@@ -129,27 +129,27 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           class="confirm-approve-content__card-content"
         >
           <div
-            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
+            class="mm-box custom-nonce mm-box--margin-bottom-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           >
             <div
-              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
+              class="mm-box mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
-              <h6
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
                 Nonce
-              </h6>
+              </p>
               <button
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
             </div>
-            <h6
-              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
+            <p
+              class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-left-auto mm-box--color-text-default"
             >
               2
-            </h6>
+            </p>
           </div>
         </div>
         <div
@@ -314,27 +314,27 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           class="confirm-approve-content__card-content"
         >
           <div
-            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
+            class="mm-box custom-nonce mm-box--margin-bottom-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           >
             <div
-              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
+              class="mm-box mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
-              <h6
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
                 Nonce
-              </h6>
+              </p>
               <button
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
             </div>
-            <h6
-              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
+            <p
+              class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-left-auto mm-box--color-text-default"
             >
               2
-            </h6>
+            </p>
           </div>
         </div>
         <div
@@ -499,27 +499,27 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           class="confirm-approve-content__card-content"
         >
           <div
-            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
+            class="mm-box custom-nonce mm-box--margin-bottom-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           >
             <div
-              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
+              class="mm-box mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
-              <h6
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
                 Nonce
-              </h6>
+              </p>
               <button
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
             </div>
-            <h6
-              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
+            <p
+              class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-left-auto mm-box--color-text-default"
             >
               2
-            </h6>
+            </p>
           </div>
         </div>
         <div
@@ -684,27 +684,27 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           class="confirm-approve-content__card-content"
         >
           <div
-            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
+            class="mm-box custom-nonce mm-box--margin-bottom-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           >
             <div
-              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
+              class="mm-box mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
-              <h6
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
                 Nonce
-              </h6>
+              </p>
               <button
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
             </div>
-            <h6
-              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
+            <p
+              class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-left-auto mm-box--color-text-default"
             >
               2
-            </h6>
+            </p>
           </div>
         </div>
         <div

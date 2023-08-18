@@ -3,466 +3,430 @@
 exports[`TokenAllowancePage should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box token-allowance-container page-container"
+    class="mm-box mm-box--sm:padding-8 mm-box--md:padding-12 mm-box--width-full"
   >
     <div
-      class="mm-box"
+      class="mm-box token-allowance-container mm-box--margin-right-auto mm-box--margin-left-auto mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--width-full mm-box--background-color-background-default mm-box--sm:rounded-xl mm-box--border-color-transparent mm-box--sm:border-color-border-muted box--border-style-solid box--border-width-1"
     >
       <div
-        class="confirm-page-container-navigation"
-        style="display: none;"
+        class="mm-box confirm-page-container-navigation mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-none mm-box--justify-content-space-between"
       >
         <div
-          class="confirm-page-container-navigation__container"
+          class="mm-box mm-box--display-flex"
           data-testid="navigation-container"
           style="visibility: hidden;"
         >
           <button
-            class="confirm-page-container-navigation__arrow"
+            aria-label="first-page"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="first-page"
           >
-            <i
-              class="fa fa-angle-double-left fa-2x"
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-double-left.svg');"
             />
           </button>
           <button
-            class="confirm-page-container-navigation__arrow"
+            aria-label="previous page"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="previous-page"
           >
-            <i
-              class="fa fa-angle-left fa-2x"
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-left.svg');"
             />
           </button>
         </div>
         <div
-          class="confirm-page-container-navigation__textcontainer"
+          class="mm-box"
         >
-          <div
-            class="confirm-page-container-navigation__navtext"
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-center mm-box--color-text-default"
           >
             0
              
             of
              
             0
-          </div>
-          <div
-            class="confirm-page-container-navigation__longtext"
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
           >
             requests waiting to be acknowledged
-          </div>
+          </p>
         </div>
         <div
-          class="confirm-page-container-navigation__container"
+          class="mm-box mm-box--display-flex"
+          data-testid="navigation-container"
           style="visibility: hidden;"
         >
           <button
-            class="confirm-page-container-navigation__arrow"
+            aria-label="next page"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="next-page"
           >
-            <i
-              class="fa fa-angle-right fa-2x"
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-right.svg');"
             />
           </button>
           <button
-            class="confirm-page-container-navigation__arrow"
+            aria-label="last page"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="last-page"
           >
-            <i
-              class="fa fa-angle-double-right fa-2x"
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-double-right.svg');"
             />
           </button>
         </div>
       </div>
-    </div>
-    <div
-      class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
-    >
       <div
-        class="mm-box"
-      />
-      <div
-        class="mm-box mm-box--text-align-end"
+        class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
       >
-        <h6
-          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-muted"
+        <p
+          class="mm-box mm-text mm-text--body-sm-bold mm-text--text-align-end mm-box--margin-left-auto mm-box--color-text-muted"
         >
           1
            
           of
            2
-        </h6>
+        </p>
       </div>
-    </div>
-    <div
-      class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
-    >
       <div
-        class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+        class="mm-box network-account-balance-header mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="box box--display-flex box--flex-direction-row box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class=""
+            class="mm-box mm-badge-wrapper mm-box--display-inline-block"
           >
             <div
-              class="identicon"
-              style="height: 32px; width: 32px; border-radius: 16px;"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
             >
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
-              >
-                <svg
-                  height="32"
-                  width="32"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="32"
-                    transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
-                    width="32"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="32"
-                    transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
-                    width="32"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="32"
-                    transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
-                    width="32"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div
-            class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
-          >
-            <span
-              class="icon-with-fallback__fallback"
-            >
-              M
-            </span>
-          </div>
-        </div>
-        <div
-          class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
-        >
-          <h6
-            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          >
-            mainnet
-          </h6>
-          <h6
-            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
-          >
-            Account 1
-          </h6>
-        </div>
-      </div>
-      <div
-        class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
-      >
-        <h6
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        >
-          Balance
-        </h6>
-        <h6
-          align="end"
-          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
-        >
-          10
-           
-          TST
-        </h6>
-      </div>
-    </div>
-    
-    <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center"
-    >
-      <div
-        class="mm-box token-allowance-container__icon-display-content mm-box--margin-top-6 mm-box--margin-right-12 mm-box--margin-bottom-8 mm-box--margin-left-12 mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-2 mm-box--display-flex mm-box--align-items-center mm-box--border-style-solid mm-box--border-color-border-muted mm-box--border-width-1"
-      >
-        <div
-          class=""
-        >
-          <img
-            alt="https://metamask.github.io"
-            class="url-icon token-allowance-container__icon-display-content__siteimage-identicon"
-            src="https://metamask.github.io/test-dapp/metamask-fox.svg"
-          />
-        </div>
-        <h6
-          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
-        >
-          https://metamask.github.io
-        </h6>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
-    >
-      <h3
-        align="center"
-        class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
-      >
-        <span>
-           
-          Spending cap request for your 
-          <div
-            class="mm-box mm-box--margin-top-4"
-          >
-            <div
-              class="box contract-token-values box--display-flex box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center"
-            >
-              <div
-                class=""
+                class="mm-avatar-account__jazzicon"
               >
                 <div
-                  class="identicon"
-                  style="height: 24px; width: 24px; border-radius: 12px;"
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
                 >
-                  <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(242, 206, 2);"
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
                   >
-                    <svg
-                      height="24"
-                      width="24"
+                    <rect
+                      fill="#18CDF2"
+                      height="32"
+                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                      width="32"
                       x="0"
                       y="0"
-                    >
-                      <rect
-                        fill="#186FF2"
-                        height="24"
-                        transform="translate(4.5535541527659795 -0.012406777909352561) rotate(501.9 12 12)"
-                        width="24"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#F97101"
-                        height="24"
-                        transform="translate(-10.003810991077078 6.326210026231173) rotate(323.7 12 12)"
-                        width="24"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#FB1832"
-                        height="24"
-                        transform="translate(-22.151479903389234 -4.322407331572157) rotate(370.5 12 12)"
-                        width="24"
-                        x="0"
-                        y="0"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <h2
-                class="box box--flex-direction-row typography typography--h2 typography--weight-bold typography--style-normal typography--color-text-alternative"
-              >
-                TST
-              </h2>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-1"
-                  class=""
-                  data-original-title="Copy to clipboard"
-                  data-tooltipped=""
-                  style="display: inline;"
-                  tabindex="0"
-                >
-                  <button
-                    aria-label="Copy to clipboard"
-                    class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-                  >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                      style="mask-image: url('./images/icons/copy.svg');"
                     />
-                  </button>
-                </div>
-              </div>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-2"
-                  class=""
-                  data-original-title="Open in block explorer"
-                  data-tooltipped=""
-                  style="display: inline;"
-                  tabindex="0"
-                >
-                  <button
-                    aria-label="Open in block explorer"
-                    class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-                  >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                      style="mask-image: url('./images/icons/export.svg');"
+                    <rect
+                      fill="#035E56"
+                      height="32"
+                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
                     />
-                  </button>
+                    <rect
+                      fill="#F26602"
+                      height="32"
+                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>
-          </div>
-          
-           
-        </span>
-      </h3>
-    </div>
-    <div
-      class="mm-box mm-box--margin-top-1 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center"
-    >
-      <a
-        class="button btn-link token-allowance-container__verify-link"
-        role="button"
-        tabindex="0"
-      >
-        <h6
-          class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
-        >
-          Verify third-party details
-        </h6>
-      </a>
-    </div>
-    <div
-      class="mm-box mm-box--margin-4 mm-box--sm:margin-4 mm-box--md:margin-3 mm-box--lg:margin-4"
-    >
-      <div
-        class="mm-box custom-spending-cap mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--background-color-background-alternative mm-box--rounded-sm"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full"
-        >
-          <div>
-            <label
-              class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--margin-right-1 mm-box--display-inline mm-box--align-items-center mm-box--color-text-default"
-              for="custom-spending-cap"
-            >
-              Custom spending cap
-            </label>
             <div
-              class="mm-box mm-box--display-inline-flex mm-box--align-items-center"
+              class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
             >
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-3"
-                  class=""
-                  data-original-title="null"
-                  data-tooltipped=""
-                  style="display: inline;"
-                  tabindex="0"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-icon-alternative"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
-                </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+              >
+                m
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
-        >
-          <input
-            autocomplete="off"
-            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--padding-inline-end-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-            data-testid="custom-spending-cap-input"
-            focused="true"
-            id="custom-spending-cap"
-            placeholder="Enter a number"
-            type="text"
-            value="7"
-          />
-          <button
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            data-testid="custom-spending-cap-max-button"
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start"
           >
-            Max
-          </button>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+            >
+              mainnet
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--color-text-default"
+            >
+              Account 1
+            </p>
+          </div>
         </div>
         <div
-          class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          >
+            Balance
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-end mm-box--color-text-default"
+          >
+            10
+             
+            TST
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+      >
+        
+        <div
+          class="box mm-tag-url token-allowance-container__tag-url box--margin-right-auto box--margin-left-auto box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <img
+              alt="https://metamask.github.io logo"
+              class="mm-avatar-favicon__image"
+              src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+          >
+            https://metamask.github.io
+          </p>
+        </div>
+        <h3
+          align="center"
+          class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
         >
           <span>
              
-            This allows the third party to spend 
-            <span
-              class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
+            Spending cap request for your 
+            <div
+              class="mm-box mm-box--margin-top-4"
             >
-              7
-               
-              TST
-            </span>
-             from your current balance.
+              <div
+                class="box contract-token-values box--display-flex box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center"
+              >
+                <div
+                  class=""
+                >
+                  <div
+                    class="identicon"
+                    style="height: 24px; width: 24px; border-radius: 12px;"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(242, 206, 2);"
+                    >
+                      <svg
+                        height="24"
+                        width="24"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#186FF2"
+                          height="24"
+                          transform="translate(4.5535541527659795 -0.012406777909352561) rotate(501.9 12 12)"
+                          width="24"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#F97101"
+                          height="24"
+                          transform="translate(-10.003810991077078 6.326210026231173) rotate(323.7 12 12)"
+                          width="24"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#FB1832"
+                          height="24"
+                          transform="translate(-22.151479903389234 -4.322407331572157) rotate(370.5 12 12)"
+                          width="24"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <h2
+                  class="box box--flex-direction-row typography typography--h2 typography--weight-bold typography--style-normal typography--color-text-alternative"
+                >
+                  TST
+                </h2>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-1"
+                    class=""
+                    data-original-title="Copy to clipboard"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <button
+                      aria-label="Copy to clipboard"
+                      class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/copy.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-2"
+                    class=""
+                    data-original-title="Open in block explorer"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <button
+                      aria-label="Open in block explorer"
+                      class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/export.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
              
           </span>
-        </div>
-        <a
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          href="https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap"
-          rel="noopener noreferrer"
-          target="_blank"
+        </h3>
+        <button
+          class="mm-box mm-text mm-button-base token-allowance-container__verify-link mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         >
-          Learn more
-        </a>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center"
-    >
-      <a
-        class="button btn-link token-allowance-container__view-details"
-        role="button"
-        tabindex="0"
-      >
-        <h6
-          class="mm-box mm-text mm-text--body-sm mm-box--margin-right-1 mm-box--color-primary-default"
+          Verify third-party details
+        </button>
+        <div
+          class="mm-box custom-spending-cap mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--background-color-background-alternative mm-box--rounded-sm"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full"
+          >
+            <div>
+              <label
+                class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--margin-right-1 mm-box--display-inline mm-box--align-items-center mm-box--color-text-default"
+                for="custom-spending-cap"
+              >
+                Custom spending cap
+              </label>
+              <div
+                class="mm-box mm-box--display-inline-flex mm-box--align-items-center"
+              >
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-3"
+                    class=""
+                    data-original-title="null"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-icon-alternative"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--padding-inline-end-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              data-testid="custom-spending-cap-input"
+              focused="true"
+              id="custom-spending-cap"
+              placeholder="Enter a number"
+              type="text"
+              value="7"
+            />
+            <button
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              data-testid="custom-spending-cap-max-button"
+            >
+              Max
+            </button>
+          </div>
+          <div
+            class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
+          >
+            <span>
+               
+              This allows the third party to spend 
+              <span
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
+              >
+                7
+                 
+                TST
+              </span>
+               from your current balance.
+               
+            </span>
+          </div>
+          <a
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Learn more
+          </a>
+        </div>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         >
           View details
-        </h6>
-        <i
-          class="fa fa-sm fa-angle-down"
-        />
-      </a>
-    </div>
-    <div
-      class="page-container__footer"
-    >
-      <footer>
-        <button
-          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
-          data-testid="page-container-footer-cancel"
-          role="button"
-          tabindex="0"
-        >
-          Reject
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
         </button>
-        <button
-          class="button btn--rounded btn-primary page-container__footer-button"
-          data-testid="page-container-footer-next"
-          role="button"
-          tabindex="0"
+        <div
+          class="mm-box mm-box--padding-top-2 mm-box--display-flex mm-box--gap-4"
         >
-          Next
-        </button>
-      </footer>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          >
+            Reject
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -7,67 +7,75 @@ exports[`ConfirmSendEther should render correct information for for confirm send
     data-testid="page-container"
   >
     <div
-      class="confirm-page-container-navigation"
-      style="display: flex;"
+      class="mm-box confirm-page-container-navigation mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
     >
       <div
-        class="confirm-page-container-navigation__container"
+        class="mm-box mm-box--display-flex"
         data-testid="navigation-container"
         style="visibility: hidden;"
       >
         <button
-          class="confirm-page-container-navigation__arrow"
+          aria-label="first-page"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="first-page"
         >
-          <i
-            class="fa fa-angle-double-left fa-2x"
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-double-left.svg');"
           />
         </button>
         <button
-          class="confirm-page-container-navigation__arrow"
+          aria-label="previous page"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="previous-page"
         >
-          <i
-            class="fa fa-angle-left fa-2x"
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
       </div>
       <div
-        class="confirm-page-container-navigation__textcontainer"
+        class="mm-box"
       >
-        <div
-          class="confirm-page-container-navigation__navtext"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-center mm-box--color-text-default"
         >
           0
            
           of
            
           2
-        </div>
-        <div
-          class="confirm-page-container-navigation__longtext"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
         >
           requests waiting to be acknowledged
-        </div>
+        </p>
       </div>
       <div
-        class="confirm-page-container-navigation__container"
+        class="mm-box mm-box--display-flex"
+        data-testid="navigation-container"
         style="visibility: initial;"
       >
         <button
-          class="confirm-page-container-navigation__arrow"
+          aria-label="next page"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="next-page"
         >
-          <i
-            class="fa fa-angle-right fa-2x"
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
         <button
-          class="confirm-page-container-navigation__arrow"
+          aria-label="last page"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="last-page"
         >
-          <i
-            class="fa fa-angle-double-right fa-2x"
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-double-right.svg');"
           />
         </button>
       </div>

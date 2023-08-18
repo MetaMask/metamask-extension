@@ -9,67 +9,75 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
       class="request-signature__navigation"
     >
       <div
-        class="confirm-page-container-navigation"
-        style="display: none;"
+        class="mm-box confirm-page-container-navigation mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-none mm-box--justify-content-space-between"
       >
         <div
-          class="confirm-page-container-navigation__container"
+          class="mm-box mm-box--display-flex"
           data-testid="navigation-container"
           style="visibility: hidden;"
         >
           <button
-            class="confirm-page-container-navigation__arrow"
+            aria-label="first-page"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="first-page"
           >
-            <i
-              class="fa fa-angle-double-left fa-2x"
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-double-left.svg');"
             />
           </button>
           <button
-            class="confirm-page-container-navigation__arrow"
+            aria-label="previous page"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="previous-page"
           >
-            <i
-              class="fa fa-angle-left fa-2x"
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-left.svg');"
             />
           </button>
         </div>
         <div
-          class="confirm-page-container-navigation__textcontainer"
+          class="mm-box"
         >
-          <div
-            class="confirm-page-container-navigation__navtext"
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-center mm-box--color-text-default"
           >
             0
              
             of
              
             1
-          </div>
-          <div
-            class="confirm-page-container-navigation__longtext"
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
           >
             requests waiting to be acknowledged
-          </div>
+          </p>
         </div>
         <div
-          class="confirm-page-container-navigation__container"
+          class="mm-box mm-box--display-flex"
+          data-testid="navigation-container"
           style="visibility: initial;"
         >
           <button
-            class="confirm-page-container-navigation__arrow"
+            aria-label="next page"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="next-page"
           >
-            <i
-              class="fa fa-angle-right fa-2x"
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-right.svg');"
             />
           </button>
           <button
-            class="confirm-page-container-navigation__arrow"
+            aria-label="last page"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="last-page"
           >
-            <i
-              class="fa fa-angle-double-right fa-2x"
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-double-right.svg');"
             />
           </button>
         </div>
@@ -79,20 +87,19 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
       class="request-signature__account"
     >
       <div
-        class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+        class="mm-box network-account-balance-header mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="box box--display-flex box--flex-direction-row box--align-items-center"
+            class="mm-box mm-badge-wrapper mm-box--display-inline-block"
           >
             <div
-              class=""
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
             >
               <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
+                class="mm-avatar-account__jazzicon"
               >
                 <div
                   style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
@@ -132,46 +139,45 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
               </div>
             </div>
             <div
-              class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+              class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
             >
-              <span
-                class="icon-with-fallback__fallback"
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
               >
                 U
-              </span>
+              </div>
             </div>
           </div>
           <div
-            class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start"
           >
-            <h6
-              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
             >
               Unknown private network
-            </h6>
-            <h6
-              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--color-text-default"
             >
               Test Account
-            </h6>
+            </p>
           </div>
         </div>
         <div
-          class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end"
         >
-          <h6
-            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             Balance
-          </h6>
-          <h6
-            align="end"
-            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-end mm-box--color-text-default"
           >
             966.987986
              
             ETH
-          </h6>
+          </p>
         </div>
       </div>
     </div>
