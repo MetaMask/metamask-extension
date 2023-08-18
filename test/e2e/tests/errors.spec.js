@@ -20,7 +20,6 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
-  'TokenListController.tokensChainsCache',
 ];
 
 const removedUiFields = [
@@ -29,7 +28,6 @@ const removedUiFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'metamask.currentPopupId',
   'metamask.timeoutMinutes',
-  'metamask.tokensChainsCache',
 ];
 
 /**
@@ -126,6 +124,18 @@ describe('Sentry errors', function () {
       });
   }
 
+  async function mockSentryInvariantMigrationError(mockServer) {
+    return await mockServer
+      .forPost('https://sentry.io/api/0000000/envelope/')
+      .withBodyIncluding('typeof state.PreferencesController is number')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {},
+        };
+      });
+  }
+
   async function mockSentryTestError(mockServer) {
     return await mockServer
       .forPost('https://sentry.io/api/0000000/envelope/')
@@ -197,9 +207,9 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
           await driver.findElement('#password');
-          // Erase `getSentryState` hook, simulating a "before initialization" state
+          // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
-            'window.stateHooks.getSentryState = undefined',
+            'window.stateHooks.getSentryAppState = undefined',
           );
 
           // Wait for Sentry request
@@ -286,10 +296,73 @@ describe('Sentry errors', function () {
           const mockTextBody = mockedRequest.body.text.split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          assert.deepStrictEqual(Object.keys(appState), [
+            'browser',
+            'version',
+            'persistedState',
+          ]);
+          assert.ok(
+            typeof appState?.browser === 'string' &&
+              appState?.browser.length > 0,
+            'Invalid browser state',
+          );
+          assert.ok(
+            typeof appState?.version === 'string' &&
+              appState?.version.length > 0,
+            'Invalid version state',
+          );
           await matchesSnapshot({
-            data: transformBackgroundState(appState),
+            data: transformBackgroundState(appState.persistedState),
             snapshot: 'errors-before-init-opt-in-background-state',
           });
+        },
+      );
+    });
+
+    it('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
+      await withFixtures(
+        {
+          fixtures: {
+            ...new FixtureBuilder()
+              .withMetaMetricsController({
+                metaMetricsId: 'fake-metrics-id',
+                participateInMetaMetrics: true,
+              })
+              .withBadPreferencesControllerState()
+              .build(),
+          },
+          ganacheOptions,
+          title: this.test.title,
+          failOnConsoleError: false,
+          testSpecificMock: mockSentryInvariantMigrationError,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await driver.navigate();
+
+          // Wait for Sentry request
+          await driver.wait(async () => {
+            const isPending = await mockedEndpoint.isPending();
+            return isPending === false;
+          }, 3000);
+
+          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
+          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const breadcrumbs = mockJsonBody?.breadcrumbs ?? [];
+          const migrationLogBreadcrumbs = breadcrumbs.filter((breadcrumb) => {
+            return breadcrumb.message?.match(/Running migration \d+/u);
+          });
+          const migrationLogMessages = migrationLogBreadcrumbs.map(
+            (breadcrumb) =>
+              breadcrumb.message.match(/(Running migration \d+)/u)[1],
+          );
+          const firstMigrationLog = migrationLogMessages[0];
+          const lastMigrationLog =
+            migrationLogMessages[migrationLogMessages.length - 1];
+
+          assert.equal(migrationLogMessages.length, 8);
+          assert.equal(firstMigrationLog, 'Running migration 75');
+          assert.equal(lastMigrationLog, 'Running migration 82');
         },
       );
     });
@@ -311,9 +384,9 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
           await driver.findElement('#password');
-          // Erase `getSentryState` hook, simulating a "before initialization" state
+          // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
-            'window.stateHooks.getSentryState = undefined',
+            'window.stateHooks.getSentryAppState = undefined',
           );
 
           // Trigger error
@@ -354,9 +427,9 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
           await driver.findElement('#password');
-          // Erase `getSentryState` hook, simulating a "before initialization" state
+          // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
-            'window.stateHooks.getSentryState = undefined',
+            'window.stateHooks.getSentryAppState = undefined',
           );
 
           // Trigger error
@@ -371,8 +444,23 @@ describe('Sentry errors', function () {
           const mockTextBody = mockedRequest.body.text.split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          assert.deepStrictEqual(Object.keys(appState), [
+            'browser',
+            'version',
+            'persistedState',
+          ]);
+          assert.ok(
+            typeof appState?.browser === 'string' &&
+              appState?.browser.length > 0,
+            'Invalid browser state',
+          );
+          assert.ok(
+            typeof appState?.version === 'string' &&
+              appState?.version.length > 0,
+            'Invalid version state',
+          );
           await matchesSnapshot({
-            data: transformUiState(appState),
+            data: transformBackgroundState(appState.persistedState),
             snapshot: 'errors-before-init-opt-in-ui-state',
           });
         },
@@ -481,7 +569,7 @@ describe('Sentry errors', function () {
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
           const { participateInMetaMetrics } =
-            extra.appState.store.MetaMetricsController;
+            extra.appState.state.MetaMetricsController;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
@@ -525,8 +613,8 @@ describe('Sentry errors', function () {
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
-            'store',
             'version',
+            'state',
           ]);
           assert.ok(
             typeof appState?.browser === 'string' &&
@@ -539,7 +627,7 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: transformBackgroundState(appState.store),
+            data: transformBackgroundState(appState.state),
             snapshot: 'errors-after-init-opt-in-background-state',
           });
         },
@@ -577,7 +665,7 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { participateInMetaMetrics } = extra.appState.store.metamask;
+          const { participateInMetaMetrics } = extra.appState.state.metamask;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
@@ -619,8 +707,8 @@ describe('Sentry errors', function () {
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
-            'store',
             'version',
+            'state',
           ]);
           assert.ok(
             typeof appState?.browser === 'string' &&
@@ -633,7 +721,7 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: transformUiState(appState.store),
+            data: transformUiState(appState.state),
             snapshot: 'errors-after-init-opt-in-ui-state',
           });
         },

@@ -1,5 +1,18 @@
 {
   "AccountTracker": { "accounts": "object" },
+  "AddressBookController": "object",
+  "AlertController": {
+    "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
+    "unconnectedAccountAlertShownOrigins": "object",
+    "web3ShimUsageOrigins": "object"
+  },
+  "AnnouncementController": "object",
+  "AppMetadataController": {
+    "currentAppVersion": "10.34.4",
+    "previousAppVersion": "",
+    "previousMigrationVersion": 0,
+    "currentMigrationVersion": 94
+  },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
@@ -24,6 +37,7 @@
   },
   "ApprovalController": "object",
   "CachedBalancesController": "object",
+  "CronjobController": "object",
   "CurrencyController": {
     "conversionDate": "number",
     "conversionRate": 1700,
@@ -42,6 +56,22 @@
     "unapprovedEncryptionPublicKeyMsgCount": 0
   },
   "EnsController": "object",
+  "GasFeeController": "object",
+  "IncomingTransactionsController": {
+    "incomingTransactions": "object",
+    "incomingTxLastFetchedBlockByChainId": {
+      "0x1": null,
+      "0xe708": null,
+      "0x5": null,
+      "0xaa36a7": null,
+      "0xe704": null
+    }
+  },
+  "KeyringController": {
+    "isUnlocked": false,
+    "keyringTypes": "object",
+    "keyrings": "object"
+  },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
@@ -66,6 +96,51 @@
     "networksMetadata": "object",
     "networkConfigurations": "object"
   },
+  "NftController": "object",
+  "NotificationController": "object",
+  "OnboardingController": {
+    "seedPhraseBackedUp": true,
+    "firstTimeFlowType": "import",
+    "completedOnboarding": true,
+    "onboardingTabs": "object"
+  },
+  "PermissionController": "object",
+  "PermissionLogController": "object",
+  "PreferencesController": {
+    "useBlockie": false,
+    "useNonceField": false,
+    "usePhishDetect": true,
+    "dismissSeedBackUpReminder": "boolean",
+    "disabledRpcMethodPreferences": "object",
+    "useMultiAccountBalanceChecker": "boolean",
+    "useTokenDetection": "boolean",
+    "useNftDetection": "boolean",
+    "use4ByteResolution": "boolean",
+    "useCurrencyRateCheck": "boolean",
+    "openSeaEnabled": "boolean",
+    "advancedGasFee": "object",
+    "featureFlags": { "showIncomingTransactions": true },
+    "knownMethodData": "object",
+    "currentLocale": "en",
+    "identities": "object",
+    "lostIdentities": "object",
+    "forgottenPassword": false,
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": false,
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "ipfsGateway": "dweb.link",
+    "useAddressBarEnsResolution": "boolean",
+    "infuraBlocked": "boolean",
+    "ledgerTransportType": "string",
+    "snapRegistryList": "object",
+    "transactionSecurityCheckEnabled": "boolean",
+    "theme": "string",
+    "isLineaMainnetReleased": "boolean",
+    "selectedAddress": "string"
+  },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
@@ -74,7 +149,12 @@
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },
+  "SmartTransactionsController": "object",
+  "SnapController": "object",
+  "SnapsRegistry": "object",
+  "SubjectMetadataController": "object",
   "SwapsController": "object",
+  "TokenListController": "object",
   "TokenRatesController": "object",
   "TokensController": "object",
   "TxController": "object"

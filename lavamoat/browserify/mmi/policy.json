@@ -790,8 +790,24 @@
     "@metamask-institutional/extension>@metamask-institutional/custody-controller": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/custody-keyring": true,
+        "@metamask-institutional/extension>@metamask-institutional/custody-keyring": true,
         "@metamask/obs-store": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/custody-keyring": {
+      "globals": {
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": true,
+        "@metamask-institutional/sdk": true,
+        "@metamask-institutional/sdk>@metamask-institutional/types": true,
+        "@metamask/obs-store": true,
+        "browserify>crypto-browserify": true,
+        "browserify>events": true,
+        "gulp-sass>lodash.clonedeep": true
       }
     },
     "@metamask-institutional/institutional-features": {
