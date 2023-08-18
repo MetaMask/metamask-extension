@@ -67,7 +67,7 @@ Possible sizes include:
 
 ```jsx
 import { Size } from '../../../helpers/constants/design-system';
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button size={Size.inherit} />
 <Button size={Size.SM} />
@@ -84,7 +84,7 @@ Use the `danger` boolean prop to change the `Button` to danger color.
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button>Normal</Button>
 <Button danger>Danger</Button>
@@ -99,7 +99,7 @@ When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button href="/">Anchor Element</Button>;
 ```
@@ -114,7 +114,7 @@ Use boolean `block` prop to quickly enable a full width block button
 
 ```jsx
 import { DISPLAY } from '../../../helpers/constants/design-system';
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button>Default Button</Button>
 <Button block>Block Button</Button>
@@ -136,7 +136,7 @@ Button `as` options:
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 
 <Button as="button">Button Element</Button>
@@ -154,7 +154,7 @@ Use the boolean `disabled` prop to disable button
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button disabled>Disabled Button</Button>;
 ```
@@ -168,7 +168,7 @@ Use the boolean `loading` prop to set loading spinner
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button loading>Loading Button</Button>;
 ```
@@ -184,7 +184,7 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 import { IconName } from '../icon';
 
 <Button startIconName={IconName.AddSquare}>Button</Button>;
@@ -195,7 +195,7 @@ import { IconName } from '../icon';
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 import { IconName } from '../icon';
 
 <Button endIconName={IconName.Arrow2Right}>Button</Button>;

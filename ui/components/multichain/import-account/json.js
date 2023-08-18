@@ -46,7 +46,7 @@ export default function JsonImportSubview({
     if (isPrimaryDisabled) {
       displayWarning(t('needImportFile'));
     } else {
-      importAccountFunc('JSON File', [fileContents, password]);
+      importAccountFunc('json', [fileContents, password]);
     }
   }
 
