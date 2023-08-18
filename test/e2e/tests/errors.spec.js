@@ -349,17 +349,20 @@ describe('Sentry errors', function () {
           const mockTextBody = mockedRequest.body.text.split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const breadcrumbs = mockJsonBody?.breadcrumbs ?? [];
-
           const migrationLogBreadcrumbs = breadcrumbs.filter((breadcrumb) => {
-            return breadcrumb.message.match(/Running migration \d+/u);
+            return breadcrumb.message?.match(/Running migration \d+/u);
           });
-          const firstMigrationLog = migrationLogBreadcrumbs[0];
+          const migrationLogMessages = migrationLogBreadcrumbs.map(
+            (breadcrumb) =>
+              breadcrumb.message.match(/(Running migration \d+)/u)[1],
+          );
+          const firstMigrationLog = migrationLogMessages[0];
           const lastMigrationLog =
-            migrationLogBreadcrumbs[migrationLogBreadcrumbs.length - 1];
+            migrationLogMessages[migrationLogMessages.length - 1];
 
-          assert.equal(migrationLogBreadcrumbs.length, 8);
-          assert.equal(firstMigrationLog.message, 'Running migration 75');
-          assert.equal(lastMigrationLog.message, 'Running migration 82');
+          assert.equal(migrationLogMessages.length, 8);
+          assert.equal(firstMigrationLog, 'Running migration 75');
+          assert.equal(lastMigrationLog, 'Running migration 82');
         },
       );
     });
