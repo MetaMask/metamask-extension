@@ -72,6 +72,9 @@ export default {
     txData: {
       control: 'object',
     },
+    warning: {
+      control: 'text',
+    },
   },
   args: {
     origin: 'https://metamask.github.io',

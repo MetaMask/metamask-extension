@@ -158,7 +158,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         await driver.findElement({
           text: 'Spending cap request for your ',
-          css: '.box--flex-direction-row',
+          tag: 'p',
         });
 
         const defaultSpendingCap = await driver.findElement({
