@@ -355,7 +355,7 @@ describe('MetaMaskController', function () {
       beforeEach(async function () {
         const password = 'a-fake-password';
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-        await metamaskController.importAccountWithStrategy('Private Key', [
+        await metamaskController.importAccountWithStrategy('privateKey', [
           importPrivkey,
         ]);
       });
@@ -766,7 +766,7 @@ describe('MetaMaskController', function () {
           metamaskController.keyringController,
           'addNewAccount',
         );
-        addNewAccountStub.returns({});
+        addNewAccountStub.returns('0x123');
 
         getAccountsStub = sinon.stub(
           metamaskController.keyringController,
@@ -847,7 +847,7 @@ describe('MetaMaskController', function () {
           await addNewAccount;
           assert.fail('should throw');
         } catch (e) {
-          assert.equal(e.message, 'MetamaskController - No HD Key Tree found');
+          assert.equal(e.message, 'No HD keyring found');
         }
       });
     });

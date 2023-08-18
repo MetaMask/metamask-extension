@@ -5,7 +5,12 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce } from 'lodash';
+import {
+  debounce,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  throttle,
+  ///: END:ONLY_INCLUDE_IN
+} from 'lodash';
 import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import createFilterMiddleware from 'eth-json-rpc-filters';
@@ -184,12 +189,11 @@ import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
-import BackupController from './controllers/backup';
+import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
-import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
@@ -197,6 +201,7 @@ import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
+import AppMetadataController from './controllers/app-metadata';
 
 import {
   CaveatMutatorFactories,
@@ -266,6 +271,8 @@ export default class MetamaskController extends EventEmitter {
     // instance of a class that wraps the extension's storage local API.
     this.localStoreApiWrapper = opts.localStore;
 
+    this.currentMigrationVersion = opts.currentMigrationVersion;
+
     // observable state store
     this.store = new ComposableObservableStore({
       state: initState,
@@ -284,6 +291,12 @@ export default class MetamaskController extends EventEmitter {
       if (details.reason === 'update' && version === '8.1.0') {
         this.platform.openExtensionInBrowser();
       }
+    });
+
+    this.appMetadataController = new AppMetadataController({
+      state: initState.AppMetadataController,
+      currentMigrationVersion: this.currentMigrationVersion,
+      currentAppVersion: version,
     });
 
     // next, we will initialize the controllers
@@ -1130,7 +1143,7 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IN
 
-    this.backupController = new BackupController({
+    this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
       networkController: this.networkController,
@@ -1475,6 +1488,7 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController.clearUnapproved();
         this.decryptMessageController.clearUnapproved();
         this.signatureController.clearUnapproved();
+        this.approvalController.clear();
       },
     );
 
@@ -1614,6 +1628,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
+      AppMetadataController: this.appMetadataController.store,
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
@@ -1627,7 +1642,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
-      BackupController: this.backupController,
       AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
@@ -1660,6 +1674,7 @@ export default class MetamaskController extends EventEmitter {
     this.memStore = new ComposableObservableStore({
       config: {
         AppStateController: this.appStateController.store,
+        AppMetadataController: this.appMetadataController.store,
         NetworkController: this.networkController,
         CachedBalancesController: this.cachedBalancesController.store,
         KeyringController: this.keyringController.memStore,
@@ -1672,7 +1687,6 @@ export default class MetamaskController extends EventEmitter {
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
-        BackupController: this.backupController,
         AnnouncementController: this.announcementController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
@@ -1822,6 +1836,39 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
   /**
+   * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
+   *
+   * @param {string} handler - The handler to trigger on the snap for the request.
+   */
+  _trackSnapExportUsage = throttle(
+    (handler) =>
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.SnapExportUsed,
+        category: MetaMetricsEventCategory.Snaps,
+        properties: {
+          export: handler,
+        },
+      }),
+    SECOND * 60,
+  );
+
+  /**
+   * Passes a JSON-RPC request object to the SnapController for execution.
+   *
+   * @param {object} args - A bag of options.
+   * @param {string} args.snapId - The ID of the recipient snap.
+   * @param {string} args.origin - The origin of the RPC request.
+   * @param {string} args.handler - The handler to trigger on the snap for the request.
+   * @param {object} args.request - The JSON-RPC request object.
+   * @returns The result of the JSON-RPC request.
+   */
+  handleSnapRequest(args) {
+    this._trackSnapExportUsage(args.handler);
+
+    return this.controllerMessenger.call('SnapController:handleRequest', args);
+  }
+
+  /**
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
@@ -1842,10 +1889,7 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
-        handleSnapRpcRequest: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:handleRequest',
-        ),
+        handleSnapRpcRequest: this.handleSnapRequest.bind(this),
         getSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getSnapState',
@@ -1986,7 +2030,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapInstalled`,
       (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
-          event: 'Snap Installed',
+          event: MetaMetricsEventName.SnapInstalled,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: truncatedSnap.id,
@@ -2000,7 +2044,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapUpdated`,
       (newSnap, oldVersion) => {
         this.metaMetricsController.trackEvent({
-          event: 'Snap Updated',
+          event: MetaMetricsEventName.SnapUpdated,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: newSnap.id,
@@ -2173,7 +2217,7 @@ export default class MetamaskController extends EventEmitter {
       smartTransactionsController,
       txController,
       assetsContractController,
-      backupController,
+      backup,
       approvalController,
     } = this;
 
@@ -2569,10 +2613,7 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:remove',
       ),
-      handleSnapRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:handleRequest',
-      ),
+      handleSnapRequest: this.handleSnapRequest.bind(this),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:revokeDynamicPermissions',
@@ -2719,9 +2760,9 @@ export default class MetamaskController extends EventEmitter {
       removePollingTokenFromAppState:
         appStateController.removePollingToken.bind(appStateController),
 
-      // BackupController
-      backupUserData: backupController.backupUserData.bind(backupController),
-      restoreUserData: backupController.restoreUserData.bind(backupController),
+      // Backup
+      backupUserData: backup.backupUserData.bind(backup),
+      restoreUserData: backup.restoreUserData.bind(backup),
 
       // DetectTokenController
       detectNewTokens: detectTokensController.detectNewTokens.bind(
@@ -2742,6 +2783,9 @@ export default class MetamaskController extends EventEmitter {
         assetsContractController.getBalancesInSingleCall.bind(
           assetsContractController,
         ),
+
+      // E2E testing
+      throwTestError: this.throwTestError.bind(this),
     };
   }
 
@@ -2914,12 +2958,10 @@ export default class MetamaskController extends EventEmitter {
 
       // seek out the first zero balance
       while (lastBalance !== '0x0') {
-        await this.coreKeyringController.addNewAccount(accounts.length);
+        const { addedAccountAddress } =
+          await this.coreKeyringController.addNewAccount(accounts.length);
         accounts = await this.coreKeyringController.getAccounts();
-        lastBalance = await this.getBalance(
-          accounts[accounts.length - 1],
-          ethQuery,
-        );
+        lastBalance = await this.getBalance(addedAccountAddress, ethQuery);
       }
 
       // remove extra zero balance account potentially created from seeking ahead
@@ -3365,7 +3407,7 @@ export default class MetamaskController extends EventEmitter {
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
    * @param accountCount
-   * @returns {} keyState
+   * @returns {Promise<string>} The address of the newly-created account.
    */
   async addNewAccount(accountCount) {
     const isActionMetricsQueueE2ETest =
@@ -3375,38 +3417,16 @@ export default class MetamaskController extends EventEmitter {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
     }
 
-    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found');
-    }
-    const { keyringController } = this;
-    const { identities: oldIdentities } =
-      this.preferencesController.store.getState();
+    const oldAccounts = await this.coreKeyringController.getAccounts();
 
-    if (Object.keys(oldIdentities).length === accountCount) {
-      const oldAccounts = await keyringController.getAccounts();
-      const keyState = await keyringController.addNewAccount(primaryKeyring);
-      const newAccounts = await keyringController.getAccounts();
+    const { addedAccountAddress } =
+      await this.coreKeyringController.addNewAccount(accountCount);
 
-      await this.verifySeedPhrase();
-
-      this.preferencesController.setAddresses(newAccounts);
-      newAccounts.forEach((address) => {
-        if (!oldAccounts.includes(address)) {
-          this.preferencesController.setSelectedAddress(address);
-        }
-      });
-
-      const { identities } = this.preferencesController.store.getState();
-      return { ...keyState, identities };
+    if (!oldAccounts.includes(addedAccountAddress)) {
+      this.preferencesController.setSelectedAddress(addedAccountAddress);
     }
 
-    return {
-      ...keyringController.memStore.getState(),
-      identities: oldIdentities,
-    };
+    return addedAccountAddress;
   }
 
   /**
@@ -3543,21 +3563,17 @@ export default class MetamaskController extends EventEmitter {
    * These are defined in app/scripts/account-import-strategies
    * Each strategy represents a different way of serializing an Ethereum key pair.
    *
-   * @param {string} strategy - A unique identifier for an account import strategy.
+   * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
    * @param {any} args - The data required by that strategy to import an account.
    */
   async importAccountWithStrategy(strategy, args) {
-    const privateKey = await accountImporter.importAccount(strategy, args);
-    const keyring = await this.keyringController.addNewKeyring(
-      KeyringType.imported,
-      [privateKey],
-    );
-    const [firstAccount] = await keyring.getAccounts();
-    // update accounts in preferences controller
-    const allAccounts = await this.keyringController.getAccounts();
-    this.preferencesController.setAddresses(allAccounts);
+    const { importedAccountAddress } =
+      await this.coreKeyringController.importAccountWithStrategy(
+        strategy,
+        args,
+      );
     // set new account as selected
-    this.preferencesController.setSelectedAddress(firstAccount);
+    this.preferencesController.setSelectedAddress(importedAccountAddress);
   }
 
   // ---------------------------------------------------------------------------
@@ -4508,6 +4524,21 @@ export default class MetamaskController extends EventEmitter {
     );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
+  }
+
+  /**
+   * Throw an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * use this for handling errors.
+   */
+  throwTestError(message) {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      throw error;
+    });
   }
 
   //=============================================================================
