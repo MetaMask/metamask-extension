@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import IconWithFallback from '../../ui/icon-with-fallback';
-import Identicon from '../../ui/identicon';
 import {
   Display,
   FlexDirection,
@@ -11,11 +9,18 @@ import {
   JustifyContent,
   TextAlign,
   TextColor,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { Text } from '../../component-library';
+import {
+  Text,
+  Box,
+  AvatarAccount,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
+} from '../../component-library';
 
 export default function NetworkAccountBalanceHeader({
   networkName,
@@ -27,10 +32,6 @@ export default function NetworkAccountBalanceHeader({
 }) {
   const t = useContext(I18nContext);
   const networkIcon = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
-  const networkIconWrapperClass = networkIcon
-    ? 'network-account-balance-header__network-account__ident-icon-ethereum'
-    : 'network-account-balance-header__network-account__ident-icon-ethereum--gray';
-
   return (
     <Box
       display={Display.Flex}
@@ -46,38 +47,26 @@ export default function NetworkAccountBalanceHeader({
         alignItems={AlignItems.center}
         gap={2}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+        <BadgeWrapper
+          badge={
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              src={networkIcon}
+              name={networkName}
+              borderColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
+            />
+          }
         >
-          <Identicon address={accountAddress} diameter={32} />
-          <IconWithFallback
-            name={networkName}
-            size={16}
-            icon={networkIcon}
-            wrapperClassName={networkIconWrapperClass}
-          />
-        </Box>
+          <AvatarAccount address={accountAddress} />
+        </BadgeWrapper>
         <Box
           display={Display.Flex}
           alignItems={AlignItems.flexStart}
           flexDirection={FlexDirection.Column}
         >
-          <Text
-            variant={TextVariant.bodySm}
-            as="h6"
-            color={TextColor.textAlternative}
-          >
-            {networkName}
-          </Text>
-
-          <Text
-            variant={TextVariant.bodySm}
-            as="h6"
-            color={TextColor.textDefault}
-            fontWeight={FontWeight.Bold}
-          >
+          <Text color={TextColor.textAlternative}>{networkName}</Text>
+          <Text color={TextColor.textDefault} fontWeight={FontWeight.Bold}>
             {accountName}
           </Text>
         </Box>
@@ -87,20 +76,11 @@ export default function NetworkAccountBalanceHeader({
         alignItems={AlignItems.flexEnd}
         flexDirection={FlexDirection.Column}
       >
+        <Text color={TextColor.textAlternative}>{t('balance')}</Text>
         <Text
-          variant={TextVariant.bodySm}
-          as="h6"
-          color={TextColor.textAlternative}
-        >
-          {t('balance')}
-        </Text>
-
-        <Text
-          variant={TextVariant.bodySm}
-          as="h6"
           color={TextColor.textDefault}
           fontWeight={FontWeight.Bold}
-          align={TextAlign.End}
+          textAlign={TextAlign.End}
         >
           {accountBalance} {tokenName}
         </Text>
