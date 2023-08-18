@@ -32,16 +32,6 @@
       "usdConversionRate": "number"
     },
     "GasFeeController": "object",
-    "IncomingTransactionsController": {
-      "incomingTransactions": "object",
-      "incomingTxLastFetchedBlockByChainId": {
-        "0x1": null,
-        "0xe708": null,
-        "0x5": null,
-        "0xaa36a7": null,
-        "0xe704": null
-      }
-    },
     "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
