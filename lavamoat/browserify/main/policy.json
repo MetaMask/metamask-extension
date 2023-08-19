@@ -1769,33 +1769,6 @@
         "@metamask/post-message-stream>readable-stream>safe-buffer": true
       }
     },
-    "@metamask/ppom-validator>elliptic": {
-      "packages": {
-        "@metamask/ppom-validator>elliptic>brorand": true,
-        "@metamask/ppom-validator>elliptic>hmac-drbg": true,
-        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
-        "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true,
-        "bn.js": true,
-        "ethereumjs-util>ethereum-cryptography>hash.js": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/ppom-validator>elliptic>brorand": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/ppom-validator>elliptic>hmac-drbg": {
-      "packages": {
-        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
-        "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true,
-        "ethereumjs-util>ethereum-cryptography>hash.js": true
-      }
-    },
     "@metamask/providers>@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -1952,6 +1925,25 @@
         "define": true
       }
     },
+    "@metamask/smart-transactions-controller>isomorphic-fetch": {
+      "globals": {
+        "fetch.bind": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": true
+      }
+    },
+    "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "Blob": true,
+        "FileReader": true,
+        "FormData": true,
+        "URLSearchParams.prototype.isPrototypeOf": true,
+        "XMLHttpRequest": true,
+        "define": true,
+        "setTimeout": true
+      }
+    },
     "@metamask/snaps-controllers": {
       "globals": {
         "URL": true,
@@ -2005,9 +1997,7 @@
       "packages": {
         "@metamask/snaps-controllers>concat-stream>readable-stream": true,
         "browserify>buffer": true,
-        "browserify>concat-stream>typedarray": true,
-        "pumpify>inherits": true,
-        "terser>source-map-support>buffer-from": true
+        "pumpify>inherits": true
       }
     },
     "@metamask/snaps-controllers>concat-stream>readable-stream": {
@@ -4364,21 +4354,6 @@
         "readable-stream>util-deprecate": true
       }
     },
-    "mocha>serialize-javascript>randombytes": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "mockttp>graphql-tag>tslib": {
-      "globals": {
-        "define": true
-      }
-    },
     "nanoid": {
       "globals": {
         "crypto": true,
@@ -5025,7 +5000,6 @@
       },
       "packages": {
         "browserify>process": true,
-        "browserify>util": true,
         "semver>lru-cache": true
       }
     },
@@ -5088,9 +5062,19 @@
         "msCrypto": true
       }
     },
+    "vinyl>clone": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "vinyl>replace-ext": {
       "packages": {
         "browserify>path-browserify": true
+      }
+    },
+    "wait-on>rxjs>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "web3": {

@@ -2222,12 +2222,6 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-controllers-flask>@metamask/snaps-utils>@metamask/snaps-ui": {
-      "packages": {
-        "@metamask/snaps-controllers-flask>@metamask/utils": true,
-        "superstruct": true
-      }
-    },
     "@metamask/snaps-controllers-flask>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -5278,7 +5272,6 @@
       },
       "packages": {
         "browserify>process": true,
-        "browserify>util": true,
         "semver>lru-cache": true
       }
     },
