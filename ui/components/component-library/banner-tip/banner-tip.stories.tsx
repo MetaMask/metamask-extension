@@ -32,9 +32,6 @@ export default {
     className: {
       control: 'text',
     },
-    actionButtonProps: {
-      control: 'object',
-    },
   },
 } as Meta<typeof BannerTip>;
 
