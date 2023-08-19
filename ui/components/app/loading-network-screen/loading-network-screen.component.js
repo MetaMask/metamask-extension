@@ -11,6 +11,7 @@ import {
   IconName,
   IconSize,
   Text,
+  Box,
 } from '../../component-library';
 import {
   DISPLAY,
@@ -18,7 +19,6 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {

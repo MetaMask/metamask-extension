@@ -16,8 +16,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
-import { AvatarIcon, IconName, Text } from '../../../component-library';
-import Box from '../../../ui/box/box';
+import { AvatarIcon, IconName, Text, Box } from '../../../component-library';
 
 /**
  * a very simple reducer using produce from Immer to keep checkboxes state manipulation

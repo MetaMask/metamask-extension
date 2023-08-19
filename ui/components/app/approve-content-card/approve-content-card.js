@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 
-import Box from '../../ui/box/box';
 import Button from '../../ui/button';
 import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
-import { Text } from '../../component-library';
+import { Text, Box } from '../../component-library';
 import {
   AlignItems,
   BlockSize,

@@ -11,10 +11,9 @@ import { getKnownMethodData } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionFunctionType } from '../../../hooks/useTransactionFunctionType';
 
-import Box from '../../ui/box/box';
 import Disclosure from '../../ui/disclosure';
 import TransactionDecoding from '../transaction-decoding';
-import { Text } from '../../component-library';
+import { Text, Box } from '../../component-library';
 
 const ConfirmData = ({ txData, dataComponent }) => {
   const t = useI18nContext();

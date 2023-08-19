@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
   BLOCK_SIZES,
@@ -23,6 +22,7 @@ import {
   IconSize,
   ValidTag,
   Text,
+  Box,
 } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';

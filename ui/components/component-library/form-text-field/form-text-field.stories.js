@@ -10,7 +10,6 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -23,6 +22,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  Box,
 } from '..';
 
 import { FormTextField } from './form-text-field';

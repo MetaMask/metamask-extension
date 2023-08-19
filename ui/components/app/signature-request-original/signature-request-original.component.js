@@ -40,13 +40,13 @@ import {
   Icon,
   IconName,
   Text,
+  Box,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Box from '../../../ui/box/box';
 import Popover from '../../../ui/popover';
 import {
   AvatarIcon,
@@ -13,6 +12,7 @@ import {
   IconName,
   IconSize,
   Text,
+  Box,
 } from '../../../component-library';
 import {
   AlignItems,

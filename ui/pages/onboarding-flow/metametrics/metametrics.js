@@ -28,9 +28,8 @@ import {
   Icon,
   IconName,
   IconSize,
+  Box,
 } from '../../../components/component-library';
-
-import Box from '../../../components/ui/box/box';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();

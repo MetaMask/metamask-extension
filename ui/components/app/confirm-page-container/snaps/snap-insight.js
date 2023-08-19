@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { useSelector } from 'react-redux';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
-import { Text } from '../../../component-library';
+import { Text, Box } from '../../../component-library';
 import {
   AlignItems,
   FLEX_DIRECTION,
@@ -14,7 +14,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/snaps/useTransactionInsightSnap';
-import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../../snaps/snap-ui-renderer';
 import { SnapDelineator } from '../../snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';

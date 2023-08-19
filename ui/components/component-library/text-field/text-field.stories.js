@@ -12,7 +12,6 @@ import {
   TextColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
 
 import {
   AvatarAccount,
@@ -24,6 +23,7 @@ import {
   IconName,
   Icon,
   IconSize,
+  Box,
 } from '..';
 
 import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';

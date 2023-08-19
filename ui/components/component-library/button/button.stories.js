@@ -6,9 +6,8 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { IconName } from '..';
+import { IconName, Box } from '..';
 import { ButtonLinkSize } from '../button-link';
-import Box from '../../ui/box/box';
 import { Text } from '../text';
 import README from './README.mdx';
 import { Button, BUTTON_VARIANT } from '.';

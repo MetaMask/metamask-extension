@@ -11,7 +11,7 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
+import { Box } from '../component-library';
 
 import {
   AvatarAccount,

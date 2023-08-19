@@ -5,7 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { hideModal } from '../../../store/actions';
 
 import Typography from '../../../components/ui/typography/typography';
-import Box from '../../../components/ui/box/box';
+import { Box } from '../../../components/component-library';
 import {
   TEXT_ALIGN,
   TypographyVariant,

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getSelectedIdentity } from '../../../selectors';
 import { AddressCopyButton } from '../../multichain';
-import Box from '../../ui/box/box';
+import { Box } from '../../component-library';
 
 const WalletOverview = ({
   balance,

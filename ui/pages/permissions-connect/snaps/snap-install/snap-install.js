@@ -3,7 +3,6 @@ import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
-import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
   BackgroundColor,
@@ -24,6 +23,7 @@ import {
   IconName,
   ValidTag,
   Text,
+  Box,
 } from '../../../../components/component-library';
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';

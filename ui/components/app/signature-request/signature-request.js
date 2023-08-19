@@ -78,12 +78,12 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
+  Box,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 // eslint-disable-next-line import/order
-import Box from '../../ui/box/box';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';

@@ -12,8 +12,7 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import Box from '../../ui/box/box';
-import { Icon, IconName, Text } from '../../component-library';
+import { Icon, IconName, Text, Box } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';
