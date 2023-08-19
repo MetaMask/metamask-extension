@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.0]
+
 ## [10.35.0]
 ### Added
 - Add the ability to customize tx nonce on ERC20 approval screens ([#17945](https://github.com/MetaMask/metamask-extension/pull/17945))
