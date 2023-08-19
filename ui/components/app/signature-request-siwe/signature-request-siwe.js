@@ -104,7 +104,7 @@ export default function SignatureRequestSIWE({ txData }) {
     } catch (e) {
       log.error(e);
     }
-  }, []);
+  }, [id, dispatch]);
 
   const handleCancelAll = () => {
     const unapprovedTxCount = messagesCount;
