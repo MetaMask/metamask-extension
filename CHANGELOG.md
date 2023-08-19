@@ -52,18 +52,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix bug that could cause a failure in the persistence of network related data ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
 - Fix  ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
 ### Added
-- [MMI] Added missing locales ([#20024](https://github.com/MetaMask/metamask-extension/pull/20024))
 - Added customize tx nonce on ERC20 approve screen when feature is enabled ([#17945](https://github.com/MetaMask/metamask-extension/pull/17945))
 - Approval flow adding success and error pages ([#19778](https://github.com/MetaMask/metamask-extension/pull/19778))
 - Add loading indicator when clicking Refresh list on tokens screen ([#19952](https://github.com/MetaMask/metamask-extension/pull/19952))
-- [MMI] Adds dev MMI configuration url ([#19899](https://github.com/MetaMask/metamask-extension/pull/19899))
-- [MMI] Adds missing return for MMI ([#19869](https://github.com/MetaMask/metamask-extension/pull/19869))
 
 ### Changed
 - Bolden "Done" text for priv key export button ([#20059](https://github.com/MetaMask/metamask-extension/pull/20059))
 - Removed footer from connected sites modal ([#20036](https://github.com/MetaMask/metamask-extension/pull/20036))
 - Update icons and text of Activity Screen, and categorize transactions by dates ([#19557](https://github.com/MetaMask/metamask-extension/pull/19557))
-- [MMI] Update Modals ([#20054](https://github.com/MetaMask/metamask-extension/pull/20054))
 - Added background color of test networks ([#20032](https://github.com/MetaMask/metamask-extension/pull/20032))
 - Automatically toggle testnet setting when switching to testnet ([#20048](https://github.com/MetaMask/metamask-extension/pull/20048))
 - Disable testnet toggle when on testnet ([#19951](https://github.com/MetaMask/metamask-extension/pull/19951))
@@ -76,32 +72,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove Portfolio from Token Overview Page ([#19988](https://github.com/MetaMask/metamask-extension/pull/19988))
 - Use System Theme for tooltip ([#19954](https://github.com/MetaMask/metamask-extension/pull/19954))
 - Populate token allowance from dapp, and show "Use Site Suggestion" revert when user changes input ([#19666](https://github.com/MetaMask/metamask-extension/pull/19666))
-- [FLASK] Allow Snaps to use `eth_accounts` as a revokable permission ([#19306](https://github.com/MetaMask/metamask-extension/pull/19306))
 - Use legacy gas API for BSC ([#19763](https://github.com/MetaMask/metamask-extension/pull/19763))
-- [MMI] personal sign and sign typed logic ([#19892](https://github.com/MetaMask/metamask-extension/pull/19892))
 - Separate default testnets from network list ([#19812](https://github.com/MetaMask/metamask-extension/pull/19812))
 - Move Token Options Menu from right to left ([#19765](https://github.com/MetaMask/metamask-extension/pull/19765))
 - Update BNB Chain name from "BNB Smart Chain" to "BNB Chain" ([#19836](https://github.com/MetaMask/metamask-extension/pull/19836))
+- [FLASK] Allow Snaps to use `eth_accounts` as a revokable permission ([#19306](https://github.com/MetaMask/metamask-extension/pull/19306))
 
 
 ### Fixed
-- [MMI] Fixed remove custodian token ([#20021](https://github.com/MetaMask/metamask-extension/pull/20021))
 - Correctly show network name and selection when chainIds collide ([#19947](https://github.com/MetaMask/metamask-extension/pull/19947))
-- [MMI] Review interactive replacement token flow ([#19974](https://github.com/MetaMask/metamask-extension/pull/19974))
-- [FLASK] Fix overflow on snaps connect screen ([#19995](https://github.com/MetaMask/metamask-extension/pull/19995))
-- [MMI] Fix Connect MMI and Deep link Flows ([#19881](https://github.com/MetaMask/metamask-extension/pull/19881))
 - Fix misaligned icons in 'Connected sites' modal ([#19944](https://github.com/MetaMask/metamask-extension/pull/19944))
 - Replace badge icon with current network image ([#19964](https://github.com/MetaMask/metamask-extension/pull/19964))
 - Show product tour only on home page ([#19938](https://github.com/MetaMask/metamask-extension/pull/19938))
 - Ensure NFT Options Menu is Same Size as Tokens ([#19953](https://github.com/MetaMask/metamask-extension/pull/19953))
 - Fixing scroll references for Advanced and Security settings ([#19771](https://github.com/MetaMask/metamask-extension/pull/19771))
 - Fixed connected sites icon's background ([#19891](https://github.com/MetaMask/metamask-extension/pull/19891))
-- [FLASK] Fix Snaps UI divider ([#19919](https://github.com/MetaMask/metamask-extension/pull/19919))
 - Don't automatically close modals when popover items are clicked ([#19857](https://github.com/MetaMask/metamask-extension/pull/19857))
-- [FLASK] Fix fetch for snap registry ([#19866](https://github.com/MetaMask/metamask-extension/pull/19866))
-- [MMI] fix note to trader ([#19868](https://github.com/MetaMask/metamask-extension/pull/19868))
 - Render correct image in the asset dropdown while sending an NFT ([#19787](https://github.com/MetaMask/metamask-extension/pull/19787))
 - Fix hold to reveal button on mobile browsers ([#19847](https://github.com/MetaMask/metamask-extension/pull/19847))
+- [FLASK] Fix overflow on snaps connect screen ([#19995](https://github.com/MetaMask/metamask-extension/pull/19995))
+- [FLASK] Fix Snaps UI divider ([#19919](https://github.com/MetaMask/metamask-extension/pull/19919))
+- [FLASK] Fix fetch for snap registry ([#19866](https://github.com/MetaMask/metamask-extension/pull/19866))
+- [FLASK] Fix Snaps UI divider ([#19919](https://github.com/MetaMask/metamask-extension/pull/19919))
 
 ## [10.34.0]
 ### Added
