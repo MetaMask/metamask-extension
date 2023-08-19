@@ -52,44 +52,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix bug that could cause a failure in the persistence of network related data ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
 - Fix  ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
 ### Added
-- Added customize tx nonce on ERC20 approve screen when feature is enabled ([#17945](https://github.com/MetaMask/metamask-extension/pull/17945))
-- Approval flow adding success and error pages ([#19778](https://github.com/MetaMask/metamask-extension/pull/19778))
-- Add loading indicator when clicking Refresh list on tokens screen ([#19952](https://github.com/MetaMask/metamask-extension/pull/19952))
+- Add the ability to customize tx nonce on ERC20 approval screens ([#17945](https://github.com/MetaMask/metamask-extension/pull/17945))
 
 ### Changed
-- Bolden "Done" text for priv key export button ([#20059](https://github.com/MetaMask/metamask-extension/pull/20059))
-- Removed footer from connected sites modal ([#20036](https://github.com/MetaMask/metamask-extension/pull/20036))
+- Update the "Spending Cap Request" screen (also known as the "ERC 20 approval" or "token allowance" screen) ([#19666](https://github.com/MetaMask/metamask-extension/pull/19666))
+    - Populate the "Custom Spending Cap" input with the dapp suggesed value
+    - Show "Use Site Suggestion" button when user changes input
+    - Update copy
+    - Add a "Learn more" link
 - Update icons and text of Activity Screen, and categorize transactions by dates ([#19557](https://github.com/MetaMask/metamask-extension/pull/19557))
-- Added background color of test networks ([#20032](https://github.com/MetaMask/metamask-extension/pull/20032))
-- Automatically toggle testnet setting when switching to testnet ([#20048](https://github.com/MetaMask/metamask-extension/pull/20048))
-- Disable testnet toggle when on testnet ([#19951](https://github.com/MetaMask/metamask-extension/pull/19951))
-- Enlargen nft detection text ([#20053](https://github.com/MetaMask/metamask-extension/pull/20053))
-- Add underline to buttonlinks text on hover ([#19992](https://github.com/MetaMask/metamask-extension/pull/19992))
+- Change the "Import NFTs" UI from a full screen page to a modal ([#19806](https://github.com/MetaMask/metamask-extension/pull/19806))
+- Add loading indicator when clicking Refresh list on tokens screen ([#19952](https://github.com/MetaMask/metamask-extension/pull/19952))
+- Bolden "Done" text for priv key export button ([#20059](https://github.com/MetaMask/metamask-extension/pull/20059))
+- Added background color of test network icons in the network menu ([#20032](https://github.com/MetaMask/metamask-extension/pull/20032))
+- Ensure "Show test networks" is toggled on if current network is a test network ([#20048](https://github.com/MetaMask/metamask-extension/pull/20048))
+- Disable the "Show test networks" toggle when the currently selected network is a test network ([#19951](https://github.com/MetaMask/metamask-extension/pull/19951))
+- Increase size of nft detection text ([#20053](https://github.com/MetaMask/metamask-extension/pull/20053))
+- Add underline to most link texts on hover ([#19992](https://github.com/MetaMask/metamask-extension/pull/19992))
 - Move MetaMask fee and quote list to new line for swap review quote ([#20030](https://github.com/MetaMask/metamask-extension/pull/20030))
-- Change "Import NFTs" to Modal ([#19806](https://github.com/MetaMask/metamask-extension/pull/19806))
+- Change the "Import NFTs" UI from a full screen page to a modal ([#19806](https://github.com/MetaMask/metamask-extension/pull/19806))
 - Change "Hardware wallet" link text to "Add Hardware wallet" ([#20026](https://github.com/MetaMask/metamask-extension/pull/20026))
-- Increase DEFAULT copy to clipboard time ([#20008](https://github.com/MetaMask/metamask-extension/pull/20008))
-- Remove Portfolio from Token Overview Page ([#19988](https://github.com/MetaMask/metamask-extension/pull/19988))
-- Use System Theme for tooltip ([#19954](https://github.com/MetaMask/metamask-extension/pull/19954))
-- Populate token allowance from dapp, and show "Use Site Suggestion" revert when user changes input ([#19666](https://github.com/MetaMask/metamask-extension/pull/19666))
-- Use legacy gas API for BSC ([#19763](https://github.com/MetaMask/metamask-extension/pull/19763))
-- Separate default testnets from network list ([#19812](https://github.com/MetaMask/metamask-extension/pull/19812))
-- Move Token Options Menu from right to left ([#19765](https://github.com/MetaMask/metamask-extension/pull/19765))
+- Remove the portfolio icon from the screen (because it is now it the three dot menu) ([#19988](https://github.com/MetaMask/metamask-extension/pull/19988))
+- Use System Theme colors for tooltip ([#19954](https://github.com/MetaMask/metamask-extension/pull/19954))
+- Separate the test networks from other networks in the "Select a network" popup ([#19812](https://github.com/MetaMask/metamask-extension/pull/19812))
+- Update "three dot" menu on token screen ([#19765](https://github.com/MetaMask/metamask-extension/pull/19765))
+    - Make the token's three-dot menu smaller
+    - Move it next to the breadcrumbs
+    - Remove the "Account Details" option from the token detail menu
 - Update BNB Chain name from "BNB Smart Chain" to "BNB Chain" ([#19836](https://github.com/MetaMask/metamask-extension/pull/19836))
 - [FLASK] Allow Snaps to use `eth_accounts` as a revokable permission ([#19306](https://github.com/MetaMask/metamask-extension/pull/19306))
 
 
 ### Fixed
+- Fix "Hold to reveal SRP" button on mobile browsers ([#19847](https://github.com/MetaMask/metamask-extension/pull/19847))
 - Correctly show network name and selection when chainIds collide ([#19947](https://github.com/MetaMask/metamask-extension/pull/19947))
 - Fix misaligned icons in 'Connected sites' modal ([#19944](https://github.com/MetaMask/metamask-extension/pull/19944))
-- Replace badge icon with current network image ([#19964](https://github.com/MetaMask/metamask-extension/pull/19964))
-- Show product tour only on home page ([#19938](https://github.com/MetaMask/metamask-extension/pull/19938))
-- Ensure NFT Options Menu is Same Size as Tokens ([#19953](https://github.com/MetaMask/metamask-extension/pull/19953))
-- Fixing scroll references for Advanced and Security settings ([#19771](https://github.com/MetaMask/metamask-extension/pull/19771))
-- Fixed connected sites icon's background ([#19891](https://github.com/MetaMask/metamask-extension/pull/19891))
-- Don't automatically close modals when popover items are clicked ([#19857](https://github.com/MetaMask/metamask-extension/pull/19857))
+- Show the icon of the correct network in the "badge" associated with token icon's in the assets list  ([#19964](https://github.com/MetaMask/metamask-extension/pull/19964))
+- Stop showing "product tour" steps when on the Swaps screen ([#19938](https://github.com/MetaMask/metamask-extension/pull/19938))
+- Fixing auto scrolling to settings when searching within Advanced and Security settings ([#19771](https://github.com/MetaMask/metamask-extension/pull/19771))
+- Fixed connected sites icon's background color ([#19891](https://github.com/MetaMask/metamask-extension/pull/19891))
+- Fix to ensure "Account Details" is displayed when that option is selected from each accounts three-dot menu within the Account Menu ([#19857](https://github.com/MetaMask/metamask-extension/pull/19857))
 - Render correct image in the asset dropdown while sending an NFT ([#19787](https://github.com/MetaMask/metamask-extension/pull/19787))
-- Fix hold to reveal button on mobile browsers ([#19847](https://github.com/MetaMask/metamask-extension/pull/19847))
+- Removed grey line from connected sites modal if there are no connected sites ([#20036](https://github.com/MetaMask/metamask-extension/pull/20036))
 - [FLASK] Fix overflow on snaps connect screen ([#19995](https://github.com/MetaMask/metamask-extension/pull/19995))
 - [FLASK] Fix Snaps UI divider ([#19919](https://github.com/MetaMask/metamask-extension/pull/19919))
 - [FLASK] Fix fetch for snap registry ([#19866](https://github.com/MetaMask/metamask-extension/pull/19866))
