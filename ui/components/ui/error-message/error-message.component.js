@@ -4,13 +4,14 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 /**
- * @deprecated - Please use ActionableMessage type danger
- * @see ActionableMessage
- * @param {object} props
- * @param {string} props.errorMessage
- * @param {string} props.errorKey
- * @param {object} context
+ * @deprecated The `<ErrorMessage />` component has been deprecated in favor of the new `<BannerAlert>` component from the component-library.
+ * Please update your code to use the new `<BannerAlert>` component instead, which can be found at ui/components/component-library/banner-alert/banner-alert.js.
+ * You can find documentation for the new BannerAlert component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-banneralert--docs}
+ * If you would like to help with the replacement of the old ErrorMessage component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/20394}
  */
+
 const ErrorMessage = (props, context) => {
   const { errorMessage, errorKey } = props;
   const error = errorKey ? context.t(errorKey) : errorMessage;

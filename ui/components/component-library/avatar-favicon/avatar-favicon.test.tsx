@@ -99,7 +99,6 @@ describe('AvatarFavicon', () => {
     const { getByTestId } = render(
       <AvatarFavicon
         className="mm-avatar-favicon--test"
-        name="test"
         data-testid="classname"
         {...args}
       />,
@@ -108,7 +107,7 @@ describe('AvatarFavicon', () => {
   });
   it('should forward a ref to the root html element', () => {
     const ref = React.createRef();
-    render(<AvatarFavicon name="test" ref={ref} />);
+    render(<AvatarFavicon ref={ref} />);
     expect(ref.current).not.toBeNull();
     expect(ref.current.nodeName).toBe('DIV');
   });
