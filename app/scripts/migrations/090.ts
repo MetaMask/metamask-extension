@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
+import log from 'loglevel';
 
 export const version = 90;
 
@@ -23,11 +24,22 @@ export async function migrate(originalVersionedData: {
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (
-    !hasProperty(state, 'PhishingController') ||
-    !isObject(state.PhishingController) ||
-    !hasProperty(state.PhishingController, 'listState')
-  ) {
+  if (!hasProperty(state, 'PhishingController')) {
+    log.warn(`typeof state.PhishingController is undefined`);
+    return state;
+  }
+  if (!isObject(state.PhishingController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.PhishingController is ${typeof state.PhishingController}`,
+      ),
+    );
+    return state;
+  }
+  if (!hasProperty(state.PhishingController, 'listState')) {
+    log.warn(
+      `typeof state.PhishingController.listState is ${typeof state.PhishingController}`,
+    );
     return state;
   }
 
