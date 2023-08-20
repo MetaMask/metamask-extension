@@ -157,7 +157,7 @@ const checkActivityTransaction = async (driver, options) => {
 
 const checkNotification = async (driver, options) => {
   const boxTitle = await driver.findElement(
-    '[data-testid="mm-banner-base-title"]',
+    '[data-testid="swaps-banner-title"]',
   );
   assert.equal(await boxTitle.getText(), options.title, 'Invalid box title');
   const boxContent = await driver.findElement(

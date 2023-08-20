@@ -83,7 +83,7 @@ SecurityProviderBannerAlert.propTypes = {
     .isRequired,
 
   /** Severity level */
-  severity: PropTypes.oneOfType([Severity.Danger, Severity.Warning]).isRequired,
+  severity: PropTypes.oneOf([Severity.Danger, Severity.Warning]).isRequired,
 
   /** Title to be passed as <BannerAlert> param */
   title: PropTypes.string.isRequired,
@@ -96,7 +96,7 @@ SecurityProviderBannerAlert.propTypes = {
   details: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 
   /** Name of the security provider */
-  provider: PropTypes.oneOfType(Object.values(SecurityProvider)),
+  provider: PropTypes.oneOf(Object.values(SecurityProvider)),
 };
 
 export default SecurityProviderBannerAlert;

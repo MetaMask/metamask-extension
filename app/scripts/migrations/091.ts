@@ -50,6 +50,19 @@ function transformState(state: Record<string, unknown>) {
       ...state,
       NetworkController: state.NetworkController,
     };
+  } else if (!isObject(state.NetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController is ${typeof state.NetworkController}`,
+      ),
+    );
+  } else if (!isObject(state.NetworkController.networkConfigurations)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController.networkConfigurations is ${typeof state
+          .NetworkController.networkConfigurations}`,
+      ),
+    );
   }
   return state;
 }
