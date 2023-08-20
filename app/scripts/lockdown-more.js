@@ -22,13 +22,7 @@ try {
    * We write this function in IIFE format to avoid polluting global scope.
    */
   (function protectIntrinsics() {
-    const lmre = // regex expression for LavaMoat scuttling error message
-      /LavaMoat - property "[A-Za-z0-9]*" of globalThis is inaccessible under scuttling mode/u;
-
     const namedIntrinsics = Reflect.ownKeys(new Compartment().globalThis);
-
-    // These named intrinsics are not automatically hardened by `lockdown`
-    const shouldHardenManually = new Set(['eval', 'Function', 'Symbol']);
 
     const globalProperties = new Set([
       // universalPropertyNames is a constant added by lockdown to global scope
@@ -61,21 +55,6 @@ try {
               configurable: false,
               writable: false,
             });
-          }
-        }
-
-        if (shouldHardenManually.has(propertyName)) {
-          try {
-            harden(globalThis[propertyName]);
-          } catch (err) {
-            if (!lmre.test(err.message)) {
-              throw err;
-            }
-            console.warn(
-              `Property ${propertyName} will not be hardened`,
-              `because it is scuttled by LavaMoat protection.`,
-              `Visit https://github.com/LavaMoat/LavaMoat/pull/360 to learn more.`,
-            );
           }
         }
       }
