@@ -76,13 +76,13 @@ exports[`Signature Request Component render should match snapshot when we are us
       data-testid="request-signature-account"
     >
       <div
-        class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+        class="mm-box network-account-balance-header mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="box box--display-flex box--flex-direction-row box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
               class=""
@@ -139,7 +139,7 @@ exports[`Signature Request Component render should match snapshot when we are us
             </div>
           </div>
           <div
-            class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start"
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
@@ -154,7 +154,7 @@ exports[`Signature Request Component render should match snapshot when we are us
           </div>
         </div>
         <div
-          class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end"
         >
           <h6
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
@@ -851,13 +851,13 @@ exports[`Signature Request Component render should match snapshot when we want t
       data-testid="request-signature-account"
     >
       <div
-        class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+        class="mm-box network-account-balance-header mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="box box--display-flex box--flex-direction-row box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
               class=""
@@ -914,7 +914,7 @@ exports[`Signature Request Component render should match snapshot when we want t
             </div>
           </div>
           <div
-            class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start"
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
@@ -929,7 +929,7 @@ exports[`Signature Request Component render should match snapshot when we want t
           </div>
         </div>
         <div
-          class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end"
         >
           <h6
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"

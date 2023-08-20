@@ -38,7 +38,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
@@ -59,7 +59,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
@@ -80,7 +80,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </li>
       <li>
         <div
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
