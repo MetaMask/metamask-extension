@@ -10,12 +10,11 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
       style="mask-image: url('./images/icons/danger.svg');"
     />
     <div>
-      <h5
-        class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
-        data-testid="mm-banner-base-title"
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >
         Malicious third party detected
-      </h5>
+      </p>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
       >

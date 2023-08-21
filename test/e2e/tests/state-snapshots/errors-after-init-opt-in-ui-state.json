@@ -57,7 +57,7 @@
     "usedNetworks": "object",
     "snapsInstallPrivacyWarningShown": "boolean",
     "serviceWorkerLastActiveTime": "number",
-    "currentAppVersion": "10.34.4",
+    "currentAppVersion": "10.34.5",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": 94,

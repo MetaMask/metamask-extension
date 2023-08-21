@@ -27,7 +27,7 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { _setBackgroundConnection } from './store/action-queue';
 
-log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
+log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
 let reduxStore;
 
