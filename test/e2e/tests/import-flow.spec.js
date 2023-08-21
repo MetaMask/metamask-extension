@@ -185,7 +185,7 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
-          .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -249,7 +249,7 @@ describe('Import flow', function () {
         await driver.clickElement({ text: 'Remove', tag: 'button' });
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
-          text: 'Account 1',
+          text: 'Account 4',
         });
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountListItemsAfterRemoval = await driver.findElements(
@@ -265,7 +265,7 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
-          .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -328,7 +328,7 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
-          .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.title,
