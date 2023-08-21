@@ -398,7 +398,7 @@ describe('Actions', () => {
 
       const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
         cb(null, {
-          identities: {},
+          addedAccountAddress: '0x123',
         }),
       );
 

@@ -118,6 +118,7 @@ import {
   IconSize,
   TextField,
   ButtonLink,
+  ButtonLinkSize,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -1035,6 +1036,9 @@ export default function PrepareSwapPage({
                   ? t('swapTokenVerifiedOn1SourceTitle')
                   : t('swapTokenAddedManuallyTitle')
               }
+              titleProps={{
+                'data-testid': 'swaps-banner-title',
+              }}
               width={BLOCK_SIZES.FULL}
             >
               <Box>
@@ -1054,7 +1058,7 @@ export default function PrepareSwapPage({
                 </Text>
                 {!verificationClicked && (
                   <ButtonLink
-                    size={Size.INHERIT}
+                    size={ButtonLinkSize.Inherit}
                     textProps={{
                       variant: TextVariant.bodyMd,
                       alignItems: AlignItems.flexStart,

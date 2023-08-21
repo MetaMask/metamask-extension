@@ -744,6 +744,13 @@ class FixtureBuilder {
     return this;
   }
 
+  withBadPreferencesControllerState() {
+    merge(this.fixture.data, {
+      PreferencesController: 5,
+    });
+    return this;
+  }
+
   withTokensControllerERC20() {
     merge(this.fixture.data.TokensController, {
       tokens: [

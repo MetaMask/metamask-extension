@@ -24,7 +24,7 @@ exports[`Security Tab should match snapshot 1`] = `
       class="settings-page__content-padded"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         data-testid="reveal-seed-words"
         type="danger"
       >
@@ -135,7 +135,7 @@ exports[`Security Tab should match snapshot 1`] = `
           <div
             class="settings-page__content-description"
           >
-            To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contact that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared.
+            To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contract that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared.
           </div>
         </div>
         <div
@@ -423,7 +423,7 @@ exports[`Security Tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-md settings-page__button mm-button-primary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md settings-page__button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
             type="secondary"
           >
             Add custom network
@@ -627,6 +627,7 @@ exports[`Security Tab should match snapshot 1`] = `
       <div
         class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         data-testid="advanced-setting-gas-fee-estimation"
+        id="advanced-settings-autodetect-tokens"
       >
         <div
           class="settings-page__content-item"

@@ -28,6 +28,7 @@ interface AppState {
   networkDropdownOpen: boolean;
   importNftsModalOpen: boolean;
   showIpfsModalOpen: boolean;
+  importTokensModalOpen: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -98,6 +99,7 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModalOpen: false,
   showIpfsModalOpen: false,
+  importTokensModalOpen: false,
   accountDetail: {
     privateKey: '',
   },
@@ -189,6 +191,18 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
+      return {
+        ...appState,
+        importTokensModalOpen: true,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
+      return {
+        ...appState,
+        importTokensModalOpen: false,
       };
 
     // alert methods

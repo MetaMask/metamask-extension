@@ -24,6 +24,11 @@ export async function migrate(originalVersionedData: {
 
 function transformState(state: Record<string, unknown>) {
   if (!isObject(state.TokensController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.TokensController is ${typeof state.TokensController}`,
+      ),
+    );
     return state;
   }
 

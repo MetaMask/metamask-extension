@@ -432,12 +432,11 @@ export function addNewAccount(): ThunkAction<
     const oldIdentities = getState().metamask.identities;
     dispatch(showLoadingIndication());
 
-    let newIdentities;
+    let addedAccountAddress;
     try {
-      const { identities } = await submitRequestToBackground('addNewAccount', [
+      addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldIdentities).length,
       ]);
-      newIdentities = identities;
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -445,11 +444,8 @@ export function addNewAccount(): ThunkAction<
       dispatch(hideLoadingIndication());
     }
 
-    const newAccountAddress = Object.keys(newIdentities).find(
-      (address) => !oldIdentities[address],
-    );
     await forceUpdateMetamaskState(dispatch);
-    return newAccountAddress;
+    return addedAccountAddress;
   };
 }
 
@@ -2378,6 +2374,18 @@ export function showNetworkDropdown(): Action {
 export function hideNetworkDropdown() {
   return {
     type: actionConstants.NETWORK_DROPDOWN_CLOSE,
+  };
+}
+
+export function showImportTokensModal(): Action {
+  return {
+    type: actionConstants.IMPORT_TOKENS_POPOVER_OPEN,
+  };
+}
+
+export function hideImportTokensModal(): Action {
+  return {
+    type: actionConstants.IMPORT_TOKENS_POPOVER_CLOSE,
   };
 }
 
@@ -4479,6 +4487,17 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
     console.error(error);
   }
   return networkEIP1559Compatibility;
+}
+
+/**
+ * Throw an error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only mean to facilitiate E2E testing. We should not use
+ * this for handling errors.
+ */
+export async function throwTestBackgroundError(message: string): Promise<void> {
+  await submitRequestToBackground('throwTestError', [message]);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)

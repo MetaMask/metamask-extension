@@ -6,10 +6,10 @@ import Popover from '../../../ui/popover';
 import {
   AvatarIcon,
   Button,
-  BUTTON_LINK_SIZES,
   BUTTON_SIZES,
   BUTTON_VARIANT,
   ButtonLink,
+  ButtonLinkSize,
   IconName,
   IconSize,
   Text,
@@ -79,7 +79,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
               {t('snapsPrivacyWarningFirstMessage', [
                 <ButtonLink
                   key="privacyNoticeTermsOfUseLink"
-                  size={BUTTON_LINK_SIZES.INHERIT}
+                  size={ButtonLinkSize.Inherit}
                   href={TERMS_OF_USE_LINK}
                   target="_blank"
                 >

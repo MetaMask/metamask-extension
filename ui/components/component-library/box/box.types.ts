@@ -225,191 +225,197 @@ export type PolymorphicComponentPropWithRef<
  */
 export interface StyleUtilityProps {
   /**
-   * The flex direction of the Box component.
+   * The flex direction of the component.
    * Use the FlexDirection enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   flexDirection?: FlexDirection | FlexDirectionArray;
   /**
-   * The flex wrap of the Box component.
+   * The flex wrap of the component.
    * Use the FlexWrap enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   flexWrap?: FlexWrap | FlexWrapArray;
   /**
-   * The gap between the Box component's children.
+   * The gap between the component's children.
    * Use 1-12 for a gap of 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   gap?: SizeNumber | SizeNumberArray | undefined;
   /**
-   * The margin of the Box component.
+   * The margin of the component.
    * Use 1-12 for 4px-48px or 'auto'.
    * Accepts responsive props in the form of an array.
    */
   margin?: SizeNumberAndAuto | SizeNumberAndAutoArray;
   /**
-   * The margin-top of the Box component.
+   * The margin-top of the component.
    * Use 1-12 for 4px-48px or 'auto'.
    * Accepts responsive props in the form of an array.
    */
   marginTop?: SizeNumberAndAuto | SizeNumberAndAutoArray;
   /**
-   * The margin-bottom of the Box component.
+   * The margin-bottom of the component.
    * Use 1-12 for 4px-48px or 'auto'.
    * Accepts responsive props in the form of an array.
    */
   marginBottom?: SizeNumberAndAuto | SizeNumberAndAutoArray;
   /**
-   * The margin-right of the Box component.
+   * The margin-right of the component.
    * Use 1-12 for 4px-48px or 'auto'.
    * Accepts responsive props in the form of an array.
    */
   marginRight?: SizeNumberAndAuto | SizeNumberAndAutoArray;
   /**
-   * The margin-left of the Box component.
+   * The margin-left of the component.
    * Use 1-12 for 4px-48px or 'auto'.
    * Accepts responsive props in the form of an array.
    */
   marginLeft?: SizeNumberAndAuto | SizeNumberAndAutoArray;
   /**
-   * The margin-inline of the Box component.
+   * The margin-inline of the component.
    * Use 1-12 for 4px-48px or 'auto'.
    * Accepts responsive props in the form of an array.
    */
   marginInline?: SizeNumberAndAuto | SizeNumberAndAutoArray;
   /**
-   * The margin-inline-start of the Box component.
+   * The margin-inline-start of the component.
    * Use 1-12 for 4px-48px or 'auto'.
    * Accepts responsive props in the form of an array.
    */
   marginInlineStart?: SizeNumberAndAuto | SizeNumberAndAutoArray;
   /**
-   * The margin-inline-end of the Box component.
+   * The margin-inline-end of the component.
    * Use 1-12 for 4px-48px or 'auto'.
    * Accepts responsive props in the form of an array.
    */
   marginInlineEnd?: SizeNumberAndAuto | SizeNumberAndAutoArray;
   /**
-   * The padding of the Box component.
+   * The padding of the component.
    * Use 1-12 for 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   padding?: SizeNumber | SizeNumberArray;
   /**
-   * The padding-top of the Box component.
+   * The padding-top of the component.
    * Use 1-12 for 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   paddingTop?: SizeNumber | SizeNumberArray;
   /**
-   * The padding-bottom of the Box component.
+   * The padding-bottom of the component.
    * Use 1-12 for 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   paddingBottom?: SizeNumber | SizeNumberArray;
   /**
-   * The padding-right of the Box component.
+   * The padding-right of the component.
    * Use 1-12 for 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   paddingRight?: SizeNumber | SizeNumberArray;
   /**
-   * The padding-left of the Box component.
+   * The padding-left of the component.
    * Use 1-12 for 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   paddingLeft?: SizeNumber | SizeNumberArray;
   /**
-   * The padding-inline of the Box component.
+   * The padding-inline of the component.
    * Use 1-12 for 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   paddingInline?: SizeNumber | SizeNumberArray;
   /**
-   * The padding-inline-start of the Box component.
+   * The padding-inline-start of the component.
    * Use 1-12 for 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   paddingInlineStart?: SizeNumber | SizeNumberArray;
   /**
-   * The padding-inline-end of the Box component.
+   * The padding-inline-end of the component.
    * Use 1-12 for 4px-48px.
    * Accepts responsive props in the form of an array.
    */
   paddingInlineEnd?: SizeNumber | SizeNumberArray;
   /**
-   * The border-color of the Box component.
+   * The border-color of the component.
    * Use BorderColor enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   borderColor?: BorderColor | BorderColorArray;
   /**
-   * The border-width of the Box component.
+   * The border-width of the component.
    * Use 1-12 for 1px-12px.
    * Accepts responsive props in the form of an array.
    */
   borderWidth?: SizeNumber | SizeNumberArray;
   /**
-   * The border-radius of the Box component.
+   * The border-radius of the component.
    * Use BorderRadius enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   borderRadius?: BorderRadius | BorderRadiusArray;
   /**
-   * The border-style of the Box component.
+   * The border-style of the component.
    * Use BorderStyle enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   borderStyle?: BorderStyle | BorderStyleArray;
   /**
-   * The align-items of the Box component.
+   * The align-items of the component.
    * Use AlignItems enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   alignItems?: AlignItems | AlignItemsArray;
   /**
-   * The justify-content of the Box component.
+   * The justify-content of the component.
    * Use JustifyContent enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   justifyContent?: JustifyContent | JustifyContentArray;
   /**
-   * The text-align of the Box component.
+   * The text-align of the component.
    * Use TextAlign enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   textAlign?: TextAlign | TextAlignArray;
   /**
-   * The display of the Box component.
+   * The display of the component.
    * Use Display enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   display?: Display | DisplayArray;
   /**
-   * The width of the Box component.
+   * The width of the component.
    * Use BlockSize enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   width?: BlockSize | BlockSizeArray;
   /**
-   * The height of the Box component.
+   * The height of the component.
    * Use BlockSize enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   height?: BlockSize | BlockSizeArray;
   /**
-   * The background-color of the Box component.
+   * The background-color of the component.
    * Use BackgroundColor enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   backgroundColor?: BackgroundColor | BackgroundColorArray;
   /**
-   * The text-color of the Box component.
+   * The text-color of the component.
    * Use TextColor enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
   color?: TextColor | TextColorArray | IconColor | IconColorArray;
+  /**
+   * An optional data-testid to apply to the component.
+   * TypeScript is complaining about data- attributes which means we need to explicitly define this as a prop.
+   * TODO: Allow data- attributes.
+   */
+  'data-testid'?: string;
 }
 /**
  * Box component props.
