@@ -252,7 +252,9 @@ const SignatureRequest = ({ txData }) => {
           ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
           <BlockaidBannerAlert
             securityAlertResponse={txData?.securityAlertResponse}
-            margin={4}
+            marginLeft={4}
+            marginRight={4}
+            marginBottom={4}
           />
           ///: END:ONLY_INCLUDE_IN
         }
