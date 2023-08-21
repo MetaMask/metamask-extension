@@ -2,102 +2,107 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Popover from '../../ui/popover';
-import Box from '../../ui/box';
-import Button from '../../ui/button';
 import {
   Display,
   FlexDirection,
   FontWeight,
-  JustifyContent,
   TextVariant,
   AlignItems,
   IconColor,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+
+import {
+  Box,
+  Button,
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
+  Icon,
+  IconName,
+  IconSize,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '../../component-library';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
   const t = useI18nContext();
-
   return (
-    <Popover
+    <Modal
+      isOpen
+      onClose={onCancel}
       className="confirmation-warning-modal__content"
-      footer={
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.spaceBetween}
-          className="confirmation-warning-modal__footer"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader
+          childrenWrapperProps={{
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
+            gap: 4,
+          }}
         >
-          <Button
-            className="confirmation-warning-modal__footer__approve-button"
-            type="danger-primary"
-            onClick={onSubmit}
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Xl}
+          />
+          <Text
+            variant={TextVariant.headingSm}
+            as="h4"
+            fontWeight={FontWeight.Bold}
+            textAlign={TextAlign.Center}
           >
-            {t('approveButtonText')}
-          </Button>
+            {t('addEthereumChainWarningModalTitle')}
+          </Text>
+        </ModalHeader>
+        <Box marginBottom={4}>
+          <Text marginTop={4} variant={TextVariant.bodySm}>
+            {t('addEthereumChainWarningModalHeader', [
+              <strong key="part-2">
+                {t('addEthereumChainWarningModalHeaderPartTwo')}
+              </strong>,
+            ])}
+          </Text>
+          <Text marginTop={4} variant={TextVariant.bodySm}>
+            {t('addEthereumChainWarningModalListHeader')}
+          </Text>
+          <ul>
+            <Text as="li" marginTop={2} variant={TextVariant.bodySm}>
+              {t('addEthereumChainWarningModalListPointOne')}
+            </Text>
+            <Text as="li" marginTop={2} variant={TextVariant.bodySm}>
+              {t('addEthereumChainWarningModalListPointTwo')}
+            </Text>
+            <Text as="li" marginTop={2} variant={TextVariant.bodySm}>
+              {t('addEthereumChainWarningModalListPointThree')}
+            </Text>
+          </ul>
+        </Box>
+        <Box display={Display.Flex} gap={4}>
           <Button
-            className="confirmation-warning-modal__footer__cancel-button"
-            type="secondary"
+            variant={BUTTON_VARIANT.SECONDARY}
             onClick={onCancel}
+            block
+            size={BUTTON_SIZES.LG}
           >
             {t('reject')}
           </Button>
+          <Button
+            variant={BUTTON_VARIANT.PRIMARY}
+            onClick={onSubmit}
+            danger
+            block
+            size={BUTTON_SIZES.LG}
+          >
+            {t('approveButtonText')}
+          </Button>
         </Box>
-      }
-    >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        padding={3}
-        margin={0}
-        className="confirmation-warning-modal__content__header"
-      >
-        <Icon
-          name={IconName.Danger}
-          color={IconColor.errorDefault}
-          className="confirmation-warning-modal__content__header__warning-icon"
-          size={IconSize.Xl}
-        />
-        <Text
-          variant={TextVariant.headingSm}
-          as="h4"
-          fontWeight={FontWeight.Bold}
-        >
-          {t('addEthereumChainWarningModalTitle')}
-        </Text>
-      </Box>
-      <Box marginLeft={6} marginRight={6} marginTop={0} marginBottom={3}>
-        <Text marginTop={4} variant={TextVariant.bodySm} as="h6">
-          {t('addEthereumChainWarningModalHeader', [
-            <strong key="part-2">
-              {t('addEthereumChainWarningModalHeaderPartTwo')}
-            </strong>,
-          ])}
-        </Text>
-        <Text marginTop={4} variant={TextVariant.bodySm} as="h6">
-          {t('addEthereumChainWarningModalListHeader')}
-        </Text>
-        <ul>
-          <li>
-            <Text marginTop={2} variant={TextVariant.bodySm} as="h6">
-              {t('addEthereumChainWarningModalListPointOne')}
-            </Text>
-          </li>
-          <li>
-            <Text marginTop={2} variant={TextVariant.bodySm} as="h6">
-              {t('addEthereumChainWarningModalListPointTwo')}
-            </Text>
-          </li>
-          <li>
-            <Text marginTop={2} variant={TextVariant.bodySm} as="h6">
-              {t('addEthereumChainWarningModalListPointThree')}
-            </Text>
-          </li>
-        </ul>
-      </Box>
-    </Popover>
+      </ModalContent>
+    </Modal>
   );
 };
 

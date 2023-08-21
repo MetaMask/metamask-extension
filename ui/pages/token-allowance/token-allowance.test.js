@@ -2,6 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
@@ -44,9 +46,11 @@ const state = {
       type: 'mainnet',
       nickname: '',
     },
-    networkDetails: {
-      EIPS: {
-        1559: true,
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: { 1559: true },
+        status: NetworkStatus.Available,
       },
     },
     preferences: {

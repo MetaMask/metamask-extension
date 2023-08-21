@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
   },
-  "addCustomToken": {
-    "message": "Özel token ekle"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Bu, bu ağın MetaMas dahilinde kullanılmasına olanak tanıyacaktır."
   },
@@ -908,9 +905,6 @@
   "deleteNetwork": {
     "message": "Ağı Sil?"
   },
-  "deleteNetworkDescription": {
-    "message": "Bu ağı silmek istediğinizden emin misiniz?"
-  },
   "deposit": {
     "message": "Para Yatır"
   },
@@ -1177,12 +1171,6 @@
   },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API'yi etkinleştir"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
   "enableToken": {
     "message": "şunu etkinleştir: $1",
@@ -2989,9 +2977,6 @@
   "searchResults": {
     "message": "Arama sonuçları"
   },
-  "searchTokens": {
-    "message": "Token ara"
-  },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
   },
@@ -3254,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "Eyvah! Bir şeyler ters gitti."
-  },
-  "source": {
-    "message": "Kaynak"
   },
   "speedUp": {
     "message": "Hızlandır"

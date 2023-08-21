@@ -19,7 +19,7 @@ export interface PopoverHeaderProps extends HeaderBaseStyleUtilityProps {
   /**
    * The props to pass to the back `ButtonIcon`
    */
-  backButtonProps?: ButtonIconProps;
+  backButtonProps?: ButtonIconProps<'button'>;
   /**
    * The start (left) content area of PopoverHeader
    * Default to have the back `ButtonIcon` when `onBack` is passed, but passing a  `startAccessory` will override this
@@ -33,7 +33,7 @@ export interface PopoverHeaderProps extends HeaderBaseStyleUtilityProps {
   /**
    * The props to pass to the close `ButtonIcon`
    */
-  closeButtonProps?: ButtonIconProps;
+  closeButtonProps?: ButtonIconProps<'button'>;
   /**
    * The end (right) content area of PopoverHeader
    * Default to have the close `ButtonIcon` when `onClose` is passed, but passing a  `endAccessory` will override this

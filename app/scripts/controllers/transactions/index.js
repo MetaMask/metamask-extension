@@ -1779,7 +1779,11 @@ export default class TransactionController extends EventEmitter {
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
     if (txMeta.custodyStatus) {
       this.inProcessOfSigning.delete(txId);
+      // Custodial nonces and gas params are set by the custodian, so MMI follows the approve
+      // workflow before the transaction parameters are sent to the keyring
+      this.txStateManager.setTxStatusApproved(txId);
       await this._signTransaction(txId);
+      // MMI relies on custodian to publish transactions so exits this code path early
       return;
     }
     ///: END:ONLY_INCLUDE_IN

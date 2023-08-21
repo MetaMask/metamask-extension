@@ -205,9 +205,6 @@
   "deleteNetwork": {
     "message": "አውታረ መረብ ይሰረዝ?"
   },
-  "deleteNetworkDescription": {
-    "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
@@ -611,9 +608,6 @@
   },
   "searchResults": {
     "message": "ውጤቶችን ፈልግ"
-  },
-  "searchTokens": {
-    "message": "ተለዋጭ ስሞችን ፈልግ"
   },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"

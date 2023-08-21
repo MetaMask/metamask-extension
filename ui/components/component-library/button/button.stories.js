@@ -7,7 +7,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { IconName } from '..';
-import { BUTTON_LINK_SIZES } from '../button-link/button-link.constants';
+import { ButtonLinkSize } from '../button-link';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
 import README from './README.mdx';
@@ -83,7 +83,7 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(BUTTON_LINK_SIZES),
+      options: Object.values(ButtonLinkSize),
     },
     variant: {
       options: Object.values(BUTTON_VARIANT),

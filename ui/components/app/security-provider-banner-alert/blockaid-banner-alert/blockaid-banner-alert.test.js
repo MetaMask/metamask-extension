@@ -40,7 +40,7 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should not render when securityAlertResponse.result_type is '${BlockaidResultType.Failed}'`, () => {
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Failed}`, () => {
     const { container } = renderWithLocalization(
       <BlockaidBannerAlert
         securityAlertResponse={{
@@ -49,8 +49,24 @@ describe('Blockaid Banner Alert', () => {
         }}
       />,
     );
+    const warningBannerAlert = container.querySelector(
+      '.mm-banner-alert--severity-warning',
+    );
 
-    expect(container.querySelector('.mm-banner-alert')).toBeNull();
+    expect(warningBannerAlert).toBeInTheDocument();
+    expect(warningBannerAlert).toMatchSnapshot();
+  });
+
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
+    const { container } = renderWithLocalization(
+      <BlockaidBannerAlert securityAlertResponse={mockSecurityAlertResponse} />,
+    );
+    const warningBannerAlert = container.querySelector(
+      '.mm-banner-alert--severity-warning',
+    );
+
+    expect(warningBannerAlert).toBeInTheDocument();
+    expect(warningBannerAlert).toMatchSnapshot();
   });
 
   it(`should render '${Severity.Danger}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Malicious}`, () => {
@@ -70,18 +86,6 @@ describe('Blockaid Banner Alert', () => {
     expect(dangerBannerAlert).toMatchSnapshot();
   });
 
-  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
-    const { container } = renderWithLocalization(
-      <BlockaidBannerAlert securityAlertResponse={mockSecurityAlertResponse} />,
-    );
-    const warningBannerAlert = container.querySelector(
-      '.mm-banner-alert--severity-warning',
-    );
-
-    expect(warningBannerAlert).toBeInTheDocument();
-    expect(warningBannerAlert).toMatchSnapshot();
-  });
-
   it('should render title, "This is a deceptive request"', () => {
     const { getByText } = renderWithLocalization(
       <BlockaidBannerAlert securityAlertResponse={mockSecurityAlertResponse} />,
@@ -90,7 +94,20 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 
-  it('should render title, "This is a suspicious request", when the reason is "raw_signature_farming"', () => {
+  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.failed}"`, () => {
+    const { getByText } = renderWithLocalization(
+      <BlockaidBannerAlert
+        securityAlertResponse={{
+          ...mockSecurityAlertResponse,
+          reason: BlockaidReason.failed,
+        }}
+      />,
+    );
+
+    expect(getByText('Request may not be safe')).toBeInTheDocument();
+  });
+
+  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.rawSignatureFarming}"`, () => {
     const { getByText } = renderWithLocalization(
       <BlockaidBannerAlert
         securityAlertResponse={{
@@ -131,6 +148,8 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, a third party known for scams might take all your assets.',
       [BlockaidReason.blurFarming]:
         'If you approve this request, someone can steal your assets listed on Blur.',
+      [BlockaidReason.failed]:
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       [BlockaidReason.maliciousDomain]:
         "You're interacting with a malicious domain. If you approve this request, you might lose your assets.",
       [BlockaidReason.other]:
