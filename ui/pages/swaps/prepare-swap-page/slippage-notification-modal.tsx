@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -35,6 +35,7 @@ export default function SlippageNotificationModal({
   onSwapSubmit,
 }: Props) {
   const t = useContext(I18nContext);
+  const [submitting, setSubmitting] = useState(false);
 
   const getSlippageModalTitle = () => {
     if (slippageErrorKey === SLIPPAGE_VERY_HIGH_ERROR) {
@@ -44,6 +45,8 @@ export default function SlippageNotificationModal({
     }
     return '';
   };
+
+  const primaryButtonText = submitting ? t('preparingSwap') : t('swapAnyway');
 
   return (
     <Modal
@@ -73,13 +76,14 @@ export default function SlippageNotificationModal({
           <Box marginTop={5}>
             <ButtonPrimary
               onClick={() => {
-                setSlippageNotificationModalOpened(false);
+                setSubmitting(true);
                 onSwapSubmit({ acknowledgedSlippage: true });
               }}
               block
               data-testid="high-slippage-continue-anyway"
+              disabled={submitting}
             >
-              {t('swapAnyway')}
+              {primaryButtonText}
             </ButtonPrimary>
           </Box>
         </Box>
