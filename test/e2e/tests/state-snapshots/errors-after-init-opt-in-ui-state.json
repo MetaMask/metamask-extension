@@ -57,10 +57,10 @@
     "usedNetworks": "object",
     "snapsInstallPrivacyWarningShown": "boolean",
     "serviceWorkerLastActiveTime": "number",
-    "currentAppVersion": "10.34.5",
+    "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": 94,
+    "currentMigrationVersion": "number",
     "selectedNetworkClientId": "string",
     "networkId": "1337",
     "providerConfig": {
