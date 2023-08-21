@@ -127,6 +127,71 @@ export const SENTRY_UI_STATE = {
   unconnectedAccount: true,
 };
 
+/**
+ * Returns whether MetaMetrics is enabled, given the application state.
+ *
+ * @param {{ state: unknown} | { persistedState: unknown }} appState - Application state
+ * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+ * is enabled, `false` otherwise.
+ */
+function getMetaMetricsEnabledFromAppState(appState) {
+  // during initialization after loading persisted state
+  if (appState.persistedState) {
+    return getMetaMetricsEnabledFromPersistedState(appState.persistedState);
+    // After initialization
+  } else if (appState.state) {
+    // UI
+    if (appState.state.metamask) {
+      return Boolean(appState.state.metamask.participateInMetaMetrics);
+    }
+    // background
+    return Boolean(
+      appState.state.MetaMetricsController?.participateInMetaMetrics,
+    );
+  }
+  // during initialization, before first persisted state is read
+  return false;
+}
+
+/**
+ * Returns whether MetaMetrics is enabled, given the persisted state.
+ *
+ * @param {unknown} persistedState - Application state
+ * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+ * is enabled, `false` otherwise.
+ */
+function getMetaMetricsEnabledFromPersistedState(persistedState) {
+  return Boolean(
+    persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
+  );
+}
+
+/**
+ * Returns whether onboarding has completed, given the application state.
+ *
+ * @param {Record<string, unknown>} appState - Application state
+ * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+ * is enabled, `false` otherwise.
+ */
+function getOnboardingCompleteFromAppState(appState) {
+  // during initialization after loading persisted state
+  if (appState.persistedState) {
+    return Boolean(
+      appState.persistedState.data?.OnboardingController?.completedOnboarding,
+    );
+    // After initialization
+  } else if (appState.state) {
+    // UI
+    if (appState.state.metamask) {
+      return Boolean(appState.state.metamask.completedOnboarding);
+    }
+    // background
+    return Boolean(appState.state.OnboardingController?.completedOnboarding);
+  }
+  // during initialization, before first persisted state is read
+  return false;
+}
+
 export default function setupSentry({ release, getState }) {
   if (!release) {
     throw new Error('Missing release');
@@ -164,22 +229,21 @@ export default function setupSentry({ release, getState }) {
   }
 
   /**
-   * A function that returns whether MetaMetrics is enabled. This should also
-   * return `false` if state has not yet been initialzed.
+   * Returns whether MetaMetrics is enabled. If the application hasn't yet
+   * been initialized, the persisted state will be used (if any).
    *
-   * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
-   * is enabled, `false` otherwise.
+   * @returns `true` if MetaMetrics is enabled, `false` otherwise.
    */
   async function getMetaMetricsEnabled() {
     const appState = getState();
-    if (Object.keys(appState) > 0) {
-      return Boolean(appState?.store?.metamask?.participateInMetaMetrics);
+    if (appState.state || appState.persistedState) {
+      return getMetaMetricsEnabledFromAppState(appState);
     }
+    // If we reach here, it means the error was thrown before initialization
+    // completed, and before we loaded the persisted state for the first time.
     try {
       const persistedState = await globalThis.stateHooks.getPersistedState();
-      return Boolean(
-        persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
-      );
+      return getMetaMetricsEnabledFromPersistedState(persistedState);
     } catch (error) {
       console.error(error);
       return false;
@@ -321,17 +385,15 @@ function hideUrlIfNotInternal(url) {
  */
 export function beforeBreadcrumb(getState) {
   return (breadcrumb) => {
-    if (getState) {
-      const appState = getState();
-      if (
-        Object.values(appState).length &&
-        (!appState?.store?.metamask?.participateInMetaMetrics ||
-          !appState?.store?.metamask?.completedOnboarding ||
-          breadcrumb?.category === 'ui.input')
-      ) {
-        return null;
-      }
-    } else {
+    if (!getState) {
+      return null;
+    }
+    const appState = getState();
+    if (
+      !getMetaMetricsEnabledFromAppState(appState) ||
+      !getOnboardingCompleteFromAppState(appState) ||
+      breadcrumb?.category === 'ui.input'
+    ) {
       return null;
     }
     const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
