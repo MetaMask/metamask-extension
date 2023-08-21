@@ -8,10 +8,10 @@
   },
   "AnnouncementController": "object",
   "AppMetadataController": {
-    "currentAppVersion": "10.34.5",
+    "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": 94
+    "currentMigrationVersion": "number"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
