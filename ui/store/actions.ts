@@ -22,6 +22,7 @@ import { NonEmptyArray } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
+import { InternalAccount } from '@metamask/eth-snap-keyring';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -114,7 +115,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { InternalAccount } from '@metamask/eth-snap-keyring';
 
 export function goHome() {
   return {

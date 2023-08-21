@@ -333,11 +333,11 @@ export function getSelectedInternalAccount(state) {
 
 export function getSelectedInternalAccountWithBalance(state) {
   const selectedAccount = getSelectedInternalAccount(state);
-  const { balance } = getMetaMaskAccountsRaw(state)[selectedAccount.address];
+  const rawAccount = getMetaMaskAccountsRaw(state)[selectedAccount.address];
 
   const selectedAccountWithBalance = {
     ...selectedAccount,
-    balance,
+    balance: rawAccount ? rawAccount.balance : 0,
   };
 
   return selectedAccountWithBalance;
