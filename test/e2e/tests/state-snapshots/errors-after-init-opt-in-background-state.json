@@ -8,7 +8,7 @@
   },
   "AnnouncementController": "object",
   "AppMetadataController": {
-    "currentAppVersion": "10.35.0",
+    "currentAppVersion": "11.0.0",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": 92.1
@@ -38,6 +38,7 @@
   "ApprovalController": "object",
   "BackupController": "undefined",
   "CachedBalancesController": "object",
+  "CronjobController": "object",
   "CurrencyController": {
     "conversionDate": "number",
     "conversionRate": 1700,
@@ -98,6 +99,7 @@
     "networkConfigurations": "object"
   },
   "NftController": "object",
+  "NotificationController": "object",
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -148,6 +150,8 @@
     "unapprovedTypedMessagesCount": 0
   },
   "SmartTransactionsController": "object",
+  "SnapController": "object",
+  "SnapsRegistry": "object",
   "SubjectMetadataController": "object",
   "SwapsController": "object",
   "TokenListController": "object",
