@@ -88,15 +88,17 @@ These test scripts all support additional options, which might be helpful for de
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
-  --browser        Set the browser used; either 'chrome' or 'firefox'.
-                                         [string] [choices: "chrome", "firefox"]
-  --debug          Run tests in debug mode, logging each driver interaction
-                                                      [boolean] [default: false]
-  --retries        Set how many times the test should be retried upon failure.
-                                                           [number] [default: 0]
-  --leave-running  Leaves the browser running after a test fails, along with
-                   anything else that the test used (ganache, the test dapp,
-                   etc.)                              [boolean] [default: false]
+  --browser           Set the browser used; either 'chrome' or 'firefox'.
+                                            [string] [choices: "chrome", "firefox"]
+  --debug             Run tests in debug mode, logging each driver interaction
+                                                         [boolean] [default: false]
+  --retries           Set how many times the test should be retried upon failure.
+                                                              [number] [default: 0]
+  --leave-running     Leaves the browser running after a test fails, along with
+                      anything else that the test used (ganache, the test dapp,
+                      etc.)                              [boolean] [default: false]
+  --update-snapshot   Update E2E test snapshots
+                                             [alias: -u] [boolean] [default: false]
 ```
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:

@@ -35,4 +35,4 @@ jobs:
         id: check-pr-has-required-labels
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run check-pr-has-required-labels
+        run: yarn run check-pr-has-required-labels

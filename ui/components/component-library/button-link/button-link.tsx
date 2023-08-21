@@ -15,9 +15,9 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
     {
       className,
       color,
-      danger,
-      disabled,
-      loading,
+      danger = false,
+      disabled = false,
+      loading = false,
       size = ButtonLinkSize.Auto,
       ...props
     }: ButtonLinkProps<C>,

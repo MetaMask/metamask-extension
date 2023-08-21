@@ -315,7 +315,7 @@ describe('MetaMaskController', function () {
         'createNewVaultAndKeychain',
       );
       sandbox.spy(
-        metamaskController.keyringController,
+        metamaskController.coreKeyringController,
         'createNewVaultAndRestore',
       );
     });
@@ -334,7 +334,7 @@ describe('MetaMaskController', function () {
       beforeEach(async function () {
         const password = 'a-fake-password';
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-        await metamaskController.importAccountWithStrategy('Private Key', [
+        await metamaskController.importAccountWithStrategy('privateKey', [
           importPrivkey,
         ]);
       });
@@ -375,7 +375,7 @@ describe('MetaMaskController', function () {
         await metamaskController.submitPassword(password);
 
         const addresses =
-          await metamaskController.keyringController.getAccounts();
+          await metamaskController.coreKeyringController.getAccounts();
 
         const internalAccounts =
           metamaskController.accountsController.listAccounts();
@@ -393,6 +393,20 @@ describe('MetaMaskController', function () {
             `internalAccounts should include all Addresses: ${address}`,
           );
         });
+      });
+    });
+
+    describe('setLocked', function () {
+      it('should lock KeyringController', async function () {
+        sandbox.spy(metamaskController.coreKeyringController, 'setLocked');
+
+        await metamaskController.setLocked();
+
+        assert(metamaskController.coreKeyringController.setLocked.called);
+        assert.equal(
+          metamaskController.coreKeyringController.state.isUnlocked,
+          false,
+        );
       });
     });
 
@@ -431,7 +445,7 @@ describe('MetaMaskController', function () {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
 
         assert(
-          metamaskController.keyringController.createNewVaultAndRestore
+          metamaskController.coreKeyringController.createNewVaultAndRestore
             .calledTwice,
         );
       });
@@ -841,7 +855,7 @@ describe('MetaMaskController', function () {
           metamaskController.keyringController,
           'addNewAccount',
         );
-        addNewAccountStub.returns({});
+        addNewAccountStub.returns('0x123');
 
         getAccountsStub = sinon.stub(
           metamaskController.keyringController,
@@ -922,7 +936,7 @@ describe('MetaMaskController', function () {
           await addNewAccount;
           assert.fail('should throw');
         } catch (e) {
-          assert.equal(e.message, 'MetamaskController - No HD Key Tree found');
+          assert.equal(e.message, 'No HD keyring found');
         }
       });
     });

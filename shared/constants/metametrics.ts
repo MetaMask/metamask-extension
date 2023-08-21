@@ -625,6 +625,11 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  SnapInstalled = 'Snap Installed',
+  SnapUpdated = 'Snap Updated',
+  SnapExportUsed = 'Snap Export Used',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 export enum MetaMetricsEventAccountType {

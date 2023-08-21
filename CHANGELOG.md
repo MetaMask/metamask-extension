@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.34.4]
+### Changed
+- Updated snaps execution environment ([#20420](https://github.com/MetaMask/metamask-extension/pull/20420))
+
+## [10.34.3]
+### Fixed
+- Ensure users phishing warning list is properly updated ([#20381](https://github.com/MetaMask/metamask-extension/pull/20381))
+- Fix inaccurate info in swaps flow for zero-balance tokens ([#20388](https://github.com/MetaMask/metamask-extension/pull/20388))
+- Fix 'Global Menu Explorer / Account Details' What's New notification display ([#20371](https://github.com/MetaMask/metamask-extension/pull/20371))
+
 ## [10.34.2]
 ### Added
 - Add Address Details and View on Explorer to Global Menu ([#20013](https://github.com/MetaMask/metamask-extension/pull/20013))
@@ -26,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.34.1]
 ### Fixed
 - Fix bug that could cause a failure in the persistence of network related data ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
-- Fix  ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
+- Fix possible crash when opening the network menu ([#20181](https://github.com/MetaMask/metamask-extension/pull/20181))
 
 ## [10.34.0]
 ### Added
@@ -3875,7 +3885,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.4...HEAD
+[10.34.4]: https://github.com/MetaMask/metamask-extension/compare/v10.34.3...v10.34.4
+[10.34.3]: https://github.com/MetaMask/metamask-extension/compare/v10.34.2...v10.34.3
 [10.34.2]: https://github.com/MetaMask/metamask-extension/compare/v10.34.1...v10.34.2
 [10.34.1]: https://github.com/MetaMask/metamask-extension/compare/v10.34.0...v10.34.1
 [10.34.0]: https://github.com/MetaMask/metamask-extension/compare/v10.33.1...v10.34.0

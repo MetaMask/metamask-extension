@@ -163,7 +163,11 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
   }
 
   return (
-    <BannerAlert severity={severity} title={title}>
+    <BannerAlert
+      severity={severity}
+      title={title}
+      titleProps={{ 'data-testid': 'swaps-banner-title' }}
+    >
       {description}
     </BannerAlert>
   );

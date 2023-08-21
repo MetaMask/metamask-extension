@@ -106,8 +106,9 @@ import { getPermissionSubjects } from './permissions';
 export function isNetworkLoading(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
+    selectedNetworkClientId &&
     state.metamask.networksMetadata[selectedNetworkClientId].status !==
-    NetworkStatus.Available
+      NetworkStatus.Available
   );
 }
 
@@ -1359,11 +1360,22 @@ export function getIsOptimism(state) {
   );
 }
 
+export function getIsBase(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.BASE ||
+    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
+  );
+}
+
+export function getIsOpStack(state) {
+  return getIsOptimism(state) || getIsBase(state);
+}
+
 export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOptimism(state);
+  return getIsOpStack(state);
 }
 /**
- *  To retrieve the maxBaseFee and priotitFee teh user has set as default
+ *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
  * @param {*} state
  * @returns Boolean

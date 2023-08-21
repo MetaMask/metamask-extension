@@ -42,9 +42,6 @@
   "addContact": {
     "message": "新增合約"
   },
-  "addCustomToken": {
-    "message": "Add Custom Token"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "這會允許在 MetaMask 內使用這個網路。"
   },
@@ -1132,9 +1129,6 @@
   },
   "searchResults": {
     "message": "搜尋結果"
-  },
-  "searchTokens": {
-    "message": "搜尋代幣"
   },
   "secureWallet": {
     "message": "Secure Wallet"
