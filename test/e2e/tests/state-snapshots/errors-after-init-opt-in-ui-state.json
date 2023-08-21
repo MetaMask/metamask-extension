@@ -57,10 +57,10 @@
     "snapsInstallPrivacyWarningShown": "boolean",
     "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "serviceWorkerLastActiveTime": "number",
-    "currentAppVersion": "10.35.0",
+    "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": 92.1,
+    "currentMigrationVersion": "number",
     "networkId": "1337",
     "networkStatus": "available",
     "providerConfig": {
