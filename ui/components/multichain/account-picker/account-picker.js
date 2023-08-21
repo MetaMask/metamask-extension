@@ -51,7 +51,11 @@ export const AccountPicker = ({
       }}
       disabled={disabled}
     >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box
+        display={Display.Flex}
+        className="multichain-account-picker-container"
+        flexDirection={FlexDirection.Column}
+      >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
           <AvatarAccount
             variant={
