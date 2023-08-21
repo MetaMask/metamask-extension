@@ -1,3 +1,4 @@
+// @jest-environment node
 import { migrate } from './088';
 
 const sentryCaptureExceptionMock = jest.fn();
@@ -724,7 +725,12 @@ describe('migration #88', () => {
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  it('captures an exception if it has no TokenListController property', async () => {
+  it('Logs a warning if it has no TokenListController property', async () => {
+    // setup
+    const previousWarnFn = console.warn;
+    const mockWarnFn = jest.fn();
+    console.warn = mockWarnFn;
+
     const oldData = {
       TokensController: {},
       NftController: {
@@ -760,13 +766,21 @@ describe('migration #88', () => {
     };
 
     await migrate(oldStorage);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+    expect(mockWarnFn).toHaveBeenCalledTimes(1);
+    expect(mockWarnFn).toHaveBeenCalledWith(
       new Error(`typeof state.TokenListController is undefined`),
     );
+
+    // tear down
+    console.warn = previousWarnFn;
   });
 
-  it('captures an exception if the TokenListController property is not an object', async () => {
+  it('Logs a warning if the TokenListController property is not an object', async () => {
+    // setup
+    const previousWarnFn = console.warn;
+    const mockWarnFn = jest.fn();
+    console.warn = mockWarnFn;
+
     const oldData = {
       TokensController: {},
       NftController: {
@@ -803,10 +817,13 @@ describe('migration #88', () => {
     };
 
     await migrate(oldStorage);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+    expect(mockWarnFn).toHaveBeenCalledTimes(1);
+    expect(mockWarnFn).toHaveBeenCalledWith(
       new Error(`typeof state.TokenListController is boolean`),
     );
+
+    // tear down
+    console.warn = previousWarnFn;
   });
 
   it('returns the state unaltered if the TokenListController object has no tokensChainsCache property', async () => {
@@ -1564,6 +1581,25 @@ describe('migration #88', () => {
     const newStorage = await migrate(oldStorage);
 
     expect(newStorage.data).toStrictEqual(oldData);
+  });
+
+  it('captures an exception if the TokensController.allDetectedTokens property is not an object', async () => {
+    const oldData = {
+      TokenListController: {},
+      TokensController: {
+        allDetectedTokens: 'foo',
+      },
+    };
+    const oldStorage = {
+      meta: { version: 87 },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.TokensController.allDetectedTokens is string`),
+    );
   });
 
   it('rewrites TokensController.allDetectedTokens so that decimal chain IDs are converted to hex strings', async () => {

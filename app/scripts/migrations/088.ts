@@ -164,7 +164,7 @@ function migrateData(state: Record<string, unknown>): void {
       );
     }
   } else {
-    global.sentry?.captureException?.(
+    console.warn(
       new Error(
         `typeof state.TokenListController is ${typeof state.TokenListController}`,
       ),
@@ -251,6 +251,12 @@ function migrateData(state: Record<string, unknown>): void {
       tokensControllerState.allDetectedTokens = mapKeys(
         allDetectedTokens,
         (_, chainId: string) => toHex(chainId),
+      );
+    } else if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.TokensController.allDetectedTokens is ${typeof tokensControllerState.allDetectedTokens}`,
+        ),
       );
     } else {
       log.warn(
