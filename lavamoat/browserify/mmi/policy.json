@@ -733,24 +733,8 @@
     "@metamask-institutional/custody-controller": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/custody-controller>@metamask-institutional/custody-keyring": true,
+        "@metamask-institutional/custody-keyring": true,
         "@metamask/obs-store": true
-      }
-    },
-    "@metamask-institutional/custody-controller>@metamask-institutional/custody-keyring": {
-      "globals": {
-        "console.log": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": true,
-        "@metamask-institutional/sdk": true,
-        "@metamask-institutional/sdk>@metamask-institutional/types": true,
-        "@metamask/obs-store": true,
-        "browserify>crypto-browserify": true,
-        "browserify>events": true,
-        "gulp-sass>lodash.clonedeep": true
       }
     },
     "@metamask-institutional/custody-keyring": {
@@ -782,102 +766,15 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/extension>@metamask-institutional/custody-controller": true,
+        "@metamask-institutional/custody-controller": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/sdk>@metamask-institutional/types": true
       }
     },
-    "@metamask-institutional/extension>@metamask-institutional/custody-controller": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/extension>@metamask-institutional/custody-keyring": true,
-        "@metamask/obs-store": true
-      }
-    },
-    "@metamask-institutional/extension>@metamask-institutional/custody-keyring": {
-      "globals": {
-        "console.log": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": true,
-        "@metamask-institutional/sdk": true,
-        "@metamask-institutional/sdk>@metamask-institutional/types": true,
-        "@metamask/obs-store": true,
-        "browserify>crypto-browserify": true,
-        "browserify>events": true,
-        "gulp-sass>lodash.clonedeep": true
-      }
-    },
     "@metamask-institutional/institutional-features": {
-      "globals": {
-        "chrome.runtime.id": true,
-        "console.log": true,
-        "fetch": true,
-        "setInterval": true
-      },
       "packages": {
-        "@metamask-institutional/institutional-features>@auth0/auth0-spa-js": true,
-        "@metamask-institutional/institutional-features>@metamask-institutional/custody-keyring": true,
-        "@metamask-institutional/sdk>@metamask-institutional/simplecache": true,
-        "@metamask/obs-store": true,
-        "browserify>events": true
-      }
-    },
-    "@metamask-institutional/institutional-features>@auth0/auth0-spa-js": {
-      "globals": {
-        "AbortController": true,
-        "Blob": true,
-        "MessageChannel": true,
-        "TextEncoder": true,
-        "URL.createObjectURL": true,
-        "URLSearchParams": true,
-        "Worker": true,
-        "addEventListener": true,
-        "atob": true,
-        "btoa": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "crossOriginIsolated": true,
-        "crypto": true,
-        "document.body.appendChild": true,
-        "document.body.contains": true,
-        "document.body.removeChild": true,
-        "document.cookie": "write",
-        "document.createElement": true,
-        "fetch": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "localStorage": true,
-        "location.assign": true,
-        "location.href": true,
-        "location.origin": true,
-        "location.protocol": true,
-        "open": true,
-        "removeEventListener": true,
-        "screenX": true,
-        "screenY": true,
-        "sessionStorage": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
-    },
-    "@metamask-institutional/institutional-features>@metamask-institutional/custody-keyring": {
-      "globals": {
-        "console.log": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": true,
-        "@metamask-institutional/sdk": true,
-        "@metamask-institutional/sdk>@metamask-institutional/types": true,
-        "@metamask/obs-store": true,
-        "browserify>crypto-browserify": true,
-        "browserify>events": true,
-        "gulp-sass>lodash.clonedeep": true
+        "@metamask-institutional/custody-keyring": true,
+        "@metamask/obs-store": true
       }
     },
     "@metamask-institutional/portfolio-dashboard": {
