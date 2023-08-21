@@ -107,7 +107,14 @@ export default class SendContent extends Component {
         <BannerAlert
           severity={Severity.Danger}
           description={t('sendingToTokenContractWarning', [
-            <a
+            <ButtonLink
+              key="contractWarningSupport"
+              href={CONTRACT_ADDRESS_LINK}
+              externalLink
+              size={ButtonLinkSize.Inherit}
+            >
+              {t('learnMoreUpperCase')}
+            </ButtonLink>,
               key="contractWarningSupport"
               target="_blank"
               rel="noopener noreferrer"
