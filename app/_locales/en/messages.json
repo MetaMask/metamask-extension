@@ -3268,6 +3268,14 @@
     "message": "Allow the snap to communicate with MetaMask directly, in order for it to read data from the blockchain and suggest messages and transactions.",
     "description": "An extended description for the `endowment:ethereum-provider` permission"
   },
+  "permission_extendRuntime": {
+    "message": "Extend runtime.",
+    "description": "Label for the `endowment:extend-runtime` permission"
+  },
+  "permission_extendRuntimeDescription": {
+    "message": "Let this snap run for an extended duration. This can be used for demanding computation.",
+    "description": "An extended description for the `endowment:extend-runtime` permission"
+  },
   "permission_getEntropy": {
     "message": "Derive arbitrary keys unique to this snap.",
     "description": "The description for the `snap_getEntropy` permission"
