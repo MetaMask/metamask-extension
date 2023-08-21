@@ -1196,8 +1196,7 @@
     },
     "@metamask/eth-snap-keyring": {
       "globals": {
-        "console.error": true,
-        "console.warn": true
+        "console.error": true
       },
       "packages": {
         "@ethereumjs/tx": true,
