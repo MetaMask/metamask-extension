@@ -60,6 +60,9 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
@@ -311,6 +314,13 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

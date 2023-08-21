@@ -102,8 +102,8 @@ describe('Test Snap Notification', function () {
 
         // try to click on the notification item (via xpath)
         await driver.clickElement({
-          text: 'Notifications',
-          tag: 'span',
+          text: 'Notifications 1',
+          css: '.menu-item',
         });
         await driver.delay(500);
 

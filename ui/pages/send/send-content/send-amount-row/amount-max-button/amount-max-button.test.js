@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { fireEvent } from '@testing-library/react';
+import { NetworkType } from '@metamask/controller-utils';
 import { AMOUNT_MODES, SEND_STATUSES } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
@@ -22,8 +23,12 @@ describe('AmountMaxButton Component', () => {
         configureMockStore(middleware)({
           metamask: {
             gasEstimateType: GasEstimateTypes.none,
-            networkDetails: {
-              EIPS: {},
+            selectedNetworkClientId: NetworkType.mainnet,
+            networksMetadata: {
+              [NetworkType.mainnet]: {
+                EIPS: {},
+                status: 'available',
+              },
             },
           },
           send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
@@ -36,8 +41,12 @@ describe('AmountMaxButton Component', () => {
       const store = configureMockStore(middleware)({
         metamask: {
           gasEstimateType: GasEstimateTypes.ethGasPrice,
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: 'available',
+            },
           },
         },
         send: getInitialSendStateWithExistingTxState({
@@ -59,8 +68,12 @@ describe('AmountMaxButton Component', () => {
       const store = configureMockStore(middleware)({
         metamask: {
           gasEstimateType: GasEstimateTypes.ethGasPrice,
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: 'available',
+            },
           },
         },
         send: {

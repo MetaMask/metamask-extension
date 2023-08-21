@@ -28,7 +28,7 @@ try {
     const namedIntrinsics = Reflect.ownKeys(new Compartment().globalThis);
 
     // These named intrinsics are not automatically hardened by `lockdown`
-    const shouldHardenManually = new Set(['eval', 'Function']);
+    const shouldHardenManually = new Set(['eval', 'Function', 'Symbol']);
 
     const globalProperties = new Set([
       // universalPropertyNames is a constant added by lockdown to global scope
