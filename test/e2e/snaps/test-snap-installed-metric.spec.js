@@ -81,7 +81,7 @@ describe('Snap Installed Event', function () {
 
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/dialog-example-snap',
-          version: '0.37.2-flask.1',
+          version: '0.38.0-flask.1',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
