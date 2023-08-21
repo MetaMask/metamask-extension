@@ -1566,25 +1566,6 @@ describe('migration #88', () => {
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  it('captures an exception if the TokensController.allDetectedTokens property is not an object', async () => {
-    const oldData = {
-      TokenListController: {},
-      TokensController: {
-        allDetectedTokens: 'foo',
-      },
-    };
-    const oldStorage = {
-      meta: { version: 87 },
-      data: oldData,
-    };
-
-    await migrate(oldStorage);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`typeof state.TokensController.allDetectedTokens is string`),
-    );
-  });
-
   it('rewrites TokensController.allDetectedTokens so that decimal chain IDs are converted to hex strings', async () => {
     const oldStorage = {
       meta: { version: 87 },

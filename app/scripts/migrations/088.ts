@@ -252,12 +252,6 @@ function migrateData(state: Record<string, unknown>): void {
         allDetectedTokens,
         (_, chainId: string) => toHex(chainId),
       );
-    } else if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
-      global.sentry?.captureException?.(
-        new Error(
-          `typeof state.TokensController.allDetectedTokens is ${typeof tokensControllerState.allDetectedTokens}`,
-        ),
-      );
     } else {
       log.warn(
         `typeof state.TokensController.allDetectedTokens is ${typeof tokensControllerState.allDetectedTokens}`,
