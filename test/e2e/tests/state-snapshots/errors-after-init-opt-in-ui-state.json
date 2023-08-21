@@ -136,6 +136,8 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
+    "domains": "object",
+    "perDomainNetwork": "boolean",
     "snapErrors": "object",
     "snaps": "object",
     "snapStates": "object",
