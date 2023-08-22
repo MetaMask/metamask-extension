@@ -46,7 +46,7 @@ export function useTransactionInsightSnaps({ transaction, chainId, origin }) {
           });
         }),
       );
-      const reformatedData = newData.map((promise, idx) => {
+      const reformattedData = newData.map((promise, idx) => {
         const snapId = snapIds[idx];
         if (promise.status === 'rejected') {
           return {
@@ -61,7 +61,7 @@ export function useTransactionInsightSnaps({ transaction, chainId, origin }) {
       });
 
       if (!cancelled) {
-        setData(reformatedData);
+        setData(reformattedData);
       }
 
       if (!cancelled) {
