@@ -806,9 +806,6 @@
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
   },
-  "connections": {
-    "message": "Connections"
-  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -839,6 +836,9 @@
   },
   "connectionRequest": {
     "message": "Connection request"
+  },
+  "connections": {
+    "message": "Connections"
   },
   "contactUs": {
     "message": "Contact us"
@@ -5319,7 +5319,7 @@
   "visitWebSite": {
     "message": "Visit our website"
   },
-  "wallet":{
+  "wallet": {
     "message": "Wallet"
   },
   "walletConnectionGuide": {
