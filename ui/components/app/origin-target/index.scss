@@ -1,0 +1,30 @@
+.origin-target {
+  width: 100%;
+
+  &__container {
+    margin: 10px;
+    border: 1px solid var(--color-border-muted);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  &__row-name {
+    font-size: 16px;
+    color: var(--color-text-alternative);
+  }
+
+  &__origin, &__origin-row, &__target-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__origin  {
+    gap: 5px;
+  }
+
+  &__origin-row {
+    margin-bottom: 10px;
+  }
+}

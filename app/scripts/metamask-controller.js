@@ -53,6 +53,7 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { NameController, ENSNameProvider } from '@metamask/name-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
@@ -1485,6 +1486,20 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
+    this.nameController = new NameController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'NameController',
+        allowedActions: [],
+      }),
+      providers: [
+        new ENSNameProvider({
+          reverseLookup: this.ensController.reverseResolveAddress.bind(
+            this.ensController,
+          ),
+        }),
+      ],
+    });
+
     this.txController.on('newSwapApproval', (txMeta) => {
       this.swapsController.setApproveTxId(txMeta.id);
     });
@@ -1671,6 +1686,7 @@ export default class MetamaskController extends EventEmitter {
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
+      NameController: this.nameController,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -1717,6 +1733,7 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
+        NameController: this.nameController,
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -2254,6 +2271,7 @@ export default class MetamaskController extends EventEmitter {
       assetsContractController,
       backup,
       approvalController,
+      nameController,
     } = this;
 
     return {
@@ -2821,6 +2839,10 @@ export default class MetamaskController extends EventEmitter {
 
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
+
+      // NameController
+      getProposedNames: nameController.getProposedNames.bind(nameController),
+      setName: nameController.setName.bind(nameController),
     };
   }
 

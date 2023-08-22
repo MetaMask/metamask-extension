@@ -1,0 +1,50 @@
+.form-combo-field {
+
+  width: 100%;
+
+  &__value > div {
+    outline: 0;
+    width: 100%;
+  }
+
+  &__value-dropdown-visible > div {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &__dropdown {
+    border: 1px solid var(--color-border-default);
+    border-top-width: 0;
+    position: absolute;
+    overflow: visible;
+    z-index: 1;
+    background-color: var(--color-background-default);
+  }
+
+  &__option {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 16px 10px 16px;
+  }
+
+  &__option:first-child {
+    padding-top: 20px;
+  }
+
+  &__option:last-child {
+    padding-bottom: 20px;
+  }
+
+  &__option:hover {
+    background-color: var(--color-background-default-hover);
+  }
+
+  &__option-primary {
+    padding-bottom: 4px;
+  }
+
+  &__option-secondary {
+    color: var(--color-text-alternative);
+    font-size: 12px;
+  }
+}

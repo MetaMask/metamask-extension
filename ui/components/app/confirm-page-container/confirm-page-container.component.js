@@ -22,7 +22,6 @@ import { PageContainerFooter } from '../../ui/page-container';
 import Button from '../../ui/button';
 ///: END:ONLY_INCLUDE_IN
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
-import SenderToRecipient from '../../ui/sender-to-recipient';
 
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
@@ -59,6 +58,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
+import OriginTarget from '../origin-target/origin-target';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -197,7 +197,7 @@ const ConfirmPageContainer = (props) => {
             accountAddress={fromAddress}
           >
             {hideSenderToRecipient ? null : (
-              <SenderToRecipient
+              <OriginTarget
                 senderName={fromName}
                 senderAddress={fromAddress}
                 recipientName={toName}
