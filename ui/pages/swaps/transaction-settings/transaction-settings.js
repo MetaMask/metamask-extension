@@ -337,6 +337,7 @@ export default function TransactionSettings({
                 <BannerAlert
                   severity={notificationSeverity}
                   title={notificationTitle}
+                  titleProps={{ 'data-testid': 'swaps-banner-title' }}
                 >
                   <Typography
                     variant={TypographyVariant.H6}

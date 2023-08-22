@@ -399,7 +399,7 @@ describe('MetaMaskController', function () {
           metamaskController.preferencesController.store.getState().identities,
         );
         const addresses =
-          await metamaskController.keyringController.getAccounts();
+          await metamaskController.coreKeyringController.getAccounts();
 
         identities.forEach((identity) => {
           assert.ok(
@@ -414,6 +414,20 @@ describe('MetaMaskController', function () {
             `identities should include all Addresses: ${address}`,
           );
         });
+      });
+    });
+
+    describe('setLocked', function () {
+      it('should lock KeyringController', async function () {
+        sandbox.spy(metamaskController.coreKeyringController, 'setLocked');
+
+        await metamaskController.setLocked();
+
+        assert(metamaskController.coreKeyringController.setLocked.called);
+        assert.equal(
+          metamaskController.coreKeyringController.state.isUnlocked,
+          false,
+        );
       });
     });
 
