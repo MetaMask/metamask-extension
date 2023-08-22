@@ -1,4 +1,7 @@
 .app-footer {
+  bottom: 0px;
+  position: sticky;
+
   &__button {
     cursor: pointer;
   }

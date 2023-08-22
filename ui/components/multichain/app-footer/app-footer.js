@@ -1,8 +1,8 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
+  CONNECTED_ROUTE,
   DEFAULT_ROUTE,
-  SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,12 +24,13 @@ export const AppFooter = () => {
   const location = useLocation();
 
   const activeWallet = location.pathname === DEFAULT_ROUTE;
-  const activeConnections = location.pathname === SETTINGS_ROUTE;
+  const activeConnections = location.pathname === CONNECTED_ROUTE;
 
   return (
     <Box
       className="app-footer"
       width={BlockSize.Full}
+      height={BlockSize.Min}
       backgroundColor={BackgroundColor.backgroundDefault}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -37,7 +38,6 @@ export const AppFooter = () => {
       paddingRight={4}
       paddingTop={2}
       paddingBottom={2}
-      style={{ bottom: '0px', position: 'fixed', zIndex: 19 }}
     >
       <Box
         className="app-footer__button"
@@ -47,7 +47,6 @@ export const AppFooter = () => {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         onClick={() => {
-          console.log('wallet clicked');
           history.push(DEFAULT_ROUTE);
         }}
       >
@@ -90,12 +89,15 @@ export const AppFooter = () => {
         />
       </Box>
       <Box
+        className="app-footer__button"
         width={BlockSize.OneThird}
         padding={2}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
-        className="app-footer__button"
+        onClick={() => {
+          history.push(CONNECTED_ROUTE);
+        }}
       >
         <Icon
           color={

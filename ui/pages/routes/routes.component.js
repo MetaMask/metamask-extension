@@ -33,7 +33,6 @@ import {
   AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
-  AppFooter,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -585,7 +584,6 @@ export default class Routes extends Component {
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
-          <AppFooter />
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
