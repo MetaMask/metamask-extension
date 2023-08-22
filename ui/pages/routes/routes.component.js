@@ -12,6 +12,7 @@ import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
 import Home from '../home';
+import { Connections } from '../connections';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
@@ -355,7 +356,7 @@ export default class Routes extends Component {
         }
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
         {/* TODO: change the component from home to connections when connections component is ready */}
-        <Authenticated path={CONNECTIONS} component={Home} />
+        <Authenticated path={CONNECTIONS} component={Connections} />
       </Switch>
     );
 
