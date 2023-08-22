@@ -20,6 +20,7 @@ import {
 import {
   KeyringControllerState,
   KeyringController,
+  KeyringControllerEvents,
 } from '@metamask/keyring-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { SnapControllerState } from '@metamask/snaps-controllers-flask';
@@ -49,7 +50,8 @@ export type AccountsControllerChangeEvent = {
 
 export type AccountsControllerEvents =
   | AccountsControllerChangeEvent
-  | SnapControllerEvents;
+  | SnapControllerEvents
+  | KeyringControllerEvents;
 
 export type AccountsControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -136,8 +138,6 @@ export default class AccountsController extends BaseControllerV2<
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     onSnapStateChange(async (snapState: SnapControllerState) => {
-      console.log('snap state changed', snapState);
-
       // only check if snaps changed in status
       const { snaps } = snapState;
       const accounts = this.listAccounts();
@@ -155,14 +155,10 @@ export default class AccountsController extends BaseControllerV2<
           }
         });
       });
-
-      console.log('updated state after snap changes', this.state);
     });
     ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
     onKeyringStateChange(async (keyringState: KeyringControllerState) => {
-      // console.log('keyring state changed', keyringState);
-
       // check if there are any new accounts added
       // TODO: change when accountAdded event is added to the keyring controller
 
@@ -214,11 +210,6 @@ export default class AccountsController extends BaseControllerV2<
                 (accountA.metadata?.lastSelected ?? 0)
               );
             })[0];
-
-          console.log(
-            'removed selected account and now setting previous',
-            previousAccount,
-          );
 
           this.setSelectedAccount(previousAccount.id);
         }
@@ -307,8 +298,6 @@ export default class AccountsController extends BaseControllerV2<
     this.update((currentState: AccountsControllerState) => {
       currentState.internalAccounts.accounts = accounts;
     });
-
-    console.log('updated state', this.state);
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -384,8 +373,6 @@ export default class AccountsController extends BaseControllerV2<
   setSelectedAccount(accountId: string): void {
     const account = this.getAccountExpect(accountId);
 
-    console.log('set selected account', account);
-
     this.update((currentState: AccountsControllerState) => {
       currentState.internalAccounts.accounts[account.id].metadata.lastSelected =
         Date.now();
@@ -398,7 +385,9 @@ export default class AccountsController extends BaseControllerV2<
 
     if (
       this.listAccounts().find(
-        (internalAccount) => internalAccount.name === accountName,
+        (internalAccount) =>
+          internalAccount.name === accountName &&
+          internalAccount.id !== accountId,
       )
     ) {
       throw new Error('Account name already exists');
@@ -410,8 +399,6 @@ export default class AccountsController extends BaseControllerV2<
         name: accountName,
       };
     });
-
-    console.log('state after set account name', this.state);
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)

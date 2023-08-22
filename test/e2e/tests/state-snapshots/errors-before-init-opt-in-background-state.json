@@ -1,5 +1,6 @@
 {
   "data": {
+    "AccountsController": "object",
     "AlertController": {
       "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
       "unconnectedAccountAlertShownOrigins": "object",
