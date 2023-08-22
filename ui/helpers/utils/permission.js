@@ -47,7 +47,7 @@ function getLeftIcon(iconName) {
       iconName={iconName}
       size={AvatarIconSize.Sm}
       iconProps={{
-        size: AvatarIconSize.Xs,
+        size: IconSize.Xs,
       }}
     />
   );
