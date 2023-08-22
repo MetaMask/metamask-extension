@@ -7,12 +7,61 @@ const {
   regularDelayMs,
   unlockWallet,
   sleepSeconds,
-  getEventPayloads,
-  tinyDelayMs,
   WINDOW_TITLES,
-  getMockedRequests,
 } = require('../helpers');
 const { toHex } = require('@metamask/controller-utils');
+
+const TEST_CHAIN_ID = toHex(100);
+
+const MOCK_CHAINLIST_RESPONSE = [
+  {
+    name: 'Ethereum Mainnet',
+    chain: 'ETH',
+    icon: 'ethereum',
+    rpc: [
+      'https://mainnet.infura.io/v3/${INFURA_API_KEY}',
+      'wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}',
+      'https://api.mycryptoapi.com/eth',
+      'https://cloudflare-eth.com',
+      'https://ethereum.publicnode.com',
+    ],
+    features: [
+      {
+        name: 'EIP155',
+      },
+      {
+        name: 'EIP1559',
+      },
+    ],
+    faucets: [],
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    infoURL: 'https://ethereum.org',
+    shortName: 'eth',
+    chainId: 1,
+    networkId: 1,
+    slip44: 60,
+    ens: {
+      registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
+    explorers: [
+      {
+        name: 'etherscan',
+        url: 'https://etherscan.io',
+        standard: 'EIP3091',
+      },
+      {
+        name: 'blockscout',
+        url: 'https://eth.blockscout.com',
+        icon: 'blockscout',
+        standard: 'EIP3091',
+      },
+    ],
+  },
+];
 
 describe('Custom network', function () {
   const chainID = '42161';
@@ -30,7 +79,7 @@ describe('Custom network', function () {
     ],
   };
 
-  describe.only('JSON-RPC API', function () {
+  describe('JSON-RPC API', function () {
     it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
       await withFixtures(
         {
@@ -64,21 +113,18 @@ describe('Custom network', function () {
             params
           })
         `);
-          console.log(1);
+
           const windowHandles = await driver.waitUntilXWindowHandles(3);
-          console.log(2);
 
           await driver.switchToWindowWithTitle(
             'MetaMask Notification',
             windowHandles,
           );
-          console.log(3);
 
           await driver.clickElement({
             tag: 'button',
             text: 'Approve',
           });
-          console.log(4);
 
           const warningTxt =
             'You are adding a new RPC provider for Ethereum Mainnet';
@@ -87,7 +133,6 @@ describe('Custom network', function () {
             tag: 'h4',
             text: warningTxt,
           });
-          console.log(5);
 
           await driver.clickElement({
             tag: 'button',
@@ -249,7 +294,7 @@ describe('Custom network', function () {
       );
     });
 
-    it.only('When the setting is turned off, no validation is enforced', async function () {
+    it('when the setting is turned off, no validation is enforced', async function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
@@ -257,12 +302,6 @@ describe('Custom network', function () {
             .thenCallback(() => ({
               statusCode: 200,
               json: { result: '0x123' },
-            })),
-          await mockServer
-            .forGet('https://chainid.network/chains.json')
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: MOCK_CHAINLIST_RESPONSE,
             })),
         ];
       }
@@ -277,7 +316,7 @@ describe('Custom network', function () {
           title: this.test.title,
           testSpecificMock: mockRPCURLAndChainId,
         },
-        async ({ driver, mockedEndpoints }) => {
+        async ({ driver }) => {
           await driver.navigate();
 
           await unlockWallet(driver);
@@ -339,15 +378,6 @@ describe('Custom network', function () {
           });
 
           await switchNetworkBtn.click();
-
-          const mockedRequests = await getMockedRequests(
-            driver,
-            mockedEndpoints,
-          );
-
-          console.log({ mockedRequests });
-
-          await sleepSeconds(100);
         },
       );
     });
@@ -488,7 +518,7 @@ describe('Custom network', function () {
       );
     });
 
-    it('Delete the Arbitrum network', async function () {
+    it('delete the Arbitrum network', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -536,7 +566,7 @@ describe('Custom network', function () {
       );
     });
 
-    it('When the network details validation toggle is turned on, validate user inserted details against data from "chainid.network"', async function () {
+    it('when the network details validation toggle is turned on, validate user inserted details against data from "chainid.network"', async function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
@@ -572,12 +602,35 @@ describe('Custom network', function () {
       );
     });
 
-    it("When the network details validation toggle is turned off, don't validate user inserted details", async function () {
+    it("when the network details validation toggle is turned off, don't validate user inserted details", async function () {
+      async function mockRPCURLAndChainId(mockServer) {
+        return [
+          await mockServer
+            .forPost('https://responsive-rpc.url/')
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {
+                id: '1694444405781',
+                jsonrpc: '2.0',
+                result: TEST_CHAIN_ID,
+              },
+            })),
+
+          await mockServer
+            .forGet('https://chainid.network/chains.json')
+            .thenCallback(() => ({
+              // even with an error, the test passes
+              statusCode: 400,
+            })),
+        ];
+      }
+
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
           title: this.test.title,
+          testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -586,74 +639,12 @@ describe('Custom network', function () {
 
           await toggleOffSafeChainsListValidation(driver);
 
-          await sleepSeconds(1);
-
           await candidateNetworkIsNotValidated(driver);
-
-          await sleepSeconds(100);
-
-          // await failCandidateNetworkValidation(driver);
         },
       );
     });
   });
-
-  describe.skip('Settings toggle search', function () {
-    it.skip('The user can search for the toggle using search', async function () {
-      //...
-    });
-  });
 });
-
-const MOCK_CHAINLIST_RESPONSE = [
-  {
-    name: 'Ethereum Mainnet',
-    chain: 'ETH',
-    icon: 'ethereum',
-    rpc: [
-      'https://mainnet.infura.io/v3/${INFURA_API_KEY}',
-      'wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}',
-      'https://api.mycryptoapi.com/eth',
-      'https://cloudflare-eth.com',
-      'https://ethereum.publicnode.com',
-    ],
-    features: [
-      {
-        name: 'EIP155',
-      },
-      {
-        name: 'EIP1559',
-      },
-    ],
-    faucets: [],
-    nativeCurrency: {
-      name: 'Ether',
-      symbol: 'ETH',
-      decimals: 18,
-    },
-    infoURL: 'https://ethereum.org',
-    shortName: 'eth',
-    chainId: 1,
-    networkId: 1,
-    slip44: 60,
-    ens: {
-      registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-    },
-    explorers: [
-      {
-        name: 'etherscan',
-        url: 'https://etherscan.io',
-        standard: 'EIP3091',
-      },
-      {
-        name: 'blockscout',
-        url: 'https://eth.blockscout.com',
-        icon: 'blockscout',
-        standard: 'EIP3091',
-      },
-    ],
-  },
-];
 
 async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   const accountOptionsMenuSelector =
@@ -817,12 +808,10 @@ async function candidateNetworkIsNotValidated(driver) {
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
-  await newRPCURLInputEl.fill('https://mainnet.infura.io/v3/');
-  await chainIDInputEl.fill(toHex(777));
+  await newRPCURLInputEl.fill('https://responsive-rpc.url/');
+  await chainIDInputEl.fill(TEST_CHAIN_ID);
   await currencySymbolInputEl.fill('cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
-
-  await sleepSeconds(100);
 
   const saveButtonRawLocator = {
     text: 'Save',

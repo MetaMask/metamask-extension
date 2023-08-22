@@ -755,6 +755,7 @@ async function getMockedRequests(driver, mockedEndpoints, hasRequest = true) {
 
     return isPending === !hasRequest;
   }, driver.timeout);
+
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
