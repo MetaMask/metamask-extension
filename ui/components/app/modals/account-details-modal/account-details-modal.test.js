@@ -205,7 +205,6 @@ describe('Account Details Modal', () => {
           },
         },
         cachedBalances: {},
-        incomingTransactions: {},
         selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         accounts: {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {

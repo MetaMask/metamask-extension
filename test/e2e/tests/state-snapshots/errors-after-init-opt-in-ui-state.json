@@ -100,6 +100,7 @@
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
+    "transactions": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
     "previousUserTraits": "object",
@@ -113,14 +114,6 @@
     "web3ShimUsageOrigins": "object",
     "seedPhraseBackedUp": true,
     "onboardingTabs": "object",
-    "incomingTransactions": "object",
-    "incomingTxLastFetchedBlockByChainId": {
-      "0x1": null,
-      "0xe708": null,
-      "0x5": null,
-      "0xaa36a7": null,
-      "0xe704": null
-    },
     "subjects": "object",
     "permissionHistory": "object",
     "permissionActivityLog": "object",
