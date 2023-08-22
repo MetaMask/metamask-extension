@@ -11,11 +11,11 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box';
 import {
   AvatarIcon,
+  AvatarIconSize,
+  Box,
   IconName,
-  IconSize,
   Text,
 } from '../../../component-library';
 import {
@@ -47,14 +47,13 @@ export const SnapDelineator = ({
       >
         <AvatarIcon
           iconName={IconName.Snaps}
-          size={IconSize.Sm}
+          size={AvatarIconSize.Sm}
           backgroundColor={
             isError ? IconColor.errorDefault : IconColor.infoDefault
           }
           borderColor={BackgroundColor.backgroundDefault}
           borderWidth={2}
           iconProps={{
-            size: IconSize.Sm,
             color: IconColor.infoInverse,
           }}
         />
