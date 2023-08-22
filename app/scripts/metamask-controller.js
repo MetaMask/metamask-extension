@@ -18,7 +18,7 @@ import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
-import TrezorKeyring from '@metamask/eth-trezor-keyring';
+import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
@@ -190,7 +190,6 @@ import CachedBalancesController from './controllers/cached-balances';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
-import IncomingTransactionsController from './controllers/incoming-transactions';
 import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
@@ -416,10 +415,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
-    });
-
-    this.preferencesController.store.subscribe(async ({ currentLocale }) => {
-      await updateCurrentLocale(currentLocale);
     });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
@@ -744,19 +739,6 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.OnboardingController,
     });
 
-    this.incomingTransactionsController = new IncomingTransactionsController({
-      blockTracker: this.blockTracker,
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
-      preferencesController: this.preferencesController,
-      onboardingController: this.onboardingController,
-      initState: initState.IncomingTransactionsController,
-    });
-
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
       provider: this.provider,
@@ -877,15 +859,21 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.keyringController =
-      this.coreKeyringController.getEthKeyringController();
-
-    this.keyringController.memStore.subscribe((state) =>
-      this._onKeyringControllerUpdate(state),
+    this.controllerMessenger.subscribe('KeyringController:unlock', () =>
+      this._onUnlock(),
+    );
+    this.controllerMessenger.subscribe('KeyringController:lock', () =>
+      this._onLock(),
+    );
+    this.controllerMessenger.subscribe(
+      'KeyringController:stateChange',
+      (state) => {
+        this._onKeyringControllerUpdate(state);
+      },
     );
 
-    this.keyringController.on('unlock', () => this._onUnlock());
-    this.keyringController.on('lock', () => this._onLock());
+    this.keyringController =
+      this.coreKeyringController.getEthKeyringController();
 
     const getIdentities = () =>
       this.preferencesController.store.getState().identities;
@@ -1186,6 +1174,9 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.state.networksMetadata?.[
           this.networkController.state.selectedNetworkClientId
         ]?.status,
+      getNetworkState: () => this.networkController.state,
+      hasCompletedOnboarding: () =>
+        this.onboardingController.store.getState().completedOnboarding,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
@@ -1654,7 +1645,6 @@ export default class MetamaskController extends EventEmitter {
       CachedBalancesController: this.cachedBalancesController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
-      IncomingTransactionsController: this.incomingTransactionsController.store,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
@@ -1700,8 +1690,6 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController.store,
         OnboardingController: this.onboardingController.store,
-        IncomingTransactionsController:
-          this.incomingTransactionsController.store,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
@@ -1797,7 +1785,7 @@ export default class MetamaskController extends EventEmitter {
 
   triggerNetworkrequests() {
     this.accountTracker.start();
-    this.incomingTransactionsController.start();
+    this.txController.startIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.start();
     }
@@ -1808,7 +1796,7 @@ export default class MetamaskController extends EventEmitter {
 
   stopNetworkRequests() {
     this.accountTracker.stop();
-    this.incomingTransactionsController.stop();
+    this.txController.stopIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.stop();
     }
@@ -1985,40 +1973,22 @@ export default class MetamaskController extends EventEmitter {
    * becomes unlocked are handled in MetaMaskController._onUnlock.
    */
   setupControllerEventSubscriptions() {
-    const handleAccountsChange = async (origin, newAccounts) => {
-      if (this.isUnlocked()) {
-        this.notifyConnections(origin, {
-          method: NOTIFICATION_NAMES.accountsChanged,
-          // This should be the same as the return value of `eth_accounts`,
-          // namely an array of the current / most recently selected Ethereum
-          // account.
-          params:
-            newAccounts.length < 2
-              ? // If the length is 1 or 0, the accounts are sorted by definition.
-                newAccounts
-              : // If the length is 2 or greater, we have to execute
-                // `eth_accounts` vi this method.
-                await this.getPermittedAccounts(origin),
-        });
+    let lastSelectedAddress;
+
+    this.preferencesController.store.subscribe(async (state) => {
+      const { selectedAddress, currentLocale } = state;
+
+      await updateCurrentLocale(currentLocale);
+
+      if (state?.featureFlags?.showIncomingTransactions) {
+        this.txController.startIncomingTransactionPolling();
+      } else {
+        this.txController.stopIncomingTransactionPolling();
       }
 
-      this.permissionLogController.updateAccountsHistory(origin, newAccounts);
-    };
-
-    // This handles account changes whenever the selected address changes.
-    let lastSelectedAddress;
-    this.preferencesController.store.subscribe(async ({ selectedAddress }) => {
       if (selectedAddress && selectedAddress !== lastSelectedAddress) {
         lastSelectedAddress = selectedAddress;
-        const permittedAccountsMap = getPermittedAccountsByOrigin(
-          this.permissionController.state,
-        );
-
-        for (const [origin, accounts] of permittedAccountsMap.entries()) {
-          if (accounts.includes(selectedAddress)) {
-            handleAccountsChange(origin, accounts);
-          }
-        }
+        await this._onAccountChange(selectedAddress);
       }
     });
 
@@ -2030,10 +2000,17 @@ export default class MetamaskController extends EventEmitter {
         const changedAccounts = getChangedAccounts(currentValue, previousValue);
 
         for (const [origin, accounts] of changedAccounts.entries()) {
-          handleAccountsChange(origin, accounts);
+          this._notifyAccountsChange(origin, accounts);
         }
       },
       getPermittedAccountsByOrigin,
+    );
+
+    this.controllerMessenger.subscribe(
+      'NetworkController:networkDidChange',
+      async () => {
+        await this.txController.updateIncomingTransactions();
+      },
     );
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -3060,10 +3037,9 @@ export default class MetamaskController extends EventEmitter {
    * is up to date with known accounts once the vault is decrypted.
    *
    * @param {string} password - The user's password
-   * @returns {Promise<object>} The keyringController update.
    */
   async submitPassword(password) {
-    await this.keyringController.submitPassword(password);
+    await this.coreKeyringController.submitPassword(password);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiController.onSubmitPassword();
@@ -3083,8 +3059,6 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.getLedgerTransportPreference();
 
     this.setLedgerTransportPreference(transportPreference);
-
-    return this.keyringController.fullUpdate();
   }
 
   async _loginUser() {
@@ -3123,7 +3097,7 @@ export default class MetamaskController extends EventEmitter {
       const { loginToken, loginSalt } =
         await this.extension.storage.session.get(['loginToken', 'loginSalt']);
       if (loginToken && loginSalt) {
-        const { vault } = this.keyringController.store.getState();
+        const { vault } = this.coreKeyringController.state;
 
         const jsonVault = JSON.parse(vault);
 
@@ -3135,7 +3109,10 @@ export default class MetamaskController extends EventEmitter {
           return;
         }
 
-        await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
+        await this.coreKeyringController.submitEncryptionKey(
+          loginToken,
+          loginSalt,
+        );
       }
     } catch (e) {
       // If somehow this login token doesn't work properly,
@@ -4709,16 +4686,11 @@ export default class MetamaskController extends EventEmitter {
       trezorKeyring.dispose();
     }
 
-    const [ledgerKeyring] = this.coreKeyringController.getKeyringsByType(
-      KeyringType.ledger,
-    );
-    ledgerKeyring?.destroy?.();
-
     if (isManifestV3) {
       this.clearLoginArtifacts();
     }
 
-    return this.keyringController.setLocked();
+    return this.coreKeyringController.setLocked();
   }
 
   removePermissionsFor = (subjects) => {
@@ -4817,5 +4789,39 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return null;
+  }
+
+  async _onAccountChange(newAddress) {
+    const permittedAccountsMap = getPermittedAccountsByOrigin(
+      this.permissionController.state,
+    );
+
+    for (const [origin, accounts] of permittedAccountsMap.entries()) {
+      if (accounts.includes(newAddress)) {
+        this._notifyAccountsChange(origin, accounts);
+      }
+    }
+
+    await this.txController.updateIncomingTransactions();
+  }
+
+  async _notifyAccountsChange(origin, newAccounts) {
+    if (this.isUnlocked()) {
+      this.notifyConnections(origin, {
+        method: NOTIFICATION_NAMES.accountsChanged,
+        // This should be the same as the return value of `eth_accounts`,
+        // namely an array of the current / most recently selected Ethereum
+        // account.
+        params:
+          newAccounts.length < 2
+            ? // If the length is 1 or 0, the accounts are sorted by definition.
+              newAccounts
+            : // If the length is 2 or greater, we have to execute
+              // `eth_accounts` vi this method.
+              await this.getPermittedAccounts(origin),
+      });
+    }
+
+    this.permissionLogController.updateAccountsHistory(origin, newAccounts);
   }
 }

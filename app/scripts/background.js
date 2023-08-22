@@ -99,7 +99,6 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-
 let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {

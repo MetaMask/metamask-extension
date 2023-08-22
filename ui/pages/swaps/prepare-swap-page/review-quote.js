@@ -1073,6 +1073,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
             {(showInsufficientWarning || tokenBalanceUnavailable) && (
               <BannerAlert
                 title={t('notEnoughBalance')}
+                titleProps={{ 'data-testid': 'swaps-banner-title' }}
                 severity={Severity.Info}
                 description={actionableBalanceErrorMessage}
                 descriptionProps={{
