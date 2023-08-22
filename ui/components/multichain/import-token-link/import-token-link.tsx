@@ -19,11 +19,12 @@ import {
   getIsTokenDetectionSupported,
   getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
+import type { ImportTokenLinkProps } from './import-token-link.types';
 
-export const ImportTokenLink: React.FC<{ className: string }> = ({
-  className,
+export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
+  className = '',
   ...props
-}) => {
+}): JSX.Element => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const dispatch = useDispatch();
