@@ -4376,6 +4376,9 @@
   "swap": {
     "message": "Swap"
   },
+  "swapAdjustSlippage": {
+    "message": "Adjust slippage"
+  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -4433,9 +4436,6 @@
   },
   "swapEditLimit": {
     "message": "Edit limit"
-  },
-  "swapEditTransactionSettings": {
-    "message": "Edit transaction settings"
   },
   "swapEnableDescription": {
     "message": "This is required and gives MetaMask permission to swap your $1.",
@@ -4627,6 +4627,20 @@
   "swapShowLatestQuotes": {
     "message": "Show latest quotes"
   },
+  "swapSlippageHighDescription": {
+    "message": "The slippage entered ($1%) is considered very high and may result in a bad rate.",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageHighTitle": {
+    "message": "High slippage"
+  },
+  "swapSlippageLowDescription": {
+    "message": "A value this low ($1%) may result in a failed swap.",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageLowTitle": {
+    "message": "Low slippage"
+  },
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
   },
@@ -4636,27 +4650,15 @@
   "swapSlippageNegativeTitle": {
     "message": "Increase slippage to continue"
   },
-  "swapSlippageOverLimitDescription": {
-    "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Reduce slippage to continue"
-  },
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageTooLowDescription": {
-    "message": "Max slippage is too low which may cause your transaction to fail."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Increase slippage to avoid transaction failure"
   },
   "swapSlippageTooltip": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
   },
   "swapSlippageVeryHighDescription": {
-    "message": "The slippage entered is considered very high and may result in a bad rate."
+    "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
   },
   "swapSlippageVeryHighTitle": {
     "message": "Very high slippage"

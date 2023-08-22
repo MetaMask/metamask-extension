@@ -99,8 +99,8 @@ import {
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
   QUOTES_EXPIRED_ERROR,
-  SLIPPAGE_VERY_HIGH_ERROR,
-  SLIPPAGE_TOO_LOW_ERROR,
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
   MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
 import { GasRecommendations } from '../../../../shared/constants/gas';
@@ -241,9 +241,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const [slippageErrorKey] = useState(() => {
     const slippage = Number(fetchParams?.slippage);
     if (slippage > 0 && slippage <= 1) {
-      return SLIPPAGE_TOO_LOW_ERROR;
+      return SLIPPAGE_LOW_ERROR;
     } else if (slippage >= 5 && slippage <= MAX_ALLOWED_SLIPPAGE) {
-      return SLIPPAGE_VERY_HIGH_ERROR;
+      return SLIPPAGE_HIGH_ERROR;
     }
     return '';
   });
@@ -1108,6 +1108,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
           }
           slippageErrorKey={slippageErrorKey}
           onSwapSubmit={onSwapSubmit}
+          currentSlippage={fetchParams?.slippage}
         />
         {
           /* istanbul ignore next */

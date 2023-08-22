@@ -23,9 +23,9 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-  SLIPPAGE_OVER_LIMIT_ERROR,
   SLIPPAGE_VERY_HIGH_ERROR,
-  SLIPPAGE_TOO_LOW_ERROR,
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
 import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
@@ -33,6 +33,7 @@ import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
 export default function SwapsBannerAlert({
   swapsErrorKey,
   showTransactionSettingsLink,
+  currentSlippage,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -52,41 +53,41 @@ export default function SwapsBannerAlert({
         dispatch(setTransactionSettingsOpened(true));
       }}
     >
-      {t('swapEditTransactionSettings')}
+      {t('swapAdjustSlippage')}
     </ButtonLink>
   );
 
   switch (swapsErrorKey) {
-    case SLIPPAGE_OVER_LIMIT_ERROR:
-      title = t('swapSlippageOverLimitTitle');
-      description = (
-        <Box>
-          <Text variant={TextVariant.bodyMd} as="h6">
-            {t('swapSlippageOverLimitDescription')}
-          </Text>
-          {transactionSettingsLink}
-        </Box>
-      );
-      break;
     case SLIPPAGE_VERY_HIGH_ERROR:
-      severity = SEVERITIES.WARNING;
       title = t('swapSlippageVeryHighTitle');
       description = (
         <Box>
           <Text variant={TextVariant.bodyMd} as="h6">
             {t('swapSlippageVeryHighDescription')}
           </Text>
+          {transactionSettingsLink}
+        </Box>
+      );
+      break;
+    case SLIPPAGE_HIGH_ERROR:
+      severity = SEVERITIES.WARNING;
+      title = t('swapSlippageHighTitle');
+      description = (
+        <Box>
+          <Text variant={TextVariant.bodyMd} as="h6">
+            {t('swapSlippageHighDescription', [currentSlippage])}
+          </Text>
           {showTransactionSettingsLink && transactionSettingsLink}
         </Box>
       );
       break;
-    case SLIPPAGE_TOO_LOW_ERROR:
+    case SLIPPAGE_LOW_ERROR:
       severity = SEVERITIES.WARNING;
-      title = t('swapSlippageTooLowTitle');
+      title = t('swapSlippageLowTitle');
       description = (
         <Box>
           <Text variant={TextVariant.bodyMd} as="h6">
-            {t('swapSlippageTooLowDescription')}
+            {t('swapSlippageLowDescription', [currentSlippage])}
           </Text>
           {showTransactionSettingsLink && transactionSettingsLink}
         </Box>
@@ -178,4 +179,5 @@ export default function SwapsBannerAlert({
 SwapsBannerAlert.propTypes = {
   swapsErrorKey: PropTypes.string,
   showTransactionSettingsLink: PropTypes.bool,
+  currentSlippage: PropTypes.number,
 };

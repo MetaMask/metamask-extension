@@ -16,8 +16,8 @@ import {
   ButtonPrimary,
 } from '../../../components/component-library';
 import {
-  SLIPPAGE_VERY_HIGH_ERROR,
-  SLIPPAGE_TOO_LOW_ERROR,
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
 } from '../../../../shared/constants/swaps';
 import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 
@@ -26,6 +26,7 @@ interface Props {
   slippageErrorKey: string;
   setSlippageNotificationModalOpened: (isOpen: boolean) => void;
   onSwapSubmit: (opts: { acknowledgedSlippage: boolean }) => void;
+  currentSlippage: number;
 }
 
 export default function SlippageNotificationModal({
@@ -33,14 +34,15 @@ export default function SlippageNotificationModal({
   slippageErrorKey,
   setSlippageNotificationModalOpened,
   onSwapSubmit,
+  currentSlippage,
 }: Props) {
   const t = useContext(I18nContext);
   const [submitting, setSubmitting] = useState(false);
 
   const getSlippageModalTitle = () => {
-    if (slippageErrorKey === SLIPPAGE_VERY_HIGH_ERROR) {
+    if (slippageErrorKey === SLIPPAGE_HIGH_ERROR) {
       return t('swapHighSlippage');
-    } else if (slippageErrorKey === SLIPPAGE_TOO_LOW_ERROR) {
+    } else if (slippageErrorKey === SLIPPAGE_LOW_ERROR) {
       return t('swapLowSlippage');
     }
     return '';
@@ -72,6 +74,7 @@ export default function SlippageNotificationModal({
           <SwapsBannerAlert
             swapsErrorKey={slippageErrorKey}
             showTransactionSettingsLink
+            currentSlippage={currentSlippage}
           />
           <Box marginTop={5}>
             <ButtonPrimary

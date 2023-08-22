@@ -1076,7 +1076,10 @@ export default function PrepareSwapPage({
         )}
         {swapsErrorKey && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
-            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
+            <SwapsBannerAlert
+              swapsErrorKey={swapsErrorKey}
+              currentSlippage={maxSlippage}
+            />
           </Box>
         )}
         {transactionSettingsOpened &&
