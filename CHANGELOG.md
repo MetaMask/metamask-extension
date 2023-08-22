@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.0.0]
+### Added
+- [FLASK] Added snaps lifecycle hooks ([#20230](https://github.com/MetaMask/metamask-extension/pull/20230))
+
+### Changed
+- [FLASK] Unblock `personal_sign` for snaps ([#19998](https://github.com/MetaMask/metamask-extension/pull/19998))
+- [FLASK] Allow disabling markdown in snaps UI ([#20069](https://github.com/MetaMask/metamask-extension/pull/20069))
+
+### Fixed
+- [FLASK] Fix regression in transaction confirmation tabs ([#20267](https://github.com/MetaMask/metamask-extension/pull/20267))
 
 ## [10.35.0]
 ### Added
