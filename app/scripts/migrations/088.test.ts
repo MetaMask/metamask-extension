@@ -1,4 +1,3 @@
-// @jest-environment node
 import { migrate } from './088';
 
 const sentryCaptureExceptionMock = jest.fn();
@@ -725,11 +724,8 @@ describe('migration #88', () => {
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  it('Logs a warning if it has no TokenListController property', async () => {
-    // setup
-    const previousWarnFn = console.warn;
-    const mockWarnFn = jest.fn();
-    console.warn = mockWarnFn;
+  it('logs a warning if it has no TokenListController property', async () => {
+    const mockWarnFn = jest.spyOn(console, 'warn');
 
     const oldData = {
       TokensController: {},
@@ -770,16 +766,10 @@ describe('migration #88', () => {
     expect(mockWarnFn).toHaveBeenCalledWith(
       new Error(`typeof state.TokenListController is undefined`),
     );
-
-    // tear down
-    console.warn = previousWarnFn;
   });
 
-  it('Logs a warning if the TokenListController property is not an object', async () => {
-    // setup
-    const previousWarnFn = console.warn;
-    const mockWarnFn = jest.fn();
-    console.warn = mockWarnFn;
+  it('logs a warning if the TokenListController property is not an object', async () => {
+    const mockWarnFn = jest.spyOn(console, 'warn');
 
     const oldData = {
       TokensController: {},
@@ -821,9 +811,6 @@ describe('migration #88', () => {
     expect(mockWarnFn).toHaveBeenCalledWith(
       new Error(`typeof state.TokenListController is boolean`),
     );
-
-    // tear down
-    console.warn = previousWarnFn;
   });
 
   it('returns the state unaltered if the TokenListController object has no tokensChainsCache property', async () => {
