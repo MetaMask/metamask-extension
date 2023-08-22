@@ -78,6 +78,7 @@ import {
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
+  CONNECTIONS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -353,6 +354,8 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IN
         }
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
+        {/* TODO: change the component from home to connections when connections component is ready */}
+        <Authenticated path={CONNECTIONS} component={Home} />
       </Switch>
     );
 

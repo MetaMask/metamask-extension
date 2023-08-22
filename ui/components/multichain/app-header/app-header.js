@@ -13,6 +13,7 @@ import {
   BUILD_QUOTE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
+  CONNECTIONS,
   DEFAULT_ROUTE,
   SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -169,7 +170,7 @@ export const AppHeader = ({ location }) => {
         >
           <MetafoxLogo
             unsetIconHeight
-            onClick={async () => history.push(DEFAULT_ROUTE)}
+            onClick={async () => history.push(CONNECTIONS)}
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             custodyImgSrc={custodianIcon}
             isUnlocked={isUnlocked}
