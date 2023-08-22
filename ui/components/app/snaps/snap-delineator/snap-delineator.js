@@ -10,6 +10,7 @@ import {
   IconColor,
   TextVariant,
   TextColor,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
@@ -42,6 +43,7 @@ export const SnapDelineator = ({
     >
       <Box
         className="snap-delineator__header"
+        display={Display.Flex}
         alignItems={AlignItems.center}
         padding={1}
       >
