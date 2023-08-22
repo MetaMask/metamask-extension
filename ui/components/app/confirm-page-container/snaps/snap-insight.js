@@ -13,7 +13,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTransactionInsightSnap } from '../../../../hooks/snaps/useTransactionInsightSnap';
 import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../../snaps/snap-ui-renderer';
 import { SnapDelineator } from '../../snaps/snap-delineator';
@@ -22,29 +21,23 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 
-export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
+export const SnapInsight = ({ data, loading }) => {
   const t = useI18nContext();
   const {
-    data: response,
     error,
-    loading,
-  } = useTransactionInsightSnap({
-    transaction,
-    chainId,
-    origin,
-    snapId: selectedSnap.id,
-  });
+    snapId,
+    response: { content },
+  } = data;
 
   const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, selectedSnap.id),
+    getTargetSubjectMetadata(state, snapId),
   );
 
-  const snapName = getSnapName(selectedSnap.id, targetSubjectMetadata);
-
-  const data = response?.content;
+  const snapName = getSnapName(snapId, targetSubjectMetadata);
 
   const hasNoData =
-    !error && (loading || !data || (data && Object.keys(data).length === 0));
+    !error &&
+    (loading || !content || (content && Object.keys(content).length === 0));
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -64,8 +57,8 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
         >
           {data && Object.keys(data).length > 0 ? (
             <SnapUIRenderer
-              snapId={selectedSnap.id}
-              data={data}
+              snapId={snapId}
+              data={content}
               delineatorType={DelineatorType.Insights}
             />
           ) : (
@@ -110,19 +103,11 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
 
 SnapInsight.propTypes = {
   /*
-   * The transaction data object
+   * The insight object
    */
-  transaction: PropTypes.object,
+  data: PropTypes.object,
   /*
-   * CAIP2 Chain ID
+   * Boolean as to whether or not the insights are loading
    */
-  chainId: PropTypes.string,
-  /*
-   *  The origin of the transaction
-   */
-  origin: PropTypes.string,
-  /*
-   * The insight snap selected
-   */
-  selectedSnap: PropTypes.object,
+  loading: PropTypes.bool,
 };

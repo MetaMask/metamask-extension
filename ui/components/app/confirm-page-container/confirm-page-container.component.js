@@ -359,6 +359,7 @@ const ConfirmPageContainer = (props) => {
             <AdvancedGasFeePopover />
           </>
         )}
+        {/** add the warning modal  here */}
       </div>
     </GasFeeContextProvider>
   );
