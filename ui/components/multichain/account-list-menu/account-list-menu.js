@@ -62,7 +62,7 @@ export const AccountListMenu = ({ onClose }) => {
   let searchResults = accounts;
   if (searchQuery) {
     const fuse = new Fuse(accounts, {
-      threshold: 0.2,
+      threshold: 0.42,
       location: 0,
       distance: 100,
       maxPatternLength: 32,
