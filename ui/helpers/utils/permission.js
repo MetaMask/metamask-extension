@@ -19,9 +19,9 @@ import {
   AvatarIconSize,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Icon,
-  IconSize,
   Text,
   ///: END:ONLY_INCLUDE_IN
+  IconSize,
   IconName,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
