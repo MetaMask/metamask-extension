@@ -1,5 +1,10 @@
-import { createSelector } from 'reselect';
+import {
+  createSelector,
+  createSelectorCreator,
+  defaultMemoize,
+} from 'reselect';
 import { ApprovalType } from '@metamask/controller-utils';
+import { isEqual } from 'lodash';
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
@@ -27,57 +32,68 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
 
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 
+const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
+
 /**
  * @param state
  * @returns {TransactionMeta[]}
  */
-export const getCurrentNetworkTransactions = (state) => {
-  const { transactions, networkId } = state.metamask ?? {};
+export const getCurrentNetworkTransactions = createDeepEqualSelector(
+  (state) => {
+    const { transactions, networkId } = state.metamask ?? {};
 
-  if (!transactions?.length) {
-    return [];
-  }
+    if (!transactions?.length) {
+      return [];
+    }
 
-  const { chainId } = getProviderConfig(state);
+    const { chainId } = getProviderConfig(state);
 
-  return transactions.filter((transaction) =>
-    transactionMatchesNetwork(transaction, chainId, networkId),
-  );
-};
+    return transactions.filter((transaction) =>
+      transactionMatchesNetwork(transaction, chainId, networkId),
+    );
+  },
+  (transactions) => transactions,
+);
 
 /**
  * @param state
  * @returns {{[id: string]: TransactionMeta}}
  */
-export const getUnapprovedTransactions = (state) => {
-  const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+export const getUnapprovedTransactions = createDeepEqualSelector(
+  (state) => {
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
 
-  return currentNetworkTransactions
-    .filter(
-      (transaction) => transaction.status === TransactionStatus.unapproved,
-    )
-    .reduce((result, transaction) => {
-      result[transaction.id] = transaction;
-      return result;
-    }, {});
-};
+    return currentNetworkTransactions
+      .filter(
+        (transaction) => transaction.status === TransactionStatus.unapproved,
+      )
+      .reduce((result, transaction) => {
+        result[transaction.id] = transaction;
+        return result;
+      }, {});
+  },
+  (transactions) => transactions,
+);
 
-export const incomingTxListSelector = (state) => {
-  const { showIncomingTransactions } = state.metamask.featureFlags;
+export const incomingTxListSelector = createDeepEqualSelector(
+  (state) => {
+    const { showIncomingTransactions } = state.metamask.featureFlags;
 
-  if (!showIncomingTransactions) {
-    return [];
-  }
+    if (!showIncomingTransactions) {
+      return [];
+    }
 
-  const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-  const selectedAddress = getSelectedAddress(state);
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+    const selectedAddress = getSelectedAddress(state);
 
-  return currentNetworkTransactions.filter(
-    (tx) =>
-      tx.type === TransactionType.incoming &&
-      tx.txParams.to === selectedAddress,
-  );
-};
+    return currentNetworkTransactions.filter(
+      (tx) =>
+        tx.type === TransactionType.incoming &&
+        tx.txParams.to === selectedAddress,
+    );
+  },
+  (transactions) => transactions,
+);
 
 export const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
