@@ -37,6 +37,7 @@ import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 
 export const SelectActionModal = () => {
   const dispatch = useDispatch();
@@ -114,7 +115,7 @@ export const SelectActionModal = () => {
               onClick={() => {
                 stakingEvent();
                 global.platform.openTab({
-                  url: 'https://metamask-institutional.io/stake',
+                  url: MMI_STAKE_WEBSITE,
                 });
               }}
             />
