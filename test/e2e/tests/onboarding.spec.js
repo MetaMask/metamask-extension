@@ -201,66 +201,6 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('User can configure incoming transaction in the advanced configuration session', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-
-        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, testPassword);
-        // Access advanced configuration
-        await driver.clickElement({
-          text: 'Advanced configuration',
-          tag: 'a',
-        });
-        await driver.waitForSelector('[data-testid="privacy-settings"]');
-
-        // expect toggles with all enabled & 2 mainnet, 3 test net, 1 localhost and all on by default
-        await driver.waitForSelector(
-          '[data-testid="incoming-transaction-toggle-enable-all"] > .toggle-button--on',
-        );
-        await driver.waitForSelector(
-          '[data-testid="network-toggle-0x1"] > .toggle-button--on',
-        );
-        await driver.waitForSelector(
-          '[data-testid="network-toggle-0x1"] > .toggle-button--on',
-        );
-
-        await driver.waitForSelector(
-          '[data-testid="network-toggle-0xe708"] > .toggle-button--on',
-        );
-        await driver.waitForSelector(
-          '[data-testid="network-toggle-0x5"] > .toggle-button--on',
-        );
-        await driver.waitForSelector(
-          '[data-testid="network-toggle-0xaa36a7"] > .toggle-button--on',
-        );
-        await driver.waitForSelector(
-          '[data-testid="network-toggle-0xe704"] > .toggle-button--on',
-        );
-        await driver.waitForSelector(
-          '[data-testid="network-toggle-0x539"] > .toggle-button--on',
-        );
-
-        // Toggle first network will disable that option and all
-        await driver.clickElement(
-          '[data-testid="network-toggle-0x1"] > .toggle-button',
-        );
-        await driver.waitForSelector(
-          '[data-testid="incoming-transaction-toggle-enable-all"] > .toggle-button--off',
-        );
-        await driver.waitForSelector(
-          '[data-testid="network-toggle-0x1"] > .toggle-button--off',
-        );
-      },
-    );
-  });
-
   it('Verify that the user has been redirected to the correct page after creating a password for their new wallet', async function () {
     await withFixtures(
       {

@@ -67,7 +67,6 @@
       "currentLocale": "en",
       "dismissSeedBackUpReminder": "boolean",
       "featureFlags": {},
-      "incomingTransactionsPreferences": "object",
       "forgottenPassword": false,
       "identities": "object",
       "infuraBlocked": "boolean",
