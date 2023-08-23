@@ -58,7 +58,7 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
   {
     path: ['m', `44'`, `1'`],
     curve: 'secp256k1',
-    name: 'Test BIP-32 Path (secp256k1)',
+    name: 'Testnet',
   },
   {
     path: ['m', `44'`, `0'`],
@@ -148,7 +148,7 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
   {
     path: ['m', `44'`, `1'`, `0'`],
     curve: 'ed25519',
-    name: 'NEAR Protocol Testnet',
+    name: 'Testnet',
   },
   {
     path: ['m', `44'`, `472'`],
