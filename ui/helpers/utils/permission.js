@@ -21,8 +21,8 @@ import {
   Icon,
   Text,
   ///: END:ONLY_INCLUDE_IN
-  IconSize,
   IconName,
+  IconSize,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { Color, FontWeight, IconColor } from '../constants/design-system';
