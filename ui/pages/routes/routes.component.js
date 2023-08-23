@@ -354,9 +354,8 @@ export default class Routes extends Component {
           />
           ///: END:ONLY_INCLUDE_IN
         }
-        <Authenticated path={DEFAULT_ROUTE} component={Home} />
-        {/* TODO: change the component from home to connections when connections component is ready */}
         <Authenticated path={CONNECTIONS} component={Connections} />
+        <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
 
