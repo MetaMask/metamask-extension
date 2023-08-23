@@ -1,16 +1,15 @@
 import React from 'react';
+import { Meta, StoryFn } from '@storybook/react';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
-
-import Box from '../../ui/box';
+import { Box } from '..';
 import README from './README.mdx';
 import { TagUrl } from './tag-url';
 
 export default {
   title: 'Components/ComponentLibrary/TagUrl',
-
   component: TagUrl,
   parameters: {
     docs: {
@@ -36,7 +35,7 @@ export default {
     src: 'https://uniswap.org/favicon.ico',
     showLockIcon: true,
   },
-};
+} as Meta<typeof TagUrl>;
 
 const Template = (args) => <TagUrl {...args} />;
 
@@ -47,8 +46,8 @@ DefaultStory.args = {
   actionButtonLabel: 'Permissions',
 };
 
-export const ActionButtonLabel = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const ActionButtonLabel: StoryFn<typeof TagUrl> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <TagUrl {...args} />
     <TagUrl {...args} actionButtonLabel="Action" />
     <TagUrl {...args} actionButtonLabel="Click" />
@@ -57,10 +56,14 @@ export const ActionButtonLabel = (args) => (
 
 ActionButtonLabel.args = {
   actionButtonLabel: 'Permissions',
+  actionButtonProps: {
+    externalLink: true,
+    href: 'https://metamask.io',
+  },
 };
 
-export const ShowLockIcon = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const ShowLockIcon: StoryFn<typeof TagUrl> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <TagUrl
       {...args}
       label="app.uniswap.org"
@@ -76,8 +79,8 @@ export const ShowLockIcon = (args) => (
   </Box>
 );
 
-export const Src = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const Src: StoryFn<typeof TagUrl> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <TagUrl
       {...args}
       label="app.uniswap.org"
@@ -85,8 +88,8 @@ export const Src = (args) => (
     />
     <TagUrl
       {...args}
-      label="peepeth.com"
-      src="https://peepeth.com/favicon-32x32.png"
+      label="metamask.github.io"
+      src="https://metamask.github.io/test-dapp/metamask-fox.svg"
     />
     <TagUrl
       {...args}
@@ -97,13 +100,13 @@ export const Src = (args) => (
   </Box>
 );
 
-export const Label = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const Label: StoryFn<typeof TagUrl> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <TagUrl {...args} />
     <TagUrl
       {...args}
-      src="https://metamask.io/icons/icon-48x48.png?v=48400a28770e10dd52a8c0e539aeb282"
-      label="metamask.io"
+      label="metamask.github.io"
+      src="https://metamask.github.io/test-dapp/metamask-fox.svg"
     />
     <TagUrl {...args} src="" label="metamask.github.io" />
   </Box>
