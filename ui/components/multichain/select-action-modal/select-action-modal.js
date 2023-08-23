@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -39,7 +39,7 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 
-export const SelectActionModal = () => {
+export const SelectActionModal = ({ onClose }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
@@ -66,22 +66,10 @@ export const SelectActionModal = () => {
   };
 
   return (
-    <Modal
-      isOpen
-      onClose={() => {
-        console.log('close'); // TODO: onClose will be replaced with function
-      }}
-      className="select-action-modal"
-    >
+    <Modal isOpen onClose={onClose} className="select-action-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader
-          onClose={() => {
-            console.log('close'); // TODO: onClose will be replaced with function
-          }}
-        >
-          {t('selectAnAction')}
-        </ModalHeader>
+        <ModalHeader onClose={onClose}>{t('selectAnAction')}</ModalHeader>
         <Box className="select-action-modal__container" marginTop={6}>
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -102,6 +90,7 @@ export const SelectActionModal = () => {
                     token_symbol: defaultSwapsToken,
                   },
                 });
+                onClose();
               }}
             />
             ///: END:ONLY_INCLUDE_IN
@@ -117,6 +106,7 @@ export const SelectActionModal = () => {
                 global.platform.openTab({
                   url: MMI_STAKE_WEBSITE,
                 });
+                onClose();
               }}
             />
             ///: END:ONLY_INCLUDE_IN
@@ -152,6 +142,7 @@ export const SelectActionModal = () => {
                 }
               }
               ///: END:ONLY_INCLUDE_IN
+              onClose();
             }}
           />
           <SelectActionModalItem
@@ -174,6 +165,7 @@ export const SelectActionModal = () => {
               ).then(() => {
                 history.push(SEND_ROUTE);
               });
+              onClose();
             }}
           />
           {
@@ -206,6 +198,7 @@ export const SelectActionModal = () => {
                     },
                   });
                 }
+                onClose();
               }}
             />
             ///: END:ONLY_INCLUDE_IN
@@ -216,9 +209,9 @@ export const SelectActionModal = () => {
   );
 };
 
-// SelectActionModal.propTypes = {
-//   /**
-//    * onClose handler for Modal
-//    */
-//   onClose: PropTypes.func,
-// };
+SelectActionModal.propTypes = {
+  /**
+   * onClose handler for Modal
+   */
+  onClose: PropTypes.func,
+};

@@ -15,6 +15,7 @@ import {
 } from '../../selectors';
 import {
   hideImportTokensModal,
+  hideSelectActionModal,
   lockMetamask,
   hideImportNftsModal,
   hideIpfsModal,
@@ -69,6 +70,7 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModalOpen,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
+    isSelectActionModalOpen: state.appState.showSelectActionModal,
   };
 }
 
@@ -86,6 +88,7 @@ function mapDispatchToProps(dispatch) {
     hideImportNftsModal: () => dispatch(hideImportNftsModal()),
     hideIpfsModal: () => dispatch(hideIpfsModal()),
     hideImportTokensModal: () => dispatch(hideImportTokensModal()),
+    hideSelectActionModal: () => dispatch(hideSelectActionModal()),
   };
 }
 
