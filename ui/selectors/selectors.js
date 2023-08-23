@@ -1356,7 +1356,6 @@ export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
 }
 
-
 export function getAllNetworks(state) {
   const networks = [
     // Mainnet and custom networks
@@ -1389,6 +1388,7 @@ export function getIsOpStack(state) {
 export function getIsMultiLayerFeeNetwork(state) {
   return getIsOpStack(state);
 }
+
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
@@ -1413,6 +1413,19 @@ export function getAdvancedGasFeeValues(state) {
   // pass it in to the selector as a second parameter, or access it at the
   // callsite.
   return state.metamask.advancedGasFee[getCurrentChainId(state)];
+}
+
+/**
+ *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsAdvancedGasFeeDefault(state) {
+  const { advancedGasFee } = state.metamask;
+  return (
+    Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
+  );
 }
 
 /**
