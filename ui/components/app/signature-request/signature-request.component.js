@@ -41,8 +41,8 @@ import {
   Icon,
   IconName,
   ///: END:ONLY_INCLUDE_IN
-  Text,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -223,13 +223,15 @@ export default class SignatureRequest extends PureComponent {
           .toString();
 
     const onSign = async () => {
-      await resolvePendingApproval(id);
-      completedTx(id);
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       if (this.props.mmiOnSignCallback) {
         await this.props.mmiOnSignCallback(txData);
+        return;
       }
       ///: END:ONLY_INCLUDE_IN
+
+      await resolvePendingApproval(id);
+      completedTx(id);
 
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,

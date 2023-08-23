@@ -3,13 +3,13 @@ import React, { useContext } from 'react';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
 import {
-  Text,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
   ButtonIcon,
   IconName,
 } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import {
   AlignItems,
   Display,

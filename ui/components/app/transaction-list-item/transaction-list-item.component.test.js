@@ -10,6 +10,7 @@ import {
   getTokenExchangeRates,
   getPreferences,
   getShouldShowFiat,
+  getCurrentNetwork,
 } from '../../../selectors';
 import {
   renderWithProvider,
@@ -53,7 +54,7 @@ jest.mock('react-redux', () => {
   return {
     ...actual,
     useSelector: jest.fn(),
-    useDispatch: () => jest.fn(),
+    useDispatch: jest.fn(),
   };
 });
 
@@ -97,6 +98,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     };
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
+  } else if (selector === getCurrentNetwork) {
+    return { nickname: 'Ethereum Mainnet' };
   } else if (selector === getPreferences) {
     return (
       opts.preferences ?? {

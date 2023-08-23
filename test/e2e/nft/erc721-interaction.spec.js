@@ -58,7 +58,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const transactionItem = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
         assert.equal(await transactionItem.isDisplayed(), true);
@@ -169,7 +169,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const transactionItem = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
         assert.equal(await transactionItem.isDisplayed(), true);
@@ -266,7 +266,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
         // Verify transaction
@@ -339,7 +339,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         // Verify transaction
         const completedTx = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN spending cap',
         });
         assert.equal(await completedTx.isDisplayed(), true);
@@ -405,12 +405,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
         // Verify transaction
         const completedTx = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN with no spend limit',
         });
         assert.equal(await completedTx.isDisplayed(), true);
@@ -484,7 +484,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         // Verify transaction
         const completedTx = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN with no spend limit',
         });
         assert.equal(await completedTx.isDisplayed(), true);

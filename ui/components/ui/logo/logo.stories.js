@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 import Card from '../card';
 import Box from '../box';

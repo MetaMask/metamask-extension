@@ -205,6 +205,7 @@ export default function ConfirmApprove({
             tokenSymbol={tokenSymbol}
             decimals={decimals}
             fromAddressIsLedger={fromAddressIsLedger}
+            warning={submitWarning}
           />
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover

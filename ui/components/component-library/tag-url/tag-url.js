@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../ui/box/box';
-import { Text } from '../text';
 import {
   AlignItems,
   BackgroundColor,
@@ -13,7 +11,8 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AvatarFavicon, ButtonLink, IconName, Icon, IconSize } from '..';
+import Box from '../../ui/box/box';
+import { AvatarFavicon, ButtonLink, IconName, Icon, IconSize, Text } from '..';
 
 export const TagUrl = ({
   label,
@@ -85,7 +84,7 @@ TagUrl.propTypes = {
   /**
    * It accepts all the props from Avatar Favicon
    */
-  avatarFaviconProps: PropTypes.shape(AvatarFavicon.PropTypes),
+  avatarFaviconProps: PropTypes.object,
   /**
    * It accepts all the props from Icon
    */
@@ -97,7 +96,7 @@ TagUrl.propTypes = {
   /**
    * It accepts all the props from Text Component
    */
-  labelProps: PropTypes.shape(Text.PropTypes),
+  labelProps: PropTypes.object,
   /**
    * If we want a button in TagUrl component.
    */
@@ -105,7 +104,7 @@ TagUrl.propTypes = {
   /**
    * It accepts all the props from ButtonLink
    */
-  actionButtonProps: PropTypes.shape(ButtonLink.PropTypes),
+  actionButtonProps: PropTypes.object,
   /**
    * Additional classNames to be added to the TagUrl component
    */

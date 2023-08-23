@@ -34,7 +34,8 @@ import {
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 import SignatureRequestHeader from '../signature-request-header';
@@ -64,7 +65,10 @@ export default class SignatureRequestOriginal extends Component {
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // Used to show a warning if the signing account is not the selected account
+    // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
+    mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -262,7 +266,7 @@ export default class SignatureRequestOriginal extends Component {
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      txData: { type, id },
+      txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
       resolvePendingApproval,
@@ -275,22 +279,34 @@ export default class SignatureRequestOriginal extends Component {
         submitText={t('sign')}
         onCancel={async () => {
           await rejectPendingApproval(
-            id,
+            txData.id,
             serializeError(ethErrors.provider.userRejectedRequest()),
           );
           clearConfirmTransaction();
           history.push(mostRecentOverviewPage);
         }}
         onSubmit={async () => {
-          if (type === MESSAGE_TYPE.ETH_SIGN) {
+          if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
-            await resolvePendingApproval(id);
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            if (this.props.mmiOnSignCallback) {
+              await this.props.mmiOnSignCallback(txData);
+              return;
+            }
+            ///: END:ONLY_INCLUDE_IN
+
+            await resolvePendingApproval(txData.id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }
         }}
-        disabled={hardwareWalletRequiresConnection}
+        disabled={
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          Boolean(txData?.custodyId) ||
+          ///: END:ONLY_INCLUDE_IN
+          hardwareWalletRequiresConnection
+        }
       />
     );
   };

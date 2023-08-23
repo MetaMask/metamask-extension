@@ -24,9 +24,9 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
-  Text,
   Box,
 } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
 import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,

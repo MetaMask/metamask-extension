@@ -21,6 +21,7 @@ export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';
 export { ButtonPrimary, BUTTON_PRIMARY_SIZES } from './button-primary';
 export { ButtonSecondary, BUTTON_SECONDARY_SIZES } from './button-secondary';
+export { Checkbox } from './checkbox';
 export { FormTextField } from './form-text-field';
 export { HeaderBase } from './header-base';
 export { HelpText } from './help-text';

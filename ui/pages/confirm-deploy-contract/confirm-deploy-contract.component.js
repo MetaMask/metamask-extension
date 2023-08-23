@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 import Box from '../../components/ui/box';
-import { Text } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
 import {
   Color,
   DISPLAY,

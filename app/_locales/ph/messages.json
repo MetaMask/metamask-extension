@@ -1105,9 +1105,6 @@
   "publicAddress": {
     "message": "Pampublikong Address"
   },
-  "queue": {
-    "message": "Queue"
-  },
   "queued": {
     "message": "Naka-queue"
   },

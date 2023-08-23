@@ -556,9 +556,6 @@
   "privateNetwork": {
     "message": "Privātais tīkls"
   },
-  "queue": {
-    "message": "Rinda"
-  },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
   },

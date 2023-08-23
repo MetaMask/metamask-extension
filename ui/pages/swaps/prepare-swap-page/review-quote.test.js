@@ -52,7 +52,8 @@ describe('ReviewQuote', () => {
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
     expect(getByText('Quote rate')).toBeInTheDocument();
-    expect(getByText('MetaMask fee')).toBeInTheDocument();
+    expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
+    expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('0.00008 ETH')).toBeInTheDocument();
     expect(getByText('Max fee:')).toBeInTheDocument();
@@ -71,7 +72,8 @@ describe('ReviewQuote', () => {
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
     expect(getByText('Quote rate')).toBeInTheDocument();
-    expect(getByText('MetaMask fee')).toBeInTheDocument();
+    expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
+    expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('0.00008 ETH')).toBeInTheDocument();
     expect(getByText('Max fee:')).toBeInTheDocument();
@@ -93,7 +95,8 @@ describe('ReviewQuote', () => {
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
     expect(getByText('New quotes in')).toBeInTheDocument();
     expect(getByText('Quote rate')).toBeInTheDocument();
-    expect(getByText('MetaMask fee')).toBeInTheDocument();
+    expect(getByText('Includes a 1% MetaMask fee –')).toBeInTheDocument();
+    expect(getByText('view all quotes')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('0.00008 ETH')).toBeInTheDocument();
     expect(getByText('Max fee:')).toBeInTheDocument();

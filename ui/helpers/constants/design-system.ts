@@ -187,10 +187,13 @@ export enum TextVariant {
   headingSm = 'heading-sm',
   bodyLgMedium = 'body-lg-medium',
   bodyMd = 'body-md',
+  bodyMdMedium = 'body-md-medium',
   bodyMdBold = 'body-md-bold',
   bodySm = 'body-sm',
+  bodySmMedium = 'body-sm-medium',
   bodySmBold = 'body-sm-bold',
   bodyXs = 'body-xs',
+  bodyXsMedium = 'body-xs-medium',
   inherit = 'inherit',
 }
 

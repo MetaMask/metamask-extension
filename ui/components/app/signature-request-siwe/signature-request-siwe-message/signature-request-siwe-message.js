@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 
 import {
   FLEX_DIRECTION,

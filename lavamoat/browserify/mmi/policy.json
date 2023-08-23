@@ -815,9 +815,16 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/custody-controller": true,
+        "@metamask-institutional/extension>@metamask-institutional/custody-controller": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/sdk>@metamask-institutional/types": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/custody-controller": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask-institutional/custody-keyring": true,
+        "@metamask/obs-store": true
       }
     },
     "@metamask-institutional/institutional-features": {
@@ -996,6 +1003,9 @@
       }
     },
     "@metamask/approval-controller": {
+      "globals": {
+        "console.info": true
+      },
       "packages": {
         "@metamask/approval-controller>nanoid": true,
         "@metamask/base-controller": true,

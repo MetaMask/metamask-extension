@@ -42,12 +42,12 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
   Box,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
 } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
 
 import {
   ASSET_ROUTE,
@@ -62,7 +62,6 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
@@ -879,11 +878,7 @@ export default class Home extends PureComponent {
                     name={this.context.t('nfts')}
                     tabKey="nfts"
                   >
-                    <NftsTab
-                      onAddNFT={() => {
-                        history.push(ADD_NFT_ROUTE);
-                      }}
-                    />
+                    <NftsTab />
                   </Tab>
                   ///: END:ONLY_INCLUDE_IN
                 }

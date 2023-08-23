@@ -1301,9 +1301,6 @@
   "provide": {
     "message": "Fornisci"
   },
-  "queue": {
-    "message": "Coda"
-  },
   "queued": {
     "message": "In coda"
   },

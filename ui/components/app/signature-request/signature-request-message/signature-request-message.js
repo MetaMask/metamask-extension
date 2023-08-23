@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import { I18nContext } from '../../../../contexts/i18n';
 import Box from '../../../ui/box';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import {
   Display,
   FlexDirection,

@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent } from '@testing-library/react';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
@@ -76,6 +77,8 @@ const state = {
         accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
+    nextNonce: 1,
+    customNonceValue: '',
   },
   history: {
     mostRecentOverviewPage: '/',
@@ -88,6 +91,8 @@ const state = {
   },
 };
 
+const mockShowModal = jest.fn();
+
 jest.mock('../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -99,6 +104,8 @@ jest.mock('../../store/actions', () => ({
   updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   createTransactionEventFragment: jest.fn(),
+  getNextNonce: () => jest.fn(),
+  showModal: () => mockShowModal,
   updateCustomNonce: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   estimateGas: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
@@ -146,6 +153,8 @@ describe('TokenAllowancePage', () => {
     currentTokenBalance: '10',
     toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
     tokenSymbol: 'TST',
+    showCustomizeGasModal: jest.fn(),
+    warning: '',
     txData: {
       id: 3049568294499567,
       time: 1664449552289,
@@ -184,15 +193,23 @@ describe('TokenAllowancePage', () => {
 
   let store;
   beforeEach(() => {
-    store = configureMockStore()(state);
+    store = configureMockStore([thunk])(state);
   });
 
-  it('should render title "Set a spending cap for your" in token allowance page', () => {
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render title "Spending cap request for your" in token allowance page', () => {
     const { getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
-    expect(getByText('Set a spending cap for your')).toBeInTheDocument();
+    expect(getByText('Spending cap request for your')).toBeInTheDocument();
   });
 
   it('should render reject button', () => {
@@ -202,6 +219,126 @@ describe('TokenAllowancePage', () => {
     );
     const onCloseBtn = getByTestId('page-container-footer-cancel');
     expect(onCloseBtn).toBeInTheDocument();
+  });
+
+  it('should not render customize nonce modal if useNonceField is set to false', () => {
+    const { queryByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    expect(queryByText('Nonce')).not.toBeInTheDocument();
+    expect(queryByText('1')).not.toBeInTheDocument();
+    expect(mockShowModal).not.toHaveBeenCalledTimes(1);
+  });
+
+  it('should render customize nonce modal if useNonceField is set to true', () => {
+    props.useNonceField = true;
+    props.nextNonce = 1;
+    const { queryByText, getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    const editButton = getByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('1')).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(mockShowModal).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render nextNonce value when custom nonce value is a empty string', () => {
+    props.useNonceField = true;
+    props.customNonceValue = '';
+    const { queryByText, getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    const editButton = getByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('1')).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(mockShowModal).toHaveBeenCalledTimes(2);
+  });
+
+  it('should render edited custom nonce value', () => {
+    props.useNonceField = true;
+    state.metamask.customNonceValue = '3';
+    const { queryByText, getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    const editButton = getByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('3')).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(mockShowModal).toHaveBeenCalledTimes(3);
+  });
+
+  it('should render customize nonce warning if custom nonce value is higher than nextNonce value', () => {
+    props.useNonceField = true;
+    props.nextNonce = 2;
+    props.customNonceValue = '3';
+    props.warning = 'Nonce is higher than suggested nonce of 2';
+    const { getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    expect(
+      getByText('Nonce is higher than suggested nonce of 2'),
+    ).toBeInTheDocument();
+  });
+
+  it('should not render customize nonce warning if custom nonce value is lower than nextNonce value', () => {
+    props.useNonceField = true;
+    props.nextNonce = 2;
+    props.customNonceValue = '1';
+    props.warning = '';
+    const { container } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    const customizeNonceWarning = container.querySelector(
+      '.token-allowance-container__custom-nonce-warning',
+    );
+    expect(customizeNonceWarning).not.toBeInTheDocument();
+  });
+
+  it('should render customize nonce modal when next button is clicked and if useNonceField is set to true', () => {
+    props.useNonceField = true;
+    state.metamask.customNonceValue = '2';
+    const { getByText, getAllByText, queryByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
+
+    const editButton = getAllByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('2')).toBeInTheDocument();
+    fireEvent.click(editButton[1]);
+    expect(mockShowModal).toHaveBeenCalledTimes(4);
+  });
+
+  it('should render customize nonce modal when next button is clicked, than back button is clicked, than return to previous page and if useNonceField is set to true', () => {
+    props.useNonceField = true;
+    state.metamask.customNonceValue = '2';
+    const { getByText, queryByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
+
+    const backButton = getByText('< Back');
+    fireEvent.click(backButton);
+
+    const editButton = getByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('2')).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(mockShowModal).toHaveBeenCalledTimes(5);
   });
 
   it('should click View details and show function type', () => {
@@ -215,37 +352,55 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Function: Approve')).toBeInTheDocument();
   });
 
-  it('should click Use default and set input value to default', () => {
-    const { getByText, getByTestId } = renderWithProvider(
+  it('should load the page with dappProposedAmount prefilled and "Use site suggestion" should not be displayed', () => {
+    const { queryByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
 
     act(() => {
-      const useDefault = getByText('Use default');
-      fireEvent.click(useDefault);
+      const useSiteSuggestion = queryByText('Use site suggestion');
+      expect(useSiteSuggestion).not.toBeInTheDocument();
     });
 
     const input = getByTestId('custom-spending-cap-input');
-    expect(input.value).toBe('1');
+    expect(input.value).toBe('7');
   });
 
-  it('should call back button when button is clicked and return to previous page', () => {
+  it('should click Use site suggestion and set input value to default', () => {
     const { getByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
-
     const textField = getByTestId('custom-spending-cap-input');
+    expect(textField.value).toBe('7');
     fireEvent.change(textField, { target: { value: '1' } });
+    expect(textField.value).toBe('1');
+
+    act(() => {
+      const useSiteSuggestion = getByText('Use site suggestion');
+      expect(useSiteSuggestion).toBeInTheDocument();
+      fireEvent.click(useSiteSuggestion);
+    });
+
+    expect(textField.value).toBe('7');
+  });
+
+  it('should call back button when button is clicked and return to previous page', () => {
+    const { getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
 
     const nextButton = getByText('Next');
     fireEvent.click(nextButton);
 
+    expect(getByText('Site requested spending cap')).toBeInTheDocument();
+
     const backButton = getByText('< Back');
     fireEvent.click(backButton);
 
-    expect(getByText('Set a spending cap for your')).toBeInTheDocument();
+    expect(getByText('Spending cap request for your')).toBeInTheDocument();
   });
 
   it('should click Verify third-party details and show popup Third-party details, then close popup', () => {
@@ -265,13 +420,10 @@ describe('TokenAllowancePage', () => {
   });
 
   it('should show ledger info text if the sending address is ledger', () => {
-    const { queryByText, getByText, getByTestId } = renderWithProvider(
+    const { queryByText, getByText } = renderWithProvider(
       <TokenAllowance {...props} fromAddressIsLedger />,
       store,
     );
-
-    const textField = getByTestId('custom-spending-cap-input');
-    fireEvent.change(textField, { target: { value: '1' } });
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
 
@@ -282,13 +434,10 @@ describe('TokenAllowancePage', () => {
   });
 
   it('should not show ledger info text if the sending address is not ledger', () => {
-    const { queryByText, getByText, getByTestId } = renderWithProvider(
+    const { queryByText, getByText } = renderWithProvider(
       <TokenAllowance {...props} fromAddressIsLedger={false} />,
       store,
     );
-
-    const textField = getByTestId('custom-spending-cap-input');
-    fireEvent.change(textField, { target: { value: '1' } });
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
 
@@ -333,7 +482,7 @@ describe('TokenAllowancePage', () => {
         selectedAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       },
     };
-    const newStore = configureMockStore()(newState);
+    const newStore = configureMockStore([thunk])(newState);
     const { queryByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       newStore,

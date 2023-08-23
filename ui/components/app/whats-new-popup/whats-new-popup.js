@@ -13,8 +13,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconName,
   ///: END:ONLY_INCLUDE_IN
-  Text,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINotifications } from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';

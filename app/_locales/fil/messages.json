@@ -484,9 +484,6 @@
   "privateNetwork": {
     "message": "Pribadong Network"
   },
-  "queue": {
-    "message": "I-queue"
-  },
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
   },

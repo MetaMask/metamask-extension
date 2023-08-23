@@ -553,9 +553,6 @@
   "privateNetwork": {
     "message": "Magánhálózat"
   },
-  "queue": {
-    "message": "Nyomtatólista"
-  },
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
   },

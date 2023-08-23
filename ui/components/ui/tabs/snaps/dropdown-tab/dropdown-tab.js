@@ -14,7 +14,8 @@ import {
   FLEX_WRAP,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, Text } from '../../../../component-library';
+import { Icon, IconName, IconSize } from '../../../../component-library';
+import { Text } from '../../../../component-library/text/deprecated';
 
 export const DropdownTab = ({
   activeClassName,

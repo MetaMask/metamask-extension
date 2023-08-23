@@ -550,9 +550,6 @@
   "privateNetwork": {
     "message": "Privaatvõrk"
   },
-  "queue": {
-    "message": "Järjekord"
-  },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
   },

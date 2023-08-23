@@ -1,8 +1,8 @@
 diff --git a/dist/index.d.ts b/dist/index.d.ts
-index 81253d38280bb25de1e36443d919f0e95b3e023c..d2333bf6796ff3ec94f5857d23ef34cc39c9729a 100644
+index 66eb3236059f88f73355d4fddef9e06a0169b407..04f067d2bda8af760c0a95ca6b5d85bcdfb2421a 100644
 --- a/dist/index.d.ts
 +++ b/dist/index.d.ts
-@@ -1,10 +1,10 @@
+@@ -1,11 +1,12 @@
 -import { type ParserOptions } from './parser/index.js';
 +import { ParserOptions } from './parser/index.js';
  import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
@@ -12,12 +12,15 @@ index 81253d38280bb25de1e36443d919f0e95b3e023c..d2333bf6796ff3ec94f5857d23ef34cc
  export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
 -export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
 -export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
+-export { ERR as ErrorCodes, type ParserError } from './common/error-codes.js';
 +export { ParserOptions, /** @internal */ Parser } from './parser/index.js';
 +export { serialize, serializeOuter, SerializerOptions } from './serializer/index.js';
- export type { ParserError } from './common/error-codes.js';
++export type { ParserError } from './common/error-codes.js';
++export { ERR as ErrorCodes } from './common/error-codes.js';
  /** @internal */
  export * as foreignContent from './common/foreign-content.js';
-@@ -13,7 +13,7 @@ export * as html from './common/html.js';
+ /** @internal */
+@@ -13,7 +14,7 @@ export * as html from './common/html.js';
  /** @internal */
  export * as Token from './common/token.js';
  /** @internal */
@@ -27,7 +30,7 @@ index 81253d38280bb25de1e36443d919f0e95b3e023c..d2333bf6796ff3ec94f5857d23ef34cc
   * Parses an HTML string.
   *
 diff --git a/dist/parser/index.d.ts b/dist/parser/index.d.ts
-index 50a9bd0c73649e4a78edd0d18b4ee44ae9cdf3b7..df1863e335e64269298dea42a7481b26b9e77581 100644
+index 50a9bd0c73649e4a78edd0d18b4ee44ae9cdf3b7..85cc630db81d7a4ebd01691223d81187cdd8adcb 100644
 --- a/dist/parser/index.d.ts
 +++ b/dist/parser/index.d.ts
 @@ -1,10 +1,10 @@
@@ -46,18 +49,18 @@ index 50a9bd0c73649e4a78edd0d18b4ee44ae9cdf3b7..df1863e335e64269298dea42a7481b26
      INITIAL = 0,
      BEFORE_HTML = 1,
 diff --git a/dist/serializer/index.d.ts b/dist/serializer/index.d.ts
-index d944fae103a245cb84623fd733c91cc7e79f72f1..432464c9e05ecfd93c66526bcf4f0c81f09bf00d 100644
+index bf759e63ba1be31a2ab14884fcfd6bd3e8ecd2d7..839e21e45dc13e678c9874c51524a8ed1a463591 100644
 --- a/dist/serializer/index.d.ts
 +++ b/dist/serializer/index.d.ts
 @@ -1,5 +1,5 @@
- import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
+ import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 -import { type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 +import { DefaultTreeAdapterMap } from '../tree-adapters/default.js';
  export interface SerializerOptions<T extends TreeAdapterTypeMap> {
      /**
       * Specifies input tree format.
 diff --git a/dist/tokenizer/index.d.ts b/dist/tokenizer/index.d.ts
-index de6e234cfb36bb3a4b928c47ab0d0fdf0b4311e1..89e2484b43f3487f3f157435a283ba932a879210 100644
+index 5afab96d6499bb0bba706aee7d2f153647db8713..3680d732d8a3570b6a1d9336c0ebdf8fe4f392db 100644
 --- a/dist/tokenizer/index.d.ts
 +++ b/dist/tokenizer/index.d.ts
 @@ -1,6 +1,6 @@
@@ -69,8 +72,18 @@ index de6e234cfb36bb3a4b928c47ab0d0fdf0b4311e1..89e2484b43f3487f3f157435a283ba93
  declare const enum State {
      DATA = 0,
      RCDATA = 1,
+diff --git a/dist/tree-adapters/default.d.ts b/dist/tree-adapters/default.d.ts
+index 547d714bdc5a664ba1414c16bdfc9247c71ab4de..d96a23d6ce3e80d78da21d958c059de194bb5146 100644
+--- a/dist/tree-adapters/default.d.ts
++++ b/dist/tree-adapters/default.d.ts
+@@ -1,4 +1,4 @@
+-import { DOCUMENT_MODE, type NS } from '../common/html.js';
++import { DOCUMENT_MODE, NS } from '../common/html.js';
+ import type { Attribute, Location, ElementLocation } from '../common/token.js';
+ import type { TreeAdapter, TreeAdapterTypeMap } from './interface.js';
+ export interface Document {
 diff --git a/dist/tokenizer/preprocessor.d.ts b/dist/tokenizer/preprocessor.d.ts
-index e74a590783b4688fb6498b019c1a75cfd9ac23e7..d145dcce97b104830e5b3d7f57f3a63377bbf89c 100644
+index e74a590783b4688fb6498b019c1a75cfd9ac23e7..7350e44b4ed952bcb8f167e30a94958e9fcf743a 100644
 --- a/dist/tokenizer/preprocessor.d.ts
 +++ b/dist/tokenizer/preprocessor.d.ts
 @@ -1,4 +1,4 @@
@@ -79,13 +92,3 @@ index e74a590783b4688fb6498b019c1a75cfd9ac23e7..d145dcce97b104830e5b3d7f57f3a633
  export declare class Preprocessor {
      private handler;
      html: string;
-diff --git a/dist/tree-adapters/default.d.ts b/dist/tree-adapters/default.d.ts
-index cccdf8f86d2295b3059c42943d896e81691c8419..d70b8fa2562f4dc6415d7ebaaba6cb322f66e9cb 100644
---- a/dist/tree-adapters/default.d.ts
-+++ b/dist/tree-adapters/default.d.ts
-@@ -1,4 +1,4 @@
--import { DOCUMENT_MODE, type NS } from '../common/html.js';
-+import { DOCUMENT_MODE, NS } from '../common/html.js';
- import type { Attribute, Location, ElementLocation } from '../common/token.js';
- import type { TreeAdapter, TreeAdapterTypeMap } from './interface.js';
- export declare enum NodeType {

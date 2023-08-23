@@ -2,7 +2,8 @@ import { Snap } from '@metamask/snaps-utils';
 import React, { useState, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Text } from '../../../components/component-library';
+import { Box } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
   Display,

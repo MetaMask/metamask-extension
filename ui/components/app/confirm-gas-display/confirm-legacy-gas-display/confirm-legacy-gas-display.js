@@ -18,7 +18,7 @@ import TransactionDetailItem from '../../transaction-detail-item';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 import InfoTooltip from '../../../ui/info-tooltip';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
-import { Text } from '../../../component-library/text';
+import { Text } from '../../../component-library/text/deprecated';
 import {
   FONT_STYLE,
   TextVariant,

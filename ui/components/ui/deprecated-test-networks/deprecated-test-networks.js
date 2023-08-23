@@ -12,7 +12,8 @@ import Box from '../box/box';
 import ActionableMessage from '../actionable-message/actionable-message';
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { Text, Icon, IconName, IconSize } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 export default function DeprecatedTestNetworks() {
   const currentChainID = useSelector(getCurrentChainId);

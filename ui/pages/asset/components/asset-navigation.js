@@ -23,8 +23,4 @@ AssetNavigation.propTypes = {
   optionsButton: PropTypes.element,
 };
 
-AssetNavigation.defaultProps = {
-  optionsButton: undefined,
-};
-
 export default AssetNavigation;

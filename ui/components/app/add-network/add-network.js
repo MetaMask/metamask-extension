@@ -36,12 +36,12 @@ import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
-  Text,
   Icon,
   IconName,
   IconSize,
   AvatarNetwork,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 
 const AddNetwork = () => {

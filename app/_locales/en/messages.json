@@ -249,6 +249,9 @@
   "addFromAListOfPopularNetworks": {
     "message": "Add from a list of popular networks or add a network manually. Only interact with the entities you trust."
   },
+  "addHardwareWallet": {
+    "message": "Add hardware wallet"
+  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -365,6 +368,9 @@
   },
   "allowThisSiteTo": {
     "message": "Allow this site to:"
+  },
+  "allowThisSnapTo": {
+    "message": "Allow this snap to:"
   },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
@@ -524,6 +530,9 @@
   "betaHeaderText": {
     "message": "This is a beta version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
+  },
+  "betaMetamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Beta Version"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -979,6 +988,12 @@
   "custodianAccount": {
     "message": "Custodian account"
   },
+  "custodianAccountAddedDesc": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianAccountAddedTitle": {
+    "message": "Selected custodian accounts have been added."
+  },
   "custodianReplaceRefreshTokenChangedFailed": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
@@ -1051,6 +1066,9 @@
   },
   "customerSupport": {
     "message": "customer support"
+  },
+  "dappRequestedSpendingCap": {
+    "message": "Site requested spending cap"
   },
   "dappSuggested": {
     "message": "Site suggested"
@@ -1743,9 +1761,6 @@
   "hardware": {
     "message": "Hardware"
   },
-  "hardwareWallet": {
-    "message": "Hardware wallet"
-  },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
@@ -2256,6 +2271,9 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Version"
+  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
   },
@@ -2299,6 +2317,9 @@
   },
   "mmiAuthenticate": {
     "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
+  },
+  "mmiBuiltAroundTheWorld": {
+    "message": "MetaMask Institutional is designed and built around the world."
   },
   "more": {
     "message": "more"
@@ -3074,9 +3095,6 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
-  "percentage": {
-    "message": "$1%"
-  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -3332,9 +3350,6 @@
   "publicAddress": {
     "message": "Public address"
   },
-  "queue": {
-    "message": "Queue"
-  },
   "queued": {
     "message": "Queued"
   },
@@ -3507,6 +3522,18 @@
   "restoreUserDataDescription": {
     "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
   },
+  "resultPageError": {
+    "message": "Error"
+  },
+  "resultPageErrorDefaultMessage": {
+    "message": "The operation failed."
+  },
+  "resultPageSuccess": {
+    "message": "Success"
+  },
+  "resultPageSuccessDefaultMessage": {
+    "message": "The operation completed successfully."
+  },
   "retryTransaction": {
     "message": "Retry transaction"
   },
@@ -3550,9 +3577,6 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
-  "reviewSpendingCap": {
-    "message": "Review the spending cap for your"
-  },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3568,6 +3592,9 @@
   "revokeApproveForAllDescriptionWithoutSymbol": {
     "message": "This revokes the permission for a third party to access and transfer all of your NFTs from $1 without further notice.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
+  "revokePermission": {
+    "message": "Revoke permission"
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
@@ -3690,6 +3717,9 @@
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
+  "selectAccountsForSnap": {
+    "message": "Select the account(s) to use with this snap"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -3766,10 +3796,6 @@
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "Set a spending cap for your $1",
-    "description": "$1 is a token symbol"
-  },
   "settingAddSnapAccount": {
     "message": "Add snap account"
   },
@@ -3778,10 +3804,6 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
-  },
-  "shortVersion": {
-    "message": "v$1",
-    "description": "$1 is the version number to show"
   },
   "show": {
     "message": "Show"
@@ -4095,6 +4117,9 @@
   "spendingCapErrorDescription": {
     "message": "Only enter a number that you're comfortable with $1 accessing now or in the future. You can always increase the token limit later.",
     "description": "$1 is origin of the site requesting the token limit"
+  },
+  "spendingCapRequest": {
+    "message": "Spending cap request for your $1"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
@@ -4446,6 +4471,10 @@
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapIncludesMetaMaskFeeViewAllQuotes": {
+    "message": "Includes a $1% MetaMask fee – $2",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Learn more about Swaps"
@@ -5145,9 +5174,6 @@
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
   },
-  "useDefault": {
-    "message": "Use default"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
@@ -5177,6 +5203,9 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
+  },
+  "useSiteSuggestion": {
+    "message": "Use site suggestion"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
@@ -5210,6 +5239,9 @@
   },
   "viewAllDetails": {
     "message": "View all details"
+  },
+  "viewAllQuotes": {
+    "message": "view all quotes"
   },
   "viewContact": {
     "message": "View contact"

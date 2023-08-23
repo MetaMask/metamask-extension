@@ -4,7 +4,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { hideModal } from '../../../store/actions';
 import Modal from '../../app/modal';
 import Box from '../../ui/box';
-import { Text, ButtonIcon, IconSize, IconName } from '../../component-library';
+import { ButtonIcon, IconSize, IconName } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   AlignItems,
   JustifyContent,

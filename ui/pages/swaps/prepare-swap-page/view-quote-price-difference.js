@@ -12,11 +12,8 @@ import {
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import { GasRecommendations } from '../../../../shared/constants/gas';
-import {
-  BannerAlert,
-  Text,
-  ButtonLink,
-} from '../../../components/component-library';
+import { BannerAlert, ButtonLink } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 
 export default function ViewQuotePriceDifference(props) {
   const {

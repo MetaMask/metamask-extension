@@ -51,14 +51,14 @@ describe('Import flow', function () {
         await driver.findVisibleElement('.qr-code__wrapper');
 
         // shows a QR code for the account
-        await driver.findVisibleElement('.popover-container');
+        await driver.findVisibleElement('.mm-modal');
         // shows the correct account address
         const address = await driver.findElement(
           '.multichain-address-copy-button',
         );
         assert.equal(await address.getText(), '0x0Cc...afD3');
 
-        await driver.clickElement('[data-testid="popover-close"]');
+        await driver.clickElement('.mm-modal button[aria-label="Close"]');
 
         // logs out of the account
         await driver.clickElement(
@@ -124,13 +124,13 @@ describe('Import flow', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
@@ -374,7 +374,7 @@ describe('Import flow', function () {
           // choose Connect hardware wallet from the account menu
           await driver.clickElement('[data-testid="account-menu-icon"]');
           await driver.clickElement({
-            text: 'Hardware wallet',
+            text: 'Add hardware wallet',
             tag: 'button',
           });
           await driver.delay(regularDelayMs);

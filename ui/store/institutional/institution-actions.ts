@@ -28,12 +28,17 @@ export function showInteractiveReplacementTokenModal(): ThunkAction<
   };
 }
 
-export function showCustodyConfirmLink(
-  link: string,
-  address: string,
-  closeNotification: boolean,
-  custodyId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function showCustodyConfirmLink({
+  link,
+  address,
+  closeNotification,
+  custodyId,
+}: {
+  link: string;
+  address: string;
+  closeNotification: boolean;
+  custodyId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch) => {
     dispatch(
       showModal({
@@ -109,18 +114,18 @@ export function updateCustodyState(
   }
 }
 
-export function checkForUnapprovedTypedMessages(
+export function checkForUnapprovedMessages(
   msgData: TemporaryMessageDataType['msgParams'],
-  unapprovedTypedMessages: MessagesIndexedById,
+  unapprovedMessages: MessagesIndexedById,
 ) {
-  const custodianUnapprovedMessages = Object.keys(unapprovedTypedMessages)
-    .map((key) => unapprovedTypedMessages[key])
+  const custodianUnapprovedMessages = Object.keys(unapprovedMessages)
+    .map((key) => unapprovedMessages[key])
     .filter((message) => message.custodyId && message.status === 'unapproved');
 
   if (custodianUnapprovedMessages && custodianUnapprovedMessages.length > 0) {
     return {
       ...msgData,
-      custodyId: unapprovedTypedMessages[msgData.metamaskId]?.custodyId,
+      custodyId: unapprovedMessages[msgData.metamaskId]?.custodyId,
     };
   }
 

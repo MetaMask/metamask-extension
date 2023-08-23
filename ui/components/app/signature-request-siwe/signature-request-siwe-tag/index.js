@@ -9,7 +9,7 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 
 const SignatureRequestSIWETag = ({ text }) => {
   return (

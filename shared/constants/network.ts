@@ -138,6 +138,8 @@ export const CHAIN_IDS = {
   BSC_TESTNET: '0x61',
   OPTIMISM: '0xa',
   OPTIMISM_TESTNET: '0x1a4',
+  BASE: '0x2105',
+  BASE_TESTNET: '0x14a33',
   POLYGON: '0x89',
   POLYGON_TESTNET: '0x13881',
   AVALANCHE: '0xa86a',
@@ -174,8 +176,7 @@ export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
 export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
 export const ARBITRUM_DISPLAY_NAME = 'Arbitrum One';
-export const BNB_DISPLAY_NAME =
-  'BNB Smart Chain (previously Binance Smart Chain Mainnet)';
+export const BNB_DISPLAY_NAME = 'BNB Chain';
 export const OPTIMISM_DISPLAY_NAME = 'Optimism';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
@@ -543,6 +544,8 @@ export const BUYABLE_CHAINS_MAP: {
     ChainId,
     | typeof CHAIN_IDS.LOCALHOST
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
+    | typeof CHAIN_IDS.BASE_TESTNET
+    | typeof CHAIN_IDS.BASE
     | typeof CHAIN_IDS.BSC_TESTNET
     | typeof CHAIN_IDS.POLYGON_TESTNET
     | typeof CHAIN_IDS.AVALANCHE_TESTNET

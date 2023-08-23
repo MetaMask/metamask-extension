@@ -14,7 +14,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getUseCurrencyRateCheck } from '../../../selectors';
-import { Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';

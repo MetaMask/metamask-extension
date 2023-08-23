@@ -12,12 +12,8 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import {
-  AvatarIcon,
-  Text,
-  IconName,
-  IconSize,
-} from '../../../component-library';
+import { AvatarIcon, IconName, IconSize } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import {
   DelineatorType,
   getDelineatorTitle,

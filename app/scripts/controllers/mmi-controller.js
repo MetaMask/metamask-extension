@@ -442,25 +442,8 @@ export default class MMIController extends EventEmitter {
     return keyring.getTransactionDeepLink(from, custodyTxId);
   }
 
-  async getCustodianToken(custodianType) {
-    let currentCustodyType;
-
-    const address = this.preferencesController.getSelectedAddress();
-
-    if (!custodianType) {
-      const resultCustody = this.custodyController.getCustodyTypeByAddress(
-        toChecksumHexAddress(address),
-      );
-      currentCustodyType = resultCustody;
-    }
-    let keyring = await this.keyringController.getKeyringsByType(
-      currentCustodyType || `Custody - ${custodianType}`,
-    )[0];
-    if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(
-        currentCustodyType || `Custody - ${custodianType}`,
-      );
-    }
+  async getCustodianToken(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
     const { authDetails } = keyring.getAccountDetails(address);
     return keyring ? authDetails.jwt || authDetails.refreshToken : '';
   }

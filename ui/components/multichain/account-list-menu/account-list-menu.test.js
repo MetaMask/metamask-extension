@@ -62,7 +62,7 @@ describe('AccountListMenu', () => {
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
     expect(getByText('Add account')).toBeInTheDocument();
     expect(getByText('Import account')).toBeInTheDocument();
-    expect(getByText('Hardware wallet')).toBeInTheDocument();
+    expect(getByText('Add hardware wallet')).toBeInTheDocument();
   });
 
   it('shows the account creation UI when Add Account is clicked', () => {
@@ -87,7 +87,7 @@ describe('AccountListMenu', () => {
 
   it('navigates to hardware wallet connection screen when clicked', () => {
     const { getByText } = render();
-    fireEvent.click(getByText('Hardware wallet'));
+    fireEvent.click(getByText('Add hardware wallet'));
     expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 

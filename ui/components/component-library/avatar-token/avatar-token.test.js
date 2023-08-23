@@ -73,10 +73,10 @@ describe('AvatarToken', () => {
       </>,
     );
     expect(getByTestId(TextColor.successDefault)).toHaveClass(
-      `box--color-${TextColor.successDefault}`,
+      `mm-box--color-${TextColor.successDefault}`,
     );
     expect(getByTestId(TextColor.errorDefault)).toHaveClass(
-      `box--color-${TextColor.errorDefault}`,
+      `mm-box--color-${TextColor.errorDefault}`,
     );
   });
   // background color
@@ -94,10 +94,10 @@ describe('AvatarToken', () => {
       </>,
     );
     expect(getByTestId(BackgroundColor.successDefault)).toHaveClass(
-      `box--background-color-${BackgroundColor.successDefault}`,
+      `mm-box--background-color-${BackgroundColor.successDefault}`,
     );
     expect(getByTestId(BackgroundColor.errorDefault)).toHaveClass(
-      `box--background-color-${BackgroundColor.errorDefault}`,
+      `mm-box--background-color-${BackgroundColor.errorDefault}`,
     );
   });
   // border color
@@ -115,10 +115,10 @@ describe('AvatarToken', () => {
       </>,
     );
     expect(getByTestId(BorderColor.successDefault)).toHaveClass(
-      `box--border-color-${BorderColor.successDefault}`,
+      `mm-box--border-color-${BorderColor.successDefault}`,
     );
     expect(getByTestId(BorderColor.errorDefault)).toHaveClass(
-      `box--border-color-${BorderColor.errorDefault}`,
+      `mm-box--border-color-${BorderColor.errorDefault}`,
     );
   });
   it('should forward a ref to the root html element', () => {

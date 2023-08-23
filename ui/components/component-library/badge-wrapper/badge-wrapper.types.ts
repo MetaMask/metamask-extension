@@ -1,4 +1,9 @@
-import type { BoxProps } from '../../ui/box/box.d';
+import React from 'react';
+
+import type {
+  StyleUtilityProps,
+  PolymorphicComponentPropWithRef,
+} from '../box';
 
 export enum BadgeWrapperPosition {
   topRight = 'top-right',
@@ -12,7 +17,7 @@ export enum BadgeWrapperAnchorElementShape {
   circular = 'circular',
 }
 
-export interface BadgeWrapperProps extends BoxProps {
+export interface BadgeWrapperStyleUtilityProps extends StyleUtilityProps {
   /**
    * The element to be wrapped by the BadgeWrapper and for the badge to be positioned on top of
    */
@@ -24,7 +29,7 @@ export interface BadgeWrapperProps extends BoxProps {
   /**
    * The BadgeWrapper props of the component. All Box props can be used
    */
-  badgeContainerProps?: BoxProps;
+  badgeContainerProps?: any; // TODO: Replace with Box types when the syntax and typing is properly figured out. Needs to accept everything Box accepts
   /**
    * The position of the Badge. Possible values could be 'BadgeWrapperPosition.topRight', 'BadgeWrapperPosition.bottomRight','BadgeWrapperPosition.topLeft', 'BadgeWrapperPosition.bottomLeft'
    * Defaults to 'BadgeWrapperPosition.topRight'
@@ -34,10 +39,10 @@ export interface BadgeWrapperProps extends BoxProps {
    * The positionObj can be used to override the default positioning of the badge it accepts an object with the following keys { top, right, bottom, left }
    */
   positionObj?: {
-    top?: number;
-    right?: number;
-    bottom?: number;
-    left?: number;
+    top?: number | string;
+    right?: number | string;
+    bottom?: number | string;
+    left?: number | string;
   };
   /**
    * The shape of the anchor element. Possible values could be 'BadgeWrapperAnchorElementShape.circular', 'BadgeWrapperAnchorElementShape.square'
@@ -49,3 +54,10 @@ export interface BadgeWrapperProps extends BoxProps {
    */
   className?: string;
 }
+
+export type BadgeWrapperProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, BadgeWrapperStyleUtilityProps>;
+
+export type BadgeWrapperComponent = <C extends React.ElementType = 'div'>(
+  props: BadgeWrapperProps<C>,
+) => React.ReactElement | null;

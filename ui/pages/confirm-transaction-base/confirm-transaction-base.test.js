@@ -234,7 +234,7 @@ describe('Confirm Transaction Base', () => {
       store,
     );
 
-    expect(getByTestId('transaction-note')).toBeInTheDocument();
+    expect(getByTestId('note-tab')).toBeInTheDocument();
   });
 
   it('handleMainSubmit calls sendTransaction correctly', async () => {

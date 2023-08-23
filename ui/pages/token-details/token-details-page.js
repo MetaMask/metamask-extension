@@ -28,8 +28,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
 } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();

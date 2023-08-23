@@ -59,6 +59,12 @@ describe('ButtonIcon', () => {
         <ButtonIcon
           iconName={IconName.AddSquare}
           ariaLabel="add"
+          size={ButtonIconSize.Md}
+          data-testid={ButtonIconSize.Md}
+        />
+        <ButtonIcon
+          iconName={IconName.AddSquare}
+          ariaLabel="add"
           size={ButtonIconSize.Lg}
           data-testid={ButtonIconSize.Lg}
         />
@@ -66,6 +72,9 @@ describe('ButtonIcon', () => {
     );
     expect(getByTestId(ButtonIconSize.Sm)).toHaveClass(
       `mm-button-icon--size-${ButtonIconSize.Sm}`,
+    );
+    expect(getByTestId(ButtonIconSize.Md)).toHaveClass(
+      `mm-button-icon--size-${ButtonIconSize.Md}`,
     );
     expect(getByTestId(ButtonIconSize.Lg)).toHaveClass(
       `mm-button-icon--size-${ButtonIconSize.Lg}`,

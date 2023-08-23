@@ -9,13 +9,8 @@ import {
   FontWeight,
 } from '../../../../helpers/constants/design-system';
 import { getSnapName } from '../../../../helpers/utils/util';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-  ValidTag,
-} from '../../../component-library';
+import { Icon, IconName, IconSize, ValidTag } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapAvatar from '../snap-avatar/snap-avatar';

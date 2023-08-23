@@ -150,7 +150,6 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
-  onAddNFT = jest.fn(),
 }) => {
   const store = configureStore({
     metamask: {
@@ -170,7 +169,7 @@ const render = ({
       nftsDropdownState,
     },
   });
-  return renderWithProvider(<NftsTab onAddNFT={onAddNFT} />, store);
+  return renderWithProvider(<NftsTab />, store);
 };
 
 describe('NFT Items', () => {
@@ -294,17 +293,6 @@ describe('NFT Items', () => {
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
-    });
-    it('should render a link "Import NFTs" when some NFTs are present, which, when clicked calls the passed in onAddNFT method', () => {
-      const onAddNFTStub = jest.fn();
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        onAddNFT: onAddNFTStub,
-      });
-      expect(onAddNFTStub).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Import NFT'));
-      expect(onAddNFTStub).toHaveBeenCalledTimes(1);
     });
   });
 });

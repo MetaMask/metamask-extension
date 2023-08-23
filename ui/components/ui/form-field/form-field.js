@@ -12,7 +12,8 @@ import {
 
 import NumericInput from '../numeric-input/numeric-input.component';
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import { Text, Box } from '../../component-library';
+import { Box } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 /**
  * @deprecated The `<FormField />` component has been deprecated in favor of the new `<FormTextField>` component from the component-library.

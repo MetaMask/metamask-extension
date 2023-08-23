@@ -11,8 +11,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
 } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/deprecated';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

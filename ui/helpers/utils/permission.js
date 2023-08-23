@@ -17,13 +17,13 @@ import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  Text,
   Icon,
   ///: END:ONLY_INCLUDE_IN
   IconName,
   IconSize,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { Text } from '../../components/component-library/text/deprecated';
 import { Color, FontWeight, IconColor } from '../constants/design-system';
 import {
   coinTypeToProtocolName,

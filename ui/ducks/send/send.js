@@ -2015,10 +2015,11 @@ export function updateSendAmount(amount) {
  * @param {object} payload - action payload
  * @param {string} payload.type - type of asset to send
  * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
+ * @param payload.skipComputeEstimatedGasLimit
  * @returns {ThunkAction<void>}
  */
 export function updateSendAsset(
-  { type, details: providedDetails },
+  { type, details: providedDetails, skipComputeEstimatedGasLimit },
   { initialAssetSet = false } = {},
 ) {
   return async (dispatch, getState) => {
@@ -2149,7 +2150,7 @@ export function updateSendAsset(
 
       await dispatch(actions.updateAsset({ asset, initialAssetSet }));
     }
-    if (initialAssetSet === false) {
+    if (initialAssetSet === false && !skipComputeEstimatedGasLimit) {
       await dispatch(computeEstimatedGasLimit());
     }
   };
@@ -2393,6 +2394,7 @@ export function startNewDraftTransaction(asset) {
       updateSendAsset({
         type: asset.type ?? AssetType.native,
         details: asset.details,
+        skipComputeEstimatedGasLimit: true,
       }),
     );
 
