@@ -1331,17 +1331,6 @@ export function getNonTestNetworks(state) {
   ];
 }
 
-
-/**
- *  To retrieve the maxBaseFee and priorityFee the user has set as default
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getAdvancedGasFeeValues(state) {
-  return state.metamask.advancedGasFee;
-}
-
 export function getAllNetworks(state) {
   const networks = [
     // Mainnet and custom networks
