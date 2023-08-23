@@ -3747,8 +3747,20 @@
   "selectAnAccount": {
     "message": "Select an account"
   },
-    "selectAnAction": {
+      "selectAnAction": {
     "message": "Select an action"
+      },
+    "buyDescription": {
+    "message": "Buy crypto with MetaMask"
+  },
+      "swapDescription": {
+    "message": "Swap and trade your tokens"
+  },
+      "sendDescription": {
+    "message": "Send crypto to any account"
+  },
+      "bridgeDescription": {
+    "message": "Transfer tokens from different networks"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
