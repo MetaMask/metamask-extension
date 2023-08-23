@@ -111,7 +111,7 @@ const getStateTree = ({
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
-    incomingTransactions: [...incomingTxList],
+    transactions: [...incomingTxList],
     currentNetworkTxList: [...txList],
   },
 });

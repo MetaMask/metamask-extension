@@ -164,7 +164,7 @@ function migrateData(state: Record<string, unknown>): void {
       );
     }
   } else {
-    global.sentry?.captureException?.(
+    console.warn(
       new Error(
         `typeof state.TokenListController is ${typeof state.TokenListController}`,
       ),

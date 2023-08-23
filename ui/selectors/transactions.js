@@ -27,6 +27,7 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags;
+
   if (!showIncomingTransactions) {
     return [];
   }
@@ -34,8 +35,9 @@ export const incomingTxListSelector = (state) => {
   const { networkId } = state.metamask;
   const { chainId } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  return Object.values(state.metamask.incomingTransactions).filter(
+  return Object.values(state.metamask.transactions || {}).filter(
     (tx) =>
+      tx.type === TransactionType.incoming &&
       tx.txParams.to === selectedAddress &&
       transactionMatchesNetwork(tx, chainId, networkId),
   );
