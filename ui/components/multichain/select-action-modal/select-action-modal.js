@@ -22,6 +22,7 @@ import {
   getCurrentChainId,
   getCurrentKeyring,
   getIsBridgeChain,
+  getIsBuyableChain,
   getIsSwapsChain,
   getMetaMetricsId,
   getSwapsDefaultToken,
@@ -55,6 +56,7 @@ export const SelectActionModal = ({ onClose }) => {
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const isBridgeChain = useSelector(getIsBridgeChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const isBuyableChain = useSelector(getIsBuyableChain);
 
   ///: END:ONLY_INCLUDE_IN
 
@@ -66,7 +68,12 @@ export const SelectActionModal = ({ onClose }) => {
   };
 
   return (
-    <Modal isOpen onClose={onClose} className="select-action-modal">
+    <Modal
+      isOpen
+      onClose={onClose}
+      className="select-action-modal"
+      data-testid="select-action-modal"
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('selectAnAction')}</ModalHeader>
@@ -77,7 +84,10 @@ export const SelectActionModal = ({ onClose }) => {
               actionIcon={IconName.Add}
               showIcon
               primaryText={t('buy')}
+              data-testid="select-action-buy"
               secondaryText={t('buyDescription')}
+              isDisabled={!isBuyableChain}
+              tooltipTitle={t('buyDisabled')}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({
@@ -101,6 +111,7 @@ export const SelectActionModal = ({ onClose }) => {
               actionIcon={IconName.Stake}
               showIcon
               primaryText={t('stake')}
+              secondaryText={t('stakeDescription')}
               onClick={() => {
                 stakingEvent();
                 global.platform.openTab({
@@ -114,7 +125,10 @@ export const SelectActionModal = ({ onClose }) => {
           <SelectActionModalItem
             actionIcon={IconName.SwapHorizontal}
             primaryText={t('swap')}
+            data-testid="select-action-swap"
             secondaryText={t('swapDescription')}
+            isDisabled={!isSwapsChain}
+            tooltipTitle={t('swapDisabled')}
             onClick={() => {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               global.platform.openTab({
@@ -149,6 +163,7 @@ export const SelectActionModal = ({ onClose }) => {
             actionIcon={IconName.Arrow2UpRight}
             primaryText={t('send')}
             secondaryText={t('sendDescription')}
+            data-testid="select-action-send"
             onClick={() => {
               trackEvent({
                 event: MetaMetricsEventName.NavSendButtonClicked,
@@ -174,7 +189,10 @@ export const SelectActionModal = ({ onClose }) => {
               actionIcon={IconName.Arrow2UpRight}
               showIcon
               primaryText={t('bridge')}
+              data-testid="select-action-bridge"
               secondaryText={t('bridgeDescription')}
+              isDisabled={!isBridgeChain}
+              tooltipTitle={t('bridgeDisabled')}
               onClick={() => {
                 if (isBridgeChain) {
                   const portfolioUrl = getPortfolioUrl(

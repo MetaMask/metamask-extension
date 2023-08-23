@@ -599,6 +599,9 @@
   "bridgeDescription": {
     "message": "Transfer tokens from different networks"
   },
+  "bridgeDisabled": {
+    "message": "Bridge is not available in this network"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -619,7 +622,10 @@
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "buyDescription": {
-    "message": "Buy crypto with MetaMask"
+    "message": "Hold up your crypto and earn potential profits"
+  },
+  "buyDisabled": {
+    "message": "Buy is not available in this network"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -4238,6 +4244,9 @@
   "stake": {
     "message": "Stake"
   },
+  "stakeDescription": {
+    "message": "Hold up your crypto and earn potential profits"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4434,6 +4443,9 @@
   },
   "swapDirectContract": {
     "message": "Direct contract"
+  },
+  "swapDisabled": {
+    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"
