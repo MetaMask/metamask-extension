@@ -96,8 +96,8 @@ import {
 // eslint-disable-next-line import/order
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
-import { createDeepEqualSelector } from './util';
 ///: END:ONLY_INCLUDE_IN
+import { createDeepEqualSelector } from './util';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
