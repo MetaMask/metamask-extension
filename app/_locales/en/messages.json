@@ -287,6 +287,9 @@
   "address": {
     "message": "Address"
   },
+  "addressCopied": {
+    "message": "Address copied!"
+  },
   "advanced": {
     "message": "Advanced"
   },
