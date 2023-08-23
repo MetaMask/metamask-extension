@@ -23,8 +23,8 @@ import {
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   BUTTON_SIZES,
-  Button,
   Box,
+  Button,
   Text,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
@@ -76,10 +76,10 @@ export default class SecurityTab extends PureComponent {
   };
 
   state = {
-    ipfsGateway: this.props.ipfsGateway,
+    ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
     srpQuizModalVisible: false,
-    ipfsToggle: false,
+    ipfsToggle: this.props.ipfsGateway.length > 0,
   };
 
   settingsRefCounter = 0;
@@ -367,51 +367,40 @@ export default class SecurityTab extends PureComponent {
 
   renderIpfsGatewayControl() {
     const { t } = this.context;
-    const { ipfsGatewayError } = this.state;
-    const { useAddressBarEnsResolution, setUseAddressBarEnsResolution } =
-      this.props;
-
-    const handleIpfsGatewaySave = (gateway) => {
-      const url = gateway ? new URL(addUrlProtocolPrefix(gateway)) : '';
-      const { host } = url;
-
-      this.props.setIpfsGateway(host);
-    };
+    let ipfsError = '';
 
     const handleIpfsGatewayChange = (url) => {
-      this.setState(() => {
-        let ipfsError = '';
-
+      if (url.length > 0) {
         try {
-          const urlObj = new URL(addUrlProtocolPrefix(url));
-          if (!urlObj.host) {
-            throw new Error();
+          const validUrl = addUrlProtocolPrefix(url);
+
+          if (!validUrl) {
+            ipfsError = t('invalidIpfsGateway');
           }
+
+          const urlObj = new URL(validUrl);
 
           // don't allow the use of this gateway
           if (urlObj.host === 'gateway.ipfs.io') {
-            throw new Error('Forbidden gateway');
+            ipfsError = t('forbiddenIpfsGateway');
+          }
+
+          if (ipfsError.length === 0) {
+            this.props.setIpfsGateway(urlObj.host);
           }
         } catch (error) {
-          ipfsError =
-            error.message === 'Forbidden gateway'
-              ? t('forbiddenIpfsGateway')
-              : t('invalidIpfsGateway');
+          ipfsError = t('invalidIpfsGateway');
         }
+      } else {
+        ipfsError = t('invalidIpfsGateway');
+      }
 
-        handleIpfsGatewaySave(url);
-        return {
-          ipfsGateway: url,
-          ipfsGatewayError: ipfsError,
-        };
+      this.setState({
+        ipfsGateway: url,
+        ipfsGatewayError: ipfsError,
       });
     };
 
-    const handleIpfsToggle = (url) => {
-      url?.length < 1
-        ? handleIpfsGatewayChange(IPFS_DEFAULT_GATEWAY_URL)
-        : handleIpfsGatewayChange('');
-    };
     return (
       <Box
         ref={this.settingsRefs[6]}
@@ -426,27 +415,36 @@ export default class SecurityTab extends PureComponent {
             {t('ipfsGatewayDescription')}
           </div>
         </div>
-        <div className="settings-page__content-item-col">
+        <div
+          className="settings-page__content-item-col"
+          data-testid="ipfsToggle"
+        >
           <ToggleButton
-            value={this.state.ipfsGateway}
+            value={this.state.ipfsToggle}
             onToggle={(value) => {
-              handleIpfsToggle(value);
-              this.setState({ ipfsToggle: Boolean(value) });
+              if (value) {
+                // turning from true to false
+                this.props.setIpfsGateway('');
+              } else {
+                // turning from false to true
+                handleIpfsGatewayChange(this.state.ipfsGateway);
+              }
+
+              this.setState({ ipfsToggle: !value });
             }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
         </div>
-        {!this.state.ipfsToggle && (
+        {this.state.ipfsToggle && (
           <div className="settings-page__content-item">
             <span>{t('addIPFSGateway')}</span>
             <div className="settings-page__content-item-col">
               <TextField
                 type="text"
-                disabled={!this.state.ipfsGateway}
                 value={this.state.ipfsGateway}
                 onChange={(e) => handleIpfsGatewayChange(e.target.value)}
-                error={ipfsGatewayError}
+                error={this.state.ipfsGatewayError}
                 fullWidth
                 margin="dense"
               />
@@ -508,8 +506,10 @@ export default class SecurityTab extends PureComponent {
             data-testid="ipfs-gateway-resolution-container"
           >
             <ToggleButton
-              value={useAddressBarEnsResolution}
-              onToggle={(value) => setUseAddressBarEnsResolution(!value)}
+              value={this.props.useAddressBarEnsResolution}
+              onToggle={(value) =>
+                this.props.setUseAddressBarEnsResolution(!value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -696,31 +696,32 @@ export default class SecurityTab extends PureComponent {
             {t('displayNftMediaDescription')}
           </div>
         </div>
-
-        <div
-          className="settings-page__content-item-col"
-          data-testid="displayNftMedia"
-        >
-          <ToggleButton
-            value={openSeaEnabled}
-            onToggle={(value) => {
-              this.context.trackEvent({
-                category: MetaMetricsEventCategory.Settings,
-                event: 'Enabled/Disable OpenSea',
-                properties: {
-                  action: 'Enabled/Disable OpenSea',
-                  legacy_event: true,
-                },
-              });
-              // value is positive when being toggled off
-              if (value && useNftDetection) {
-                setUseNftDetection(false);
-              }
-              setOpenSeaEnabled(!value);
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
+        <div className="settings-page__content-item">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="enableOpenSeaAPI"
+          >
+            <ToggleButton
+              value={openSeaEnabled}
+              onToggle={(value) => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: 'Enabled/Disable OpenSea',
+                  properties: {
+                    action: 'Enabled/Disable OpenSea',
+                    legacy_event: true,
+                  },
+                });
+                // value is positive when being toggled off
+                if (value && useNftDetection) {
+                  setUseNftDetection(false);
+                }
+                setOpenSeaEnabled(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
         </div>
       </Box>
     );
