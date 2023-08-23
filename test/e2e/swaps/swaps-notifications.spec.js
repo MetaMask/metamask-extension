@@ -111,7 +111,7 @@ describe('Swaps - notifications', function () {
         });
         await checkNotification(driver, {
           title: 'Insufficient balance',
-          text: 'You need 50 more TESTETH to complete this swap',
+          text: 'You need 43.4467 more TESTETH to complete this swap',
         });
         await reviewQuote(driver, {
           swapFrom: 'TESTETH',

@@ -21,8 +21,7 @@ describe('Clear account activity', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withTransactionControllerCompletedTransaction()
-          .withIncomingTransactionsControllerOneTransaction()
+          .withTransactionControllerCompletedAndIncomingTransaction()
           .build(),
         ganacheOptions,
         title: this.test.title,

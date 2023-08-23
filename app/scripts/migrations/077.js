@@ -1,4 +1,6 @@
 import { cloneDeep } from 'lodash';
+import log from 'loglevel';
+import { hasProperty, isObject } from '@metamask/utils';
 import transformState077For082 from './077-supplements/077-supplement-for-082';
 import transformState077For084 from './077-supplements/077-supplement-for-084';
 import transformState077For086 from './077-supplements/077-supplement-for-086';
@@ -29,8 +31,23 @@ export default {
 };
 
 function transformState(state) {
-  const TokenListController = state?.TokenListController || {};
-
+  if (!hasProperty(state, 'TokenListController')) {
+    log.warn('Skipping migration, TokenListController state is missing');
+    return state;
+  } else if (!isObject(state.TokenListController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.TokenListController is ${typeof state.TokenListController}`,
+      ),
+    );
+    return state;
+  } else if (!hasProperty(state.TokenListController, 'tokensChainsCache')) {
+    log.warn(
+      'Skipping migration, TokenListController.tokensChainsCache state is missing',
+    );
+    return state;
+  }
+  const { TokenListController } = state;
   const { tokensChainsCache } = TokenListController;
 
   let dataCache;

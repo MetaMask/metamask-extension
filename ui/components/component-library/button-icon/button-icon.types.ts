@@ -1,6 +1,6 @@
-import type { BoxProps } from '../../ui/box/box.d';
 import { IconName, IconProps } from '../icon';
 import { IconColor } from '../../../helpers/constants/design-system';
+import { PolymorphicComponentPropWithRef, StyleUtilityProps } from '../box';
 
 export enum ButtonIconSize {
   Sm = 'sm',
@@ -8,7 +8,7 @@ export enum ButtonIconSize {
   Lg = 'lg',
 }
 
-export interface ButtonIconProps extends BoxProps {
+export interface ButtonIconStyleUtilityProps extends StyleUtilityProps {
   /**
    * String that adds an accessible name for ButtonIcon
    */
@@ -48,3 +48,10 @@ export interface ButtonIconProps extends BoxProps {
    */
   size?: ButtonIconSize;
 }
+
+export type ButtonIconProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, ButtonIconStyleUtilityProps>;
+
+export type ButtonIconComponent = <C extends React.ElementType = 'button'>(
+  props: ButtonIconProps<C>,
+) => React.ReactElement | null;

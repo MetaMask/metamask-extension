@@ -208,9 +208,6 @@
   "deleteNetwork": {
     "message": "Odstrániť sieť?"
   },
-  "deleteNetworkDescription": {
-    "message": "Naozaj chcete túto sieť odstrániť?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -598,9 +595,6 @@
   },
   "searchResults": {
     "message": "Výsledky vyhľadávania"
-  },
-  "searchTokens": {
-    "message": "Hledat tokeny"
   },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
