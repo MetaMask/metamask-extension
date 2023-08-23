@@ -263,6 +263,13 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.AddSquare,
     weight: 3,
   }),
+  [RestrictedMethods.snap_getLocale]: ({ t }) => ({
+    // TODO
+    label: 'Get Locale',
+    description: 'foo',
+    leftIcon: IconName.Messages,
+    weight: 3,
+  }),
   [RestrictedMethods.wallet_snap]: ({
     t,
     permissionValue,
