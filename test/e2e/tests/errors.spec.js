@@ -303,7 +303,7 @@ describe('Sentry errors', function () {
           }, 3000);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
@@ -343,7 +343,7 @@ describe('Sentry errors', function () {
           }, 3000);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
@@ -399,7 +399,7 @@ describe('Sentry errors', function () {
           }, 3000);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const breadcrumbs = mockJsonBody?.breadcrumbs ?? [];
           const migrationLogBreadcrumbs = breadcrumbs.filter((breadcrumb) => {
@@ -451,7 +451,7 @@ describe('Sentry errors', function () {
             return isPending === false;
           }, 3000);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
@@ -494,7 +494,7 @@ describe('Sentry errors', function () {
             return isPending === false;
           }, 3000);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
@@ -620,7 +620,7 @@ describe('Sentry errors', function () {
             return isPending === false;
           }, 3000);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
@@ -664,7 +664,7 @@ describe('Sentry errors', function () {
             return isPending === false;
           }, 3000);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
@@ -717,7 +717,7 @@ describe('Sentry errors', function () {
             return isPending === false;
           }, 3000);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
@@ -758,7 +758,7 @@ describe('Sentry errors', function () {
             return isPending === false;
           }, 3000);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [

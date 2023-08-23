@@ -515,7 +515,7 @@
     "madge": "^6.1.0",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
-    "mockttp": "^2.6.0",
+    "mockttp": "^3.9.4",
     "nock": "^13.2.9",
     "node-fetch": "^2.6.1",
     "nyc": "^15.0.0",
