@@ -34,7 +34,10 @@ export const SelectActionModalItem = ({
       flexDirection={FlexDirection.Row}
       as="a"
       href="#"
-      onClick={onClick}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick();
+      }}
       className="select-action-modal-item"
       data-testid="select-action-modal-item"
     >

@@ -596,6 +596,9 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeDescription": {
+    "message": "Transfer tokens from different networks"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -614,6 +617,9 @@
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyDescription": {
+    "message": "Buy crypto with MetaMask"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -3747,26 +3753,14 @@
   "selectAnAccount": {
     "message": "Select an account"
   },
-      "selectAnAction": {
-    "message": "Select an action"
-      },
-    "buyDescription": {
-    "message": "Buy crypto with MetaMask"
-  },
-      "swapDescription": {
-    "message": "Swap and trade your tokens"
-  },
-      "sendDescription": {
-    "message": "Send crypto to any account"
-  },
-      "bridgeDescription": {
-    "message": "Transfer tokens from different networks"
-  },
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
   },
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
+  },
+  "selectAnAction": {
+    "message": "Select an action"
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -3794,6 +3788,9 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
+  },
+  "sendDescription": {
+    "message": "Send crypto to any account"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -4431,6 +4428,9 @@
   },
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
+  },
+  "swapDescription": {
+    "message": "Swap and trade your tokens"
   },
   "swapDirectContract": {
     "message": "Direct contract"
