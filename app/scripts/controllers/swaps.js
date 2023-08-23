@@ -1,10 +1,11 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
-import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
+import { captureException } from '@sentry/browser';
+
 import {
   decGWEIToHexWEI,
   sumHexes,
@@ -362,6 +363,7 @@ export default class SwapsController {
       } else if (!isPolledRequest) {
         const { gasLimit: approvalGas } = await this.timedoutGasReturn(
           firstQuote.approvalNeeded,
+          firstQuote.aggregator,
         );
 
         newQuotes = mapValues(newQuotes, (quote) => ({
@@ -463,6 +465,7 @@ export default class SwapsController {
       Object.values(quotes).map(async (quote) => {
         const { gasLimit, simulationFails } = await this.timedoutGasReturn(
           quote.trade,
+          quote.aggregator,
         );
         return [gasLimit, simulationFails, quote.aggregator];
       }),
@@ -492,13 +495,21 @@ export default class SwapsController {
     return newQuotes;
   }
 
-  timedoutGasReturn(tradeTxParams) {
+  timedoutGasReturn(tradeTxParams, aggregator = '') {
     return new Promise((resolve) => {
       let gasTimedOut = false;
 
       const gasTimeout = setTimeout(() => {
         gasTimedOut = true;
-        resolve({ gasLimit: null, simulationFails: true });
+        captureException(new Error('timedoutGasReturn: timeout'), {
+          extra: {
+            aggregator,
+          },
+        });
+        resolve({
+          gasLimit: null,
+          simulationFails: true,
+        });
       }, SECOND * 5);
 
       // Remove gas from params that will be passed to the `estimateGas` call
@@ -519,7 +530,11 @@ export default class SwapsController {
           }
         })
         .catch((e) => {
-          log.error(e);
+          captureException(e, {
+            extra: {
+              aggregator,
+            },
+          });
           if (!gasTimedOut) {
             clearTimeout(gasTimeout);
             resolve({ gasLimit: null, simulationFails: true });
@@ -534,7 +549,10 @@ export default class SwapsController {
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
 
     const { gasLimit: newGasEstimate, simulationFails } =
-      await this.timedoutGasReturn(quoteToUpdate.trade);
+      await this.timedoutGasReturn(
+        quoteToUpdate.trade,
+        quoteToUpdate.aggregator,
+      );
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(
