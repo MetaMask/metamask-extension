@@ -34,11 +34,13 @@ import {
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { I18nContext } from '../../../contexts/i18n';
 import { AssetType } from '../../../../shared/constants/transaction';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
+import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
+///: END:ONLY_INCLUDE_IN
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 
 export const SelectActionModal = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -60,12 +62,14 @@ export const SelectActionModal = ({ onClose }) => {
 
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const stakingEvent = () => {
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <Modal
