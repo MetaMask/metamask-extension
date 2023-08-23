@@ -48,6 +48,6 @@ How should reviewers and QA manually test your changes? For instance:
 - [ ] PR is linked to the appropriate GitHub issue
 - [ ] **IF** this PR fixes a bug in the release milestone, add this PR to the release milestone
 
-If further QA is required (e.g. new feature, complex testing steps, large refactor), add the `Extension QA Board` label.
+If further QA is required (e.g. new feature, complex testing steps, large refactor), add the `needs-qa` label.
 
 In this case, a QA Engineer approval will be be required.
