@@ -1931,8 +1931,6 @@ export default class MetamaskController extends EventEmitter {
         getSnapKeyring: this.getSnapKeyring.bind(this),
         saveSnapKeyring: async () => {
           await this.keyringController.persistAllKeyrings();
-          await this.keyringController._updateMemStoreKeyrings();
-          await this.keyringController.fullUpdate();
         },
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
