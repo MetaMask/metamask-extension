@@ -23,7 +23,6 @@ import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   BUTTON_SIZES,
   Box,
-  Button,
   Text,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
