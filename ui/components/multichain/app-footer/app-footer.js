@@ -1,26 +1,32 @@
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   CONNECTED_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import IconButton from '../../ui/icon-button/icon-button';
 
 export const AppFooter = () => {
   const t = useI18nContext();
-  const history = useHistory();
   const location = useLocation();
 
   const activeWallet = location.pathname === DEFAULT_ROUTE;
@@ -46,16 +52,14 @@ export const AppFooter = () => {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
-        onClick={() => {
-          history.push(DEFAULT_ROUTE);
-        }}
       >
-        <Icon
+        <ButtonIcon
+          data-testid="app-footer-wallet-button"
           color={
             activeWallet ? IconColor.primaryDefault : IconColor.iconAlternative
           }
-          name={IconName.Wallet}
-          size={IconSize.Lg}
+          iconName={IconName.Wallet}
+          size={ButtonIconSize.Lg}
         />
         <Text
           color={
@@ -72,20 +76,16 @@ export const AppFooter = () => {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
       >
-        <IconButton
+        <ButtonIcon
           className="app-footer__button"
-          Icon={
-            <Icon
-              color={IconColor.primaryInverse}
-              name={IconName.SwapVertical}
-              size={IconSize.Lg}
-            />
-          }
-          data-testid="app-Footer-actions-button"
-          onClick={() => {
-            console.log('clicked');
-          }}
+          data-testid="app-footer-actions-button"
+          iconName={IconName.SwapVertical}
+          color={IconColor.primaryInverse}
+          backgroundColor={BackgroundColor.primaryDefault}
+          size={ButtonIconSize.Lg}
+          borderRadius={BorderRadius.full}
         />
       </Box>
       <Box
@@ -95,18 +95,16 @@ export const AppFooter = () => {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
-        onClick={() => {
-          history.push(CONNECTED_ROUTE);
-        }}
       >
-        <Icon
+        <ButtonIcon
+          data-testid="app-footer-connections-button"
           color={
             activeConnections
               ? IconColor.primaryDefault
               : IconColor.iconAlternative
           }
-          name={IconName.Global}
-          size={IconSize.Lg}
+          iconName={IconName.Global}
+          size={ButtonIconSize.Lg}
         />
         <Text
           color={
