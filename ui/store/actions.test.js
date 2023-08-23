@@ -398,7 +398,7 @@ describe('Actions', () => {
 
       const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
         cb(null, {
-          identities: {},
+          addedAccountAddress: '0x123',
         }),
       );
 
@@ -1752,6 +1752,44 @@ describe('Actions', () => {
       ];
 
       store.dispatch(actions.setUseMultiAccountBalanceChecker());
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setUse4ByteResolution', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setUse4ByteResolution in background', async () => {
+      const store = mockStore();
+      const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => cb());
+      _setBackgroundConnection({
+        setUse4ByteResolution: setUse4ByteResolutionStub,
+      });
+
+      await store.dispatch(actions.setUse4ByteResolution());
+      expect(setUse4ByteResolutionStub.callCount).toStrictEqual(1);
+    });
+
+    it('errors when setUse4ByteResolution in background throws', async () => {
+      const store = mockStore();
+      const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => {
+        cb(new Error('error'));
+      });
+
+      _setBackgroundConnection({
+        setUse4ByteResolution: setUse4ByteResolutionStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.setUse4ByteResolution());
+
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });

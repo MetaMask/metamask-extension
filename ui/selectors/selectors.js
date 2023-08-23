@@ -107,8 +107,9 @@ import { getPermissionSubjects } from './permissions';
 export function isNetworkLoading(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
+    selectedNetworkClientId &&
     state.metamask.networksMetadata[selectedNetworkClientId].status !==
-    NetworkStatus.Available
+      NetworkStatus.Available
   );
 }
 
@@ -698,9 +699,9 @@ export function getKnownMethodData(state, data) {
   }
   const prefixedData = addHexPrefix(data);
   const fourBytePrefix = prefixedData.slice(0, 10);
-  const { knownMethodData } = state.metamask;
-
-  return knownMethodData && knownMethodData[fourBytePrefix];
+  const { knownMethodData, use4ByteResolution } = state.metamask;
+  // If 4byte setting is off, we do not want to return the knownMethodData
+  return use4ByteResolution && knownMethodData?.[fourBytePrefix];
 }
 
 export function getFeatureFlags(state) {
@@ -1307,11 +1308,22 @@ export function getIsOptimism(state) {
   );
 }
 
+export function getIsBase(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.BASE ||
+    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
+  );
+}
+
+export function getIsOpStack(state) {
+  return getIsOptimism(state) || getIsBase(state);
+}
+
 export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOptimism(state);
+  return getIsOpStack(state);
 }
 /**
- *  To retrieve the maxBaseFee and priotitFee teh user has set as default
+ *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
  * @param {*} state
  * @returns Boolean

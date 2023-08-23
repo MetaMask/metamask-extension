@@ -1,6 +1,7 @@
 import { hasProperty, Hex, isObject, isStrictHexString } from '@metamask/utils';
 import { BN } from 'ethereumjs-util';
 import { cloneDeep, mapKeys } from 'lodash';
+import log from 'loglevel';
 
 type VersionedData = {
   meta: { version: number };
@@ -70,6 +71,16 @@ function migrateData(state: Record<string, unknown>): void {
           }
         });
       }
+    } else if (hasProperty(nftControllerState, 'allNftContracts')) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.NftController.allNftContracts is ${typeof nftControllerState.allNftContracts}`,
+        ),
+      );
+    } else {
+      log.warn(
+        `typeof state.NftController.allNftContracts is ${typeof nftControllerState.allNftContracts}`,
+      );
     }
 
     // Migrate NftController.allNfts
@@ -96,9 +107,25 @@ function migrateData(state: Record<string, unknown>): void {
           }
         });
       }
+    } else if (hasProperty(nftControllerState, 'allNfts')) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.NftController.allNfts is ${typeof nftControllerState.allNfts}`,
+        ),
+      );
+    } else {
+      log.warn(
+        `typeof state.NftController.allNfts is ${typeof nftControllerState.allNfts}`,
+      );
     }
 
     state.NftController = nftControllerState;
+  } else if (hasProperty(state, 'NftController')) {
+    global.sentry?.captureException?.(
+      new Error(`typeof state.NftController is ${typeof state.NftController}`),
+    );
+  } else {
+    log.warn(`typeof state.NftController is undefined`);
   }
 
   if (
@@ -124,7 +151,24 @@ function migrateData(state: Record<string, unknown>): void {
         tokenListControllerState.tokensChainsCache,
         (_, chainId: string) => toHex(chainId),
       );
+    } else if (hasProperty(tokenListControllerState, 'tokensChainsCache')) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.TokenListController.tokensChainsCache is ${typeof state
+            .TokenListController.tokensChainsCache}`,
+        ),
+      );
+    } else {
+      log.warn(
+        `typeof state.TokenListController.tokensChainsCache is undefined`,
+      );
     }
+  } else {
+    console.warn(
+      new Error(
+        `typeof state.TokenListController is ${typeof state.TokenListController}`,
+      ),
+    );
   }
 
   if (
@@ -150,6 +194,16 @@ function migrateData(state: Record<string, unknown>): void {
         allTokens,
         (_, chainId: string) => toHex(chainId),
       );
+    } else if (hasProperty(tokensControllerState, 'allTokens')) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.TokensController.allTokens is ${typeof tokensControllerState.allTokens}`,
+        ),
+      );
+    } else {
+      log.warn(
+        `typeof state.TokensController.allTokens is ${typeof tokensControllerState.allTokens}`,
+      );
     }
 
     // Migrate TokensController.allIgnoredTokens
@@ -168,6 +222,16 @@ function migrateData(state: Record<string, unknown>): void {
       tokensControllerState.allIgnoredTokens = mapKeys(
         allIgnoredTokens,
         (_, chainId: string) => toHex(chainId),
+      );
+    } else if (hasProperty(tokensControllerState, 'allIgnoredTokens')) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.TokensController.allIgnoredTokens is ${typeof tokensControllerState.allIgnoredTokens}`,
+        ),
+      );
+    } else {
+      log.warn(
+        `typeof state.TokensController.allIgnoredTokens is ${typeof tokensControllerState.allIgnoredTokens}`,
       );
     }
 
@@ -188,9 +252,25 @@ function migrateData(state: Record<string, unknown>): void {
         allDetectedTokens,
         (_, chainId: string) => toHex(chainId),
       );
+    } else if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.TokensController.allDetectedTokens is ${typeof tokensControllerState.allDetectedTokens}`,
+        ),
+      );
+    } else {
+      log.warn(
+        `typeof state.TokensController.allDetectedTokens is ${typeof tokensControllerState.allDetectedTokens}`,
+      );
     }
 
     state.TokensController = tokensControllerState;
+  } else {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.TokensController is ${typeof state.TokensController}`,
+      ),
+    );
   }
 }
 

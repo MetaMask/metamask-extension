@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
+import log from 'loglevel';
 
 export const version = 92;
 
@@ -30,6 +31,14 @@ function transformState(state: Record<string, unknown>) {
   ) {
     delete state.PhishingController.stalelistLastFetched;
     delete state.PhishingController.hotlistLastFetched;
+  } else if (hasProperty(state, 'PhishingController')) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.PhishingController is ${typeof state.PhishingController}`,
+      ),
+    );
+  } else {
+    log.warn(`typeof state.PhishingController is undefined`);
   }
   return state;
 }

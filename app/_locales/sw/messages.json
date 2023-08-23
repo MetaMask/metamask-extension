@@ -208,9 +208,6 @@
   "deleteNetwork": {
     "message": "Futa Mtandao?"
   },
-  "deleteNetworkDescription": {
-    "message": "Una uhakika unataka kufuta mtandao huu?"
-  },
   "details": {
     "message": "Maelezo"
   },
@@ -604,9 +601,6 @@
   },
   "searchResults": {
     "message": "Matokeo ya Utafutaji"
-  },
-  "searchTokens": {
-    "message": "Tafuta Vianzio"
   },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
