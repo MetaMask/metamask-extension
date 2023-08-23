@@ -28,10 +28,6 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
 
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 
-/**
- * @param state
- * @returns {TransactionMeta[]}
- */
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
   (state) => {
     const { transactions, networkId } = state.metamask ?? {};
@@ -49,10 +45,6 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
-/**
- * @param state
- * @returns {{[id: string]: TransactionMeta}}
- */
 export const getUnapprovedTransactions = createDeepEqualSelector(
   (state) => {
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);

@@ -27,7 +27,7 @@ const initialState = {
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   identities: {},
-  unapprovedTxs: {},
+  transactions: [],
   networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},

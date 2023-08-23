@@ -13,6 +13,7 @@ import {
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getCurrentNetworkTransactions } from '../../selectors';
+import { TransactionMeta } from '../../../shared/constants/transaction';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
@@ -69,7 +70,7 @@ export function updateCustodyState(
   const oldCurrentNetworkTxList = getCurrentNetworkTransactions(state);
 
   const differentTxs = newCurrentNetworkTxList.filter(
-    (item) =>
+    (item: TransactionMeta) =>
       oldCurrentNetworkTxList.filter(
         (tx: { [key: string]: any }) =>
           tx.custodyId === item.custodyId &&
@@ -78,7 +79,7 @@ export function updateCustodyState(
   );
 
   const txStateSaysDeepLinkShouldClose = Boolean(
-    differentTxs.find((tx) => {
+    differentTxs.find((tx: TransactionMeta) => {
       const custodyAccountDetails =
         state.metamask.custodyAccountDetails[
           toChecksumHexAddress(tx.txParams.from)

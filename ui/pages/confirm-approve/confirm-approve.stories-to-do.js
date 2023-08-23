@@ -15,7 +15,7 @@ export default {
   title: 'Pages/ConfirmApprove',
 };
 
-// transaction ID, maps to entry in state.metamask.currentNetworkTxList
+// transaction ID, maps to entry in state.metamask.transactions
 const txId = 7900715443136469;
 
 const PageSet = ({ children }) => {
@@ -33,7 +33,7 @@ const PageSet = ({ children }) => {
     store.dispatch(
       updateMetamaskState(
         getNewState(state.metamask, {
-          currentNetworkTxList: [transaction],
+          transactions: [transaction],
         }),
       ),
     );
