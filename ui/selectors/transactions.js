@@ -1,10 +1,5 @@
-import {
-  createSelector,
-  createSelectorCreator,
-  defaultMemoize,
-} from 'reselect';
 import { ApprovalType } from '@metamask/controller-utils';
-import { isEqual } from 'lodash';
+import { createSelector } from 'reselect';
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
@@ -24,6 +19,7 @@ import {
   getSelectedAddress,
 } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import { createDeepEqualSelector } from './util';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -31,8 +27,6 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
 ];
 
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
-
-const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
 /**
  * @param state

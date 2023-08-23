@@ -129,7 +129,7 @@ const RevealSeedPage = () => {
 
   const renderPasswordPromptContent = () => {
     return (
-      <form onSubmit={(event) => handleSubmit(event)}>
+      <form onSubmit={handleSubmit}>
         <Label htmlFor="password-box">{t('enterPasswordContinue')}</Label>
         <TextField
           inputProps={{

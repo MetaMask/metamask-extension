@@ -3,16 +3,11 @@ import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
 import {
-  createSelector,
-  createSelectorCreator,
-  defaultMemoize,
-} from 'reselect';
-import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   memoize,
   ///: END:ONLY_INCLUDE_IN
-  isEqual,
 } from 'lodash';
+import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -101,6 +96,7 @@ import {
 // eslint-disable-next-line import/order
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
+import { createDeepEqualSelector } from './util';
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -112,8 +108,9 @@ import { getPermissionSubjects } from './permissions';
 export function isNetworkLoading(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
+    selectedNetworkClientId &&
     state.metamask.networksMetadata[selectedNetworkClientId].status !==
-    NetworkStatus.Available
+      NetworkStatus.Available
   );
 }
 
@@ -824,8 +821,6 @@ export function getNextSuggestedNonce(state) {
 export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
-
-const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
 export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
   getMetaMaskIdentities,

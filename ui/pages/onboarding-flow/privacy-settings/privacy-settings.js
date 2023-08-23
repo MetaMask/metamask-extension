@@ -12,19 +12,18 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
+  Box,
+  Button,
   PickerNetwork,
   Text,
   TextField,
 } from '../../../components/component-library';
-import Box from '../../../components/ui/box/box';
-import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  FONT_WEIGHT,
   TextColor,
   TextVariant,
-  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -114,15 +113,12 @@ export default function PrivacySettings() {
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
-          <Typography
-            variant={TypographyVariant.H2}
-            fontWeight={FONT_WEIGHT.BOLD}
-          >
+          <Text variant={TextVariant.headingLg} as="h2">
             {t('advancedConfiguration')}
-          </Typography>
-          <Typography variant={TypographyVariant.H4}>
+          </Text>
+          <Text variant={TextVariant.headingSm} as="h4">
             {t('setAdvancedPrivacySettingsDetails')}
-          </Typography>
+          </Text>
         </div>
         <div
           className="privacy-settings__settings"
@@ -221,9 +217,8 @@ export default function PrivacySettings() {
                     </div>
                   ) : (
                     <Button
-                      type="secondary"
-                      rounded
-                      large
+                      variant={BUTTON_VARIANT.SECONDARY}
+                      size={BUTTON_SIZES.LG}
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
@@ -251,8 +246,8 @@ export default function PrivacySettings() {
                     }}
                   />
                   {ipfsURL ? (
-                    <Typography
-                      variant={TypographyVariant.H7}
+                    <Text
+                      variant={TextVariant.bodySm}
                       color={
                         ipfsError
                           ? TextColor.errorDefault
@@ -260,7 +255,7 @@ export default function PrivacySettings() {
                       }
                     >
                       {ipfsError || t('onboardingAdvancedPrivacyIPFSValid')}
-                    </Typography>
+                    </Text>
                   ) : null}
                 </Box>
               </>
@@ -329,10 +324,16 @@ export default function PrivacySettings() {
               </a>,
             ])}
           />
+          <Button
+            variant={BUTTON_VARIANT.PRIMARY}
+            size={BUTTON_SIZES.LG}
+            onClick={handleSubmit}
+            block
+            marginTop={6}
+          >
+            {t('done')}
+          </Button>
         </div>
-        <Button type="primary" rounded onClick={handleSubmit}>
-          {t('done')}
-        </Button>
       </div>
     </>
   );

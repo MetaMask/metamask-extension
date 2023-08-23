@@ -16,20 +16,20 @@ export interface ButtonLinkStyleUtilityProps
   /**
    * Boolean to change button type to Danger when true
    */
-  danger: boolean;
+  danger?: boolean;
   /**
    * Boolean to disable button
    */
-  disabled: boolean;
+  disabled?: boolean;
   /**
    * Boolean to show loading spinner in button
    */
-  loading: boolean;
+  loading?: boolean;
   /**
    * Possible size values: 'ButtonLinkSize.Auto'(auto), 'ButtonLinkSize.Sm'(32px), 'ButtonLinkSize.Md'(40px), 'ButtonLinkSize.Lg'(48px), 'ButtonLinkSize.Inherit'(inherits parents font-size)
    * Default value is 'ButtonLinkSize.Auto'.
    */
-  size: ButtonLinkSize;
+  size?: ButtonLinkSize;
 }
 
 export type ButtonLinkProps<C extends React.ElementType> =

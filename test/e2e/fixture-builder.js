@@ -197,16 +197,6 @@ function defaultFixture() {
         gasEstimateType: 'none',
         gasFeeEstimates: {},
       },
-      IncomingTransactionsController: {
-        incomingTransactions: {},
-        incomingTxLastFetchedBlockByChainId: {
-          [CHAIN_IDS.MAINNET]: null,
-          [CHAIN_IDS.LINEA_MAINNET]: null,
-          [CHAIN_IDS.GOERLI]: null,
-          [CHAIN_IDS.SEPOLIA]: null,
-          [CHAIN_IDS.LINEA_GOERLI]: null,
-        },
-      },
       KeyringController: {
         vault:
           '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
@@ -707,6 +697,13 @@ class FixtureBuilder {
 
   withTokensController(data) {
     merge(this.fixture.data.TokensController, data);
+    return this;
+  }
+
+  withBadPreferencesControllerState() {
+    merge(this.fixture.data, {
+      PreferencesController: 5,
+    });
     return this;
   }
 

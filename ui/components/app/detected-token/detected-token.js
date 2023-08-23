@@ -161,6 +161,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     <>
       {showDetectedTokenIgnoredPopover && (
         <DetectedTokenIgnoredPopover
+          isOpen
           onCancelIgnore={onCancelIgnore}
           handleClearTokensSelection={handleClearTokensSelection}
           partiallyIgnoreDetectedTokens={partiallyIgnoreDetectedTokens}
