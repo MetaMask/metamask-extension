@@ -178,7 +178,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
         class="signature-request__origin"
       >
         <div
-          class="box mm-tag-url box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
+          class="mm-box mm-tag-url mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
