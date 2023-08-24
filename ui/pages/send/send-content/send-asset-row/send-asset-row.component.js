@@ -205,8 +205,8 @@ export default class SendAssetRow extends Component {
       this.props;
     const { sendableTokens, sendableNfts } = this.state;
 
-    const balanceValue = accounts[selectedAccount.address]
-      ? accounts[selectedAccount.address].balance
+    const balanceValue = accounts[selectedAccount.id]
+      ? accounts[selectedAccount.id].balance
       : '';
 
     const sendableAssets = [...sendableTokens, ...sendableNfts];

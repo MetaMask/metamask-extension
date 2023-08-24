@@ -1581,13 +1581,13 @@ export default class TransactionController extends EventEmitter {
 
     if (origin === ORIGIN_METAMASK) {
       // Assert the from address is the selected address
-      if (normalizedTxParams.from !== this.getSelectedAddress()) {
+      if (normalizedTxParams.from !== this.getSelectedAccountAddress()) {
         throw ethErrors.rpc.internal({
           message: `Internally initiated transaction is using invalid account.`,
           data: {
             origin,
             fromAddress: normalizedTxParams.from,
-            selectedAddress: this.getSelectedAddress(),
+            selectedAddress: this.getSelectedAccountAddress(),
           },
         });
       }
@@ -1917,8 +1917,7 @@ export default class TransactionController extends EventEmitter {
     this.getState = () => this.memStore.getState();
 
     /** @returns {string} the user selected address */
-    this.getSelectedAddress = () =>
-      this.preferencesStore.getState().selectedAddress;
+    this.getSelectedAccountAddress = () => this.getCurrentAccount().address;
 
     /** @returns {Array} transactions whos status is unapproved */
     this.getUnapprovedTxCount = () =>
@@ -2494,8 +2493,8 @@ export default class TransactionController extends EventEmitter {
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
       gas_edit_attempted: 'none',
-      account_type: await this.getAccountType(this.getSelectedAddress()),
-      device_model: await this.getDeviceModel(this.getSelectedAddress()),
+      account_type: await this.getAccountType(this.getSelectedAccountAddress()),
+      device_model: await this.getDeviceModel(this.getSelectedAccountAddress()),
       asset_type: assetType,
       token_standard: tokenStandard,
       transaction_type: transactionType,

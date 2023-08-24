@@ -2948,6 +2948,9 @@ export default class MetamaskController extends EventEmitter {
           password,
         );
         await this.accountsController.updateAccounts();
+        this.accountsController.setSelectedAccount(
+          this.accountsController.getAccounts()[0].id,
+        );
       }
 
       return vault;
@@ -3562,7 +3565,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The current selected address.
    */
   async resetAccount() {
-    const selectedAddress = this.preferencesController.getSelectedAddress();
+    const selectedAddress =
+      this.accountsController.getSelectedAccount().address;
     this.txController.wipeTransactions(selectedAddress);
     this.networkController.resetConnection();
 
