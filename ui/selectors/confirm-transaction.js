@@ -93,7 +93,6 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     network,
     chainId,
   ) => {
-    console.log(111, unapprovedTxs);
     const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce(
       (acc, address) => {
         const transactions = { ...acc };
@@ -108,6 +107,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
       },
       {},
     );
+    console.log(111, filteredUnapprovedTxs);
 
     return {
       ...filteredUnapprovedTxs,
