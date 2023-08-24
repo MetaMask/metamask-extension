@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Adresi panoya kopyala"
   },
-  "copyPrivateKey": {
-    "message": "Bu sizin özel anahtarınız (kopyalamak için tıklayın)"
-  },
   "copyRawTransactionData": {
     "message": "Ham işlem verisini kopyala"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "İsteğe bağlı parolayı girin"
   },
-  "enterPassword": {
-    "message": "Parolanızı girin"
-  },
   "enterPasswordContinue": {
     "message": "Devam etmek için parola girin"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "MetaMask Snap'lerini keşfedin"
-  },
-  "exportPrivateKey": {
-    "message": "Özel anahtarı dışa aktar"
   },
   "extendWalletWithSnaps": {
     "message": "Cüzdan deneyimini genişletin."
@@ -3868,9 +3859,6 @@
   "showPrivateKey": {
     "message": "Özel anahtarı göster"
   },
-  "showPrivateKeys": {
-    "message": "Özel Anahtarları Göster"
-  },
   "showTestnetNetworks": {
     "message": "Test ağlarını göster"
   },
@@ -5129,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Şu anda işlem içgörüleri bu sözleşme için desteklenmiyor."
-  },
-  "typePassword": {
-    "message": "MetaMask parolanızı girin"
   },
   "typeYourSRP": {
     "message": "Gizli Kurtarma İfadenizi girin"
