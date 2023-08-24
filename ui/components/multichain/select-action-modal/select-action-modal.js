@@ -103,11 +103,11 @@ export const SelectActionModal = ({ onClose }) => {
               actionIcon={IconName.Add}
               showIcon
               primaryText={t('buy')}
-              data-testid="select-action-buy"
               secondaryText={t('buyDescription')}
               isDisabled={!isBuyableChain}
               tooltipTitle={t('buyDisabled')}
               onClick={() => {
+                onClose();
                 openBuyCryptoInPdapp();
                 trackEvent({
                   event: MetaMetricsEventName.NavBuyButtonClicked,
@@ -119,7 +119,6 @@ export const SelectActionModal = ({ onClose }) => {
                     token_symbol: defaultSwapsToken,
                   },
                 });
-                onClose();
               }}
             />
             ///: END:ONLY_INCLUDE_IN
@@ -144,7 +143,6 @@ export const SelectActionModal = ({ onClose }) => {
           <SelectActionModalItem
             actionIcon={IconName.SwapHorizontal}
             primaryText={t('swap')}
-            data-testid="select-action-swap"
             secondaryText={t('swapDescription')}
             isDisabled={!isSwapsChain}
             tooltipTitle={t('swapDisabled')}
@@ -182,7 +180,6 @@ export const SelectActionModal = ({ onClose }) => {
             actionIcon={IconName.Arrow2UpRight}
             primaryText={t('send')}
             secondaryText={t('sendDescription')}
-            data-testid="select-action-send"
             onClick={async () => {
               trackEvent({
                 event: MetaMetricsEventName.NavSendButtonClicked,
@@ -207,7 +204,6 @@ export const SelectActionModal = ({ onClose }) => {
               actionIcon={IconName.Arrow2UpRight}
               showIcon
               primaryText={t('bridge')}
-              data-testid="select-action-bridge"
               secondaryText={t('bridgeDescription')}
               isDisabled={!isBridgeChain}
               tooltipTitle={t('bridgeDisabled')}

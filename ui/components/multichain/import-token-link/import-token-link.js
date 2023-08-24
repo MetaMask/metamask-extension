@@ -9,11 +9,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  detectNewTokens,
-  showImportTokensModal,
-  showSelectActionModal,
-} from '../../../store/actions';
+import { detectNewTokens, showImportTokensModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -49,7 +45,7 @@ export const ImportTokenLink = ({ className, ...props }) => {
           data-testid="import-token-button"
           startIconName={IconName.Add}
           onClick={() => {
-            dispatch(showSelectActionModal());
+            dispatch(showImportTokensModal());
             trackEvent({
               event: MetaMetricsEventName.TokenImportButtonClicked,
               category: MetaMetricsEventCategory.Navigation,
