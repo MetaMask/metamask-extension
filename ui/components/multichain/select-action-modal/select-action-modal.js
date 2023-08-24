@@ -107,7 +107,6 @@ export const SelectActionModal = ({ onClose }) => {
               isDisabled={!isBuyableChain}
               tooltipTitle={t('buyDisabled')}
               onClick={() => {
-                onClose();
                 openBuyCryptoInPdapp();
                 trackEvent({
                   event: MetaMetricsEventName.NavBuyButtonClicked,
@@ -119,6 +118,7 @@ export const SelectActionModal = ({ onClose }) => {
                     token_symbol: defaultSwapsToken,
                   },
                 });
+                onClose();
               }}
             />
             ///: END:ONLY_INCLUDE_IN
