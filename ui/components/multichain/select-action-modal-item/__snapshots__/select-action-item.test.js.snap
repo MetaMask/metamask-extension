@@ -2,10 +2,9 @@
 
 exports[`SelectActionModalItem should render correctly 1`] = `
 <div>
-  <a
-    class="mm-box select-action-modal-item mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+  <button
+    class="mm-box select-action-modal-item mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--background-color-transparent"
     data-testid="select-action-modal-item"
-    href="#"
   >
     <div
       class="mm-box"
@@ -26,13 +25,13 @@ exports[`SelectActionModalItem should render correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-lg-medium mm-text--text-align-left mm-box--color-text-default"
         />
       </div>
       <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
       />
     </div>
-  </a>
+  </button>
 </div>
 `;

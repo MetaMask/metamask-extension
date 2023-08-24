@@ -6,6 +6,7 @@ import {
   Display,
   FlexDirection,
   IconColor,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -34,8 +35,8 @@ export const SelectActionModalItem = ({
         gap={4}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
-        as="a"
-        href="#"
+        as="button"
+        backgroundColor={BackgroundColor.transparent}
         onClick={(e) => {
           e.preventDefault();
           onClick();
@@ -59,7 +60,9 @@ export const SelectActionModalItem = ({
             gap={2}
             alignItems={AlignItems.center}
           >
-            <Text variant={TextVariant.bodyLgMedium}>{primaryText}</Text>
+            <Text variant={TextVariant.bodyLgMedium} textAlign={TextAlign.Left}>
+              {primaryText}
+            </Text>
             {showIcon && (
               <Icon
                 name={IconName.Export}
@@ -68,7 +71,9 @@ export const SelectActionModalItem = ({
               />
             )}
           </Box>
-          <Text variant={TextVariant.bodyMd}>{secondaryText}</Text>
+          <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left}>
+            {secondaryText}
+          </Text>
         </Box>
       </Box>
     );
