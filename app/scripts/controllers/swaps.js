@@ -20,6 +20,10 @@ import {
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
 import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_DEADLINE,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
@@ -116,6 +120,7 @@ export default class SwapsController {
       getCurrentChainId,
       getEIP1559GasFeeEstimates,
       onNetworkStateChange,
+      trackMetaMetricsEvent,
     },
     state,
   ) {
@@ -141,6 +146,7 @@ export default class SwapsController {
 
     this.getBufferedGasLimit = getBufferedGasLimit;
     this.getTokenRatesState = getTokenRatesState;
+    this.trackMetaMetricsEvent = trackMetaMetricsEvent;
 
     this.pollCount = 0;
     this.getProviderConfig = getProviderConfig;
@@ -501,8 +507,10 @@ export default class SwapsController {
 
       const gasTimeout = setTimeout(() => {
         gasTimedOut = true;
-        captureException(new Error('timedoutGasReturn: timeout'), {
-          extra: {
+        this.trackMetaMetricsEvent({
+          event: MetaMetricsEventName.QuoteError,
+          category: MetaMetricsEventCategory.Swaps,
+          properties: {
             aggregator,
           },
         });

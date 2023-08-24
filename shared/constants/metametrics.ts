@@ -550,6 +550,7 @@ export enum MetaMetricsEventName {
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
+  QuoteError = 'Quote Error',
   ServiceWorkerRestarted = 'Service Worker Restarted',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
