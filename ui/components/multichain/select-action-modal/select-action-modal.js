@@ -1,7 +1,12 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react-router-dom';
 import {
   Box,
   IconName,
@@ -11,7 +16,10 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import { SelectActionModalItem } from '../select-action-modal-item';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: END:ONLY_INCLUDE_IN
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -48,7 +56,6 @@ import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 ///: END:ONLY_INCLUDE_IN
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 export const SelectActionModal = ({ onClose }) => {
   const dispatch = useDispatch();
