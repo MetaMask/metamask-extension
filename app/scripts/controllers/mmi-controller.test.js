@@ -53,6 +53,7 @@ describe('MMIController', function () {
         onInfuraIsBlocked: jest.fn(),
         onInfuraIsUnblocked: jest.fn(),
         provider: {},
+        networkConfigurations: {},
       }),
       appStateController: new AppStateController({
         addUnlockListener: jest.fn(),

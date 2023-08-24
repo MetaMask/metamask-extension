@@ -724,7 +724,9 @@ describe('migration #88', () => {
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  it('captures an exception if it has no TokenListController property', async () => {
+  it('logs a warning if it has no TokenListController property', async () => {
+    const mockWarnFn = jest.spyOn(console, 'warn');
+
     const oldData = {
       TokensController: {},
       NftController: {
@@ -760,13 +762,15 @@ describe('migration #88', () => {
     };
 
     await migrate(oldStorage);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+    expect(mockWarnFn).toHaveBeenCalledTimes(1);
+    expect(mockWarnFn).toHaveBeenCalledWith(
       new Error(`typeof state.TokenListController is undefined`),
     );
   });
 
-  it('captures an exception if the TokenListController property is not an object', async () => {
+  it('logs a warning if the TokenListController property is not an object', async () => {
+    const mockWarnFn = jest.spyOn(console, 'warn');
+
     const oldData = {
       TokensController: {},
       NftController: {
@@ -803,8 +807,8 @@ describe('migration #88', () => {
     };
 
     await migrate(oldStorage);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+    expect(mockWarnFn).toHaveBeenCalledTimes(1);
+    expect(mockWarnFn).toHaveBeenCalledWith(
       new Error(`typeof state.TokenListController is boolean`),
     );
   });
