@@ -586,7 +586,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
       data-testid="advanced-setting-toggle-ethsign"
     >
       <div
