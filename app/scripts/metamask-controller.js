@@ -4122,9 +4122,6 @@ export default class MetamaskController extends EventEmitter {
         showApprovalError: this.approvalController.error.bind(
           this.approvalController,
         ),
-        sendMetrics: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
