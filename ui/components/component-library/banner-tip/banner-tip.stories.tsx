@@ -104,8 +104,7 @@ ActionButton.args = {
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
-    iconName: IconName.Arrow2Right,
-    iconPositionRight: true,
+    endIconName: IconName.Arrow2Right,
   },
   children:
     'Use actionButtonLabel for action text, actionButtonOnClick for the onClick handler, and actionButtonProps to pass any ButtonLink prop types such as iconName',
