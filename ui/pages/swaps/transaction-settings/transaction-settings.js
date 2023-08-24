@@ -112,8 +112,8 @@ export default function TransactionSettings({
       notificationTitle = t('swapSlippageHighTitle');
     } else if (Number(customValue) > maxAllowedSlippage) {
       notificationSeverity = SEVERITIES.DANGER;
-      notificationText = t('swapSlippageVeryHighDescription');
-      notificationTitle = t('swapSlippageVeryHighTitle');
+      notificationText = t('swapSlippageOverLimitDescription');
+      notificationTitle = t('swapSlippageOverLimitTitle');
       dispatch(setSwapsErrorKey(SLIPPAGE_VERY_HIGH_ERROR));
     } else if (Number(customValue) === 0) {
       notificationSeverity = SEVERITIES.INFO;

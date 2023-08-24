@@ -57,11 +57,11 @@ export default function SwapsBannerAlert({
 
   switch (swapsErrorKey) {
     case SLIPPAGE_VERY_HIGH_ERROR:
-      title = t('swapSlippageVeryHighTitle');
+      title = t('swapSlippageOverLimitTitle');
       description = (
         <Box>
           <Text variant={TextVariant.bodyMd} as="h6">
-            {t('swapSlippageVeryHighDescription')}
+            {t('swapSlippageOverLimitDescription')}
           </Text>
           {transactionSettingsLink}
         </Box>
