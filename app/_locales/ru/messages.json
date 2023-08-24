@@ -3019,10 +3019,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Установка MetaMask завершена!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Отображение входящих транзакций в вашем кошельке зависит от связи с $1. Etherscan получит доступ к вашему адресу Ethereum и вашему IP-адресу. Посмотрите $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Оповещения об обнаружении фишинга зависят от связи с $1. jsDeliver получит доступ к вашему IP-адресу. Посмотрите $ 2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"

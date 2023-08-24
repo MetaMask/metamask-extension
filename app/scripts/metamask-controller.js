@@ -415,6 +415,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
+      networkConfigurations: this.networkController.state.networkConfigurations,
     });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
@@ -1975,10 +1976,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.preferencesController.store.subscribe(async (state) => {
       const { selectedAddress, currentLocale } = state;
-
+      const { chainId } = this.networkController.state.providerConfig;
       await updateCurrentLocale(currentLocale);
 
-      if (state?.featureFlags?.showIncomingTransactions) {
+      if (state.incomingTransactionsPreferences?.[chainId]) {
         this.txController.startIncomingTransactionPolling();
       } else {
         this.txController.stopIncomingTransactionPolling();
@@ -2280,6 +2281,10 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
+      setIncomingTransactionsPreferences:
+        preferencesController.setIncomingTransactionsPreferences.bind(
+          preferencesController,
+        ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,

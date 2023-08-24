@@ -3019,10 +3019,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Ang pagpapakita ng mga papasok na transaksyon sa iyong wallet ay umaasa sa pakikipag-ugnayan sa $1. Magkakaroon ng access ang Etherscan sa iyong Ethereum address at iyong IP address. Tingnan ang $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Ang mga alerto sa pagtuklas ng phishing ay umaasa sa komunikasyon sa $1. Ang jsDeliver ay magkakaroon ng access sa iyong IP address. Tingnan ang $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
