@@ -42,19 +42,17 @@ export default function SwapsBannerAlert({
   let description;
 
   const transactionSettingsLink = (
-    <ButtonLink
-      size={ButtonLinkSize.Inherit}
-      textProps={{
-        variant: TextVariant.bodyMd,
-        alignItems: AlignItems.flexStart,
-      }}
-      onClick={(e) => {
-        e.preventDefault();
-        dispatch(setTransactionSettingsOpened(true));
-      }}
-    >
-      {t('swapAdjustSlippage')}
-    </ButtonLink>
+    <Text variant={TextVariant.bodyMd}>
+      <ButtonLink
+        onClick={(e) => {
+          e.preventDefault();
+          dispatch(setTransactionSettingsOpened(true));
+        }}
+        size={ButtonLinkSize.Inherit}
+      >
+        {t('swapAdjustSlippage')}
+      </ButtonLink>
+    </Text>
   );
 
   switch (swapsErrorKey) {
