@@ -40,7 +40,7 @@ describe('SlippageNotificationModal', () => {
     );
     expect(
       getByText(
-        'The slippage entered (10%) is considered very high and may result in a bad rate.',
+        'The slippage entered (10%) is considered very high and may result in a bad rate',
       ),
     ).toBeInTheDocument();
     expect(getByText('Adjust slippage')).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe('SlippageNotificationModal', () => {
       'Low slippage',
     );
     expect(
-      getByText('A value this low (1%) may result in a failed swap.'),
+      getByText('A value this low (1%) may result in a failed swap'),
     ).toBeInTheDocument();
     expect(getByText('Adjust slippage')).toBeInTheDocument();
     expect(getByText('Swap anyway')).toBeInTheDocument();

@@ -172,12 +172,12 @@ describe('Swaps - notifications', function () {
         await driver.fill('input[data-testid*="slippage"]', '1');
         await checkNotification(driver, {
           title: 'Low slippage',
-          text: 'A value this low (1%) may result in a failed swap.',
+          text: 'A value this low (1%) may result in a failed swap',
         });
         await driver.fill('input[data-testid*="slippage"]', '15');
         await checkNotification(driver, {
           title: 'High slippage',
-          text: 'The slippage entered (15%) is considered very high and may result in a bad rate.',
+          text: 'The slippage entered (15%) is considered very high and may result in a bad rate',
         });
         await driver.fill('input[data-testid*="slippage"]', '20');
         await checkNotification(driver, {

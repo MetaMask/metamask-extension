@@ -55,7 +55,7 @@ describe('SwapsBannerAlert', () => {
     expect(getByText('High slippage')).toBeInTheDocument();
     expect(
       getByText(
-        'The slippage entered (5%) is considered very high and may result in a bad rate.',
+        'The slippage entered (5%) is considered very high and may result in a bad rate',
       ),
     ).toBeInTheDocument();
   });
@@ -74,7 +74,7 @@ describe('SwapsBannerAlert', () => {
     expect(getByText('High slippage')).toBeInTheDocument();
     expect(
       getByText(
-        'The slippage entered (10%) is considered very high and may result in a bad rate.',
+        'The slippage entered (10%) is considered very high and may result in a bad rate',
       ),
     ).toBeInTheDocument();
     expect(getByText('Adjust slippage')).toBeInTheDocument();
@@ -92,7 +92,7 @@ describe('SwapsBannerAlert', () => {
     );
     expect(getByText('Low slippage')).toBeInTheDocument();
     expect(
-      getByText('A value this low (1%) may result in a failed swap.'),
+      getByText('A value this low (1%) may result in a failed swap'),
     ).toBeInTheDocument();
   });
 
@@ -109,7 +109,7 @@ describe('SwapsBannerAlert', () => {
     );
     expect(getByText('Low slippage')).toBeInTheDocument();
     expect(
-      getByText('A value this low (1%) may result in a failed swap.'),
+      getByText('A value this low (1%) may result in a failed swap'),
     ).toBeInTheDocument();
     expect(getByText('Adjust slippage')).toBeInTheDocument();
   });

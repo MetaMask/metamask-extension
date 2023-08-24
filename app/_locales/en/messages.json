@@ -4628,14 +4628,14 @@
     "message": "Show latest quotes"
   },
   "swapSlippageHighDescription": {
-    "message": "The slippage entered ($1%) is considered very high and may result in a bad rate.",
+    "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
     "description": "$1 is the amount of % for slippage"
   },
   "swapSlippageHighTitle": {
     "message": "High slippage"
   },
   "swapSlippageLowDescription": {
-    "message": "A value this low ($1%) may result in a failed swap.",
+    "message": "A value this low ($1%) may result in a failed swap",
     "description": "$1 is the amount of % for slippage"
   },
   "swapSlippageLowTitle": {
