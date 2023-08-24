@@ -24,6 +24,7 @@ import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
+
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
   FontWeight,

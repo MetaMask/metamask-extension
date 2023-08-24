@@ -28,7 +28,7 @@ export default function IconButton({
       {renderWrapper(
         <>
           <div className="icon-button__circle">{Icon}</div>
-          {label?.length > 9 ? (
+          {label.length > 9 ? (
             <Tooltip title={label} position="bottom">
               <Text
                 className="icon-button__label"
@@ -57,7 +57,7 @@ IconButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   Icon: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
-  label: PropTypes.string,
+  label: PropTypes.string.isRequired,
   tooltipRender: PropTypes.func,
   className: PropTypes.string,
   'data-testid': PropTypes.string,
