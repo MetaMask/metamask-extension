@@ -5,6 +5,7 @@ import {
   permittedMethods as permittedSnapMethods,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/rpc-methods';
+import { hasProperty } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { flatten } from 'lodash';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
@@ -38,11 +39,20 @@ const expectedHookNames = Array.from(
 export function createMethodMiddleware(hooks) {
   // Fail immediately if we forgot to provide any expected hooks.
   const missingHookNames = expectedHookNames.filter(
-    (hookName) => !Object.hasOwnProperty.call(hooks, hookName),
+    (hookName) => !hasProperty(hooks, hookName),
   );
   if (missingHookNames.length > 0) {
     throw new Error(
       `Missing expected hooks:\n\n${missingHookNames.join('\n')}\n`,
+    );
+  }
+
+  const extraneousHookNames = Object.keys(hooks).filter(
+    (hookName) => !expectedHookNames.includes(hookName),
+  );
+  if (extraneousHookNames.length > 0) {
+    throw new Error(
+      `Received unexpected hooks:\n\n${extraneousHookNames.join('\n')}\n`,
     );
   }
 
