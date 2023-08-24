@@ -237,6 +237,8 @@ env:
   - BLOCKAID_FILE_CDN
   # Blockaid public key for verifying signatures of data files downloaded from CDN
   - BLOCKAID_PUBLIC_KEY
+  # Determines if feature flagged Multichain UI should be used
+  - MULTICHAIN: ''
 
   ###
   # Meta variables
