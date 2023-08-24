@@ -74,13 +74,7 @@ export default {
   },
 } as Meta<typeof Button>;
 
-<<<<<<< HEAD
 const Template: StoryFn<typeof Button> = (args) => <Button {...args} />;
-=======
-export const DefaultStory: StoryFn<typeof Button> = (args) => (
-  <Button {...args} />
-);
->>>>>>> 6c19af8604 (button to TS migration)
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
@@ -163,31 +157,16 @@ export const As: StoryFn<typeof Button> = (args) => (
   </Box>
 );
 
-<<<<<<< HEAD
 export const Disabled = Template.bind({});
-=======
-export const Disabled: StoryFn<typeof Button> = (args) => (
-  <Button {...args}>Disabled Button</Button>
-);
-
->>>>>>> 6c19af8604 (button to TS migration)
 Disabled.args = {
   disabled: true,
 };
 
-<<<<<<< HEAD
 export const Loading = Template.bind({});
-=======
-export const Loading: StoryFn<typeof Button> = (args) => (
-  <Button {...args}>Loading Button</Button>
-);
-
->>>>>>> 6c19af8604 (button to TS migration)
 Loading.args = {
   loading: true,
 };
 
-<<<<<<< HEAD
 export const StartIconName = Template.bind({});
 StartIconName.args = {
   startIconName: IconName.AddSquare,
@@ -197,16 +176,3 @@ export const EndIconName = Template.bind({});
 EndIconName.args = {
   endIconName: IconName.AddSquare,
 };
-=======
-export const StartIconName: StoryFn<typeof Button> = (args) => (
-  <Button {...args} startIconName={IconName.AddSquare}>
-    Button
-  </Button>
-);
-
-export const EndIconName: StoryFn<typeof Button> = (args) => (
-  <Button {...args} endIconName={IconName.Arrow2Right}>
-    Button
-  </Button>
-);
->>>>>>> 6c19af8604 (button to TS migration)

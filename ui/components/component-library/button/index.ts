@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Size } from '../../../helpers/constants/design-system';
 
 export { Button } from './button';
@@ -22,7 +21,3 @@ export const BUTTON_VARIANT = {
   SECONDARY: 'secondary',
   LINK: 'link',
 };
-=======
-export { Button } from './button';
-export { ButtonSize, ButtonVariant } from './button.types';
->>>>>>> 6c19af8604 (button to TS migration)
