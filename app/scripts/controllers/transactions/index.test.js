@@ -56,10 +56,10 @@ const TRANSACTION_META_MOCK = {
   hash: '0x1',
   id: 1,
   status: TransactionStatus.confirmed,
-  transaction: {
+  time: 123456789,
+  txParams: {
     from: VALID_ADDRESS,
   },
-  time: 123456789,
 };
 
 async function flushPromises() {
