@@ -262,7 +262,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gaps={4}
+        gap={4}
         data-testid="advanced-setting-hex-data"
       >
         <div className="settings-page__content-item">
@@ -295,7 +295,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gaps={4}
+        gap={4}
         data-testid="advanced-setting-show-testnet-conversion"
       >
         <div className="settings-page__content-item">
@@ -331,7 +331,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gaps={4}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('showTestnetNetworks')}</span>
@@ -364,7 +364,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gaps={4}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('nonceField')}</span>
@@ -555,7 +555,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        gaps={4}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('dismissReminderField')}</span>

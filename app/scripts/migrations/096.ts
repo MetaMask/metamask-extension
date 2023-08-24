@@ -37,25 +37,7 @@ interface NetworkConfiguration {
   chainId: Record<string, any>;
 }
 
-interface FeatureFlags {
-  showIncomingTransactions: boolean;
-}
-
-interface IncomingTransactionPreferences {
-  [key: string]: boolean;
-}
-
-interface State {
-  PreferencesController?: {
-    featureFlags?: FeatureFlags;
-    incomingTransactionsPreferences?: IncomingTransactionPreferences;
-  };
-  NetworkController?: {
-    networkConfigurations?: Record<string, NetworkConfiguration>;
-  };
-}
-
-function transformState(state: State) {
+function transformState(state: Record<string, unknown>) {
   if (
     !hasProperty(state, 'PreferencesController') ||
     !isObject(state.PreferencesController) ||
@@ -91,9 +73,9 @@ function transformState(state: State) {
     map(allSavedNetworks, (element) => [element, showIncomingTransactions]),
   );
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  delete state.PreferencesController.featureFlags.showIncomingTransactions;
+  if (featureFlags?.showIncomingTransactions !== undefined) {
+    delete featureFlags.showIncomingTransactions;
+  }
 
   state.PreferencesController.incomingTransactionsPreferences =
     incomingTransactionsPreferences;
