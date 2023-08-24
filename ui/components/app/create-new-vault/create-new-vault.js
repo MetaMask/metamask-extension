@@ -128,7 +128,7 @@ export default function CreateNewVault({
           <Checkbox
             id="create-new-vault__terms-checkbox"
             dataTestId="create-new-vault__terms-checkbox"
-            checked={termsChecked}
+            isChecked={termsChecked}
             onClick={toggleTermsCheck}
             label={termsOfUse}
           />
