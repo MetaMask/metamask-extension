@@ -34,7 +34,6 @@ import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getInternalAccount,
