@@ -15,7 +15,6 @@ export {
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
 export { Box } from './box';
-<<<<<<< HEAD
 export {
   Button,
   ButtonVariant,
@@ -23,9 +22,6 @@ export {
   BUTTON_SIZES,
   BUTTON_VARIANT,
 } from './button';
-=======
-export { Button, ButtonVariant, ButtonSize } from './button';
->>>>>>> 6c19af8604 (button to TS migration)
 export { ButtonBase, ButtonBaseSize } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, ButtonLinkSize } from './button-link';
