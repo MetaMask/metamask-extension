@@ -628,5 +628,5 @@
       "@storybook/react-webpack5>@storybook/preset-react-webpack>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false
     }
   },
-  "packageManager": "yarn@4.0.0-rc.48"
+  "packageManager": "yarn@4.0.0-rc.50"
 }
