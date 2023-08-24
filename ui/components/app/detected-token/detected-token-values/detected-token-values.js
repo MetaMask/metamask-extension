@@ -57,7 +57,10 @@ const DetectedTokenValues = ({
         </Text>
       </Box>
       <Box className="detected-token-values__checkbox">
-        <Checkbox checked={tokenSelection} onClick={handleCheckBoxSelection} />
+        <Checkbox
+          isChecked={tokenSelection}
+          onClick={handleCheckBoxSelection}
+        />
       </Box>
     </Box>
   );
