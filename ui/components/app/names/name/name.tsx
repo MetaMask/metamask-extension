@@ -28,7 +28,6 @@ export default function Name({
   }, [setModalOpen]);
 
   const handleModalClose = useCallback(() => {
-    console.log('Good');
     setModalOpen(false);
   }, [setModalOpen]);
 

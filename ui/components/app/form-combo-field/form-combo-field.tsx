@@ -9,6 +9,7 @@ export interface FormComboFieldOption {
 
 export interface FormComboFieldProps {
   alwaysVisible?: boolean;
+  maxDropdownHeight?: number;
   options: FormComboFieldOption[];
   onChange?: (value: string) => void;
   onOptionClick?: (option: FormComboFieldOption) => void;
@@ -53,16 +54,21 @@ function Option({
 }
 
 function Dropdown({
+  maxDropdownHeight,
   options,
   onOptionClick,
   width,
 }: {
+  maxDropdownHeight?: number;
   options: FormComboFieldOption[];
   onOptionClick: (option: FormComboFieldOption) => void;
   width: number;
 }) {
   return (
-    <div className="form-combo-field__dropdown" style={{ width }}>
+    <div
+      className="form-combo-field__dropdown"
+      style={{ width, maxHeight: maxDropdownHeight }}
+    >
       {options.map((option) => (
         <Option
           option={option}
@@ -77,6 +83,7 @@ function Dropdown({
 
 export default function FormComboField({
   alwaysVisible = false,
+  maxDropdownHeight,
   options,
   onChange,
   onOptionClick,
@@ -86,18 +93,19 @@ export default function FormComboField({
   const [dropdownVisible, setDropdownVisible] = useState(alwaysVisible);
   const valueRef = useRef<any>();
   const [valueWidth, setValueWidth] = useState(0);
+  const inputRef = useRef<any>(null);
 
   useEffect(() => {
     setValueWidth(valueRef.current?.offsetWidth);
   });
 
   const handleBlur = useCallback(
-    (e: any) => {
+    (e?: any) => {
       if (alwaysVisible) {
         return;
       }
 
-      if (e.relatedTarget?.className !== 'form-combo-field__option') {
+      if (e?.relatedTarget?.className !== 'form-combo-field__option') {
         setDropdownVisible(false);
       }
     },
@@ -116,6 +124,7 @@ export default function FormComboField({
       handleChange({ target: { value: option.primaryLabel } });
       setDropdownVisible(alwaysVisible);
       onOptionClick?.(option);
+      inputRef.current?.focus();
     },
     [alwaysVisible, setDropdownVisible],
   );
@@ -128,8 +137,15 @@ export default function FormComboField({
         }}
       >
         <FormTextField
+          autoFocus
+          inputRef={inputRef}
           placeholder={placeholder}
           onBlur={handleBlur}
+          onKeyUp={(e: any) => {
+            if (e.key === 'Enter') {
+              handleBlur();
+            }
+          }}
           value={value}
           onChange={handleChange}
           className={classnames({
@@ -140,6 +156,7 @@ export default function FormComboField({
       </div>
       {dropdownVisible && (
         <Dropdown
+          maxDropdownHeight={maxDropdownHeight}
           options={options}
           onOptionClick={handleOptionClick}
           width={valueWidth}

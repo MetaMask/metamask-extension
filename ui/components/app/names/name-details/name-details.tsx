@@ -5,8 +5,10 @@ import {
   BUTTON_VARIANT,
   Box,
   Button,
+  ButtonIcon,
   FormTextField,
   IconName,
+  IconSize,
   Label,
   Modal,
   ModalContent,
@@ -17,17 +19,24 @@ import {
 import {
   AlignItems,
   BlockSize,
+  Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import Name from '../name/name';
 import FormComboField from '../../form-combo-field/form-combo-field';
 import { getNames } from '../../../../selectors';
 import { setName as saveName } from '../../../../store/actions';
+import { isEqual } from 'lodash';
+import { AddressCopyButton } from '../../../multichain';
+import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
 const PROVIDER_LABELS: { [providerId: string]: string } = {
   ens: 'Ethereum Name Service (ENS)',
   opensea: 'OpenSea',
+  etherscan: 'Etherscan (Verified Contract Name)',
+  token: 'Token Name (Blockchain)',
 };
 
 export interface NameDetailsProps {
@@ -41,10 +50,11 @@ export default function NameDetails({
   type,
   value,
 }: NameDetailsProps) {
-  const names = useSelector(getNames);
+  const names = useSelector(getNames, isEqual);
   const [name, setName] = useState('');
   const [provider, setProvider] = useState(undefined);
   const dispatch = useDispatch();
+  const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
 
   const handleSaveClick = useCallback(async () => {
     await dispatch(saveName({ value, type, name, provider }));
@@ -103,7 +113,7 @@ export default function NameDetails({
             <Name
               value={value}
               type={NameValueType.ETHEREUM_ADDRESS}
-              providerPriority={['ens']}
+              providerPriority={['token', 'ens', 'etherscan']}
             />
           </div>
           {!hasSavedName && (
@@ -121,11 +131,21 @@ export default function NameDetails({
           )}
           <hr className="name-details__line" />
           <FormTextField
+            className="name-details__address"
             id="form-text-field"
             label="Contract address"
             value={value}
             marginBottom={4}
             disabled
+            endAccessory={
+              <ButtonIcon
+                display={Display.Flex}
+                iconName={copiedAddress ? IconName.CopySuccess : IconName.Copy}
+                size={IconSize.Sm}
+                onClick={() => handleCopyAddress(value)}
+                color={IconColor.iconMuted}
+              />
+            }
           />
           <Label
             flexDirection={FlexDirection.Column}
@@ -140,6 +160,7 @@ export default function NameDetails({
               onChange={handleNameChange}
               onOptionClick={handleProviderClick}
               value={name}
+              maxDropdownHeight={170}
             />
           </Label>
           <hr className="name-details__line" />

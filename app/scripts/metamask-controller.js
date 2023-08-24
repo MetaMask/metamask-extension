@@ -53,7 +53,12 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { NameController, ENSNameProvider } from '@metamask/name-controller';
+import {
+  NameController,
+  ENSNameProvider,
+  EtherscanNameProvider,
+  TokenNameProvider,
+} from '@metamask/name-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
@@ -1487,6 +1492,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.nameController = new NameController({
+      getChainId: () => this.networkController.state.providerConfig.chainId,
       messenger: this.controllerMessenger.getRestricted({
         name: 'NameController',
         allowedActions: [],
@@ -1497,6 +1503,8 @@ export default class MetamaskController extends EventEmitter {
             this.ensController,
           ),
         }),
+        new EtherscanNameProvider({}),
+        new TokenNameProvider({}),
       ],
     });
 
