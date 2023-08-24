@@ -1065,8 +1065,8 @@ export default class MetamaskController extends EventEmitter {
       refetchOnAllowlistMiss: requireAllowlist,
       failOnUnavailableRegistry: requireAllowlist,
       url: {
-        registry: 'https://acl.execution.metamask.io/latest/registry.json',
-        signature: 'https://acl.execution.metamask.io/latest/signature.json',
+        registry: 'https://acl.execution.consensys.io/latest/registry.json',
+        signature: 'https://acl.execution.consensys.io/latest/signature.json',
       },
       publicKey:
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
