@@ -30,6 +30,53 @@ export const SENTRY_BACKGROUND_STATE = {
   AccountTracker: {
     currentBlockGasLimit: true,
   },
+  PermissionLogController: {
+    // double-check if contains PID?
+    permissionHistory: true,
+    // double-check if contains PID?
+    permissionActivityLog: true,
+  },
+  AnnouncementController: {
+    announcements: true,
+  },
+  GasFeeController: {
+    gasFeeEstimates: true,
+    estimatedGasFeeTimeBounds: true,
+    gasEstimateType: true,
+  },
+  TokenListController: {
+    // double-check if contains PID?
+    tokenList: true,
+    tokensChainsCache: true,
+    preventPollingOnNetworkRestart: true,
+  },
+  TokensController: {
+    // double-check if contains PID?
+    tokens: true,
+    // double-check if contains PID?
+    ignoredTokens: true,
+    // double-check if contains PID?
+    detectedTokens: true,
+    // double-check if contains PID?
+    allTokens: true,
+    // double-check if contains PID?
+    allIgnoredTokens: true,
+    // double-check if contains PID?
+    allDetectedTokens: true,
+  },
+  SmartTransactionsController: {
+    smartTransactions: false,
+    userOptIn: true,
+    liveness: true,
+    fees: {
+      approvalTxFees: true,
+      tradeTxFees: true,
+    },
+  },
+  NotificationController: {
+    // double-check if contains PID?
+    notifications: true,
+  },
   AlertController: {
     alertEnabledness: true,
   },
@@ -40,20 +87,38 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
   },
   AppStateController: {
+    timeoutMinutes: true,
     connectedStatusPopoverHasBeenShown: true,
     defaultHomeActiveTabName: true,
+    browserEnvironment: true,
+    popupGasPollTokens: true,
+    notificationGasPollTokens: true,
+    fullScreenGasPollTokens: true,
+    recoveryPhraseReminderHasBeenShown: true,
+    recoveryPhraseReminderLastShown: true,
+    outdatedBrowserWarningLastShown: true,
+    nftsDetectionNoticeDismissed: true,
+    showTestnetMessageInDropdown: true,
+    showBetaHeader: true,
+    showProductTour: true,
+    trezorModel: true,
+    currentPopupId: false,
+    qrHardware: true,
+    nftsDropdownState: true,
+    usedNetworks: true,
+    serviceWorkerLastActiveTime: true,
   },
   CurrencyController: {
     conversionDate: true,
     conversionRate: true,
     currentCurrency: true,
     nativeCurrency: true,
+    pendingCurrentCurrency: true,
+    pendingNativeCurrency: true,
+    usdConversionRate: true,
   },
   DecryptMessageController: {
     unapprovedDecryptMsgCount: true,
-  },
-  DesktopController: {
-    desktopEnabled: true,
   },
   EncryptionPublicKeyController: {
     unapprovedEncryptionPublicKeyMsgCount: true,
@@ -64,15 +129,31 @@ export const SENTRY_BACKGROUND_STATE = {
   MetaMetricsController: {
     metaMetricsId: true,
     participateInMetaMetrics: true,
+    eventsBeforeMetricsOptIn: true,
   },
   NetworkController: {
-    networkId: true,
     networkStatus: true,
+    selectedNetworkClientId: false,
+    networkId: true,
     providerConfig: {
-      nickname: true,
-      ticker: true,
+      rpcUrl: false,
       type: true,
+      chainId: false,
+      ticker: true,
+      nickname: true,
+      rpcPrefs: false,
+      id: false,
     },
+    networkConfigurations: false,
+    networksMetadata: {
+      EIPS: true,
+      status: true,
+    },
+  },
+  NftController: {
+    allNftContracts: false,
+    allNfts: false,
+    ignoredNfts: false,
   },
   OnboardingController: {
     completedOnboarding: true,
@@ -80,20 +161,109 @@ export const SENTRY_BACKGROUND_STATE = {
     seedPhraseBackedUp: true,
   },
   PreferencesController: {
-    currentLocale: true,
     featureFlags: true,
-    forgottenPassword: true,
+    // double-check if contains PID?
     ipfsGateway: true,
-    preferences: true,
+    identities: false,
+    lostIdentities: false,
+    selectedAddress: false,
+    useTokenDetection: true,
+    useNftDetection: true,
+    openSeaEnabled: true,
+    isMultiAccountBalancesEnabled: true,
+    disabledRpcMethodPreferences: true,
+    showTestNetworks: true,
+    isIpfsGatewayEnabled: true,
     useBlockie: true,
     useNonceField: true,
     usePhishDetect: true,
+    dismissSeedBackUpReminder: true,
+    useMultiAccountBalanceChecker: true,
+    use4ByteResolution: true,
+    useCurrencyRateCheck: true,
+    advancedGasFee: true,
+    incomingTransactionsPreferences: true,
+    // double-check if contains PID?
+    knownMethodData: true,
+    currentLocale: true,
+    forgottenPassword: true,
+    preferences: {
+      autoLockTimeLimit: true,
+      showFiatInTestnets: true,
+      showTestNetworks: true,
+      useNativeCurrencyAsPrimaryCurrency: true,
+      hideZeroBalanceTokens: true,
+    },
+    useAddressBarEnsResolution: true,
+    infuraBlocked: true,
+    ledgerTransportType: true,
+    snapRegistryList: true,
+    transactionSecurityCheckEnabled: true,
+    theme: true,
+    isLineaMainnetReleased: true,
+
+    securityAlertsEnabled: false,
+    snapsAddSnapAccountModalDismissed: true,
   },
   SignatureController: {
+    unapprovedMsgs: false,
+    unapprovedPersonalMsgs: false,
+    unapprovedTypedMessages: false,
     unapprovedMsgCount: true,
     unapprovedPersonalMsgCount: true,
     unapprovedTypedMessagesCount: true,
   },
+  SwapsController: {
+    swapsState: {
+      // double-check if contains PID?
+      quotes: false,
+      quotesPollingLimitEnabled: true,
+      fetchParams: true,
+      // double-check if contains PID?
+      tokens: true,
+      tradeTxId: false,
+      approveTxId: false,
+      quotesLastFetched: true,
+      customMaxGas: true,
+      customGasPrice: true,
+      customMaxFeePerGas: true,
+      customMaxPriorityFeePerGas: true,
+      swapsUserFeeLevel: true,
+      selectedAggId: true,
+      customApproveTxData: true,
+      errorKey: true,
+      topAggId: false,
+      routeState: true,
+      swapsFeatureIsLive: true,
+      saveFetchedQuotes: true,
+      swapsQuoteRefreshTime: true,
+      swapsQuotePrefetchingRefreshTime: true,
+      swapsStxBatchStatusRefreshTime: true,
+      swapsStxGetTransactionsRefreshTime: true,
+      swapsStxMaxFeeMultiplier: true,
+      swapsFeatureFlags: true,
+    },
+  },
+  SnapController: {
+    // double-check if contains PID?
+    snaps: true,
+    snapStates: true,
+    snapErrors: true,
+  },
+  CronjobController: {
+    jobs: true,
+  },
+  DesktopController: {
+    desktopEnabled: true,
+  },
+  // we're not sending any data to Sentry from the following controllers
+  // PermissionController
+  // TransactionController
+  // AddressBookController
+  // CachedBalancesController
+  // SubjectMetadataController
+  // PhishingController
+  // SnapsRegistry
 };
 
 const flattenedBackgroundStateMask = Object.values(
