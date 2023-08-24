@@ -21,6 +21,7 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
+  Button,
   BUTTON_SIZES,
   Box,
   Text,
