@@ -13,7 +13,6 @@ import { Button, ButtonSize, ButtonVariant } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/Button',
-
   component: Button,
   parameters: {
     docs: {
@@ -75,10 +74,9 @@ export default {
   },
 } as Meta<typeof Button>;
 
-export const DefaultStory: StoryFn<typeof Button> = (args) => (
-  <Button {...args} />
-);
+const Template: StoryFn<typeof Button> = (args) => <Button {...args} />;
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const Variant: StoryFn<typeof Button> = () => (
@@ -159,30 +157,22 @@ export const As: StoryFn<typeof Button> = (args) => (
   </Box>
 );
 
-export const Disabled: StoryFn<typeof Button> = (args) => (
-  <Button {...args}>Disabled Button</Button>
-);
-
+export const Disabled = Template.bind({});
 Disabled.args = {
   disabled: true,
 };
 
-export const Loading: StoryFn<typeof Button> = (args) => (
-  <Button {...args}>Loading Button</Button>
-);
-
+export const Loading = Template.bind({});
 Loading.args = {
   loading: true,
 };
 
-export const StartIconName: StoryFn<typeof Button> = (args) => (
-  <Button {...args} startIconName={IconName.AddSquare}>
-    Button
-  </Button>
-);
+export const StartIconName = Template.bind({});
+StartIconName.args = {
+  startIconName: IconName.AddSquare,
+};
 
-export const EndIconName: StoryFn<typeof Button> = (args) => (
-  <Button {...args} endIconName={IconName.Arrow2Right}>
-    Button
-  </Button>
-);
+export const EndIconName = Template.bind({});
+EndIconName.args = {
+  endIconName: IconName.AddSquare,
+};
