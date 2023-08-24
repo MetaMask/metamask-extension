@@ -17,7 +17,6 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
-import Tooltip from '../../ui/tooltip';
 
 export const SelectActionModalItem = ({
   actionIcon,
@@ -26,7 +25,6 @@ export const SelectActionModalItem = ({
   primaryText,
   secondaryText,
   isDisabled,
-  tooltipTitle,
 }) => {
   const SelectActionItem = () => {
     return (
@@ -42,9 +40,7 @@ export const SelectActionModalItem = ({
           e.preventDefault();
           onClick();
         }}
-        className={`select-action-modal-item ${
-          isDisabled && 'select-action-modal-item__disabled'
-        }`}
+        className="select-action-modal-item"
         data-testid="select-action-modal-item"
       >
         <Box>
@@ -80,9 +76,9 @@ export const SelectActionModalItem = ({
   return (
     <>
       {isDisabled ? (
-        <Tooltip position="bottom" title={tooltipTitle}>
+        <Box display={Display.None}>
           <SelectActionItem />
-        </Tooltip>
+        </Box>
       ) : (
         <SelectActionItem />
       )}
@@ -98,25 +94,21 @@ SelectActionModalItem.propTypes = {
   /**
    * onClick handler for each action
    */
-  onClick: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
   /**
    * Icon for each action Item
    */
-  actionIcon: PropTypes.string,
+  actionIcon: PropTypes.string.isRequired,
   /**
    * Title for each action Item
    */
-  primaryText: PropTypes.string,
+  primaryText: PropTypes.string.isRequired,
   /**
    * Description for each action Item
    */
-  secondaryText: PropTypes.string,
+  secondaryText: PropTypes.string.isRequired,
   /**
    * Disable bridge and swap for selected networks
    */
   isDisabled: PropTypes.bool,
-  /**
-   * Tooltip Title for each action Item
-   */
-  tooltipTitle: PropTypes.string,
 };

@@ -16,19 +16,25 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 import {
   getCurrentChainId,
+  getIsSwapsChain,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  getSwapsDefaultToken,
   getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
-  getIsSwapsChain,
   getMetaMetricsId,
-  getSwapsDefaultToken,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -38,8 +44,10 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+///: END:ONLY_INCLUDE_IN
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 export const SelectActionModal = ({ onClose }) => {
@@ -168,7 +176,7 @@ export const SelectActionModal = ({ onClose }) => {
             primaryText={t('send')}
             secondaryText={t('sendDescription')}
             data-testid="select-action-send"
-            onClick={() => {
+            onClick={async () => {
               trackEvent({
                 event: MetaMetricsEventName.NavSendButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,
@@ -179,11 +187,10 @@ export const SelectActionModal = ({ onClose }) => {
                   chain_id: chainId,
                 },
               });
-              dispatch(
+              await dispatch(
                 startNewDraftTransaction({ type: AssetType.native }),
-              ).then(() => {
-                history.push(SEND_ROUTE);
-              });
+              );
+              history.push(SEND_ROUTE);
               onClose();
             }}
           />
