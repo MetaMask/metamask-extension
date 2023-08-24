@@ -10,7 +10,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  SEVERITIES,
+  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getPlatform } from '../../../../app/scripts/lib/util';
@@ -600,8 +600,7 @@ export default class AdvancedTab extends PureComponent {
         className="settings-page__content-row"
         data-testid="advanced-setting-toggle-ethsign"
         display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={FlexDirection.Column}
       >
         <div className="settings-page__content-item">
           <span>{t('toggleEthSignField')}</span>
@@ -609,11 +608,11 @@ export default class AdvancedTab extends PureComponent {
             {t('toggleEthSignDescriptionField')}
           </div>
         </div>
-
         {disabledRpcMethodPreferences?.eth_sign ? (
           <BannerAlert
-            severity={SEVERITIES.DANGER}
-            marginBottom={5}
+            severity={Severity.Danger}
+            marginTop={3}
+            marginBottom={4}
             descriptionProps={{ variant: TextVariant.bodyMd }}
           >
             {t('toggleEthSignBannerDescription')}
