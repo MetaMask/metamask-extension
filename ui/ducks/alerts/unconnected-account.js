@@ -6,7 +6,7 @@ import * as actionConstants from '../../store/actionConstants';
 import {
   addPermittedAccount,
   setAlertEnabledness,
-  setSelectedAddress,
+  setSelectedInternalAccount,
 } from '../../store/actions';
 import {
   getOriginOfCurrentTab,
@@ -114,11 +114,11 @@ export const dismissAndDisableAlert = () => {
   };
 };
 
-export const switchToAccount = (address) => {
+export const switchToAccount = (accountId) => {
   return async (dispatch) => {
     try {
       await dispatch(switchAccountRequested());
-      await dispatch(setSelectedAddress(address));
+      await dispatch(setSelectedInternalAccount(accountId));
       await dispatch(switchAccountSucceeded());
     } catch (error) {
       console.error(error);

@@ -63,7 +63,7 @@ export const DefaultStory = () => {
       accountToConnect={accounts[0]}
       connectAccount={action('Account Connected')}
       removePermittedAccount={action('Account Removed')}
-      setSelectedAddress={action('Selected Address Changed')}
+      setSelectedAccount={action('Selected Account Changed')}
     />
   );
 };

@@ -1670,25 +1670,20 @@ export function lockMetamask(): ThunkAction<
   };
 }
 
-async function _setSelectedAddress(address: string): Promise<void> {
-  log.debug(`background.setSelectedAddress`);
-  await submitRequestToBackground('setSelectedAddress', [address]);
-}
-
 async function _setSelectedInternalAccount(accountId: string): Promise<void> {
   log.debug(`background.setSelectedInternalAccount`);
   console.log('sending to background', accountId);
   await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
 }
 
-export function setSelectedAddress(
-  address: string,
+export function setSelectedAccount(
+  accountId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setSelectedAddress`);
+    log.debug(`background.setSelectedInternalAccount`);
     try {
-      await _setSelectedAddress(address);
+      await _setSelectedInternalAccount(accountId);
     } catch (error) {
       dispatch(displayWarning(error));
       return;
@@ -1703,7 +1698,7 @@ export function setSelectedInternalAccount(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setSelectedAddress`);
+    log.debug(`background.setSelectedInternalAccount`);
 
     const state = getState();
     const unconnectedAccountAccountAlertIsEnabled =
@@ -1728,50 +1723,6 @@ export function setSelectedInternalAccount(
 
     try {
       await _setSelectedInternalAccount(accountId);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      dispatch(displayWarning(error));
-      return;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    if (
-      unconnectedAccountAccountAlertIsEnabled &&
-      switchingToUnconnectedAddress
-    ) {
-      dispatch(switchedToUnconnectedAccount());
-      await setUnconnectedAccountAlertShown(activeTabOrigin);
-    }
-  };
-}
-
-export function setSelectedAccount(
-  address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch, getState) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setSelectedAddress`);
-
-    const state = getState();
-    const unconnectedAccountAccountAlertIsEnabled =
-      getUnconnectedAccountAlertEnabledness(state);
-    const activeTabOrigin = state.activeTab.origin;
-    const selectedAddress = getSelectedAddress(state);
-    const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(state);
-    const currentTabIsConnectedToPreviousAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(selectedAddress);
-    const currentTabIsConnectedToNextAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(address);
-    const switchingToUnconnectedAddress =
-      currentTabIsConnectedToPreviousAddress &&
-      !currentTabIsConnectedToNextAddress;
-
-    try {
-      await _setSelectedAddress(address);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));

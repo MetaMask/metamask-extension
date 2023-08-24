@@ -25,7 +25,7 @@ export default class ConnectedAccounts extends PureComponent {
     isActiveTabExtension: PropTypes.bool.isRequired,
     selectedAddress: PropTypes.string.isRequired,
     removePermittedAccount: PropTypes.func.isRequired,
-    setSelectedAddress: PropTypes.func.isRequired,
+    setSelectedAccount: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
   };
 
@@ -41,7 +41,7 @@ export default class ConnectedAccounts extends PureComponent {
       permissions,
       selectedAddress,
       removePermittedAccount,
-      setSelectedAddress,
+      setSelectedAccount,
     } = this.props;
     const { t } = this.context;
 
@@ -76,7 +76,7 @@ export default class ConnectedAccounts extends PureComponent {
           connectedAccounts={connectedAccounts}
           selectedAddress={selectedAddress}
           removePermittedAccount={removePermittedAccount}
-          setSelectedAddress={setSelectedAddress}
+          setSelectedAccount={setSelectedAccount}
           shouldRenderListOptions
         />
       </Popover>

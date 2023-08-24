@@ -1,6 +1,7 @@
 import { NetworkType } from '@metamask/controller-utils';
 import type { BlockTracker, NetworkState } from '@metamask/network-controller';
 
+import { InternalAccount } from '@metamask/eth-snap-keyring';
 import {
   TransactionMeta,
   TransactionStatus,
@@ -22,7 +23,29 @@ const NETWORK_STATE_MOCK: NetworkState = {
   networkId: '1',
 } as unknown as NetworkState;
 
-const ADDERSS_MOCK = '0x1';
+const INTERNAL_ACCOUNT_MOCK: InternalAccount = {
+  address: '0x1',
+  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+  metadata: {
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  name: 'Test Account',
+  options: {},
+  supportedMethods: [
+    'personal_sign',
+    'eth_sendTransaction',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v2',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
 const FROM_BLOCK_HEX_MOCK = '0x20';
 const FROM_BLOCK_DECIMAL_MOCK = 32;
 
@@ -34,7 +57,7 @@ const BLOCK_TRACKER_MOCK = {
 
 const CONTROLLER_ARGS_MOCK = {
   blockTracker: BLOCK_TRACKER_MOCK,
-  getCurrentAccount: () => ADDERSS_MOCK,
+  getCurrentAccount: () => INTERNAL_ACCOUNT_MOCK,
   getNetworkState: () => NETWORK_STATE_MOCK,
   remoteTransactionSource: {} as RemoteTransactionSource,
   transactionLimit: 1,
@@ -137,7 +160,7 @@ describe('IncomingTransactionHelper', () => {
         );
 
         expect(remoteTransactionSource.fetchTransactions).toHaveBeenCalledWith({
-          address: ADDERSS_MOCK,
+          address: INTERNAL_ACCOUNT_MOCK.address,
           currentChainId: NETWORK_STATE_MOCK.providerConfig.chainId,
           currentNetworkId: NETWORK_STATE_MOCK.networkId,
           fromBlock: expect.any(Number),
@@ -173,7 +196,7 @@ describe('IncomingTransactionHelper', () => {
           ...CONTROLLER_ARGS_MOCK,
           remoteTransactionSource,
           lastFetchedBlockNumbers: {
-            [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDERSS_MOCK}`]:
+            [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${INTERNAL_ACCOUNT_MOCK.address}`]:
               FROM_BLOCK_DECIMAL_MOCK,
           },
         });
@@ -414,7 +437,7 @@ describe('IncomingTransactionHelper', () => {
         );
 
         expect(lastFetchedBlockNumbers).toStrictEqual({
-          [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDERSS_MOCK}`]:
+          [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${INTERNAL_ACCOUNT_MOCK.address}`]:
             parseInt(TRANSACTION_MOCK_2.blockNumber as string, 10),
         });
       });
@@ -472,7 +495,7 @@ describe('IncomingTransactionHelper', () => {
             TRANSACTION_MOCK_2,
           ]),
           lastFetchedBlockNumbers: {
-            [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDERSS_MOCK}`]:
+            [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${INTERNAL_ACCOUNT_MOCK.address}`]:
               parseInt(TRANSACTION_MOCK_2.blockNumber as string, 10),
           },
         });

@@ -101,7 +101,7 @@ const UnconnectedAccountAlert = () => {
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
         connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}
-        setSelectedAddress={(address) => dispatch(switchToAccount(address))}
+        setSelectedAccount={(accountId) => dispatch(switchToAccount(accountId))}
         shouldRenderListOptions={false}
       />
     </Popover>

@@ -1217,6 +1217,7 @@ export default class MetamaskController extends EventEmitter {
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
       preferencesStore: this.preferencesController.store,
+      getCurrentAccount: () => this.accountsController.getSelectedAccount(),
       txHistoryLimit: 60,
       signTransaction: this.keyringController.signTransaction.bind(
         this.keyringController,
@@ -1560,7 +1561,7 @@ export default class MetamaskController extends EventEmitter {
       ) => {
         if (innerOrigin === ORIGIN_METAMASK) {
           const selectedAddress =
-            this.preferencesController.getSelectedAddress();
+            this.accountsController.getSelectedAccount().address;
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
           return await this.getPermittedAccounts(innerOrigin, {
@@ -2008,7 +2009,7 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedAddress;
 
     this.preferencesController.store.subscribe(async (state) => {
-      const { selectedAddress, currentLocale } = state;
+      const { currentLocale } = state;
 
       await updateCurrentLocale(currentLocale);
 
@@ -2017,12 +2018,17 @@ export default class MetamaskController extends EventEmitter {
       } else {
         this.txController.stopIncomingTransactionPolling();
       }
-
-      if (selectedAddress && selectedAddress !== lastSelectedAddress) {
-        lastSelectedAddress = selectedAddress;
-        await this._onAccountChange(selectedAddress);
-      }
     });
+
+    this.controllerMessenger.subscribe(
+      `${this.accountsController.name}:selectedAccountChange`,
+      async (account) => {
+        if (account.address && account.address !== lastSelectedAddress) {
+          lastSelectedAddress = account.address;
+          await this._onAccountChange(account.address);
+        }
+      },
+    );
 
     // This handles account changes every time relevant permission state
     // changes, for any reason.

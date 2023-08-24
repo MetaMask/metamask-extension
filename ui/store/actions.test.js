@@ -871,89 +871,37 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setSelectedAddress', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setSelectedAddress in background', async () => {
-      const store = mockStore();
-
-      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
-      });
-
-      _setBackgroundConnection(background.getApi());
-
-      await store.dispatch(
-        actions.setSelectedAddress(
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        ),
-      );
-      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
-    });
-
-    it('errors when setSelectedAddress throws', async () => {
-      const store = mockStore();
-
-      const setSelectedAddressSpy = sinon
-        .stub()
-        .callsFake((_, cb) => cb(new Error('error')));
-
-      background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
-      });
-
-      _setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setSelectedAddress());
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setSelectedAccount', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('#setSelectedAccount', async () => {
-      const store = mockStore({
-        activeTab: {},
-        metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
-      });
+    it('calls setSelectedAccount in background', async () => {
+      const store = mockStore();
 
-      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
+      const setSelectedAccountSpy = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
+        setSelectedInternalAccount: setSelectedAccountSpy,
       });
 
       _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setSelectedAccount());
-      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
+      await store.dispatch(
+        actions.setSelectedAccount('0140ecb0-185b-4067-a25a-43997fecb05d'),
+      );
+      expect(setSelectedAccountSpy.callCount).toStrictEqual(1);
     });
 
-    it('displays warning if setSelectedAccount throws', async () => {
-      const store = mockStore({
-        activeTab: {},
-        metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
-      });
+    it('errors when setSelectedAccount throws', async () => {
+      const store = mockStore();
 
-      const setSelectedAddressSpy = sinon
+      const setSelectedAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
+        setSelectedInternalAccount: setSelectedAccountSpy,
       });
 
       _setBackgroundConnection(background.getApi());

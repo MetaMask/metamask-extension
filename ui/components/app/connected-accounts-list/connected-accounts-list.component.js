@@ -29,7 +29,7 @@ export default class ConnectedAccountsList extends PureComponent {
     connectAccount: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string.isRequired,
     removePermittedAccount: PropTypes.func,
-    setSelectedAddress: PropTypes.func.isRequired,
+    setSelectedAccount: PropTypes.func.isRequired,
     shouldRenderListOptions: (props, propName, componentName) => {
       if (typeof props[propName] !== 'boolean') {
         return new Error(
@@ -57,7 +57,7 @@ export default class ConnectedAccountsList extends PureComponent {
 
   switchAccount = (address) => {
     this.hideAccountOptions();
-    this.props.setSelectedAddress(address);
+    this.props.setSelectedAccount(address);
   };
 
   hideAccountOptions = () => {
@@ -112,13 +112,13 @@ export default class ConnectedAccountsList extends PureComponent {
     );
   }
 
-  renderListItemAction(address) {
+  renderListItemAction(accountId) {
     const { t } = this.context;
 
     return (
       <a
         className="connected-accounts-list__account-status-link"
-        onClick={() => this.switchAccount(address)}
+        onClick={() => this.switchAccount(accountId)}
       >
         {t('switchToThisAccount')}
       </a>
@@ -134,7 +134,7 @@ export default class ConnectedAccountsList extends PureComponent {
       <>
         <main className="connected-accounts-list">
           {this.renderUnconnectedAccount()}
-          {connectedAccounts.map(({ address, name }, index) => {
+          {connectedAccounts.map(({ accountId, address, name }, index) => {
             return (
               <ConnectedAccountsListItem
                 key={address}
@@ -149,7 +149,7 @@ export default class ConnectedAccountsList extends PureComponent {
                 action={
                   address === selectedAddress
                     ? null
-                    : this.renderListItemAction(address)
+                    : this.renderListItemAction(accountId)
                 }
               />
             );

@@ -48,8 +48,14 @@ export type AccountsControllerChangeEvent = {
   payload: [AccountsControllerState, Patch[]];
 };
 
+export type AccountsControllerSelectedAccountChangeEvent = {
+  type: `${typeof controllerName}:selectedAccountChange`;
+  payload: [InternalAccount];
+};
+
 export type AccountsControllerEvents =
   | AccountsControllerChangeEvent
+  | AccountsControllerSelectedAccountChangeEvent
   | SnapControllerEvents
   | KeyringControllerEvents;
 
@@ -378,6 +384,8 @@ export default class AccountsController extends BaseControllerV2<
         Date.now();
       currentState.internalAccounts.selectedAccount = account.id;
     });
+
+    this.messagingSystem.publish(`${this.name}:selectedAccountChange`, account);
   }
 
   setAccountName(accountId: string, accountName: string): void {

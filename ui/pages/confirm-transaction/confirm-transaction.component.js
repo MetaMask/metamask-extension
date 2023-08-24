@@ -47,6 +47,7 @@ import ConfirmSignatureRequest from '../confirm-signature-request';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
+  console.log('here');
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: paramsTransactionId } = useParams();
@@ -56,6 +57,8 @@ const ConfirmTransaction = () => {
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
+
+  console.log('sendTo', sendTo);
 
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
@@ -92,6 +95,8 @@ const ConfirmTransaction = () => {
   const { id, type } = transaction;
   const transactionId = id && String(id);
   const isValidTokenMethod = isTokenMethodAction(type);
+  console.log('transactionId', transactionId);
+  console.log('transactionId', paramsTransactionId);
   const isValidTransactionId =
     transactionId &&
     (!paramsTransactionId || paramsTransactionId === transactionId);

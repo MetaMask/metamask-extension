@@ -154,6 +154,7 @@ export default class TransactionController extends EventEmitter {
     this._getCurrentAccountEIP1559Compatibility =
       opts.getCurrentAccountEIP1559Compatibility;
     this.preferencesStore = opts.preferencesStore || new ObservableStore({});
+    this.getCurrentAccount = opts.getCurrentAccount;
     this.provider = opts.provider;
     this.getPermittedAccounts = opts.getPermittedAccounts;
     this.blockTracker = opts.blockTracker;
@@ -224,7 +225,7 @@ export default class TransactionController extends EventEmitter {
 
     this.incomingTransactionHelper = new IncomingTransactionHelper({
       blockTracker: this.blockTracker,
-      getCurrentAccount: () => this.getSelectedAddress(),
+      getCurrentAccount: () => this.getCurrentAccount(),
       getNetworkState: () => this._getNetworkState(),
       isEnabled: () =>
         Boolean(

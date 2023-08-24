@@ -3,6 +3,7 @@ import type { BlockTracker, NetworkState } from '@metamask/network-controller';
 import type { Hex } from '@metamask/utils';
 
 import log from 'loglevel';
+import { InternalAccount } from '@metamask/eth-snap-keyring';
 import { TransactionMeta } from '../../../../shared/constants/transaction';
 import { RemoteTransactionSource } from './types';
 
@@ -15,7 +16,7 @@ export class IncomingTransactionHelper {
 
   #blockTracker: BlockTracker;
 
-  #getCurrentAccount: () => string;
+  #getCurrentAccount: () => InternalAccount;
 
   #getLocalTransactions: () => TransactionMeta[];
 
@@ -49,7 +50,7 @@ export class IncomingTransactionHelper {
     updateTransactions,
   }: {
     blockTracker: BlockTracker;
-    getCurrentAccount: () => string;
+    getCurrentAccount: () => InternalAccount;
     getNetworkState: () => NetworkState;
     getLocalTransactions?: () => TransactionMeta[];
     isEnabled?: () => boolean;
@@ -115,7 +116,7 @@ export class IncomingTransactionHelper {
       );
 
       const fromBlock = this.#getFromBlock(latestBlockNumber);
-      const address = this.#getCurrentAccount();
+      const { address } = this.#getCurrentAccount();
       const currentChainId = this.#getCurrentChainId();
       const currentNetworkId = this.#getCurrentNetworkId();
 

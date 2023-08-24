@@ -8,7 +8,7 @@ export default {
     connectedAccounts: {
       control: 'array',
     },
-    selectedAddress: {
+    setSelectedAccount: {
       control: 'text',
     },
     shouldRenderListOptions: {
