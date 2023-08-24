@@ -78,7 +78,7 @@ export const SelectActionModalItem = ({
       </Box>
     );
   };
-  return <>{isDisabled ? null : <SelectActionItem />}</>;
+  return isDisabled ? null : <SelectActionItem />;
 };
 
 SelectActionModalItem.propTypes = {
