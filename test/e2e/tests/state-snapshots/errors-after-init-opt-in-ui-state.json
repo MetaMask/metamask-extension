@@ -20,7 +20,8 @@
     "pendingTokens": "object",
     "customNonceValue": "",
     "useBlockie": false,
-    "featureFlags": { "showIncomingTransactions": true },
+    "featureFlags": {},
+    "incomingTransactionsPreferences": "object",
     "welcomeScreenSeen": false,
     "currentLocale": "en",
     "preferences": {

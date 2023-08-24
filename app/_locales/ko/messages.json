@@ -3019,10 +3019,6 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMask 설치가 완료되었습니다!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "지갑에 들어오는 거래를 표시하려면 $1 링크와의 통신이 필요합니다. Etherscan은 이더리움 주소와 IP 주소에 액세스할 수 있습니다. $2 보기.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "피싱 감지 경보는 $1과(와)의 통신에 의존합니다. jsDeliver는 귀하의 IP 주소에 액세스할 수 있습니다. $2 보기.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"

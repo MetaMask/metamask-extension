@@ -74,7 +74,6 @@ const customStore = ({
       // pendingTransactions
       featureFlags: {
         ...testData?.metamask?.featureFlags,
-        showIncomingTransactions: pendingCount > 0,
       },
       incomingTransactions: {
         ...testData?.metamask?.incomingTransactions,
