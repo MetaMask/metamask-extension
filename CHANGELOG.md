@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.35.1]
+
 ## [10.35.0]
 ### Added
 - Add the ability to customize tx nonce on ERC20 approval screens ([#17945](https://github.com/MetaMask/metamask-extension/pull/17945))
@@ -3946,7 +3948,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.35.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.35.1...HEAD
+[10.35.1]: https://github.com/MetaMask/metamask-extension/compare/v10.35.0...v10.35.1
 [10.35.0]: https://github.com/MetaMask/metamask-extension/compare/v10.34.5...v10.35.0
 [10.34.5]: https://github.com/MetaMask/metamask-extension/compare/v10.34.4...v10.34.5
 [10.34.4]: https://github.com/MetaMask/metamask-extension/compare/v10.34.3...v10.34.4
