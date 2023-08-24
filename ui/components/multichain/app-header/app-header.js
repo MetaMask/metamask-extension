@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, matchPath } from 'react-router-dom';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -30,6 +31,7 @@ import {
   IconName,
   PickerNetwork,
   Box,
+  IconSize,
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -42,8 +44,8 @@ import {
   getSelectedIdentity,
   getShowProductTour,
   getTestNetworkBackgroundColor,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getTheme,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -62,6 +64,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getSendStage, SEND_STAGES } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { MINUTE } from '../../../../shared/constants/time';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -94,11 +98,17 @@ export const AppHeader = ({ location }) => {
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
+  // Used for copy button
+  const currentAddress = useSelector(getSelectedAddress);
+  const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
+  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-  const showStatus =
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-    origin &&
-    origin !== browser.runtime.id;
+  const showConnectedStatus =
+    process.env.MULTICHAIN ||
+    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+      origin &&
+      origin !== browser.runtime.id);
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
   const productTourDirection = document
@@ -285,6 +295,7 @@ export const AppHeader = ({ location }) => {
                     });
                   }}
                   disabled={disableAccountPicker}
+                  showAddress={process.env.MULTICHAIN}
                 />
               ) : null}
               <Box
@@ -293,19 +304,35 @@ export const AppHeader = ({ location }) => {
                 justifyContent={JustifyContent.flexEnd}
               >
                 <Box display={Display.Flex} gap={4}>
-                  {showStatus ? (
-                    <Box ref={menuRef}>
-                      <ConnectedStatusIndicator
-                        onClick={() => {
-                          history.push(CONNECTED_ACCOUNTS_ROUTE);
-                          trackEvent({
-                            event: MetaMetricsEventName.NavConnectedSitesOpened,
-                            category: MetaMetricsEventCategory.Navigation,
-                          });
-                        }}
-                      />
-                    </Box>
-                  ) : null}{' '}
+                  {showConnectedStatus &&
+                    (process.env.MULTICHAIN ? (
+                      <Tooltip
+                        position="left"
+                        title={copied ? t('addressCopied') : null}
+                      >
+                        <ButtonIcon
+                          onClick={() => handleCopy(checksummedCurrentAddress)}
+                          iconName={
+                            copied ? IconName.CopySuccess : IconName.Copy
+                          }
+                          size={IconSize.Sm}
+                          data-testid="app-header-copy-button"
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Box ref={menuRef}>
+                        <ConnectedStatusIndicator
+                          onClick={() => {
+                            history.push(CONNECTED_ACCOUNTS_ROUTE);
+                            trackEvent({
+                              event:
+                                MetaMetricsEventName.NavConnectedSitesOpened,
+                              category: MetaMetricsEventCategory.Navigation,
+                            });
+                          }}
+                        />
+                      </Box>
+                    ))}{' '}
                   {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                     custodianIcon && (

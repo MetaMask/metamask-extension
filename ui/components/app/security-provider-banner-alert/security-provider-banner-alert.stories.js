@@ -53,7 +53,10 @@ export default {
       control: {
         type: 'select',
       },
-      options: [Object.values(SecurityProvider)],
+      options: ['none', ...Object.values(SecurityProvider)],
+      mapping: {
+        none: null,
+      },
     },
     severity: {
       control: {

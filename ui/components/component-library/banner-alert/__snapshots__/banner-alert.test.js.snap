@@ -3,7 +3,7 @@
 exports[`BannerAlert should render BannerAlert element correctly 1`] = `
 <div>
   <div
-    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-info box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-info mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-primary-muted mm-box--rounded-sm"
     data-testid="bannerAlert"
   >
     <span
@@ -11,12 +11,11 @@ exports[`BannerAlert should render BannerAlert element correctly 1`] = `
       style="mask-image: url('./images/icons/info.svg');"
     />
     <div>
-      <h5
-        class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
-        data-testid="mm-banner-base-title"
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >
         BannerAlert test
-      </h5>
+      </p>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       >

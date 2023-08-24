@@ -315,11 +315,11 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           class="transaction-alerts"
         >
           <div
-            class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+            class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
           >
             <span
               class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
-              style="mask-image: url('./images/icons/warning.svg');"
+              style="mask-image: url('./images/icons/danger.svg');"
             />
             <div>
               <p

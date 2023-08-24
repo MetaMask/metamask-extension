@@ -65,6 +65,7 @@ function documentElementCheck() {
  */
 function blockedDomainCheck() {
   const blockedDomains = [
+    'execution.consensys.io',
     'execution.metamask.io',
     'uscourts.gov',
     'dropbox.com',

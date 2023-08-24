@@ -340,6 +340,8 @@
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
     "useCurrencyRateCheck": true,
+    "useNftDetection": true,
+    "openSeaEnabled": true,
     "advancedGasFee": {
       "maxBaseFee": "75",
       "priorityFee": "2"
