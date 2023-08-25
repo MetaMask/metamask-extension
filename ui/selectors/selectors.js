@@ -764,9 +764,8 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 
 export function getSwapsDefaultToken(state) {
   const selectedAccount = getSelectedAccount(state);
-  const { balance } = selectedAccount;
+  const balance = selectedAccount?.balance;
   const chainId = getCurrentChainId(state);
-
   const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {
