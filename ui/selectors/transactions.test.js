@@ -262,7 +262,6 @@ describe('Transaction Selectors', () => {
         selectedAddress: '0xAddress',
         featureFlags: {},
         transactions: [submittedTx, unapprovedTx, approvedTx, confirmedTx],
-
       },
     };
 
