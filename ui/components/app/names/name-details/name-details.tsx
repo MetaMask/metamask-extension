@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NameValueType } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import {
   BUTTON_VARIANT,
   Box,
@@ -28,8 +29,6 @@ import Name from '../name/name';
 import FormComboField from '../../form-combo-field/form-combo-field';
 import { getNames } from '../../../../selectors';
 import { setName as saveName } from '../../../../store/actions';
-import { isEqual } from 'lodash';
-import { AddressCopyButton } from '../../../multichain';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
 const PROVIDER_LABELS: { [providerId: string]: string } = {
@@ -37,6 +36,7 @@ const PROVIDER_LABELS: { [providerId: string]: string } = {
   opensea: 'OpenSea',
   etherscan: 'Etherscan (Verified Contract Name)',
   token: 'Token Name (Blockchain)',
+  lens: 'Lens Protocol',
 };
 
 export interface NameDetailsProps {
@@ -113,7 +113,7 @@ export default function NameDetails({
             <Name
               value={value}
               type={NameValueType.ETHEREUM_ADDRESS}
-              providerPriority={['token', 'ens', 'etherscan']}
+              providerPriority={['lens', 'token', 'ens', 'etherscan']}
             />
           </div>
           {!hasSavedName && (

@@ -102,7 +102,7 @@ export function RecipientWithAddress({ checksummedRecipientAddress }) {
     <Name
       value={checksummedRecipientAddress}
       type={NameValueType.ETHEREUM_ADDRESS}
-      providerPriority={['token', 'ens', 'etherscan']}
+      providerPriority={['lens', 'token', 'ens', 'etherscan']}
     />
   );
 }

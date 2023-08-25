@@ -58,6 +58,7 @@ import {
   ENSNameProvider,
   EtherscanNameProvider,
   TokenNameProvider,
+  LensNameProvider,
 } from '@metamask/name-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
@@ -1505,6 +1506,7 @@ export default class MetamaskController extends EventEmitter {
         }),
         new EtherscanNameProvider({}),
         new TokenNameProvider({}),
+        new LensNameProvider(),
       ],
     });
 

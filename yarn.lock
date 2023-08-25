@@ -4412,11 +4412,11 @@ __metadata:
 
 "@metamask/name-controller@file:.yalc/@metamask/name-controller::locator=metamask-crx%40workspace%3A.":
   version: 1.0.0
-  resolution: "@metamask/name-controller@file:.yalc/@metamask/name-controller#.yalc/@metamask/name-controller::hash=5138e7&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/name-controller@file:.yalc/@metamask/name-controller#.yalc/@metamask/name-controller::hash=ebd30c&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^3.2.0"
     immer: "npm:^9.0.6"
-  checksum: 575bb46345b1f3f365ee10421f2b0dbacaa52066272048efa95fc926962476318c5dce844b900c0470474218bfa5e5de73e79e3fcee7694ae21033369dffe679
+  checksum: 4e8800fcfdd23e1aefd8d3bbd8ef1479de1df62a15aefa26aa351e2f1137cd5b3953e814cf5282dc8d429e8e08ef5c4e13b23b247ae920f85347d159608e8834
   languageName: node
   linkType: hard
 
