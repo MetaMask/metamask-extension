@@ -691,6 +691,7 @@ export enum MetaMetricsEventKeyType {
 
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
+  GasTimeout = 'gas_timeout',
 }
 
 export enum MetaMetricsNetworkEventSource {

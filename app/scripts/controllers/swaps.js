@@ -22,6 +22,7 @@ import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventErrorType,
 } from '../../../shared/constants/metametrics';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
@@ -511,6 +512,7 @@ export default class SwapsController {
           event: MetaMetricsEventName.QuoteError,
           category: MetaMetricsEventCategory.Swaps,
           properties: {
+            error_type: MetaMetricsEventErrorType.GasTimeout,
             aggregator,
           },
         });
