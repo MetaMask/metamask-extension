@@ -72,6 +72,4 @@ function filterOutObsoleteNetworkControllerStateProperties(
     ...state,
     NetworkController: updatedNetworkController,
   };
-
-  return state;
 }
