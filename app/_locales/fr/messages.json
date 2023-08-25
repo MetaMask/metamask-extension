@@ -415,7 +415,7 @@
     "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT suivants."
   },
   "approveTokenDescriptionWithoutSymbol": {
-    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT via $1$.",
+    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT via $1.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveTokenTitle": {
