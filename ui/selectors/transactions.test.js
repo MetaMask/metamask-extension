@@ -141,9 +141,7 @@ describe('Transaction Selectors', () => {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
-          featureFlags: {
-            showIncomingTransactions: false,
-          },
+          featureFlags: {},
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -232,9 +230,7 @@ describe('Transaction Selectors', () => {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
-          featureFlags: {
-            showIncomingTransactions: false,
-          },
+          featureFlags: {},
           currentNetworkTxList: [tx1, tx2],
           internalAccounts: {
             accounts: {
@@ -343,9 +339,7 @@ describe('Transaction Selectors', () => {
           nickname: 'mainnet',
           chainId: CHAIN_IDS.MAINNET,
         },
-        featureFlags: {
-          showIncomingTransactions: false,
-        },
+        featureFlags: {},
         currentNetworkTxList: [
           submittedTx,
           unapprovedTx,

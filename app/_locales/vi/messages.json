@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Sao chép địa chỉ vào bộ nhớ đệm"
   },
-  "copyPrivateKey": {
-    "message": "Đây là khóa riêng tư của bạn (hãy nhấn vào để sao chép)"
-  },
   "copyRawTransactionData": {
     "message": "Sao chép dữ liệu giao dịch thô"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "Nhập mật khẩu tùy chọn"
   },
-  "enterPassword": {
-    "message": "Nhập mật khẩu"
-  },
   "enterPasswordContinue": {
     "message": "Nhập mật khẩu để tiếp tục"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "Khám phá MetaMask Snap"
-  },
-  "exportPrivateKey": {
-    "message": "Xuất khóa riêng tư"
   },
   "extendWalletWithSnaps": {
     "message": "Mở rộng trải nghiệm sử dụng ví."
@@ -3019,10 +3010,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Việc hiển thị các giao dịch đến trong ví của bạn tùy thuộc vào quá trình truyền tin với $1. Etherscan sẽ có quyền truy cập vào địa chỉ Ethereum và địa chỉ IP của bạn. Xem $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Thông báo phát hiện dấu hiệu lừa đảo tùy thuộc vào quá trình truyền tin với $1. jsDeliver sẽ có quyền truy cập vào địa chỉ IP của bạn. Xem $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -3871,9 +3858,6 @@
   },
   "showPrivateKey": {
     "message": "Hiển thị khóa riêng tư"
-  },
-  "showPrivateKeys": {
-    "message": "Hiện khóa riêng tư"
   },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"
@@ -5133,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Thông tin chi tiết về giao dịch không được hỗ trợ cho hợp đồng này tại thời điểm này."
-  },
-  "typePassword": {
-    "message": "Nhập mật khẩu MetaMask của bạn"
   },
   "typeYourSRP": {
     "message": "Nhập Cụm từ khôi phục bí mật của bạn"

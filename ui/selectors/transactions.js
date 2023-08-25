@@ -26,9 +26,8 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
 ];
 
 export const incomingTxListSelector = (state) => {
-  const { showIncomingTransactions } = state.metamask.featureFlags;
-
-  if (!showIncomingTransactions) {
+  const { incomingTransactionsPreferences } = state.metamask;
+  if (!incomingTransactionsPreferences) {
     return [];
   }
 

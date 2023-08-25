@@ -229,8 +229,9 @@ export default class TransactionController extends EventEmitter {
       getNetworkState: () => this._getNetworkState(),
       isEnabled: () =>
         Boolean(
-          this.preferencesStore.getState().featureFlags
-            ?.showIncomingTransactions && this._hasCompletedOnboarding(),
+          this.preferencesStore.getState().incomingTransactionsPreferences?.[
+            this._getChainId()
+          ] && this._hasCompletedOnboarding(),
         ),
       lastFetchedBlockNumbers: opts.initState?.lastFetchedBlockNumbers || {},
       remoteTransactionSource: new EtherscanRemoteTransactionSource({

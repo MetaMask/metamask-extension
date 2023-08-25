@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
   },
-  "copyPrivateKey": {
-    "message": "Αυτό είναι το ιδιωτικό σας κλειδί (κάντε κλικ για αντιγραφή)"
-  },
   "copyRawTransactionData": {
     "message": "Αντιγραφή ακατέργαστων δεδομένων συναλλαγών"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "Πληκτρολογήστε προαιρετικό κωδικό πρόσβασης"
   },
-  "enterPassword": {
-    "message": "Εισάγετε τον κωδικό πρόσβασης"
-  },
   "enterPasswordContinue": {
     "message": "Πληκτρολογήστε τον κωδικό πρόσβασης για να συνεχίσετε"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "Εξερευνήστε το MetaMask Snaps"
-  },
-  "exportPrivateKey": {
-    "message": "Εξαγωγή Ιδιωτικού Κλειδιού"
   },
   "extendWalletWithSnaps": {
     "message": "Επεκτείνετε την εμπειρία του πορτοφολιού."
@@ -3019,10 +3010,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Η εγκατάσταση του MetaMask ολοκληρώθηκε!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Η εμφάνιση των εισερχόμενων συναλλαγών στο πορτοφόλι σας βασίζεται σε επικοινωνία με το $1. Το Etherscan θα έχει πρόσβαση στη διεύθυνση Ethereum σας και τη διεύθυνση IP σας. Δείτε $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Οι ειδοποιήσεις ανίχνευσης Απάτης Ηλεκτρονικού Ψαρέματος βασίζονται στην επικοινωνία με το $1. Το jsDeliver θα έχει πρόσβαση στη διεύθυνση IP σας. Δείτε $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -3871,9 +3858,6 @@
   },
   "showPrivateKey": {
     "message": "Εμφάνιση ιδιωτικού κλειδιού"
-  },
-  "showPrivateKeys": {
-    "message": "Εμφάνιση Ιδιωτικών Κλειδιών"
   },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
@@ -5133,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Οι αναλύσεις συναλλαγών εις βάθος δεν υποστηρίζονται για αυτό το συμβόλαιο αυτή τη στιγμή."
-  },
-  "typePassword": {
-    "message": "Πληκτρολογήστε τον κωδικό πρόσβασής σας MetaMask"
   },
   "typeYourSRP": {
     "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"

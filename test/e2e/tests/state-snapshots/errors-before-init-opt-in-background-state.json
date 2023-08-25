@@ -67,7 +67,7 @@
       "advancedGasFee": "object",
       "currentLocale": "en",
       "dismissSeedBackUpReminder": "boolean",
-      "featureFlags": { "showIncomingTransactions": true },
+      "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
       "infuraBlocked": "boolean",

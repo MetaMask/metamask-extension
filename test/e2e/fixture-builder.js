@@ -281,9 +281,7 @@ function defaultFixture() {
         advancedGasFee: null,
         currentLocale: 'en',
         dismissSeedBackUpReminder: true,
-        featureFlags: {
-          showIncomingTransactions: true,
-        },
+        featureFlags: {},
         forgottenPassword: false,
         identities: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
@@ -353,6 +351,7 @@ function defaultFixture() {
     },
   };
 }
+
 function onboardingFixture() {
   return {
     data: {
@@ -411,9 +410,7 @@ function onboardingFixture() {
         advancedGasFee: null,
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
-        featureFlags: {
-          showIncomingTransactions: true,
-        },
+        featureFlags: {},
         forgottenPassword: false,
         identities: {},
         infuraBlocked: false,

@@ -80,9 +80,6 @@ const getStateTree = ({
     },
     unapprovedMsgs,
     selectedAddress: SENDERS.ONE,
-    featureFlags: {
-      showIncomingTransactions: true,
-    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -111,8 +108,11 @@ const getStateTree = ({
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
+    featureFlags: {},
     transactions: [...incomingTxList],
+    incomingTransactions: [...incomingTxList],
     currentNetworkTxList: [...txList],
+    incomingTransactionsPreferences: {},
   },
 });
 

@@ -24494,7 +24494,6 @@ __metadata:
     typescript: "npm:~4.4.0"
     unicode-confusables: "npm:^0.1.1"
     uuid: "npm:^8.3.2"
-    valid-url: "npm:^1.0.9"
     vinyl: "npm:^2.2.1"
     vinyl-buffer: "npm:^1.0.1"
     vinyl-source-stream: "npm:^2.0.0"
@@ -34285,13 +34284,6 @@ __metadata:
   dependencies:
     homedir-polyfill: "npm:^1.0.1"
   checksum: 4c88e2681f12153ae5e45de678ba724ebd2daf2619d4fbe5cc8075b07b2095522dbfd0cb55e510a1d27ea0ed0db4a5e6fc6d18d312f7d8fc098a3c6a79b7ffc6
-  languageName: node
-  linkType: hard
-
-"valid-url@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "valid-url@npm:1.0.9"
-  checksum: 343dfaf85eb3691dc8eb93f7bc007be1ee6091e6c6d1a68bf633cb85e4bf2930e34ca9214fb2c3330de5b652510b257a8ee1ff0a0a37df0925e9dabf93ee512d
   languageName: node
   linkType: hard
 
