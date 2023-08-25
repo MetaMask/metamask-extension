@@ -111,7 +111,7 @@ export default class SelectedNetworkController extends BaseControllerV2<
     this.messagingSystem.subscribe(
       'NetworkController:stateChange',
       (state: NetworkState, patch: Patch[]) => {
-        const isChangingNetwork = patch.find(
+        const isChangingNetwork = patch.some(
           (p) => p.path[0] === 'selectedNetworkClientId',
         );
         if (!isChangingNetwork) {
@@ -146,7 +146,7 @@ export default class SelectedNetworkController extends BaseControllerV2<
   }
 
   getNetworkClientIdForDomain(domain: Domain) {
-    if (this.state.perDomainNetwork === true) {
+    if (this.state.perDomainNetwork) {
       return this.state.domains[domain];
     }
     return this.state.domains[METAMASK_DOMAIN];
