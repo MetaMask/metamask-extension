@@ -1,37 +1,30 @@
-import { NetworkType } from '@metamask/controller-utils';
+import { NetworkType, toHex } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { migrate, version as currentStateVersion } from './092.2';
+import { version as currentStateVersion, migrate } from './092.2';
 
 const TEST_NETWORK_CONTROLLER_STATE = {
-  selectedNetworkClientId: 'test-network-client-id',
-  networkId: 'sdf',
+  networkId: 'network-id',
+  networkStatus: NetworkStatus.Available,
   providerConfig: {
     type: NetworkType.rpc,
-    chainId: '0x9393',
+    chainId: toHex(42),
     nickname: 'Funky Town Chain',
     ticker: 'ETH',
     id: 'test-network-client-id',
   },
+  networkDetails: { EIPS: {} },
   networkConfigurations: {
     'network-configuration-id-1': {
-      chainId: '0x539',
+      chainId: toHex(42),
       nickname: 'Localhost 8545',
       rpcPrefs: {},
       rpcUrl: 'http://localhost:8545',
       ticker: 'ETH',
     },
   },
-  networksMetadata: {
-    'test-network-client-id': {
-      status: NetworkStatus.Available,
-      EIPS: {},
-    },
-  },
 };
 
-const anyPreviousStateVersion = Math.floor(
-  Math.random() * (currentStateVersion - 1) + 1,
-);
+const anyPreviousStateVersion = 91;
 
 describe('migration #96', () => {
   afterEach(() => {

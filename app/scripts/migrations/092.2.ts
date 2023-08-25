@@ -1,4 +1,6 @@
-import { cloneDeep } from 'lodash';
+import { hasProperty } from '@metamask/utils';
+import { captureException } from '@sentry/browser';
+import { cloneDeep, isObject, pick } from 'lodash';
 
 type MetaMaskState = Record<string, unknown>;
 type VersionedState = {
@@ -47,20 +49,29 @@ function filterOutObsoleteNetworkControllerStateProperties(
     'networkConfigurations',
   ];
 
-  const networkControllerState: Record<string, any> =
-    state.NetworkController || {};
-  const networkControllerStateProps = Object.keys(networkControllerState);
+  if (
+    !hasProperty(state, 'NetworkController') ||
+    !isObject(state.NetworkController)
+  ) {
+    captureException(
+      `Migration ${version}: Invalid NetworkController state: ${typeof state.NetworkController}`,
+    );
+
+    return state;
+  }
+
+  const networkControllerState = state.NetworkController;
 
   // delete network state properties that are not currently in use
-  for (let p = 0; p < networkControllerStateProps.length; p++) {
-    if (
-      !CURRENT_NETWORK_CONTROLLER_STATE_PROPS.includes(
-        networkControllerStateProps[p],
-      )
-    ) {
-      delete networkControllerState[networkControllerStateProps[p]];
-    }
-  }
+  const updatedNetworkController = pick(
+    networkControllerState,
+    CURRENT_NETWORK_CONTROLLER_STATE_PROPS,
+  );
+
+  return {
+    ...state,
+    NetworkController: updatedNetworkController,
+  };
 
   return state;
 }
