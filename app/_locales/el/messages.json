@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
   },
-  "copyPrivateKey": {
-    "message": "Αυτό είναι το ιδιωτικό σας κλειδί (κάντε κλικ για αντιγραφή)"
-  },
   "copyRawTransactionData": {
     "message": "Αντιγραφή ακατέργαστων δεδομένων συναλλαγών"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "Πληκτρολογήστε προαιρετικό κωδικό πρόσβασης"
   },
-  "enterPassword": {
-    "message": "Εισάγετε τον κωδικό πρόσβασης"
-  },
   "enterPasswordContinue": {
     "message": "Πληκτρολογήστε τον κωδικό πρόσβασης για να συνεχίσετε"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "Εξερευνήστε το MetaMask Snaps"
-  },
-  "exportPrivateKey": {
-    "message": "Εξαγωγή Ιδιωτικού Κλειδιού"
   },
   "extendWalletWithSnaps": {
     "message": "Επεκτείνετε την εμπειρία του πορτοφολιού."
@@ -3868,9 +3859,6 @@
   "showPrivateKey": {
     "message": "Εμφάνιση ιδιωτικού κλειδιού"
   },
-  "showPrivateKeys": {
-    "message": "Εμφάνιση Ιδιωτικών Κλειδιών"
-  },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
   },
@@ -5129,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Οι αναλύσεις συναλλαγών εις βάθος δεν υποστηρίζονται για αυτό το συμβόλαιο αυτή τη στιγμή."
-  },
-  "typePassword": {
-    "message": "Πληκτρολογήστε τον κωδικό πρόσβασής σας MetaMask"
   },
   "typeYourSRP": {
     "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"

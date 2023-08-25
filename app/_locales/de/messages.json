@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
   },
-  "copyPrivateKey": {
-    "message": "Das ist Ihr Private Key (klicken um zu kopieren)"
-  },
   "copyRawTransactionData": {
     "message": "Roh-Transaktionsdaten kopieren"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "Optionales Passwort eingeben"
   },
-  "enterPassword": {
-    "message": "Passwort eingeben"
-  },
   "enterPasswordContinue": {
     "message": "Zum Fortfahren Passwort eingeben"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "MetaMask Snaps erforschen"
-  },
-  "exportPrivateKey": {
-    "message": "Private Key exportieren"
   },
   "extendWalletWithSnaps": {
     "message": "Erweitern Sie das Wallet-Erlebnis."
@@ -3868,9 +3859,6 @@
   "showPrivateKey": {
     "message": "Privaten Key anzeigen"
   },
-  "showPrivateKeys": {
-    "message": "Private Keys anzeigen"
-  },
   "showTestnetNetworks": {
     "message": "Test-Netzwerke anzeigen"
   },
@@ -5129,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Transaktionseinsichten für diesen Vertrag zu diesem Zeitpunkt nicht unterstützt."
-  },
-  "typePassword": {
-    "message": "Passwort eingeben"
   },
   "typeYourSRP": {
     "message": "Geben Sie Ihre geheime Wiederherstellungsphrase ein"

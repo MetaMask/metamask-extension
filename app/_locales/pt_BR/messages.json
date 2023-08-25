@@ -475,9 +475,6 @@
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
-  "copyPrivateKey": {
-    "message": "Essa é a sua chave privada (clique para copiar)"
-  },
   "copyRawTransactionData": {
     "message": "Copiar dados brutos da transação"
   },
@@ -767,9 +764,6 @@
   "enterMaxSpendLimit": {
     "message": "Digite um limite máximo de gastos"
   },
-  "enterPassword": {
-    "message": "Digite a senha"
-  },
   "enterPasswordContinue": {
     "message": "Digite a senha para continuar"
   },
@@ -825,9 +819,6 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar chave privada"
   },
   "externalExtension": {
     "message": "Extensão externa"
@@ -2016,9 +2007,6 @@
   "showPermissions": {
     "message": "Mostrar permissões"
   },
-  "showPrivateKeys": {
-    "message": "Mostrar chaves privadas"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
   },
@@ -2632,9 +2620,6 @@
   },
   "txInsightsNotSupported": {
     "message": "As informações sobre transações não são suportadas para esse contrato, por ora."
-  },
-  "typePassword": {
-    "message": "Digite sua senha da MetaMask"
   },
   "u2f": {
     "message": "U2F",
