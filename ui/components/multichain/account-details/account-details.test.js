@@ -11,7 +11,6 @@ import {
   clearAccountDetails,
   exportAccount,
   hideWarning,
-  setAccountDetailsAddress,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { AccountDetailsKey } from './account-details-key';
@@ -28,14 +27,12 @@ describe('AccountDetails', () => {
   const mockClearAccountDetails = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
   const mockHideWarning = jest.fn();
-  const mockSetAccountDetailsAddress = jest.fn();
 
   beforeEach(() => {
     setAccountDetailsAccountId.mockReturnValue(mockSetAccountDetailsAccountId);
     clearAccountDetails.mockReturnValue(mockClearAccountDetails);
     exportAccount.mockReturnValue(mockExportAccount);
     hideWarning.mockReturnValue(mockHideWarning);
-    setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
   });
 
   afterEach(() => jest.clearAllMocks());
