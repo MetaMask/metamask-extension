@@ -42,20 +42,20 @@ export type GetSelectedNetworkStateChange = {
   payload: [SelectedNetworkControllerState, Patch[]];
 };
 
-export type GetNetworkClientIdChainForDomain = {
+export type GetNetworkClientIdForDomain = {
   type: `SelectedNetworkController:getNetworkClientIdForDomain`;
   handler: (domain: string) => NetworkClientId;
 };
 
-export type SetNetworkClientIdChainForDomain = {
+export type SetNetworkClientIdForDomain = {
   type: `SelectedNetworkController:setNetworkClientIdForDomain`;
   handler: (domain: string, NetworkClientId: NetworkClientId) => void;
 };
 
 export type SelectedNetworkControllerActions =
   | GetSelectedNetworkState
-  | GetNetworkClientIdChainForDomain
-  | SetNetworkClientIdChainForDomain;
+  | GetNetworkClientIdForDomain
+  | SetNetworkClientIdForDomain;
 
 export type SelectedNetworkControllerEvents = GetSelectedNetworkStateChange;
 
@@ -129,7 +129,7 @@ export default class SelectedNetworkController extends BaseControllerV2<
    * Reset the controller state to the initial state.
    */
   resetState() {
-    this.update(() => getDefaultState());
+    this.update(getDefaultState);
   }
 
   setNetworkClientIdForMetamask(networkClientId: NetworkClientId) {
