@@ -65,7 +65,7 @@ export default class ConnectedAccounts extends PureComponent {
         onClose={() => history.push(mostRecentOverviewPage)}
         footerClassName="connected-accounts__footer"
         footer={
-          permissions.length > 0 && (
+          permissions?.length > 0 && (
             <ConnectedAccountsPermissions permissions={permissions} />
           )
         }
