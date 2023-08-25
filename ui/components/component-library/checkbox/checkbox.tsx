@@ -53,7 +53,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
         })}
         as="label"
         display={Display.InlineFlex}
-        alignItems={AlignItems.center}
+        alignItems={AlignItems.flexStart}
         ref={ref}
         htmlFor={id}
         {...props} // TODO: There is a typing issue with spreading props to the Box component. It still works but TypeScript complains.
@@ -79,7 +79,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             }}
             onKeyDown={handleCheckboxKeyDown}
             margin={0}
-            marginRight={label ? 2 : 0}
+            marginRight={label ? 4 : 0}
             backgroundColor={
               isChecked || isIndeterminate
                 ? BackgroundColor.primaryDefault

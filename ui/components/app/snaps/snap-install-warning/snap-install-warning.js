@@ -23,7 +23,6 @@ import {
   Button,
   Checkbox,
   IconName,
-  Label,
   Modal,
   ModalContent,
   ModalHeader,
@@ -130,8 +129,8 @@ export default function SnapInstallWarning({
                 isChecked={checkboxState[warning.id] ?? false}
                 id={warning.id}
                 onChange={() => onCheckboxClicked(warning.id)}
+                label={warning.message}
               />
-              <Label htmlFor={warning.id}>{warning.message}</Label>
             </Box>
           ))}
         </Box>
