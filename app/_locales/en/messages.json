@@ -5343,8 +5343,7 @@
     "message": "Want to add this network?"
   },
   "wantsToAddThisAsset": {
-    "message": "$1 wants to add this asset to your wallet",
-    "description": "$1 is the name of the website that wants to add an asset to your wallet"
+    "message": "This allows the following asset to be added to your wallet."
   },
   "warning": {
     "message": "Warning"
