@@ -4186,14 +4186,21 @@ export default class MetamaskController extends EventEmitter {
             this.institutionalFeaturesController,
           ),
         handleMmiCheckIfTokenIsPresent:
-          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiDashboardData:
-          this.mmiController.handleMmiDashboardData.bind(this),
-        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
+          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(
+            this.mmiController,
+          ),
+        handleMmiDashboardData: this.mmiController.handleMmiDashboardData.bind(
+          this.mmiController,
+        ),
+        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(
+          this.mmiController,
+        ),
         handleMmiSetAccountAndNetwork:
-          this.mmiController.setAccountAndNetwork.bind(this),
+          this.mmiController.setAccountAndNetwork.bind(this.mmiController),
         handleMmiOpenAddHardwareWallet:
-          this.mmiController.handleMmiOpenAddHardwareWallet.bind(this),
+          this.mmiController.handleMmiOpenAddHardwareWallet.bind(
+            this.mmiController,
+          ),
         ///: END:ONLY_INCLUDE_IN
       }),
     );
