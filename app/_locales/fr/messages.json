@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "Modifier la limite"
   },
-  "swapEditTransactionSettings": {
-    "message": "Modifier les paramètres de la transaction"
-  },
   "swapEnableDescription": {
     "message": "Cette information est nécessaire et autorise MetaMask à effectuer le swap de vos $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "$1 %",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "La transaction peut échouer, car le slippage maximal est trop faible."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Augmentez le slippage pour éviter l’échec de la transaction"
-  },
   "swapSlippageTooltip": {
     "message": "Si le prix fluctue entre le moment où vous placez un ordre et le moment où il est exécuté, on parle alors d’un « effet de glissement » ou « slippage ». Votre swap sera automatiquement annulé si ce phénomène dépasse le « seuil de glissement toléré » que vous avez fixé."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "Le slippage saisi est considéré comme très élevé et peut donner lieu à un taux de change désavantageux"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Slippage très élevé"
   },
   "swapSlippageZeroDescription": {
     "message": "Il y a moins de prestataires de services d’investissement sans slippage, ce qui se traduit par une cotation moins compétitive."

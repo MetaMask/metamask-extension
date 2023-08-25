@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "Edit batas"
   },
-  "swapEditTransactionSettings": {
-    "message": "Edit pengaturan transaksi"
-  },
   "swapEnableDescription": {
     "message": "Ini diwajibkan dan memberikan MetaMask izin untuk menukar $1 Anda.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "Selip maks terlalu rendah sehingga dapat menyebabkan transaksi gagal."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Tingkatkan selip untuk menghindari kegagalan transaksi"
-  },
   "swapSlippageTooltip": {
     "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut “slippage”. Swap Anda akan otomatis dibatalkan jika slippage melebihi pengaturan “slippage tolerance”."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "Selip yang dimasukkan dianggap sangat tinggi dan dapat mengakibatkan tarif yang tidak efektif"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Selip sangat tinggi"
   },
   "swapSlippageZeroDescription": {
     "message": "Ada lebih sedikit penyedia kuotasi nol selip sehingga akan menghasilkan kuotasi yang kurang kompetitif."

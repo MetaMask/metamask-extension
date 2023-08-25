@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "Изменить лимит"
   },
-  "swapEditTransactionSettings": {
-    "message": "Изменить настройки транзакции"
-  },
   "swapEnableDescription": {
     "message": "Это необходимо и дает MetaMask разрешение на обмен вашего $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "Максимальное проскальзывание слишком мало, что может привести к сбою транзакции."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Увеличьте проскальзывание, чтобы избежать неудачной транзакции"
-  },
   "swapSlippageTooltip": {
     "message": "Изменение цены в период между размещением заказа и подтверждением называется «проскальзыванием». Обмен будет автоматически отменен, если фактическое проскальзывание превысит установленный «допуск проскальзывания»."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "Введенное проскальзывание считается очень высоким и может привести к неудачной ставке"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Очень высокое проскальзывание"
   },
   "swapSlippageZeroDescription": {
     "message": "Существует меньше поставщиков котировок с нулевым проскальзыванием, что приводит к менее конкурентоспособным котировкам."
