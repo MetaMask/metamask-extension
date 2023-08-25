@@ -142,7 +142,7 @@ const EditGasToolTip = ({
               fontWeight={FontWeight.Bold}
               className="edit-gas-tooltip__container__label"
             >
-              {t('priorityFeeProperCase')}
+              {t('priorityFee')}
             </Text>
             {maxPriorityFeePerGas && (
               <Text

@@ -21,11 +21,11 @@ const NETWORK_CONFIGURATION_DATA = {
     rpcPrefs: {},
   },
 };
-describe('preferences controller', () => {
+describe('preferences controller', function () {
   let preferencesController;
   let tokenListController;
 
-  beforeEach(() => {
+  beforeEach(function () {
     const tokenListMessenger = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
     });
@@ -46,14 +46,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useBlockie', () => {
-    it('defaults useBlockie to false', () => {
+  describe('useBlockie', function () {
+    it('defaults useBlockie to false', function () {
       expect(preferencesController.store.getState().useBlockie).toStrictEqual(
         false,
       );
     });
 
-    it('setUseBlockie to true', () => {
+    it('setUseBlockie to true', function () {
       preferencesController.setUseBlockie(true);
       expect(preferencesController.store.getState().useBlockie).toStrictEqual(
         true,
@@ -61,21 +61,21 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setCurrentLocale', () => {
-    it('checks the default currentLocale', () => {
+  describe('setCurrentLocale', function () {
+    it('checks the default currentLocale', function () {
       const { currentLocale } = preferencesController.store.getState();
       expect(currentLocale).toStrictEqual('en_US');
     });
 
-    it('sets current locale in preferences controller', () => {
+    it('sets current locale in preferences controller', function () {
       preferencesController.setCurrentLocale('ja');
       const { currentLocale } = preferencesController.store.getState();
       expect(currentLocale).toStrictEqual('ja');
     });
   });
 
-  describe('setAddresses', () => {
-    it('should keep a map of addresses to names and addresses in the store', () => {
+  describe('setAddresses', function () {
+    it('should keep a map of addresses to names and addresses in the store', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
 
       const { identities } = preferencesController.store.getState();
@@ -91,7 +91,7 @@ describe('preferences controller', () => {
       });
     });
 
-    it('should replace its list of addresses', () => {
+    it('should replace its list of addresses', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
       preferencesController.setAddresses(['0xda22le77', '0x7e57e277']);
 
@@ -109,8 +109,8 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('removeAddress', () => {
-    it('should remove an address from state', () => {
+  describe('removeAddress', function () {
+    it('should remove an address from state', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
 
       preferencesController.removeAddress('0xda22le');
@@ -120,7 +120,7 @@ describe('preferences controller', () => {
       ).toStrictEqual(undefined);
     });
 
-    it('should switch accounts if the selected address is removed', () => {
+    it('should switch accounts if the selected address is removed', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
 
       preferencesController.setSelectedAddress('0x7e57e2');
@@ -131,8 +131,8 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setAccountLabel', () => {
-    it('should update a label for the given account', () => {
+  describe('setAccountLabel', function () {
+    it('should update a label for the given account', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
 
       expect(
@@ -152,14 +152,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setPasswordForgotten', () => {
-    it('should default to false', () => {
+  describe('setPasswordForgotten', function () {
+    it('should default to false', function () {
       expect(
         preferencesController.store.getState().forgottenPassword,
       ).toStrictEqual(false);
     });
 
-    it('should set the forgottenPassword property in state', () => {
+    it('should set the forgottenPassword property in state', function () {
       preferencesController.setPasswordForgotten(true);
       expect(
         preferencesController.store.getState().forgottenPassword,
@@ -167,14 +167,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setUsePhishDetect', () => {
-    it('should default to true', () => {
+  describe('setUsePhishDetect', function () {
+    it('should default to true', function () {
       expect(
         preferencesController.store.getState().usePhishDetect,
       ).toStrictEqual(true);
     });
 
-    it('should set the usePhishDetect property in state', () => {
+    it('should set the usePhishDetect property in state', function () {
       preferencesController.setUsePhishDetect(false);
       expect(
         preferencesController.store.getState().usePhishDetect,
@@ -182,14 +182,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setUseMultiAccountBalanceChecker', () => {
-    it('should default to true', () => {
+  describe('setUseMultiAccountBalanceChecker', function () {
+    it('should default to true', function () {
       expect(
         preferencesController.store.getState().useMultiAccountBalanceChecker,
       ).toStrictEqual(true);
     });
 
-    it('should set the setUseMultiAccountBalanceChecker property in state', () => {
+    it('should set the setUseMultiAccountBalanceChecker property in state', function () {
       preferencesController.setUseMultiAccountBalanceChecker(false);
       expect(
         preferencesController.store.getState().useMultiAccountBalanceChecker,
@@ -197,14 +197,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setUseTokenDetection', () => {
-    it('should default to false', () => {
+  describe('setUseTokenDetection', function () {
+    it('should default to false', function () {
       expect(
         preferencesController.store.getState().useTokenDetection,
       ).toStrictEqual(false);
     });
 
-    it('should set the useTokenDetection property in state', () => {
+    it('should set the useTokenDetection property in state', function () {
       preferencesController.setUseTokenDetection(true);
       expect(
         preferencesController.store.getState().useTokenDetection,
@@ -212,14 +212,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setUseNftDetection', () => {
-    it('should default to false', () => {
+  describe('setUseNftDetection', function () {
+    it('should default to false', function () {
       expect(
         preferencesController.store.getState().useNftDetection,
       ).toStrictEqual(false);
     });
 
-    it('should set the useNftDetection property in state', () => {
+    it('should set the useNftDetection property in state', function () {
       preferencesController.setOpenSeaEnabled(true);
       preferencesController.setUseNftDetection(true);
       expect(
@@ -243,14 +243,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setOpenSeaEnabled', () => {
-    it('should default to false', () => {
+  describe('setOpenSeaEnabled', function () {
+    it('should default to false', function () {
       expect(
         preferencesController.store.getState().openSeaEnabled,
       ).toStrictEqual(false);
     });
 
-    it('should set the openSeaEnabled property in state', () => {
+    it('should set the openSeaEnabled property in state', function () {
       preferencesController.setOpenSeaEnabled(true);
       expect(
         preferencesController.store.getState().openSeaEnabled,
@@ -258,33 +258,38 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setAdvancedGasFee', () => {
-    it('should default to null', () => {
+  describe('setAdvancedGasFee', function () {
+    it('should default to an empty object', function () {
       expect(
         preferencesController.store.getState().advancedGasFee,
-      ).toStrictEqual(null);
+      ).toStrictEqual({});
     });
 
-    it('should set the setAdvancedGasFee property in state', () => {
+    it('should set the setAdvancedGasFee property in state', function () {
       preferencesController.setAdvancedGasFee({
-        maxBaseFee: '1.5',
-        priorityFee: '2',
+        chainId: CHAIN_IDS.GOERLI,
+        gasFeePreferences: {
+          maxBaseFee: '1.5',
+          priorityFee: '2',
+        },
       });
       expect(
-        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
+          .maxBaseFee,
       ).toStrictEqual('1.5');
       expect(
-        preferencesController.store.getState().advancedGasFee.priorityFee,
+        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
+          .priorityFee,
       ).toStrictEqual('2');
     });
   });
 
-  describe('setTheme', () => {
-    it('should default to value "OS"', () => {
+  describe('setTheme', function () {
+    it('should default to value "OS"', function () {
       expect(preferencesController.store.getState().theme).toStrictEqual('os');
     });
 
-    it('should set the setTheme property in state', () => {
+    it('should set the setTheme property in state', function () {
       preferencesController.setTheme('dark');
       expect(preferencesController.store.getState().theme).toStrictEqual(
         'dark',
@@ -292,14 +297,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setUseCurrencyRateCheck', () => {
-    it('should default to false', () => {
+  describe('setUseCurrencyRateCheck', function () {
+    it('should default to false', function () {
       expect(
         preferencesController.store.getState().useCurrencyRateCheck,
       ).toStrictEqual(true);
     });
 
-    it('should set the useCurrencyRateCheck property in state', () => {
+    it('should set the useCurrencyRateCheck property in state', function () {
       preferencesController.setUseCurrencyRateCheck(false);
       expect(
         preferencesController.store.getState().useCurrencyRateCheck,
@@ -307,10 +312,10 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setIncomingTransactionsPreferences', () => {
+  describe('setIncomingTransactionsPreferences', function () {
     const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
 
-    it('should have default value combined', () => {
+    it('should have default value combined', function () {
       const state = preferencesController.store.getState();
       expect(state.incomingTransactionsPreferences).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
@@ -323,7 +328,7 @@ describe('preferences controller', () => {
       });
     });
 
-    it('should update incomingTransactionsPreferences with given value set', () => {
+    it('should update incomingTransactionsPreferences with given value set', function () {
       preferencesController.setIncomingTransactionsPreferences(
         [CHAIN_IDS.LINEA_MAINNET],
         false,

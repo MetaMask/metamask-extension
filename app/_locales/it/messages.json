@@ -210,12 +210,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Quando la tua transazione viene inclusa nel blocco, ogni differenza tra la tua offerta massima di gas e il gas effettivamente utilizzato viene restituita a te. Il totale viene calcolato come offerta massima di gas (in GEWI) * limite di gas."
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Salva queste $1 come mie preferite per \"Avanzate\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Utilizzare sempre questi valori e l'impostazione avanzata come predefiniti."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Tariffa gas avanzata"
   },
