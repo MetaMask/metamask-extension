@@ -62,6 +62,30 @@ const TRANSACTION_META_MOCK = {
   time: 123456789,
 };
 
+const MOCK_INTENRAL_ACCOUNT = {
+  id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
+  address: '0x88bb7F89eB5e5b30D3e15a57C68DBe03C6aCCB21',
+  metadata: {
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  name: 'Account 1',
+  options: {},
+  supportedMethods: [
+    'personal_sign',
+    'eth_sendTransaction',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v2',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
+
 async function flushPromises() {
   await new Promise((resolve) => setImmediate(resolve));
 }
@@ -74,6 +98,7 @@ describe('Transaction Controller', function () {
     fragmentExists,
     networkStatusStore,
     getCurrentChainId,
+    getCurrentAccount,
     messengerMock,
     resultCallbacksMock,
     updateSpy,
@@ -104,6 +129,8 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop;
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
+
+    getCurrentAccount = sinon.stub().callsFake(() => MOCK_INTENRAL_ACCOUNT);
 
     resultCallbacksMock = {
       success: sinon.spy(),
@@ -144,6 +171,7 @@ describe('Transaction Controller', function () {
       getProviderConfig: () => providerConfig,
       getPermittedAccounts: () => undefined,
       getCurrentChainId,
+      getCurrentAccount,
       getParticipateInMetrics: () => false,
       trackMetaMetricsEvent: () => undefined,
       createEventFragment: () => undefined,

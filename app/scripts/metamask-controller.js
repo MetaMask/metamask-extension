@@ -740,54 +740,6 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.OnboardingController,
     });
 
-    // account tracker watches balances, nonces, and any code at their address
-    this.accountTracker = new AccountTracker({
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
-      getNetworkIdentifier: () => {
-        const { type, rpcUrl } = this.networkController.state.providerConfig;
-        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-      },
-      preferencesController: this.preferencesController,
-      onboardingController: this.onboardingController,
-      initState:
-        isManifestV3 &&
-        isFirstMetaMaskControllerSetup === false &&
-        initState.AccountTracker?.accounts
-          ? { accounts: initState.AccountTracker.accounts }
-          : { accounts: {} },
-    });
-
-    // start and stop polling for balances based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      const { completedOnboarding } =
-        this.onboardingController.store.getState();
-      if (activeControllerConnections > 0 && completedOnboarding) {
-        this.triggerNetworkrequests();
-      } else {
-        this.stopNetworkRequests();
-      }
-    });
-
-    this.onboardingController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const { completedOnboarding: currCompletedOnboarding } = currState;
-        if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          this.triggerNetworkrequests();
-        }
-      }, this.onboardingController.store.getState()),
-    );
-
-    this.cachedBalancesController = new CachedBalancesController({
-      accountTracker: this.accountTracker,
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
-      initState: initState.CachedBalancesController,
-    });
-
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
     if (this.canUseHardwareWallets()) {
@@ -1127,6 +1079,56 @@ export default class MetamaskController extends EventEmitter {
         'SnapController:stateChange',
       ),
       ///: END:ONLY_INCLUDE_IN
+    });
+
+    // account tracker watches balances, nonces, and any code at their address
+    this.accountTracker = new AccountTracker({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+      getCurrentChainId: () =>
+        this.networkController.state.providerConfig.chainId,
+      getNetworkIdentifier: () => {
+        const { type, rpcUrl } = this.networkController.state.providerConfig;
+        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
+      },
+      preferencesController: this.preferencesController,
+      accountsController: this.accountsController,
+      controllerMessenger: this.controllerMessenger,
+      onboardingController: this.onboardingController,
+      initState:
+        isManifestV3 &&
+        isFirstMetaMaskControllerSetup === false &&
+        initState.AccountTracker?.accounts
+          ? { accounts: initState.AccountTracker.accounts }
+          : { accounts: {} },
+    });
+
+    // start and stop polling for balances based on activeControllerConnections
+    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
+      if (activeControllerConnections > 0 && completedOnboarding) {
+        this.triggerNetworkrequests();
+      } else {
+        this.stopNetworkRequests();
+      }
+    });
+
+    this.onboardingController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          this.triggerNetworkrequests();
+        }
+      }, this.onboardingController.store.getState()),
+    );
+
+    this.cachedBalancesController = new CachedBalancesController({
+      accountTracker: this.accountTracker,
+      getCurrentChainId: () =>
+        this.networkController.state.providerConfig.chainId,
+      initState: initState.CachedBalancesController,
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -2949,7 +2951,7 @@ export default class MetamaskController extends EventEmitter {
         );
         await this.accountsController.updateAccounts();
         this.accountsController.setSelectedAccount(
-          this.accountsController.getAccounts()[0].id,
+          this.accountsController.listAccounts()[0].id,
         );
       }
 
@@ -2999,6 +3001,8 @@ export default class MetamaskController extends EventEmitter {
 
       const ethQuery = new EthQuery(this.provider);
       accounts = await this.coreKeyringController.getAccounts();
+      const firstAccount = accounts[0];
+
       lastBalance = await this.getBalance(
         accounts[accounts.length - 1],
         ethQuery,
@@ -3035,6 +3039,13 @@ export default class MetamaskController extends EventEmitter {
       this.setLedgerTransportPreference(transportPreference);
 
       await this.accountsController.updateAccounts();
+
+      // set first hd account as the selected account by default
+      this.accountsController.setSelectedAccount(
+        this.accountsController
+          .listAccounts()
+          .find((account) => account.address === firstAccount).id,
+      );
 
       return vault;
     } finally {

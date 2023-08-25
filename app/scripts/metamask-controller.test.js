@@ -28,6 +28,7 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
 import TransactionController from './controllers/transactions';
 import PreferencesController from './controllers/preferences';
+import AccountsController from './controllers/accounts-controller';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -121,6 +122,29 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const TEST_INTERNAL_ACCOUNT = {
+  id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
+  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  metadata: {
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  name: 'Account 1',
+  options: {},
+  supportedMethods: [
+    'personal_sign',
+    'eth_sendTransaction',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v2',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
@@ -965,7 +989,7 @@ describe('MetaMaskController', function () {
           await addNewAccount;
           assert.fail('should throw');
         } catch (e) {
-          assert.equal(e.message, 'No HD keyring found');
+          assert.equal(e.message, 'MetamaskController - No HD Key Tree found');
         }
       });
     });
@@ -992,19 +1016,17 @@ describe('MetaMaskController', function () {
     });
 
     describe('#resetAccount', function () {
-      it('wipes transactions from only the correct network id and with the selected address', async function () {
-        const selectedAddressStub = sinon.stub(
-          metamaskController.preferencesController,
-          'getSelectedAddress',
+      it('wipes transactions from only the correct network id and with the selected account', async function () {
+        const selectedAccountStub = sinon.stub(
+          metamaskController.accountsController,
+          'getSelectedAccount',
         );
         const getNetworkIdStub = sinon.stub(
           metamaskController.txController.txStateManager,
           'getNetworkId',
         );
 
-        selectedAddressStub.returns(
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        );
+        selectedAccountStub.returns(TEST_INTERNAL_ACCOUNT);
         getNetworkIdStub.returns(42);
 
         metamaskController.txController.txStateManager._addTransactionsToState([
@@ -1781,10 +1803,15 @@ describe('MetaMaskController', function () {
     describe('incoming transactions', function () {
       let txControllerStub, preferencesControllerSpy, controllerMessengerSpy;
 
-      beforeEach(function () {
+      beforeEach(async function () {
         txControllerStub = TransactionController.prototype;
         preferencesControllerSpy = metamaskController.preferencesController;
         controllerMessengerSpy = ControllerMessenger.prototype;
+        sandbox
+          .stub(metamaskController.accountsController, 'getSelectedAccount')
+          .callsFake(() => {
+            return TEST_INTERNAL_ACCOUNT;
+          });
       });
 
       it('starts incoming transaction polling if show incoming transactions enabled', async function () {
@@ -1814,9 +1841,11 @@ describe('MetaMaskController', function () {
       it('updates incoming transactions when changing account', async function () {
         assert(txControllerStub.updateIncomingTransactions.notCalled);
 
-        await preferencesControllerSpy.store.subscribe.lastCall.args[0]({
-          selectedAddress: 'foo',
-        });
+        await controllerMessengerSpy.subscribe.args
+          .filter(
+            (args) => args[0] === 'AccountsController:selectedAccountChange',
+          )
+          .slice(-1)[0][1]();
 
         assert(txControllerStub.updateIncomingTransactions.calledOnce);
       });

@@ -82,6 +82,7 @@ export default class AccountTracker {
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
     this.preferencesController = opts.preferencesController;
     this.onboardingController = opts.onboardingController;
+    this.accountsController = opts.accountsController;
 
     this.onboardingController.store.subscribe(
       previousValueComparator(async (prevState, currState) => {
@@ -91,6 +92,19 @@ export default class AccountTracker {
           this._updateAccounts();
         }
       }, this.onboardingController.store.getState()),
+    );
+
+    this.controllerMessenger = opts.controllerMessenger;
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      () => {
+        const { useMultiAccountBalanceChecker } =
+          this.preferencesController.store.getState();
+        if (!useMultiAccountBalanceChecker) {
+          this._updateAccounts();
+        }
+      },
     );
 
     this.preferencesController.store.subscribe(
@@ -247,7 +261,8 @@ export default class AccountTracker {
 
       addresses = Object.keys(accounts);
     } else {
-      const selectedAddress = this.preferencesController.getSelectedAddress();
+      const selectedAddress =
+        this.accountsController.getSelectedAccount().address;
 
       addresses = [selectedAddress];
     }

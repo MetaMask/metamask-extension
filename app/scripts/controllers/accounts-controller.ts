@@ -335,9 +335,9 @@ export default class AccountsController extends BaseControllerV2<
   ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
   // Note: listLegacyAccounts is a temporary method until the keyrings all implement the InternalAccount interface
-  async #listLegacyAccounts(): Promise<InternalAccount[]> {
+  async #listLegacyAccounts(): Promise<Omit<InternalAccount, 'name'>[]> {
     const addresses = await this.#keyringController.getAccounts();
-    const internalAccounts: InternalAccount[] = [];
+    const internalAccounts: Omit<InternalAccount, 'name'>[] = [];
     for (const address of addresses) {
       const keyring = await this.#keyringController.getKeyringForAccount(
         address,
