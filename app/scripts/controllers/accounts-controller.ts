@@ -97,12 +97,9 @@ export default class AccountsController extends BaseControllerV2<
   #snapController: SnapController;
   ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
-  identities: any;
-
   constructor({
     messenger,
     state,
-    identities,
     keyringController,
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     snapController,
@@ -116,7 +113,6 @@ export default class AccountsController extends BaseControllerV2<
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     snapController: SnapController;
     ///: END:ONLY_INCLUDE_IN(keyring-snaps)
-    identities: any;
     onKeyringStateChange: (
       listener: (keyringState: KeyringControllerState) => void,
     ) => void;
@@ -140,7 +136,6 @@ export default class AccountsController extends BaseControllerV2<
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     this.#snapController = snapController;
     ///: END:ONLY_INCLUDE_IN(keyring-snaps)
-    this.identities = identities;
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     onSnapStateChange(async (snapState: SnapControllerState) => {
@@ -266,6 +261,7 @@ export default class AccountsController extends BaseControllerV2<
 
     // keyring type map.
     const keyringTypes = new Map<string, number>();
+    const previousAccounts = this.state.internalAccounts.accounts;
 
     const accounts: Record<string, InternalAccount> = [
       ...legacyAccounts,
@@ -283,18 +279,16 @@ export default class AccountsController extends BaseControllerV2<
         keyringTypes.set(keyringTypeName, 1);
       }
 
-      const existingAccount = this.getAccount(internalAccount.id);
+      const existingAccount = previousAccounts[internalAccount.id];
 
       internalAccountMap[internalAccount.id] = {
         ...internalAccount,
-        // use the account name from the identities if it exists
         name: existingAccount
           ? existingAccount.name
           : `${keyringTypeName} ${keyringAccountIndex + 1}`,
         metadata: {
           ...internalAccount.metadata,
-          lastSelected: this.getAccount(internalAccount.id)?.metadata
-            ?.lastSelected,
+          lastSelected: existingAccount?.metadata?.lastSelected,
         },
       };
 

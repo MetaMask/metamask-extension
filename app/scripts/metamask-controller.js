@@ -1069,7 +1069,6 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       snapController: this.snapController,
       ///: END:ONLY_INCLUDE_IN
-      identities: initState.PreferencesController?.identities,
       onKeyringStateChange: keyringControllerMessenger.subscribe.bind(
         keyringControllerMessenger,
         'KeyringController:stateChange',
