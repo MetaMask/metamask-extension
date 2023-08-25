@@ -1557,7 +1557,7 @@
     "message": "Export private key"
   },
   "extendWalletWithSnaps": {
-    "message": "Extend the wallet experience."
+    "message": "Customize your wallet experience."
   },
   "externalExtension": {
     "message": "External extension"
@@ -2834,7 +2834,7 @@
     "message": "👓 We are making transactions easier to read."
   },
   "notificationsEmptyText": {
-    "message": "Nothing to see here."
+    "message": "This is where you can find notifications from your installed snaps."
   },
   "notificationsHeader": {
     "message": "Notifications"
