@@ -1,5 +1,6 @@
 import { NetworkType, toHex } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { cloneDeep } from 'lodash';
 import { version as currentStateVersion, migrate } from './092.2';
 
 const TEST_NETWORK_CONTROLLER_STATE = {
@@ -37,7 +38,7 @@ describe('migration #96', () => {
       data: {},
     };
 
-    const newStorage = await migrate(originalVersionedState);
+    const newStorage = await migrate(cloneDeep(originalVersionedState));
 
     expect(newStorage.meta).toStrictEqual({ version: currentStateVersion });
   });
