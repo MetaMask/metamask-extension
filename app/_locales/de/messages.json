@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
   },
-  "copyPrivateKey": {
-    "message": "Das ist Ihr Private Key (klicken um zu kopieren)"
-  },
   "copyRawTransactionData": {
     "message": "Roh-Transaktionsdaten kopieren"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "Optionales Passwort eingeben"
   },
-  "enterPassword": {
-    "message": "Passwort eingeben"
-  },
   "enterPasswordContinue": {
     "message": "Zum Fortfahren Passwort eingeben"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "MetaMask Snaps erforschen"
-  },
-  "exportPrivateKey": {
-    "message": "Private Key exportieren"
   },
   "extendWalletWithSnaps": {
     "message": "Erweitern Sie das Wallet-Erlebnis."
@@ -3019,10 +3010,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Ihre MetaMask Installation ist abgeschlossen!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Die Anzeige der eingehenden Transaktionen in Ihrer Wallet beruht auf der Kommunikation mit $1. Etherscan hat Zugriff auf Ihre Ethereum-Adresse und Ihre IP-Adresse. $2 anzeigen.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing-Warnungen basieren auf der Kommunikation mit $1. jsDeliver hat Zugriff auf Ihre IP-Adresse. $2 ansehen.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -3871,9 +3858,6 @@
   },
   "showPrivateKey": {
     "message": "Privaten Key anzeigen"
-  },
-  "showPrivateKeys": {
-    "message": "Private Keys anzeigen"
   },
   "showTestnetNetworks": {
     "message": "Test-Netzwerke anzeigen"
@@ -5133,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Transaktionseinsichten für diesen Vertrag zu diesem Zeitpunkt nicht unterstützt."
-  },
-  "typePassword": {
-    "message": "Passwort eingeben"
   },
   "typeYourSRP": {
     "message": "Geben Sie Ihre geheime Wiederherstellungsphrase ein"

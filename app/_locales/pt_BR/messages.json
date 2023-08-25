@@ -475,9 +475,6 @@
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
-  "copyPrivateKey": {
-    "message": "Essa é a sua chave privada (clique para copiar)"
-  },
   "copyRawTransactionData": {
     "message": "Copiar dados brutos da transação"
   },
@@ -767,9 +764,6 @@
   "enterMaxSpendLimit": {
     "message": "Digite um limite máximo de gastos"
   },
-  "enterPassword": {
-    "message": "Digite a senha"
-  },
   "enterPasswordContinue": {
     "message": "Digite a senha para continuar"
   },
@@ -825,9 +819,6 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar chave privada"
   },
   "externalExtension": {
     "message": "Extensão externa"
@@ -1623,10 +1614,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "A exibição de transações recebidas na sua carteira depende de comunicação com $1. O Etherscan terá acesso ao seu endereço Ethereum e ao seu endereço IP. Veja $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -2019,9 +2006,6 @@
   },
   "showPermissions": {
     "message": "Mostrar permissões"
-  },
-  "showPrivateKeys": {
-    "message": "Mostrar chaves privadas"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
@@ -2636,9 +2620,6 @@
   },
   "txInsightsNotSupported": {
     "message": "As informações sobre transações não são suportadas para esse contrato, por ora."
-  },
-  "typePassword": {
-    "message": "Digite sua senha da MetaMask"
   },
   "u2f": {
     "message": "U2F",

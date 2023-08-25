@@ -475,9 +475,6 @@
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },
-  "copyPrivateKey": {
-    "message": "Esta es su clave privada (haga clic para copiarla)"
-  },
   "copyRawTransactionData": {
     "message": "Copiar los datos de las transacciones en bruto"
   },
@@ -767,9 +764,6 @@
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
   },
-  "enterPassword": {
-    "message": "Escribir contraseña"
-  },
   "enterPasswordContinue": {
     "message": "Escribir contraseña para continuar"
   },
@@ -825,9 +819,6 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar clave privada"
   },
   "externalExtension": {
     "message": "Extensión externa"
@@ -1623,14 +1614,6 @@
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
-  "onboardingUsePhishingDetectionDescription": {
-    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver $2.",
-    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
-  },
   "onlyAddTrustedNetworks": {
     "message": "Un proveedor de red malintencionado puede mentir sobre el estado de la cadena de bloques y registrar su actividad de red. Agregue solo redes personalizadas de confianza."
   },
@@ -2019,9 +2002,6 @@
   },
   "showPermissions": {
     "message": "Mostrar permisos"
-  },
-  "showPrivateKeys": {
-    "message": "Mostrar claves privadas"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"
@@ -2636,9 +2616,6 @@
   },
   "txInsightsNotSupported": {
     "message": "En este momento no se admiten informaciones sobre las transacciones para este contrato."
-  },
-  "typePassword": {
-    "message": "Escriba su contraseña de MetaMask"
   },
   "u2f": {
     "message": "U2F",
