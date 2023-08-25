@@ -41,14 +41,6 @@ const PREFERENCES_CONTROLLER_MOCK = {
   isLineaMainnetReleased: false,
 };
 
-const PREFERENCES_CONTROLLER_MOCK_2 = {
-  ...PREFERENCES_CONTROLLER_MOCK,
-  advancedGasFee: {
-    priorityFee: '0x1',
-    maxBaseFee: '0x1',
-  },
-};
-
 describe('migration #92.3', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
@@ -76,12 +68,28 @@ describe('migration #92.3', () => {
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
+  it('does nothing if no AppStateController state', async () => {
+    const oldData = {
+      some: 'data',
+    };
+
+    const oldStorage = {
+      meta: { version: 92.2 },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(oldData);
+  });
+
   it('changes advancedGasFee from null to an empty object, and sets hadAdvancedGasFeesSetPriorToMigration92_3 to false', async () => {
     const oldData = {
       some: 'data',
       PreferencesController: {
         ...PREFERENCES_CONTROLLER_MOCK,
       },
+      AppStateController: {},
     };
 
     const oldStorage = {
@@ -107,8 +115,13 @@ describe('migration #92.3', () => {
     const oldData = {
       some: 'data',
       PreferencesController: {
-        ...PREFERENCES_CONTROLLER_MOCK_2,
+        ...PREFERENCES_CONTROLLER_MOCK,
+        advancedGasFee: {
+          priorityFee: '0x1',
+          maxBaseFee: '0x1',
+        },
       },
+      AppStateController: {},
     };
 
     const oldStorage = {
@@ -121,11 +134,50 @@ describe('migration #92.3', () => {
     expect(newStorage.data).toStrictEqual({
       some: oldData.some,
       PreferencesController: {
-        ...PREFERENCES_CONTROLLER_MOCK_2,
+        ...PREFERENCES_CONTROLLER_MOCK,
         advancedGasFee: {},
       },
       AppStateController: {
         hadAdvancedGasFeesSetPriorToMigration92_3: true,
+      },
+    });
+  });
+
+  it('does not erase advancedGasFee if it does not contain the expected data prior to this migration', async () => {
+    const oldData = {
+      some: 'data',
+      PreferencesController: {
+        ...PREFERENCES_CONTROLLER_MOCK,
+        advancedGasFee: {
+          '0x5': {
+            priorityFee: '0x1',
+            maxBaseFee: '0x1',
+          },
+        },
+      },
+      AppStateController: {},
+    };
+
+    const oldStorage = {
+      meta: { version: 92.2 },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      some: oldData.some,
+      PreferencesController: {
+        ...PREFERENCES_CONTROLLER_MOCK,
+        advancedGasFee: {
+          '0x5': {
+            priorityFee: '0x1',
+            maxBaseFee: '0x1',
+          },
+        },
+      },
+      AppStateController: {
+        hadAdvancedGasFeesSetPriorToMigration92_3: false,
       },
     });
   });
