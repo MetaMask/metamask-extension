@@ -3341,6 +3341,9 @@
   "priorityFee": {
     "message": "Priority fee"
   },
+  "priorityFeeProperCase": {
+    "message": "Priority Fee"
+  },
   "privacy": {
     "message": "Privacy"
   },
