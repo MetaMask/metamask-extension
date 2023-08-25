@@ -901,9 +901,6 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
-  "copyPrivateKey": {
-    "message": "This is your private key (click to copy)"
-  },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
   },
@@ -1485,9 +1482,6 @@
   "enterOptionalPassword": {
     "message": "Enter optional password"
   },
-  "enterPassword": {
-    "message": "Enter password"
-  },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
@@ -1564,11 +1558,8 @@
   "exploreMetaMaskSnaps": {
     "message": "Explore MetaMask Snaps"
   },
-  "exportPrivateKey": {
-    "message": "Export private key"
-  },
   "extendWalletWithSnaps": {
-    "message": "Extend the wallet experience."
+    "message": "Customize your wallet experience."
   },
   "externalExtension": {
     "message": "External extension"
@@ -2873,7 +2864,7 @@
     "message": "👓 We are making transactions easier to read."
   },
   "notificationsEmptyText": {
-    "message": "Nothing to see here."
+    "message": "This is where you can find notifications from your installed snaps."
   },
   "notificationsHeader": {
     "message": "Notifications"
@@ -3021,10 +3012,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
-  },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Showing incoming transactions in your wallet relies on communication with $1. Etherscan will have access to your Ethereum address and your IP address. View $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
@@ -3875,9 +3862,6 @@
   "showPrivateKey": {
     "message": "Show private key"
   },
-  "showPrivateKeys": {
-    "message": "Show Private Keys"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -4380,6 +4364,9 @@
   "swap": {
     "message": "Swap"
   },
+  "swapAdjustSlippage": {
+    "message": "Adjust slippage"
+  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -4437,9 +4424,6 @@
   },
   "swapEditLimit": {
     "message": "Edit limit"
-  },
-  "swapEditTransactionSettings": {
-    "message": "Edit transaction settings"
   },
   "swapEnableDescription": {
     "message": "This is required and gives MetaMask permission to swap your $1.",
@@ -4501,6 +4485,9 @@
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
+  "swapHighSlippage": {
+    "message": "High slippage"
+  },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
   },
@@ -4514,6 +4501,9 @@
   },
   "swapLearnMore": {
     "message": "Learn more about Swaps"
+  },
+  "swapLowSlippage": {
+    "message": "Low slippage"
   },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
@@ -4625,6 +4615,20 @@
   "swapShowLatestQuotes": {
     "message": "Show latest quotes"
   },
+  "swapSlippageHighDescription": {
+    "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageHighTitle": {
+    "message": "High slippage"
+  },
+  "swapSlippageLowDescription": {
+    "message": "A value this low ($1%) may result in a failed swap",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageLowTitle": {
+    "message": "Low slippage"
+  },
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
   },
@@ -4638,26 +4642,14 @@
     "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
   },
   "swapSlippageOverLimitTitle": {
-    "message": "Reduce slippage to continue"
+    "message": "Very high slippage"
   },
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "Max slippage is too low which may cause your transaction to fail."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Increase slippage to avoid transaction failure"
-  },
   "swapSlippageTooltip": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "The slippage entered is considered very high and may result in a bad rate"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Very high slippage"
   },
   "swapSlippageZeroDescription": {
     "message": "There are fewer zero-slippage quote providers which will result in a less competitive quote."
@@ -5136,9 +5128,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Transaction insights not supported for this contract at this time."
-  },
-  "typePassword": {
-    "message": "Type your MetaMask password"
   },
   "typeYourSRP": {
     "message": "Type your Secret Recovery Phrase"

@@ -113,9 +113,7 @@ describe('Transaction Selectors', () => {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
-          featureFlags: {
-            showIncomingTransactions: false,
-          },
+          featureFlags: {},
           selectedAddress: '0xAddress',
           transactions: [
             {
@@ -180,9 +178,7 @@ describe('Transaction Selectors', () => {
             chainId: CHAIN_IDS.MAINNET,
           },
           selectedAddress: '0xAddress',
-          featureFlags: {
-            showIncomingTransactions: false,
-          },
+          featureFlags: {},
           transactions: [tx1, tx2],
         },
       };
@@ -264,10 +260,9 @@ describe('Transaction Selectors', () => {
           chainId: CHAIN_IDS.MAINNET,
         },
         selectedAddress: '0xAddress',
-        featureFlags: {
-          showIncomingTransactions: false,
-        },
+        featureFlags: {},
         transactions: [submittedTx, unapprovedTx, approvedTx, confirmedTx],
+
       },
     };
 

@@ -63,9 +63,8 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
 
 export const incomingTxListSelector = createDeepEqualSelector(
   (state) => {
-    const { showIncomingTransactions } = state.metamask.featureFlags;
-
-    if (!showIncomingTransactions) {
+    const { incomingTransactionsPreferences } = state.metamask;
+    if (!incomingTransactionsPreferences) {
       return [];
     }
 

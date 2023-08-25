@@ -2,6 +2,7 @@ import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { CHAIN_IDS } from '../shared/constants/network';
 
 const state = {
   invalidCustomNetwork: {
@@ -528,6 +529,12 @@ const state = {
     currentLocale: 'en',
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
+    },
+    incomingTransactionsPreferences: {
+      [CHAIN_IDS.MAINNET]: true,
+      [CHAIN_IDS.GOERLI]: false,
+      [CHAIN_IDS.OPTIMISM_TESTNET]: false,
+      [CHAIN_IDS.AVALANCHE_TESTNET]: true,
     },
     firstTimeFlowType: 'create',
     completedOnboarding: true,
