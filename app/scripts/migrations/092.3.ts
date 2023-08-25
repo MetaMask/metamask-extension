@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isObject } from '@metamask/utils';
+import { hasProperty, isNullOrUndefined, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import log from 'loglevel';
 
@@ -39,7 +39,7 @@ function migrateData(state: Record<string, unknown>): void {
 }
 
 function changeShapeAndRemoveOldAdvancedGasFeePreference(
-  state: Record<string, any>,
+  state: Record<string, unknown>,
 ) {
   if (isNullOrUndefined(state.PreferencesController)) {
     log.warn(
@@ -47,42 +47,48 @@ function changeShapeAndRemoveOldAdvancedGasFeePreference(
     );
     return;
   }
-  const possibleOriginalValue = state.PreferencesController?.advancedGasFee;
 
-  // Will be false if the keys set on the object are anything other than the
-  // maxBaseFee or priorityFee. Essentially if the object is already keyed
-  // by chainId it won't show as hadFeesSet.
-  const hadFeesSet =
-    isObject(possibleOriginalValue) &&
-    hasFeePreferenceKeys(possibleOriginalValue);
+  if (
+    hasProperty(state, 'AppStateController') &&
+    isObject(state.AppStateController) &&
+    hasProperty(state, 'PreferencesController') &&
+    isObject(state.PreferencesController)
+  ) {
+    const possibleOriginalValue = state.PreferencesController?.advancedGasFee;
 
-  if (isObject(state.AppStateController) === false) {
+    // Will be false if the keys set on the object are anything other than the
+    // maxBaseFee or priorityFee. Essentially if the object is already keyed
+    // by chainId it won't show as hadFeesSet.
+    const hadFeesSet =
+      isObject(possibleOriginalValue) &&
+      hasFeePreferenceKeys(possibleOriginalValue);
+
+    state.AppStateController.hadAdvancedGasFeesSetPriorToMigration92_3 =
+      hadFeesSet;
+
+    if (
+      state.PreferencesController.advancedGasFee === null ||
+      (isObject(state.PreferencesController.advancedGasFee) &&
+        hasFeePreferenceKeys(state.PreferencesController.advancedGasFee))
+    ) {
+      state.PreferencesController.advancedGasFee = {};
+    }
+  } else if (isObject(state.AppStateController) === false) {
     global.sentry?.captureException?.(
       new Error(
         `typeof state.AppStateController is ${typeof state.AppStateController}`,
       ),
     );
-  } else {
-    state.AppStateController.hadAdvancedGasFeesSetPriorToMigration92_3 =
-      hadFeesSet;
-  }
-
-  if (isObject(state.PreferencesController) === false) {
+  } else if (isObject(state.PreferencesController) === false) {
     global.sentry?.captureException?.(
       new Error(
         `typeof state.PreferencesController is ${typeof state.PreferencesController}`,
       ),
     );
-  } else if (
-    state.PreferencesController.advancedGasFee === null ||
-    (isObject(state.PreferencesController.advancedGasFee) &&
-      hasFeePreferenceKeys(state.PreferencesController.advancedGasFee))
-  ) {
-    state.PreferencesController.advancedGasFee = {};
   }
 }
 
-function hasFeePreferenceKeys(objectToCheck: Record<string, any>): boolean {
+function hasFeePreferenceKeys(objectToCheck: Record<string, unknown>): boolean {
   const keys = Object.keys(objectToCheck);
 
   if (keys.includes('maxBaseFee') || keys.includes('priorityFee')) {
