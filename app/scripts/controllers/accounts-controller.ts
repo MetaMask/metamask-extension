@@ -420,7 +420,7 @@ export default class AccountsController extends BaseControllerV2<
   ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 }
 
-function keyringTypeToName(keyringType: string): string {
+export function keyringTypeToName(keyringType: string): string {
   switch (keyringType) {
     case 'Simple Key Pair': {
       return 'Account';

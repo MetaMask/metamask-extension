@@ -257,7 +257,7 @@ export class IncomingTransactionHelper {
   }
 
   #getBlockNumberKey(): string {
-    return `${this.#getCurrentChainId()}#${this.#getCurrentAccount().toLowerCase()}`;
+    return `${this.#getCurrentChainId()}#${this.#getCurrentAccount().address.toLowerCase()}`;
   }
 
   #canStart(): boolean {

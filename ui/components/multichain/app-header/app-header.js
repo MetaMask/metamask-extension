@@ -98,7 +98,7 @@ export const AppHeader = ({ location }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Used for copy button
-  const currentAddress = selectedAddress;
+  const { address: currentAddress } = internalAccount;
   const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
