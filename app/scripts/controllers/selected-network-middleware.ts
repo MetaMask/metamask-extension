@@ -18,9 +18,7 @@ const createSelectedNetworkMiddleware = (
     }
 
     const networkClientIdForRequest =
-      selectedNetworkController.getNetworkClientIdForDomain(
-        (req as any).origin,
-      );
+      selectedNetworkController.getNetworkClientIdForDomain(req.origin);
 
     req.networkClientId = networkClientIdForRequest;
     return next();
