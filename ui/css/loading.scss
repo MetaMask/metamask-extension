@@ -11,11 +11,13 @@
   flex-direction: column;
   z-index: 1000;
   opacity: 0;
-  animation: fadeIn 0.25s;
+
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
+  animation-delay: 1s;
 
   .metamask-loaded & {
-    animation: fadeOut 0.25s;
-    opacity: 0;
+    display: none;
   }
 
   .loading-logo {
@@ -36,7 +38,7 @@
 #app-content {
   visibility: hidden;
 
-  &.app-content-loaded {
+  .metamask-loaded & {
     animation: fadeIn 0.25s;
     visibility: visible;
   }

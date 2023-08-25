@@ -114,19 +114,6 @@ async function start() {
 
   let isUIInitialised = false;
 
-  // Start the logo animation
-  const loadingNode = document.querySelector('#app-loader');
-  const contentNode = document.querySelector('#app-content');
-
-  document.documentElement.classList.add('metamask-loaded');
-
-  loadingNode.addEventListener('animationend', ({ animationName }) => {
-    if (animationName === 'fadeOut') {
-      loadingNode.style.display = 'none';
-      contentNode.classList.add('app-content-loaded');
-    }
-  });
-
   // setup stream to background
   extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
@@ -274,6 +261,7 @@ async function start() {
   }
 
   function initializeUiWithTab(tab) {
+
     initializeUi(
       tab,
       connectionStream,
@@ -367,6 +355,9 @@ function initializeUi(activeTab, connectionStream, cb) {
       );
       return;
     }
+
+    // Hide loader, show content
+    document.documentElement.classList.add('metamask-loaded');
 
     launchMetaMaskUi(
       {
