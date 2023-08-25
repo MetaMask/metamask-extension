@@ -8,7 +8,9 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconName,
+  IconSize,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -29,6 +31,8 @@ export const AppFooter = () => {
   const t = useI18nContext();
   const location = useLocation();
 
+  const walletRoute = `#${DEFAULT_ROUTE}`;
+  const connectedRoute = `#${CONNECTED_ROUTE}`;
   const activeWallet = location.pathname === DEFAULT_ROUTE;
   const activeConnections = location.pathname === CONNECTED_ROUTE;
 
@@ -46,20 +50,23 @@ export const AppFooter = () => {
       paddingBottom={2}
     >
       <Box
+        as="a"
+        href={walletRoute}
         className="app-footer__button"
         width={BlockSize.OneThird}
         padding={2}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
+        tabIndex={0}
       >
-        <ButtonIcon
+        <Icon
           data-testid="app-footer-wallet-button"
           color={
             activeWallet ? IconColor.primaryDefault : IconColor.iconAlternative
           }
-          iconName={IconName.Wallet}
-          size={ButtonIconSize.Lg}
+          name={IconName.Wallet}
+          size={IconSize.Lg}
         />
         <Text
           color={
@@ -71,12 +78,15 @@ export const AppFooter = () => {
         </Text>
       </Box>
       <Box
+        as="a"
         width={BlockSize.OneThird}
         padding={2}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        tabIndex={0}
       >
         <ButtonIcon
           className="app-footer__button"
@@ -89,22 +99,25 @@ export const AppFooter = () => {
         />
       </Box>
       <Box
+        as="a"
+        href={connectedRoute}
         className="app-footer__button"
         width={BlockSize.OneThird}
         padding={2}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
+        tabIndex={0}
       >
-        <ButtonIcon
+        <Icon
           data-testid="app-footer-connections-button"
           color={
             activeConnections
               ? IconColor.primaryDefault
               : IconColor.iconAlternative
           }
-          iconName={IconName.Global}
-          size={ButtonIconSize.Lg}
+          name={IconName.Global}
+          size={IconSize.Lg}
         />
         <Text
           color={
