@@ -837,6 +837,9 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "connections": {
+    "message": "Connections"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -5315,6 +5318,9 @@
   },
   "visitWebSite": {
     "message": "Visit our website"
+  },
+  "wallet": {
+    "message": "Wallet"
   },
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
