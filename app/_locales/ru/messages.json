@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
   },
-  "copyPrivateKey": {
-    "message": "Это ваш закрытый ключ (нажмите, чтобы скопировать)"
-  },
   "copyRawTransactionData": {
     "message": "Копировать необработанные данные транзакции"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "Введите необязательный пароль"
   },
-  "enterPassword": {
-    "message": "Введите пароль"
-  },
   "enterPasswordContinue": {
     "message": "Введите пароль, чтобы продолжить"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "Обзор привязок MetaMask"
-  },
-  "exportPrivateKey": {
-    "message": "Экспорт закрытого ключа"
   },
   "extendWalletWithSnaps": {
     "message": "Расширьте возможности кошелька."
@@ -3868,9 +3859,6 @@
   "showPrivateKey": {
     "message": "Показать закрытый ключ"
   },
-  "showPrivateKeys": {
-    "message": "Показать закрытые ключи"
-  },
   "showTestnetNetworks": {
     "message": "Показать тестовые сети"
   },
@@ -5129,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Для этого контракта сейчас не поддерживается аналитика транзакций."
-  },
-  "typePassword": {
-    "message": "Введите свой пароль MetaMask"
   },
   "typeYourSRP": {
     "message": "Введите секретную фразу для восстановления"

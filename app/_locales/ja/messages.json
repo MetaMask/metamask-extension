@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
   },
-  "copyPrivateKey": {
-    "message": "これは秘密鍵です (クリックしてコピー)"
-  },
   "copyRawTransactionData": {
     "message": "未処理のトランザクションデータをコピー"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "オプションのパスワードを入力してください"
   },
-  "enterPassword": {
-    "message": "パスワードを入力してください"
-  },
   "enterPasswordContinue": {
     "message": "続行するには、パスワードを入力してください"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "MetaMask スナップを閲覧"
-  },
-  "exportPrivateKey": {
-    "message": "秘密鍵のエクスポート"
   },
   "extendWalletWithSnaps": {
     "message": "ウォレットのエクスペリエンスを拡張します。"
@@ -3868,9 +3859,6 @@
   "showPrivateKey": {
     "message": "秘密鍵を表示"
   },
-  "showPrivateKeys": {
-    "message": "秘密鍵を表示"
-  },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
   },
@@ -5129,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "現時点ではこのコントラクトでトランザクションインサイトはサポートされていません。"
-  },
-  "typePassword": {
-    "message": "MetaMaskパスワードを入力してください"
   },
   "typeYourSRP": {
     "message": "秘密のリカバリーフレーズを入力してください"

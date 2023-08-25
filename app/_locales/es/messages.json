@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },
-  "copyPrivateKey": {
-    "message": "Esta es su clave privada (haga clic para copiarla)"
-  },
   "copyRawTransactionData": {
     "message": "Copiar los datos de las transacciones en bruto"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "Ingrese la contraseña opcional"
   },
-  "enterPassword": {
-    "message": "Escribir contraseña"
-  },
   "enterPasswordContinue": {
     "message": "Escribir contraseña para continuar"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "Explore complementos de MetaMask"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar clave privada"
   },
   "extendWalletWithSnaps": {
     "message": "Amplíe la experiencia de uso de la cartera."
@@ -3868,9 +3859,6 @@
   "showPrivateKey": {
     "message": "Mostrar clave privada"
   },
-  "showPrivateKeys": {
-    "message": "Mostrar claves privadas"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"
   },
@@ -5129,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "En este momento no se admiten informaciones sobre las transacciones para este contrato."
-  },
-  "typePassword": {
-    "message": "Escriba su contraseña de MetaMask"
   },
   "typeYourSRP": {
     "message": "Escriba la frase secreta de respaldo"

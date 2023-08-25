@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "क्लिपबोर्ड पर पता कॉपी करें"
   },
-  "copyPrivateKey": {
-    "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)"
-  },
   "copyRawTransactionData": {
     "message": "लेन-देन का अपरिष्कृत डेटा कॉपी करें"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "वैकल्पिक पासवर्ड डालें"
   },
-  "enterPassword": {
-    "message": "पासवर्ड दर्ज करें"
-  },
   "enterPasswordContinue": {
     "message": "जारी रखने के लिए पासवर्ड दर्ज करें"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "MetaMask स्नैप्स का अन्वेषण करें"
-  },
-  "exportPrivateKey": {
-    "message": "निजी कुंजी निर्यात करें"
   },
   "extendWalletWithSnaps": {
     "message": "वॉलेट अनुभव का विस्तार करें।"
@@ -3868,9 +3859,6 @@
   "showPrivateKey": {
     "message": "निजी कुंजी दिखाएं"
   },
-  "showPrivateKeys": {
-    "message": "निजी कुंजियां दिखाएं"
-  },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
   },
@@ -5129,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "इस समय इस अनुबंध के लिए लेन-देन की जानकारी समर्थित नहीं है।"
-  },
-  "typePassword": {
-    "message": "अपना MetaMask पासवर्ड टाइप करें"
   },
   "typeYourSRP": {
     "message": "अपना गुप्त रिकवरी वाक्यांश लिखें"

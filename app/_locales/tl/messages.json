@@ -898,9 +898,6 @@
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong key (i-click para kopyahin)"
-  },
   "copyRawTransactionData": {
     "message": "Kopyahin ang raw na data ng transaksyon"
   },
@@ -1482,9 +1479,6 @@
   "enterOptionalPassword": {
     "message": "Ilagay ang opsyonal na password"
   },
-  "enterPassword": {
-    "message": "Ilagay ang password"
-  },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
   },
@@ -1560,9 +1554,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "Galugarin ang MetaMask Snaps"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Pribadong Key"
   },
   "extendWalletWithSnaps": {
     "message": "Palawakin ang karanasan sa wallet."
@@ -3868,9 +3859,6 @@
   "showPrivateKey": {
     "message": "Ipakita ang private key"
   },
-  "showPrivateKeys": {
-    "message": "Ipakita ang Mga Pribadong Key"
-  },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test networks"
   },
@@ -5129,9 +5117,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Hindi magagamit ang mga pag-alam sa transaksyon para sa contract na ito sa oras na ito."
-  },
-  "typePassword": {
-    "message": "Uri ng password ng iyong MetaMask"
   },
   "typeYourSRP": {
     "message": "I-type ang iyong Secret Recovery Phrase"
