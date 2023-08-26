@@ -7,9 +7,9 @@ import {
   BorderColor,
   BackgroundColor,
   TextColor,
+  Severity,
 } from '../../../helpers/constants/design-system';
 
-import { Severity } from '../../../helpers/constants/design-system';
 import { BannerAlert } from '../../component-library';
 import ApproveIcon from '../icon/approve-icon.component';
 import InfoIcon from '../icon/info-icon.component';
