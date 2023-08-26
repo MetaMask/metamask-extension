@@ -52,12 +52,10 @@ function moveIdentitiesToAccountsController(state: Record<string, any>) {
   const identities: {
     [key: string]: {
       name: string;
+      address: string;
       lastSelected: number;
     };
   } = state.PreferencesController?.identities || {};
-
-  const { keyrings }: { keyrings: { type: string; accounts: string[] }[] } =
-    state.KeyringController;
 
   if (Object.keys(identities).length === 0) {
     return;
@@ -65,45 +63,35 @@ function moveIdentitiesToAccountsController(state: Record<string, any>) {
 
   const accounts: Record<string, InternalAccount> = {};
 
-  keyrings.forEach((keyring) => {
-    keyring.accounts.forEach((address) => {
-      const expectedId = uuid({
-        random: sha256FromString(address).slice(0, 16),
-      });
-
-      const identity = identities[address];
-
-      if (!identity) {
-        throw new Error(
-          `Missing account name for ${address} in PreferencesControllerState`,
-        );
-      }
-
-      accounts[expectedId] = {
-        address,
-        id: expectedId,
-        name: identity.name,
-        options: {},
-        metadata: {
-          lastSelected: identity.lastSelected ?? null,
-          keyring: {
-            type: keyring.type,
-          },
-        },
-        supportedMethods: [
-          'personal_sign',
-          'eth_sendTransaction',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v2',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
-      };
+  Object.values(identities).forEach((identity) => {
+    const expectedId = uuid({
+      random: sha256FromString(identity.address).slice(0, 16),
     });
+
+    accounts[expectedId] = {
+      address: identity.address,
+      id: expectedId,
+      name: identity.name,
+      options: {},
+      metadata: {
+        lastSelected: identity.lastSelected ?? null,
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      supportedMethods: [
+        'personal_sign',
+        'eth_sendTransaction',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v2',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
+    };
   });
 
   state.AccountsController.internalAccounts.accounts = accounts;
@@ -121,7 +109,7 @@ function moveSelectedAddressToAccountsController(state: Record<string, any>) {
   if (selectedAccount) {
     state.AccountsController.internalAccounts = {
       ...state.AccountsController.internalAccounts,
-      selectedAccount: selectedAccount.id,
+      selectedAccount: selectedAccount.id ?? '',
     };
   }
 }
