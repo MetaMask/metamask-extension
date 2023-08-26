@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import {
   TypographyVariant,
@@ -103,6 +104,10 @@ const Deprecated = ({ children }) => (
     {children}
   </>
 );
+
+Deprecated.propTypes = {
+  children: PropTypes.node,
+};
 
 export const DefaultStory = (args) => (
   <Deprecated>
