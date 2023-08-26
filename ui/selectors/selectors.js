@@ -281,28 +281,38 @@ export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.networkId ?? 'loading';
 }
 
+/**
+ * Get MetaMask accounts, including account name and balance.
+ */
 export const getMetaMaskAccounts = createSelector(
-  getMetaMaskAccountsRaw,
+  getMetaMaskIdentities,
+  getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (currentAccounts, cachedBalances) =>
-    Object.entries(currentAccounts).reduce(
-      (selectedAccounts, [accountID, account]) => {
-        if (account.balance === null || account.balance === undefined) {
-          return {
-            ...selectedAccounts,
-            [accountID]: {
-              ...account,
-              balance: cachedBalances && cachedBalances[accountID],
-            },
-          };
-        }
-        return {
-          ...selectedAccounts,
-          [accountID]: account,
+  (identities, balances, cachedBalances) =>
+    Object.keys(identities).reduce((accounts, address) => {
+      // TODO: mix in the identity state here as well, consolidating this
+      // selector with `accountsWithSendEtherInfoSelector`
+      let account = {};
+
+      if (balances[address]) {
+        account = {
+          ...account,
+          ...balances[address],
         };
-      },
-      {},
-    ),
+      }
+
+      if (account.balance === null || account.balance === undefined) {
+        account = {
+          ...account,
+          balance: cachedBalances && cachedBalances[address],
+        };
+      }
+
+      return {
+        ...accounts,
+        [address]: account,
+      };
+    }, {}),
 );
 
 export function getSelectedAddress(state) {
@@ -325,11 +335,23 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
+/**
+ * Get identity state.
+ *
+ * @param {object} state - Redux state
+ * @returns {object} A map of account addresses to identities (which includes the account name)
+ */
 export function getMetaMaskIdentities(state) {
   return state.metamask.identities;
 }
 
-export function getMetaMaskAccountsRaw(state) {
+/**
+ * Get account balances state.
+ *
+ * @param {object} state - Redux state
+ * @returns {object} A map of account addresses to account objects (which includes the account balance)
+ */
+export function getMetaMaskAccountBalances(state) {
   return state.metamask.accounts;
 }
 
@@ -368,7 +390,7 @@ export const getMetaMaskAccountsConnected = createSelector(
 
 export function isBalanceCached(state) {
   const selectedAccountBalance =
-    state.metamask.accounts[getSelectedAddress(state)].balance;
+    getMetaMaskAccountBalances(state)[getSelectedAddress(state)]?.balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
