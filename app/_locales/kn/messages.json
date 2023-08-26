@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "ವಿಳಾಸವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
   },
-  "copyPrivateKey": {
-    "message": "ಇದು ನಿಮ್ಮ ಖಾಸಗಿ ಕೀ ಆಗಿದೆ (ನಕಲಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ)"
-  },
   "copyToClipboard": {
     "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
   },
-  "enterPassword": {
-    "message": "ಪಾಸ್‌ವರ್ಡ್‌ ಅನ್ನು ನಮೂದಿಸಿ"
-  },
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "ವಿಸ್ತರಿಸಿದ ವೀಕ್ಷಣೆ"
-  },
-  "exportPrivateKey": {
-    "message": "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ರಫ್ತು ಮಾಡಿ"
   },
   "failed": {
     "message": "ವಿಫಲವಾಗಿದೆ"
@@ -624,9 +615,6 @@
   "searchResults": {
     "message": "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳು"
   },
-  "searchTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಹುಡುಕಿ"
-  },
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"
   },
@@ -665,9 +653,6 @@
   },
   "showHexDataDescription": {
     "message": "ಕಳುಹಿಸುವ ಪರದೆಯಲ್ಲಿ ಹೆಕ್ಸ್ ಡೇಟಾ ಕ್ಷೇತ್ರವನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "showPrivateKeys": {
-    "message": "ಖಾಸಗಿ ಕೀಗಳನ್ನು ತೋರಿಸಿ"
   },
   "sigRequest": {
     "message": "ಸಹಿಯ ವಿನಂತಿ"
@@ -788,9 +773,6 @@
   },
   "tryAgain": {
     "message": "ಪುನಃ ಪ್ರಯತ್ನಿಸಿ"
-  },
-  "typePassword": {
-    "message": "ನಿಮ್ಮ MetaMask ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಟೈಪ್ ಮಾಡಿ"
   },
   "unapproved": {
     "message": "ಅನುಮೋದಿಸದಿರುವುದು"

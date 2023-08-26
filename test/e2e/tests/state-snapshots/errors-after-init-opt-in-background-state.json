@@ -1,0 +1,152 @@
+{
+  "AccountTracker": { "accounts": "object" },
+  "AddressBookController": "object",
+  "AlertController": {
+    "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
+    "unconnectedAccountAlertShownOrigins": "object",
+    "web3ShimUsageOrigins": "object"
+  },
+  "AnnouncementController": "object",
+  "AppMetadataController": {
+    "currentAppVersion": "string",
+    "previousAppVersion": "",
+    "previousMigrationVersion": 0,
+    "currentMigrationVersion": "number"
+  },
+  "AppStateController": {
+    "connectedStatusPopoverHasBeenShown": true,
+    "defaultHomeActiveTabName": null,
+    "browserEnvironment": "object",
+    "popupGasPollTokens": "object",
+    "notificationGasPollTokens": "object",
+    "fullScreenGasPollTokens": "object",
+    "recoveryPhraseReminderHasBeenShown": "boolean",
+    "recoveryPhraseReminderLastShown": "number",
+    "outdatedBrowserWarningLastShown": "number",
+    "nftsDetectionNoticeDismissed": "boolean",
+    "showTestnetMessageInDropdown": "boolean",
+    "showBetaHeader": "boolean",
+    "showProductTour": "boolean",
+    "trezorModel": "object",
+    "nftsDropdownState": "object",
+    "termsOfUseLastAgreed": "number",
+    "qrHardware": "object",
+    "usedNetworks": "object",
+    "snapsInstallPrivacyWarningShown": "boolean",
+    "serviceWorkerLastActiveTime": "number"
+  },
+  "ApprovalController": "object",
+  "CachedBalancesController": "object",
+  "CronjobController": "object",
+  "CurrencyController": {
+    "conversionDate": "number",
+    "conversionRate": 1700,
+    "nativeCurrency": "ETH",
+    "currentCurrency": "usd",
+    "pendingCurrentCurrency": "object",
+    "pendingNativeCurrency": "object",
+    "usdConversionRate": "number"
+  },
+  "DecryptMessageController": {
+    "unapprovedDecryptMsgs": "object",
+    "unapprovedDecryptMsgCount": 0
+  },
+  "EncryptionPublicKeyController": {
+    "unapprovedEncryptionPublicKeyMsgs": "object",
+    "unapprovedEncryptionPublicKeyMsgCount": 0
+  },
+  "EnsController": "object",
+  "GasFeeController": "object",
+  "KeyringController": {
+    "isUnlocked": false,
+    "keyringTypes": "object",
+    "keyrings": "object"
+  },
+  "MetaMetricsController": {
+    "participateInMetaMetrics": true,
+    "metaMetricsId": "fake-metrics-id",
+    "eventsBeforeMetricsOptIn": "object",
+    "traits": "object",
+    "fragments": "object",
+    "segmentApiCalls": "object",
+    "previousUserTraits": "object"
+  },
+  "NetworkController": {
+    "selectedNetworkClientId": "string",
+    "networkId": "1337",
+    "providerConfig": {
+      "chainId": "string",
+      "nickname": "Localhost 8545",
+      "rpcPrefs": "object",
+      "rpcUrl": "string",
+      "ticker": "ETH",
+      "type": "rpc",
+      "id": "string"
+    },
+    "networksMetadata": "object",
+    "networkConfigurations": "object"
+  },
+  "NftController": "object",
+  "NotificationController": "object",
+  "OnboardingController": {
+    "seedPhraseBackedUp": true,
+    "firstTimeFlowType": "import",
+    "completedOnboarding": true,
+    "onboardingTabs": "object"
+  },
+  "PermissionController": "object",
+  "PermissionLogController": "object",
+  "PreferencesController": {
+    "useBlockie": false,
+    "useNonceField": false,
+    "usePhishDetect": true,
+    "dismissSeedBackUpReminder": "boolean",
+    "disabledRpcMethodPreferences": "object",
+    "useMultiAccountBalanceChecker": "boolean",
+    "useTokenDetection": "boolean",
+    "useNftDetection": "boolean",
+    "use4ByteResolution": "boolean",
+    "useCurrencyRateCheck": "boolean",
+    "openSeaEnabled": "boolean",
+    "advancedGasFee": "object",
+    "featureFlags": {},
+    "incomingTransactionsPreferences": "object",
+    "knownMethodData": "object",
+    "currentLocale": "en",
+    "identities": "object",
+    "lostIdentities": "object",
+    "forgottenPassword": false,
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": false,
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "ipfsGateway": "dweb.link",
+    "useAddressBarEnsResolution": "boolean",
+    "infuraBlocked": "boolean",
+    "ledgerTransportType": "string",
+    "snapRegistryList": "object",
+    "transactionSecurityCheckEnabled": "boolean",
+    "theme": "string",
+    "isLineaMainnetReleased": "boolean",
+    "selectedAddress": "string"
+  },
+  "SignatureController": {
+    "unapprovedMsgs": "object",
+    "unapprovedPersonalMsgs": "object",
+    "unapprovedTypedMessages": "object",
+    "unapprovedMsgCount": 0,
+    "unapprovedPersonalMsgCount": 0,
+    "unapprovedTypedMessagesCount": 0
+  },
+  "SmartTransactionsController": "object",
+  "SnapController": "object",
+  "SnapsRegistry": "object",
+  "SubjectMetadataController": "object",
+  "SwapsController": "object",
+  "TokenListController": "object",
+  "TokenRatesController": "object",
+  "TokensController": "object",
+  "TxController": "object"
+}

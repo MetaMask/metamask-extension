@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"
   },
-  "copyPrivateKey": {
-    "message": "Šī ir jūsu privātā atslēga (noklikšķiniet, lai nokopētu)"
-  },
   "copyToClipboard": {
     "message": "Kopēt starpliktuvē"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Kļūda ENS vārda reģistrācijā"
   },
-  "enterPassword": {
-    "message": "Ievadiet paroli"
-  },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Izvērst skatījumu"
-  },
-  "exportPrivateKey": {
-    "message": "Eksportēt privāto atslēgu"
   },
   "failed": {
     "message": "Neizdevās"
@@ -620,9 +611,6 @@
   "searchResults": {
     "message": "Meklēšanas rezultāti"
   },
-  "searchTokens": {
-    "message": "Meklēt marķierus"
-  },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
@@ -661,9 +649,6 @@
   },
   "showHexDataDescription": {
     "message": "Atlasiet šo, lai atvērtu hex datus sūtīšanas ekrānā"
-  },
-  "showPrivateKeys": {
-    "message": "Rādīt privātās atslēgas"
   },
   "sigRequest": {
     "message": "Paraksta pieprasījums"
@@ -784,9 +769,6 @@
   },
   "tryAgain": {
     "message": "Mēģināt vēlreiz"
-  },
-  "typePassword": {
-    "message": "Ievadiet savu MetaMask paroli"
   },
   "unapproved": {
     "message": "Nav apstiprināts"

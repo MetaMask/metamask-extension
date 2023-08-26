@@ -169,9 +169,6 @@
   "copyAddress": {
     "message": "Nakili anwani kwenye ubao wa kunakilia"
   },
-  "copyPrivateKey": {
-    "message": "Huu ni ufunguo wako wa kibinafsi (bofya ili unakili)"
-  },
   "copyToClipboard": {
     "message": "Nakili kwenye ubao wa kunakili"
   },
@@ -235,9 +232,6 @@
   "ensRegistrationError": {
     "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
   },
-  "enterPassword": {
-    "message": "Ingiza nenosiri"
-  },
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
   },
@@ -248,9 +242,6 @@
     "message": "Tazama akaunti kwenye Etherscan"
   },
   "expandView": {
-    "message": "Panua Mwonekano"
-  },
-  "exportPrivateKey": {
     "message": "Panua Mwonekano"
   },
   "failed": {
@@ -602,9 +593,6 @@
   "searchResults": {
     "message": "Matokeo ya Utafutaji"
   },
-  "searchTokens": {
-    "message": "Tafuta Vianzio"
-  },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
   },
@@ -643,9 +631,6 @@
   },
   "showHexDataDescription": {
     "message": "Chagua hii ili uonyeshe sehemu ya data ya hex kwenye skrini ya tuma"
-  },
-  "showPrivateKeys": {
-    "message": "Onyesha Fungo Binafsi"
   },
   "sigRequest": {
     "message": "Ombi la Saini"
@@ -766,9 +751,6 @@
   },
   "tryAgain": {
     "message": "Jaribu tena"
-  },
-  "typePassword": {
-    "message": "Andika nenosiri lako la MetaMask"
   },
   "unapproved": {
     "message": "Haijaidhinishwa"

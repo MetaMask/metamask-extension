@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"
   },
-  "copyPrivateKey": {
-    "message": "Това е Вашият личен ключ (кликнете, за да го копирате)"
-  },
   "copyToClipboard": {
     "message": "Копиране в буферната памет"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Грешка при регистрацията на име на ENS"
   },
-  "enterPassword": {
-    "message": "Въведете парола"
-  },
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Разгъване на изглед"
-  },
-  "exportPrivateKey": {
-    "message": "Експортиране на частен ключ"
   },
   "failed": {
     "message": "Неуспешно"
@@ -620,9 +611,6 @@
   "searchResults": {
     "message": "Резултати от търсенето"
   },
-  "searchTokens": {
-    "message": "Търсене на маркери"
-  },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
@@ -661,9 +649,6 @@
   },
   "showHexDataDescription": {
     "message": "Изберете това, за да се покаже полето с шестнадесетични данни на екрана за изпращане"
-  },
-  "showPrivateKeys": {
-    "message": "Показване на частни ключове"
   },
   "sigRequest": {
     "message": "Заявка за подпис"
@@ -784,9 +769,6 @@
   },
   "tryAgain": {
     "message": "Нов опит"
-  },
-  "typePassword": {
-    "message": "Въведете паролата си за MetaMask"
   },
   "unapproved": {
     "message": "Неодобрено"

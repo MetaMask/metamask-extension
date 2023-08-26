@@ -67,6 +67,9 @@ const renderComponent = ({
           balance: '0x176e5b6f173ebe66',
         },
       },
+      identities: {
+        '0xAddress': {},
+      },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',

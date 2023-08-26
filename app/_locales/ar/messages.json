@@ -179,9 +179,6 @@
   "copyAddress": {
     "message": "نسخ العنوان إلى الحافظة"
   },
-  "copyPrivateKey": {
-    "message": "هذا هو مفتاحك الخاص (انقر للنسخ)"
-  },
   "copyToClipboard": {
     "message": "نسخ إلى الحافظة"
   },
@@ -245,9 +242,6 @@
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
   },
-  "enterPassword": {
-    "message": "أدخل كلمة مرور"
-  },
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
   },
@@ -259,9 +253,6 @@
   },
   "expandView": {
     "message": "توسيع العرض"
-  },
-  "exportPrivateKey": {
-    "message": "تصدير المفتاح الخاص"
   },
   "failed": {
     "message": "فشل"
@@ -621,9 +612,6 @@
   "searchResults": {
     "message": "نتائج البحث"
   },
-  "searchTokens": {
-    "message": "البحث عن العملات الرمزية"
-  },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
@@ -662,9 +650,6 @@
   },
   "showHexDataDescription": {
     "message": "حدد هذا لإظهار حقل بيانات سداسي عشرية على شاشة الإرسال"
-  },
-  "showPrivateKeys": {
-    "message": "عرض المفاتيح الخاصة"
   },
   "sigRequest": {
     "message": "طلب التوقيع"
@@ -785,9 +770,6 @@
   },
   "tryAgain": {
     "message": "إعادة المحاولة"
-  },
-  "typePassword": {
-    "message": "أدخل كلمة مرور MetaMask الخاصة بك"
   },
   "unapproved": {
     "message": "تم الرفض"

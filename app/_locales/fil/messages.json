@@ -154,9 +154,6 @@
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong private key (i-click para kopyahin)"
-  },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
   },
@@ -217,9 +214,6 @@
   "ensRegistrationError": {
     "message": "May error sa pagrerehistro ng ENS name"
   },
-  "enterPassword": {
-    "message": "Ilagay ang password"
-  },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
   },
@@ -228,9 +222,6 @@
   },
   "expandView": {
     "message": "I-expand ang View"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Private Key"
   },
   "failed": {
     "message": "Nabigo"
@@ -548,9 +539,6 @@
   "searchResults": {
     "message": "Mga Resulta ng Paghahanap"
   },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -589,9 +577,6 @@
   },
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang hex data field sa screen ng pagpapadala"
-  },
-  "showPrivateKeys": {
-    "message": "Ipakita ang mga Private Key"
   },
   "sign": {
     "message": "I-sign"
@@ -700,9 +685,6 @@
   },
   "tryAgain": {
     "message": "Subukang muli"
-  },
-  "typePassword": {
-    "message": "I-type ang iyong password sa MetaMask"
   },
   "unapproved": {
     "message": "Hindi inaprubahan"

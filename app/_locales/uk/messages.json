@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Копіювати адресу в буфер обміну"
   },
-  "copyPrivateKey": {
-    "message": "Це ваш закритий ключ (натисніть, щоб скопіювати)"
-  },
   "copyToClipboard": {
     "message": "Копіювати в буфер"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Помилка у реєстрації ENS ім'я"
   },
-  "enterPassword": {
-    "message": "Введіть пароль"
-  },
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Розгорнути подання"
-  },
-  "exportPrivateKey": {
-    "message": "Експортувати приватний ключ"
   },
   "failed": {
     "message": "Помилка"
@@ -624,9 +615,6 @@
   "searchResults": {
     "message": "Результати пошуку"
   },
-  "searchTokens": {
-    "message": "Шукати токени"
-  },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
@@ -665,9 +653,6 @@
   },
   "showHexDataDescription": {
     "message": "Оберіть це, щоб показати поле для шістнадцятирикових даних на екрані надсилання"
-  },
-  "showPrivateKeys": {
-    "message": "Показати приватні ключі"
   },
   "sigRequest": {
     "message": "Запит підпису"
@@ -788,9 +773,6 @@
   },
   "tryAgain": {
     "message": "Повторити"
-  },
-  "typePassword": {
-    "message": "Введіть ваш пароль MetaMask"
   },
   "unapproved": {
     "message": "Не затверджено"

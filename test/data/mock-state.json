@@ -107,9 +107,7 @@
     "alertEnabledness": {
       "unconnectedAccount": true
     },
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
+    "featureFlags": {},
     "networkId": "5",
     "providerConfig": {
       "type": "rpc",
@@ -220,7 +218,15 @@
       }
     },
     "cachedBalances": {},
-    "incomingTransactions": {},
+    "incomingTransactionsPreferences": {
+      "0x1": true,
+      "0xe708": false,
+      "0xfa": true,
+      "0x5": false,
+      "0xaa36a7": true,
+      "0xe704": true
+    },
+
     "unapprovedTxs": {
       "8393540981007587": {
         "chainId": "0x5",
@@ -340,6 +346,8 @@
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
     "useCurrencyRateCheck": true,
+    "useNftDetection": true,
+    "openSeaEnabled": true,
     "advancedGasFee": {
       "maxBaseFee": "75",
       "priorityFee": "2"
