@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "Limiti düzenle"
   },
-  "swapEditTransactionSettings": {
-    "message": "İşlem ayarlarını düzenleyin"
-  },
   "swapEnableDescription": {
     "message": "Bu gereklidir ve MetaMask'e $1 takası yapma izni verir.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "%$1",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "Maks. fark çok düşük ve bu durum işleminizin başarısız olmasına neden olabilir."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "İşlemin başarısız olmasını önlemek için farkı artırın"
-  },
   "swapSlippageTooltip": {
     "message": "Emrinizin verildiği ve onaylandığı zamanlar arasında fiyat farkı oluşursa buna \"fark\" denir. Fark, \"fark toleransı\" ayarınızı aşarsa takas işleminiz otomatik olarak iptal edilir."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "Girilen fark çok yüksek kabul ediliyor ve kötü bir oranla sonuçlanabilir"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Fark çok yüksek"
   },
   "swapSlippageZeroDescription": {
     "message": "Daha az rekabetçi bir kota ile sonuçlanacak olan az sayıda sıfır fark kotalı sağlayıcı var."

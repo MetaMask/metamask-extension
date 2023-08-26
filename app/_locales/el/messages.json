@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "Επεξεργασία ορίου"
   },
-  "swapEditTransactionSettings": {
-    "message": "Επεξεργασία ρυθμίσεων συναλλαγών"
-  },
   "swapEnableDescription": {
     "message": "Αυτό απαιτείται και δίνει άδεια στο MetaMask για να ανταλλάξετε το $1 σας.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "Η μέγιστη απόκλιση είναι πολύ χαμηλή, με αποτέλεσμα την αποτυχία της συναλλαγής σας."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Αυξήστε την απόκλιση για να αποφύγετε την αποτυχία της συναλλαγής"
-  },
   "swapSlippageTooltip": {
     "message": "Εάν η τιμή αλλάξει μεταξύ της ώρας που η εντολή αγοράς σας υποβάλλεται και επιβεβαιώνεται, αυτό ονομάζεται «ολίσθηση». Η συναλλαγή θα ακυρωθεί αυτόματα εάν η ολίσθηση υπερβαίνει τη ρύθμιση «ανοχή ολίσθησης»."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "Η απόκλιση που καταχωρήθηκε θεωρείται πολύ υψηλή και μπορεί να οδηγήσει σε δυσμενή τιμή"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Πολύ υψηλή απόκλιση"
   },
   "swapSlippageZeroDescription": {
     "message": "Υπάρχουν λίγοι πάροχοι προσφορών με μηδενική απόκλιση, γεγονός που θα οδηγήσει σε λιγότερο ανταγωνιστική προσφορά."
