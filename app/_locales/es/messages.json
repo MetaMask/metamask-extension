@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "Editar límite"
   },
-  "swapEditTransactionSettings": {
-    "message": "Editar la configuración de la transacción"
-  },
   "swapEnableDescription": {
     "message": "Esta acción es obligatoria y le da permiso a MetaMask para canjear su $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "El desfase máximo es demasiado bajo, lo que puede hacer que su transacción fracase."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Aumente el desfase para evitar fallas en las transacciones"
-  },
   "swapSlippageTooltip": {
     "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración de la \"tolerancia de desfase\"."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "El desfase ingresado se considera muy alto y puede resultar en una mala tasa"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Desfase muy alto"
   },
   "swapSlippageZeroDescription": {
     "message": "Hay menos proveedores de cotizaciones de deslizamiento cero, lo que resultará en una cotización menos competitiva."

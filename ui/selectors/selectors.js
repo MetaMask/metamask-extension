@@ -291,31 +291,35 @@ export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.networkId ?? 'loading';
 }
 
+/**
+ * Get MetaMask accounts, including account name and balance.
+ */
 export const getMetaMaskAccounts = createSelector(
   getInternalAccounts,
-  getMetaMaskAccountsRaw,
+  getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (internalAccounts, currentAccounts, cachedBalances) => {
+  (internalAccounts, balances, cachedBalances) => {
     return internalAccounts.reduce((selectedAccounts, account) => {
-      if (
-        currentAccounts[account.address]?.balance === null ||
-        currentAccounts[account.address]?.balance === undefined
-      ) {
+      // TODO: consolidating this selector with `accountsWithSendEtherInfoSelector`
+
+      if (balances[account.address]?.balance) {
         return {
           ...selectedAccounts,
           [account.id]: {
             ...account,
-            ...currentAccounts[account.address],
-            balance: cachedBalances && cachedBalances[account.address],
+            ...balances[account.address],
+            balance: balances[account.address]?.balance,
           },
         };
       }
+
+      // use cache balance if it is not in balances
       return {
         ...selectedAccounts,
         [account.id]: {
           ...account,
-          ...currentAccounts[account.address],
-          balance: currentAccounts[account.address].balance,
+          ...balances[account.address],
+          balance: cachedBalances && cachedBalances[account.address],
         },
       };
     }, {});
@@ -333,7 +337,7 @@ export function getSelectedInternalAccount(state) {
 
 export function getSelectedInternalAccountWithBalance(state) {
   const selectedAccount = getSelectedInternalAccount(state);
-  const rawAccount = getMetaMaskAccountsRaw(state)[selectedAccount.address];
+  const rawAccount = getMetaMaskAccountBalances(state)[selectedAccount.address];
 
   const selectedAccountWithBalance = {
     ...selectedAccount,
@@ -384,7 +388,13 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
-export function getMetaMaskAccountsRaw(state) {
+/**
+ * Get account balances state.
+ *
+ * @param {object} state - Redux state
+ * @returns {object} A map of account addresses to account objects (which includes the account balance)
+ */
+export function getMetaMaskAccountBalances(state) {
   return state.metamask.accounts;
 }
 
@@ -821,9 +831,8 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 
 export function getSwapsDefaultToken(state) {
   const selectedAccount = getSelectedAccount(state);
-  const { balance } = selectedAccount;
+  const balance = selectedAccount?.balance;
   const chainId = getCurrentChainId(state);
-
   const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {

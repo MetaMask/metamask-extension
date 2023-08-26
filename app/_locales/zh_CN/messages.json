@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "编辑限制"
   },
-  "swapEditTransactionSettings": {
-    "message": "编辑交易设置"
-  },
   "swapEnableDescription": {
     "message": "这是必须的，并且允许 MetaMask 兑换您的 $1。",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "最大滑点太低，可能导致交易失败。"
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "提高滑点以避免交易失败"
-  },
   "swapSlippageTooltip": {
     "message": "如果价格于下单到订单确认期间发生变化，这被称为“滑点”。如果滑点超过“最大滑点”设置，您的兑换将会自动取消。"
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "输入的滑点被认为非常高，可能导致不良费率"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "非常高的滑点"
   },
   "swapSlippageZeroDescription": {
     "message": "零滑点报价供应商较少，这将导致报价竞争力下降。"

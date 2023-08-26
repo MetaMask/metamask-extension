@@ -295,6 +295,9 @@ describe('Actions', () => {
               '0xAnotherAddress': '0x0',
             },
           },
+          identities: {
+            '0xAnotherAddress': {},
+          },
         }),
       );
 

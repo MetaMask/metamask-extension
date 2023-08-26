@@ -1652,6 +1652,9 @@ describe('Send Slice', () => {
               address: mockAddress1,
             },
           },
+          identities: {
+            [mockAddress1]: {},
+          },
         },
         send: {
           ...getInitialSendStateWithExistingTxState({

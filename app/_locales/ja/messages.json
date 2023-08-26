@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "限度額を編集"
   },
-  "swapEditTransactionSettings": {
-    "message": "トランザクション設定を編集"
-  },
   "swapEnableDescription": {
     "message": "これは必須であり、MetaMaskに$1をスワップする許可を付与します。",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "最大スリッページが低すぎ、トランザクションが失敗する可能性があります。"
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "トランザクションの失敗を防ぐために、スリッページを増やしてください。"
-  },
   "swapSlippageTooltip": {
     "message": "注文から確定までの間に価格が変動することを「スリッページ」といいます。スリッページが「スリッページ許容範囲」の設定を超えた場合、スワップは自動的にキャンセルされます。"
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "入力されたスリッページが非常に高いため、不利なレートになる可能性があります"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "非常に高いスリッページ"
   },
   "swapSlippageZeroDescription": {
     "message": "スリッページがゼロのプロバイダーは少ないため、不利なクォートになる可能性があります。"

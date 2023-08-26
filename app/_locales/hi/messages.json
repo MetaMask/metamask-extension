@@ -4419,9 +4419,6 @@
   "swapEditLimit": {
     "message": "सीमा संपादित करें"
   },
-  "swapEditTransactionSettings": {
-    "message": "लेन-देन सेटिंग्स को संपादित करें"
-  },
   "swapEnableDescription": {
     "message": "यह आवश्यक है और MetaMask को आपके $1 को स्वैप करने की अनुमति देता है।",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4625,20 +4622,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "अधिकतम स्लिपेज बहुत कम है जिसके कारण आपका लेन-देन विफल हो सकता है।"
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "लेन-देन की विफलता से बचने के लिए स्लिपेज बढ़ाएं"
-  },
   "swapSlippageTooltip": {
     "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "दर्ज किया गया स्लिपेज बहुत अधिक माना जाता है और इसका परिणाम खराब दर हो सकता है"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "बहुत अधिक स्लिपेज"
   },
   "swapSlippageZeroDescription": {
     "message": "शून्य-स्लिपेज उद्धरण प्रदाता कम हैं, जिसके परिणामस्वरूप कम प्रतिस्पर्धी उद्धरण होगा।"
