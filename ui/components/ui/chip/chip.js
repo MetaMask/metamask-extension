@@ -19,6 +19,7 @@ import {
  * If you would like to help with the replacement of the old `Chip` component, please submit a pull request against this GitHub issue:
  * {@link https://github.com/MetaMask/metamask-extension/issues/20487}
  */
+ 
 export default function Chip({
   dataTestId,
   className,
