@@ -2564,6 +2564,8 @@ export function hideWarning() {
 export function exportAccount(
   password: string,
   address: string,
+  setPrivateKey: (key: string) => void,
+  setShowHoldToReveal: (show: boolean) => void,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return function (dispatch) {
     dispatch(showLoadingIndication());
@@ -2592,7 +2594,8 @@ export function exportAccount(
               return;
             }
 
-            dispatch(showPrivateKey(result as string));
+            setPrivateKey(result as string);
+            setShowHoldToReveal(true);
             resolve(result as string);
           },
         );
@@ -2693,7 +2696,7 @@ interface TemporaryFeatureFlagDef {
   [feature: string]: boolean;
 }
 interface TemporaryPreferenceFlagDef {
-  [preference: string]: boolean;
+  [preference: string]: boolean | object;
 }
 
 export function setFeatureFlag(
@@ -2729,7 +2732,7 @@ export function setFeatureFlag(
 
 export function setPreference(
   preference: string,
-  value: boolean | string,
+  value: boolean | string | object,
 ): ThunkAction<
   Promise<TemporaryPreferenceFlagDef>,
   MetaMaskReduxState,
@@ -2744,13 +2747,11 @@ export function setPreference(
         [preference, value],
         (err, updatedPreferences) => {
           dispatch(hideLoadingIndication());
-
           if (err) {
             dispatch(displayWarning(err));
             reject(err);
             return;
           }
-
           resolve(updatedPreferences as TemporaryPreferenceFlagDef);
         },
       );
@@ -2787,6 +2788,21 @@ export function setShowTestNetworks(value: boolean) {
 
 export function setAutoLockTimeLimit(value: boolean) {
   return setPreference('autoLockTimeLimit', value);
+}
+
+export function setIncomingTransactionsPreferences(
+  chainId: string,
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setIncomingTransactionsPreferences`);
+    await submitRequestToBackground('setIncomingTransactionsPreferences', [
+      chainId,
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
 }
 
 export function setCompletedOnboarding(): ThunkAction<
