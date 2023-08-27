@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "고급 옵션"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "이 $1 옵션을 \"고급\"의 기본값으로 저장합니다"
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "항상 이 값과 고급 설정을 기본값으로 사용합니다."
-  },
   "advancedGasFeeModalTitle": {
     "message": "고급 가스 요금"
   },
@@ -2494,9 +2488,6 @@
   },
   "newTokensImportedTitle": {
     "message": "불러온 토큰"
-  },
-  "newValues": {
-    "message": "새로운 가치"
   },
   "next": {
     "message": "다음"

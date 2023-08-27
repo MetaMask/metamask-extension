@@ -10,6 +10,7 @@ import { ETH } from '../../../../helpers/constants/common';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../store/actions', () => ({
@@ -59,7 +60,9 @@ const renderComponent = ({
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
-      providerConfig: {},
+      providerConfig: {
+        chainId: CHAIN_IDS.GOERLI,
+      },
       cachedBalances: {},
       accounts: {
         '0xAddress': {
@@ -75,8 +78,10 @@ const renderComponent = ({
       gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
       advancedGasFee: {
-        maxBaseFee: '100',
-        priorityFee: '2',
+        [CHAIN_IDS.GOERLI]: {
+          maxBaseFee: '100',
+          priorityFee: '2',
+        },
       },
     },
   });
