@@ -8,13 +8,18 @@ import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
+const selectedAddress =
+  mockState.metamask.internalAccounts.accounts[
+    mockState.metamask.internalAccounts.selectedAccount
+  ].address;
+
 const store = configureStore({
   ...mockState,
   metamask: {
     ...mockState.metamask,
     accounts: {
-      [mockState.metamask.selectedAddress]: {
-        address: mockState.metamask.selectedAddress,
+      [selectedAddress]: {
+        address: selectedAddress,
         balance: '0x1F4',
       },
     },
