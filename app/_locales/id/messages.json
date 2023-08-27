@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "Konfigurasi lanjutan"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Simpan $1 ini sebagai default saya untuk \"Lanjutan\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Selalu gunakan nilai ini dan pengaturan lanjutan sebagai default."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Biaya gas lanjutan"
   },
@@ -2494,9 +2488,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Token diimpor"
-  },
-  "newValues": {
-    "message": "nilai baru"
   },
   "next": {
     "message": "Berikutnya"

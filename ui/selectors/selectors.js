@@ -1347,23 +1347,26 @@ export function getIsMultiLayerFeeNetwork(state) {
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
  * @param {*} state
- * @returns Boolean
+ * @returns {{maxBaseFee: string, priorityFee: string} | undefined}
  */
 export function getAdvancedGasFeeValues(state) {
-  return state.metamask.advancedGasFee;
-}
-
-/**
- *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsAdvancedGasFeeDefault(state) {
-  const { advancedGasFee } = state.metamask;
-  return (
-    Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
-  );
+  // This will not work when we switch to supporting multi-chain.
+  // There are four non-test files that use this selector.
+  // advanced-gas-fee-defaults
+  // base-fee-input
+  // priority-fee-input
+  // useGasItemFeeDetails
+  // The first three are part of the AdvancedGasFeePopover
+  // The latter is used by the EditGasPopover
+  // Both of those are used in Confirmations as well as transaction-list-item
+  // All of the call sites have access to the GasFeeContext, which has a
+  // transaction object set on it, but there are currently no guarantees that
+  // the transaction has a chainId associated with it. To have this method
+  // support multichain we'll need a reliable way for the chainId of the
+  // transaction being modified to be available to all callsites and either
+  // pass it in to the selector as a second parameter, or access it at the
+  // callsite.
+  return state.metamask.advancedGasFee[getCurrentChainId(state)];
 }
 
 /**

@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "Расширенная конфигурация"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Сохранить этот $1 в качестве моего значения по умолчанию для «Дополнительной» настройки"
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Всегда использовать эти значения и дополнительную настройку по умолчанию."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Дополнительная плата за газ"
   },
@@ -2494,9 +2488,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Токен импортирован"
-  },
-  "newValues": {
-    "message": "новые значения"
   },
   "next": {
     "message": "Далее"

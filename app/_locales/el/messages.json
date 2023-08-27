@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "Προηγμένη ρύθμιση παραμέτρων"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Αποθηκεύστε αυτά τα $1 ως προεπιλογή μου για το \"Προηγμένο\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Να χρησιμοποιούνται πάντα αυτές τις τιμές και η ρύθμιση για προχωρημένους."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Προηγμένη χρέωση τελών συναλλαγής"
   },
@@ -2494,9 +2488,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Τα token εισήχθησαν"
-  },
-  "newValues": {
-    "message": "νέες τιμές"
   },
   "next": {
     "message": "Επόμενο"
