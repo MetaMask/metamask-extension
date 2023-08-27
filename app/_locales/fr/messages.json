@@ -275,12 +275,6 @@
   "advancedConfiguration": {
     "message": "Configuration avancée"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Enregistrer ces $1 comme valeur par défaut pour « Avancé »"
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Toujours utiliser par défaut ces valeurs et les paramètres avancés."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Frais de carburant avancés"
   },
@@ -2100,9 +2094,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Jeton importé"
-  },
-  "newValues": {
-    "message": "nouvelles valeurs"
   },
   "next": {
     "message": "Suivant"

@@ -275,12 +275,6 @@
   "advancedConfiguration": {
     "message": "Erweiterte Einstellungen"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Speichern Sie diese $1 als Standard für \"Erweitert\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Immer diese Werte und erweiterte Einstellung als Standard verwenden."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Erweiterte Gasgebühr"
   },
@@ -2100,9 +2094,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Token importiert"
-  },
-  "newValues": {
-    "message": "neue Werte"
   },
   "next": {
     "message": "Weiter"

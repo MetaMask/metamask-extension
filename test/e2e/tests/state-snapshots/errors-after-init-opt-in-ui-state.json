@@ -55,6 +55,7 @@
     "qrHardware": "object",
     "usedNetworks": "object",
     "snapsInstallPrivacyWarningShown": "boolean",
+    "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "serviceWorkerLastActiveTime": "number",
     "currentAppVersion": "10.35.0",
     "previousAppVersion": "",

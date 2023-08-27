@@ -41,7 +41,7 @@ export default class PreferencesController {
       useNftDetection: false,
       useCurrencyRateCheck: true,
       openSeaEnabled: false,
-      advancedGasFee: null,
+      advancedGasFee: {},
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -188,10 +188,18 @@ export default class PreferencesController {
   /**
    * Setter for the `advancedGasFee` property
    *
-   * @param {object} val - holds the maxBaseFee and PriorityFee that the user set as default advanced settings.
+   * @param {object} options
+   * @param {string} options.chainId - The chainId the advancedGasFees should be set on
+   * @param {object} options.gasFeePreferences - The advancedGasFee options to set
    */
-  setAdvancedGasFee(val) {
-    this.store.updateState({ advancedGasFee: val });
+  setAdvancedGasFee({ chainId, gasFeePreferences }) {
+    const { advancedGasFee } = this.store.getState();
+    this.store.updateState({
+      advancedGasFee: {
+        ...advancedGasFee,
+        [chainId]: gasFeePreferences,
+      },
+    });
   }
 
   /**

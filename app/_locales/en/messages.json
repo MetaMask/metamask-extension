@@ -306,10 +306,8 @@
     "message": "Advanced configuration"
   },
   "advancedGasFeeDefaultOptIn": {
-    "message": "Save these $1 as my default for \"Advanced\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Always use these values and advanced setting as default."
+    "message": "Save these values as my default for the $1 network.",
+    "description": "$1 is the current network name."
   },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
@@ -2482,9 +2480,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Token imported"
-  },
-  "newValues": {
-    "message": "new values"
   },
   "next": {
     "message": "Next"

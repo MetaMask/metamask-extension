@@ -52,6 +52,10 @@ export default class AppStateController extends EventEmitter {
       ...initState,
       qrHardware: {},
       nftsDropdownState: {},
+      // This key is only used for checking if the user had set advancedGasFee
+      // prior to Migration 92.3 where we split out the setting to support
+      // multiple networks.
+      hadAdvancedGasFeesSetPriorToMigration92_3: false,
       usedNetworks: {
         '0x1': true,
         '0x5': true,
