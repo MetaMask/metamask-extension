@@ -18,7 +18,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@0x20fE9F5896A3021Ca6eA78005a15AE954dC134E6;.
 
     - name: crowdin action
       uses: crowdin/github-action@a3160b9e5a9e00739392c23da5e580c6cabe526d
