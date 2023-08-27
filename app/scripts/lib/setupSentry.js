@@ -58,9 +58,6 @@ export const SENTRY_BACKGROUND_STATE = {
   EncryptionPublicKeyController: {
     unapprovedEncryptionPublicKeyMsgCount: true,
   },
-  IncomingTransactionsController: {
-    incomingTxLastFetchedBlockByChainId: true,
-  },
   KeyringController: {
     isUnlocked: true,
   },

@@ -1,12 +1,26 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  IPFS_DEFAULT_GATEWAY_URL,
+} from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
+
+const mainNetworks = {
+  [CHAIN_IDS.MAINNET]: true,
+  [CHAIN_IDS.LINEA_MAINNET]: true,
+};
+
+const testNetworks = {
+  [CHAIN_IDS.GOERLI]: true,
+  [CHAIN_IDS.SEPOLIA]: true,
+  [CHAIN_IDS.LINEA_GOERLI]: true,
+};
 
 export default class PreferencesController {
   /**
@@ -25,6 +39,13 @@ export default class PreferencesController {
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    */
   constructor(opts = {}) {
+    const addedNonMainNetwork = Object.values(
+      opts.networkConfigurations,
+    ).reduce((acc, element) => {
+      acc[element.chainId] = true;
+      return acc;
+    }, {});
+
     const initState = {
       useBlockie: false,
       useNonceField: false,
@@ -45,14 +66,17 @@ export default class PreferencesController {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertsEnabled: false,
       ///: END:ONLY_INCLUDE_IN
-      advancedGasFee: null,
+      advancedGasFee: {},
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
       // for convenient testing of pre-release features, and should never
       // perform sensitive operations.
-      featureFlags: {
-        showIncomingTransactions: true,
+      featureFlags: {},
+      incomingTransactionsPreferences: {
+        ...mainNetworks,
+        ...addedNonMainNetwork,
+        ...testNetworks,
       },
       knownMethodData: {},
       currentLocale: opts.initLangCode,
@@ -84,6 +108,7 @@ export default class PreferencesController {
     };
 
     this.network = opts.network;
+
     this._onInfuraIsBlocked = opts.onInfuraIsBlocked;
     this._onInfuraIsUnblocked = opts.onInfuraIsUnblocked;
     this.store = new ObservableStore(initState);
@@ -215,10 +240,18 @@ export default class PreferencesController {
   /**
    * Setter for the `advancedGasFee` property
    *
-   * @param {object} val - holds the maxBaseFee and PriorityFee that the user set as default advanced settings.
+   * @param {object} options
+   * @param {string} options.chainId - The chainId the advancedGasFees should be set on
+   * @param {object} options.gasFeePreferences - The advancedGasFee options to set
    */
-  setAdvancedGasFee(val) {
-    this.store.updateState({ advancedGasFee: val });
+  setAdvancedGasFee({ chainId, gasFeePreferences }) {
+    const { advancedGasFee } = this.store.getState();
+    this.store.updateState({
+      advancedGasFee: {
+        ...advancedGasFee,
+        [chainId]: gasFeePreferences,
+      },
+    });
   }
 
   /**
@@ -448,7 +481,7 @@ export default class PreferencesController {
    * found in the settings page.
    *
    * @param {string} preference - The preference to enable or disable.
-   * @param {boolean} value - Indicates whether or not the preference should be enabled or disabled.
+   * @param {boolean |object} value - Indicates whether or not the preference should be enabled or disabled.
    * @returns {Promise<object>} Promises a new object; the updated preferences object.
    */
   async setPreference(preference, value) {
@@ -550,6 +583,18 @@ export default class PreferencesController {
     });
   }
 
+  /**
+   * A setter for the incomingTransactions in preference to be updated
+   *
+   * @param {string} chainId - chainId of the network
+   * @param {bool} value - preference of certain network, true to be enabled
+   */
+  setIncomingTransactionsPreferences(chainId, value) {
+    const previousValue = this.store.getState().incomingTransactionsPreferences;
+    const updatedValue = { ...previousValue, [chainId]: value };
+    this.store.updateState({ incomingTransactionsPreferences: updatedValue });
+  }
+
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
   }
@@ -570,6 +615,7 @@ export default class PreferencesController {
     }
     this.store.updateState({ snapRegistryList: snapRegistry });
   }
+
   ///: END:ONLY_INCLUDE_IN
 
   //

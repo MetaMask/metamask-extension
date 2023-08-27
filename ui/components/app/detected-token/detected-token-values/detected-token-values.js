@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import CheckBox from '../../../ui/check-box';
-
 import {
   Display,
   TextColor,
@@ -12,7 +10,7 @@ import {
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
-import { Box, Text } from '../../../component-library';
+import { Box, Checkbox, Text } from '../../../component-library';
 
 const DetectedTokenValues = ({
   token,
@@ -54,12 +52,15 @@ const DetectedTokenValues = ({
           color={TextColor.textAlternative}
         >
           {useCurrencyRateCheck
-            ? formattedFiatBalance || '$0' // since formattedFiatBalance will be when teh conversion rate is not obtained, should be replace the `$0` with `N/A`
+            ? formattedFiatBalance || '$0' // since formattedFiatBalance will be when the conversion rate is not obtained, should replace the `$0` with `N/A`
             : formattedFiatBalance}
         </Text>
       </Box>
       <Box className="detected-token-values__checkbox">
-        <CheckBox checked={tokenSelection} onClick={handleCheckBoxSelection} />
+        <Checkbox
+          isChecked={tokenSelection}
+          onClick={handleCheckBoxSelection}
+        />
       </Box>
     </Box>
   );
