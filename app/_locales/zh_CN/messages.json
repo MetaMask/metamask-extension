@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "高级配置"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "将这些 $1 保存为“高级”默认值"
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "始终使用这些值和高级设置作为默认值。"
-  },
   "advancedGasFeeModalTitle": {
     "message": "高级燃料费"
   },
@@ -2494,9 +2488,6 @@
   },
   "newTokensImportedTitle": {
     "message": "已导入代币"
-  },
-  "newValues": {
-    "message": "新的值"
   },
   "next": {
     "message": "下一步"
