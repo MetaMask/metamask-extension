@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "उन्नत कंफिगुरेशन"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "इन $1 को \"एडवांस\" के लिए मेरे डिफॉल्ट के रूप में सहेजें"
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "हमेशा इन मूल्यों और एडवांस सेटिंग को डिफॉल्ट के रूप में उपयोग करें।"
-  },
   "advancedGasFeeModalTitle": {
     "message": "एडवांस गैस शुल्क"
   },
@@ -2494,9 +2488,6 @@
   },
   "newTokensImportedTitle": {
     "message": "टोकन इम्पोर्ट हो गया"
-  },
-  "newValues": {
-    "message": "नए मान"
   },
   "next": {
     "message": "अगला"

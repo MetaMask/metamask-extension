@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "Cấu hình nâng cao"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Lưu $1 này làm mặc định của tôi cho \"Nâng cao\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Luôn sử dụng các giá trị và thiết lập nâng cao này làm mặc định."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Phí gas nâng cao"
   },
@@ -2494,9 +2488,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Đã nhập token"
-  },
-  "newValues": {
-    "message": "giá trị mới"
   },
   "next": {
     "message": "Tiếp theo"
