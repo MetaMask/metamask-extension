@@ -34,6 +34,8 @@ export default class DetectTokensController {
    * @param config.assetsContractController
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
+   * @param config.controllerMessenger
+   * @param config.accountsController
    */
   constructor({
     messenger,
@@ -45,6 +47,8 @@ export default class DetectTokensController {
     tokensController,
     assetsContractController = null,
     trackMetaMetricsEvent,
+    controllerMessenger,
+    accountsController,
   } = {}) {
     this.messenger = messenger;
     this.assetsContractController = assetsContractController;
@@ -56,7 +60,8 @@ export default class DetectTokensController {
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
-    this.selectedAddress = this.preferences?.store.getState().selectedAddress;
+    this.accountsController = accountsController;
+    this.selectedAddress = this.accountsController.getSelectedAccount().address;
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
     });
@@ -64,17 +69,24 @@ export default class DetectTokensController {
     this.detectedTokens = this.tokensController?.state.detectedTokens;
     this.chainId = this.getChainIdFromNetworkStore();
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
+    this.controllerMessenger = controllerMessenger;
 
-    preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
-      if (
-        this.selectedAddress !== selectedAddress ||
-        this.useTokenDetection !== useTokenDetection
-      ) {
-        this.selectedAddress = selectedAddress;
-        this.useTokenDetection = useTokenDetection;
-        this.restartTokenDetection({ selectedAddress });
-      }
-    });
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (account) => {
+        const useTokenDetection =
+          this.preferences?.store.getState().useTokenDetection;
+        if (
+          this.selectedAddress !== account.address ||
+          this.useTokenDetection !== useTokenDetection
+        ) {
+          this.selectedAddress = account.address;
+          this.useTokenDetection = useTokenDetection;
+          this.restartTokenDetection({ selectedAddress: this.selectedAddress });
+        }
+      },
+    );
+
     tokensController?.subscribe(
       ({ tokens = [], ignoredTokens = [], detectedTokens = [] }) => {
         this.tokenAddresses = tokens.map((token) => {
@@ -84,6 +96,7 @@ export default class DetectTokensController {
         this.detectedTokens = detectedTokens;
       },
     );
+
     messenger.subscribe('NetworkController:stateChange', () => {
       if (this.chainId !== this.getChainIdFromNetworkStore()) {
         const chainId = this.getChainIdFromNetworkStore();

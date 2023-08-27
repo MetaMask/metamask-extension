@@ -62,7 +62,7 @@ const TRANSACTION_META_MOCK = {
   time: 123456789,
 };
 
-const MOCK_INTENRAL_ACCOUNT = {
+const MOCK_INTERNAL_ACCOUNT = {
   id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
   address: '0x88bb7F89eB5e5b30D3e15a57C68DBe03C6aCCB21',
   metadata: {
@@ -130,7 +130,7 @@ describe('Transaction Controller', function () {
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
 
-    getCurrentAccount = sinon.stub().callsFake(() => MOCK_INTENRAL_ACCOUNT);
+    getCurrentAccount = sinon.stub().callsFake(() => MOCK_INTERNAL_ACCOUNT);
 
     resultCallbacksMock = {
       success: sinon.spy(),
@@ -388,13 +388,36 @@ describe('Transaction Controller', function () {
 
   describe('#addTransaction', function () {
     const selectedAddress = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
+    const selectedInternalAccount = {
+      address: selectedAddress,
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      name: 'Test Account',
+      options: {},
+      supportedMethods: [
+        'personal_sign',
+        'eth_sendTransaction',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v2',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
+    };
     const recipientAddress = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
 
     let txMeta,
       txParams,
       getPermittedAccounts,
       signStub,
-      getSelectedAddress,
+      getSelectedAccountAddress,
       getDefaultGasFees;
 
     beforeEach(function () {
@@ -417,9 +440,9 @@ describe('Transaction Controller', function () {
         .stub(txController, 'getPermittedAccounts')
         .returns([txParams.from]);
 
-      getSelectedAddress = sinon
-        .stub(txController, 'getSelectedAddress')
-        .returns(selectedAddress);
+      getSelectedAccountAddress = sinon
+        .stub(txController, 'getSelectedAccountAddress')
+        .returns(selectedInternalAccount.address);
 
       getDefaultGasFees = sinon
         .stub(txController, '_getDefaultGasFees')
@@ -430,7 +453,7 @@ describe('Transaction Controller', function () {
       txController.txStateManager._addTransactionsToState([]);
       getPermittedAccounts.restore();
       signStub?.restore();
-      getSelectedAddress.restore();
+      getSelectedAccountAddress.restore();
       getDefaultGasFees.restore();
     });
 
@@ -1166,9 +1189,32 @@ describe('Transaction Controller', function () {
 
   describe('#createCancelTransaction', function () {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d';
+    const selectedInternalAccount = {
+      address: selectedAddress,
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      name: 'Test Account',
+      options: {},
+      supportedMethods: [
+        'personal_sign',
+        'eth_sendTransaction',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v2',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
+    };
     const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
-    let getSelectedAddress,
+    let getSelectedAccountAddress,
       getPermittedAccounts,
       getDefaultGasFees,
       getDefaultGasLimit;
@@ -1177,9 +1223,9 @@ describe('Transaction Controller', function () {
         '0x2a5523c6fa98b47b7d9b6c8320179785150b42a16bcff36b398c5062b65657e8';
       providerResultStub.eth_sendRawTransaction = hash;
 
-      getSelectedAddress = sinon
-        .stub(txController, 'getSelectedAddress')
-        .returns(selectedAddress);
+      getSelectedAccountAddress = sinon
+        .stub(txController, 'getSelectedAccountAddress')
+        .returns(selectedInternalAccount.address);
       getDefaultGasFees = sinon
         .stub(txController, '_getDefaultGasFees')
         .returns({});
@@ -1192,7 +1238,7 @@ describe('Transaction Controller', function () {
     });
 
     afterEach(function () {
-      getSelectedAddress.restore();
+      getSelectedAccountAddress.restore();
       getPermittedAccounts.restore();
       getDefaultGasFees.restore();
       getDefaultGasLimit.restore();
@@ -1632,9 +1678,32 @@ describe('Transaction Controller', function () {
     let txParams;
     let expectedTxParams;
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d';
+    const selectedInternalAccount = {
+      address: selectedAddress,
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      name: 'Test Account',
+      options: {},
+      supportedMethods: [
+        'personal_sign',
+        'eth_sendTransaction',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v2',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
+    };
     const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
-    let getSelectedAddress,
+    let getSelectedAccountAddress,
       getPermittedAccounts,
       getDefaultGasFees,
       getDefaultGasLimit;
@@ -1647,9 +1716,9 @@ describe('Transaction Controller', function () {
         '0x2a5523c6fa98b47b7d9b6c8320179785150b42a16bcff36b398c5062b65657e8';
       providerResultStub.eth_sendRawTransaction = hash;
 
-      getSelectedAddress = sinon
-        .stub(txController, 'getSelectedAddress')
-        .returns(selectedAddress);
+      getSelectedAccountAddress = sinon
+        .stub(txController, 'getSelectedAccountAddress')
+        .returns(selectedInternalAccount.address);
       getDefaultGasFees = sinon
         .stub(txController, '_getDefaultGasFees')
         .returns({});
@@ -1685,7 +1754,7 @@ describe('Transaction Controller', function () {
     afterEach(function () {
       addTransactionSpy.restore();
       approveTransactionSpy.restore();
-      getSelectedAddress.restore();
+      getSelectedAccountAddress.restore();
       getPermittedAccounts.restore();
       getDefaultGasFees.restore();
       getDefaultGasLimit.restore();

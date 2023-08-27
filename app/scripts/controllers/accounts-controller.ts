@@ -31,7 +31,6 @@ const controllerName = 'AccountsController';
 export type AccountsControllerState = {
   internalAccounts: {
     accounts: Record<string, InternalAccount>;
-    lostAccounts: Record<string, InternalAccount>;
     selectedAccount: string; // id of the selected account
   };
 };
@@ -80,8 +79,11 @@ const accountsControllerMetadata = {
 
 const defaultState: AccountsControllerState = {
   internalAccounts: {
-    accounts: {},
-    lostAccounts: {},
+    accounts: {
+      '': {
+        address: '',
+      } as InternalAccount,
+    },
     selectedAccount: '',
   },
 };
@@ -170,49 +172,34 @@ export default class AccountsController extends BaseControllerV2<
         );
         const previousAccounts = this.listAccounts();
 
+        // if there are no overlaps between the addresses in the keyring and previous accounts,
+        // it means the keyring is being reinitialized because the vault is being restored with the same SRP
+        const overlaps = updatedKeyringAddresses.filter((address) =>
+          previousAccounts.find(
+            (account) =>
+              account.address.toLowerCase() === address.toLowerCase(),
+          ),
+        );
+
         await this.updateAccounts();
 
         if (updatedKeyringAddresses.length > previousAccounts.length) {
-          // new address to add
-          const newAddress = updatedKeyringAddresses.find(
-            (address) =>
-              !previousAccounts.find(
-                (account) =>
-                  account.address.toLowerCase() === address.toLowerCase(),
-              ),
+          this.#handleNewAccountAdded(
+            updatedKeyringAddresses,
+            previousAccounts,
           );
-
-          const newAccount = this.listAccounts().find(
-            (account) =>
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              account.address.toLowerCase() === newAddress!.toLowerCase(),
-          );
-
-          console.log('new account in onKeyringStateChange', newAccount);
-
-          // set the first new account as the selected account
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.setSelectedAccount(newAccount!.id);
+        } else if (
+          updatedKeyringAddresses.length > 0 &&
+          overlaps.length === 0
+        ) {
+          // if the keyring is being reinitialized, the selected account will be reset to the first account
+          this.setSelectedAccount(this.listAccounts()[0].id);
         } else if (
           updatedKeyringAddresses.length < previousAccounts.length &&
+          overlaps.length > 0 &&
           !this.getAccount(this.state.internalAccounts.selectedAccount)
         ) {
-          // handle if the removed account is the selected
-
-          const previousAccount = this.listAccounts()
-            .filter(
-              (account) =>
-                account.id !== this.state.internalAccounts.selectedAccount,
-            )
-            .sort((accountA, accountB) => {
-              // sort by lastSelected descending
-              return (
-                (accountB.metadata?.lastSelected ?? 0) -
-                (accountA.metadata?.lastSelected ?? 0)
-              );
-            })[0];
-
-          this.setSelectedAccount(previousAccount.id);
+          this.#handleSelectedAccountRemoved();
         }
       }
     });
@@ -235,6 +222,14 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   getAccountExpect(accountId: string): InternalAccount {
+    // Edge case where the extension is setup but the srp is not yet created
+    // certain ui elements will query the selected address before any accounts are created.
+    if (!accountId) {
+      return {
+        address: '',
+      } as InternalAccount;
+    }
+
     const account = this.getAccount(accountId);
     if (account === undefined) {
       throw new Error(`Account Id ${accountId} not found`);
@@ -412,6 +407,46 @@ export default class AccountsController extends BaseControllerV2<
     return snap?.enabled && !snap?.blocked;
   }
   ///: END:ONLY_INCLUDE_IN(keyring-snaps)
+
+  #handleSelectedAccountRemoved() {
+    const previousAccount = this.listAccounts()
+      .filter(
+        (account) => account.id !== this.state.internalAccounts.selectedAccount,
+      )
+      .sort((accountA, accountB) => {
+        // sort by lastSelected descending
+        return (
+          (accountB.metadata?.lastSelected ?? 0) -
+          (accountA.metadata?.lastSelected ?? 0)
+        );
+      })[0];
+
+    this.setSelectedAccount(previousAccount.id);
+  }
+
+  #handleNewAccountAdded(
+    updatedKeyringAddresses: string[],
+    previousAccounts: InternalAccount[],
+  ) {
+    const newAddress = updatedKeyringAddresses.find(
+      (address) =>
+        !previousAccounts.find(
+          (account) => account.address.toLowerCase() === address.toLowerCase(),
+        ),
+    );
+
+    const newAccount = this.listAccounts().find(
+      (account) =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        account.address.toLowerCase() === newAddress!.toLowerCase(),
+    );
+
+    // console.log('new account in onKeyringStateChange', newAccount);
+
+    // set the first new account as the selected account
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.setSelectedAccount(newAccount!.id);
+  }
 }
 
 export function keyringTypeToName(keyringType: string): string {

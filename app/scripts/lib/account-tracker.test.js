@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import { ControllerMessenger } from '@metamask/base-controller';
 
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 
@@ -31,12 +32,19 @@ const mockAccounts = {
   },
 };
 
+const mockKeyringController = jest.fn();
+const mockSnapController = jest.fn();
+const mockSnapChange = jest.fn();
+const mockKeyringChange = jest.fn();
+
 describe('Account Tracker', () => {
   let provider,
     blockTrackerStub,
     providerResultStub,
     useMultiAccountBalanceChecker,
-    accountTracker;
+    accountTracker,
+    controllerMessenger,
+    accountsController;
 
   beforeEach(() => {
     providerResultStub = {
@@ -52,6 +60,26 @@ describe('Account Tracker', () => {
     blockTrackerStub = new EventEmitter();
     blockTrackerStub.getCurrentBlock = noop;
     blockTrackerStub.getLatestBlock = noop;
+
+    controllerMessenger = new ControllerMessenger();
+
+    const accountsControllerMessenger = controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+      ],
+    });
+
+    accountsController = new AccountTracker({
+      state: {},
+      messenger: accountsControllerMessenger,
+      keyringController: () => mockKeyringController,
+      snapController: () => mockSnapController,
+      onSnapChange: () => mockSnapChange,
+      onKeyringChange: () => mockKeyringChange,
+    });
 
     accountTracker = new AccountTracker({
       provider,
@@ -70,6 +98,8 @@ describe('Account Tracker', () => {
           getState: noop,
         },
       },
+      controllerMessenger,
+      accountsController,
     });
   });
 

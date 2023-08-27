@@ -1146,6 +1146,8 @@ export default class MetamaskController extends EventEmitter {
       messenger: detectTokensControllerMessenger,
       preferences: this.preferencesController,
       tokensController: this.tokensController,
+      accountsController: this.accountsController,
+      controllerMessenger: this.controllerMessenger,
       assetsContractController: this.assetsContractController,
       network: this.networkController,
       keyringMemStore: this.keyringController.memStore,
@@ -1162,7 +1164,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.alertController = new AlertController({
       initState: initState.AlertController,
-      preferencesStore: this.preferencesController.store,
+      controllerMessenger: this.controllerMessenger,
+      accountsController: this.accountsController,
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

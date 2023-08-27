@@ -15,6 +15,7 @@ import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import PreferencesController from './preferences';
+import AccountsController from './accounts-controller';
 
 function buildMessenger() {
   return new ControllerMessenger().getRestricted({
@@ -31,7 +32,9 @@ describe('DetectTokensController', function () {
     preferences,
     provider,
     tokensController,
-    tokenListController;
+    tokenListController,
+    controllerMessenger,
+    accountsController;
 
   const noop = () => undefined;
 
@@ -227,10 +230,6 @@ describe('DetectTokensController', function () {
       onInfuraIsUnblocked: sinon.stub(),
       networkConfigurations: {},
     });
-    preferences.setAddresses([
-      '0x7e57e2',
-      '0xbc86727e770de68b1060c91f6bb6945c73e10388',
-    ]);
     preferences.setUseTokenDetection(true);
 
     tokensController = new TokensController({
@@ -253,6 +252,76 @@ describe('DetectTokensController', function () {
         'NetworkController:stateChange',
       ),
     });
+
+    controllerMessenger = new ControllerMessenger();
+
+    const accountsControllerMessenger = controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+      ],
+    });
+
+    accountsController = new AccountsController({
+      messenger: accountsControllerMessenger,
+      state: {
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x7e57e2',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Test Account',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+            '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+              address: '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+              id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Test Account',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
+      },
+      onSnapStateChange: sinon.spy(),
+      onKeyringStateChange: sinon.spy(),
+    });
   });
 
   afterEach(function () {
@@ -262,7 +331,13 @@ describe('DetectTokensController', function () {
 
   it('should poll on correct interval', async function () {
     const stub = sinon.stub(global, 'setInterval');
-    new DetectTokensController({ messenger: buildMessenger(), interval: 1337 }); // eslint-disable-line no-new
+    // eslint-disable-next-line no-new
+    new DetectTokensController({
+      messenger: buildMessenger(),
+      interval: 1337,
+      accountsController,
+      controllerMessenger,
+    });
     assert.strictEqual(stub.getCall(0).args[1], 1337);
     stub.restore();
   });
@@ -278,6 +353,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
+      accountsController,
+      controllerMessenger,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -315,6 +392,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
+      accountsController,
+      controllerMessenger,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -340,6 +419,8 @@ describe('DetectTokensController', function () {
       tokensController,
       assetsContractController,
       trackMetaMetricsEvent: noop,
+      accountsController,
+      controllerMessenger,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -392,6 +473,8 @@ describe('DetectTokensController', function () {
       tokensController,
       assetsContractController,
       trackMetaMetricsEvent: noop,
+      accountsController,
+      controllerMessenger,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -450,12 +533,14 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
+      accountsController,
+      controllerMessenger,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
     const stub = sandbox.stub(controller, 'detectNewTokens');
-    await preferences.setSelectedAddress(
-      '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+    accountsController.setSelectedAccount(
+      '07c2cfec-36c9-46c4-8115-3836d3ac9047',
     );
     sandbox.assert.called(stub);
   });
@@ -470,6 +555,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
+      accountsController,
+      controllerMessenger,
     });
     controller.isOpen = true;
     controller.selectedAddress = '0x0';
@@ -489,6 +576,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
+      accountsController,
+      controllerMessenger,
     });
     controller.isOpen = true;
     controller.isUnlocked = false;
@@ -510,10 +599,12 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokensController,
       assetsContractController,
+      accountsController,
+      controllerMessenger,
     });
     // trigger state update from preferences controller
-    await preferences.setSelectedAddress(
-      '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+    accountsController.setSelectedAccount(
+      '07c2cfec-36c9-46c4-8115-3836d3ac9047',
     );
     controller.isOpen = false;
     controller.isUnlocked = true;

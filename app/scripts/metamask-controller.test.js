@@ -28,7 +28,6 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
 import TransactionController from './controllers/transactions';
 import PreferencesController from './controllers/preferences';
-import AccountsController from './controllers/accounts-controller';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -166,7 +165,11 @@ const firstTimeState = {
   config: {},
   AccountsController: {
     internalAccounts: {
-      accounts: {},
+      accounts: {
+        '': {
+          address: '',
+        },
+      },
       selectedAccount: '',
     },
   },
@@ -1801,17 +1804,22 @@ describe('MetaMaskController', function () {
     });
 
     describe('incoming transactions', function () {
-      let txControllerStub, preferencesControllerSpy, controllerMessengerSpy;
+      let txControllerStub,
+        preferencesControllerSpy,
+        controllerMessengerSpy,
+        accountsControllerSpy;
 
       beforeEach(async function () {
         txControllerStub = TransactionController.prototype;
         preferencesControllerSpy = metamaskController.preferencesController;
         controllerMessengerSpy = ControllerMessenger.prototype;
+        accountsControllerSpy = metamaskController.accountsController;
         sandbox
-          .stub(metamaskController.accountsController, 'getSelectedAccount')
+          .stub(metamaskController.accountsController, 'getAccountExpect')
           .callsFake(() => {
             return TEST_INTERNAL_ACCOUNT;
           });
+        sandbox.stub(metamaskController.accountsController, 'update');
       });
 
       it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async function () {
@@ -1840,13 +1848,7 @@ describe('MetaMaskController', function () {
 
       it('updates incoming transactions when changing account', async function () {
         assert(txControllerStub.updateIncomingTransactions.notCalled);
-
-        await controllerMessengerSpy.subscribe.args
-          .filter(
-            (args) => args[0] === 'AccountsController:selectedAccountChange',
-          )
-          .slice(-1)[0][1]();
-
+        accountsControllerSpy.setSelectedAccount('mock-id');
         assert(txControllerStub.updateIncomingTransactions.calledOnce);
       });
 

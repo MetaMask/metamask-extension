@@ -38,7 +38,7 @@ export default class AlertController {
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { initState = {}, preferencesStore } = opts;
+    const { initState = {}, accountsController, controllerMessenger } = opts;
     const state = {
       ...defaultState,
       alertEnabledness: {
@@ -49,18 +49,23 @@ export default class AlertController {
 
     this.store = new ObservableStore(state);
 
-    this.selectedAddress = preferencesStore.getState().selectedAddress;
+    this.selectedAddress = accountsController.getSelectedAccount().address;
 
-    preferencesStore.subscribe(({ selectedAddress }) => {
-      const currentState = this.store.getState();
-      if (
-        currentState.unconnectedAccountAlertShownOrigins &&
-        this.selectedAddress !== selectedAddress
-      ) {
-        this.selectedAddress = selectedAddress;
-        this.store.updateState({ unconnectedAccountAlertShownOrigins: {} });
-      }
-    });
+    this.controllerMessenger = controllerMessenger;
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (account) => {
+        const currentState = this.store.getState();
+        if (
+          currentState.unconnectedAccountAlertShownOrigins &&
+          this.selectedAddress !== account.address
+        ) {
+          this.selectedAddress = account.address;
+          this.store.updateState({ unconnectedAccountAlertShownOrigins: {} });
+        }
+      },
+    );
   }
 
   setAlertEnabledness(alertId, enabledness) {
