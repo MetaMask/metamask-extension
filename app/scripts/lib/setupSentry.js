@@ -132,7 +132,7 @@ export const SENTRY_BACKGROUND_STATE = {
       ticker: true,
       nickname: true,
       rpcPrefs: false,
-      id: false,
+      id: true,
     },
     networkConfigurations: false,
     networksMetadata: {
@@ -241,14 +241,13 @@ export const SENTRY_BACKGROUND_STATE = {
   DesktopController: {
     desktopEnabled: true,
   },
-  // we're not sending any data to Sentry from the following controllers
-  // PermissionController
-  // TransactionController
-  // AddressBookController
-  // CachedBalancesController
-  // SubjectMetadataController
-  // PhishingController
-  // SnapsRegistry
+  PermissionController: {},
+  TransactionController: {},
+  AddressBookController: {},
+  CachedBalancesController: {},
+  SubjectMetadataController: {},
+  PhishingController: {},
+  SnapsRegistry: {},
 };
 
 const flattenedBackgroundStateMask = Object.values(
