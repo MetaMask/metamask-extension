@@ -6,6 +6,22 @@
   overflow: auto;
   overscroll-behavior-y: none;
 
+  // For small height screens override default paddingTop paddingBottom props
+  @media screen and (max-height: 600px) {
+    padding: 16px;
+  }
+
+  // Scrollbar styling
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background: var(--color-icon-muted);
+  }
+
   &__dialog {
     --modal-content-size: var(--size, 360px);
 

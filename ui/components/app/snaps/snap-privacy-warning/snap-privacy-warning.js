@@ -40,10 +40,13 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
     useScrollRequired();
 
   return (
-    <Modal isOpen={isOpen} className="snap-privacy-warning">
+    <Modal className="snap-privacy-warning" isOpen={isOpen} autoFocus={false}>
       <ModalOverlay />
       <ModalContent
+        paddingTop={[4, 12]}
+        paddingBottom={[4, 12]}
         modalDialogProps={{
+          className: 'snap-privacy-warning__modal-dialog',
           display: Display.Flex,
           flexDirection: FlexDirection.Column,
           gap: 4,
@@ -118,7 +121,6 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
 
         <Box
           display={Display.Flex}
-          flexDirection={[FlexDirection.Column, FlexDirection.Row]}
           gap={[2, 4]}
           paddingLeft={4}
           paddingRight={4}

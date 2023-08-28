@@ -1,19 +1,16 @@
 .snap-privacy-warning {
+  &__modal-dialog {
+    max-height: 100%;
+    min-height: 300px; // prevents modal shrinking in height beyond being functional
+  }
+
   &__content {
     overflow-y: auto;
-
-    @include screen-sm-max {
-      max-height: 312px; // fits for popover view
-    }
-
+    max-height: 100%;
 
     &__scroll-button {
       position: sticky;
       bottom: 16px;
-
-      @include screen-sm-min {
-        display: none; // hides scroll button
-      }
     }
   }
 }
