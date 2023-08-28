@@ -21,9 +21,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
 import { METAMASK_DEVELOPER } from '../constants';
-import { SnapDetailTag } from './snap-tag';
+import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
+import SnapDetailTag from './snap-detail-tag';
 
 export const SnapDetailHeader = ({
   updateAvailable,

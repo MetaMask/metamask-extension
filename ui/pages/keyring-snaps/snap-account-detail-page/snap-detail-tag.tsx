@@ -6,18 +6,18 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
-  Display,
-  JustifyContent,
   AlignItems,
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
+  Display,
+  IconColor,
+  JustifyContent,
   TextColor,
   TextVariant,
-  BorderColor,
-  BackgroundColor,
-  BorderRadius,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 
-export const SnapDetailTag = ({
+const SnapDetailTag = ({
   icon,
   children,
 }: {
@@ -45,3 +45,5 @@ export const SnapDetailTag = ({
     </Box>
   );
 };
+
+export default React.memo(SnapDetailTag);

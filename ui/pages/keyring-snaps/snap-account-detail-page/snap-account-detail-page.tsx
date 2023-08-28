@@ -113,9 +113,14 @@ export default function SnapAccountDetailPage() {
             </Text>
           </Detail>
           <Detail title={t('snapDetailWebsite')}>
-            <Text overflowWrap={OverflowWrap.BreakWord}>
+            <Button
+              variant={BUTTON_VARIANT.LINK}
+              overflowWrap={OverflowWrap.Anywhere}
+              href={currentSnap.website}
+              externalLink
+            >
               {currentSnap.website}
-            </Text>
+            </Button>
           </Detail>
           <Detail title={t('snapDetailAudits')}>
             {currentSnap.auditUrls.map((auditLink, index) => {
@@ -123,8 +128,9 @@ export default function SnapAccountDetailPage() {
                 <Button
                   key={`audit-link-${index}`}
                   variant={BUTTON_VARIANT.LINK}
-                  overflowWrap={OverflowWrap.BreakWord}
+                  overflowWrap={OverflowWrap.Anywhere}
                   href={auditLink}
+                  externalLink
                 >
                   {auditLink}
                 </Button>
