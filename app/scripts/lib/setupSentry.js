@@ -61,6 +61,7 @@ export const SENTRY_BACKGROUND_STATE = {
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
+    termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
