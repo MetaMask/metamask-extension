@@ -1264,6 +1264,19 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
+    "@metamask/eth-snap-keyring": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-api": true,
+        "@metamask/eth-snap-keyring>@metamask/utils": true,
+        "@metamask/eth-snap-keyring>uuid": true,
+        "browserify>events": true,
+        "superstruct": true
+      }
+    },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -1287,6 +1300,49 @@
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/eth-snap-keyring>@metamask/keyring-api>@metamask/utils": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-api>uuid": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/keyring-api>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/keyring-api>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/eth-snap-keyring>uuid": {
+      "globals": {
         "crypto": true
       }
     },

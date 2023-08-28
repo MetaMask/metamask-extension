@@ -107,7 +107,6 @@ export const unconfirmedTransactionsHashSelector = createSelector(
       },
       {},
     );
-    console.log(111, filteredUnapprovedTxs);
 
     return {
       ...filteredUnapprovedTxs,

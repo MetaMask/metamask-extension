@@ -832,6 +832,41 @@ export default class MetamaskController extends EventEmitter {
     const getIdentities = () =>
       this.preferencesController.store.getState().identities;
 
+    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+        'AccountsController:selectedAccountChange',
+      ],
+    });
+
+    this.accountsController = new AccountsController({
+      messenger: accountsControllerMessenger,
+      state: initState.AccountsController,
+      getKeyringForAccount:
+        this.coreKeyringController.getKeyringForAccount.bind(
+          this.coreKeyringController,
+        ),
+      getKeyringByType: this.coreKeyringController.getKeyringsByType.bind(
+        this.coreKeyringController,
+      ),
+      getAccounts: this.coreKeyringController.getAccounts.bind(
+        this.coreKeyringController,
+      ),
+      onKeyringStateChange: keyringControllerMessenger.subscribe.bind(
+        keyringControllerMessenger,
+        'KeyringController:stateChange',
+      ),
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      onSnapStateChange: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'SnapController:stateChange',
+      ),
+      ///: END:ONLY_INCLUDE_IN
+    });
+
     this.permissionController = new PermissionController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PermissionController',
@@ -1052,34 +1087,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     ///: END:ONLY_INCLUDE_IN
-
-    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-      ],
-    });
-
-    this.accountsController = new AccountsController({
-      messenger: accountsControllerMessenger,
-      state: initState.AccountsController,
-      keyringController: this.keyringController,
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-      snapController: this.snapController,
-      ///: END:ONLY_INCLUDE_IN
-      onKeyringStateChange: keyringControllerMessenger.subscribe.bind(
-        keyringControllerMessenger,
-        'KeyringController:stateChange',
-      ),
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-      onSnapStateChange: this.controllerMessenger.subscribe.bind(
-        this.controllerMessenger,
-        'SnapController:stateChange',
-      ),
-      ///: END:ONLY_INCLUDE_IN
-    });
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({

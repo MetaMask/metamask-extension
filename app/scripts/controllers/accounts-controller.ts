@@ -7,12 +7,11 @@ import type {
   KeyringController,
   KeyringControllerEvents,
 } from '@metamask/keyring-controller';
-import type {
-  SnapController,
-  SnapControllerEvents,
-} from '@metamask/snaps-controllers';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import type { SnapControllerEvents } from '@metamask/snaps-controllers';
 import type { SnapControllerState } from '@metamask/snaps-controllers-flask';
 import type { Snap } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN(keyring-snaps)
 import { sha256FromString } from 'ethereumjs-util';
 import type { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
@@ -80,28 +79,36 @@ export default class AccountsController extends BaseControllerV2<
   AccountsControllerState,
   AccountsControllerMessenger
 > {
-  #keyringController: KeyringController;
+  getKeyringForAccount: KeyringController['getKeyringForAccount'];
 
-  #snapController: SnapController;
+  getKeyringByType: KeyringController['getKeyringsByType'];
+
+  getAccounts: KeyringController['getAccounts'];
 
   constructor({
     messenger,
     state,
-    keyringController,
-    snapController,
+    getKeyringForAccount,
+    getKeyringByType,
+    getAccounts,
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     onSnapStateChange,
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     onKeyringStateChange,
   }: {
     messenger: AccountsControllerMessenger;
     state: AccountsControllerState;
-    keyringController: KeyringController;
-    snapController: SnapController;
+    getKeyringForAccount: KeyringController['getKeyringForAccount'];
+    getKeyringByType: KeyringController['getKeyringsByType'];
+    getAccounts: KeyringController['getAccounts'];
     onKeyringStateChange: (
       listener: (keyringState: KeyringControllerState) => void,
     ) => void;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     onSnapStateChange: (
       listener: (snapState: SnapControllerState) => void,
     ) => void;
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
   }) {
     super({
       messenger,
@@ -113,21 +120,20 @@ export default class AccountsController extends BaseControllerV2<
       },
     });
 
-    this.#keyringController = keyringController;
-    this.#snapController = snapController;
+    this.getKeyringForAccount = getKeyringForAccount;
+    this.getKeyringByType = getKeyringByType;
+    this.getAccounts = getAccounts;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onSnapStateChange(async (snapState: SnapControllerState) => {
       // only check if snaps changed in status
       const { snaps } = snapState;
       const accounts = this.listAccounts();
 
-      const disabledSnaps: Snap[] = [];
-      for (const snap of Object.values(snaps)) {
-        if (!(await this.#isSnapEnabled(snap.id))) {
-          disabledSnaps.push(snap);
-        }
-      }
+      const disabledSnaps: Snap[] = Object.values(snaps).filter(
+        (snap) => !snap.enabled || !snap.blocked,
+      );
 
       const accountsToUpdate = accounts.filter(
         (account) =>
@@ -149,6 +155,7 @@ export default class AccountsController extends BaseControllerV2<
         });
       });
     });
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
     onKeyringStateChange(
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -173,8 +180,6 @@ export default class AccountsController extends BaseControllerV2<
           );
 
           await this.updateAccounts();
-
-          const updatedAccounts = this.listAccounts();
 
           if (updatedKeyringAddresses.length > previousAccounts.length) {
             this.#handleNewAccountAdded(
@@ -247,6 +252,7 @@ export default class AccountsController extends BaseControllerV2<
 
   async updateAccounts(): Promise<void> {
     let legacyAccounts = await this.#listLegacyAccounts();
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const snapAccounts = await this.#listSnapAccounts();
     // remove duplicate accounts that are retrieved from the snap keyring.
     legacyAccounts = legacyAccounts.filter(
@@ -255,6 +261,7 @@ export default class AccountsController extends BaseControllerV2<
           (snapAccount) => snapAccount.address === account.address,
         ),
     );
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
     // keyring type map.
     const keyringTypes = new Map<string, number>();
@@ -262,7 +269,9 @@ export default class AccountsController extends BaseControllerV2<
 
     const accounts: Record<string, InternalAccount> = [
       ...legacyAccounts,
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       ...snapAccounts,
+      ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     ].reduce((internalAccountMap, internalAccount) => {
       const keyringTypeName = keyringTypeToName(
         internalAccount.metadata.keyring.type,
@@ -298,9 +307,7 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   async #listSnapAccounts(): Promise<InternalAccount[]> {
-    const [snapKeyring] = this.#keyringController.getKeyringsByType(
-      SnapKeyring.type,
-    );
+    const [snapKeyring] = this.getKeyringByType(SnapKeyring.type);
 
     const snapAccounts =
       (await (snapKeyring as SnapKeyring)?.listAccounts(false)) ?? [];
@@ -311,7 +318,7 @@ export default class AccountsController extends BaseControllerV2<
       account.metadata = {
         snap: {
           id: snapId,
-          enabled: await this.#isSnapEnabled(snapId),
+          enabled: true,
           name: account.name,
         },
         keyring: {
@@ -325,12 +332,10 @@ export default class AccountsController extends BaseControllerV2<
 
   // Note: listLegacyAccounts is a temporary method until the keyrings all implement the InternalAccount interface
   async #listLegacyAccounts(): Promise<Omit<InternalAccount, 'name'>[]> {
-    const addresses = await this.#keyringController.getAccounts();
+    const addresses = await this.getAccounts();
     const internalAccounts: Omit<InternalAccount, 'name'>[] = [];
     for (const address of addresses) {
-      const keyring = await this.#keyringController.getKeyringForAccount(
-        address,
-      );
+      const keyring = await this.getKeyringForAccount(address);
       // TODO: this is done until the keyrings all implement the InternalAccount interface
       const v4options = {
         random: sha256FromString(address).slice(0, 16),
@@ -396,14 +401,6 @@ export default class AccountsController extends BaseControllerV2<
         name: accountName,
       };
     });
-  }
-
-  async #isSnapEnabled(snapId: string): Promise<boolean> {
-    const snap = (await this.#snapController.getSnapState(snapId)) as any;
-    if (!snap) {
-      return false;
-    }
-    return snap?.enabled && !snap?.blocked;
   }
 
   #handleSelectedAccountRemoved() {
