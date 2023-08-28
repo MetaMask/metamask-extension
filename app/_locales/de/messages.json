@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "Erweiterte Einstellungen"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Speichern Sie diese $1 als Standard für \"Erweitert\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Immer diese Werte und erweiterte Einstellung als Standard verwenden."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Erweiterte Gasgebühr"
   },
@@ -898,9 +892,6 @@
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
   },
-  "copyPrivateKey": {
-    "message": "Das ist Ihr Private Key (klicken um zu kopieren)"
-  },
   "copyRawTransactionData": {
     "message": "Roh-Transaktionsdaten kopieren"
   },
@@ -1482,9 +1473,6 @@
   "enterOptionalPassword": {
     "message": "Optionales Passwort eingeben"
   },
-  "enterPassword": {
-    "message": "Passwort eingeben"
-  },
   "enterPasswordContinue": {
     "message": "Zum Fortfahren Passwort eingeben"
   },
@@ -1560,9 +1548,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "MetaMask Snaps erforschen"
-  },
-  "exportPrivateKey": {
-    "message": "Private Key exportieren"
   },
   "extendWalletWithSnaps": {
     "message": "Erweitern Sie das Wallet-Erlebnis."
@@ -2503,9 +2488,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Token importiert"
-  },
-  "newValues": {
-    "message": "neue Werte"
   },
   "next": {
     "message": "Weiter"
@@ -3868,9 +3850,6 @@
   "showPrivateKey": {
     "message": "Privaten Key anzeigen"
   },
-  "showPrivateKeys": {
-    "message": "Private Keys anzeigen"
-  },
   "showTestnetNetworks": {
     "message": "Test-Netzwerke anzeigen"
   },
@@ -4431,9 +4410,6 @@
   "swapEditLimit": {
     "message": "Limit bearbeiten"
   },
-  "swapEditTransactionSettings": {
-    "message": "Transaktionseinstellungen anpassen"
-  },
   "swapEnableDescription": {
     "message": "Dies ist erforderlich und gibt MetaMask die Erlaubnis, Ihren $1 zu swappen.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4637,20 +4613,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "Maximale Slippage ist zu niedrig, weswegen Ihre Transaktion fehlschlagen könnte."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Slippage erhöhen, um Fehlschlag der Transaktion zu verhindern"
-  },
   "swapSlippageTooltip": {
     "message": "Wenn sich der Kurs zwischen der Aufgabe Ihrer Bestellung und der Bestätigung ändert, nennt man das „Slippage”. Ihr Swap wird automatisch storniert, wenn die Abweichung die von Ihnen eingestellte „Abweichungstoleranz” überschreitet."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "Die eingegebene Slippage wird als sehr hoch angesehen und könnte einen schlechten Kurs bewirken"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Sehr hohe Slippage"
   },
   "swapSlippageZeroDescription": {
     "message": "Es gibt weniger Anbieter mit Null-Slippage, was in einem weniger konkurrenzfähigen Angebot resultieren könne."
@@ -5129,9 +5093,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Transaktionseinsichten für diesen Vertrag zu diesem Zeitpunkt nicht unterstützt."
-  },
-  "typePassword": {
-    "message": "Passwort eingeben"
   },
   "typeYourSRP": {
     "message": "Geben Sie Ihre geheime Wiederherstellungsphrase ein"
