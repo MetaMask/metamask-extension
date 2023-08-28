@@ -41,7 +41,6 @@ exports[`SearchableItemList renders the component with initial props 2`] = `
   class="searchable-item-list__item searchable-item-list__item--selected"
   data-testid="searchable-item-list__item"
   tabindex="0"
-  title=""
 >
   <div
     class=""
