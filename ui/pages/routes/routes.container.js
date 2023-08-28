@@ -14,8 +14,6 @@ import {
   isCurrentProviderCustom,
 } from '../../selectors';
 import {
-  hideImportTokensModal,
-  hideSelectActionModal,
   lockMetamask,
   hideImportNftsModal,
   hideIpfsModal,
@@ -24,7 +22,9 @@ import {
   setMouseUserState,
   toggleAccountMenu,
   toggleNetworkMenu,
+  hideImportTokensModal,
 } from '../../store/actions';
+import { hideSelectActionModal } from '../../components/multichain/app-footer/app-footer-actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';

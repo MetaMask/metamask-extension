@@ -2389,18 +2389,6 @@ export function hideImportTokensModal(): Action {
   };
 }
 
-export function showSelectActionModal(): Action {
-  return {
-    type: actionConstants.SELECT_ACTION_MODAL_OPEN,
-  };
-}
-
-export function hideSelectActionModal(): Action {
-  return {
-    type: actionConstants.SELECT_ACTION_MODAL_CLOSE,
-  };
-}
-
 type ModalPayload = { name: string } & Record<string, any>;
 
 export function showModal(payload: ModalPayload): PayloadAction<ModalPayload> {
