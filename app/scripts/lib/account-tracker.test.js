@@ -4,6 +4,7 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 
 import { createTestProviderTools } from '../../../test/stub/provider';
+import AccountsController from '../controllers/accounts-controller';
 import AccountTracker from './account-tracker';
 
 const noop = () => true;
@@ -72,13 +73,13 @@ describe('Account Tracker', () => {
       ],
     });
 
-    accountsController = new AccountTracker({
+    accountsController = new AccountsController({
       state: {},
       messenger: accountsControllerMessenger,
       keyringController: () => mockKeyringController,
       snapController: () => mockSnapController,
-      onSnapChange: () => mockSnapChange,
-      onKeyringChange: () => mockKeyringChange,
+      onSnapStateChange: () => mockSnapChange,
+      onKeyringStateChange: () => mockKeyringChange,
     });
 
     accountTracker = new AccountTracker({

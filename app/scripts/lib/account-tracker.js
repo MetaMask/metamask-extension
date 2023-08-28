@@ -94,33 +94,24 @@ export default class AccountTracker {
       }, this.onboardingController.store.getState()),
     );
 
+    this.selectedAccount = this.accountsController.getSelectedAccount();
+
     this.controllerMessenger = opts.controllerMessenger;
 
     this.controllerMessenger.subscribe(
       'AccountsController:selectedAccountChange',
-      () => {
+      (newAccount) => {
         const { useMultiAccountBalanceChecker } =
           this.preferencesController.store.getState();
-        if (!useMultiAccountBalanceChecker) {
+
+        if (
+          this.selectedAccount.id !== newAccount.id &&
+          !useMultiAccountBalanceChecker
+        ) {
+          this.selectedAccount = newAccount;
           this._updateAccounts();
         }
       },
-    );
-
-    this.preferencesController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { selectedAddress: prevSelectedAddress } = prevState;
-        const {
-          selectedAddress: currSelectedAddress,
-          useMultiAccountBalanceChecker,
-        } = currState;
-        if (
-          prevSelectedAddress !== currSelectedAddress &&
-          !useMultiAccountBalanceChecker
-        ) {
-          this._updateAccounts();
-        }
-      }, this.onboardingController.store.getState()),
     );
     this.ethersProvider = new Web3Provider(this._provider);
   }
