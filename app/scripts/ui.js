@@ -261,7 +261,6 @@ async function start() {
   }
 
   function initializeUiWithTab(tab) {
-
     initializeUi(
       tab,
       connectionStream,
