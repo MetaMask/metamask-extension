@@ -776,10 +776,8 @@ describe('Sentry errors', function () {
       );
     });
   });
-});
 
-describe('Sentry App State Mask', function () {
-  it('should match the `uiState` coming from the controllers in the background', async function () {
+  it('should have up-to-date set of policy gaps for UI controller state', async function () {
     const { initialBalanceInHex } = genRandInitBal();
 
     await withFixtures(
