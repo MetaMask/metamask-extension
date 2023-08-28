@@ -55,7 +55,7 @@ const useTransactionInsights = ({ txData }) => {
         className="confirm-page-container-content__tab"
         name={selectedSnap.manifest.proposedName}
       >
-        <SnapInsight data={data[0]} loading={loading} />
+        <SnapInsight data={data?.[0]} loading={loading} />
       </Tab>
     );
   } else {
@@ -66,7 +66,7 @@ const useTransactionInsights = ({ txData }) => {
       }),
     );
 
-    const selectedSnapData = data.find(
+    const selectedSnapData = data?.find(
       (promise) => promise.snapId === selectedInsightSnapId,
     );
 
@@ -82,7 +82,7 @@ const useTransactionInsights = ({ txData }) => {
     );
   }
 
-  const warnings = data.reduce((warningsArr, promise) => {
+  const warnings = data?.reduce((warningsArr, promise) => {
     // use enum here from snap-utils
     if (promise.response?.severity === 'critical') {
       const {

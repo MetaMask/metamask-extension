@@ -111,7 +111,12 @@ export default function TxInsightWarnings({
           >
             {t('cancel')}
           </Button>
-          <Button size={Size.LG} danger onClick={onSubmit}>
+          <Button
+            size={Size.LG}
+            danger
+            onClick={onSubmit}
+            disabled={!isChecked}
+          >
             {t(`${results[type].imperative}`)}
           </Button>
         </Box>

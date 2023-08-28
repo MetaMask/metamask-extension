@@ -364,7 +364,7 @@ const ConfirmPageContainer = (props) => {
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         }
-        {warnings.length > 0 && (
+        {warnings?.length > 0 && (
           <TxInsightWarnings
             warnings={warnings}
             origin={origin}
