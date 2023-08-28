@@ -1,0 +1,272 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { SelectWrapper } from './select-wrapper';
+
+# SelectWrapper
+
+SelectWrapper is a graphical element that allows users to select one or more options from a set of choices.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={SelectWrapper} />
+
+### triggerComponent
+
+Use the `triggerComponent` prop to pass in a component that will be used as the trigger for the `SelectWrapper`.
+`SelectButton` is a component that can be used as the triggerComponent or used for reference when creating a custom triggerComponent.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--trigger-component" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Trigger Component</SelectButton>}
+>
+  <SelectOption value="Value">Value</SelectOption>
+</SelectWrapper>;
+```
+
+### Children
+
+Elements passed in as children will be used in the popover(dropdown) for the `SelectWrapper`.
+`SelectOption` is a component that can be used as a child or used for reference when creating a custom child.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--children" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Trigger Component</SelectButton>}
+>
+  <Text paddingLeft={2} paddingRight={2}>
+    All elements contained in SelectWrapper will be rendered within the popover
+  </Text>
+  <SelectOption value="Child 1">Child 1</SelectOption>
+  <SelectOption value="Child 2">Child 2</SelectOption>
+  <SelectOption value="Child 3">Child 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Controlled Open (isOpen, onOpenChange)
+
+For a controlled open experience use the `isOpen` and `onOpenChange` props.
+Pass a boolean to `isOpen` to control the open state of the `SelectWrapper`.
+Pass a function to `onOpenChange` to handle the open state of the `SelectWrapper`.
+
+See [isMultiSelect](/docs/components-componentlibrary-selectwrapper--docs#ismultiselect) for more info on how it impacts the onOpenChange.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--controlled-open" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+const [isOpen, setIsOpen] = React.useState(false);
+
+<SelectWrapper
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  triggerComponent={
+    <SelectButton onClick={() => setIsOpen(!isOpen)}>
+      Controlled Open Demo
+    </SelectButton>
+  }
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Uncontrolled Open
+
+`SelectWrapper` will control the open state internally if the `isOpen` prop is not passed. By default the `SelectButton` will toggle the open/close state and when selecting an option with `SelectOption` that will trigger a close.
+
+See [isMultiSelect](/docs/components-componentlibrary-selectwrapper--docs#ismultiselect) for more info on how it impacts the open state.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--controlled-open" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Uncontrolled Open Demo</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Controlled Value (value, onValueChange, defaultValue)
+
+For a controlled value dev experience use the `value`, `onValueChange`, and `defaultValue` props.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--controlled-value" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper />;
+```
+
+### Uncontrolled Value
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--uncontrolled-value" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper />;
+```
+
+### isMultiSelect
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--use-select-context" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper />;
+```
+
+### To Do
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--is-multi-select" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper />;
+```
+
+### To Do
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--placeholder" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper />;
+```
+
+### To Do
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--is-disabled" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper />;
+```
+
+### To Do
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--is-danger" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper />;
+```
+
+### To Do
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--popover-props" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper />;
+```
