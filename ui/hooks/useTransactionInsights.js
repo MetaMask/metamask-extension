@@ -83,6 +83,7 @@ const useTransactionInsights = ({ txData }) => {
   }
 
   const warnings = data.reduce((warningsArr, promise) => {
+    // use enum here from snap-utils
     if (promise.response?.severity === 'critical') {
       const {
         snapId,

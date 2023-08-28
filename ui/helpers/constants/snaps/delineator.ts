@@ -4,6 +4,7 @@ export enum DelineatorType {
   Error = 'error',
   Insights = 'insights',
   Description = 'description',
+  Warning = 'warning',
 }
 
 export const getDelineatorTitle = (type: DelineatorType) => {
@@ -14,6 +15,8 @@ export const getDelineatorTitle = (type: DelineatorType) => {
       return 'insightsFromSnap';
     case DelineatorType.Description:
       return 'descriptionFromSnap';
+    case DelineatorType.Warning:
+      return 'warningFromSnap';
     default:
       return 'contentFromSnap';
   }

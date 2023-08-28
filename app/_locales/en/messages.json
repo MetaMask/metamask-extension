@@ -5060,6 +5060,17 @@
   "transactionHistoryPriorityFee": {
     "message": "Priority fee (GWEI)"
   },
+  "transactionInsightWarningCheckboxMessage": {
+    "message": "$1 the request by $2",
+    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
+  },
+  "transactionInsightWarningHeader": {
+    "message": "This request may be risky"
+  },
+  "transactionInsightWarningContent": {
+    "message": "Review $1 warnings before $2. Once made, your $3 is irreversible.",
+    "description": "$1 is the number of warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
+  },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
   },
@@ -5356,6 +5367,10 @@
   },
   "warning": {
     "message": "Warning"
+  },
+  "warningFromSnap": {
+    "message": "Warning from $1",
+    "description": "$1 represents the name of the snap"
   },
   "warningTooltipText": {
     "message": "$1 The third party could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",

@@ -41,6 +41,7 @@ import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
+import TxInsightWarnings from '../snaps/tx-insight-warnings/tx-insight-warnings';
 ///: END:ONLY_INCLUDE_IN
 import {
   getAccountName,
@@ -59,6 +60,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
+
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -159,7 +161,7 @@ const ConfirmPageContainer = (props) => {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
-  const insightComponent = useTransactionInsights({
+  const { warnings, insightComponent } = useTransactionInsights({
     txData,
   });
   ///: END:ONLY_INCLUDE_IN
@@ -359,7 +361,20 @@ const ConfirmPageContainer = (props) => {
             <AdvancedGasFeePopover />
           </>
         )}
-        {/** add the warning modal  here */}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        }
+        {warnings.length > 0 && (
+          <TxInsightWarnings
+            warnings={warnings}
+            origin={origin}
+            onCancel={onCancel}
+            onSubmit={onSubmit}
+          />
+        )}
+        {
+          ///: END:ONLY_INCLUDE_IN
+        }
       </div>
     </GasFeeContextProvider>
   );
