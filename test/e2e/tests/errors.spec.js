@@ -4,10 +4,9 @@ const { strict: assert } = require('assert');
 const { get, has, set, unset } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
+const { isObject } = require('@metamask/utils');
+const { SENTRY_UI_STATE } = require('../../../app/scripts/lib/setupSentry');
 const FixtureBuilder = require('../fixture-builder');
-const {
-  SENTRY_BACKGROUND_STATE,
-} = require('../../../app/scripts/lib/setupSentry');
 const {
   DEFAULT_GANACHE_OPTIONS,
   convertToHexValue,
@@ -122,6 +121,38 @@ async function matchesSnapshot({
     }
     throw error;
   }
+}
+
+/**
+ * Get an object consisting of all properties in the complete
+ * object that are missing from the given object.
+ *
+ * @param {object} complete - The complete object to compare to.
+ * @param {object} object - The object to test for missing properties.
+ */
+function getMissingProperties(complete, object) {
+  const missing = {};
+  for (const [key, value] of Object.entries(complete)) {
+    if (key in object) {
+      if (isObject(value) && isObject(object[key])) {
+        const missingNestedProperties = getMissingProperties(
+          value,
+          object[key],
+        );
+        if (Object.keys(missingNestedProperties).length > 0) {
+          missing[key] = missingNestedProperties;
+        } else {
+          // no missing nested properties
+        }
+      } else {
+        // Skip non-object values, they are considered as present
+        // even if they represent masked data structures
+      }
+    } else {
+      missing[key] = value;
+    }
+  }
+  return missing;
 }
 
 describe('Sentry errors', function () {
@@ -766,72 +797,21 @@ describe('Sentry App State Mask', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        await driver.findElement('#password');
 
-        const uiState = await driver.executeScript(() =>
+        const fullUiState = await driver.executeScript(() =>
           window.stateHooks?.getCleanAppState?.(),
         );
-
-        const missingMetaMaskStatePropsInSentryMask = compareStates(
-          uiState,
-          SENTRY_BACKGROUND_STATE,
+        const missingState = getMissingProperties(
+          fullUiState.metamask,
+          SENTRY_UI_STATE.metamask,
         );
 
         await matchesSnapshot({
-          data: missingMetaMaskStatePropsInSentryMask,
+          data: missingState,
           snapshot: 'sentry-mask-policy-gaps',
         });
       },
     );
   });
-
-  /**
-   * Compares the properties of `uiState.metamask` with the properties of `sentryBackgroundState`.
-   * It checks if all properties (including nested ones) of `uiState.metamask` exist in `sentryBackgroundState`.
-   * If a property is missing, it is added to the `missingProps` array which is returned at the end.
-   *
-   * @param {Object} uiState - The uiState object.
-   * @param {Object} sentryBackgroundState - The sentryBackgroundState object.
-   * @returns {Array} An array of strings representing the missing properties in `sentryBackgroundState`.
-   */
-  function compareStates(uiState, sentryBackgroundState) {
-    const missingProps = [];
-
-    /**
-     * Recursively checks the properties of an object against `sentryBackgroundState`.
-     *
-     * @param {Object} obj - The object to check.
-     * @param {string} path - The current path of properties.
-     */
-    function checkNestedProps(obj, path = '') {
-      for (const prop in obj) {
-        if (typeof obj[prop] === 'object' && obj[prop] !== null) {
-          // If the property is an object, check its properties.
-          checkNestedProps(obj[prop], `${path}${prop}.`);
-        } else {
-          let found = false;
-          for (const controller in sentryBackgroundState) {
-            // Create the full path including the controller name.
-            const fullPath = `${controller}.${path}${prop}`;
-            // Check if the property exists in `sentryBackgroundState`.
-            if (
-              fullPath
-                .split('.')
-                .reduce((o, i) => o?.[i], sentryBackgroundState) !== undefined
-            ) {
-              found = true;
-              break;
-            }
-          }
-          // If the property was not found, add it to `missingProps`.
-          if (!found) {
-            missingProps.push(`${path}${prop}`);
-          }
-        }
-      }
-    }
-
-    // Start checking the properties of `uiState.metamask`.
-    checkNestedProps(uiState.metamask);
-    return missingProps;
-  }
 });
