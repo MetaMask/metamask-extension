@@ -91,6 +91,7 @@ const render = ({ txProps, contextProps } = {}) => {
       },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      advancedGasFee: {},
     },
   });
 
