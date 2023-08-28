@@ -5,14 +5,16 @@ const { get, has, set, unset } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const FixtureBuilder = require('../fixture-builder');
-import { SENTRY_BACKGROUND_STATE } from '../../../app/scripts/lib/setupSentry';
-import {
+const {
+  SENTRY_BACKGROUND_STATE,
+} = require('../../../app/scripts/lib/setupSentry');
+const {
   DEFAULT_GANACHE_OPTIONS,
   convertToHexValue,
   genRandInitBal,
   generateGanacheOptions,
   withFixtures,
-} from '../helpers';
+} = require('../helpers');
 
 const maskedBackgroundFields = [
   'CurrencyController.conversionDate', // This is a timestamp that changes each run
