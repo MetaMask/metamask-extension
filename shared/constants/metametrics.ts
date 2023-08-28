@@ -601,6 +601,7 @@ export enum MetaMetricsEventName {
   WhatsNewClicked = `What's New Link Clicked`,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SnapInstalled = 'Snap Installed',
+  SnapUninstalled = 'Snap Uninstalled',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   ///: END:ONLY_INCLUDE_IN

@@ -2050,6 +2050,15 @@ export default class MetamaskController extends EventEmitter {
         }, []);
 
         this.dismissNotifications(notificationIds);
+
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.SnapUninstalled,
+          category: MetaMetricsEventCategory.Snaps,
+          properties: {
+            snap_id: truncatedSnap.id,
+            version: truncatedSnap.version,
+          },
+        });
       },
     );
 
