@@ -1,30 +1,21 @@
-import {
-  BaseControllerV2,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
-import { Patch } from 'immer';
-import { v4 as uuid } from 'uuid';
-import { sha256FromString } from 'ethereumjs-util';
-import {
-  InternalAccount,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  SnapKeyring,
-  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
-} from '@metamask/eth-snap-keyring';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import {
-  SnapController,
-  SnapControllerEvents,
-} from '@metamask/snaps-controllers';
-///: END:ONLY_INCLUDE_IN(keyring-snaps)
-import {
+import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { BaseControllerV2 } from '@metamask/base-controller';
+import type { InternalAccount } from '@metamask/eth-snap-keyring';
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
+import type {
   KeyringControllerState,
   KeyringController,
   KeyringControllerEvents,
 } from '@metamask/keyring-controller';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { SnapControllerState } from '@metamask/snaps-controllers-flask';
-///: END:ONLY_INCLUDE_IN(keyring-snaps)
+import type {
+  SnapController,
+  SnapControllerEvents,
+} from '@metamask/snaps-controllers';
+import type { SnapControllerState } from '@metamask/snaps-controllers-flask';
+import type { Snap } from '@metamask/snaps-utils';
+import { sha256FromString } from 'ethereumjs-util';
+import type { Patch } from 'immer';
+import { v4 as uuid } from 'uuid';
 
 const controllerName = 'AccountsController';
 
@@ -91,34 +82,26 @@ export default class AccountsController extends BaseControllerV2<
 > {
   #keyringController: KeyringController;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   #snapController: SnapController;
-  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
   constructor({
     messenger,
     state,
     keyringController,
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     snapController,
     onSnapStateChange,
-    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     onKeyringStateChange,
   }: {
     messenger: AccountsControllerMessenger;
     state: AccountsControllerState;
     keyringController: KeyringController;
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     snapController: SnapController;
-    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     onKeyringStateChange: (
       listener: (keyringState: KeyringControllerState) => void,
     ) => void;
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     onSnapStateChange: (
       listener: (snapState: SnapControllerState) => void,
     ) => void;
-    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
   }) {
     super({
       messenger,
@@ -131,74 +114,89 @@ export default class AccountsController extends BaseControllerV2<
     });
 
     this.#keyringController = keyringController;
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     this.#snapController = snapController;
-    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onSnapStateChange(async (snapState: SnapControllerState) => {
       // only check if snaps changed in status
       const { snaps } = snapState;
       const accounts = this.listAccounts();
 
+      const disabledSnaps: Snap[] = [];
+      for (const snap of Object.values(snaps)) {
+        if (!(await this.#isSnapEnabled(snap.id))) {
+          disabledSnaps.push(snap);
+        }
+      }
+
+      const accountsToUpdate = accounts.filter(
+        (account) =>
+          account.metadata.snap &&
+          disabledSnaps.find((snap) => snap.id === account.metadata.snap?.id),
+      );
+
       this.update((currentState: AccountsControllerState) => {
-        Object.values(snaps).forEach((snap) => {
-          if (!this.#isSnapEnabled(snap.id)) {
-            accounts.forEach((account) => {
-              if (account.metadata.snap?.id === snap.id) {
-                currentState.internalAccounts.accounts[
-                  account.id
-                ].metadata.snap.enabled = false;
-              }
-            });
+        accountsToUpdate.forEach((account) => {
+          if (
+            currentState.internalAccounts.accounts[account.id]?.metadata?.snap
+          ) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore this account is guaranteed to have snap metadata
+            currentState.internalAccounts.accounts[
+              account.id
+            ].metadata.snap.enabled = false;
           }
         });
       });
     });
-    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
-    onKeyringStateChange(async (keyringState: KeyringControllerState) => {
-      // check if there are any new accounts added
-      // TODO: change when accountAdded event is added to the keyring controller
+    onKeyringStateChange(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async (keyringState: KeyringControllerState): Promise<void> => {
+        // check if there are any new accounts added
+        // TODO: change when accountAdded event is added to the keyring controller
 
-      if (keyringState.isUnlocked) {
-        // TODO: ACCOUNTS_CONTROLLER keyring will return accounts instead of addresses, remove this flatMap after and just get the latest id
-        const updatedKeyringAddresses = keyringState.keyrings.flatMap(
-          (keyring) => keyring.accounts,
-        );
-        const previousAccounts = this.listAccounts();
-
-        // if there are no overlaps between the addresses in the keyring and previous accounts,
-        // it means the keyring is being reinitialized because the vault is being restored with the same SRP
-        const overlaps = updatedKeyringAddresses.filter((address) =>
-          previousAccounts.find(
-            (account) =>
-              account.address.toLowerCase() === address.toLowerCase(),
-          ),
-        );
-
-        await this.updateAccounts();
-
-        if (updatedKeyringAddresses.length > previousAccounts.length) {
-          this.#handleNewAccountAdded(
-            updatedKeyringAddresses,
-            previousAccounts,
+        if (keyringState.isUnlocked) {
+          // TODO: ACCOUNTS_CONTROLLER keyring will return accounts instead of addresses, remove this flatMap after and just get the latest id
+          const updatedKeyringAddresses = keyringState.keyrings.flatMap(
+            (keyring) => keyring.accounts,
           );
-        } else if (
-          updatedKeyringAddresses.length > 0 &&
-          overlaps.length === 0
-        ) {
-          // if the keyring is being reinitialized, the selected account will be reset to the first account
-          this.setSelectedAccount(this.listAccounts()[0].id);
-        } else if (
-          updatedKeyringAddresses.length < previousAccounts.length &&
-          overlaps.length > 0 &&
-          !this.getAccount(this.state.internalAccounts.selectedAccount)
-        ) {
-          this.#handleSelectedAccountRemoved();
+          const previousAccounts = this.listAccounts();
+
+          // if there are no overlaps between the addresses in the keyring and previous accounts,
+          // it means the keyring is being reinitialized because the vault is being restored with the same SRP
+          const overlaps = updatedKeyringAddresses.filter((address) =>
+            previousAccounts.find(
+              (account) =>
+                account.address.toLowerCase() === address.toLowerCase(),
+            ),
+          );
+
+          await this.updateAccounts();
+
+          const updatedAccounts = this.listAccounts();
+
+          if (updatedKeyringAddresses.length > previousAccounts.length) {
+            this.#handleNewAccountAdded(
+              updatedKeyringAddresses,
+              previousAccounts,
+            );
+          } else if (
+            updatedKeyringAddresses.length > 0 &&
+            overlaps.length === 0
+          ) {
+            // if the keyring is being reinitialized, the selected account will be reset to the first account
+            this.setSelectedAccount(this.listAccounts()[0].id);
+          } else if (
+            updatedKeyringAddresses.length < previousAccounts.length &&
+            overlaps.length > 0 &&
+            !this.getAccount(this.state.internalAccounts.selectedAccount)
+          ) {
+            this.#handleSelectedAccountRemoved();
+          }
         }
-      }
-    });
+      },
+    );
 
     // if somehow the selected account becomes lost then select the first account
     if (
@@ -249,16 +247,14 @@ export default class AccountsController extends BaseControllerV2<
 
   async updateAccounts(): Promise<void> {
     let legacyAccounts = await this.#listLegacyAccounts();
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const snapAccounts = await this.#listSnapAccounts();
     // remove duplicate accounts that are retrieved from the snap keyring.
     legacyAccounts = legacyAccounts.filter(
       (account) =>
         !snapAccounts.find(
-          (snapAccount) => snapAccount.address !== account.address,
+          (snapAccount) => snapAccount.address === account.address,
         ),
     );
-    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
     // keyring type map.
     const keyringTypes = new Map<string, number>();
@@ -266,9 +262,7 @@ export default class AccountsController extends BaseControllerV2<
 
     const accounts: Record<string, InternalAccount> = [
       ...legacyAccounts,
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       ...snapAccounts,
-      ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     ].reduce((internalAccountMap, internalAccount) => {
       const keyringTypeName = keyringTypeToName(
         internalAccount.metadata.keyring.type,
@@ -296,12 +290,13 @@ export default class AccountsController extends BaseControllerV2<
       return internalAccountMap;
     }, {} as Record<string, InternalAccount>);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore Type instantiation is excessively deep and possibly infinite.
     this.update((currentState: AccountsControllerState) => {
       currentState.internalAccounts.accounts = accounts;
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   async #listSnapAccounts(): Promise<InternalAccount[]> {
     const [snapKeyring] = this.#keyringController.getKeyringsByType(
       SnapKeyring.type,
@@ -311,12 +306,12 @@ export default class AccountsController extends BaseControllerV2<
       (await (snapKeyring as SnapKeyring)?.listAccounts(false)) ?? [];
 
     for (const account of snapAccounts) {
+      const snapId = account.metadata.snap?.id as string;
+
       account.metadata = {
         snap: {
-          id: account?.metadata?.snap?.id!,
-          enabled: await this.#isSnapEnabled(
-            account?.metadata?.snap?.id as string,
-          ),
+          id: snapId,
+          enabled: await this.#isSnapEnabled(snapId),
           name: account.name,
         },
         keyring: {
@@ -327,7 +322,6 @@ export default class AccountsController extends BaseControllerV2<
 
     return snapAccounts;
   }
-  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
   // Note: listLegacyAccounts is a temporary method until the keyrings all implement the InternalAccount interface
   async #listLegacyAccounts(): Promise<Omit<InternalAccount, 'name'>[]> {
@@ -404,7 +398,6 @@ export default class AccountsController extends BaseControllerV2<
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   async #isSnapEnabled(snapId: string): Promise<boolean> {
     const snap = (await this.#snapController.getSnapState(snapId)) as any;
     if (!snap) {
@@ -412,7 +405,6 @@ export default class AccountsController extends BaseControllerV2<
     }
     return snap?.enabled && !snap?.blocked;
   }
-  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
   #handleSelectedAccountRemoved() {
     const previousAccount = this.listAccounts()
@@ -455,6 +447,12 @@ export default class AccountsController extends BaseControllerV2<
   }
 }
 
+/**
+ * Returns the name of the keyring type.
+ *
+ * @param keyringType - The type of the keyring.
+ * @returns The name of the keyring type.
+ */
 export function keyringTypeToName(keyringType: string): string {
   switch (keyringType) {
     case 'Simple Key Pair': {
