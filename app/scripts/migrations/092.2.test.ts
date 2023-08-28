@@ -52,7 +52,9 @@ describe('migration #96', () => {
       data: originalMetaMaskState,
     };
 
-    const updatedVersionedState = await migrate(originalVersionedState);
+    const updatedVersionedState = await migrate(
+      cloneDeep(originalVersionedState),
+    );
     expect(updatedVersionedState.data).toStrictEqual(originalMetaMaskState);
   });
 
@@ -66,7 +68,9 @@ describe('migration #96', () => {
       data: originalMetaMaskState,
     };
 
-    const updatedVersionedState = await migrate(originalVersionedState);
+    const updatedVersionedState = await migrate(
+      cloneDeep(originalVersionedState),
+    );
     expect(updatedVersionedState.data).toStrictEqual(originalMetaMaskState);
   });
 
@@ -83,7 +87,9 @@ describe('migration #96', () => {
       data: originalMetaMaskState,
     };
 
-    const updatedVersionedState = await migrate(originalVersionedState);
+    const updatedVersionedState = await migrate(
+      cloneDeep(originalVersionedState),
+    );
     expect(updatedVersionedState.data).not.toStrictEqual(originalMetaMaskState);
     expect(updatedVersionedState.data).toStrictEqual({
       anotherController: 'another-controller-state',
