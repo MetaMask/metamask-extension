@@ -21,6 +21,8 @@ const maskedBackgroundFields = [
   // part of the release process
   'AppMetadataController.currentAppVersion',
   'AppMetadataController.currentMigrationVersion',
+  'AppStateController.recoveryPhraseReminderLastShown',
+  'AppStateController.termsOfUseLastAgreed',
 ];
 const maskedUiFields = [
   'metamask.conversionDate', // This is a timestamp that changes each run
@@ -28,6 +30,8 @@ const maskedUiFields = [
   // part of the release process
   'metamask.currentAppVersion',
   'metamask.currentMigrationVersion',
+  'metamask.recoveryPhraseReminderLastShown',
+  'metamask.termsOfUseLastAgreed',
 ];
 
 const removedBackgroundFields = [
@@ -360,7 +364,10 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: transformBackgroundState(appState.persistedState),
+            data: {
+              ...appState.persistedState,
+              data: transformBackgroundState(appState.persistedState.data),
+            },
             snapshot: 'errors-before-init-opt-in-background-state',
           });
         },
@@ -508,7 +515,10 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: transformBackgroundState(appState.persistedState),
+            data: {
+              ...appState.persistedState,
+              data: transformBackgroundState(appState.persistedState.data),
+            },
             snapshot: 'errors-before-init-opt-in-ui-state',
           });
         },
