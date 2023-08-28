@@ -228,14 +228,14 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setUse4ByteResolution', function () {
-    it('should default to true', function () {
+  describe('setUse4ByteResolution', () => {
+    it('should default to true', () => {
       expect(
         preferencesController.store.getState().use4ByteResolution,
       ).toStrictEqual(true);
     });
 
-    it('should set the use4ByteResolution property in state', function () {
+    it('should set the use4ByteResolution property in state', () => {
       preferencesController.setUse4ByteResolution(false);
       expect(
         preferencesController.store.getState().use4ByteResolution,
@@ -259,22 +259,27 @@ describe('preferences controller', () => {
   });
 
   describe('setAdvancedGasFee', () => {
-    it('should default to null', () => {
+    it('should default to an empty object', () => {
       expect(
         preferencesController.store.getState().advancedGasFee,
-      ).toStrictEqual(null);
+      ).toStrictEqual({});
     });
 
     it('should set the setAdvancedGasFee property in state', () => {
       preferencesController.setAdvancedGasFee({
-        maxBaseFee: '1.5',
-        priorityFee: '2',
+        chainId: CHAIN_IDS.GOERLI,
+        gasFeePreferences: {
+          maxBaseFee: '1.5',
+          priorityFee: '2',
+        },
       });
       expect(
-        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
+          .maxBaseFee,
       ).toStrictEqual('1.5');
       expect(
-        preferencesController.store.getState().advancedGasFee.priorityFee,
+        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
+          .priorityFee,
       ).toStrictEqual('2');
     });
   });
