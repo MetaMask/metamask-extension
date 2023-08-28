@@ -150,11 +150,14 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           >
             Website
           </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--color-text-default"
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://www.consensys.net/"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             https://www.consensys.net/
-          </p>
+          </a>
         </div>
         <div
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
@@ -165,14 +168,18 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
             Audit
           </p>
           <a
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-break-word mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             href="auditUrl1"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             auditUrl1
           </a>
           <a
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-break-word mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             href="auditUrl2"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             auditUrl2
           </a>
