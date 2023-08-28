@@ -1,4 +1,14 @@
+import { cloneDeep } from 'lodash';
 import migration77 from './077';
+
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  startSession: jest.fn(),
+  endSession: jest.fn(),
+  toggleSession: jest.fn(),
+  captureException: sentryCaptureExceptionMock,
+};
 
 describe('migration #77', () => {
   it('should update the version metadata', async () => {
@@ -6,6 +16,7 @@ describe('migration #77', () => {
       meta: {
         version: 76,
       },
+      data: {},
     };
 
     const newStorage = await migration77.migrate(oldStorage);
@@ -13,6 +24,65 @@ describe('migration #77', () => {
       version: 77,
     });
   });
+
+  it('should return state unchanged if token list controller is missing', async () => {
+    const oldStorage = {
+      meta: {
+        version: 76,
+      },
+      data: {
+        Foo: {
+          bar: 'baz',
+        },
+      },
+    };
+
+    const newStorage = await migration77.migrate(cloneDeep(oldStorage));
+
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
+  it('should capture an exception if the TokenListController state is invalid', async () => {
+    const oldStorage = {
+      meta: {
+        version: 76,
+      },
+      data: {
+        TokenListController: 'test',
+      },
+    };
+
+    await migration77.migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.TokenListController is string`),
+    );
+  });
+
+  it('should return state unchanged if tokenChainsCache is missing', async () => {
+    const oldStorage = {
+      meta: {
+        version: 76,
+      },
+      data: {
+        TokenListController: {
+          tokenList: {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+              symbol: 'LINK',
+              decimals: 18,
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migration77.migrate(cloneDeep(oldStorage));
+
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
   it('should change the data from array to object for a single network', async () => {
     const oldStorage = {
       meta: {

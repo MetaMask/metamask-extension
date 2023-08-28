@@ -90,6 +90,7 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
 import {
   resetSwapsPostFetchState,
@@ -136,8 +137,6 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from './smart-transactions-popover';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
-
-const MAX_ALLOWED_SLIPPAGE = 15;
 
 let timeoutIdForQuotesPrefetching;
 
@@ -1036,6 +1035,9 @@ export default function PrepareSwapPage({
                   ? t('swapTokenVerifiedOn1SourceTitle')
                   : t('swapTokenAddedManuallyTitle')
               }
+              titleProps={{
+                'data-testid': 'swaps-banner-title',
+              }}
               width={BLOCK_SIZES.FULL}
             >
               <Box>
@@ -1074,7 +1076,10 @@ export default function PrepareSwapPage({
         )}
         {swapsErrorKey && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
-            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
+            <SwapsBannerAlert
+              swapsErrorKey={swapsErrorKey}
+              currentSlippage={maxSlippage}
+            />
           </Box>
         )}
         {transactionSettingsOpened &&

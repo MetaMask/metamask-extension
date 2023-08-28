@@ -84,6 +84,35 @@ function transformState(state: Record<string, unknown>) {
         selectedNetworkClientId,
       },
     };
+  } else if (!isObject(state.NetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController is ${typeof state.NetworkController}`,
+      ),
+    );
+  } else if (
+    isObject(state.NetworkController) &&
+    !isObject(state.NetworkController.providerConfig)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController.providerConfig is ${typeof state
+          .NetworkController.providerConfig}`,
+      ),
+    );
+  } else if (
+    isObject(state.NetworkController) &&
+    isObject(state.NetworkController.providerConfig)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController.providerConfig.id is ${typeof state
+          .NetworkController.providerConfig
+          .id} and state.NetworkController.providerConfig.type is ${
+          state.NetworkController.providerConfig.type
+        }`,
+      ),
+    );
   }
   return state;
 }
