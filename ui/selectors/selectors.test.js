@@ -632,11 +632,6 @@ describe('Selectors', () => {
       priorityFee: '2',
     });
   });
-  it('#getIsAdvancedGasFeeDefault', () => {
-    const isAdvancedGasFeeDefault =
-      selectors.getIsAdvancedGasFeeDefault(mockState);
-    expect(isAdvancedGasFeeDefault).toStrictEqual(true);
-  });
   it('#getAppIsLoading', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);

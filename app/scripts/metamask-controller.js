@@ -415,6 +415,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
+      networkConfigurations: this.networkController.state.networkConfigurations,
     });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
@@ -1090,8 +1091,8 @@ export default class MetamaskController extends EventEmitter {
       refetchOnAllowlistMiss: requireAllowlist,
       failOnUnavailableRegistry: requireAllowlist,
       url: {
-        registry: 'https://acl.execution.metamask.io/latest/registry.json',
-        signature: 'https://acl.execution.metamask.io/latest/signature.json',
+        registry: 'https://acl.execution.consensys.io/latest/registry.json',
+        signature: 'https://acl.execution.consensys.io/latest/signature.json',
       },
       publicKey:
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
@@ -1931,8 +1932,6 @@ export default class MetamaskController extends EventEmitter {
         getSnapKeyring: this.getSnapKeyring.bind(this),
         saveSnapKeyring: async () => {
           await this.keyringController.persistAllKeyrings();
-          await this.keyringController._updateMemStoreKeyrings();
-          await this.keyringController.fullUpdate();
         },
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -1977,10 +1976,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.preferencesController.store.subscribe(async (state) => {
       const { selectedAddress, currentLocale } = state;
-
+      const { chainId } = this.networkController.state.providerConfig;
       await updateCurrentLocale(currentLocale);
 
-      if (state?.featureFlags?.showIncomingTransactions) {
+      if (state.incomingTransactionsPreferences?.[chainId]) {
         this.txController.startIncomingTransactionPolling();
       } else {
         this.txController.stopIncomingTransactionPolling();
@@ -2093,6 +2092,15 @@ export default class MetamaskController extends EventEmitter {
         }, []);
 
         this.dismissNotifications(notificationIds);
+
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.SnapUninstalled,
+          category: MetaMetricsEventCategory.Snaps,
+          properties: {
+            snap_id: truncatedSnap.id,
+            version: truncatedSnap.version,
+          },
+        });
       },
     );
 
@@ -2282,6 +2290,10 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
+      setIncomingTransactionsPreferences:
+        preferencesController.setIncomingTransactionsPreferences.bind(
+          preferencesController,
+        ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,
@@ -4183,14 +4195,21 @@ export default class MetamaskController extends EventEmitter {
             this.institutionalFeaturesController,
           ),
         handleMmiCheckIfTokenIsPresent:
-          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiDashboardData:
-          this.mmiController.handleMmiDashboardData.bind(this),
-        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
+          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(
+            this.mmiController,
+          ),
+        handleMmiDashboardData: this.mmiController.handleMmiDashboardData.bind(
+          this.mmiController,
+        ),
+        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(
+          this.mmiController,
+        ),
         handleMmiSetAccountAndNetwork:
-          this.mmiController.setAccountAndNetwork.bind(this),
+          this.mmiController.setAccountAndNetwork.bind(this.mmiController),
         handleMmiOpenAddHardwareWallet:
-          this.mmiController.handleMmiOpenAddHardwareWallet.bind(this),
+          this.mmiController.handleMmiOpenAddHardwareWallet.bind(
+            this.mmiController,
+          ),
         ///: END:ONLY_INCLUDE_IN
       }),
     );
