@@ -225,6 +225,7 @@ describe('DetectTokensController', function () {
       tokenListController,
       onInfuraIsBlocked: sinon.stub(),
       onInfuraIsUnblocked: sinon.stub(),
+      networkConfigurations: {},
     });
     preferences.setAddresses([
       '0x7e57e2',
