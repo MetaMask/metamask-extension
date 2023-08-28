@@ -31,10 +31,8 @@ export const SENTRY_BACKGROUND_STATE = {
     currentBlockGasLimit: true,
   },
   PermissionLogController: {
-    // double-check if contains PID?
-    permissionHistory: true,
-    // double-check if contains PID?
-    permissionActivityLog: true,
+    permissionHistory: false,
+    permissionActivityLog: false,
   },
   AnnouncementController: {
     announcements: true,
@@ -45,24 +43,17 @@ export const SENTRY_BACKGROUND_STATE = {
     gasEstimateType: true,
   },
   TokenListController: {
-    // double-check if contains PID?
-    tokenList: true,
-    tokensChainsCache: true,
+    tokenList: false,
+    tokensChainsCache: false,
     preventPollingOnNetworkRestart: true,
   },
   TokensController: {
-    // double-check if contains PID?
-    tokens: true,
-    // double-check if contains PID?
-    ignoredTokens: true,
-    // double-check if contains PID?
-    detectedTokens: true,
-    // double-check if contains PID?
-    allTokens: true,
-    // double-check if contains PID?
-    allIgnoredTokens: true,
-    // double-check if contains PID?
-    allDetectedTokens: true,
+    tokens: false,
+    ignoredTokens: false,
+    detectedTokens: false,
+    allTokens: false,
+    allIgnoredTokens: false,
+    allDetectedTokens: false,
   },
   SmartTransactionsController: {
     smartTransactions: false,
@@ -74,8 +65,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   NotificationController: {
-    // double-check if contains PID?
-    notifications: true,
+    notifications: false,
   },
   AlertController: {
     alertEnabledness: true,
@@ -129,7 +119,7 @@ export const SENTRY_BACKGROUND_STATE = {
   MetaMetricsController: {
     metaMetricsId: true,
     participateInMetaMetrics: true,
-    eventsBeforeMetricsOptIn: true,
+    eventsBeforeMetricsOptIn: false,
   },
   NetworkController: {
     networkStatus: true,
@@ -162,8 +152,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   PreferencesController: {
     featureFlags: true,
-    // double-check if contains PID?
-    ipfsGateway: true,
+    ipfsGateway: false,
     identities: false,
     lostIdentities: false,
     selectedAddress: false,
@@ -183,8 +172,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useCurrencyRateCheck: true,
     advancedGasFee: true,
     incomingTransactionsPreferences: true,
-    // double-check if contains PID?
-    knownMethodData: true,
+    knownMethodData: false,
     currentLocale: true,
     forgottenPassword: true,
     preferences: {
@@ -215,12 +203,10 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   SwapsController: {
     swapsState: {
-      // double-check if contains PID?
       quotes: false,
       quotesPollingLimitEnabled: true,
       fetchParams: true,
-      // double-check if contains PID?
-      tokens: true,
+      tokens: false,
       tradeTxId: false,
       approveTxId: false,
       quotesLastFetched: true,
@@ -245,13 +231,12 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
-    // double-check if contains PID?
-    snaps: true,
-    snapStates: true,
-    snapErrors: true,
+    snaps: false,
+    snapStates: false,
+    snapErrors: false,
   },
   CronjobController: {
-    jobs: true,
+    jobs: false,
   },
   DesktopController: {
     desktopEnabled: true,
