@@ -79,11 +79,7 @@ const accountsControllerMetadata = {
 
 const defaultState: AccountsControllerState = {
   internalAccounts: {
-    accounts: {
-      '': {
-        address: '',
-      } as InternalAccount,
-    },
+    accounts: {},
     selectedAccount: '',
   },
 };
@@ -226,8 +222,18 @@ export default class AccountsController extends BaseControllerV2<
     // certain ui elements will query the selected address before any accounts are created.
     if (!accountId) {
       return {
+        id: '',
+        name: '',
         address: '',
-      } as InternalAccount;
+        options: {},
+        supportedMethods: [],
+        type: 'eip155:eoa',
+        metadata: {
+          keyring: {
+            type: '',
+          },
+        },
+      };
     }
 
     const account = this.getAccount(accountId);
