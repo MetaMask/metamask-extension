@@ -1,7 +1,7 @@
 import { useArgs } from '@storybook/client-api';
 import { StoryFn } from '@storybook/react';
 import React from 'react';
-import { BUTTON_VARIANT, Button } from '../../../components/component-library';
+import { ButtonVariant, Button } from '../../../components/component-library';
 import AddSnapAccountModal from '.';
 
 const AddSnapAccountModalStory = {
@@ -16,7 +16,7 @@ export const DefaultStory: StoryFn<typeof AddSnapAccountModal> = () => {
   return (
     <>
       <Button
-        variant={BUTTON_VARIANT.PRIMARY}
+        variant={ButtonVariant.Primary}
         onClick={() => updateArgs({ isShowingModal: true })}
       >
         Open modal
