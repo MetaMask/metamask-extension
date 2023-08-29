@@ -21,6 +21,8 @@ const maskedBackgroundFields = [
   // part of the release process
   'AppMetadataController.currentAppVersion',
   'AppMetadataController.currentMigrationVersion',
+  'AppStateController.browserEnvironment.browser',
+  'AppStateController.browserEnvironment.os',
   'AppStateController.outdatedBrowserWarningLastShown',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',

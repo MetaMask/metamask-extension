@@ -71,7 +71,7 @@
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
-    "browserEnvironment": { "os": "linux", "browser": "firefox" },
+    "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": [],
     "notificationGasPollTokens": [],
     "fullScreenGasPollTokens": [],
