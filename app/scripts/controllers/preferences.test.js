@@ -42,6 +42,7 @@ describe('preferences controller', () => {
       tokenListController,
       onInfuraIsBlocked: jest.fn(),
       onInfuraIsUnblocked: jest.fn(),
+      onAccountRemoved: jest.fn(),
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
     });
   });

@@ -70,6 +70,7 @@ describe('Account Tracker', () => {
           getState: noop,
         },
       },
+      onAccountRemoved: jest.fn(),
     });
   });
 
