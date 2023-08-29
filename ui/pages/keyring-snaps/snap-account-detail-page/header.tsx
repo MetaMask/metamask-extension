@@ -3,7 +3,7 @@ import ConfigureSnapPopup, {
   ConfigureSnapPopupType,
 } from '../../../components/app/configure-snap-popup/configure-snap-popup';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Button,
   Icon,
@@ -58,7 +58,7 @@ export const SnapDetailHeader = ({
           marginBottom={4}
         >
           <Button
-            variant={BUTTON_VARIANT.LINK}
+            variant={ButtonVariant.Link}
             marginRight={4}
             onClick={() => history.back()}
           >
@@ -91,7 +91,7 @@ export const SnapDetailHeader = ({
           <Box>
             {isInstalled && updateAvailable && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 marginRight={1}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
@@ -103,7 +103,7 @@ export const SnapDetailHeader = ({
             )}
             {isInstalled && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.CONFIGURE);
                   setShowConfigPopover(true);
@@ -114,7 +114,7 @@ export const SnapDetailHeader = ({
             )}
             {!isInstalled && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
                   setShowConfigPopover(true);
