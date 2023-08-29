@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import semver from 'semver';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Button,
   Tag,
@@ -111,7 +111,7 @@ export default function SnapAccountDetailPage() {
             {currentSnap.auditUrls.map((auditLink, index) => {
               return (
                 <Text key={`audit-link-${index}`}>
-                  <Button variant={BUTTON_VARIANT.LINK} href={auditLink}>
+                  <Button variant={ButtonVariant.Link} href={auditLink}>
                     {auditLink}
                   </Button>
                 </Text>
@@ -127,7 +127,7 @@ export default function SnapAccountDetailPage() {
           {isInstalled && (
             <Box>
               <Button
-                variant={BUTTON_VARIANT.LINK}
+                variant={ButtonVariant.Link}
                 onClick={() =>
                   history.push(
                     `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(

@@ -25,7 +25,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/1.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/1.0.2/index.html
     # Main build uses the default browser manifest
     manifestOverrides: false
 
