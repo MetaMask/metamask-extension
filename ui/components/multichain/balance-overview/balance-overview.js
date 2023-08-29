@@ -57,20 +57,18 @@ export const BalanceOverview = () => {
     });
   };
   const renderInstitutionalButtons = () => {
-    return (
-      mmiPortfolioEnabled && (
-        <ButtonSecondary
-          className="token-balance-mmi-portfolio"
-          onClick={() => {
-            portfolioEvent();
-            window.open(mmiPortfolioUrl, '_blank');
-          }}
-          endIconName={IconName.Export}
-        >
-          {t('portfolio')}
-        </ButtonSecondary>
-      )
-    );
+    return mmiPortfolioEnabled ? (
+      <ButtonSecondary
+        className="token-balance-mmi-portfolio"
+        onClick={() => {
+          portfolioEvent();
+          window.open(mmiPortfolioUrl, '_blank');
+        }}
+        endIconName={IconName.Export}
+      >
+        {t('portfolio')}
+      </ButtonSecondary>
+    ) : null;
   };
 
   ///: END:ONLY_INCLUDE_IN
@@ -83,7 +81,7 @@ export const BalanceOverview = () => {
       padding={4}
     >
       <Box className="token-balance-overview__balance">
-        {balance && (
+        {balance ? (
           <UserPreferencedCurrencyDisplay
             className={classnames({
               'token-balance-overview__cached-secondary-balance':
@@ -103,7 +101,7 @@ export const BalanceOverview = () => {
               color: TextColor.textDefault,
             }}
           />
-        )}
+        ) : null}
         <Box className="token-balance-overview__primary-container">
           {balance ? (
             <UserPreferencedCurrencyDisplay
