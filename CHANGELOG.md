@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.35.1]
+### Changed
+- Allow quick Add Account name based on default name ([#20168](https://github.com/MetaMask/metamask-extension/pull/20168))
+- Store default gas settings by network ([#20576](https://github.com/MetaMask/metamask-extension/pull/20576), [#20632](https://github.com/MetaMask/metamask-extension/pull/20632))
+- Add more diagnostic information upon failure ([#20595](https://github.com/MetaMask/metamask-extension/pull/20595))
+
+### Fixed
+- Fix bug resulting in custom network configuration being lost upon restart ([#20586](https://github.com/MetaMask/metamask-extension/pull/20586))
+- Fix UI crash when balances are missing ([#20385](https://github.com/MetaMask/metamask-extension/pull/20385))
+- Fix infinite rerender on network change while signature request is pending ([#20473](https://github.com/MetaMask/metamask-extension/pull/20473))
+- Fix Dapp link on NFT import screen ([#19799](https://github.com/MetaMask/metamask-extension/pull/19799))
+- Fix 'View on Opensea' link for main and testnet NFTs ([#19797](https://github.com/MetaMask/metamask-extension/pull/19797))
+- Ensure chainId comparison in switchEthereumChain handler is case insensitive ([#20149](https://github.com/MetaMask/metamask-extension/pull/20149))
+- Enforce user preferences in incoming transactions controller ([#19982](https://github.com/MetaMask/metamask-extension/pull/19982))
 
 ## [10.35.0]
 ### Added
