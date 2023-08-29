@@ -260,7 +260,7 @@
   },
   "TokenListController": {
     "tokenList": "object",
-    "tokensChainsCache": "object",
+    "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": true
   },
   "TokenRatesController": { "contractExchangeRates": "object" },
@@ -268,9 +268,9 @@
     "tokens": "object",
     "ignoredTokens": "object",
     "detectedTokens": "object",
-    "allTokens": "object",
-    "allIgnoredTokens": "object",
-    "allDetectedTokens": "object"
+    "allTokens": {},
+    "allIgnoredTokens": {},
+    "allDetectedTokens": {}
   },
   "TxController": {
     "unapprovedTxs": "object",

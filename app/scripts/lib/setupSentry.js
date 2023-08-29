@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
+import { AllProperties } from '../../../shared/modules/object.utils';
 import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
@@ -260,15 +261,23 @@ export const SENTRY_BACKGROUND_STATE = {
   TokenListController: {
     preventPollingOnNetworkRestart: true,
     tokenList: false,
-    tokensChainsCache: false,
+    tokensChainsCache: {
+      [AllProperties]: false,
+    },
   },
   TokenRatesController: {
     contractExchangeRates: false,
   },
   TokensController: {
-    allDetectedTokens: false,
-    allIgnoredTokens: false,
-    allTokens: false,
+    allDetectedTokens: {
+      [AllProperties]: false,
+    },
+    allIgnoredTokens: {
+      [AllProperties]: false,
+    },
+    allTokens: {
+      [AllProperties]: false,
+    },
     detectedTokens: false,
     ignoredTokens: false,
     tokens: false,
