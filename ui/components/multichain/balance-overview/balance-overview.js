@@ -37,8 +37,10 @@ import {
 export const BalanceOverview = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const metaMetricsId = useSelector(getMetaMetricsId);
   const chainId = useSelector(getCurrentChainId);
+  ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
   const balance = useSelector(getSelectedAccountCachedBalance);
 
