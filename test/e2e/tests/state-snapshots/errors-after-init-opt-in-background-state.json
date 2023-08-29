@@ -8,10 +8,10 @@
   },
   "AnnouncementController": "object",
   "AppMetadataController": {
-    "currentAppVersion": "10.34.4",
+    "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": 94
+    "currentMigrationVersion": "number"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -33,6 +33,7 @@
     "qrHardware": "object",
     "usedNetworks": "object",
     "snapsInstallPrivacyWarningShown": "boolean",
+    "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "serviceWorkerLastActiveTime": "number"
   },
   "ApprovalController": "object",
@@ -57,16 +58,6 @@
   },
   "EnsController": "object",
   "GasFeeController": "object",
-  "IncomingTransactionsController": {
-    "incomingTransactions": "object",
-    "incomingTxLastFetchedBlockByChainId": {
-      "0x1": null,
-      "0xe708": null,
-      "0x5": null,
-      "0xaa36a7": null,
-      "0xe704": null
-    }
-  },
   "KeyringController": {
     "isUnlocked": false,
     "keyringTypes": "object",
@@ -119,7 +110,8 @@
     "useCurrencyRateCheck": "boolean",
     "openSeaEnabled": "boolean",
     "advancedGasFee": "object",
-    "featureFlags": { "showIncomingTransactions": true },
+    "featureFlags": {},
+    "incomingTransactionsPreferences": "object",
     "knownMethodData": "object",
     "currentLocale": "en",
     "identities": "object",

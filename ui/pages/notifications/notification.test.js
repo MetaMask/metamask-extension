@@ -66,7 +66,11 @@ describe('Notifications', () => {
 
     const { getByText, getByRole } = render(mockStore);
 
-    expect(getByText('Nothing to see here.')).toBeDefined();
+    expect(
+      getByText(
+        'This is where you can find notifications from your installed snaps.',
+      ),
+    ).toBeDefined();
     expect(getByRole('button', { name: 'Mark all as read' })).toBeDisabled();
   });
 });

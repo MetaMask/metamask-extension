@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.34.5]
+### Changed
+- Improve error diagnostic information
+  - Add additional logging for state migrations ([#20424](https://github.com/MetaMask/metamask-extension/pull/20424), [#20517](https://github.com/MetaMask/metamask-extension/pull/20517), [#20521](https://github.com/MetaMask/metamask-extension/pull/20521))
+  - Improve diagnostic state snapshot ([#20457](https://github.com/MetaMask/metamask-extension/pull/20457), [#20491](https://github.com/MetaMask/metamask-extension/pull/20491), [#20428](https://github.com/MetaMask/metamask-extension/pull/20428), [#20458](https://github.com/MetaMask/metamask-extension/pull/20458))
+  - Capture additional errors when state migrations fail ([#20427](https://github.com/MetaMask/metamask-extension/pull/20427))
+
+### Fixed
+- Fix bug where state was temporarily incomplete upon initial load ([#20468](https://github.com/MetaMask/metamask-extension/pull/20468))
+  - In rare circumstances, this bug may have resulted in data loss (of preferences, permissions, or tracked NFTs/tokens) or UI crashes.
+
 ## [10.34.4]
 ### Changed
 - Updated snaps execution environment ([#20420](https://github.com/MetaMask/metamask-extension/pull/20420))
@@ -3885,7 +3896,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.5...HEAD
+[10.34.5]: https://github.com/MetaMask/metamask-extension/compare/v10.34.4...v10.34.5
 [10.34.4]: https://github.com/MetaMask/metamask-extension/compare/v10.34.3...v10.34.4
 [10.34.3]: https://github.com/MetaMask/metamask-extension/compare/v10.34.2...v10.34.3
 [10.34.2]: https://github.com/MetaMask/metamask-extension/compare/v10.34.1...v10.34.2
