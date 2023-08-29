@@ -12,6 +12,7 @@ import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
 import Home from '../home';
+import { Connections } from '../../components/multichain/pages';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
@@ -78,6 +79,7 @@ import {
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
+  CONNECTIONS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -352,6 +354,9 @@ export default class Routes extends Component {
           />
           ///: END:ONLY_INCLUDE_IN
         }
+        {process.env.MULTICHAIN && (
+          <Authenticated path={CONNECTIONS} component={Connections} />
+        )}
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
