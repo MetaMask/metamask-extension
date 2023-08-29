@@ -14,6 +14,7 @@ import {
   AVALANCHE,
   OPTIMISM,
   ARBITRUM,
+  ZKSYNC,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -257,6 +258,10 @@ describe('Swaps Util', () => {
 
     it('returns "arbitrum" for Arbitrum chain ID', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.ARBITRUM)).toBe(ARBITRUM);
+    });
+
+    it('returns "zksync" for zkSync chain ID', () => {
+      expect(getNetworkNameByChainId(CHAIN_IDS.ZKSYNC)).toBe(ZKSYNC);
     });
   });
 

@@ -2440,6 +2440,9 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
+  "networkNameZkSync": {
+    "message": "zkSync"
+  },
   "networkProvider": {
     "message": "Network provider"
   },
