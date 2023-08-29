@@ -41,7 +41,7 @@ export const SENTRY_BACKGROUND_STATE = {
     web3ShimUsageOrigins: false,
   },
   AnnouncementController: {
-    announcements: true,
+    announcements: false,
   },
   AppMetadataController: {
     currentAppVersion: true,
@@ -185,7 +185,7 @@ export const SENTRY_BACKGROUND_STATE = {
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     selectedAddress: false,
-    snapRegistryList: true,
+    snapRegistryList: false,
     theme: true,
     transactionSecurityCheckEnabled: true,
     use4ByteResolution: true,
@@ -232,7 +232,7 @@ export const SENTRY_BACKGROUND_STATE = {
   SwapsController: {
     swapsState: {
       approveTxId: false,
-      customApproveTxData: true,
+      customApproveTxData: false,
       customGasPrice: true,
       customMaxFeePerGas: true,
       customMaxGas: true,
