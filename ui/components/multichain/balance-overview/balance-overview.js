@@ -18,8 +18,10 @@ import {
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IN
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   getCurrentChainId,
   getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IN
   getSelectedAccountCachedBalance,
   isBalanceCached,
 } from '../../../selectors';
