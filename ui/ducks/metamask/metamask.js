@@ -47,6 +47,7 @@ const initialState = {
   firstTimeFlowType: null,
   completedOnboarding: false,
   knownMethodData: {},
+  use4ByteResolution: true,
   participateInMetaMetrics: null,
   nextNonce: null,
   conversionRate: null,

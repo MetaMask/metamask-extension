@@ -72,9 +72,6 @@
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
-  "copyPrivateKey": {
-    "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
-  },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
   },
@@ -105,14 +102,8 @@
   "edit": {
     "message": "Upravit"
   },
-  "enterPassword": {
-    "message": "Zadejte heslo"
-  },
   "etherscanView": {
     "message": "Prohlédněte si účet na Etherscan"
-  },
-  "exportPrivateKey": {
-    "message": "Exportovat privátní klíč"
   },
   "failed": {
     "message": "Neúspěšné"
@@ -289,9 +280,6 @@
   "search": {
     "message": "Hledat"
   },
-  "searchTokens": {
-    "message": "Hledat tokeny"
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },
@@ -306,9 +294,6 @@
   },
   "settings": {
     "message": "Nastavení"
-  },
-  "showPrivateKeys": {
-    "message": "Zobrazit privátní klíče"
   },
   "sigRequest": {
     "message": "Požadavek podpisu"
@@ -357,9 +342,6 @@
   },
   "transactionError": {
     "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
-  },
-  "typePassword": {
-    "message": "Zadejte své heslo"
   },
   "unapproved": {
     "message": "Neschváleno"

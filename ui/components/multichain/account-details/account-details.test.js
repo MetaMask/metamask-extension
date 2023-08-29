@@ -1,31 +1,35 @@
-import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
+import { fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { showPrivateKey } from '../../../../app/_locales/en/messages.json';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
+import { shortenAddress } from '../../../helpers/utils/util';
 import {
-  setAccountDetailsAddress,
+  clearAccountDetails,
   exportAccount,
   hideWarning,
+  setAccountDetailsAddress,
 } from '../../../store/actions';
-import { shortenAddress } from '../../../helpers/utils/util';
+import configureStore from '../../../store/store';
+import { AccountDetailsKey } from './account-details-key';
 import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
 
 describe('AccountDetails', () => {
   const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-  const mockSetAccountDetailsAddress = jest.fn();
+  const mockClearAccountDetails = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
   const mockHideWarning = jest.fn();
+  const mockSetAccountDetailsAddress = jest.fn();
 
   beforeEach(() => {
-    setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
+    clearAccountDetails.mockReturnValue(mockClearAccountDetails);
     exportAccount.mockReturnValue(mockExportAccount);
     hideWarning.mockReturnValue(mockHideWarning);
+    setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -79,23 +83,33 @@ describe('AccountDetails', () => {
     await userEvent.keyboard(password);
     fireEvent.click(queryByText('Confirm'));
 
-    expect(exportAccount).toHaveBeenCalledWith(password, address);
+    expect(exportAccount).toHaveBeenCalledWith(
+      password,
+      address,
+      expect.any(Function),
+      expect.any(Function),
+    );
   });
 
-  it('displays the private key when exposed in state', () => {
+  it('displays the private key when sent in props', () => {
     const samplePrivateKey = '8675309';
-    const { queryByText } = render(
-      {},
-      { appState: { accountDetail: { privateKey: samplePrivateKey } } },
+
+    const { queryByText } = renderWithProvider(
+      <AccountDetailsKey
+        accountName="Account 1"
+        onClose={jest.fn()}
+        privateKey={samplePrivateKey}
+      />,
     );
 
-    const exportPrivateKeyButton = queryByText(showPrivateKey.message);
-    fireEvent.click(exportPrivateKeyButton);
-
-    expect(
-      queryByText(shortenAddress(toChecksumHexAddress(address))),
-    ).toBeInTheDocument();
-
     expect(queryByText(samplePrivateKey)).toBeInTheDocument();
+  });
+
+  it('should call AccountDetails.onClose()', () => {
+    render();
+
+    fireEvent.click(screen.getByLabelText('Close'));
+
+    expect(screen.queryByText('Account 1')).toBeNull();
   });
 });

@@ -71,8 +71,6 @@ const t = (key) => {
       return 'Reveal Secret Recovery Phrase';
     case 'showIncomingTransactions':
       return 'Show incoming transactions';
-    case 'showIncomingTransactionsDescription':
-      return 'Select this to use Etherscan to show incoming transactions in the transactions list';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -165,7 +163,7 @@ describe('Settings Search Utils', () => {
     it('should get good security & privacy section number', () => {
       expect(
         getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(12);
+      ).toStrictEqual(13);
     });
 
     it('should get good alerts section number', () => {

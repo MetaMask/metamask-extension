@@ -489,30 +489,21 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="confirm-page-container-content__error-container"
+        class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--margin-right-4 mm-box--margin-bottom-4 mm-box--margin-left-4 mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
       >
-        <div
-          class="actionable-message actionable-message--danger actionable-message--warning actionable-message--with-icon"
-        >
-          <svg
-            viewBox="0 0 10 10"
-            xmlns="http://www.w3.org/2000/svg"
+        <span
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+          style="mask-image: url('./images/icons/danger.svg');"
+        />
+        <div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            <path
-              d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-              fill="var(--color-error-default)"
-            />
-          </svg>
-          
-          <div
-            class="actionable-message__message"
-          >
-            <h6
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
-            >
-              You do not have enough  in your account to pay for transaction fees on Goerli network. Deposit  from another account.
-            </h6>
-          </div>
+            You do not have enough  in your account to pay for transaction fees on Goerli network. Deposit  from another account.
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          />
         </div>
       </div>
       <div

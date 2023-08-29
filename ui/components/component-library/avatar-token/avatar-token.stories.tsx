@@ -13,7 +13,7 @@ import {
   BadgeWrapper,
   Box,
   ButtonLink,
-  BUTTON_LINK_SIZES,
+  ButtonLinkSize,
   Text,
 } from '..';
 import README from './README.mdx';
@@ -98,14 +98,14 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
     <Text marginBottom={4}>
       Sizes with{' '}
       <ButtonLink
-        size={BUTTON_LINK_SIZES.INHERIT}
+        size={ButtonLinkSize.Inherit}
         href="/docs/components-componentlibrary-buttonlink--default-story"
       >
         AvatarNetwork
       </ButtonLink>{' '}
       and{' '}
       <ButtonLink
-        size={BUTTON_LINK_SIZES.INHERIT}
+        size={ButtonLinkSize.Inherit}
         href="/docs/components-componentlibrary-badgewrapper--default-story"
       >
         BadgeWrapper

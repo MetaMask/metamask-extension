@@ -18,8 +18,8 @@ import { REVEAL_SEED_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  BUTTON_SIZES,
-  BUTTON_VARIANT,
+  ButtonSize,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
@@ -81,14 +81,14 @@ export default function SRPQuiz(props: any) {
           {
             label: t('srpSecurityQuizGetStarted'),
             onClick: () => setStage(QuizStage.questionOne),
-            variant: BUTTON_VARIANT.PRIMARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Primary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-get-started',
           },
           {
             label: t('learnMoreUpperCase'),
             onClick: openSupportArticle,
-            variant: BUTTON_VARIANT.LINK,
+            variant: ButtonVariant.Link,
             'data-testid': 'srp-quiz-learn-more',
           },
         ]}
@@ -105,21 +105,21 @@ export default function SRPQuiz(props: any) {
           {
             label: t('srpSecurityQuizQuestionOneWrongAnswer'),
             onClick: () => setStage(QuizStage.wrongAnswerQuestionOne),
-            variant: BUTTON_VARIANT.SECONDARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Secondary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-wrong-answer',
           },
           {
             label: t('srpSecurityQuizQuestionOneRightAnswer'),
             onClick: () => setStage(QuizStage.rightAnswerQuestionOne),
-            variant: BUTTON_VARIANT.SECONDARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Secondary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-right-answer',
           },
           {
             label: t('learnMoreUpperCase'),
             onClick: openSupportArticle,
-            variant: BUTTON_VARIANT.LINK,
+            variant: ButtonVariant.Link,
           },
         ]}
       />
@@ -137,14 +137,14 @@ export default function SRPQuiz(props: any) {
           {
             label: t('continue'),
             onClick: () => setStage(QuizStage.questionTwo),
-            variant: BUTTON_VARIANT.PRIMARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Primary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-continue',
           },
           {
             label: t('learnMoreUpperCase'),
             onClick: openSupportArticle,
-            variant: BUTTON_VARIANT.LINK,
+            variant: ButtonVariant.Link,
           },
         ]}
       />
@@ -162,14 +162,14 @@ export default function SRPQuiz(props: any) {
           {
             label: t('tryAgain'),
             onClick: () => setStage(QuizStage.questionOne),
-            variant: BUTTON_VARIANT.PRIMARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Primary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-try-again',
           },
           {
             label: t('learnMoreUpperCase'),
             onClick: openSupportArticle,
-            variant: BUTTON_VARIANT.LINK,
+            variant: ButtonVariant.Link,
           },
         ]}
       />
@@ -185,21 +185,21 @@ export default function SRPQuiz(props: any) {
           {
             label: t('srpSecurityQuizQuestionTwoRightAnswer'),
             onClick: () => setStage(QuizStage.rightAnswerQuestionTwo),
-            variant: BUTTON_VARIANT.SECONDARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Secondary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-right-answer',
           },
           {
             label: t('srpSecurityQuizQuestionTwoWrongAnswer'),
             onClick: () => setStage(QuizStage.wrongAnswerQuestionTwo),
-            variant: BUTTON_VARIANT.SECONDARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Secondary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-wrong-answer',
           },
           {
             label: t('learnMoreUpperCase'),
             onClick: openSupportArticle,
-            variant: BUTTON_VARIANT.LINK,
+            variant: ButtonVariant.Link,
           },
         ]}
       />
@@ -217,14 +217,14 @@ export default function SRPQuiz(props: any) {
           {
             label: t('continue'),
             onClick: () => history.push(REVEAL_SEED_ROUTE),
-            variant: BUTTON_VARIANT.PRIMARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Primary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-continue',
           },
           {
             label: t('learnMoreUpperCase'),
             onClick: openSupportArticle,
-            variant: BUTTON_VARIANT.LINK,
+            variant: ButtonVariant.Link,
           },
         ]}
       />
@@ -242,14 +242,14 @@ export default function SRPQuiz(props: any) {
           {
             label: t('tryAgain'),
             onClick: () => setStage(QuizStage.questionTwo),
-            variant: BUTTON_VARIANT.PRIMARY,
-            size: BUTTON_SIZES.LG,
+            variant: ButtonVariant.Primary,
+            size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-try-again',
           },
           {
             label: t('learnMoreUpperCase'),
             onClick: openSupportArticle,
-            variant: BUTTON_VARIANT.LINK,
+            variant: ButtonVariant.Link,
           },
         ]}
       />

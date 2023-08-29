@@ -545,8 +545,18 @@ export function quotesToRenderableData({
   });
 }
 
-export function formatSwapsValueForDisplay(destinationAmount: string): string {
-  let amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12);
+export function formatSwapsValueForDisplay(
+  destinationAmount: string | BigNumber,
+): string {
+  let amountToDisplay;
+  if (
+    typeof destinationAmount === 'string' &&
+    destinationAmount.includes('...')
+  ) {
+    amountToDisplay = destinationAmount;
+  } else {
+    amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12);
+  }
   if (amountToDisplay.match(/e[+-]/u)) {
     amountToDisplay = new BigNumber(amountToDisplay).toFixed();
   }

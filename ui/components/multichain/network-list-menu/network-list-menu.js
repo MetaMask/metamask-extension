@@ -29,7 +29,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  BUTTON_SECONDARY_SIZES,
+  ButtonSecondarySize,
   ButtonSecondary,
   Modal,
   ModalContent,
@@ -242,7 +242,7 @@ export const NetworkListMenu = ({ onClose }) => {
           ) : null}
           <Box padding={4}>
             <ButtonSecondary
-              size={BUTTON_SECONDARY_SIZES.LG}
+              size={ButtonSecondarySize.Lg}
               disabled={!isUnlocked}
               block
               onClick={() => {

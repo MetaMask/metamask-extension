@@ -13,66 +13,53 @@ The `Button` is used for user actions. It unifies `ButtonPrimary`, `ButtonSecond
 
 ## Props
 
-The `Button` accepts all props below as well as all [ButtonPrimary](/docs/components-componentlibrary-buttonprimary--default-story), [ButtonSecondary](/docs/components-componentlibrary-buttonsecondary--default-story), [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story), and [Box](/docs/components-ui-box--default-story#props) component props
-
 <ArgsTable of={Button} />
-
-The `Button` accepts all [ButtonBase](/docs/components-componentlibrary-buttonbase--default-story#props) component props
-
-<ArgsTable of={ButtonBase} />
-
-The `Button` accepts all [ButtonPrimary](/docs/components-componentlibrary-buttonprimary--default-story), [ButtonSecondary](/docs/components-componentlibrary-buttonsecondary--default-story), [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story), and [Box](/docs/components-ui-box--default-story#props) component props
-
-<ArgsTable of={ButtonLink} />
 
 ### Variant
 
-Use the `variant` prop and the `BUTTON_VARIANT` object from `./button.constants.js` to change the `Button` variant.
+Use the `variant` prop and the `ButtonVariant` enum from `./ui/components/component-library` to change the `Button` variant.
 
 Possible variants include:
 
-- `BUTTON_VARIANT.PRIMARY`
-- `BUTTON_VARIANT.SECONDARY`
-- `BUTTON_VARIANT.LINK`
+- `ButtonVariant.Primary` (default)
+- `ButtonVariant.Secondary`
+- `ButtonVariant.Link`
 
 <Canvas>
   <Story id="components-componentlibrary-button--variant" />
 </Canvas>
 
 ```jsx
-import { Button, BUTTON_VARIANT } from '../ui/component-library/button';
+import { Button, ButtonVariant } from '../ui/component-library/button';
 
-<Button variant={BUTTON_VARIANT.PRIMARY}>Button Primary</Button>
-<Button variant={BUTTON_VARIANT.SECONDARY}>Button Secondary</Button>
-<Button variant={BUTTON_VARIANT.LINK}>Button Link</Button>
+<Button variant={ButtonVariant.Primary}>Button Primary</Button>
+<Button variant={ButtonVariant.Secondary}>Button Secondary</Button>
+<Button variant={ButtonVariant.Link}>Button Link</Button>
 ```
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `Button`. Defaults to `Size.MD`
-
-Optional: `BUTTON_SIZES` from `./button` object can be used instead of `Size`.
+Use the `size` prop and the `ButtonSize` enum from `./ui/components/component-library` to change the size of `Button`. Defaults to `Buttonsize.Md`
 
 Possible sizes include:
 
-- `Size.inherit` inherits the font-size of the parent element. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
-- `Size.auto` inherits auto height, but keeps the same button font-size. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
-- `Size.SM` 32px
-- `Size.MD` 40px
-- `Size.LG` 48px
+- `Buttonsize.Inherit` inherits the font-size of the parent element. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
+- `Buttonsize.Auto` inherits auto height, but keeps the same button font-size. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
+- `Buttonsize.Sm` 32px
+- `Buttonsize.Md` 40px
+- `Buttonsize.Lg` 48px
 
 <Canvas>
   <Story id="components-componentlibrary-button--size-story" />
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { Button } from '../ui/component-library';
+import { Button, ButtonSize } from '../../component-library';
 
-<Button size={Size.inherit} />
-<Button size={Size.SM} />
-<Button size={Size.MD} />
-<Button size={Size.LG} />
+<Button size={Buttonsize.Inherit} />
+<Button size={Buttonsize.Sm} />
+<Button size={Buttonsize.Md} />
+<Button size={Buttonsize.Lg} />
 ```
 
 ### Danger
@@ -84,7 +71,7 @@ Use the `danger` boolean prop to change the `Button` to danger color.
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button>Normal</Button>
 <Button danger>Danger</Button>
@@ -99,7 +86,7 @@ When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button href="/">Anchor Element</Button>;
 ```
@@ -113,8 +100,7 @@ Use boolean `block` prop to quickly enable a full width block button
 </Canvas>
 
 ```jsx
-import { DISPLAY } from '../../../helpers/constants/design-system';
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button>Default Button</Button>
 <Button block>Block Button</Button>
@@ -136,7 +122,7 @@ Button `as` options:
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 
 <Button as="button">Button Element</Button>
@@ -154,7 +140,7 @@ Use the boolean `disabled` prop to disable button
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button disabled>Disabled Button</Button>;
 ```
@@ -168,7 +154,7 @@ Use the boolean `loading` prop to set loading spinner
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
+import { Button } from '../../component-library';
 
 <Button loading>Loading Button</Button>;
 ```
@@ -184,8 +170,7 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
-import { IconName } from '../icon';
+import { Button, IconName } from '../../component-library';
 
 <Button startIconName={IconName.AddSquare}>Button</Button>;
 ```
@@ -195,8 +180,7 @@ import { IconName } from '../icon';
 </Canvas>
 
 ```jsx
-import { Button } from '../ui/component-library';
-import { IconName } from '../icon';
+import { Button, IconName } from '../../component-library';
 
 <Button endIconName={IconName.Arrow2Right}>Button</Button>;
 ```

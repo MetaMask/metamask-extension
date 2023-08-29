@@ -401,6 +401,12 @@ describe('Swaps Util', () => {
         '39.6493201125',
       );
     });
+
+    it('gets swaps value for display when the value contains three dots', () => {
+      expect(formatSwapsValueForDisplay('33680099000000000000...')).toBe(
+        '33680099000000000000...',
+      );
+    });
   });
 
   describe('getSwapsTokensReceivedFromTxMeta', () => {

@@ -110,8 +110,9 @@ import { getPermissionSubjects } from './permissions';
 export function isNetworkLoading(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
+    selectedNetworkClientId &&
     state.metamask.networksMetadata[selectedNetworkClientId].status !==
-    NetworkStatus.Available
+      NetworkStatus.Available
   );
 }
 
@@ -292,28 +293,38 @@ export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.networkId ?? 'loading';
 }
 
+/**
+ * Get MetaMask accounts, including account name and balance.
+ */
 export const getMetaMaskAccounts = createSelector(
-  getMetaMaskAccountsRaw,
+  getMetaMaskIdentities,
+  getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (currentAccounts, cachedBalances) =>
-    Object.entries(currentAccounts).reduce(
-      (selectedAccounts, [accountID, account]) => {
-        if (account.balance === null || account.balance === undefined) {
-          return {
-            ...selectedAccounts,
-            [accountID]: {
-              ...account,
-              balance: cachedBalances && cachedBalances[accountID],
-            },
-          };
-        }
-        return {
-          ...selectedAccounts,
-          [accountID]: account,
+  (identities, balances, cachedBalances) =>
+    Object.keys(identities).reduce((accounts, address) => {
+      // TODO: mix in the identity state here as well, consolidating this
+      // selector with `accountsWithSendEtherInfoSelector`
+      let account = {};
+
+      if (balances[address]) {
+        account = {
+          ...account,
+          ...balances[address],
         };
-      },
-      {},
-    ),
+      }
+
+      if (account.balance === null || account.balance === undefined) {
+        account = {
+          ...account,
+          balance: cachedBalances && cachedBalances[address],
+        };
+      }
+
+      return {
+        ...accounts,
+        [address]: account,
+      };
+    }, {}),
 );
 
 export function getSelectedAddress(state) {
@@ -336,11 +347,23 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
+/**
+ * Get identity state.
+ *
+ * @param {object} state - Redux state
+ * @returns {object} A map of account addresses to identities (which includes the account name)
+ */
 export function getMetaMaskIdentities(state) {
   return state.metamask.identities;
 }
 
-export function getMetaMaskAccountsRaw(state) {
+/**
+ * Get account balances state.
+ *
+ * @param {object} state - Redux state
+ * @returns {object} A map of account addresses to account objects (which includes the account balance)
+ */
+export function getMetaMaskAccountBalances(state) {
   return state.metamask.accounts;
 }
 
@@ -379,7 +402,7 @@ export const getMetaMaskAccountsConnected = createSelector(
 
 export function isBalanceCached(state) {
   const selectedAccountBalance =
-    state.metamask.accounts[getSelectedAddress(state)].balance;
+    getMetaMaskAccountBalances(state)[getSelectedAddress(state)]?.balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
@@ -701,9 +724,9 @@ export function getKnownMethodData(state, data) {
   }
   const prefixedData = addHexPrefix(data);
   const fourBytePrefix = prefixedData.slice(0, 10);
-  const { knownMethodData } = state.metamask;
-
-  return knownMethodData && knownMethodData[fourBytePrefix];
+  const { knownMethodData, use4ByteResolution } = state.metamask;
+  // If 4byte setting is off, we do not want to return the knownMethodData
+  return use4ByteResolution && knownMethodData?.[fourBytePrefix];
 }
 
 export function getFeatureFlags(state) {
@@ -766,9 +789,8 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 
 export function getSwapsDefaultToken(state) {
   const selectedAccount = getSelectedAccount(state);
-  const { balance } = selectedAccount;
+  const balance = selectedAccount?.balance;
   const chainId = getCurrentChainId(state);
-
   const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {
@@ -1310,30 +1332,44 @@ export function getIsOptimism(state) {
   );
 }
 
-export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOptimism(state);
-}
-/**
- *  To retrieve the maxBaseFee and priotitFee teh user has set as default
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getAdvancedGasFeeValues(state) {
-  return state.metamask.advancedGasFee;
+export function getIsBase(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.BASE ||
+    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
+  );
 }
 
+export function getIsOpStack(state) {
+  return getIsOptimism(state) || getIsBase(state);
+}
+
+export function getIsMultiLayerFeeNetwork(state) {
+  return getIsOpStack(state);
+}
 /**
- *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
+ *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
  * @param {*} state
- * @returns Boolean
+ * @returns {{maxBaseFee: string, priorityFee: string} | undefined}
  */
-export function getIsAdvancedGasFeeDefault(state) {
-  const { advancedGasFee } = state.metamask;
-  return (
-    Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
-  );
+export function getAdvancedGasFeeValues(state) {
+  // This will not work when we switch to supporting multi-chain.
+  // There are four non-test files that use this selector.
+  // advanced-gas-fee-defaults
+  // base-fee-input
+  // priority-fee-input
+  // useGasItemFeeDetails
+  // The first three are part of the AdvancedGasFeePopover
+  // The latter is used by the EditGasPopover
+  // Both of those are used in Confirmations as well as transaction-list-item
+  // All of the call sites have access to the GasFeeContext, which has a
+  // transaction object set on it, but there are currently no guarantees that
+  // the transaction has a chainId associated with it. To have this method
+  // support multichain we'll need a reliable way for the chainId of the
+  // transaction being modified to be available to all callsites and either
+  // pass it in to the selector as a second parameter, or access it at the
+  // callsite.
+  return state.metamask.advancedGasFee[getCurrentChainId(state)];
 }
 
 /**

@@ -2,9 +2,11 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// This import sets up a global function required for Sentry to function.
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-import './lib/setup-persisted-state-hook';
+import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
@@ -13,6 +15,7 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
+import { isObject } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -41,7 +44,7 @@ import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
-import { SENTRY_STATE } from './lib/setupSentry';
+import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
@@ -68,6 +71,12 @@ import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 ///: END:ONLY_INCLUDE_IN
 /* eslint-enable import/order */
 
+// Setup global hook for improved Sentry state snapshots during initialization
+const inTest = process.env.IN_TEST;
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+global.stateHooks.getMostRecentPersistedState = () =>
+  localStore.mostRecentRetrievedState;
+
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
@@ -79,7 +88,7 @@ const metamaskInternalProcessHash = {
 
 const metamaskBlockedPorts = ['trezor-connect'];
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
+log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
@@ -90,10 +99,6 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-
-// state persistence
-const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {
@@ -264,7 +269,8 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  */
 async function initialize() {
   try {
-    const initState = await loadStateFromPersistence();
+    const initData = await loadStateFromPersistence();
+    const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -287,6 +293,7 @@ async function initialize() {
       initLangCode,
       {},
       isFirstMetaMaskControllerSetup,
+      initData.meta,
     );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -353,7 +360,7 @@ async function loadPhishingWarningPage() {
   } catch (error) {
     if (error instanceof PhishingWarningPageTimeoutError) {
       console.warn(
-        'Phishing warning page timeout; page not guaraneteed to work offline.',
+        'Phishing warning page timeout; page not guaranteed to work offline.',
       );
     } else {
       console.error('Failed to initialize phishing warning page', error);
@@ -409,6 +416,19 @@ export async function loadStateFromPersistence() {
   versionedData = await migrator.migrateData(versionedData);
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
+  } else if (!isObject(versionedData.meta)) {
+    throw new Error(
+      `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
+    );
+  } else if (typeof versionedData.meta.version !== 'number') {
+    throw new Error(
+      `MetaMask - migrator metadata version has invalid type '${typeof versionedData
+        .meta.version}'`,
+    );
+  } else if (!isObject(versionedData.data)) {
+    throw new Error(
+      `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
+    );
   }
   // this initializes the meta/version data as a class variable to be used for future writes
   localStore.setMetadata(versionedData.meta);
@@ -417,7 +437,7 @@ export async function loadStateFromPersistence() {
   localStore.set(versionedData.data);
 
   // return just the data
-  return versionedData.data;
+  return versionedData;
 }
 
 /**
@@ -430,12 +450,14 @@ export async function loadStateFromPersistence() {
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
  * @param isFirstMetaMaskControllerSetup
+ * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  */
 export function setupController(
   initState,
   initLangCode,
   overrides,
   isFirstMetaMaskControllerSetup,
+  stateMetadata,
 ) {
   //
   // MetaMask Controller
@@ -462,6 +484,7 @@ export function setupController(
     localStore,
     overrides,
     isFirstMetaMaskControllerSetup,
+    currentMigrationVersion: stateMetadata.version,
   });
 
   setupEnsIpfsResolver({
@@ -880,14 +903,9 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 function setupSentryGetStateGlobal(store) {
-  global.stateHooks.getSentryState = function () {
-    const fullState = store.getState();
-    const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
-    return {
-      browser: window.navigator.userAgent,
-      store: debugState,
-      version: platform.getVersion(),
-    };
+  global.stateHooks.getSentryAppState = function () {
+    const backgroundState = store.memStore.getState();
+    return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }
 
