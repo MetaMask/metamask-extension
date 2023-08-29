@@ -1598,6 +1598,9 @@ describe('Send Slice', () => {
               address: mockAddress1,
             },
           },
+          identities: {
+            [mockAddress1]: {},
+          },
         },
         send: {
           ...getInitialSendStateWithExistingTxState({
@@ -2387,7 +2390,9 @@ describe('Send Slice', () => {
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
             },
-            identities: {},
+            identities: {
+              [mockAddress1]: {},
+            },
             accounts: {
               [mockAddress1]: {
                 address: mockAddress1,
@@ -2522,7 +2527,9 @@ describe('Send Slice', () => {
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
             },
-            identities: {},
+            identities: {
+              [mockAddress1]: {},
+            },
             accounts: {
               [mockAddress1]: {
                 address: mockAddress1,
@@ -2705,7 +2712,9 @@ describe('Send Slice', () => {
           addressBook: {
             [CHAIN_IDS.GOERLI]: {},
           },
-          identities: {},
+          identities: {
+            [mockAddress1]: {},
+          },
           accounts: {
             [mockAddress1]: {
               address: mockAddress1,

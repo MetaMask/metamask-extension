@@ -131,7 +131,6 @@ const jsonData = JSON.stringify({
     advancedGasFee: null,
     featureFlags: {
       sendHexData: true,
-      showIncomingTransactions: true,
     },
     knownMethodData: {},
     currentLocale: 'en',
