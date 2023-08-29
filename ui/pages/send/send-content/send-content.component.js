@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component';
 import Dialog from '../../../components/ui/dialog';
-import { BannerAlert } from '../../../components/component-library';
+import {
+  BannerAlert,
+  ButtonLink,
+  ButtonLinkSize,
+} from '../../../components/component-library';
 import { Severity } from '../../../helpers/constants/design-system';
 import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
@@ -109,20 +113,13 @@ export default class SendContent extends Component {
           description={t('sendingToTokenContractWarning', [
             <ButtonLink
               key="contractWarningSupport"
+              className="send__warning-container__link"
               href={CONTRACT_ADDRESS_LINK}
               externalLink
               size={ButtonLinkSize.Inherit}
             >
               {t('learnMoreUpperCase')}
             </ButtonLink>,
-              key="contractWarningSupport"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="send__warning-container__link"
-              href={CONTRACT_ADDRESS_LINK}
-            >
-              {t('learnMoreUpperCase')}
-            </a>,
           ])}
           actionButtonLabel={t('tooltipApproveButton')}
           actionButtonOnClick={acknowledgeRecipientWarning}
