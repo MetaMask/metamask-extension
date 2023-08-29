@@ -364,8 +364,8 @@ export const getTranslatedUINotifications = (t, locale) => {
     ///: END:ONLY_INCLUDE_IN
     24: {
       ...UI_NOTIFICATIONS[24],
-      title: t('notification24Title'),
-      description: [t('notification24DescriptionOne')],
+      title: t('notifications24Title'),
+      description: t('notifications24Description'),
       actionText: t('notifications24ActionText'),
       date: UI_NOTIFICATIONS[24].date
         ? new Intl.DateTimeFormat(formattedLocale).format(

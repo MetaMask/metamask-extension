@@ -2783,11 +2783,11 @@
   "notifications24ActionText": {
     "message": "Got it"
   },
-  "notifications24DescriptionOne": {
-    "message": "Advanced Gas Fee preferences are now persisted per network, and previously saved preferences have been cleared"
+  "notifications24Description": {
+    "message": "Advanced gas fee settings are now remembered based on the network you're using. This means you can set specific advanced gas fees for each network and avoid overpaying for gas or stuck transactions."
   },
   "notifications24Title": {
-    "message": "Advanced Gas Fees Reset"
+    "message": "Advanced gas fees by network"
   },
   "notifications3ActionText": {
     "message": "Read more",
