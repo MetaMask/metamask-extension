@@ -3,7 +3,7 @@
 exports[`SelectActionModalItem should render correctly 1`] = `
 <div>
   <button
-    class="mm-box select-action-modal-item mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--background-color-transparent"
+    class="mm-box select-action-modal-item mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--background-color-transparent"
     data-testid="select-action-modal-item"
   >
     <div
@@ -14,7 +14,7 @@ exports[`SelectActionModalItem should render correctly 1`] = `
       >
         <span
           class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/undefined.svg');"
+          style="mask-image: url('./images/icons/add.svg');"
         />
       </div>
     </div>
@@ -26,11 +26,19 @@ exports[`SelectActionModalItem should render correctly 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-lg-medium mm-text--text-align-left mm-box--color-text-default"
+        >
+          Buy
+        </p>
+        <span
+          class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-alternative"
+          style="mask-image: url('./images/icons/export.svg');"
         />
       </div>
       <p
         class="mm-box mm-text mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
-      />
+      >
+        Buy crypto with MetaMask
+      </p>
     </div>
   </button>
 </div>

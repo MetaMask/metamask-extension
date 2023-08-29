@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   Display,
   FlexDirection,
   IconColor,
@@ -45,6 +46,7 @@ export const SelectActionModalItem = ({
       }}
       className="select-action-modal-item"
       data-testid="select-action-modal-item"
+      width={BlockSize.Full}
     >
       <Box>
         <AvatarIcon
