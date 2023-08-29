@@ -798,12 +798,53 @@ describe('Sentry errors', function () {
         const fullUiState = await driver.executeScript(() =>
           window.stateHooks?.getCleanAppState?.(),
         );
+
         const missingState = getMissingProperties(
           fullUiState.metamask,
           SENTRY_UI_STATE.metamask,
         );
-
         assert.deepEqual(missingState, {});
+      },
+    );
+  });
+
+  it('should not have extra properties in UI state mask', async function () {
+    const expectedMissingState = {
+      lastFetchedBlockNumbers: false, // Part of transaction controller store, but missing from the initial state
+      preferences: {
+        autoLockTimeLimit: true, // Initialized as undefined
+      },
+      smartTransactionsState: {
+        fees: {
+          approvalTxFees: true, // initialized as undefined
+          tradeTxFees: true, // initialized as undefined
+        },
+        userOptIn: true, // initialized as undefined
+      },
+    };
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.findElement('#password');
+
+        const fullUiState = await driver.executeScript(() =>
+          window.stateHooks?.getCleanAppState?.(),
+        );
+
+        const extraMaskProperties = getMissingProperties(
+          SENTRY_UI_STATE.metamask,
+          fullUiState.metamask,
+        );
+        const unexpectedExtraMaskProperties = getMissingProperties(
+          extraMaskProperties,
+          expectedMissingState,
+        );
+        assert.deepEqual(unexpectedExtraMaskProperties, {});
       },
     );
   });

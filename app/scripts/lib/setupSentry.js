@@ -97,9 +97,6 @@ export const SENTRY_BACKGROUND_STATE = {
     unapprovedDecryptMsgs: false,
     unapprovedDecryptMsgCount: true,
   },
-  DesktopController: {
-    desktopEnabled: true,
-  },
   EncryptionPublicKeyController: {
     unapprovedEncryptionPublicKeyMsgs: false,
     unapprovedEncryptionPublicKeyMsgCount: true,
@@ -129,7 +126,6 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkController: {
     networkConfigurations: false,
     networkId: true,
-    networkStatus: true,
     networksMetadata: true,
     providerConfig: {
       chainId: false,
@@ -175,10 +171,7 @@ export const SENTRY_BACKGROUND_STATE = {
     incomingTransactionsPreferences: true,
     infuraBlocked: true,
     ipfsGateway: false,
-    isIpfsGatewayEnabled: true,
     isLineaMainnetReleased: true,
-
-    isMultiAccountBalancesEnabled: true,
     knownMethodData: false,
     ledgerTransportType: true,
     lostIdentities: false,
@@ -190,11 +183,8 @@ export const SENTRY_BACKGROUND_STATE = {
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
-    securityAlertsEnabled: false,
     selectedAddress: false,
-    showTestNetworks: true,
     snapRegistryList: true,
-    snapsAddSnapAccountModalDismissed: true,
     theme: true,
     transactionSecurityCheckEnabled: true,
     use4ByteResolution: true,
