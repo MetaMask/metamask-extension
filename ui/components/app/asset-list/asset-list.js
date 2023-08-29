@@ -68,7 +68,7 @@ const AssetList = ({ onClickAsset }) => {
 
   return (
     <>
-      <BalanceOverview />
+      {process.env.MULTICHAIN && <BalanceOverview />}
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
