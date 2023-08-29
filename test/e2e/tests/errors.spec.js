@@ -7,13 +7,7 @@ const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
 const { SENTRY_UI_STATE } = require('../../../app/scripts/lib/setupSentry');
 const FixtureBuilder = require('../fixture-builder');
-const {
-  DEFAULT_GANACHE_OPTIONS,
-  convertToHexValue,
-  genRandInitBal,
-  generateGanacheOptions,
-  withFixtures,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 /**
  * Derive a UI state field from a background state field.
@@ -791,19 +785,10 @@ describe('Sentry errors', function () {
   });
 
   it('should have no policy gaps for UI controller state', async function () {
-    const { initialBalanceInHex } = genRandInitBal();
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({
-          accounts: [
-            {
-              secretKey: DEFAULT_GANACHE_OPTIONS.accounts[0].secretKey,
-              balance: initialBalanceInHex,
-            },
-          ],
-        }),
+        ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
