@@ -129,7 +129,7 @@ export const SENTRY_BACKGROUND_STATE = {
     networkId: true,
     networksMetadata: true,
     providerConfig: {
-      chainId: false,
+      chainId: true,
       id: true,
       nickname: true,
       rpcPrefs: false,
