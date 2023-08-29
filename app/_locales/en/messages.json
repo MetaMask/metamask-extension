@@ -596,6 +596,12 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeDescription": {
+    "message": "Transfer tokens from different networks"
+  },
+  "bridgeDisabled": {
+    "message": "Bridge is not available in this network"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -614,6 +620,12 @@
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyDescription": {
+    "message": "Hold up your crypto and earn potential profits"
+  },
+  "buyDisabled": {
+    "message": "Buy is not available in this network"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -3753,6 +3765,9 @@
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
   },
+  "selectAnAction": {
+    "message": "Select an action"
+  },
   "selectHdPath": {
     "message": "Select HD path"
   },
@@ -3779,6 +3794,9 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
+  },
+  "sendDescription": {
+    "message": "Send crypto to any account"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -4226,6 +4244,9 @@
   "stake": {
     "message": "Stake"
   },
+  "stakeDescription": {
+    "message": "Hold up your crypto and earn potential profits"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4417,8 +4438,14 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
+  "swapDescription": {
+    "message": "Swap and trade your tokens"
+  },
   "swapDirectContract": {
     "message": "Direct contract"
+  },
+  "swapDisabled": {
+    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"

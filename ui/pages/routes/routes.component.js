@@ -34,6 +34,7 @@ import {
   AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
+  SelectActionModal,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -164,6 +165,8 @@ export default class Routes extends Component {
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
+    isSelectActionModalOpen: PropTypes.bool.isRequired,
+    hideSelectActionModal: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -511,12 +514,14 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
+      isSelectActionModalOpen,
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
       isIpfsModalOpen,
       hideIpfsModal,
       hideImportTokensModal,
+      hideSelectActionModal,
     } = this.props;
 
     const loadMessage =
@@ -584,6 +589,9 @@ export default class Routes extends Component {
         ) : null}
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
+        ) : null}
+        {isSelectActionModalOpen ? (
+          <SelectActionModal onClose={() => hideSelectActionModal()} />
         ) : null}
         <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

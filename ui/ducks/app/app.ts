@@ -29,6 +29,7 @@ interface AppState {
   importNftsModalOpen: boolean;
   showIpfsModalOpen: boolean;
   importTokensModalOpen: boolean;
+  showSelectActionModal: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -100,6 +101,7 @@ const initialState: AppState = {
   importNftsModalOpen: false,
   showIpfsModalOpen: false,
   importTokensModalOpen: false,
+  showSelectActionModal: false,
   accountDetail: {
     privateKey: '',
   },
@@ -203,6 +205,18 @@ export default function reduceApp(
       return {
         ...appState,
         importTokensModalOpen: false,
+      };
+
+    case actionConstants.SELECT_ACTION_MODAL_OPEN:
+      return {
+        ...appState,
+        showSelectActionModal: true,
+      };
+
+    case actionConstants.SELECT_ACTION_MODAL_CLOSE:
+      return {
+        ...appState,
+        showSelectActionModal: false,
       };
 
     // alert methods
