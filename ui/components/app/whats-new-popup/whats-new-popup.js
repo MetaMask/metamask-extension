@@ -394,6 +394,7 @@ export default function WhatsNewPopup({
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IN
+    24: renderFirstNotification,
   };
 
   return (

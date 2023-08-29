@@ -130,11 +130,11 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
+  ///: END:ONLY_INCLUDE_IN
   24: {
     id: 24,
     date: null,
   },
-  ///: END:ONLY_INCLUDE_IN
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
