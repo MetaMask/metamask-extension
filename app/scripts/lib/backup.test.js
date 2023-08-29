@@ -68,6 +68,21 @@ function getMockNetworkController() {
   return { state, loadBackup };
 }
 
+function getMockAccountsController() {
+  const state = {
+    internalAccounts: {
+      accounts: {},
+    },
+    selectedAccount: '',
+  };
+
+  const loadBackup = ({ internalAccounts }) => {
+    Object.assign(state, { internalAccounts });
+  };
+
+  return { state, loadBackup };
+}
+
 const jsonData = JSON.stringify({
   addressBook: {
     addressBook: {
@@ -148,6 +163,35 @@ const jsonData = JSON.stringify({
     customNetworkListEnabled: false,
     textDirection: 'auto',
   },
+  internalAccounts: {
+    accounts: {
+      'fcbcdca4-cc47-4bc8-b455-b14421e9277e': {
+        address: '0x129af01f4b770b30615f049790e1e206ebaa7b10',
+        id: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
+        metadata: {
+          keyring: {
+            type: 'HD Key Tree',
+          },
+          lastSelected: 1693289751176,
+        },
+        name: 'Account 1',
+        options: {},
+        supportedMethods: [
+          'personal_sign',
+          'eth_sendTransaction',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v2',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+      },
+    },
+    selectedAccount: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
+  },
 });
 
 describe('Backup', function () {
@@ -156,6 +200,7 @@ describe('Backup', function () {
       preferencesController: getMockPreferencesController(),
       addressBookController: getMockAddressBookController(),
       networkController: getMockNetworkController(),
+      accountsController: getMockAccountsController(),
       trackMetaMetricsEvent: sinon.stub(),
     });
   };
