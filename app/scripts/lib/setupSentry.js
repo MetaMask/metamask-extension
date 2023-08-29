@@ -28,11 +28,16 @@ export const ERROR_URL_ALLOWLIST = {
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
   AccountTracker: {
+    accounts: false,
     currentBlockGasLimit: true,
   },
-  AddressBookController: {},
+  AddressBookController: {
+    addressBook: false,
+  },
   AlertController: {
     alertEnabledness: true,
+    unconnectedAccountAlertShownOrigins: false,
+    web3ShimUsageOrigins: false,
   },
   AnnouncementController: {
     announcements: true,
@@ -43,12 +48,18 @@ export const SENTRY_BACKGROUND_STATE = {
     previousAppVersion: true,
     previousMigrationVersion: true,
   },
+  ApprovalController: {
+    approvalFlows: false,
+    pendingApprovals: false,
+    pendingApprovalCount: false,
+  },
   AppStateController: {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
+    hadAdvancedGasFeesSetPriorToMigration92_3: true,
     nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
     notificationGasPollTokens: true,
@@ -61,12 +72,15 @@ export const SENTRY_BACKGROUND_STATE = {
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
+    snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
   },
-  CachedBalancesController: {},
+  CachedBalancesController: {
+    cachedBalances: false,
+  },
   CronjobController: {
     jobs: false,
   },
@@ -80,13 +94,18 @@ export const SENTRY_BACKGROUND_STATE = {
     usdConversionRate: true,
   },
   DecryptMessageController: {
+    unapprovedDecryptMsgs: false,
     unapprovedDecryptMsgCount: true,
   },
   DesktopController: {
     desktopEnabled: true,
   },
   EncryptionPublicKeyController: {
+    unapprovedEncryptionPublicKeyMsgs: false,
     unapprovedEncryptionPublicKeyMsgCount: true,
+  },
+  EnsController: {
+    ensResolutionsByAddress: false,
   },
   GasFeeController: {
     estimatedGasFeeTimeBounds: true,
@@ -95,20 +114,23 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   KeyringController: {
     isUnlocked: true,
+    keyrings: false,
+    keyringTypes: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
+    fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,
+    previousUserTraits: false,
+    segmentApiCalls: false,
+    traits: false,
   },
   NetworkController: {
     networkConfigurations: false,
     networkId: true,
     networkStatus: true,
-    networksMetadata: {
-      EIPS: true,
-      status: true,
-    },
+    networksMetadata: true,
     providerConfig: {
       chainId: false,
       id: true,
@@ -131,9 +153,12 @@ export const SENTRY_BACKGROUND_STATE = {
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
+    onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
-  PermissionController: {},
+  PermissionController: {
+    subjects: false,
+  },
   PermissionLogController: {
     permissionActivityLog: false,
     permissionHistory: false,
@@ -191,21 +216,28 @@ export const SENTRY_BACKGROUND_STATE = {
     unapprovedTypedMessagesCount: true,
   },
   SmartTransactionsController: {
-    fees: {
-      approvalTxFees: true,
-      tradeTxFees: true,
+    smartTransactionsState: {
+      fees: {
+        approvalTxFees: true,
+        tradeTxFees: true,
+      },
+      liveness: true,
+      smartTransactions: false,
+      userOptIn: true,
     },
-    liveness: true,
-    smartTransactions: false,
-    userOptIn: true,
   },
   SnapController: {
     snapErrors: false,
     snapStates: false,
     snaps: false,
   },
-  SnapsRegistry: {},
-  SubjectMetadataController: {},
+  SnapsRegistry: {
+    database: false,
+    lastUpdated: false,
+  },
+  SubjectMetadataController: {
+    subjectMetadata: false,
+  },
   SwapsController: {
     swapsState: {
       approveTxId: false,
@@ -240,6 +272,9 @@ export const SENTRY_BACKGROUND_STATE = {
     tokenList: false,
     tokensChainsCache: false,
   },
+  TokenRatesController: {
+    contractExchangeRates: false,
+  },
   TokensController: {
     allDetectedTokens: false,
     allIgnoredTokens: false,
@@ -248,7 +283,16 @@ export const SENTRY_BACKGROUND_STATE = {
     ignoredTokens: false,
     tokens: false,
   },
-  TransactionController: {},
+  TransactionController: {
+    currentNetworkTxList: false,
+    transactions: false,
+    lastFetchedBlockNumbers: false,
+  },
+  TxController: {
+    currentNetworkTxList: false,
+    transactions: false,
+    unapprovedTxs: false,
+  },
 };
 
 const flattenedBackgroundStateMask = Object.values(
@@ -273,7 +317,9 @@ export const SENTRY_UI_STATE = {
     // These properties are in the `metamask` slice but not in the background state
     customNonceValue: true,
     isAccountMenuOpen: true,
+    isNetworkMenuOpen: true,
     nextNonce: true,
+    pendingTokens: false,
     welcomeScreenSeen: true,
   },
   unconnectedAccount: true,

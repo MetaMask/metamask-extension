@@ -790,7 +790,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should have up-to-date set of policy gaps for UI controller state', async function () {
+  it('should have no policy gaps for UI controller state', async function () {
     const { initialBalanceInHex } = genRandInitBal();
 
     await withFixtures(
@@ -818,10 +818,7 @@ describe('Sentry errors', function () {
           SENTRY_UI_STATE.metamask,
         );
 
-        await matchesSnapshot({
-          data: missingState,
-          snapshot: 'sentry-mask-policy-gaps',
-        });
+        assert.deepEqual(missingState, {});
       },
     );
   });

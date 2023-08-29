@@ -11,7 +11,7 @@
     "isInitialized": true,
     "isUnlocked": false,
     "isAccountMenuOpen": false,
-    "isNetworkMenuOpen": "boolean",
+    "isNetworkMenuOpen": false,
     "identities": "object",
     "unapprovedTxs": "object",
     "networkConfigurations": "object",
@@ -55,8 +55,8 @@
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
-    "snapsInstallPrivacyWarningShown": "boolean",
-    "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
+    "snapsInstallPrivacyWarningShown": true,
+    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "serviceWorkerLastActiveTime": 0,
     "currentAppVersion": "string",
     "previousAppVersion": "",
@@ -73,7 +73,12 @@
       "type": "rpc",
       "id": "networkConfigurationId"
     },
-    "networksMetadata": { "networkConfigurationId": "object" },
+    "networksMetadata": {
+      "networkConfigurationId": {
+        "EIPS": { "1559": false },
+        "status": "available"
+      }
+    },
     "cachedBalances": "object",
     "keyringTypes": "object",
     "keyrings": "object",
@@ -185,7 +190,11 @@
     "allTokens": "object",
     "allIgnoredTokens": "object",
     "allDetectedTokens": "object",
-    "smartTransactionsState": "object",
+    "smartTransactionsState": {
+      "fees": {},
+      "liveness": true,
+      "smartTransactions": "object"
+    },
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",

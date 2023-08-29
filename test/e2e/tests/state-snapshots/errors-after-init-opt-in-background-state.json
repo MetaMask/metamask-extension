@@ -87,11 +87,15 @@
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
-    "snapsInstallPrivacyWarningShown": "boolean",
-    "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
+    "snapsInstallPrivacyWarningShown": true,
+    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "serviceWorkerLastActiveTime": 0
   },
-  "ApprovalController": "object",
+  "ApprovalController": {
+    "pendingApprovals": "object",
+    "pendingApprovalCount": "number",
+    "approvalFlows": "object"
+  },
   "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
@@ -111,7 +115,7 @@
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
   },
-  "EnsController": "object",
+  "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
     "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
@@ -143,7 +147,12 @@
       "type": "rpc",
       "id": "networkConfigurationId"
     },
-    "networksMetadata": { "networkConfigurationId": "object" },
+    "networksMetadata": {
+      "networkConfigurationId": {
+        "EIPS": { "1559": false },
+        "status": "available"
+      }
+    },
     "networkConfigurations": "object"
   },
   "NftController": {
@@ -207,7 +216,13 @@
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },
-  "SmartTransactionsController": { "smartTransactionsState": "object" },
+  "SmartTransactionsController": {
+    "smartTransactionsState": {
+      "fees": {},
+      "liveness": true,
+      "smartTransactions": "object"
+    }
+  },
   "SnapController": {
     "snapErrors": "object",
     "snaps": "object",
@@ -248,7 +263,7 @@
     "tokensChainsCache": "object",
     "preventPollingOnNetworkRestart": true
   },
-  "TokenRatesController": "object",
+  "TokenRatesController": { "contractExchangeRates": "object" },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",
@@ -257,5 +272,9 @@
     "allIgnoredTokens": "object",
     "allDetectedTokens": "object"
   },
-  "TxController": "object"
+  "TxController": {
+    "unapprovedTxs": "object",
+    "currentNetworkTxList": "object",
+    "transactions": "object"
+  }
 }

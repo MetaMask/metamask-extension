@@ -80,7 +80,7 @@
         "0x5": true,
         "0x539": true
       },
-      "snapsInstallPrivacyWarningShown": "boolean"
+      "snapsInstallPrivacyWarningShown": true
     },
     "CachedBalancesController": { "cachedBalances": "object" },
     "CurrencyController": {
@@ -106,7 +106,9 @@
     "NetworkController": {
       "networkId": "1337",
       "selectedNetworkClientId": "string",
-      "networksMetadata": { "networkConfigurationId": "object" },
+      "networksMetadata": {
+        "networkConfigurationId": { "EIPS": {}, "status": "available" }
+      },
       "providerConfig": {
         "chainId": "string",
         "nickname": "Localhost 8545",
@@ -154,7 +156,13 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true
     },
-    "SmartTransactionsController": { "smartTransactionsState": "object" },
+    "SmartTransactionsController": {
+      "smartTransactionsState": {
+        "fees": {},
+        "liveness": true,
+        "smartTransactions": "object"
+      }
+    },
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
       "allDetectedTokens": "object",
