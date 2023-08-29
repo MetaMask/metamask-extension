@@ -296,12 +296,6 @@
   "advancedConfiguration": {
     "message": "Advanced na pagsasaayos"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "I-save itong mga $1bilang aking default para sa \"Advanced\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Laging gamitin ang mga value na ito at advanced setting bilang default."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Advanced na gas fee"
   },
@@ -898,9 +892,6 @@
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong key (i-click para kopyahin)"
-  },
   "copyRawTransactionData": {
     "message": "Kopyahin ang raw na data ng transaksyon"
   },
@@ -1482,9 +1473,6 @@
   "enterOptionalPassword": {
     "message": "Ilagay ang opsyonal na password"
   },
-  "enterPassword": {
-    "message": "Ilagay ang password"
-  },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
   },
@@ -1560,9 +1548,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "Galugarin ang MetaMask Snaps"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Pribadong Key"
   },
   "extendWalletWithSnaps": {
     "message": "Palawakin ang karanasan sa wallet."
@@ -2504,9 +2489,6 @@
   "newTokensImportedTitle": {
     "message": "Na-import ang token"
   },
-  "newValues": {
-    "message": "bagong value"
-  },
   "next": {
     "message": "Susunod"
   },
@@ -3018,10 +3000,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"
-  },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Ang pagpapakita ng mga papasok na transaksyon sa iyong wallet ay umaasa sa pakikipag-ugnayan sa $1. Magkakaroon ng access ang Etherscan sa iyong Ethereum address at iyong IP address. Tingnan ang $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Ang mga alerto sa pagtuklas ng phishing ay umaasa sa komunikasyon sa $1. Ang jsDeliver ay magkakaroon ng access sa iyong IP address. Tingnan ang $2.",
@@ -3872,9 +3850,6 @@
   "showPrivateKey": {
     "message": "Ipakita ang private key"
   },
-  "showPrivateKeys": {
-    "message": "Ipakita ang Mga Pribadong Key"
-  },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test networks"
   },
@@ -4435,9 +4410,6 @@
   "swapEditLimit": {
     "message": "I-edit ang limitasyon"
   },
-  "swapEditTransactionSettings": {
-    "message": "I-edit ang mga setting ng transaksyon"
-  },
   "swapEnableDescription": {
     "message": "Kinakailangan ito at nagbibigay ito ng pahintulot sa MetaMask na i-swap ang iyong $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4641,20 +4613,8 @@
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "Masyadong mababa ang max slippage na maaaring maging sanhi para mabigo ang iyong transaksyon."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Dagdagan ang slippage para maiwasan ang pagkabigo ng transaksyon"
-  },
   "swapSlippageTooltip": {
     "message": "Kung magbabago ang presyo sa pagitan ng oras na nailagay at nakumpirma ang iyong order, tinatawag itong \"slippage\". Awtomatikong makakansela ang iyong swap kung lalampas ang slippage sa iyong setting ng “pagpapahintulot sa slippage”."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "Itinuturing na napakataas ng inilagay na slippage at maaari itong magresulta sa hindi magandang rate"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Napakataas na slippage"
   },
   "swapSlippageZeroDescription": {
     "message": "Kakaunti ang mga tagapagbigay ng zero-slippage quote at maaari itong magresulta sa hindi gaanong mapagkumpitensyang quote."
@@ -5133,9 +5093,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Hindi magagamit ang mga pag-alam sa transaksyon para sa contract na ito sa oras na ito."
-  },
-  "typePassword": {
-    "message": "Uri ng password ng iyong MetaMask"
   },
   "typeYourSRP": {
     "message": "I-type ang iyong Secret Recovery Phrase"

@@ -10,30 +10,38 @@ exports[`AccountPicker renders properly 1`] = `
       class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-primary-inverse"
     >
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+        class="mm-box multichain-account-picker-container mm-box--display-flex mm-box--flex-direction-column"
       >
-        <canvas
-          height="32"
-          style="display: none;"
-          width="32"
-        />
-        <img
-          alt=""
-          height="16"
-          src="data:image/png;base64,00"
-          style="border-radius: 50%;"
-          width="16"
-        />
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+          >
+            <canvas
+              height="32"
+              style="display: none;"
+              width="32"
+            />
+            <img
+              alt=""
+              height="16"
+              src="data:image/png;base64,00"
+              style="border-radius: 50%;"
+              width="16"
+            />
+          </div>
+          <span
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis mm-box--color-text-default"
+          >
+            Account 1
+          </span>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </div>
       </div>
-      <span
-        class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis mm-box--color-text-default"
-      >
-        Account 1
-      </span>
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-        style="mask-image: url('./images/icons/arrow-down.svg');"
-      />
     </span>
   </button>
 </div>

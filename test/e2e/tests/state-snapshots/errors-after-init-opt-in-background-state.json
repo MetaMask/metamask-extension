@@ -33,6 +33,7 @@
     "qrHardware": "object",
     "usedNetworks": "object",
     "snapsInstallPrivacyWarningShown": "boolean",
+    "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "serviceWorkerLastActiveTime": "number"
   },
   "ApprovalController": "object",
@@ -109,7 +110,8 @@
     "useCurrencyRateCheck": "boolean",
     "openSeaEnabled": "boolean",
     "advancedGasFee": "object",
-    "featureFlags": { "showIncomingTransactions": true },
+    "featureFlags": {},
+    "incomingTransactionsPreferences": "object",
     "knownMethodData": "object",
     "currentLocale": "en",
     "identities": "object",
