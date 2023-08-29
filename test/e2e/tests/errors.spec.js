@@ -810,17 +810,28 @@ describe('Sentry errors', function () {
 
   it('should not have extra properties in UI state mask', async function () {
     const expectedMissingState = {
-      lastFetchedBlockNumbers: false, // Part of transaction controller store, but missing from the initial state
+      currentPopupId: false, // Initialized as undefined
+      // Part of transaction controller store, but missing from the initial
+      // state
+      lastFetchedBlockNumbers: false,
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
       },
       smartTransactionsState: {
         fees: {
-          approvalTxFees: true, // initialized as undefined
-          tradeTxFees: true, // initialized as undefined
+          approvalTxFees: true, // Initialized as undefined
+          tradeTxFees: true, // Initialized as undefined
         },
-        userOptIn: true, // initialized as undefined
+        userOptIn: true, // Initialized as undefined
       },
+      swapsState: {
+        // This can get wiped out during initialization due to a bug in
+        // the "resetState" method
+        swapsFeatureFlags: true,
+      },
+      // This can get erased due to a bug in the app state controller's
+      // preferences state change handler
+      timeoutMinutes: true,
     };
     await withFixtures(
       {
