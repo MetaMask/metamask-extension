@@ -74,9 +74,6 @@ describe('MMIController', function () {
             },
           })),
         },
-        qrHardwareStore: {
-          subscribe: jest.fn(),
-        },
         messenger: mockMessenger,
       }),
       custodianEventHandlerFactory: jest.fn(),
