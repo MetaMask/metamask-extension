@@ -25,60 +25,60 @@ export const SelectActionModalItem = ({
   showIcon,
   primaryText,
   secondaryText,
-  isDisabled,
+  disabled,
 }) => {
-  const SelectActionItem = () => {
-    return (
-      <Box
-        paddingTop={4}
-        paddingBottom={4}
-        gap={4}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        as="button"
-        backgroundColor={BackgroundColor.transparent}
-        onClick={(e) => {
-          e.preventDefault();
-          onClick();
-        }}
-        className="select-action-modal-item"
-        data-testid="select-action-modal-item"
-      >
-        <Box>
-          <AvatarIcon
-            iconName={actionIcon}
-            color={IconColor.primaryInverse}
-            backgroundColor={BackgroundColor.primaryDefault}
-            size={AvatarIconSize.Md}
-            className="select-action-modal-item__avatar"
-          />
-        </Box>
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            gap={2}
-            alignItems={AlignItems.center}
-          >
-            <Text variant={TextVariant.bodyLgMedium} textAlign={TextAlign.Left}>
-              {primaryText}
-            </Text>
-            {showIcon && (
-              <Icon
-                name={IconName.Export}
-                size={IconSize.Xs}
-                color={IconColor.iconAlternative}
-              />
-            )}
-          </Box>
-          <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left}>
-            {secondaryText}
-          </Text>
-        </Box>
+  if (disabled) {
+    return null;
+  }
+  return (
+    <Box
+      paddingTop={4}
+      paddingBottom={4}
+      gap={4}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      as="button"
+      backgroundColor={BackgroundColor.transparent}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick();
+      }}
+      className="select-action-modal-item"
+      data-testid="select-action-modal-item"
+    >
+      <Box>
+        <AvatarIcon
+          iconName={actionIcon}
+          color={IconColor.primaryInverse}
+          backgroundColor={BackgroundColor.primaryDefault}
+          size={AvatarIconSize.Md}
+          className="select-action-modal-item__avatar"
+        />
       </Box>
-    );
-  };
-  return isDisabled ? null : <SelectActionItem />;
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          gap={2}
+          alignItems={AlignItems.center}
+        >
+          <Text variant={TextVariant.bodyLgMedium} textAlign={TextAlign.Left}>
+            {primaryText}
+          </Text>
+          {showIcon && (
+            <Icon
+              name={IconName.Export}
+              size={IconSize.Xs}
+              color={IconColor.iconAlternative}
+            />
+          )}
+        </Box>
+        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left}>
+          {secondaryText}
+        </Text>
+      </Box>
+    </Box>
+  );
 };
 
 SelectActionModalItem.propTypes = {
@@ -105,5 +105,5 @@ SelectActionModalItem.propTypes = {
   /**
    * Disable bridge and swap for selected networks
    */
-  isDisabled: PropTypes.bool,
+  disabled: PropTypes.bool,
 };

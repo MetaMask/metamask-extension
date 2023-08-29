@@ -104,7 +104,7 @@ export const SelectActionModal = ({ onClose }) => {
               showIcon
               primaryText={t('buy')}
               secondaryText={t('buyDescription')}
-              isDisabled={!isBuyableChain}
+              disabled={!isBuyableChain}
               tooltipTitle={t('buyDisabled')}
               onClick={() => {
                 openBuyCryptoInPdapp();
@@ -144,7 +144,7 @@ export const SelectActionModal = ({ onClose }) => {
             actionIcon={IconName.SwapHorizontal}
             primaryText={t('swap')}
             secondaryText={t('swapDescription')}
-            isDisabled={!isSwapsChain}
+            disabled={!isSwapsChain}
             tooltipTitle={t('swapDisabled')}
             onClick={() => {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -205,7 +205,7 @@ export const SelectActionModal = ({ onClose }) => {
               showIcon
               primaryText={t('bridge')}
               secondaryText={t('bridgeDescription')}
-              isDisabled={!isBridgeChain}
+              disabled={!isBridgeChain}
               tooltipTitle={t('bridgeDisabled')}
               onClick={() => {
                 if (isBridgeChain) {
