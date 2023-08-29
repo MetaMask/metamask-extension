@@ -10,7 +10,7 @@ export const txMetaStub = {
   history: [
     {
       id: 405984854664302,
-      loadingDefaults: true,
+
       metamaskNetworkId: '5',
       status: TransactionStatus.unapproved,
       time: 1572395156620,
@@ -23,14 +23,6 @@ export const txMetaStub = {
         value: '0x0',
       },
     },
-    [
-      {
-        op: 'replace',
-        path: '/loadingDefaults',
-        timestamp: 1572395156645,
-        value: false,
-      },
-    ],
     [
       {
         note: '#newUnapprovedTransaction - adding the origin',
@@ -162,7 +154,7 @@ export const txMetaStub = {
     ],
   ],
   id: 405984854664302,
-  loadingDefaults: false,
+
   metamaskNetworkId: '5',
   nonceDetails: {
     local: {

@@ -769,7 +769,7 @@ class FixtureBuilder {
                 maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012623,
-              loadingDefaults: true,
+
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
@@ -784,18 +784,9 @@ class FixtureBuilder {
               },
               type: 'simpleSend',
             },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1631545992244,
-                value: false,
-              },
-            ],
           ],
           id: 7911313280012623,
-          loadingDefaults: false,
+
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
@@ -826,7 +817,7 @@ class FixtureBuilder {
                 maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012624,
-              loadingDefaults: true,
+
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
@@ -841,18 +832,9 @@ class FixtureBuilder {
               },
               type: 'simpleSend',
             },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1631545994695,
-                value: false,
-              },
-            ],
           ],
           id: 7911313280012624,
-          loadingDefaults: false,
+
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
@@ -883,7 +865,7 @@ class FixtureBuilder {
                 maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012625,
-              loadingDefaults: true,
+
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
@@ -898,18 +880,9 @@ class FixtureBuilder {
               },
               type: 'simpleSend',
             },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1631545996678,
-                value: false,
-              },
-            ],
           ],
           id: 7911313280012625,
-          loadingDefaults: false,
+
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
@@ -940,7 +913,7 @@ class FixtureBuilder {
                 maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012626,
-              loadingDefaults: true,
+
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
@@ -955,18 +928,9 @@ class FixtureBuilder {
               },
               type: 'simpleSend',
             },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1631545998677,
-                value: false,
-              },
-            ],
           ],
           id: 7911313280012626,
-          loadingDefaults: false,
+
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
@@ -994,7 +958,7 @@ class FixtureBuilder {
             {
               chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
-              loadingDefaults: true,
+
               metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
@@ -1008,24 +972,15 @@ class FixtureBuilder {
               },
               type: 'simpleSend',
             },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1617228030069,
-                value: false,
-              },
-            ],
           ],
           id: 4046084157914634,
-          loadingDefaults: false,
+
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
-            loadingDefaults: true,
+
             metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'unapproved',
@@ -1063,7 +1018,7 @@ class FixtureBuilder {
             {
               chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
-              loadingDefaults: true,
+
               metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
@@ -1079,24 +1034,15 @@ class FixtureBuilder {
               },
               type: 'simpleSend',
             },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1617228030069,
-                value: false,
-              },
-            ],
           ],
           id: 4046084157914634,
-          loadingDefaults: false,
+
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
-            loadingDefaults: true,
+
             metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'unapproved',
@@ -1138,7 +1084,7 @@ class FixtureBuilder {
             {
               chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
-              loadingDefaults: true,
+
               metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
@@ -1154,15 +1100,6 @@ class FixtureBuilder {
               },
               type: 'simpleSend',
             },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1617228030069,
-                value: false,
-              },
-            ],
             [
               {
                 op: 'add',
@@ -1201,13 +1138,13 @@ class FixtureBuilder {
             ],
           ],
           id: 4046084157914634,
-          loadingDefaults: false,
+
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
-            loadingDefaults: true,
+
             metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'approved',
@@ -1249,7 +1186,7 @@ class FixtureBuilder {
             {
               chainId: CHAIN_IDS.LOCALHOST,
               id: 5748272735958801,
-              loadingDefaults: true,
+
               metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
@@ -1265,15 +1202,6 @@ class FixtureBuilder {
               },
               type: 'simpleSend',
             },
-            [
-              {
-                note: 'Added new unapproved transaction.',
-                op: 'replace',
-                path: '/loadingDefaults',
-                timestamp: 1671635506520,
-                value: false,
-              },
-            ],
             [
               {
                 note: 'confTx: user approved transaction',
@@ -1388,7 +1316,7 @@ class FixtureBuilder {
             ],
           ],
           id: 5748272735958801,
-          loadingDefaults: false,
+
           metamaskNetworkId: '5',
           nonceDetails: {
             local: {

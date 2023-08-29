@@ -7,7 +7,7 @@
     "status": "approved",
     "metamaskNetworkId": "5",
     "chainId": "0x5",
-    "loadingDefaults": false,
+
     "dappSuggestedGasFees": null,
     "txParams": {
       "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -27,7 +27,7 @@
         "status": "unapproved",
         "metamaskNetworkId": "5",
         "chainId": "0x5",
-        "loadingDefaults": true,
+
         "dappSuggestedGasFees": null,
         "txParams": {
           "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -42,13 +42,6 @@
         "type": "simpleSend"
       },
       [
-        {
-          "op": "replace",
-          "path": "/loadingDefaults",
-          "value": false,
-          "note": "Added new unapproved transaction.",
-          "timestamp": 1631558469059
-        },
         {
           "op": "add",
           "path": "/userFeeLevel",
@@ -83,7 +76,7 @@
     "status": "approved",
     "metamaskNetworkId": "5",
     "chainId": "0x5",
-    "loadingDefaults": false,
+
     "dappSuggestedGasFees": null,
     "txParams": {
       "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -103,7 +96,7 @@
         "status": "unapproved",
         "metamaskNetworkId": "5",
         "chainId": "0x5",
-        "loadingDefaults": true,
+
         "dappSuggestedGasFees": null,
         "txParams": {
           "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -118,13 +111,6 @@
         "type": "simpleSend"
       },
       [
-        {
-          "op": "replace",
-          "path": "/loadingDefaults",
-          "value": false,
-          "note": "Added new unapproved transaction.",
-          "timestamp": 1631558469059
-        },
         {
           "op": "add",
           "path": "/userFeeLevel",
@@ -160,7 +146,7 @@
       "status": "approved",
       "metamaskNetworkId": "5",
       "chainId": "0x5",
-      "loadingDefaults": false,
+
       "dappSuggestedGasFees": null,
       "txParams": {
         "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -180,7 +166,7 @@
           "status": "unapproved",
           "metamaskNetworkId": "5",
           "chainId": "0x5",
-          "loadingDefaults": true,
+
           "dappSuggestedGasFees": null,
           "txParams": {
             "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -195,13 +181,6 @@
           "type": "simpleSend"
         },
         [
-          {
-            "op": "replace",
-            "path": "/loadingDefaults",
-            "value": false,
-            "note": "Added new unapproved transaction.",
-            "timestamp": 1631558469059
-          },
           {
             "op": "add",
             "path": "/userFeeLevel",

@@ -167,7 +167,7 @@ describe('TokenAllowancePage', () => {
       originalGasEstimate: '0xea60',
       userEditedGasLimit: false,
       chainId: '0x3',
-      loadingDefaults: false,
+
       dappSuggestedGasFees: {
         gasPrice: '0x4a817c800',
         gas: '0xea60',

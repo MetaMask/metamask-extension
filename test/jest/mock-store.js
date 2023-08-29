@@ -163,7 +163,7 @@ export const createSwapsMockStore = () => {
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
           chainId: '0x5',
-          loadingDefaults: false,
+
           dappSuggestedGasFees: null,
           sendFlowHistory: null,
           txParams: {

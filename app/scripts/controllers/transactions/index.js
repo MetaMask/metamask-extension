@@ -566,7 +566,7 @@ export default class TransactionController extends EventEmitter {
         ...newGasParams,
       },
       previousGasParams,
-      loadingDefaults: false,
+
       status: TransactionStatus.approved,
       type: TransactionType.cancel,
       actionId,
@@ -625,7 +625,7 @@ export default class TransactionController extends EventEmitter {
         ...newGasParams,
       },
       previousGasParams,
-      loadingDefaults: false,
+
       status: TransactionStatus.approved,
       type: TransactionType.retry,
       originalType: originalTxMeta.type,
@@ -907,16 +907,12 @@ export default class TransactionController extends EventEmitter {
     } catch (error) {
       log.warn(error);
       updateTxMeta = this.txStateManager.getTransaction(txMeta.id);
-      updateTxMeta.loadingDefaults = false;
       this.txStateManager.updateTransaction(
         txMeta,
         'Failed to calculate gas defaults.',
       );
       throw error;
     }
-
-    updateTxMeta.loadingDefaults = false;
-
     // The history note used here 'Added new unapproved transaction.' is confusing update call only updated the gas defaults.
     // We need to improve `this._addTransaction` to accept history note and change note here.
     this.txStateManager.updateTransaction(
@@ -1966,13 +1962,11 @@ export default class TransactionController extends EventEmitter {
       .getTransactions({
         searchCriteria: {
           status: TransactionStatus.unapproved,
-          loadingDefaults: true,
         },
       })
       .forEach((tx) => {
         this._addTxGasDefaults(tx)
           .then((txMeta) => {
-            txMeta.loadingDefaults = false;
             this.txStateManager.updateTransaction(
               txMeta,
               'transactions: gas estimation for tx on boot',
@@ -1980,7 +1974,6 @@ export default class TransactionController extends EventEmitter {
           })
           .catch((error) => {
             const txMeta = this.txStateManager.getTransaction(tx.id);
-            txMeta.loadingDefaults = false;
             this.txStateManager.updateTransaction(
               txMeta,
               'failed to estimate gas during boot cleanup.',

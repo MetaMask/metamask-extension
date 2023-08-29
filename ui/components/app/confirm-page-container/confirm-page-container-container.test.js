@@ -36,7 +36,7 @@ const props = {
     metamaskNetworkId: '5',
     originalGasEstimate: '0x5208',
     userEditedGasLimit: false,
-    loadingDefaults: false,
+
     dappSuggestedGasFees: null,
     sendFlowHistory: [],
     txParams: {
@@ -70,7 +70,7 @@ const props = {
     originalGasEstimate: '0xea60',
     userEditedGasLimit: false,
     chainId: '0x13881',
-    loadingDefaults: false,
+
     dappSuggestedGasFees: {
       gasPrice: '0x4a817c800',
       gas: '0xea60',
@@ -96,7 +96,7 @@ const props = {
         originalGasEstimate: '0xea60',
         userEditedGasLimit: false,
         chainId: '0x13881',
-        loadingDefaults: true,
+
         dappSuggestedGasFees: {
           gasPrice: '0x4a817c800',
           gas: '0xea60',
@@ -129,11 +129,6 @@ const props = {
           op: 'add',
           path: '/txParams/maxPriorityFeePerGas',
           value: '0x0',
-        },
-        {
-          op: 'replace',
-          path: '/loadingDefaults',
-          value: false,
         },
         {
           op: 'add',

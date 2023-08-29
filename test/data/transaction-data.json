@@ -6,7 +6,7 @@
       "time": 1589314601567,
       "status": "confirmed",
       "metamaskNetworkId": "4",
-      "loadingDefaults": false,
+
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
         "to": "0xffe5bc4e8f1f969934d773fa67da095d2e491a97",
@@ -67,7 +67,7 @@
         "time": 1589314601567,
         "status": "confirmed",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
+
         "txParams": {
           "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
           "to": "0xffe5bc4e8f1f969934d773fa67da095d2e491a97",
@@ -128,7 +128,7 @@
       "time": 1589314601567,
       "status": "confirmed",
       "metamaskNetworkId": "4",
-      "loadingDefaults": false,
+
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
         "to": "0xffe5bc4e8f1f969934d773fa67da095d2e491a97",
@@ -193,7 +193,7 @@
       "time": 1589314355872,
       "status": "confirmed",
       "metamaskNetworkId": "4",
-      "loadingDefaults": false,
+
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
         "to": "0x0ccc8aeeaf5ce790f3b448325981a143fdef8848",
@@ -254,7 +254,7 @@
         "time": 1589314355872,
         "status": "confirmed",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
+
         "txParams": {
           "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
           "to": "0x0ccc8aeeaf5ce790f3b448325981a143fdef8848",
@@ -315,7 +315,7 @@
       "time": 1589314355872,
       "status": "confirmed",
       "metamaskNetworkId": "4",
-      "loadingDefaults": false,
+
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
         "to": "0x0ccc8aeeaf5ce790f3b448325981a143fdef8848",
@@ -380,7 +380,7 @@
       "time": 1589314345433,
       "status": "confirmed",
       "metamaskNetworkId": "4",
-      "loadingDefaults": false,
+
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
         "to": "0xffe5bc4e8f1f969934d773fa67da095d2e491a97",
@@ -442,7 +442,7 @@
         "time": 1589314345433,
         "status": "confirmed",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
+
         "txParams": {
           "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
           "to": "0xffe5bc4e8f1f969934d773fa67da095d2e491a97",
@@ -504,7 +504,7 @@
       "time": 1589314345433,
       "status": "confirmed",
       "metamaskNetworkId": "4",
-      "loadingDefaults": false,
+
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
         "to": "0xffe5bc4e8f1f969934d773fa67da095d2e491a97",
@@ -868,7 +868,7 @@
         "originalGasEstimate": "0x118e0",
         "userEditedGasLimit": false,
         "chainId": "0x5",
-        "loadingDefaults": false,
+
         "dappSuggestedGasFees": {
           "maxPriorityFeePerGas": "0x3B9ACA00",
           "maxFeePerGas": "0x7be830aec"
@@ -984,7 +984,7 @@
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
       "chainId": "0x5",
-      "loadingDefaults": false,
+
       "dappSuggestedGasFees": {
         "maxPriorityFeePerGas": "0x3B9ACA00",
         "maxFeePerGas": "0x7be830aec"
@@ -1099,7 +1099,7 @@
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
       "chainId": "0x5",
-      "loadingDefaults": false,
+
       "dappSuggestedGasFees": {
         "maxPriorityFeePerGas": "0x3B9ACA00",
         "maxFeePerGas": "0x7be830aec"

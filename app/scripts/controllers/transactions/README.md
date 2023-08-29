@@ -31,7 +31,7 @@ txMeta = {
   "time": 1524094064821, // time of creation
   "status": "confirmed",
   "metamaskNetworkId": "1524091532133", //the network id for the transaction
-  "loadingDefaults": false, // used to tell the ui when we are done calculating gas defaults
+   // used to tell the ui when we are done calculating gas defaults
   "txParams": { // the txParams object
     "from": "0x8acce2391c0d510a6c5e5d8f819a678f79b7e675",
     "to": "0x8acce2391c0d510a6c5e5d8f819a678f79b7e675",
@@ -46,7 +46,7 @@ txMeta = {
       "time": 1524094064821,
       "status": "unapproved",
       "metamaskNetworkId": "1524091532133",
-      "loadingDefaults": true,
+
       "txParams": {
         "from": "0x8acce2391c0d510a6c5e5d8f819a678f79b7e675",
         "to": "0x8acce2391c0d510a6c5e5d8f819a678f79b7e675",

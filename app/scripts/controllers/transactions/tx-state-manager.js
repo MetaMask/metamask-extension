@@ -137,7 +137,7 @@ export default class TransactionStateManager extends EventEmitter {
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
       chainId,
-      loadingDefaults: true,
+
       dappSuggestedGasFees,
       sendFlowHistory: [],
       ...opts,

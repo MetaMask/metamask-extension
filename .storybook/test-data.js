@@ -322,7 +322,6 @@ const state = {
         metamaskNetworkId: '5',
         msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
         chainId: '0x5',
-        loadingDefaults: false,
         txParams: {
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
@@ -341,7 +340,6 @@ const state = {
             status: 'unapproved',
             metamaskNetworkId: '5',
             chainId: '0x5',
-            loadingDefaults: true,
             txParams: {
               from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
               to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
@@ -353,16 +351,7 @@ const state = {
             type: 'standard',
             origin: 'metamask',
             transactionCategory: 'transfer',
-          },
-          [
-            {
-              op: 'replace',
-              path: '/loadingDefaults',
-              value: false,
-              note: 'Added new unapproved transaction.',
-              timestamp: 1620710815497,
-            },
-          ],
+          }
         ],
       },
     },
@@ -585,7 +574,7 @@ const state = {
             chainId: '0x38',
             dappSuggestedGasFees: null,
             id: 2360388496987298,
-            loadingDefaults: true,
+
             metamaskNetworkId: '56',
             origin: 'metamask',
             status: 'unapproved',
@@ -601,15 +590,6 @@ const state = {
             },
             type: 'transfer',
           },
-          [
-            {
-              note: 'Added new unapproved transaction.',
-              op: 'replace',
-              path: '/loadingDefaults',
-              timestamp: 1629582710530,
-              value: false,
-            },
-          ],
           [
             {
               note: 'txStateManager: setting status to approved',
@@ -899,7 +879,7 @@ const state = {
           ],
         ],
         id: 7900715443136469,
-        loadingDefaults: false,
+
         metamaskNetworkId: '56',
         nonceDetails: {
           local: {
@@ -1484,7 +1464,7 @@ const state = {
       status: 'unapproved',
       metamaskNetworkId: '5',
       chainId: '0x5',
-      loadingDefaults: false,
+
       txParams: {
         from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
         to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
@@ -1503,7 +1483,7 @@ const state = {
           status: 'unapproved',
           metamaskNetworkId: '5',
           chainId: '0x5',
-          loadingDefaults: true,
+
           txParams: {
             from: '0x983211ce699ea5ab57cc528086154b6db1ad8e55',
             to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
@@ -1516,15 +1496,6 @@ const state = {
           origin: 'https://metamask.github.io',
           transactionCategory: 'approve',
         },
-        [
-          {
-            op: 'replace',
-            path: '/loadingDefaults',
-            value: false,
-            note: 'Added new unapproved transaction.',
-            timestamp: 1620723786844,
-          },
-        ],
       ],
     },
     tokenData: {

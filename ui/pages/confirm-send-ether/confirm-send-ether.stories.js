@@ -13,7 +13,7 @@ const sendEther = {
   originalGasEstimate: '0x5208',
   userEditedGasLimit: false,
   chainId: '0x5',
-  loadingDefaults: false,
+
   dappSuggestedGasFees: {
     maxPriorityFeePerGas: '0x3b9aca00',
     maxFeePerGas: '0x2540be400',

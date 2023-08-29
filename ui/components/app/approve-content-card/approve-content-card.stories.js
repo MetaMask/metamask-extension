@@ -97,7 +97,7 @@ export default {
       originalGasEstimate: '0xea60',
       userEditedGasLimit: false,
       chainId: '0x3',
-      loadingDefaults: false,
+
       dappSuggestedGasFees: {
         gasPrice: '0x4a817c800',
         gas: '0xea60',
@@ -123,7 +123,7 @@ export default {
           originalGasEstimate: '0xea60',
           userEditedGasLimit: false,
           chainId: '0x3',
-          loadingDefaults: true,
+
           dappSuggestedGasFees: {
             gasPrice: '0x4a817c800',
             gas: '0xea60',
@@ -156,11 +156,6 @@ export default {
             op: 'add',
             path: '/txParams/maxPriorityFeePerGas',
             value: '0x4a817c800',
-          },
-          {
-            op: 'replace',
-            path: '/loadingDefaults',
-            value: false,
           },
           {
             op: 'add',

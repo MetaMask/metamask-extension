@@ -25,7 +25,7 @@ describe('TransactionActivityLog utils', () => {
               status: TransactionStatus.unapproved,
               metamaskNetworkId: '5',
               chainId: '0x5',
-              loadingDefaults: true,
+
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
                 to: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -70,7 +70,7 @@ describe('TransactionActivityLog utils', () => {
             ],
           ],
           id: 6400627574331058,
-          loadingDefaults: false,
+
           metamaskNetworkId: '5',
           chainId: '0x5',
           status: TransactionStatus.dropped,
@@ -95,7 +95,7 @@ describe('TransactionActivityLog utils', () => {
               status: TransactionStatus.unapproved,
               metamaskNetworkId: '5',
               chainId: '0x5',
-              loadingDefaults: false,
+
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
                 to: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -163,7 +163,7 @@ describe('TransactionActivityLog utils', () => {
           ],
           id: 6400627574331060,
           lastGasPrice: '0x4190ab00',
-          loadingDefaults: false,
+
           metamaskNetworkId: '5',
           chainId: '0x5',
           status: TransactionStatus.confirmed,
@@ -251,7 +251,7 @@ describe('TransactionActivityLog utils', () => {
         history: [
           {
             id: 5559712943815343,
-            loadingDefaults: true,
+
             metamaskNetworkId: '5',
             chainId: '0x5',
             status: TransactionStatus.unapproved,
@@ -265,14 +265,6 @@ describe('TransactionActivityLog utils', () => {
               value: '0x2386f26fc10000',
             },
           },
-          [
-            {
-              op: 'replace',
-              path: '/loadingDefaults',
-              timestamp: 1535507561515,
-              value: false,
-            },
-          ],
           [
             {
               note: '#newUnapprovedTransaction - adding the origin',
