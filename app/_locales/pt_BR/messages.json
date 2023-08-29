@@ -145,12 +145,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Quando a sua transação for incluída no bloco, qualquer diferença entre a sua taxa de base máxima e a taxa de base real será reembolsada. O cálculo do valor total é feito da seguinte forma: taxa de base máxima (em GWEI) * limite de gás."
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Salvar estes $1 como meu padrão para \"Avançado\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Sempre utilizar esses valores e a configuração avançada por padrão."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Taxa de gás avançada"
   },
@@ -1409,9 +1403,6 @@
   },
   "newPassword": {
     "message": "Nova senha (no mínimo 8 caracteres)"
-  },
-  "newValues": {
-    "message": "novos valores"
   },
   "next": {
     "message": "Seguinte"

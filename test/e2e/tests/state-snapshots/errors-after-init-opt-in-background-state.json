@@ -33,6 +33,7 @@
     "qrHardware": "object",
     "usedNetworks": "object",
     "snapsInstallPrivacyWarningShown": "boolean",
+    "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "serviceWorkerLastActiveTime": "number"
   },
   "ApprovalController": "object",
