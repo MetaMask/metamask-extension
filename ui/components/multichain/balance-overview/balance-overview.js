@@ -14,7 +14,9 @@ import {
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: END:ONLY_INCLUDE_IN
 import {
   getCurrentChainId,
   getMetaMetricsId,
