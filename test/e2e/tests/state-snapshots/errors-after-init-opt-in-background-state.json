@@ -131,8 +131,7 @@
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": "boolean",
     "theme": "string",
-    "isLineaMainnetReleased": "boolean",
-    "selectedAddress": "string"
+    "isLineaMainnetReleased": "boolean"
   },
   "SignatureController": {
     "unapprovedMsgs": "object",
