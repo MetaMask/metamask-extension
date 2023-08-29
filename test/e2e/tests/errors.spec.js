@@ -21,6 +21,7 @@ const maskedBackgroundFields = [
   // part of the release process
   'AppMetadataController.currentAppVersion',
   'AppMetadataController.currentMigrationVersion',
+  'AppStateController.outdatedBrowserWarningLastShown',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
 ];
@@ -30,6 +31,7 @@ const maskedUiFields = [
   // part of the release process
   'metamask.currentAppVersion',
   'metamask.currentMigrationVersion',
+  'metamask.outdatedBrowserWarningLastShown',
   'metamask.recoveryPhraseReminderLastShown',
   'metamask.termsOfUseLastAgreed',
 ];

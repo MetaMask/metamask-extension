@@ -45,7 +45,7 @@
     "fullScreenGasPollTokens": [],
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
-    "outdatedBrowserWarningLastShown": 1693266640508,
+    "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
