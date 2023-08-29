@@ -172,9 +172,6 @@
   "copyAddress": {
     "message": "ক্লিপবোর্ডে ঠিকানা কপি করুন"
   },
-  "copyPrivateKey": {
-    "message": "এটি হল আপনার গোপন কী (কপি করতে ক্লিক করুন)"
-  },
   "copyToClipboard": {
     "message": "ক্লিপবোর্ডে কপি করুন"
   },
@@ -238,9 +235,6 @@
   "ensRegistrationError": {
     "message": "ENS নাম নিবন্ধীকরণে ত্রুটি হয়েছে"
   },
-  "enterPassword": {
-    "message": "পাসওয়ার্ড লিখুন"
-  },
   "enterPasswordContinue": {
     "message": "অবিরত রাখতে পাসওয়ার্ড লিখুন"
   },
@@ -252,9 +246,6 @@
   },
   "expandView": {
     "message": "ভিউ সম্প্রসারিত করুন"
-  },
-  "exportPrivateKey": {
-    "message": "ব্যক্তিগত কী রপ্তানি করুন"
   },
   "failed": {
     "message": "ব্যর্থ হয়েছে"
@@ -618,9 +609,6 @@
   "searchResults": {
     "message": "অনুসন্ধানের ফলাফলগুলি"
   },
-  "searchTokens": {
-    "message": "টোকেনগুলি অনুসন্ধান করুন"
-  },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
   },
@@ -659,9 +647,6 @@
   },
   "showHexDataDescription": {
     "message": "পাঠাবার স্ক্রিনে হেক্স ডেটা ফিল্ডটি দেখাবার জন্য এটি নির্বাচন করুন"
-  },
-  "showPrivateKeys": {
-    "message": "গোপনীয় কীগুলি দেখান"
   },
   "sigRequest": {
     "message": "স্বাক্ষরের অনুরোধ"
@@ -782,9 +767,6 @@
   },
   "tryAgain": {
     "message": "আবার করুন"
-  },
-  "typePassword": {
-    "message": "আপনার MetaMask পাসওয়ার্ড টাইপ করুন"
   },
   "unapproved": {
     "message": "অননুমোদিত"

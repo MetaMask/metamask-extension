@@ -1,0 +1,101 @@
+{
+  "data": {
+    "AlertController": {
+      "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
+      "unconnectedAccountAlertShownOrigins": "object",
+      "web3ShimUsageOrigins": "object"
+    },
+    "AnnouncementController": "object",
+    "AppStateController": {
+      "browserEnvironment": "object",
+      "nftsDropdownState": "object",
+      "connectedStatusPopoverHasBeenShown": true,
+      "termsOfUseLastAgreed": "number",
+      "defaultHomeActiveTabName": null,
+      "fullScreenGasPollTokens": "object",
+      "notificationGasPollTokens": "object",
+      "popupGasPollTokens": "object",
+      "qrHardware": "object",
+      "recoveryPhraseReminderHasBeenShown": "boolean",
+      "recoveryPhraseReminderLastShown": "number",
+      "showTestnetMessageInDropdown": "boolean",
+      "trezorModel": "object",
+      "usedNetworks": "object",
+      "snapsInstallPrivacyWarningShown": "boolean"
+    },
+    "CachedBalancesController": "object",
+    "CurrencyController": {
+      "conversionDate": 1665507600,
+      "conversionRate": 1300,
+      "currentCurrency": "usd",
+      "nativeCurrency": "ETH",
+      "usdConversionRate": "number"
+    },
+    "GasFeeController": "object",
+    "KeyringController": { "vault": "string" },
+    "MetaMetricsController": {
+      "eventsBeforeMetricsOptIn": "object",
+      "fragments": "object",
+      "metaMetricsId": "fake-metrics-id",
+      "participateInMetaMetrics": true,
+      "traits": "object"
+    },
+    "NetworkController": {
+      "networkId": "1337",
+      "selectedNetworkClientId": "string",
+      "networksMetadata": "object",
+      "providerConfig": {
+        "chainId": "string",
+        "nickname": "Localhost 8545",
+        "rpcPrefs": "object",
+        "rpcUrl": "string",
+        "ticker": "ETH",
+        "type": "rpc",
+        "id": "string"
+      },
+      "networkConfigurations": "object"
+    },
+    "OnboardingController": {
+      "completedOnboarding": true,
+      "firstTimeFlowType": "import",
+      "onboardingTabs": "object",
+      "seedPhraseBackedUp": true
+    },
+    "PermissionController": "object",
+    "PreferencesController": {
+      "advancedGasFee": "object",
+      "currentLocale": "en",
+      "dismissSeedBackUpReminder": "boolean",
+      "featureFlags": {},
+      "forgottenPassword": false,
+      "identities": "object",
+      "infuraBlocked": "boolean",
+      "ipfsGateway": "dweb.link",
+      "knownMethodData": "object",
+      "ledgerTransportType": "string",
+      "lostIdentities": "object",
+      "openSeaEnabled": "boolean",
+      "preferences": {
+        "hideZeroBalanceTokens": false,
+        "showFiatInTestnets": false,
+        "showTestNetworks": false,
+        "useNativeCurrencyAsPrimaryCurrency": true
+      },
+      "selectedAddress": "string",
+      "theme": "string",
+      "useBlockie": false,
+      "useNftDetection": "boolean",
+      "useNonceField": false,
+      "usePhishDetect": true,
+      "useTokenDetection": "boolean",
+      "useCurrencyRateCheck": "boolean",
+      "useMultiAccountBalanceChecker": "boolean"
+    },
+    "SmartTransactionsController": "object",
+    "SubjectMetadataController": "object",
+    "TokensController": "object",
+    "TransactionController": "object",
+    "config": "object",
+    "firstTimeInfo": "object"
+  }
+}

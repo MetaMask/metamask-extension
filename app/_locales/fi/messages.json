@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Kopioi osoite leikepöydälle"
   },
-  "copyPrivateKey": {
-    "message": "Tämä on yksityinen avaimesi (kopioi napsauttamalla)"
-  },
   "copyToClipboard": {
     "message": "Kopioi leikepöydälle"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Virhe ENS-nimen rekisteröinnissä"
   },
-  "enterPassword": {
-    "message": "Kirjoita salasana"
-  },
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Laajenna näkymää"
-  },
-  "exportPrivateKey": {
-    "message": "Vie yksityinen avain"
   },
   "failed": {
     "message": "Epäonnistui"
@@ -621,9 +612,6 @@
   "searchResults": {
     "message": "Hakutulokset"
   },
-  "searchTokens": {
-    "message": "Hae tietueita"
-  },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
   },
@@ -662,9 +650,6 @@
   },
   "showHexDataDescription": {
     "message": "Näytä hex-tietokenttä lähetysnäytössä valitsemalla tämän"
-  },
-  "showPrivateKeys": {
-    "message": "Näytä yksityiset avaimet"
   },
   "sigRequest": {
     "message": "Allekirjoitus pyydetään"
@@ -785,9 +770,6 @@
   },
   "tryAgain": {
     "message": "Yritä uudelleen"
-  },
-  "typePassword": {
-    "message": "Kirjoita MetaMask-salasanasi"
   },
   "unapproved": {
     "message": "Ei hyväksytty"

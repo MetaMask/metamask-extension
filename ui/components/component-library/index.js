@@ -4,7 +4,7 @@ export {
   AvatarAccountVariant,
   AvatarAccountDiameter,
 } from './avatar-account';
-export { AvatarFavicon, AVATAR_FAVICON_SIZES } from './avatar-favicon';
+export { AvatarFavicon, AvatarFaviconSize } from './avatar-favicon';
 export { AvatarIcon, AvatarIconSize } from './avatar-icon';
 export { AvatarNetwork, AvatarNetworkSize } from './avatar-network';
 export { AvatarToken, AvatarTokenSize } from './avatar-token';
@@ -15,12 +15,18 @@ export {
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
 export { Box } from './box';
-export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
+export {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
+} from './button';
 export { ButtonBase, ButtonBaseSize } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, ButtonLinkSize } from './button-link';
 export { ButtonPrimary, ButtonPrimarySize } from './button-primary';
-export { ButtonSecondary, BUTTON_SECONDARY_SIZES } from './button-secondary';
+export { ButtonSecondary, ButtonSecondarySize } from './button-secondary';
 export { Checkbox } from './checkbox';
 export { FormTextField } from './form-text-field';
 export { HeaderBase } from './header-base';

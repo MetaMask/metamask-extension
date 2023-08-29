@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Kopeeri aadress lõikelauale"
   },
-  "copyPrivateKey": {
-    "message": "See on teie privaatne võti (klõpsake kopeerimiseks)"
-  },
   "copyToClipboard": {
     "message": "Kopeeri lõikelauale"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Tõrge ENS-i nime registreerimisel"
   },
-  "enterPassword": {
-    "message": "Sisestage parool"
-  },
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Laienda vaadet"
-  },
-  "exportPrivateKey": {
-    "message": "Ekspordi privaatvõti"
   },
   "failed": {
     "message": "Nurjus"
@@ -614,9 +605,6 @@
   "searchResults": {
     "message": "Otsingutulemused"
   },
-  "searchTokens": {
-    "message": "Lubade otsimine"
-  },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
   },
@@ -655,9 +643,6 @@
   },
   "showHexDataDescription": {
     "message": "Valige see, et kuvada saatmisekraanil hex-andmete väli"
-  },
-  "showPrivateKeys": {
-    "message": "Kuva privaatvõtmed"
   },
   "sigRequest": {
     "message": "Allkirja taotlus"
@@ -778,9 +763,6 @@
   },
   "tryAgain": {
     "message": "Proovi uuesti"
-  },
-  "typePassword": {
-    "message": "Sisestage oma MetaMaski parool"
   },
   "unapproved": {
     "message": "Kinnitamata"

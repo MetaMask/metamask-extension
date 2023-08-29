@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Skopiuj adres do schowka"
   },
-  "copyPrivateKey": {
-    "message": "To jest Twój prywatny klucz (kliknij żeby skopiować)"
-  },
   "copyToClipboard": {
     "message": "Skopiuj do schowka"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Błąd w rejestracji nazwy ENS"
   },
-  "enterPassword": {
-    "message": "Wpisz hasło"
-  },
   "enterPasswordContinue": {
     "message": "Podaj hasło żeby kontynuować"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Rozwiń widok"
-  },
-  "exportPrivateKey": {
-    "message": "Eksportuj klucz prywatny"
   },
   "failed": {
     "message": "Nie udało się"
@@ -618,9 +609,6 @@
   "searchResults": {
     "message": "Wyniki wyszukiwania"
   },
-  "searchTokens": {
-    "message": "Szukaj tokenów"
-  },
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
@@ -659,9 +647,6 @@
   },
   "showHexDataDescription": {
     "message": "Wybierz to żeby pokazać pole danych hex na ekranie wysyłania"
-  },
-  "showPrivateKeys": {
-    "message": "Pokaż prywatne klucze"
   },
   "sigRequest": {
     "message": "Prośba o podpis"
@@ -776,9 +761,6 @@
   },
   "tryAgain": {
     "message": "Spróbuj ponownie"
-  },
-  "typePassword": {
-    "message": "Wpisz hasło"
   },
   "unapproved": {
     "message": "Niezatwierdzone"

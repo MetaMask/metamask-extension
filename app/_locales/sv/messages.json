@@ -169,9 +169,6 @@
   "copyAddress": {
     "message": "Kopiera adress till urklipp"
   },
-  "copyPrivateKey": {
-    "message": "Det här är din privata nyckel (klicka för att kopiera)"
-  },
   "copyToClipboard": {
     "message": "Kopiera till Urklipp"
   },
@@ -235,9 +232,6 @@
   "ensRegistrationError": {
     "message": "Fel i ENS-namnregistrering"
   },
-  "enterPassword": {
-    "message": "Ange lösenord"
-  },
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
   },
@@ -249,9 +243,6 @@
   },
   "expandView": {
     "message": "Expandera vy"
-  },
-  "exportPrivateKey": {
-    "message": "Exportera privat nyckel"
   },
   "failed": {
     "message": "Misslyckades"
@@ -608,9 +599,6 @@
   "searchResults": {
     "message": "Sökresultat"
   },
-  "searchTokens": {
-    "message": "Sök tokens"
-  },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
   },
@@ -649,9 +637,6 @@
   },
   "showHexDataDescription": {
     "message": "Välj detta för att visa hex-datafältet på sändarskärmen"
-  },
-  "showPrivateKeys": {
-    "message": "Visa privata nycklar"
   },
   "sigRequest": {
     "message": "Signaturförfrågan"
@@ -763,9 +748,6 @@
   },
   "tryAgain": {
     "message": "Försök igen"
-  },
-  "typePassword": {
-    "message": "Ange ditt MetaMask-lösenord"
   },
   "unapproved": {
     "message": "Inte godkänd"

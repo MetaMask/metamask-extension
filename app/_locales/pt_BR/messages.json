@@ -100,9 +100,6 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addCustomToken": {
-    "message": "Adicionar token personalizado"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
   },
@@ -147,12 +144,6 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Quando a sua transação for incluída no bloco, qualquer diferença entre a sua taxa de base máxima e a taxa de base real será reembolsada. O cálculo do valor total é feito da seguinte forma: taxa de base máxima (em GWEI) * limite de gás."
-  },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Salvar estes $1 como meu padrão para \"Avançado\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Sempre utilizar esses valores e a configuração avançada por padrão."
   },
   "advancedGasFeeModalTitle": {
     "message": "Taxa de gás avançada"
@@ -478,9 +469,6 @@
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
-  "copyPrivateKey": {
-    "message": "Essa é a sua chave privada (clique para copiar)"
-  },
   "copyRawTransactionData": {
     "message": "Copiar dados brutos da transação"
   },
@@ -770,9 +758,6 @@
   "enterMaxSpendLimit": {
     "message": "Digite um limite máximo de gastos"
   },
-  "enterPassword": {
-    "message": "Digite a senha"
-  },
   "enterPasswordContinue": {
     "message": "Digite a senha para continuar"
   },
@@ -828,9 +813,6 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar chave privada"
   },
   "externalExtension": {
     "message": "Extensão externa"
@@ -1422,9 +1404,6 @@
   "newPassword": {
     "message": "Nova senha (no mínimo 8 caracteres)"
   },
-  "newValues": {
-    "message": "novos valores"
-  },
   "next": {
     "message": "Seguinte"
   },
@@ -1625,10 +1604,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
-  },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "A exibição de transações recebidas na sua carteira depende de comunicação com $1. O Etherscan terá acesso ao seu endereço Ethereum e ao seu endereço IP. Veja $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
@@ -1882,9 +1857,6 @@
   "searchResults": {
     "message": "Resultados da busca"
   },
-  "searchTokens": {
-    "message": "Buscar tokens"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
   },
@@ -2025,9 +1997,6 @@
   },
   "showPermissions": {
     "message": "Mostrar permissões"
-  },
-  "showPrivateKeys": {
-    "message": "Mostrar chaves privadas"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
@@ -2642,9 +2611,6 @@
   },
   "txInsightsNotSupported": {
     "message": "As informações sobre transações não são suportadas para esse contrato, por ora."
-  },
-  "typePassword": {
-    "message": "Digite sua senha da MetaMask"
   },
   "u2f": {
     "message": "U2F",

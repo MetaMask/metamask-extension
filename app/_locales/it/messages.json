@@ -155,9 +155,6 @@
   "addContact": {
     "message": "Aggiungi contatto"
   },
-  "addCustomToken": {
-    "message": "Aggiungi token personalizzato"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
   },
@@ -212,12 +209,6 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Quando la tua transazione viene inclusa nel blocco, ogni differenza tra la tua offerta massima di gas e il gas effettivamente utilizzato viene restituita a te. Il totale viene calcolato come offerta massima di gas (in GEWI) * limite di gas."
-  },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Salva queste $1 come mie preferite per \"Avanzate\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Utilizzare sempre questi valori e l'impostazione avanzata come predefiniti."
   },
   "advancedGasFeeModalTitle": {
     "message": "Tariffa gas avanzata"
@@ -582,9 +573,6 @@
   "copyAddress": {
     "message": "Copia l'indirizzo"
   },
-  "copyPrivateKey": {
-    "message": "Questa è la tua chiave privata (clicca per copiare)"
-  },
   "copyRawTransactionData": {
     "message": "Copia i dati grezzi della transazione"
   },
@@ -843,9 +831,6 @@
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
   },
-  "enterPassword": {
-    "message": "Inserisci password"
-  },
   "enterPasswordContinue": {
     "message": "Inserisci la tua password per continuare"
   },
@@ -877,9 +862,6 @@
   },
   "expandView": {
     "message": "Espandi Vista"
-  },
-  "exportPrivateKey": {
-    "message": "Esporta Chiave Privata"
   },
   "externalExtension": {
     "message": "Estensione Esterna"
@@ -1380,9 +1362,6 @@
   "searchResults": {
     "message": "Risultati Ricerca"
   },
-  "searchTokens": {
-    "message": "Cerca Tokens"
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
@@ -1444,9 +1423,6 @@
   },
   "showPermissions": {
     "message": "Mostra permessi"
-  },
-  "showPrivateKeys": {
-    "message": "Mostra Chiave Privata"
   },
   "sigRequest": {
     "message": "Firma Richiesta"
@@ -1799,9 +1775,6 @@
   },
   "tryAgain": {
     "message": "Prova di nuovo"
-  },
-  "typePassword": {
-    "message": "Inserisci Password"
   },
   "unapproved": {
     "message": "Non approvata"

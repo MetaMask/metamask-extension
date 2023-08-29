@@ -42,9 +42,6 @@
   "addContact": {
     "message": "新增合約"
   },
-  "addCustomToken": {
-    "message": "Add Custom Token"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "這會允許在 MetaMask 內使用這個網路。"
   },
@@ -337,9 +334,6 @@
   "copyAddress": {
     "message": "複製到剪貼簿"
   },
-  "copyPrivateKey": {
-    "message": "這是您的私鑰（點擊複製）"
-  },
   "copyToClipboard": {
     "message": "複製到剪貼簿"
   },
@@ -500,9 +494,6 @@
   "enterMaxSpendLimit": {
     "message": "輸入最大花費限制"
   },
-  "enterPassword": {
-    "message": "請輸入密碼"
-  },
   "enterPasswordContinue": {
     "message": "請輸入密碼"
   },
@@ -549,9 +540,6 @@
   },
   "expandView": {
     "message": "展開畫面"
-  },
-  "exportPrivateKey": {
-    "message": "匯出私鑰"
   },
   "externalExtension": {
     "message": "外部擴充功能"
@@ -1133,9 +1121,6 @@
   "searchResults": {
     "message": "搜尋結果"
   },
-  "searchTokens": {
-    "message": "搜尋代幣"
-  },
   "secureWallet": {
     "message": "Secure Wallet"
   },
@@ -1236,9 +1221,6 @@
   },
   "showPermissions": {
     "message": "顯示權限"
-  },
-  "showPrivateKeys": {
-    "message": "顯示私鑰"
   },
   "sigRequest": {
     "message": "請求簽署"
@@ -1445,9 +1427,6 @@
   },
   "tryAgain": {
     "message": "再試一次"
-  },
-  "typePassword": {
-    "message": "請輸入密碼"
   },
   "unapproved": {
     "message": "未批准"

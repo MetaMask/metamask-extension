@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Kopiraj naslov v odložišče"
   },
-  "copyPrivateKey": {
-    "message": "To je vaš zesebni ključ (kliknite za kopiranje)"
-  },
   "copyToClipboard": {
     "message": "Kopiraj v odložišče"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Napaka pri registraciji imena ENS"
   },
-  "enterPassword": {
-    "message": "Vnesite geslo"
-  },
   "enterPasswordContinue": {
     "message": "Za nadaljevanje vnesite geslo"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Razširi pogled"
-  },
-  "exportPrivateKey": {
-    "message": "Izvozi zasebni ključ"
   },
   "failed": {
     "message": "Ni uspelo"
@@ -612,9 +603,6 @@
   "searchResults": {
     "message": "Rezultati iskanja"
   },
-  "searchTokens": {
-    "message": "Iskanje žetonov"
-  },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
   },
@@ -653,9 +641,6 @@
   },
   "showHexDataDescription": {
     "message": "Izberite za prikaz hex podatkov na zaslonu za pošiljanje"
-  },
-  "showPrivateKeys": {
-    "message": "Pokaži zasebni ključ"
   },
   "sigRequest": {
     "message": "Zahteva za podpis"
@@ -776,9 +761,6 @@
   },
   "tryAgain": {
     "message": "Poskusi znova"
-  },
-  "typePassword": {
-    "message": "Vnesite vaše MetaMask geslo"
   },
   "unapproved": {
     "message": "Neodobreno"

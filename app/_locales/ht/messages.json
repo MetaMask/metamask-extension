@@ -108,9 +108,6 @@
   "copyAddress": {
     "message": "Kopi adrès clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Sa a se kle prive ou (klike pou ou kopye)"
-  },
   "copyToClipboard": {
     "message": "Kopi clipboard"
   },
@@ -147,9 +144,6 @@
   "edit": {
     "message": "Korije"
   },
-  "enterPassword": {
-    "message": "Mete modpas"
-  },
   "enterPasswordContinue": {
     "message": "Mete modpas pou kontinye"
   },
@@ -158,9 +152,6 @@
   },
   "expandView": {
     "message": "Elaji Wè"
-  },
-  "exportPrivateKey": {
-    "message": "Voye Kòd Prive"
   },
   "failed": {
     "message": "Tonbe"
@@ -452,9 +443,6 @@
   "searchResults": {
     "message": "Rezilta rechèch"
   },
-  "searchTokens": {
-    "message": "Rechèch Tokens"
-  },
   "seedPhraseReq": {
     "message": "Seed fraz yo se 12 long mo"
   },
@@ -484,9 +472,6 @@
   },
   "showHexDataDescription": {
     "message": "Pran sa pouw ka montre chan entèfas hex data a"
-  },
-  "showPrivateKeys": {
-    "message": "Montre Kle Prive"
   },
   "sigRequest": {
     "message": "Demann Siyati"
@@ -556,9 +541,6 @@
   },
   "tryAgain": {
     "message": "Eseye anko"
-  },
-  "typePassword": {
-    "message": "Tape modpas ou"
   },
   "unapproved": {
     "message": "Pa apwouve"
