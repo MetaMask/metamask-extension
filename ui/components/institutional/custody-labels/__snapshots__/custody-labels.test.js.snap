@@ -7,7 +7,7 @@ exports[`CustodyLabels Component should render correctly 1`] = `
     for="address-index"
   >
     <p
-      class="box mm-text custody-label mm-text--body-xs mm-text--font-weight-normal mm-text--text-transform-capitalize box--margin-top-1 box--margin-right-1 box--margin-bottom-2 box--padding-top-1 box--padding-right-2 box--padding-bottom-1 box--padding-left-2 box--flex-direction-row box--color-text-default box--background-color-background-alternative box--rounded-sm"
+      class="mm-box mm-text custody-label mm-text--body-xs mm-text--font-weight-normal mm-text--text-transform-capitalize mm-box--margin-top-1 mm-box--margin-right-1 mm-box--margin-bottom-2 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-sm"
     >
       value
     </p>

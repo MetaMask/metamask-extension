@@ -33,26 +33,26 @@ exports[`CustodyPage renders CustodyPage 2`] = `
       >
         <button
           aria-label="Back"
-          class="box mm-button-icon mm-button-icon--size-sm box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           Back
         </p>
       </div>
       <h4
-        class="box mm-text mm-text--body-lg-medium box--margin-top-4 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-4 mm-box--color-text-default"
       >
         Custodial Accounts
       </h4>
       <h6
-        class="box mm-text mm-text--body-md box--margin-top-2 box--margin-bottom-5 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--margin-bottom-5 mm-box--color-text-default"
       >
         Please choose the custodian you want to connect in order to add or refresh a token.
       </h6>
@@ -75,13 +75,13 @@ exports[`CustodyPage renders CustodyPage 2`] = `
                 width="32"
               />
               <p
-                class="box mm-text mm-text--body-md box--margin-left-2 box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-text-default"
               >
                 Saturn Custody
               </p>
             </div>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
               data-testid="custody-connect-button"
             >
               Select
@@ -90,6 +90,7 @@ exports[`CustodyPage renders CustodyPage 2`] = `
         </ul>
       </div>
     </div>
+    
   </div>
 </div>
 `;

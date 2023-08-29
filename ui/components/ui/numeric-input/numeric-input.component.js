@@ -6,7 +6,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { DECIMAL_REGEX } from '../../../../shared/constants/tokens';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 
 export default function NumericInput({
   detailText = '',

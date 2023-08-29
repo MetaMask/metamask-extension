@@ -2,12 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Icon, IconName, IconSize } from '../../component-library';
-import Box from '../../ui/box';
+import { Icon, IconName, IconSize, Box } from '../../component-library';
 import {
   BorderRadius,
   Color,
-  DISPLAY,
+  Display,
 } from '../../../helpers/constants/design-system';
 
 const TabBar = (props) => {
@@ -33,7 +32,7 @@ const TabBar = (props) => {
               className="tab-bar__tab__selected-indicator"
               borderRadius={BorderRadius.pill}
               backgroundColor={Color.primaryDefault}
-              display={[DISPLAY.NONE, DISPLAY.BLOCK]}
+              display={[Display.None, Display.Block]}
             />
           )}
           <div className="tab-bar__tab__content">

@@ -7,6 +7,7 @@ import IdleTimer from 'react-idle-timer';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import browserAPI from 'webextension-polyfill';
 ///: END:ONLY_INCLUDE_IN
+
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
@@ -18,8 +19,6 @@ import Lock from '../lock';
 import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
-import ImportTokenPage from '../import-token';
-import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account/create-account.component';
 import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
@@ -33,6 +32,7 @@ import {
   NetworkListMenu,
   AccountDetails,
   ImportNftsModal,
+  ImportTokensModal,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -51,17 +51,14 @@ import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ComplianceFeaturePage from '../institutional/compliance-feature-page';
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
-import ConfirmAddInstitutionalFeature from '../institutional/confirm-add-institutional-feature';
 import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
 import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
 import CustodyPage from '../institutional/custody';
 ///: END:ONLY_INCLUDE_IN
 
 import {
-  IMPORT_TOKEN_ROUTE,
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -78,15 +75,12 @@ import {
   UNLOCK_ROUTE,
   BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  CONFIRM_IMPORT_TOKEN_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE_FEATURE_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
-  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   CUSTODY_ACCOUNT_ROUTE,
@@ -121,6 +115,7 @@ import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { Box } from '../../components/component-library';
+import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -163,6 +158,10 @@ export default class Routes extends Component {
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
+    isIpfsModalOpen: PropTypes.bool.isRequired,
+    hideIpfsModal: PropTypes.func.isRequired,
+    isImportTokensModalOpen: PropTypes.bool.isRequired,
+    hideImportTokensModal: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -281,16 +280,6 @@ export default class Routes extends Component {
         />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
         <Authenticated
-          path={IMPORT_TOKEN_ROUTE}
-          component={ImportTokenPage}
-          exact
-        />
-        <Authenticated
-          path={CONFIRM_IMPORT_TOKEN_ROUTE}
-          component={ConfirmImportTokenPage}
-          exact
-        />
-        <Authenticated
           path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
           component={ConfirmAddSuggestedTokenPage}
           exact
@@ -326,14 +315,6 @@ export default class Routes extends Component {
           path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
           component={InteractiveReplacementTokenPage}
           exact
-        />
-        <Authenticated
-          path={COMPLIANCE_FEATURE_ROUTE}
-          component={ComplianceFeaturePage}
-        />
-        <Authenticated
-          path={CONFIRM_INSTITUTIONAL_FEATURE_CONNECT}
-          component={ConfirmAddInstitutionalFeature}
         />
         <Authenticated
           path={CONFIRM_ADD_CUSTODIAN_TOKEN}
@@ -524,10 +505,15 @@ export default class Routes extends Component {
       isNetworkMenuOpen,
       toggleNetworkMenu,
       accountDetailsAddress,
+      isImportTokensModalOpen,
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
+      isIpfsModalOpen,
+      hideIpfsModal,
+      hideImportTokensModal,
     } = this.props;
+
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
@@ -587,6 +573,12 @@ export default class Routes extends Component {
         ) : null}
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={() => hideImportNftsModal()} />
+        ) : null}
+        {isIpfsModalOpen ? (
+          <ToggleIpfsModal onClose={() => hideIpfsModal()} />
+        ) : null}
+        {isImportTokensModalOpen ? (
+          <ImportTokensModal onClose={() => hideImportTokensModal()} />
         ) : null}
         <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

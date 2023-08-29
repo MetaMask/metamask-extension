@@ -3,14 +3,14 @@ import ConfigureSnapPopup, {
   ConfigureSnapPopupType,
 } from '../../../components/app/configure-snap-popup/configure-snap-popup';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Button,
   Icon,
   IconName,
   Tag,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
   BackgroundColor,
@@ -58,7 +58,7 @@ export const SnapDetailHeader = ({
           marginBottom={4}
         >
           <Button
-            variant={BUTTON_VARIANT.LINK}
+            variant={ButtonVariant.Link}
             marginRight={4}
             onClick={() => history.back()}
           >
@@ -85,15 +85,13 @@ export const SnapDetailHeader = ({
                 labelProps={{
                   color: TextColor.textAlternative,
                 }}
-                className=""
-                height={2}
               />
             )}
           </Box>
           <Box>
             {isInstalled && updateAvailable && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 marginRight={1}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
@@ -105,7 +103,7 @@ export const SnapDetailHeader = ({
             )}
             {isInstalled && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.CONFIGURE);
                   setShowConfigPopover(true);
@@ -116,7 +114,7 @@ export const SnapDetailHeader = ({
             )}
             {!isInstalled && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
                   setShowConfigPopover(true);
@@ -152,7 +150,7 @@ export const SnapDetailHeader = ({
             <Tag
               color={TextColor.infoDefault}
               backgroundColor={BackgroundColor.infoMuted}
-              borderColor={BackgroundColor.infoMuted}
+              borderColor={BorderColor.infoMuted}
               label={
                 <Box
                   display={Display.Flex}
@@ -180,7 +178,7 @@ export const SnapDetailHeader = ({
               className=""
               color={TextColor.infoDefault}
               backgroundColor={BackgroundColor.infoMuted}
-              borderColor={BackgroundColor.infoMuted}
+              borderColor={BorderColor.infoMuted}
               label={
                 <Box
                   display={Display.Flex}

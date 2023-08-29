@@ -12,7 +12,7 @@ exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
         class="mm-box mm-box--width-full"
       >
         <p
-          class="box mm-text jwt-url-form__instruction mm-text--body-md box--margin-bottom-4 box--display-block box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text jwt-url-form__instruction mm-text--body-md mm-box--margin-bottom-4 mm-box--display-block mm-box--color-text-default"
         >
           input text
         </p>
@@ -27,7 +27,7 @@ exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
       class="mm-box mm-box--width-full"
     >
       <p
-        class="box mm-text jwt-url-form__instruction mm-text--body-md box--display-block box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text jwt-url-form__instruction mm-text--body-md mm-box--display-block mm-box--color-text-default"
       />
       <div
         class="mm-box mm-box--margin-top-4"

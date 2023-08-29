@@ -9,7 +9,6 @@ import TransactionDetailItem from '.';
 
 export default {
   title: 'Components/App/TransactionDetailItem',
-
   component: TransactionDetailItem,
   parameters: {
     docs: {

@@ -8,10 +8,10 @@
   },
   "AnnouncementController": "object",
   "AppMetadataController": {
-    "currentAppVersion": "10.35.0",
+    "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": 92.1
+    "currentMigrationVersion": "number"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -33,11 +33,12 @@
     "qrHardware": "object",
     "usedNetworks": "object",
     "snapsInstallPrivacyWarningShown": "boolean",
+    "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "serviceWorkerLastActiveTime": "number"
   },
   "ApprovalController": "object",
-  "BackupController": "undefined",
   "CachedBalancesController": "object",
+  "CronjobController": "object",
   "CurrencyController": {
     "conversionDate": "number",
     "conversionRate": 1700,
@@ -57,21 +58,10 @@
   },
   "EnsController": "object",
   "GasFeeController": "object",
-  "IncomingTransactionsController": {
-    "incomingTransactions": "object",
-    "incomingTxLastFetchedBlockByChainId": {
-      "0x1": null,
-      "0xe708": null,
-      "0x5": null,
-      "0xaa36a7": null,
-      "0xe704": null
-    }
-  },
   "KeyringController": {
     "isUnlocked": false,
     "keyringTypes": "object",
-    "keyrings": "object",
-    "encryptionKey": "object"
+    "keyrings": "object"
   },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
@@ -83,8 +73,8 @@
     "previousUserTraits": "object"
   },
   "NetworkController": {
+    "selectedNetworkClientId": "string",
     "networkId": "1337",
-    "networkStatus": "available",
     "providerConfig": {
       "chainId": "string",
       "nickname": "Localhost 8545",
@@ -94,10 +84,11 @@
       "type": "rpc",
       "id": "string"
     },
-    "networkDetails": "object",
+    "networksMetadata": "object",
     "networkConfigurations": "object"
   },
   "NftController": "object",
+  "NotificationController": "object",
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -115,10 +106,12 @@
     "useMultiAccountBalanceChecker": "boolean",
     "useTokenDetection": "boolean",
     "useNftDetection": "boolean",
+    "use4ByteResolution": "boolean",
     "useCurrencyRateCheck": "boolean",
     "openSeaEnabled": "boolean",
     "advancedGasFee": "object",
-    "featureFlags": { "showIncomingTransactions": true },
+    "featureFlags": {},
+    "incomingTransactionsPreferences": "object",
     "knownMethodData": "object",
     "currentLocale": "en",
     "identities": "object",
@@ -131,6 +124,7 @@
       "useNativeCurrencyAsPrimaryCurrency": true
     },
     "ipfsGateway": "dweb.link",
+    "useAddressBarEnsResolution": "boolean",
     "infuraBlocked": "boolean",
     "ledgerTransportType": "string",
     "snapRegistryList": "object",
@@ -148,6 +142,8 @@
     "unapprovedTypedMessagesCount": 0
   },
   "SmartTransactionsController": "object",
+  "SnapController": "object",
+  "SnapsRegistry": "object",
   "SubjectMetadataController": "object",
   "SwapsController": "object",
   "TokenListController": "object",

@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { TokenStandard } from '../../../../shared/constants/transaction';
+import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
@@ -342,5 +343,22 @@ describe('ConfirmApproveContent Component', () => {
     });
 
     expect(getByText(securityProviderResponse.reason)).toBeInTheDocument();
+  });
+
+  it('should render security alert if provided', () => {
+    const mockSecurityAlertResponse = {
+      result_type: BlockaidResultType.Malicious,
+      reason: 'blur_farming',
+    };
+
+    const { getByText } = renderComponent({
+      ...props,
+      txData: {
+        ...props.txData,
+        securityAlertResponse: mockSecurityAlertResponse,
+      },
+    });
+
+    expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 });

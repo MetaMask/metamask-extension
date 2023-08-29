@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IN
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
@@ -14,7 +17,6 @@ import {
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
@@ -23,6 +25,7 @@ import {
   FontWeight,
   TextAlign,
   TextColor,
+  Size,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
   DISPLAY,
@@ -31,14 +34,27 @@ import {
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
-import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import {
+  ButtonLink,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Icon,
+  IconName,
+  Text,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+
 import SignatureRequestHeader from '../signature-request-header';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
+///: END:ONLY_INCLUDE_IN
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -51,9 +67,6 @@ export default class SignatureRequestOriginal extends Component {
       address: PropTypes.string.isRequired,
       name: PropTypes.string,
     }).isRequired,
-    clearConfirmTransaction: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    mostRecentOverviewPage: PropTypes.string.isRequired,
     txData: PropTypes.object.isRequired,
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
@@ -62,6 +75,9 @@ export default class SignatureRequestOriginal extends Component {
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAllApprovals: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
+    clearConfirmTransaction: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -137,12 +153,18 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          <BlockaidBannerAlert
+            securityAlertResponse={txData?.securityAlertResponse}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
-
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           this.props.selectedAccount.address ===
@@ -170,20 +192,33 @@ export default class SignatureRequestOriginal extends Component {
           )
           ///: END:ONLY_INCLUDE_IN
         }
-
         <div className="request-signature__origin">
-          <SiteOrigin
-            title={txData.msgParams.origin}
-            siteOrigin={txData.msgParams.origin}
-            iconSrc={targetSubjectMetadata?.iconUrl}
-            iconName={
-              getURLHostName(targetSubjectMetadata?.origin) ||
-              targetSubjectMetadata?.origin
-            }
-            chip
-          />
+          {
+            // Use legacy authorship header for snaps
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            targetSubjectMetadata?.subjectType === SubjectType.Snap ? (
+              <SnapLegacyAuthorshipHeader
+                snapId={targetSubjectMetadata.origin}
+                marginLeft={4}
+                marginRight={4}
+              />
+            ) : (
+              ///: END:ONLY_INCLUDE_IN
+              <SiteOrigin
+                title={txData.msgParams.origin}
+                siteOrigin={txData.msgParams.origin}
+                iconSrc={targetSubjectMetadata?.iconUrl}
+                iconName={
+                  getURLHostName(targetSubjectMetadata?.origin) ||
+                  targetSubjectMetadata?.origin
+                }
+                chip
+              />
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
         </div>
-
         <Typography
           className="request-signature__content__title"
           variant={TypographyVariant.H3}
@@ -201,7 +236,6 @@ export default class SignatureRequestOriginal extends Component {
         >
           {this.context.t('signatureRequestGuidance')}
         </Typography>
-
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
@@ -230,16 +264,22 @@ export default class SignatureRequestOriginal extends Component {
 
   onSubmit = async () => {
     const {
+      resolvePendingApproval,
+      completedTx,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      resolvePendingApproval,
-      completedTx,
-      txData: { id },
+      txData,
     } = this.props;
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (this.props.mmiOnSignCallback) {
+      await this.props.mmiOnSignCallback(txData);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
 
-    await resolvePendingApproval(id);
-    completedTx(id);
+    await resolvePendingApproval(txData.id);
+    completedTx(txData.id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
@@ -367,13 +407,13 @@ export default class SignatureRequestOriginal extends Component {
         )}
         {this.renderFooter()}
         {messagesCount > 1 ? (
-          <Button
-            type="link"
+          <ButtonLink
+            size={Size.inherit}
             className="request-signature__container__reject"
             onClick={() => this.handleCancelAll()}
           >
             {rejectNText}
-          </Button>
+          </ButtonLink>
         ) : null}
       </div>
     );

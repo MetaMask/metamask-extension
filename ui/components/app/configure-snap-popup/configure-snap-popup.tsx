@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '../../component-library/text/deprecated';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Button,
   Box,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -72,7 +72,7 @@ export default function ConfigureSnapPopup({
             {t('configureSnapPopupLink')}
           </Text>
           <Button
-            variant={BUTTON_VARIANT.LINK}
+            variant={ButtonVariant.Link}
             marginBottom={8}
             onClick={() => {
               global.platform.openTab({

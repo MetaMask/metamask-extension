@@ -13,8 +13,7 @@ import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import Box from '../../ui/box/box';
-import { Icon, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Icon, IconName, Text } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';
