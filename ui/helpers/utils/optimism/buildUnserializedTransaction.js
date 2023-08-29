@@ -19,7 +19,6 @@ function buildTransactionCommon(txMeta) {
   // fine for our use case.
   return Common.custom({
     chainId: new BN(stripHexPrefix(txMeta.chainId), 16),
-    networkId: new BN(txMeta.metamaskNetworkId, 10),
     // Optimism only supports type-0 transactions; it does not support any of
     // the newer EIPs since EIP-155. Source:
     // <https://github.com/ethereum-optimism/optimism/blob/develop/specs/l2geth/transaction-types.md>

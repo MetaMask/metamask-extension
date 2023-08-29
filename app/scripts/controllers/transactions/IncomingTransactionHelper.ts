@@ -261,9 +261,8 @@ export class IncomingTransactionHelper {
     const isEnabled = this.#isEnabled();
     const currentChainId = this.#getCurrentChainId();
 
-    const isSupportedNetwork = this.#remoteTransactionSource.isSupportedNetwork(
-      currentChainId,
-    );
+    const isSupportedNetwork =
+      this.#remoteTransactionSource.isSupportedNetwork(currentChainId);
 
     return isEnabled && isSupportedNetwork;
   }

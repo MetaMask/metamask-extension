@@ -43,6 +43,7 @@ export function transactionMatchesNetwork(transaction, chainId) {
   if (transaction.chainId !== undefined) {
     return transaction.chainId === chainId;
   }
+  // TODO: Get rid of this. Write migration
   if (transaction.metamaskNetworkId !== undefined) {
     // Handle ETC/ETH fork
     const networkId =

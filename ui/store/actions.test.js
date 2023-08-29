@@ -39,7 +39,7 @@ const baseMockState = defaultState.metamask;
 describe('Actions', () => {
   let background;
 
-  const currentNetworkId = '5';
+  const currentChainId = '0x5';
 
   beforeEach(async () => {
     background = sinon.createStubInstance(MetaMaskController, {
@@ -665,7 +665,7 @@ describe('Actions', () => {
     const txData = {
       id: '1',
       status: TransactionStatus.unapproved,
-      metamaskNetworkId: currentNetworkId,
+      chainId: currentChainId,
       txParams,
     };
 

@@ -24,12 +24,14 @@ const INCOMING_TX = {
     from: RECIPIENTS.ONE,
     to: SENDERS.ONE,
   },
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const SIGNING_REQUEST = {
   type: TransactionType.sign,
   id: '0-signing',
   status: TransactionStatus.unapproved,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const SIMPLE_SEND_TX = {
@@ -39,6 +41,7 @@ const SIMPLE_SEND_TX = {
     to: RECIPIENTS.ONE,
   },
   type: TransactionType.simpleSend,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const TOKEN_SEND_TX = {
@@ -50,12 +53,14 @@ const TOKEN_SEND_TX = {
     data: '0xdata',
   },
   type: TransactionType.tokenMethodTransfer,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const RETRY_TX = {
   ...SIMPLE_SEND_TX,
   id: '0-retry',
   type: TransactionType.retry,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const CANCEL_TX = {
@@ -66,6 +71,7 @@ const CANCEL_TX = {
     to: SENDERS.ONE,
   },
   type: TransactionType.cancel,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const getStateTree = ({

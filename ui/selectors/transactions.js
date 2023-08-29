@@ -13,11 +13,7 @@ import {
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
-import {
-  getCurrentChainId,
-  deprecatedGetCurrentNetworkId,
-  getSelectedAddress,
-} from './selectors';
+import { getCurrentChainId, getSelectedAddress } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
@@ -31,7 +27,6 @@ export const incomingTxListSelector = (state) => {
     return [];
   }
 
-  const { networkId } = state.metamask;
   const { chainId } = getProviderConfig(state);
   const selectedAddress = getSelectedAddress(state);
 
@@ -39,7 +34,7 @@ export const incomingTxListSelector = (state) => {
     (tx) =>
       tx.type === TransactionType.incoming &&
       tx.txParams.to === selectedAddress &&
-      transactionMatchesNetwork(tx, chainId, networkId),
+      transactionMatchesNetwork(tx, chainId),
   );
 };
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -84,7 +79,6 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  deprecatedGetCurrentNetworkId,
   getCurrentChainId,
   (
     unapprovedMsgs = {},
@@ -92,7 +86,6 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
     chainId,
   ) =>
     txHelper(
@@ -102,7 +95,6 @@ export const unapprovedMessagesSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      network,
       chainId,
     ) || [],
 );
