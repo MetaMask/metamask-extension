@@ -32,6 +32,10 @@ import {
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
   getIpfsGateway,
+  getNetworkIdentifier,
+  getSelectedAddress,
+  getSelectedAccountCachedBalance,
+  getAddressBookEntryOrAccountName,
 } from '../../selectors';
 import NftDefaultImage from '../../components/app/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
@@ -47,6 +51,13 @@ import {
   TextVariant,
   BlockSize,
 } from '../../helpers/constants/design-system';
+import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
+import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
+import SiteOrigin from '../../components/ui/site-origin/site-origin';
+import { PRIMARY } from '../../helpers/constants/common';
+import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
+import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
+import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
@@ -59,6 +70,26 @@ const ConfirmAddSuggestedNFT = () => {
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
   const trackEvent = useContext(MetaMetricsContext);
+  const networkIdentifier = useSelector(getNetworkIdentifier);
+  const selectedAddress = useSelector(getSelectedAddress);
+  const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
+  const accountName = useSelector((state) =>
+    getAddressBookEntryOrAccountName(state, selectedAddress),
+  );
+
+  const networkName = NETWORK_TO_NAME_MAP[chainId] || networkIdentifier;
+
+  const {
+    currency: primaryCurrency,
+    numberOfDecimals: primaryNumberOfDecimals,
+  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
+
+  const [primaryCurrencyValue] = useCurrencyDisplay(selectedAccountBalance, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
+  });
+
+  const originMetadata = useOriginMetadata(suggestedNfts[0]?.origin) || {};
 
   const handleAddNftsClick = useCallback(async () => {
     await Promise.all(
@@ -116,6 +147,7 @@ const ConfirmAddSuggestedNFT = () => {
       origin = 'dapp';
     }
   }
+
   return (
     <Box
       height={BlockSize.Full}
@@ -124,6 +156,28 @@ const ConfirmAddSuggestedNFT = () => {
       flexDirection={FlexDirection.Column}
     >
       <Box paddingBottom={2} className="confirm-add-suggested-nft__header">
+        <NetworkAccountBalanceHeader
+          accountName={accountName}
+          accountBalance={primaryCurrencyValue}
+          accountAddress={selectedAddress}
+          networkName={networkName}
+          chainId={chainId}
+        />
+        <Box
+          paddingTop={4}
+          paddingRight={4}
+          paddingLeft={4}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+        >
+          <SiteOrigin
+            chip
+            siteOrigin={originMetadata.origin}
+            title={originMetadata.origin}
+            iconSrc={originMetadata.iconUrl}
+            iconName={originMetadata.hostname}
+          />
+        </Box>
         <Text
           variant={TextVariant.headingLg}
           textAlign={TextAlign.Center}

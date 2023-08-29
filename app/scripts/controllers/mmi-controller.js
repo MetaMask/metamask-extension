@@ -292,9 +292,9 @@ export default class MMIController extends EventEmitter {
       })),
     );
 
-    newAccounts.forEach(
-      async () => await this.keyringController.addNewAccount(keyring),
-    );
+    for (let i = 0; i < newAccounts.length; i++) {
+      await this.keyringController.addNewAccount(keyring);
+    }
 
     const allAccounts = await this.keyringController.getAccounts();
 
@@ -303,12 +303,33 @@ export default class MMIController extends EventEmitter {
       ...new Set(oldAccounts.concat(allAccounts.map((a) => a.toLowerCase()))),
     ];
 
+    // Create a Set of lowercased addresses from oldAccounts for efficient existence checks
+    const oldAccountsSet = new Set(
+      oldAccounts.map((address) => address.toLowerCase()),
+    );
+
+    // Create a map of lowercased addresses to names from newAccounts for efficient lookups
+    const accountNameMap = newAccounts.reduce((acc, item) => {
+      // For each account in newAccounts, add an entry to the map with the lowercased address as the key and the name as the value
+      acc[item.toLowerCase()] = accounts[item].name;
+      return acc;
+    }, {});
+
+    // Iterate over all accounts
     allAccounts.forEach((address) => {
-      if (!oldAccounts.includes(address.toLowerCase())) {
-        const label = newAccounts
-          .filter((item) => item.toLowerCase() === address)
-          .map((item) => accounts[item].name)[0];
-        this.preferencesController.setAccountLabel(address, label);
+      // Convert the address to lowercase for consistent comparisons
+      const lowercasedAddress = address.toLowerCase();
+
+      // If the address is not in oldAccounts
+      if (!oldAccountsSet.has(lowercasedAddress)) {
+        // Look up the label in the map
+        const label = accountNameMap[lowercasedAddress];
+
+        // If the label is defined
+        if (label) {
+          // Set the label for the address
+          this.preferencesController.setAccountLabel(address, label);
+        }
       }
     });
 
