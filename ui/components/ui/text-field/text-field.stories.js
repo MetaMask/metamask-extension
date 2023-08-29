@@ -10,7 +10,7 @@ const Deprecated = ({ children }) => (
     <BannerAlert
       severity={Severity.Warning}
       title="Deprecated"
-      description="<Menu/> has been deprecated in favor of <Popover/>"
+      description="<TextField/> has been deprecated in favor of <TextField/>"
       marginBottom={4}
     />
     {children}
