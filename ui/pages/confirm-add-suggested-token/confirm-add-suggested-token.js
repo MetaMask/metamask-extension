@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
-  BUTTON_VARIANT,
   BannerAlert,
   Button,
+  ButtonVariant,
 } from '../../components/component-library';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
@@ -90,7 +90,7 @@ const ConfirmAddSuggestedToken = () => {
         <BannerAlert severity={Severity.Warning}>
           {t('knownTokenWarning', [
             <Button
-              variant={BUTTON_VARIANT.LINK}
+              variant={ButtonVariant.Link}
               key="confirm-add-suggested-token-duplicate-warning"
               className="confirm-add-suggested-token__link"
               rel="noopener noreferrer"
