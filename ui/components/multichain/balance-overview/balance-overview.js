@@ -19,7 +19,6 @@ import {
   getCurrentChainId,
   getMetaMetricsId,
   getSelectedAccountCachedBalance,
-  getShouldShowFiat,
   isBalanceCached,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -29,6 +28,8 @@ import {
   AlignItems,
   Display,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 export const BalanceOverview = () => {
@@ -38,7 +39,6 @@ export const BalanceOverview = () => {
   const chainId = useSelector(getCurrentChainId);
   const balanceIsCached = useSelector(isBalanceCached);
   const balance = useSelector(getSelectedAccountCachedBalance);
-  const showFiat = useSelector(getShouldShowFiat);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -77,18 +77,46 @@ export const BalanceOverview = () => {
       padding={4}
     >
       <Box className="token-balance-overview__balance">
+        {balance && (
+          <UserPreferencedCurrencyDisplay
+            className={classnames({
+              'token-balance-overview__cached-secondary-balance':
+                balanceIsCached,
+              'token-balance-overview__secondary-balance': !balanceIsCached,
+            })}
+            data-testid="token-balance-overview__secondary-currency"
+            value={balance}
+            type={PRIMARY}
+            ethNumberOfDecimals={4}
+            textProps={{
+              variant: TextVariant.headingLg,
+              color: TextColor.textDefault,
+            }}
+            suffixProps={{
+              variant: TextVariant.headingLg,
+              color: TextColor.textDefault,
+            }}
+          />
+        )}
         <Box className="token-balance-overview__primary-container">
           {balance ? (
             <UserPreferencedCurrencyDisplay
-              style={{ display: 'contents' }}
               className={classnames('token-balance-overview__primary-balance', {
                 'token-balance-overview__cached-balance': balanceIsCached,
               })}
               data-testid="token-balance-overview__primary-currency"
               value={balance}
-              type={PRIMARY}
+              type={SECONDARY}
               ethNumberOfDecimals={4}
               hideTitle
+              textProps={{
+                variant: TextVariant.bodyMd,
+                color: TextColor.textAlternative,
+              }}
+              suffixProps={{
+                variant: TextVariant.bodyMd,
+                color: TextColor.textAlternative,
+              }}
             />
           ) : (
             <Spinner
@@ -100,19 +128,6 @@ export const BalanceOverview = () => {
             <span className="token-balance-overview__cached-star">*</span>
           ) : null}
         </Box>
-        {showFiat && balance && (
-          <UserPreferencedCurrencyDisplay
-            className={classnames({
-              'token-balance-overview__cached-secondary-balance':
-                balanceIsCached,
-              'token-balance-overview__secondary-balance': !balanceIsCached,
-            })}
-            data-testid="token-balance-overview__secondary-currency"
-            value={balance}
-            type={SECONDARY}
-            ethNumberOfDecimals={4}
-          />
-        )}
       </Box>
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
