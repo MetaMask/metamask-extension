@@ -61,47 +61,31 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           />
         </div>
         <div
-          class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
         >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+            style="mask-image: url('./images/icons/star.svg');"
+          />
+           
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
           >
-            <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/star.svg');"
-              />
-               
-              <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
-              >
-                By MetaMask
-              </p>
-            </div>
+            By MetaMask
           </p>
         </div>
         <div
-          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
         >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+            style="mask-image: url('./images/icons/star.svg');"
+          />
+           
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
           >
-            <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/star.svg');"
-              />
-               
-              <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
-              >
-                Audited
-              </p>
-            </div>
+            Audited
           </p>
         </div>
       </div>
@@ -130,7 +114,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Tags
           </p>
@@ -148,12 +132,12 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Developer
           </p>
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--color-text-default"
           >
             Metamask
           </p>
@@ -162,46 +146,49 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Website
           </p>
-          https://www.consensys.net/
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://www.consensys.net/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            https://www.consensys.net/
+          </a>
         </div>
         <div
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Audit
           </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="auditUrl1"
+            rel="noopener noreferrer"
+            target="_blank"
           >
-            <a
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-              href="auditUrl1"
-            >
-              auditUrl1
-            </a>
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            auditUrl1
+          </a>
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="auditUrl2"
+            rel="noopener noreferrer"
+            target="_blank"
           >
-            <a
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-              href="auditUrl2"
-            >
-              auditUrl2
-            </a>
-          </p>
+            auditUrl2
+          </a>
         </div>
         <div
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Version
           </p>
@@ -215,7 +202,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Updated
           </p>
