@@ -15,6 +15,20 @@ const {
   withFixtures,
 } = require('../helpers');
 
+/**
+ * Derive a UI state field from a background state field.
+ *
+ * @param {string} backgroundField - The path of a background field.
+ * @returns {string} The path for the corresponding UI field.
+ */
+function backgroundToUiField(backgroundField) {
+  // The controller name is lost in the UI due to state flattening
+  const [, ...rest] = backgroundField.split('.');
+  const flattenedBackgroundField = rest.join('.');
+  // Controller state is under the 'metamask' slice in the UI
+  return `metamask.${flattenedBackgroundField}`;
+}
+
 const maskedBackgroundFields = [
   'CurrencyController.conversionDate', // This is a timestamp that changes each run
   // App metadata is masked so that we don't have to update the snapshot as
@@ -27,16 +41,7 @@ const maskedBackgroundFields = [
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
 ];
-const maskedUiFields = [
-  'metamask.conversionDate', // This is a timestamp that changes each run
-  // App metadata is masked so that we don't have to update the snapshot as
-  // part of the release process
-  'metamask.currentAppVersion',
-  'metamask.currentMigrationVersion',
-  'metamask.outdatedBrowserWarningLastShown',
-  'metamask.recoveryPhraseReminderLastShown',
-  'metamask.termsOfUseLastAgreed',
-];
+const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
   // This property is timing-dependent
@@ -46,13 +51,7 @@ const removedBackgroundFields = [
   'AppStateController.timeoutMinutes',
 ];
 
-const removedUiFields = [
-  // This property is timing-dependent
-  'metamask.currentBlockGasLimit',
-  // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
-  'metamask.currentPopupId',
-  'metamask.timeoutMinutes',
-];
+const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
 
 /**
  * Transform background state to make it consistent between test runs.
