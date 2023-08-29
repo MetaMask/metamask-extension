@@ -109,6 +109,7 @@ const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
   '../../shared/modules/mv3.utils': { isManifestV3: true },
 }).default;
 
+const currentChainId = '0x5';
 const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
@@ -893,15 +894,10 @@ describe('MetaMaskController', function () {
           metamaskController.preferencesController,
           'getSelectedAddress',
         );
-        const getNetworkIdStub = sinon.stub(
-          metamaskController.txController.txStateManager,
-          'getNetworkId',
-        );
 
         selectedAddressStub.returns(
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         );
-        getNetworkIdStub.returns(42);
 
         metamaskController.txController.txStateManager._addTransactionsToState([
           createTxMeta({
@@ -925,6 +921,49 @@ describe('MetaMaskController', function () {
             id: 3,
             status: TransactionStatus.submitted,
             metamaskNetworkId: currentNetworkId,
+            txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
+          }),
+        ]);
+
+        await metamaskController.resetAccount();
+        assert.equal(
+          metamaskController.txController.txStateManager.getTransaction(1),
+          undefined,
+        );
+      });
+
+      it('wipes transactions from only the correct chain id and with the selected address', async function () {
+        const selectedAddressStub = sinon.stub(
+          metamaskController.preferencesController,
+          'getSelectedAddress',
+        );
+
+        selectedAddressStub.returns(
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        );
+
+        metamaskController.txController.txStateManager._addTransactionsToState([
+          createTxMeta({
+            id: 1,
+            status: TransactionStatus.unapproved,
+            chainId: currentChainId,
+            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
+          }),
+          createTxMeta({
+            id: 1,
+            status: TransactionStatus.unapproved,
+            chainId: currentChainId,
+            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
+          }),
+          createTxMeta({
+            id: 2,
+            status: TransactionStatus.rejected,
+            chainId: '0x32',
+          }),
+          createTxMeta({
+            id: 3,
+            status: TransactionStatus.submitted,
+            chainId: currentChainId,
             txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
           }),
         ]);
