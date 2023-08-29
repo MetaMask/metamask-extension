@@ -121,6 +121,10 @@ export const UI_NOTIFICATIONS = {
       src: 'images/global-menu-block-explorer.svg',
     },
   },
+  24: {
+    id: 24,
+    date: null,
+  },
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -328,6 +332,17 @@ export const getTranslatedUINotifications = (t, locale) => {
       date: UI_NOTIFICATIONS[22].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[22].date),
+          )
+        : '',
+    },
+    24: {
+      ...UI_NOTIFICATIONS[24],
+      title: t('notifications24Title'),
+      description: t('notifications24Description'),
+      actionText: t('notifications24ActionText'),
+      date: UI_NOTIFICATIONS[24].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[24].date),
           )
         : '',
     },

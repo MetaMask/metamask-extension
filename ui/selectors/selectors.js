@@ -1031,6 +1031,7 @@ function getAllowedAnnouncementIds(state) {
     20: currentKeyringIsLedger && isFirefox,
     21: isSwapsChain,
     22: true,
+    24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
   };
 }
 

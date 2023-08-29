@@ -103,6 +103,9 @@ function getActionFunctionById(id, history) {
     22: () => {
       updateViewedNotifications({ 22: true });
     },
+    24: () => {
+      updateViewedNotifications({ 24: true });
+    },
   };
 
   return actionFunctions[id];
@@ -364,6 +367,7 @@ export default function WhatsNewPopup({
     19: renderFirstNotification,
     21: renderFirstNotification,
     22: renderFirstNotification,
+    24: renderFirstNotification,
   };
 
   return (
