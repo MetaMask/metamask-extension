@@ -210,7 +210,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -220,7 +220,7 @@ describe('Transaction Controller', function () {
         {
           id: 2,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -230,7 +230,7 @@ describe('Transaction Controller', function () {
         {
           id: 3,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -249,7 +249,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -259,7 +259,7 @@ describe('Transaction Controller', function () {
         {
           id: 2,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -269,7 +269,7 @@ describe('Transaction Controller', function () {
         {
           id: 3,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -293,63 +293,63 @@ describe('Transaction Controller', function () {
         {
           id: 0,
           status: TransactionStatus.confirmed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
         {
           id: 1,
           status: TransactionStatus.confirmed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
         {
           id: 2,
           status: TransactionStatus.confirmed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
         {
           id: 3,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
         {
           id: 4,
           status: TransactionStatus.rejected,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
         {
           id: 5,
           status: TransactionStatus.approved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
         {
           id: 6,
           status: TransactionStatus.signed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
         {
           id: 7,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
         {
           id: 8,
           status: TransactionStatus.failed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
@@ -381,7 +381,7 @@ describe('Transaction Controller', function () {
       txMeta = {
         status: TransactionStatus.unapproved,
         id: 1,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams,
         history: [{}],
       };
@@ -416,10 +416,7 @@ describe('Transaction Controller', function () {
       }));
       assert.ok('id' in txMeta, 'should have a id');
       assert.ok('time' in txMeta, 'should have a time stamp');
-      assert.ok(
-        'metamaskNetworkId' in txMeta,
-        'should have a metamaskNetworkId',
-      );
+      assert.ok('chainId' in txMeta, 'should have a chainId');
       assert.ok('txParams' in txMeta, 'should have a txParams');
       assert.ok('history' in txMeta, 'should have a history');
       assert.equal(
@@ -1248,7 +1245,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -1298,7 +1295,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -1348,7 +1345,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -1398,7 +1395,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -1452,7 +1449,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -1569,7 +1566,7 @@ describe('Transaction Controller', function () {
         {
           id: '1',
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -1648,7 +1645,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams,
           history: [{}],
         },
@@ -1814,7 +1811,7 @@ describe('Transaction Controller', function () {
         {
           status: TransactionStatus.unapproved,
           id: 1,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             from: VALID_ADDRESS_TWO,
@@ -1837,7 +1834,7 @@ describe('Transaction Controller', function () {
         {
           status: TransactionStatus.unapproved,
           id: 2,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             from: VALID_ADDRESS_TWO,
@@ -1869,7 +1866,7 @@ describe('Transaction Controller', function () {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS_TWO,
         },
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
       };
       providerResultStub.eth_sendRawTransaction = hash;
       trackTransactionMetricsEventSpy = sinon.spy(
@@ -1931,7 +1928,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.confirmed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             to: VALID_ADDRESS_TWO,
@@ -1942,7 +1939,7 @@ describe('Transaction Controller', function () {
         {
           id: 2,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             to: VALID_ADDRESS_TWO,
@@ -1953,7 +1950,7 @@ describe('Transaction Controller', function () {
         {
           id: 3,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             to: VALID_ADDRESS_TWO,
@@ -1964,7 +1961,7 @@ describe('Transaction Controller', function () {
         {
           id: 4,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             to: VALID_ADDRESS_TWO,
@@ -1975,7 +1972,7 @@ describe('Transaction Controller', function () {
         {
           id: 5,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             to: VALID_ADDRESS_TWO,
@@ -1986,7 +1983,7 @@ describe('Transaction Controller', function () {
         {
           id: 6,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             to: VALID_ADDRESS_TWO,
@@ -1997,7 +1994,7 @@ describe('Transaction Controller', function () {
         {
           id: 7,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           history: [{}],
           txParams: {
             to: VALID_ADDRESS_TWO,
@@ -2029,7 +2026,7 @@ describe('Transaction Controller', function () {
         {
           id: 1,
           status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -2038,7 +2035,7 @@ describe('Transaction Controller', function () {
         {
           id: 2,
           status: TransactionStatus.rejected,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -2048,7 +2045,7 @@ describe('Transaction Controller', function () {
         {
           id: 3,
           status: TransactionStatus.approved,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -2058,7 +2055,7 @@ describe('Transaction Controller', function () {
         {
           id: 4,
           status: TransactionStatus.signed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -2068,7 +2065,7 @@ describe('Transaction Controller', function () {
         {
           id: 5,
           status: TransactionStatus.submitted,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -2078,7 +2075,7 @@ describe('Transaction Controller', function () {
         {
           id: 6,
           status: TransactionStatus.confirmed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -2088,7 +2085,7 @@ describe('Transaction Controller', function () {
         {
           id: 7,
           status: TransactionStatus.failed,
-          metamaskNetworkId: currentNetworkId,
+          chainId: currentChainId,
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
@@ -2162,7 +2159,6 @@ describe('Transaction Controller', function () {
           origin: ORIGIN_METAMASK,
           chainId: currentChainId,
           time: 1624408066355,
-          metamaskNetworkId: currentNetworkId,
           defaultGasEstimates: {
             gas: '0x7b0d',
             gasPrice: '0x77359400',
@@ -2187,7 +2183,7 @@ describe('Transaction Controller', function () {
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
-            network: '5',
+
             referrer: ORIGIN_METAMASK,
             source: MetaMetricsTransactionEventSource.User,
             transaction_type: TransactionType.simpleSend,
@@ -2276,7 +2272,7 @@ describe('Transaction Controller', function () {
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
-            network: '5',
+
             referrer: ORIGIN_METAMASK,
             source: MetaMetricsTransactionEventSource.User,
             transaction_type: TransactionType.simpleSend,
@@ -2352,7 +2348,6 @@ describe('Transaction Controller', function () {
           origin: 'other',
           chainId: currentChainId,
           time: 1624408066355,
-          metamaskNetworkId: currentNetworkId,
           defaultGasEstimates: {
             gas: '0x7b0d',
             gasPrice: '0x77359400',
@@ -2377,7 +2372,7 @@ describe('Transaction Controller', function () {
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
-            network: '5',
+
             referrer: 'other',
             source: MetaMetricsTransactionEventSource.Dapp,
             transaction_type: TransactionType.simpleSend,
@@ -2468,7 +2463,7 @@ describe('Transaction Controller', function () {
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
-            network: '5',
+
             referrer: 'other',
             source: MetaMetricsTransactionEventSource.Dapp,
             transaction_type: TransactionType.simpleSend,
@@ -2543,7 +2538,6 @@ describe('Transaction Controller', function () {
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
-        metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
           flagAsDangerous: 0,
         },
@@ -2565,7 +2559,7 @@ describe('Transaction Controller', function () {
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
-          network: '5',
+
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
@@ -2621,7 +2615,6 @@ describe('Transaction Controller', function () {
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
-        metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
           flagAsDangerous: 0,
         },
@@ -2635,7 +2628,6 @@ describe('Transaction Controller', function () {
         persist: true,
         category: MetaMetricsEventCategory.Transactions,
         properties: {
-          network: '5',
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
@@ -2697,7 +2689,6 @@ describe('Transaction Controller', function () {
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
-        metamaskNetworkId: currentNetworkId,
         securityAlertResponse: {
           result_type: BlockaidResultType.Failed,
           reason: 'some error',
@@ -2712,7 +2703,6 @@ describe('Transaction Controller', function () {
         persist: true,
         category: MetaMetricsEventCategory.Transactions,
         properties: {
-          network: '5',
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           status: 'unapproved',
@@ -2774,7 +2764,6 @@ describe('Transaction Controller', function () {
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
-        metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
           flagAsDangerous: 1,
         },
@@ -2788,7 +2777,6 @@ describe('Transaction Controller', function () {
         persist: true,
         category: MetaMetricsEventCategory.Transactions,
         properties: {
-          network: '5',
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
@@ -2850,7 +2838,6 @@ describe('Transaction Controller', function () {
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
-        metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
           flagAsDangerous: 2,
         },
@@ -2864,7 +2851,6 @@ describe('Transaction Controller', function () {
         persist: true,
         category: MetaMetricsEventCategory.Transactions,
         properties: {
-          network: '5',
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
@@ -2929,7 +2915,6 @@ describe('Transaction Controller', function () {
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
-        metamaskNetworkId: currentNetworkId,
         defaultGasEstimates: {
           estimateType: 'medium',
           maxFeePerGas: '0x77359400',
@@ -2952,7 +2937,7 @@ describe('Transaction Controller', function () {
           eip_1559_version: '2',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
-          network: '5',
+
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
@@ -3077,7 +3062,7 @@ describe('Transaction Controller', function () {
       txStateManager.addTransaction({
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           gasLimit: '0x001',
           gasPrice: '0x002',
@@ -3117,7 +3102,7 @@ describe('Transaction Controller', function () {
       txStateManager.addTransaction({
         id: '2',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           maxPriorityFeePerGas: '0x003',
           to: VALID_ADDRESS,
@@ -3135,7 +3120,7 @@ describe('Transaction Controller', function () {
       txStateManager.addTransaction({
         id: '3',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           maxPriorityFeePerGas: '0x003',
           maxFeePerGas: '0x004',
@@ -3158,7 +3143,7 @@ describe('Transaction Controller', function () {
       txStateManager.addTransaction({
         id: '4',
         status: TransactionStatus.dropped,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           maxPriorityFeePerGas: '0x007',
           maxFeePerGas: '0x008',
@@ -3204,7 +3189,7 @@ describe('Transaction Controller', function () {
       txStateManager.addTransaction({
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           gas: '0x001',
           gasPrice: '0x002',
@@ -3242,7 +3227,7 @@ describe('Transaction Controller', function () {
       txStateManager.addTransaction({
         id: '2',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           gas: '0x001',
           gasPrice: '0x002',
@@ -3273,7 +3258,7 @@ describe('Transaction Controller', function () {
       txStateManager.addTransaction({
         id: '3',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           gas: '0x001',
           gasPrice: '0x002',
@@ -3323,7 +3308,7 @@ describe('Transaction Controller', function () {
         id: firstTxId,
         origin: ORIGIN_METAMASK,
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS_TWO,
@@ -3335,7 +3320,7 @@ describe('Transaction Controller', function () {
         id: secondTxId,
         origin: ORIGIN_METAMASK,
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS_TWO,
@@ -3380,7 +3365,7 @@ describe('Transaction Controller', function () {
         id: txId,
         origin: ORIGIN_METAMASK,
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS_TWO,

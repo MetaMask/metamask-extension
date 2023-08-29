@@ -1170,7 +1170,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      getNetworkId: () => this.networkController.state.networkId,
       getNetworkStatus: () =>
         this.networkController.state.networksMetadata?.[
           this.networkController.state.selectedNetworkClientId
@@ -1182,7 +1181,6 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
           () => listener(),
-          ({ networkId }) => networkId,
         );
       },
       getCurrentChainId: () =>

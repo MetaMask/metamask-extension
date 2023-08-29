@@ -156,7 +156,6 @@ describe('EtherscanRemoteTransactionSource', () => {
       expect(
         new EtherscanRemoteTransactionSource().isSupportedNetwork(
           CHAIN_IDS.MAINNET,
-          '1',
         ),
       ).toBe(true);
     });
@@ -165,7 +164,6 @@ describe('EtherscanRemoteTransactionSource', () => {
       expect(
         new EtherscanRemoteTransactionSource().isSupportedNetwork(
           CHAIN_IDS.LOCALHOST,
-          '1',
         ),
       ).toBe(false);
     });

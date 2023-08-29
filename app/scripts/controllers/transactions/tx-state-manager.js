@@ -55,14 +55,12 @@ export const ERROR_SUBMITTING =
  *  transactions list keyed by id
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
  *  transactions can hang around in state
- * @param {Function} opts.getNetworkId - Get the current network Id.
  * @param {Function} opts.getNetworkStatus - Get the current network status.
  */
 export default class TransactionStateManager extends EventEmitter {
   constructor({
     initState,
     txHistoryLimit,
-    getNetworkId,
     getNetworkStatus,
     getCurrentChainId,
   }) {
@@ -73,7 +71,6 @@ export default class TransactionStateManager extends EventEmitter {
       ...initState,
     });
     this.txHistoryLimit = txHistoryLimit;
-    this.getNetworkId = getNetworkId;
     this.getNetworkStatus = getNetworkStatus;
     this.getCurrentChainId = getCurrentChainId;
   }
@@ -90,7 +87,6 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta} the default txMeta object
    */
   generateTxMeta(opts = {}) {
-    const networkId = this.getNetworkId();
     const networkStatus = this.getNetworkStatus();
     const chainId = this.getCurrentChainId();
     if (networkStatus !== NetworkStatus.Available) {
@@ -133,7 +129,6 @@ export default class TransactionStateManager extends EventEmitter {
       id: createId(),
       time: new Date().getTime(),
       status: TransactionStatus.unapproved,
-      metamaskNetworkId: networkId,
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
       chainId,
@@ -154,12 +149,11 @@ export default class TransactionStateManager extends EventEmitter {
    */
   getUnapprovedTxList() {
     const chainId = this.getCurrentChainId();
-    const networkId = this.getNetworkId();
     return pickBy(
       this.store.getState().transactions,
       (transaction) =>
         transaction.status === TransactionStatus.unapproved &&
-        transactionMatchesNetwork(transaction, chainId, networkId),
+        transactionMatchesNetwork(transaction, chainId),
     );
   }
 
@@ -279,8 +273,8 @@ export default class TransactionStateManager extends EventEmitter {
       .reverse()
       .filter((tx) => {
         const { nonce, from } = tx.txParams;
-        const { chainId, metamaskNetworkId, status } = tx;
-        const key = `${nonce}-${chainId ?? metamaskNetworkId}-${from}`;
+        const { chainId, status } = tx;
+        const key = `${nonce}-${chainId}-${from}`;
         if (nonceNetworkSet.has(key)) {
           return false;
         } else if (
@@ -418,7 +412,6 @@ export default class TransactionStateManager extends EventEmitter {
     limit,
   } = {}) {
     const chainId = this.getCurrentChainId();
-    const networkId = this.getNetworkId();
     // searchCriteria is an object that might have values that aren't predicate
     // methods. When providing any other value type (string, number, etc), we
     // consider this shorthand for "check the value at key for strict equality
@@ -447,7 +440,7 @@ export default class TransactionStateManager extends EventEmitter {
         // when filterToCurrentNetwork is true.
         if (
           filterToCurrentNetwork &&
-          transactionMatchesNetwork(transaction, chainId, networkId) === false
+          transactionMatchesNetwork(transaction, chainId) === false
         ) {
           return false;
         }
@@ -610,7 +603,6 @@ export default class TransactionStateManager extends EventEmitter {
     // network only tx
     const { transactions } = this.store.getState();
     const chainId = this.getCurrentChainId();
-    const networkId = this.getNetworkId();
 
     // Update state
     this.store.updateState({
@@ -618,7 +610,7 @@ export default class TransactionStateManager extends EventEmitter {
         transactions,
         (transaction) =>
           transaction.txParams.from === address &&
-          transactionMatchesNetwork(transaction, chainId, networkId),
+          transactionMatchesNetwork(transaction, chainId),
       ),
     });
   }

@@ -39,11 +39,17 @@ const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
 
-export function transactionMatchesNetwork(transaction, chainId, networkId) {
-  if (typeof transaction.chainId !== 'undefined') {
+export function transactionMatchesNetwork(transaction, chainId) {
+  if (transaction.chainId !== undefined) {
     return transaction.chainId === chainId;
   }
-  return transaction.metamaskNetworkId === networkId;
+  if (transaction.metamaskNetworkId !== undefined) {
+    // Handle ETC/ETH fork
+    const networkId =
+      chainId === '0x61' ? '1' : parseInt(chainId, 16).toString();
+    return transaction.metamaskNetworkId === networkId;
+  }
+  return !chainId;
 }
 
 /**
