@@ -354,7 +354,9 @@ export default class Routes extends Component {
           />
           ///: END:ONLY_INCLUDE_IN
         }
-        <Authenticated path={CONNECTIONS} component={Connections} />
+        {process.env.MULTICHAIN && (
+          <Authenticated path={CONNECTIONS} component={Connections} />
+        )}
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
