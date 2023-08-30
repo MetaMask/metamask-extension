@@ -118,10 +118,6 @@ export default function TokenAllowance({
   const history = useHistory();
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
-
   const { hostname } = new URL(origin);
   const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
 
@@ -151,6 +147,14 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiActions = mmiActionsFactory();
+  const trackEvent = useContext(MetaMetricsContext);
+  const accountType = useSelector((state) =>
+    getAccountType(state, fromAccount.address),
+  );
+  ///: END:ONLY_INCLUDE_IN
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -188,13 +192,6 @@ export default function TokenAllowance({
       },
     };
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const trackEvent = useContext(MetaMetricsContext);
-  const accountType = useSelector((state) =>
-    getAccountType(state, fromAccount.address),
-  );
-  ///: END:ONLY_INCLUDE_IN
 
   const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
   const methodData = useSelector((state) => getKnownMethodData(state, data));
