@@ -243,7 +243,7 @@ describe('DetectTokensController', function () {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
-      onTokenListStateChange: () => {},
+      onTokenListStateChange: sinon.stub(),
     });
 
     assetsContractController = new AssetsContractController({
@@ -354,6 +354,7 @@ describe('DetectTokensController', function () {
         address: tokenValues[0].address,
         symbol: tokenValues[0].symbol,
         decimals: tokenValues[0].decimals,
+        name: tokenValues[0].name,
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
@@ -374,6 +375,7 @@ describe('DetectTokensController', function () {
       {
         address: toChecksumHexAddress(tokenValues[0].address),
         decimals: tokenValues[0].decimals,
+        name: tokenValues[0].name,
         symbol: tokenValues[0].symbol,
         aggregators: undefined,
         image: undefined,
@@ -409,6 +411,7 @@ describe('DetectTokensController', function () {
         address: existingToken.address,
         symbol: existingToken.symbol,
         decimals: existingToken.decimals,
+        name: existingToken.name,
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
@@ -426,6 +429,7 @@ describe('DetectTokensController', function () {
       {
         address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
+        name: existingToken.name,
         symbol: existingToken.symbol,
         aggregators: undefined,
         image: undefined,
@@ -434,6 +438,7 @@ describe('DetectTokensController', function () {
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
+        name: tokenToAdd.name,
         symbol: tokenToAdd.symbol,
         aggregators: undefined,
         image: undefined,

@@ -436,7 +436,7 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
-      onTokenListStateChange: () => {},
+      onTokenListStateChange: this.onTokenListStateChange,
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -704,6 +704,9 @@ export default class MetamaskController extends EventEmitter {
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
+        ),
+        onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+          this.preferencesController.store,
         ),
       },
       {
@@ -4682,6 +4685,13 @@ export default class MetamaskController extends EventEmitter {
         appStatePollingTokenType,
       );
     });
+  }
+
+  /**
+   * A method that is called by the TokensController when a token is added.
+   */
+  onTokenListStateChange(_listener) {
+    return _listener;
   }
 
   /**
