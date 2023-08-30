@@ -1,5 +1,5 @@
 diff --git a/dist/KeyringController.d.ts b/dist/KeyringController.d.ts
-index 82de83a7bb1ad14bb23f3b6274e0c4d5bb773382..86a09b3f604f6feb26e2c7edbdcb0abebd4bae20 100644
+index ccfd5ca9accf782b0a612ab1666501898cf2abb9..f772552156491b308f2aa29a734a5138237d951e 100644
 --- a/dist/KeyringController.d.ts
 +++ b/dist/KeyringController.d.ts
 @@ -1,10 +1,11 @@
@@ -28,7 +28,7 @@ index 82de83a7bb1ad14bb23f3b6274e0c4d5bb773382..86a09b3f604f6feb26e2c7edbdcb0abe
       * Adds a new account to the default (first) HD seed phrase keyring.
       *
 diff --git a/dist/KeyringController.js b/dist/KeyringController.js
-index 54d39d266425b45ed1008cecb16e78cf831c75d7..0ddded415bf71716c27ed3bf7bd1c5a79b11be13 100644
+index 9e241ba3b5445a053e3b20ee70a579118b7b2934..eb1f7bce9d3607017b39e087db227e8a7dadd849 100644
 --- a/dist/KeyringController.js
 +++ b/dist/KeyringController.js
 @@ -153,6 +153,12 @@ class KeyringController extends base_controller_1.BaseControllerV2 {
