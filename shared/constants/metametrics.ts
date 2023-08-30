@@ -550,6 +550,7 @@ export enum MetaMetricsEventName {
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
+  QuoteError = 'Quote Error',
   ServiceWorkerRestarted = 'Service Worker Restarted',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -627,6 +628,7 @@ export enum MetaMetricsEventName {
   SwapError = 'Swap Error',
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SnapInstalled = 'Snap Installed',
+  SnapUninstalled = 'Snap Uninstalled',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   ///: END:ONLY_INCLUDE_IN
@@ -689,6 +691,7 @@ export enum MetaMetricsEventKeyType {
 
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
+  GasTimeout = 'gas_timeout',
 }
 
 export enum MetaMetricsNetworkEventSource {
