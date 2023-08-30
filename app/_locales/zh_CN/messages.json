@@ -2330,9 +2330,6 @@
   "more": {
     "message": "更多"
   },
-  "moreComingSoon": {
-    "message": "即将有更多提供商加入"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1想连接$2个snap。只有在您信任此网站的情况下才能继续。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3754,9 +3751,6 @@
   },
   "selectPathHelp": {
     "message": "如果您没有看到您期望的账户，请尝试切换 HD 路径。"
-  },
-  "selectProvider": {
-    "message": "选择提供程序："
   },
   "selectType": {
     "message": "选择类型"

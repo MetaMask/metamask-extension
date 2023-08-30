@@ -2330,9 +2330,6 @@
   "more": {
     "message": "plus"
   },
-  "moreComingSoon": {
-    "message": "D’autres fournisseurs seront bientôt disponibles"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 veut se connecter avec $2 snaps. Ne procédez que si vous avez confiance dans ce site web.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3754,9 +3751,6 @@
   },
   "selectPathHelp": {
     "message": "Si vos comptes n’apparaissent pas ci-dessous, essayez de sélectionner le chemin HD."
-  },
-  "selectProvider": {
-    "message": "Sélectionner les fournisseurs :"
   },
   "selectType": {
     "message": "Sélectionner le type"

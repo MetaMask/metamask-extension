@@ -2330,9 +2330,6 @@
   "more": {
     "message": "अधिक"
   },
-  "moreComingSoon": {
-    "message": "जल्द ही और प्रोवाइडर उपलब्ध होंगे"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 चाहता है कि $2 स्नैप्स के साथ जुड़े। तभी आगे बढ़ें अगर आप इस वेबसाइट पर भरोसा करते हैं।",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3754,9 +3751,6 @@
   },
   "selectPathHelp": {
     "message": "यदि आपको अपेक्षित खाते दिखाई नहीं देते हैं, तो HD पथ बदलने का प्रयास करें।"
-  },
-  "selectProvider": {
-    "message": "प्रदाताओं का चयन करें:"
   },
   "selectType": {
     "message": "प्रकार का चयन करें"

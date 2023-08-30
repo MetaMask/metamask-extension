@@ -2330,9 +2330,6 @@
   "more": {
     "message": "他"
   },
-  "moreComingSoon": {
-    "message": "他のプロバイダーも近日追加予定"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 が $2 個のスナップとの接続を要求しています。この Web サイトが信頼できる場合にのみ続行してください。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3754,9 +3751,6 @@
   },
   "selectPathHelp": {
     "message": "アカウントが見当たらない場合は、HDパスを切り替えてみてください。"
-  },
-  "selectProvider": {
-    "message": "プロバイダーを選択してください:"
   },
   "selectType": {
     "message": "種類を選択"

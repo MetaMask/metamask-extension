@@ -2330,9 +2330,6 @@
   "more": {
     "message": "그 외"
   },
-  "moreComingSoon": {
-    "message": "더 많은 공급업체가 곧 추가됩니다"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1에서 $2개의 스냅 연결을 원합니다. 해당 웹사이트를 신뢰할 수 있는 경우에만 진행하세요.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3754,9 +3751,6 @@
   },
   "selectPathHelp": {
     "message": "아래에 기존 Ledger 계정이 표시되지 않는다면 경로를 \"Legacy (MEW / MyCrypto)\"로 변경해 보세요."
-  },
-  "selectProvider": {
-    "message": "공급업체 선택"
   },
   "selectType": {
     "message": "유형 선택"
