@@ -12,7 +12,7 @@ export enum AvatarFaviconSize {
 }
 
 export interface AvatarFaviconStyleUtilityProps
-  extends Omit<AvatarBaseStyleUtilityProps, 'size'> {
+  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children'> {
   /**
    * The src accepts the string of the image to be rendered
    */

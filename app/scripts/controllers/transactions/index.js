@@ -72,6 +72,8 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
+import { IncomingTransactionHelper } from './IncomingTransactionHelper';
+import { EtherscanRemoteTransactionSource } from './EtherscanRemoteTransactionSource';
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 const UPDATE_POST_TX_BALANCE_TIMEOUT = 5000;
@@ -127,6 +129,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param {object} opts.initState - initial transaction list default is an empty array
  * @param {Function} opts.getNetworkId - Get the current network ID.
  * @param {Function} opts.getNetworkStatus - Get the current network status.
+ * @param {Function} opts.getNetworkState - Get the network state.
  * @param {Function} opts.onNetworkStateChange - Subscribe to network state change events.
  * @param {object} opts.blockTracker - An instance of eth-blocktracker
  * @param {object} opts.provider - A network provider.
@@ -134,6 +137,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param {object} opts.getPermittedAccounts - get accounts that an origin has permissions for
  * @param {Function} opts.signTransaction - ethTx signer that returns a rawTx
  * @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
+ * @param {Function} opts.hasCompletedOnboarding - Returns whether or not the user has completed the onboarding flow
  * @param {object} opts.preferencesStore
  */
 
@@ -142,6 +146,7 @@ export default class TransactionController extends EventEmitter {
     super();
     this.getNetworkId = opts.getNetworkId;
     this.getNetworkStatus = opts.getNetworkStatus;
+    this._getNetworkState = opts.getNetworkState;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
@@ -166,6 +171,7 @@ export default class TransactionController extends EventEmitter {
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
     this.messagingSystem = opts.messenger;
+    this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
 
     this.memStore = new ObservableStore({});
 
@@ -215,6 +221,33 @@ export default class TransactionController extends EventEmitter {
       getCompletedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
+
+    this.incomingTransactionHelper = new IncomingTransactionHelper({
+      blockTracker: this.blockTracker,
+      getCurrentAccount: () => this.getSelectedAddress(),
+      getNetworkState: () => this._getNetworkState(),
+      isEnabled: () =>
+        Boolean(
+          this.preferencesStore.getState().incomingTransactionsPreferences?.[
+            this._getChainId()
+          ] && this._hasCompletedOnboarding(),
+        ),
+      lastFetchedBlockNumbers: opts.initState?.lastFetchedBlockNumbers || {},
+      remoteTransactionSource: new EtherscanRemoteTransactionSource({
+        includeTokenTransfers: false,
+      }),
+      updateTransactions: false,
+    });
+
+    this.incomingTransactionHelper.hub.on(
+      'transactions',
+      this._onIncomingTransactions.bind(this),
+    );
+
+    this.incomingTransactionHelper.hub.on(
+      'updatedLastFetchedBlockNumbers',
+      this._onUpdatedLastFetchedBlockNumbers.bind(this),
+    );
 
     this.txStateManager.store.subscribe(() =>
       this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE),
@@ -757,6 +790,18 @@ export default class TransactionController extends EventEmitter {
       sensitiveProperties,
       actionId,
     );
+  }
+
+  startIncomingTransactionPolling() {
+    this.incomingTransactionHelper.start();
+  }
+
+  stopIncomingTransactionPolling() {
+    this.incomingTransactionHelper.stop();
+  }
+
+  async updateIncomingTransactions() {
+    await this.incomingTransactionHelper.update();
   }
 
   //
@@ -1779,7 +1824,11 @@ export default class TransactionController extends EventEmitter {
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
     if (txMeta.custodyStatus) {
       this.inProcessOfSigning.delete(txId);
+      // Custodial nonces and gas params are set by the custodian, so MMI follows the approve
+      // workflow before the transaction parameters are sent to the keyring
+      this.txStateManager.setTxStatusApproved(txId);
       await this._signTransaction(txId);
+      // MMI relies on custodian to publish transactions so exits this code path early
       return;
     }
     ///: END:ONLY_INCLUDE_IN
@@ -1889,9 +1938,13 @@ export default class TransactionController extends EventEmitter {
      */
     this.getTransactions = (opts) => this.txStateManager.getTransactions(opts);
 
-    /** @returns {object} the saved default values for advancedGasFee */
+    /**
+     * @returns {object} the saved default values for advancedGasFee
+     */
     this.getAdvancedGasFee = () =>
-      this.preferencesStore.getState().advancedGasFee;
+      this.preferencesStore.getState().advancedGasFee[
+        this._getCurrentChainId()
+      ];
   }
 
   // called once on startup
@@ -2082,11 +2135,18 @@ export default class TransactionController extends EventEmitter {
    * Updates the memStore in transaction controller
    */
   _updateMemstore() {
+    const { transactions } = this.store.getState();
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
+
     const currentNetworkTxList = this.txStateManager.getTransactions({
       limit: MAX_MEMSTORE_TX_LIST_SIZE,
     });
-    this.memStore.updateState({ unapprovedTxs, currentNetworkTxList });
+
+    this.memStore.updateState({
+      unapprovedTxs,
+      currentNetworkTxList,
+      transactions,
+    });
   }
 
   _calculateTransactionsCost(txMeta, approvalTxMeta) {
@@ -2728,6 +2788,34 @@ export default class TransactionController extends EventEmitter {
       TransactionMetaMetricsEvent.added,
       txMeta.actionId,
     );
+  }
+
+  _onIncomingTransactions({ added: transactions }) {
+    log.debug('Detected new incoming transactions', transactions);
+
+    const currentTransactions = this.store.getState().transactions || {};
+
+    const incomingTransactions = transactions
+      .filter((tx) => !this._hasTransactionHash(tx.hash, currentTransactions))
+      .reduce((result, tx) => {
+        result[tx.id] = tx;
+        return result;
+      }, {});
+
+    const updatedTransactions = {
+      ...currentTransactions,
+      ...incomingTransactions,
+    };
+
+    this.store.updateState({ transactions: updatedTransactions });
+  }
+
+  _onUpdatedLastFetchedBlockNumbers({ lastFetchedBlockNumbers }) {
+    this.store.updateState({ lastFetchedBlockNumbers });
+  }
+
+  _hasTransactionHash(hash, transactions) {
+    return Object.values(transactions).some((tx) => tx.hash === hash);
   }
 
   // Approvals

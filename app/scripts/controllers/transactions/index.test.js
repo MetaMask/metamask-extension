@@ -38,6 +38,7 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import TxGasUtil from './tx-gas-utils';
+import * as IncomingTransactionHelperClass from './IncomingTransactionHelper';
 import TransactionController from '.';
 
 const noop = () => true;
@@ -51,6 +52,16 @@ const actionId = 'DUMMY_ACTION_ID';
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
 
+const TRANSACTION_META_MOCK = {
+  hash: '0x1',
+  id: 1,
+  status: TransactionStatus.confirmed,
+  transaction: {
+    from: VALID_ADDRESS,
+  },
+  time: 123456789,
+};
+
 async function flushPromises() {
   await new Promise((resolve) => setImmediate(resolve));
 }
@@ -62,10 +73,13 @@ describe('Transaction Controller', function () {
     fromAccount,
     fragmentExists,
     networkStatusStore,
+    preferencesStore,
     getCurrentChainId,
     messengerMock,
     resultCallbacksMock,
-    updateSpy;
+    updateSpy,
+    incomingTransactionHelperClassMock,
+    incomingTransactionHelperEventMock;
 
   beforeEach(function () {
     fragmentExists = false;
@@ -84,6 +98,7 @@ describe('Transaction Controller', function () {
     }).provider;
 
     networkStatusStore = new ObservableStore(currentNetworkStatus);
+    preferencesStore = new ObservableStore({ advancedGasFee: {} });
 
     fromAccount = getTestAccounts()[0];
     const blockTrackerStub = new EventEmitter();
@@ -100,6 +115,16 @@ describe('Transaction Controller', function () {
     messengerMock = {
       call: sinon.stub(),
     };
+
+    incomingTransactionHelperEventMock = sinon.spy();
+
+    incomingTransactionHelperClassMock = sinon
+      .stub(IncomingTransactionHelperClass, 'IncomingTransactionHelper')
+      .returns({
+        hub: {
+          on: incomingTransactionHelperEventMock,
+        },
+      });
 
     txController = new TransactionController({
       provider,
@@ -132,6 +157,7 @@ describe('Transaction Controller', function () {
       getAccountType: () => 'MetaMask',
       getDeviceModel: () => 'N/A',
       securityProviderRequest: () => undefined,
+      preferencesStore,
       messenger: messengerMock,
     });
 
@@ -146,6 +172,10 @@ describe('Transaction Controller', function () {
         resultCallbacks: resultCallbacksMock,
       }),
     );
+  });
+
+  afterEach(function () {
+    incomingTransactionHelperClassMock.restore();
   });
 
   function getLastTxMeta() {
@@ -3372,6 +3402,80 @@ describe('Transaction Controller', function () {
       );
 
       assert.deepEqual(transaction1, transaction2);
+    });
+  });
+
+  describe('on incoming transaction helper transactions event', function () {
+    it('adds new transactions to state', async function () {
+      const existingTransaction = TRANSACTION_META_MOCK;
+
+      const incomingTransaction1 = {
+        ...TRANSACTION_META_MOCK,
+        id: 2,
+        hash: '0x2',
+      };
+
+      const incomingTransaction2 = {
+        ...TRANSACTION_META_MOCK,
+        id: 3,
+        hash: '0x3',
+      };
+
+      txController.store.getState().transactions = {
+        [existingTransaction.id]: existingTransaction,
+      };
+
+      await incomingTransactionHelperEventMock.firstCall.args[1]({
+        added: [incomingTransaction1, incomingTransaction2],
+        updated: [],
+      });
+
+      assert.deepEqual(txController.store.getState().transactions, {
+        [existingTransaction.id]: existingTransaction,
+        [incomingTransaction1.id]: incomingTransaction1,
+        [incomingTransaction2.id]: incomingTransaction2,
+      });
+    });
+
+    it('ignores new transactions if hash matches existing transaction', async function () {
+      const existingTransaction = TRANSACTION_META_MOCK;
+      const incomingTransaction1 = { ...TRANSACTION_META_MOCK, id: 2 };
+      const incomingTransaction2 = { ...TRANSACTION_META_MOCK, id: 3 };
+
+      txController.store.getState().transactions = {
+        [existingTransaction.id]: existingTransaction,
+      };
+
+      await incomingTransactionHelperEventMock.firstCall.args[1]({
+        added: [incomingTransaction1, incomingTransaction2],
+        updated: [],
+      });
+
+      assert.deepEqual(txController.store.getState().transactions, {
+        [existingTransaction.id]: existingTransaction,
+      });
+    });
+  });
+
+  describe('on incoming transaction helper updatedLastFetchedBlockNumbers event', function () {
+    it('updates state', async function () {
+      const lastFetchedBlockNumbers = {
+        key: 234,
+      };
+
+      assert.deepEqual(
+        txController.store.getState().lastFetchedBlockNumbers,
+        undefined,
+      );
+
+      await incomingTransactionHelperEventMock.secondCall.args[1]({
+        lastFetchedBlockNumbers,
+      });
+
+      assert.deepEqual(
+        txController.store.getState().lastFetchedBlockNumbers,
+        lastFetchedBlockNumbers,
+      );
     });
   });
 });

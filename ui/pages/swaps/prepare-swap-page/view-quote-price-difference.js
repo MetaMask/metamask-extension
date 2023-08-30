@@ -59,6 +59,7 @@ export default function ViewQuotePriceDifference(props) {
     <Box display={DISPLAY.FLEX} marginTop={2}>
       <BannerAlert
         title={priceDifferenceTitle}
+        titleProps={{ 'data-testid': 'swaps-banner-title' }}
         severity={severity}
         width={BLOCK_SIZES.FULL}
         data-testid="mm-banner-alert"

@@ -1,0 +1,126 @@
+{
+  "data": {
+    "AlertController": {
+      "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
+      "unconnectedAccountAlertShownOrigins": "object",
+      "web3ShimUsageOrigins": "object"
+    },
+    "AnnouncementController": { "announcements": "object" },
+    "AppStateController": {
+      "browserEnvironment": {},
+      "nftsDropdownState": {},
+      "connectedStatusPopoverHasBeenShown": true,
+      "termsOfUseLastAgreed": "number",
+      "defaultHomeActiveTabName": null,
+      "fullScreenGasPollTokens": [],
+      "notificationGasPollTokens": [],
+      "popupGasPollTokens": [],
+      "qrHardware": {},
+      "recoveryPhraseReminderHasBeenShown": true,
+      "recoveryPhraseReminderLastShown": "number",
+      "showTestnetMessageInDropdown": true,
+      "trezorModel": null,
+      "usedNetworks": {
+        "0x1": true,
+        "0xe708": true,
+        "0x5": true,
+        "0x539": true
+      },
+      "snapsInstallPrivacyWarningShown": true
+    },
+    "CachedBalancesController": { "cachedBalances": "object" },
+    "CurrencyController": {
+      "conversionDate": "number",
+      "conversionRate": 1300,
+      "currentCurrency": "usd",
+      "nativeCurrency": "ETH",
+      "usdConversionRate": 1300
+    },
+    "GasFeeController": {
+      "estimatedGasFeeTimeBounds": {},
+      "gasEstimateType": "none",
+      "gasFeeEstimates": {}
+    },
+    "KeyringController": { "vault": "string" },
+    "MetaMetricsController": {
+      "eventsBeforeMetricsOptIn": "object",
+      "fragments": "object",
+      "metaMetricsId": "fake-metrics-id",
+      "participateInMetaMetrics": true,
+      "traits": "object"
+    },
+    "NetworkController": {
+      "networkId": "1337",
+      "selectedNetworkClientId": "string",
+      "networksMetadata": {
+        "networkConfigurationId": { "EIPS": {}, "status": "available" }
+      },
+      "providerConfig": {
+        "chainId": "0x539",
+        "nickname": "Localhost 8545",
+        "rpcPrefs": "object",
+        "rpcUrl": "string",
+        "ticker": "ETH",
+        "type": "rpc",
+        "id": "networkConfigurationId"
+      },
+      "networkConfigurations": "object"
+    },
+    "OnboardingController": {
+      "completedOnboarding": true,
+      "firstTimeFlowType": "import",
+      "onboardingTabs": "object",
+      "seedPhraseBackedUp": true
+    },
+    "PermissionController": { "subjects": "object" },
+    "PreferencesController": {
+      "advancedGasFee": null,
+      "currentLocale": "en",
+      "dismissSeedBackUpReminder": true,
+      "featureFlags": {},
+      "forgottenPassword": false,
+      "identities": "object",
+      "infuraBlocked": false,
+      "ipfsGateway": "string",
+      "knownMethodData": "object",
+      "ledgerTransportType": "webhid",
+      "lostIdentities": "object",
+      "openSeaEnabled": false,
+      "preferences": {
+        "hideZeroBalanceTokens": false,
+        "showFiatInTestnets": false,
+        "showTestNetworks": false,
+        "useNativeCurrencyAsPrimaryCurrency": true
+      },
+      "selectedAddress": "string",
+      "theme": "light",
+      "useBlockie": false,
+      "useNftDetection": false,
+      "useNonceField": false,
+      "usePhishDetect": true,
+      "useTokenDetection": false,
+      "useCurrencyRateCheck": true,
+      "useMultiAccountBalanceChecker": true
+    },
+    "SmartTransactionsController": {
+      "smartTransactionsState": {
+        "fees": {},
+        "liveness": true,
+        "smartTransactions": "object"
+      }
+    },
+    "SubjectMetadataController": { "subjectMetadata": "object" },
+    "TokensController": {
+      "allDetectedTokens": {},
+      "allIgnoredTokens": {},
+      "allTokens": {},
+      "detectedTokens": "object",
+      "ignoredTokens": "object",
+      "tokens": "object"
+    },
+    "TransactionController": { "transactions": "object" },
+    "config": "object",
+    "firstTimeInfo": "object"
+  },
+  "meta": { "version": 74 }
+}
