@@ -1359,8 +1359,8 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       getEncryptionPublicKey:
-        this.keyringController.getEncryptionPublicKey.bind(
-          this.keyringController,
+        this.coreKeyringController.getEncryptionPublicKey.bind(
+          this.coreKeyringController,
         ),
       getAccountKeyringType:
         this.coreKeyringController.getAccountKeyringType.bind(
