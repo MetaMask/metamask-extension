@@ -2133,6 +2133,7 @@ export default class MetamaskController extends EventEmitter {
       return {
         isUnlocked,
         chainId,
+        networkVersion: parseInt(chainId, 16).toString(),
       };
     }
 
@@ -2159,8 +2160,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {object} An object with relevant network state properties.
    */
   getProviderNetworkState() {
+    const { chainId } = this.networkController.state.providerConfig;
     return {
-      chainId: this.networkController.state.providerConfig.chainId,
+      chainId,
+      networkVersion: parseInt(chainId, 16).toString(),
     };
   }
 
