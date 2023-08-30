@@ -26,33 +26,34 @@ export const BannerTip: BannerTipComponent = React.forwardRef(
       ...props
     }: BannerTipProps<C>,
     ref?: PolymorphicRef<C>,
-  ) => {
-    return (
-      <BannerBase
-        ref={ref}
-        startAccessory={
-          startAccessory || (
+  ) => (
+    <BannerBase
+      ref={ref}
+      startAccessory={
+        startAccessory || (
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            {...logoWrapperProps}
+          >
             <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              {...logoWrapperProps}
-            >
-              <Box
-                as="img"
-                className="mm-banner-tip--logo"
-                src={`images/fox-${logoType}.png`}
-                alt={logoType}
-                {...(logoProps as BoxProps<C>)}
-              />
-            </Box>
-          )
-        }
-        borderColor={BorderColor.borderDefault}
-        className={classnames('mm-banner-tip', className)}
-        {...(props as BannerBaseProps<C>)}
-      >
-        {children}
-      </BannerBase>
-    );
-  },
+              as="img"
+              src={`images/fox-${logoType}.png`}
+              alt={logoType}
+              {...(logoProps as BoxProps<C>)}
+              className={classnames(
+                'mm-banner-tip--logo',
+                logoProps?.className ?? '',
+              )}
+            />
+          </Box>
+        )
+      }
+      borderColor={BorderColor.borderDefault}
+      className={classnames('mm-banner-tip', className)}
+      {...(props as BannerBaseProps<C>)}
+    >
+      {children}
+    </BannerBase>
+  ),
 );

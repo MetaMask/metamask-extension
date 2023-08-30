@@ -89,7 +89,7 @@ export const Children: StoryFn<typeof BannerTip> = (args) => {
       <ButtonLink
         size={ButtonLinkSize.Inherit}
         href="https://metamask.io/"
-        target="_blank"
+        externalLink
       >
         hyperlink.
       </ButtonLink>

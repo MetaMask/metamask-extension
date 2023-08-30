@@ -27,7 +27,7 @@ export interface BannerTipStyleUtilityProps
    */
   logoWrapperProps?: BoxProps<'span'>;
   /**
-   * The start(defualt left) content area of BannerBase
+   * The start(default left) content area of BannerBase
    */
   startAccessory?: React.ReactNode;
 }
