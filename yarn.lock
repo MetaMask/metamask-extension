@@ -12200,9 +12200,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^116.0.0":
-  version: 116.0.0
-  resolution: "chromedriver@npm:116.0.0"
+"chromedriver@npm:^114.0.0":
+  version: 114.0.3
+  resolution: "chromedriver@npm:114.0.3"
   dependencies:
     "@testim/chrome-version": "npm:^1.1.3"
     axios: "npm:^1.4.0"
@@ -12213,7 +12213,7 @@ __metadata:
     tcp-port-used: "npm:^1.0.1"
   bin:
     chromedriver: bin/chromedriver
-  checksum: 0f3254efed54e4746c28606a61485e9f91d143f6c92158c904b729871bca14ff50738323f18eac9b30fbcef48c1510a9d7700ee38a53a54bbd24c06330b3bb2d
+  checksum: b57c2dce1122557eddac6cec2f7668514db3654ce6ee2fe0469d24429b3f86894fd1fd03865f4a7c49cbaaed8562106154bf4158bb3844814917befba412aa00
   languageName: node
   linkType: hard
 
@@ -24352,7 +24352,7 @@ __metadata:
     browserify: "npm:^16.5.1"
     chalk: "npm:^4.1.2"
     chokidar: "npm:^3.5.3"
-    chromedriver: "npm:^116.0.0"
+    chromedriver: "npm:^114.0.0"
     classnames: "npm:^2.2.6"
     concurrently: "npm:^7.6.0"
     copy-to-clipboard: "npm:^3.3.3"
