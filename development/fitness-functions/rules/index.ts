@@ -1,4 +1,4 @@
-import { preventSinonAssertSyntax } from './sinon-assert-syntax';
+// import { preventSinonAssertSyntax } from './sinon-assert-syntax';
 import { preventJavaScriptFileAdditions } from './javascript-additions';
 
 const RULES: IRule[] = [
