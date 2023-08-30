@@ -2429,6 +2429,19 @@ export function hideIpfsModal(): Action {
     type: actionConstants.SHOW_IPFS_MODAL_CLOSE,
   };
 }
+
+export function showSitePermissionsModal(): Action {
+  return {
+    type: actionConstants.SHOW_SITE_PERMISSIONS_MODAL,
+  };
+}
+
+export function hideSitePermissionsModal(): Action {
+  return {
+    type: actionConstants.HIDE_SITE_PERMISSIONS_MODAL,
+  };
+}
+
 export function closeCurrentNotificationWindow(): ThunkAction<
   void,
   MetaMaskReduxState,
