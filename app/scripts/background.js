@@ -20,6 +20,7 @@ import { isObject } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
 import PortStream from 'extension-port-stream';
+
 import { ethErrors } from 'eth-rpc-errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
