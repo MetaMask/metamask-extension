@@ -705,9 +705,10 @@ export default class MetamaskController extends EventEmitter {
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-          this.preferencesController.store,
-        ),
+        onPreferencesStateChange:
+          this.preferencesController.store.subscribe.bind(
+            this.preferencesController.store,
+          ),
       },
       {
         disabled:
@@ -4689,6 +4690,8 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * A method that is called by the TokensController when a token is added.
+   *
+   * @param _listener
    */
   onTokenListStateChange(_listener) {
     return _listener;
