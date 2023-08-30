@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
@@ -189,6 +190,7 @@ export default function TokenAllowance({
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const trackEvent = useContext(MetaMetricsContext);
   const accountType = useSelector((state) =>
     getAccountType(state, fromAccount.address),
   );
@@ -259,7 +261,9 @@ export default function TokenAllowance({
     }
     ///: END:ONLY_INCLUDE_IN
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     dispatch(updateCustomNonce(''));
+    ///: END:ONLY_INCLUDE_IN
 
     dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -271,7 +275,10 @@ export default function TokenAllowance({
         closeNotification: isNotification && unapprovedTxCount === 1,
         showCustodyConfirmLink,
         onDeepLinkFetched: () => {
-          console.log('onDeepLinkFetched');
+          trackEvent({
+            category: 'MMI',
+            event: 'Show deeplink for transaction',
+          });
         },
         onDeepLinkShown: () => {
           clearConfirmTransaction();
@@ -280,8 +287,11 @@ export default function TokenAllowance({
         },
       });
       ///: END:ONLY_INCLUDE_IN
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       dispatch(clearConfirmTransaction());
       history.push(mostRecentOverviewPage);
+      ///: END:ONLY_INCLUDE_IN
     });
   };
 
@@ -769,8 +779,10 @@ TokenAllowance.propTypes = {
    * Customize nonce warning message
    */
   warning: PropTypes.string,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   /**
    * Whether the page is a notification or not
    */
   isNotification: PropTypes.bool,
+  ///: END:ONLY_INCLUDE_IN
 };
