@@ -1612,10 +1612,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@blockaid/ppom@npm:1.1.1"
-  checksum: d12ae3ee9e91ce8719381f828834b9dc438671482608fc39a82c854e203be327b5d7feaaac378b7eb8132e0596e202a699f889bbf863ae26f45fa4d44512b4b3
+"@blockaid/ppom_release@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "@blockaid/ppom_release@npm:1.2.6"
+  checksum: 090d5f3f7422b9b1d66619fd0412ac865457fa2f30426380f4adaad11a2d93d5f1c4a0f67e2a1d20af50edf6e1b09cbd6cb5d7972dcaab5cbbbc4c52cfa0507a
   languageName: node
   linkType: hard
 
@@ -24169,7 +24169,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.16.7"
     "@babel/register": "npm:^7.5.5"
     "@babel/runtime": "npm:^7.18.9"
-    "@blockaid/ppom": "npm:^1.1.1"
+    "@blockaid/ppom_release": "npm:^1.2.6"
     "@download/blockies": "npm:^1.0.3"
     "@ensdomains/content-hash": "npm:^2.5.6"
     "@ethereumjs/common": "npm:^3.1.1"
