@@ -4527,6 +4527,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/post-message-stream@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@metamask/post-message-stream@npm:6.2.0"
+  dependencies:
+    "@metamask/utils": ^5.0.0
+    readable-stream: 2.3.3
+  checksum: 657cdb2dd61a46a4da7f036a97ef0aa9ad8e918d8f8c0fd620eaede4a32c2ff909738a7dfb2b1e6099e7771fd03c3466b60fedab56e39a5cc5507927758e3cb7
+  languageName: node
+  linkType: hard
+
 "@metamask/preferences-controller@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/preferences-controller@npm:4.1.0"
@@ -24442,7 +24452,7 @@ __metadata:
     "@metamask/permission-controller": ^4.0.0
     "@metamask/phishing-controller": ^3.0.0
     "@metamask/phishing-warning": ^2.1.0
-    "@metamask/post-message-stream": ^6.0.0
+    "@metamask/post-message-stream": ^6.2.0
     "@metamask/providers": ^10.2.1
     "@metamask/rate-limit-controller": ^3.0.0
     "@metamask/rpc-methods": ^0.32.2
