@@ -3,19 +3,18 @@
 exports[`Security Provider Banner Alert should match snapshot 1`] = `
 <div>
   <div
-    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--margin-4 mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
   >
     <span
       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
       style="mask-image: url('./images/icons/danger.svg');"
     />
     <div>
-      <h5
-        class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
-        data-testid="mm-banner-base-title"
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >
         Malicious third party detected
-      </h5>
+      </p>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
       >

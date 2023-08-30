@@ -145,27 +145,21 @@ describe('MetaMaskController', function () {
         metamaskController.addNewAccount(1),
         metamaskController.addNewAccount(1),
       ]);
-      assert.deepEqual(
-        Object.keys(addNewAccountResult1.identities),
-        Object.keys(addNewAccountResult2.identities),
-      );
+      assert.equal(addNewAccountResult1, addNewAccountResult2);
     });
 
     it('two successive calls with same accountCount give same result', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(1);
-      assert.deepEqual(
-        Object.keys(addNewAccountResult1.identities),
-        Object.keys(addNewAccountResult2.identities),
-      );
+      assert.equal(addNewAccountResult1, addNewAccountResult2);
     });
 
     it('two successive calls with different accountCount give different results', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(2);
-      assert.notDeepEqual(addNewAccountResult1, addNewAccountResult2);
+      assert.notEqual(addNewAccountResult1, addNewAccountResult2);
     });
   });
 
@@ -178,14 +172,14 @@ describe('MetaMaskController', function () {
 
       await metamaskController.createNewVaultAndKeychain('test@123');
       await Promise.all([
-        metamaskController.importAccountWithStrategy('Private Key', [
+        metamaskController.importAccountWithStrategy('privateKey', [
           importPrivkey,
         ]),
         Promise.resolve(1).then(() => {
           keyringControllerState1 = JSON.stringify(
             metamaskController.keyringController.memStore.getState(),
           );
-          metamaskController.importAccountWithStrategy('Private Key', [
+          metamaskController.importAccountWithStrategy('privateKey', [
             importPrivkey,
           ]);
         }),
@@ -223,6 +217,14 @@ describe('MetaMaskController', function () {
       );
       assert.notEqual(result1, undefined);
       assert.deepEqual(result1, result2);
+    });
+  });
+
+  describe('#setLocked', function () {
+    it('should lock the wallet', async function () {
+      const { isUnlocked, keyrings } = await metamaskController.setLocked();
+      assert(!isUnlocked);
+      assert.deepEqual(keyrings, []);
     });
   });
 

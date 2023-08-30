@@ -17,9 +17,9 @@ import {
 export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
   <C extends React.ElementType = 'button' | 'a'>(
     {
-      className,
-      danger,
-      disabled,
+      className = '',
+      danger = false,
+      disabled = false,
       size = ButtonPrimarySize.Md,
       ...props
     }: ButtonPrimaryProps<C>,

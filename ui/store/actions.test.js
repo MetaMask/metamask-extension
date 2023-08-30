@@ -244,6 +244,9 @@ describe('Actions', () => {
               '0xAnotherAddress': '0x0',
             },
           },
+          identities: {
+            '0xAnotherAddress': {},
+          },
         }),
       );
 
@@ -398,7 +401,7 @@ describe('Actions', () => {
 
       const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
         cb(null, {
-          identities: {},
+          addedAccountAddress: '0x123',
         }),
       );
 
@@ -1402,15 +1405,17 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        {
-          type: 'SHOW_PRIVATE_KEY',
-          payload: testPrivKey,
-        },
       ];
 
       await store.dispatch(
-        actions.exportAccount('a-test-password', '0xAddress'),
+        actions.exportAccount(
+          'a-test-password',
+          '0xAddress',
+          jest.fn(),
+          jest.fn(),
+        ),
       );
+
       expect(verifyPasswordStub.callCount).toStrictEqual(1);
       expect(exportAccountStub.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -1939,6 +1944,9 @@ describe('Actions', () => {
               '0xFirstAddress': {
                 balance: '0x0',
               },
+            },
+            identities: {
+              '0xFirstAddress': {},
             },
             cachedBalances: {
               '0x1': {

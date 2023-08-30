@@ -42,6 +42,12 @@ async function main() {
               'Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.)',
             type: 'boolean',
           })
+          .option('update-snapshot', {
+            alias: 'u',
+            default: false,
+            description: 'Update E2E snapshots',
+            type: 'boolean',
+          })
           .positional('e2e-test-path', {
             describe: 'The path for the E2E test to run.',
             type: 'string',
@@ -58,6 +64,7 @@ async function main() {
     retries,
     retryUntilFailure,
     leaveRunning,
+    updateSnapshot,
   } = argv;
 
   if (!browser) {
@@ -101,6 +108,10 @@ async function main() {
     process.env.E2E_LEAVE_RUNNING = 'true';
     testTimeoutInMilliseconds = 0;
     exit = '--no-exit';
+  }
+
+  if (updateSnapshot) {
+    process.env.UPDATE_SNAPSHOTS = 'true';
   }
 
   const configFile = path.join(__dirname, '.mocharc.js');

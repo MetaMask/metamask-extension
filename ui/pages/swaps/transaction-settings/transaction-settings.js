@@ -21,7 +21,7 @@ import {
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import {
   Slippage,
-  SLIPPAGE_OVER_LIMIT_ERROR,
+  SLIPPAGE_VERY_HIGH_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
 import {
@@ -101,20 +101,20 @@ export default function TransactionSettings({
       // We will not show this warning for 0% slippage, because we will only
       // return non-slippage quotes from off-chain makers.
       notificationSeverity = SEVERITIES.WARNING;
-      notificationText = t('swapSlippageTooLowDescription');
-      notificationTitle = t('swapSlippageTooLowTitle');
+      notificationText = t('swapSlippageLowDescription', [newSlippage]);
+      notificationTitle = t('swapSlippageLowTitle');
     } else if (
       Number(customValue) >= 5 &&
       Number(customValue) <= maxAllowedSlippage
     ) {
       notificationSeverity = SEVERITIES.WARNING;
-      notificationText = t('swapSlippageVeryHighDescription');
-      notificationTitle = t('swapSlippageVeryHighTitle');
+      notificationText = t('swapSlippageHighDescription', [newSlippage]);
+      notificationTitle = t('swapSlippageHighTitle');
     } else if (Number(customValue) > maxAllowedSlippage) {
       notificationSeverity = SEVERITIES.DANGER;
       notificationText = t('swapSlippageOverLimitDescription');
       notificationTitle = t('swapSlippageOverLimitTitle');
-      dispatch(setSwapsErrorKey(SLIPPAGE_OVER_LIMIT_ERROR));
+      dispatch(setSwapsErrorKey(SLIPPAGE_VERY_HIGH_ERROR));
     } else if (Number(customValue) === 0) {
       notificationSeverity = SEVERITIES.INFO;
       notificationText = t('swapSlippageZeroDescription');
@@ -337,6 +337,7 @@ export default function TransactionSettings({
                 <BannerAlert
                   severity={notificationSeverity}
                   title={notificationTitle}
+                  titleProps={{ 'data-testid': 'swaps-banner-title' }}
                 >
                   <Typography
                     variant={TypographyVariant.H6}
