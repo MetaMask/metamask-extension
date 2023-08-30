@@ -1,39 +1,18 @@
 import React from 'react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
-  Size,
+  Display,
+  FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { IconName } from '..';
-import { ButtonLinkSize } from '../button-link';
-import Box from '../../ui/box/box';
+import { Box, IconName } from '..';
 import { Text } from '../text';
 import README from './README.mdx';
-import { Button, BUTTON_VARIANT } from '.';
-
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
+import { Button, ButtonSize, ButtonVariant } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/Button',
-
   component: Button,
   parameters: {
     docs: {
@@ -83,79 +62,54 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(ButtonLinkSize),
+      options: Object.values(ButtonSize),
     },
     variant: {
-      options: Object.values(BUTTON_VARIANT),
+      options: Object.values(ButtonVariant),
       control: 'select',
-    },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
     },
   },
   args: {
     children: 'Button',
   },
-};
+} as Meta<typeof Button>;
 
-export const DefaultStory = (args) => <Button {...args} />;
+const Template: StoryFn<typeof Button> = (args) => <Button {...args} />;
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Variant = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
-    <Button variant={BUTTON_VARIANT.PRIMARY} {...args}>
-      Button Primary
-    </Button>
-    <Button variant={BUTTON_VARIANT.SECONDARY} {...args}>
-      Button Secondary
-    </Button>
-    <Button variant={BUTTON_VARIANT.LINK} {...args}>
-      Button Link
-    </Button>
+export const Variant: StoryFn<typeof Button> = () => (
+  <Box display={Display.Flex} gap={1}>
+    <Button variant={ButtonVariant.Primary}>Button Primary</Button>
+    <Button variant={ButtonVariant.Secondary}>Button Secondary</Button>
+    <Button variant={ButtonVariant.Link}>Button Link</Button>
   </Box>
 );
 
-export const SizeStory = (args) => (
+export const SizeStory: StoryFn<typeof Button> = (args) => (
   <>
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.baseline}
       gap={1}
       marginBottom={3}
     >
-      <Button {...args} size={Size.SM}>
+      <Button {...args} variant={ButtonVariant.Primary} size={ButtonSize.Sm}>
         Small Button
       </Button>
-      <Button {...args} size={Size.MD}>
+      <Button {...args} size={ButtonSize.Md}>
         Medium (Default) Button
       </Button>
-      <Button {...args} size={Size.LG}>
+      <Button {...args} size={ButtonSize.Lg}>
         Large Button
       </Button>
-      <Button {...args} variant={BUTTON_VARIANT.LINK}>
+      <Button {...args} variant={ButtonVariant.Link}>
         Auto ButtonLink
       </Button>
     </Box>
     <Text variant={TextVariant.bodySm}>
-      <Button {...args} variant={BUTTON_VARIANT.LINK} size={Size.inherit}>
+      <Button {...args} variant={ButtonVariant.Link} size={ButtonSize.Inherit}>
         Button Inherit
       </Button>{' '}
       inherits the font-size of the parent element. Inherit size only used for
@@ -165,8 +119,8 @@ export const SizeStory = (args) => (
 );
 SizeStory.storyName = 'Size';
 
-export const Danger = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+export const Danger: StoryFn<typeof Button> = (args) => (
+  <Box display={Display.Flex} gap={1}>
     <Button {...args}>Normal</Button>
     {/* Test Anchor tag to match exactly as button */}
     <Button as="a" {...args} href="#" danger>
@@ -175,13 +129,15 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <Button {...args}>Anchor Element</Button>;
+export const Href: StoryFn<typeof Button> = (args) => (
+  <Button {...args}>Anchor Element</Button>
+);
 
 Href.args = {
   href: '/metamask',
 };
 
-export const Block = (args) => (
+export const Block: StoryFn<typeof Button> = (args) => (
   <>
     <Button {...args} marginBottom={2}>
       Default Button
@@ -192,8 +148,8 @@ export const Block = (args) => (
   </>
 );
 
-export const As = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
+export const As: StoryFn<typeof Button> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
     <Button {...args}>Button Element</Button>
     <Button as="a" href="#" {...args}>
       Anchor Element
@@ -201,26 +157,22 @@ export const As = (args) => (
   </Box>
 );
 
-export const Disabled = (args) => <Button {...args}>Disabled Button</Button>;
-
+export const Disabled = Template.bind({});
 Disabled.args = {
   disabled: true,
 };
 
-export const Loading = (args) => <Button {...args}>Loading Button</Button>;
-
+export const Loading = Template.bind({});
 Loading.args = {
   loading: true,
 };
 
-export const StartIconName = (args) => (
-  <Button {...args} startIconName={IconName.AddSquare}>
-    Button
-  </Button>
-);
+export const StartIconName = Template.bind({});
+StartIconName.args = {
+  startIconName: IconName.AddSquare,
+};
 
-export const EndIconName = (args) => (
-  <Button {...args} endIconName={IconName.Arrow2Right}>
-    Button
-  </Button>
-);
+export const EndIconName = Template.bind({});
+EndIconName.args = {
+  endIconName: IconName.AddSquare,
+};

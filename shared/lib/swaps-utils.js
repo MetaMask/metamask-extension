@@ -155,7 +155,7 @@ export const getBaseApi = function (type, chainId) {
     case 'trade':
       return `${baseUrl}/trades?`;
     case 'tokens':
-      return `${baseUrl}/tokens`;
+      return `${baseUrl}/tokens?includeBlockedTokens=true`;
     case 'token':
       return `${baseUrl}/token`;
     case 'topAssets':
