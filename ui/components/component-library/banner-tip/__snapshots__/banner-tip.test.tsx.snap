@@ -7,11 +7,11 @@ exports[`BannerTip should render BannerTip element correctly 1`] = `
     data-testid="bannerTip"
   >
     <div
-      class="box box--display-flex box--flex-direction-row box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--align-items-center"
     >
       <img
         alt="greeting"
-        class="box mm-banner-tip--logo box--flex-direction-row"
+        class="mm-box mm-banner-tip--logo"
         src="images/fox-greeting.png"
       />
     </div>
