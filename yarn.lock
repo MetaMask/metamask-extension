@@ -4527,17 +4527,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^6.0.0, @metamask/post-message-stream@npm:^6.1.1, @metamask/post-message-stream@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "@metamask/post-message-stream@npm:6.1.2"
-  dependencies:
-    "@metamask/utils": "npm:^5.0.0"
-    readable-stream: "npm:2.3.3"
-  checksum: 324e3fb944e38060d2872eb34dd84373e0923370e3d3952cedf543269ad1d67e8e454e55a1aa65abccf27284c1e39eecb0212f0a48a02b0dfb8441441ce5e9b4
-  languageName: node
-  linkType: hard
-
-"@metamask/post-message-stream@npm:^6.2.0":
+"@metamask/post-message-stream@npm:^6.0.0, @metamask/post-message-stream@npm:^6.1.1, @metamask/post-message-stream@npm:^6.1.2, @metamask/post-message-stream@npm:^6.2.0":
   version: 6.2.0
   resolution: "@metamask/post-message-stream@npm:6.2.0"
   dependencies:
@@ -16794,16 +16784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extension-port-stream@npm:^2.0.0, extension-port-stream@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "extension-port-stream@npm:2.0.1"
-  dependencies:
-    webextension-polyfill-ts: "npm:^0.22.0"
-  checksum: 81a3241b1fd847c3b66edbbafb864415c2ca7eb30953d90155eb2c45f846e60df7175e007010cf4ad7d287993839764e7eab2cbe5d056262eeca90f05b945007
-  languageName: node
-  linkType: hard
-
-"extension-port-stream@npm:^2.1.1":
+"extension-port-stream@npm:^2.0.0, extension-port-stream@npm:^2.0.1, extension-port-stream@npm:^2.1.1":
   version: 2.1.1
   resolution: "extension-port-stream@npm:2.1.1"
   dependencies:
@@ -34754,15 +34735,6 @@ __metadata:
     randombytes: "npm:^2.1.0"
     utf8: "npm:3.0.0"
   checksum: 56b9d1ab2494ee632ca8f10ab1c9ede701b8f3fca5231b0de02a08b1aba414d24b7bca1468454c7d661b19d0c7bb06341c09b186191e2db5736005193cfe884b
-  languageName: node
-  linkType: hard
-
-"webextension-polyfill-ts@npm:^0.22.0":
-  version: 0.22.0
-  resolution: "webextension-polyfill-ts@npm:0.22.0"
-  dependencies:
-    webextension-polyfill: "npm:^0.7.0"
-  checksum: 3d07c8c2d8df3f25e4e62d59c1d8f6a16cf36a320f9fb3627e635f9e8fb4bbd72ca3f31ba60bb3ed39321b422a93413da55b061b952cfce571ff39cd0f9f3ce5
   languageName: node
   linkType: hard
 
