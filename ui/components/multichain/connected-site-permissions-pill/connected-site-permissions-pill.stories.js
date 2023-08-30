@@ -20,6 +20,13 @@ DefaultView.argTypes = {
   siteIcon: { control: 'text' },
 };
 
+export const NoActionButton = () => (
+  <ConnectedSitePermissionsPill
+    siteName="app.uniswap.org"
+    siteIcon="https://uniswap.org/favicon.ico"
+  />
+);
+
 export const Overflow = () => (
   <ConnectedSitePermissionsPill
     actionButtonLabel="Permissions"

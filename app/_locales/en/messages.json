@@ -833,6 +833,15 @@
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button."
   },
+  "connectedSitePermission1": {
+    "message": "See address, account balance, and activity"
+  },
+  "connectedSitePermission2": {
+    "message": "Suggest transactions to approve"
+  },
+  "connectedSitePermissionsSubtitle": {
+    "message": "This site has permission to:"
+  },
   "connectedSites": {
     "message": "Connected sites"
   },
