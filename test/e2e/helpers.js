@@ -51,6 +51,7 @@ async function withFixtures(options, testSuite) {
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
+  const phishingPagePort = 10000 + Math.floor(Math.random() * 10000);
 
   let webDriver;
   let driver;
@@ -78,7 +79,7 @@ async function withFixtures(options, testSuite) {
     }
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
-    await phishingPageServer.start();
+    await phishingPageServer.start(phishingPagePort);
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
         numberOfDapps = dappOptions.numberOfDapps;
