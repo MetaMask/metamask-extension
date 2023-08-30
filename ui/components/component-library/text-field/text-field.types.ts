@@ -107,19 +107,19 @@ export interface TextFieldStyleUtilityProps
   /**
    * Callback fired on blur
    */
-  onBlur?: () => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   /**
    * Callback fired when the value is changed.
    */
-  onChange?: () => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   /**
    * Callback fired when the TextField is clicked on
    */
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
   /**
    * Callback fired on focus
    */
-  onFocus?: () => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   /**
    * The short hint displayed in the input before the user enters a value.
    */

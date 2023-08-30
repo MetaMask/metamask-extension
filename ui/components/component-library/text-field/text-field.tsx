@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, KeyboardEvent } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import classnames from 'classnames';
 
 import {
@@ -63,7 +63,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
       }
     }, [disabled]);
 
-    const handleClick = (event: KeyboardEvent<HTMLInputElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLInputElement>) => {
       const { current } = internalInputRef;
 
       if (current) {
@@ -72,16 +72,16 @@ export const TextField: TextFieldComponent = React.forwardRef(
       }
 
       if (onClick && !disabled) {
-        onClick(event);
+        onClick?.(event);
       }
     };
 
-    const handleFocus = (event: KeyboardEvent<HTMLInputElement>) => {
+    const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
       setFocused(true);
       onFocus?.(event);
     };
 
-    const handleBlur = (event: KeyboardEvent<HTMLInputElement>) => {
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
       setFocused(false);
       onBlur?.(event);
     };

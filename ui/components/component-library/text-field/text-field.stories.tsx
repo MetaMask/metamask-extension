@@ -25,37 +25,18 @@ import {
   Icon,
   IconSize,
   AvatarTokenSize,
+  Input,
 } from '..';
 
-import { BoxProps, PolymorphicRef, StyleUtilityProps } from '../box';
-import { InputProps } from '../input';
-import { InputComponent } from '../input/input.types';
+import { PolymorphicRef } from '../box';
+import { InputProps, InputComponent } from '../input';
 import { TextFieldSize, TextFieldType } from './text-field.types';
 import { TextField } from './text-field';
 
 import README from './README.mdx';
 
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
-
 export default {
   title: 'Components/ComponentLibrary/TextField',
-
   component: TextField,
   parameters: {
     docs: {
@@ -130,26 +111,6 @@ export default {
     },
     value: {
       control: 'text',
-    },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
     },
   },
   args: {
@@ -347,100 +308,14 @@ export const InputRef = (args) => {
   );
 };
 
-interface CustomInputProps extends StyleUtilityProps {
-  as?: string;
-  autoComplete?: string;
-  autoFocus?: boolean;
-  defaultValue?: string | number;
-  disabled?: boolean;
-  focused?: boolean;
-  id?: string;
-  inputProps?: Record<string, any>;
-  inputRef?:
-    | ((instance: HTMLInputElement | null) => void)
-    | React.RefObject<HTMLInputElement>
-    | null;
-  maxLength?: number;
-  name?: string;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-  readOnly?: boolean;
-  required?: boolean;
-  value?: string;
-  variant?: TextVariant;
-  type?: TextFieldType;
-  className?: string;
-  'aria-invalid'?: boolean;
-}
-
-const CustomInputComponent: InputComponent = React.forwardRef(
+export const CustomInputComponent: InputComponent = React.forwardRef(
   <C extends React.ElementType = 'input'>(
-    {
-      as,
-      autoComplete,
-      autoFocus,
-      defaultValue,
-      disabled,
-      focused,
-      id,
-      inputProps,
-      inputRef,
-      maxLength,
-      name,
-      onBlur,
-      onChange,
-      onFocus,
-      padding,
-      paddingLeft,
-      paddingRight,
-      placeholder,
-      readOnly,
-      required,
-      value,
-      variant,
-      type,
-      className,
-      'aria-invalid': ariaInvalid,
-      ...props
-    }: CustomInputProps,
-    ref,
+    props: InputProps<C>,
+    ref: PolymorphicRef<C>,
   ) => (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      ref={ref}
-      {...{ padding, paddingLeft, paddingRight, ...(props as BoxProps<C>) }}
-    >
+    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
       <Box display={Display.InlineFlex}>
-        <Text
-          style={{ padding: 0 }}
-          aria-invalid={ariaInvalid}
-          ref={inputRef}
-          {...{
-            className,
-            as,
-            autoComplete,
-            autoFocus,
-            defaultValue,
-            disabled,
-            focused,
-            id,
-            maxLength,
-            name,
-            onBlur,
-            onChange,
-            onFocus,
-            placeholder,
-            readOnly,
-            required,
-            value,
-            variant,
-            type,
-            ...(inputProps as InputProps<C>),
-          }}
-        />
+        <Input ref={ref} {...(props as InputProps<C>)} />
         <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
           GoerliETH
         </Text>
@@ -450,7 +325,7 @@ const CustomInputComponent: InputComponent = React.forwardRef(
   ),
 );
 
-export const InputComponent = (args) => (
+export const InputComponentStory = (args) => (
   <TextField
     {...args}
     placeholder="0"
@@ -463,7 +338,7 @@ export const InputComponent = (args) => (
   />
 );
 
-InputComponent.args = { autoComplete: true };
+InputComponentStory.args = { autoComplete: true };
 
 export const AutoComplete = Template.bind({});
 AutoComplete.args = {

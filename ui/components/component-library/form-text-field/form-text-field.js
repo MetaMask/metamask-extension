@@ -156,8 +156,4 @@ FormTextField.propTypes = {
    * Props that are applied to the TextField component
    */
   textFieldProps: PropTypes.object,
-  /**
-   * FormTextField accepts all the props from TextField and Box
-   */
-  ...TextField.propTypes,
 };
