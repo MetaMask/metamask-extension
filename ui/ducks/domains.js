@@ -118,7 +118,7 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(CHAIN_CHANGED, (state, action) => {
-      if (action.payload !== state.currentChainId) {
+      if (action.payload !== state.chainId) {
         state.stage = 'UNINITIALIZED';
         web3Provider = null;
       }
@@ -143,11 +143,12 @@ export function initializeDomainSlice() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const networkName = CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP[chainId];
-    const ensAddress = ensNetworkMap[parseInt(chainId, 16).toString()];
+    const chainIdInt = parseInt(chainId, 16);
+    const ensAddress = ensNetworkMap[chainIdInt.toString()];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
       web3Provider = new Web3Provider(global.ethereumProvider, {
-        chainId,
+        chainId: chainIdInt,
         name: networkName,
         ensAddress,
       });
