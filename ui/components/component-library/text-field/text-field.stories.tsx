@@ -308,14 +308,14 @@ export const InputRef = (args) => {
   );
 };
 
-export const CustomInputComponent: InputComponent = React.forwardRef(
+const CustomInputComponent: InputComponent = React.forwardRef(
   <C extends React.ElementType = 'input'>(
     props: InputProps<C>,
     ref: PolymorphicRef<C>,
   ) => (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
       <Box display={Display.InlineFlex}>
-        <Input ref={ref} {...(props as InputProps<C>)} />
+        <Input ref={ref} {...(props as InputProps<C>)} style={{ padding: 0 }} />
         <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
           GoerliETH
         </Text>
@@ -325,20 +325,18 @@ export const CustomInputComponent: InputComponent = React.forwardRef(
   ),
 );
 
-export const InputComponentStory = (args) => (
-  <TextField
-    {...args}
-    placeholder="0"
-    type="number"
-    size={Size.LG}
-    InputComponent={CustomInputComponent}
-    startAccessory={
-      <Icon color={IconColor.iconAlternative} name={IconName.Wallet} />
-    }
-  />
-);
+export const InputComponentStory = Template.bind({});
 
-InputComponentStory.args = { autoComplete: true };
+InputComponentStory.storyName = 'InputComponent';
+InputComponentStory.args = {
+  placeholder: 0,
+  type: 'number',
+  size: Size.LG,
+  InputComponent: CustomInputComponent,
+  startAccessory: (
+    <Icon color={IconColor.iconAlternative} name={IconName.Wallet} />
+  ),
+};
 
 export const AutoComplete = Template.bind({});
 AutoComplete.args = {
