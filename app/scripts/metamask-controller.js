@@ -436,6 +436,7 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: () => {},
       config: { provider: this.provider },
       state: initState.TokensController,
     });

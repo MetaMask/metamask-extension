@@ -243,6 +243,7 @@ describe('DetectTokensController', function () {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: () => {},
     });
 
     assetsContractController = new AssetsContractController({
