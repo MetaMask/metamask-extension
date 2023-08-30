@@ -376,6 +376,8 @@ describe('DetectTokensController', function () {
         address: toChecksumHexAddress(tokenValues[0].address),
         decimals: tokenValues[0].decimals,
         name: tokenValues[0].name,
+        // TODO: Should match name
+        // name: undefined,
         symbol: tokenValues[0].symbol,
         aggregators: undefined,
         image: undefined,
@@ -429,9 +431,9 @@ describe('DetectTokensController', function () {
       {
         address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
-        // name: existingToken.name,
+        name: existingToken.name,
         // TODO: Should match name
-        name: undefined,
+        // name: undefined,
         symbol: existingToken.symbol,
         aggregators: undefined,
         image: undefined,
