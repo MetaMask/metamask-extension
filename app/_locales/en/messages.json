@@ -2781,10 +2781,7 @@
     "message": "Enable security alerts"
   },
   "notifications23DescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "If you enabled security alerts from OpenSea, we've moved you over to this feature."
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid on Ethereum Mainnet."
   },
   "notifications23DescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
