@@ -21,19 +21,6 @@
     align-items: center;
   }
 
-  &__header,
-  &__header--edit {
-    &__name {
-      @include H3;
-
-      margin-left: 24px;
-      max-width: 8em;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-  }
-
   &__header--edit {
     display: flex;
     justify-content: space-between;
@@ -186,10 +173,6 @@
         padding-top: 0;
       }
     }
-
-    .page-container__footer {
-      border-top: none;
-    }
   }
 
   &__add-contact {
@@ -197,10 +180,16 @@
     flex-flow: column nowrap;
     padding-bottom: 0 !important;
     height: 100%;
+    padding-top: 0;
 
     &__content {
       flex: 1 1 auto;
       height: 100%;
+      padding-top: 0;
+
+      &__username {
+        padding-top: 0;
+      }
     }
 
     &__error {

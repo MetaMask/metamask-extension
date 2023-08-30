@@ -86,7 +86,7 @@ describe('HoldToRevealButton', () => {
 
     const button = getByText('Hold to reveal SRP');
 
-    fireEvent.mouseDown(button);
+    fireEvent.pointerDown(button);
 
     const circleLocked = getByLabelText('hold to reveal circle locked');
     fireEvent.transitionEnd(circleLocked);

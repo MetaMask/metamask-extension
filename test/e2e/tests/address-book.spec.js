@@ -62,13 +62,13 @@ describe('Address Book', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-2 ETH',
         });
       },
@@ -171,7 +171,7 @@ describe('Address Book', function () {
 
         await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.clickElement({ text: 'Delete account', tag: 'a' });
+        await driver.clickElement({ text: 'Delete contact', tag: 'a' });
         // it checks if account is deleted
         const contact = await driver.findElement(
           '.send__select-recipient-wrapper__group-item',

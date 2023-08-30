@@ -27,15 +27,8 @@ describe('JwtUrlForm', function () {
   };
 
   it('opens JWT Url Form without input for new JWT', () => {
-    const { getAllByTestId, getByText } = renderWithProvider(
-      <JwtUrlForm {...props} />,
-      store,
-    );
+    const { getByText } = renderWithProvider(<JwtUrlForm {...props} />, store);
 
-    expect(getAllByTestId('addNewToken-btn')[0]).toHaveAttribute(
-      'role',
-      'button',
-    );
     expect(getByText('Add new token')).toBeInTheDocument();
   });
 

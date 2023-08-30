@@ -1,24 +1,24 @@
+import urlLib from 'url';
+import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
-import { AccessList } from '@ethereumjs/tx';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-
 import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_BACKGROUND,
-  PLATFORM_FIREFOX,
-  PLATFORM_OPERA,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  PLATFORM_BRAVE,
   PLATFORM_CHROME,
   PLATFORM_EDGE,
-  PLATFORM_BRAVE,
+  PLATFORM_FIREFOX,
+  PLATFORM_OPERA,
 } from '../../../shared/constants/app';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '../../../shared/constants/transaction';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -143,13 +143,13 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
 }
 
 export {
-  getPlatform,
-  getEnvironmentType,
-  hexToBn,
   BnMultiplyByFraction,
   addHexPrefix,
-  getChainType,
   checkAlarmExists,
+  getChainType,
+  getEnvironmentType,
+  getPlatform,
+  hexToBn,
 };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
@@ -235,10 +235,43 @@ export function previousValueComparator<A>(
 }
 
 export function addUrlProtocolPrefix(urlString: string) {
-  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
-    return `https://${urlString}`;
+  let trimmed = urlString.trim();
+
+  if (trimmed.length && !urlLib.parse(trimmed).protocol) {
+    trimmed = `https://${trimmed}`;
   }
-  return urlString;
+
+  if (getValidUrl(trimmed) !== null) {
+    return trimmed;
+  }
+
+  return null;
+}
+
+export function getValidUrl(urlString: string): URL | null {
+  try {
+    const url = new URL(urlString);
+
+    if (url.hostname.length === 0 || url.pathname.length === 0) {
+      return null;
+    }
+
+    if (url.hostname !== decodeURIComponent(url.hostname)) {
+      return null; // will happen if there's a %, a space, or other invalid character in the hostname
+    }
+
+    return url;
+  } catch (error) {
+    return null;
+  }
+}
+
+export function isWebUrl(urlString: string): boolean {
+  const url = getValidUrl(urlString);
+
+  return (
+    url !== null && (url.protocol === 'https:' || url.protocol === 'http:')
+  );
 }
 
 interface FormattedTransactionMeta {

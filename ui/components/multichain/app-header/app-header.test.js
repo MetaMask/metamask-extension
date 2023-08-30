@@ -5,7 +5,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
 import { AppHeader } from '.';
 
-const render = (stateChanges = {}, location = jest.fn()) => {
+const render = (stateChanges = {}, location = {}) => {
   const store = configureStore({
     ...mockState,
     activeTab: {
@@ -30,5 +30,11 @@ describe('App Header', () => {
   it('should allow switching accounts during a send', () => {
     const { getByTestId } = render({ send: { stage: SEND_STAGES.DRAFT } });
     expect(getByTestId('account-menu-icon')).toBeEnabled();
+  });
+
+  it('should show the copy button for multichain', () => {
+    process.env.MULTICHAIN = 1;
+    const { getByTestId } = render({ send: { stage: SEND_STAGES.INACTIVE } });
+    expect(getByTestId('app-header-copy-button')).toBeEnabled();
   });
 });

@@ -581,7 +581,7 @@ export default class ConfirmTransactionBase extends Component {
     });
   }
 
-  handleCancel() {
+  async handleCancel() {
     const {
       txData,
       cancelTransaction,
@@ -592,9 +592,8 @@ export default class ConfirmTransactionBase extends Component {
 
     this._removeBeforeUnload();
     updateCustomNonce('');
-    cancelTransaction(txData).then(() => {
-      history.push(mostRecentOverviewPage);
-    });
+    await cancelTransaction(txData);
+    history.push(mostRecentOverviewPage);
   }
 
   handleSubmit() {
@@ -705,6 +704,7 @@ export default class ConfirmTransactionBase extends Component {
       toAccounts,
       toAddress,
       showCustodianDeepLink,
+      clearConfirmTransaction,
     } = this.props;
     const { noteText } = this.state;
 
@@ -746,9 +746,6 @@ export default class ConfirmTransactionBase extends Component {
 
         sendTransaction(txData)
           .then(() => {
-            if (!this._isMounted) {
-              return;
-            }
             if (txData.custodyStatus) {
               showCustodianDeepLink({
                 fromAddress,
@@ -761,7 +758,10 @@ export default class ConfirmTransactionBase extends Component {
                   });
                 },
                 onDeepLinkShown: () => {
-                  this.props.clearConfirmTransaction();
+                  clearConfirmTransaction();
+                  if (!this._isMounted) {
+                    return;
+                  }
                   this.setState({ submitting: false }, () => {
                     history.push(mostRecentOverviewPage);
                     updateCustomNonce('');
@@ -769,6 +769,9 @@ export default class ConfirmTransactionBase extends Component {
                 },
               });
             } else {
+              if (!this._isMounted) {
+                return;
+              }
               this.setState(
                 {
                   submitting: false,

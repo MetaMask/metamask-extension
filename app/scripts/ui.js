@@ -1,5 +1,8 @@
-// polyfills
-import '@formatjs/intl-relativetimeformat/polyfill';
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+import './lib/setup-initial-state-hooks';
 
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';

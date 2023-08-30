@@ -33,8 +33,8 @@ import {
   ButtonIconSize,
   Icon,
   IconName,
-  Text,
   Box,
+  Text,
 } from '../../components/component-library';
 import {
   AlignItems,
@@ -165,7 +165,7 @@ class SettingsPage extends PureComponent {
             {this.renderTitle()}
             <Box
               className="settings-page__header__title-container__search"
-              display={[Display.BLOCK]}
+              display={[Display.Block]}
             >
               <SettingsSearch
                 onSearch={({ searchQuery = '', results = [] }) => {
@@ -267,6 +267,8 @@ class SettingsPage extends PureComponent {
         <Box
           className="settings-page__subheader"
           padding={4}
+          paddingLeft={6}
+          paddingRight={6}
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
@@ -359,6 +361,12 @@ class SettingsPage extends PureComponent {
         tabs={tabs}
         isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
+            return true;
+          }
+          if (
+            key === CONTACT_LIST_ROUTE &&
+            currentPath.includes(CONTACT_LIST_ROUTE)
+          ) {
             return true;
           }
           return matchPath(currentPath, { exact: true, path: key });

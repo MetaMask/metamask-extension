@@ -1,27 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '../../../ui/box/box';
+
 import {
   AlignItems,
   BackgroundColor,
-  BLOCK_SIZES,
-  FLEX_DIRECTION,
-  FONT_WEIGHT,
+  BlockSize,
   IconColor,
   JustifyContent,
   TextAlign,
   TextVariant,
+  FlexDirection,
+  Display,
+  Severity,
 } from '../../../../helpers/constants/design-system';
-import ActionableMessage from '../../../ui/actionable-message/actionable-message';
-import { AvatarIcon, IconSize, Text } from '../../../component-library';
+
+import {
+  AvatarIcon,
+  IconSize,
+  Text,
+  Box,
+  BannerAlert,
+} from '../../../component-library';
 
 const InstallError = ({ title, error, description, iconName }) => {
   return (
     <Box
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
-      height={BLOCK_SIZES.FULL}
+      height={BlockSize.Full}
       padding={2}
     >
       {iconName && (
@@ -36,14 +44,16 @@ const InstallError = ({ title, error, description, iconName }) => {
           marginBottom={4}
         />
       )}
-      <Text fontWeight={FONT_WEIGHT.BOLD} variant={TextVariant.headingLg}>
-        {title}
-      </Text>
+      <Text variant={TextVariant.headingLg}>{title}</Text>
       {description && <Text textAlign={TextAlign.Center}>{description}</Text>}
       {error && (
-        <Box padding={2}>
-          <ActionableMessage type="danger" message={error} />
-        </Box>
+        <BannerAlert
+          marginTop={4}
+          startAccessory={null}
+          severity={Severity.Danger}
+        >
+          <Text variant={TextVariant.bodySm}>{error}</Text>
+        </BannerAlert>
       )}
     </Box>
   );

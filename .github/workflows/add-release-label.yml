@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
 
       - name: Install dependencies
         run: yarn --immutable
@@ -36,4 +37,4 @@ jobs:
         env:
           RELEASE_LABEL_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
           NEXT_SEMVER_VERSION: ${{ env.NEXT_SEMVER_VERSION }}
-        run: npm run add-release-label-to-pr-and-linked-issues
+        run: yarn run add-release-label-to-pr-and-linked-issues

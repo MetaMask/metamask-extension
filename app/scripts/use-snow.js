@@ -8,14 +8,22 @@ Changing this code must be done cautiously to avoid breaking the app!
 // eslint-disable-next-line import/unambiguous
 (function () {
   const log = console.log.bind(console);
+  // eslint-disable-next-line no-undef
+  const isWorker = !self.document;
   const msg =
     'Snow detected a new realm creation attempt in MetaMask. Performing scuttling on new realm.';
-  Object.defineProperty(window.top, 'SCUTTLER', {
+  // eslint-disable-next-line no-undef
+  Object.defineProperty(self, 'SCUTTLER', {
     value: (realm, scuttle) => {
-      window.top.SNOW((win) => {
-        log(msg, win);
-        scuttle(win);
-      }, realm);
+      if (isWorker) {
+        scuttle(realm);
+      } else {
+        // eslint-disable-next-line no-undef
+        self.SNOW((win) => {
+          log(msg, win);
+          scuttle(win);
+        }, realm);
+      }
     },
   });
 })();

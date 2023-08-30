@@ -1,6 +1,6 @@
 import React from 'react';
 import testData from '../../../../.storybook/test-data';
-import { AccountDetails } from './account-details';
+import { AccountDetails } from '.';
 
 const [, address] = Object.keys(testData.metamask.identities);
 

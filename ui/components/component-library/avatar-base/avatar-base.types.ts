@@ -3,7 +3,8 @@ import {
   BorderColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TextProps } from '../text';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import type { TextStyleUtilityProps } from '../text';
 
 export enum AvatarBaseSize {
   Xs = 'xs',
@@ -13,7 +14,7 @@ export enum AvatarBaseSize {
   Xl = 'xl',
 }
 
-export interface AvatarBaseProps extends TextProps {
+export interface AvatarBaseStyleUtilityProps extends TextStyleUtilityProps {
   /**
    * The size of the AvatarBase.
    * Possible values could be 'AvatarBaseSize.Xs'(16px), 'AvatarBaseSize.Sm'(24px),
@@ -45,3 +46,10 @@ export interface AvatarBaseProps extends TextProps {
    */
   className?: string;
 }
+
+export type AvatarBaseProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, AvatarBaseStyleUtilityProps>;
+
+export type AvatarBaseComponent = <C extends React.ElementType = 'span'>(
+  props: AvatarBaseProps<C>,
+) => React.ReactElement | null;

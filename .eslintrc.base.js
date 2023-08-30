@@ -72,5 +72,8 @@ module.exports = {
     // upgrading eslint and dependencies. This rule should be evaluated and
     // if agreeable turned on upstream in @metamask/eslint-config
     'import/no-named-as-default-member': 'off',
+
+    // This is necessary to run eslint on Windows and not get a thousand CRLF errors
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
 };

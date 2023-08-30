@@ -11,7 +11,7 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -20,8 +20,8 @@ import {
   Icon,
   IconName,
   IconSize,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -41,7 +41,7 @@ export const ConnectedSiteMenu = ({
       data-testid="connection-menu"
       as="button"
       onClick={onClick}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
       backgroundColor={BackgroundColor.backgroundDefault}
@@ -64,11 +64,9 @@ export const ConnectedSiteMenu = ({
           badge={
             <Box
               backgroundColor={globalMenuColor}
-              className={`multichain-connected-site-menu__badge ${
-                status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
-                  ? 'not-connected'
-                  : ''
-              }`}
+              className={classNames('multichain-connected-site-menu__badge', {
+                'not-connected': status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+              })}
               borderRadius={BorderRadius.full}
               borderColor={
                 status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT

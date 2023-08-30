@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import {
   ButtonPrimary,
   ButtonSecondary,
-  BUTTON_SECONDARY_SIZES,
+  Box,
+  ButtonSecondarySize,
 } from '../../component-library';
-import Box from '../../ui/box/box';
 import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
@@ -32,7 +32,7 @@ export default function BottomButtons({
           dispatch(actions.hideWarning());
           onActionComplete();
         }}
-        size={BUTTON_SECONDARY_SIZES.LG}
+        size={ButtonSecondarySize.Lg}
         block
       >
         {t('cancel')}
@@ -49,7 +49,7 @@ export default function BottomButtons({
           }
         }}
         disabled={isPrimaryDisabled}
-        size={BUTTON_SECONDARY_SIZES.LG}
+        size={ButtonSecondarySize.Lg}
         data-testid="import-account-confirm-button"
         block
       >

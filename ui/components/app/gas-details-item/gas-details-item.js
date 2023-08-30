@@ -24,7 +24,10 @@ import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransact
 import { PriorityLevels } from '../../../../shared/constants/gas';
 import GasDetailsItemTitle from './gas-details-item-title';
 
-const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
+const GasDetailsItem = ({
+  'data-testid': dataTestId,
+  userAcknowledgedGasMissing = false,
+}) => {
   const t = useI18nContext();
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionData = useDraftTransactionWithTxParams();
@@ -64,6 +67,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
   return (
     <TransactionDetailItem
       key="gas-details-item"
+      data-testid={dataTestId}
       detailTitle={<GasDetailsItemTitle />}
       detailTitleColor={TextColor.textDefault}
       detailText={
@@ -137,6 +141,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
 };
 
 GasDetailsItem.propTypes = {
+  'data-testid': PropTypes.string,
   userAcknowledgedGasMissing: PropTypes.bool,
 };
 

@@ -106,6 +106,7 @@ describe('Routes Component', () => {
             swapsFeatureIsLive: true,
           },
           pendingApprovals: {},
+          approvalFlows: [],
           announcements: {},
         },
         send: {

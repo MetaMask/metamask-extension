@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import ContactList from '../../../components/app/contact-list';
 import {
   CONTACT_ADD_ROUTE,
+  CONTACT_LIST_ROUTE,
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -34,6 +35,7 @@ export default class ContactListTab extends Component {
     editingContact: PropTypes.bool,
     addingContact: PropTypes.bool,
     hideAddressBook: PropTypes.bool,
+    currentPath: PropTypes.string,
   };
 
   settingsRefs = Array(
@@ -155,13 +157,15 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact, addressBook } = this.props;
+    const { addingContact, addressBook, currentPath } = this.props;
 
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
-        {!addingContact && addressBook.length > 0
+        {currentPath === CONTACT_LIST_ROUTE &&
+        !addingContact &&
+        addressBook.length > 0
           ? this.renderAddButton()
           : null}
       </div>

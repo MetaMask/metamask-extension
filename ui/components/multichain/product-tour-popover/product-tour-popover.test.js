@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { ProductTour } from './product-tour-popover';
+import { ProductTour } from '.';
 
 describe('DetectedTokensBanner', () => {
   const props = {
@@ -9,6 +9,7 @@ describe('DetectedTokensBanner', () => {
     description: 'Find your connected accounts and manage permissions here.',
     currentStep: '1',
     totalSteps: '3',
+    closeMenu: jest.fn(),
   };
   it('should render correctly', () => {
     const { getByTestId } = render(

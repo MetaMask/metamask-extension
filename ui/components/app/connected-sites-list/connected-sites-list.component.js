@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../ui/button';
-import SiteIcon from '../../ui/site-icon';
+import { AvatarFavicon } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
+import { BorderColor, Size } from '../../../helpers/constants/design-system';
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -33,11 +34,12 @@ export default class ConnectedSitesList extends Component {
             className="connected-sites-list__content-row"
           >
             <div className="connected-sites-list__subject-info">
-              <SiteIcon
-                icon={subject.iconUrl}
-                name={subject.name}
-                size={32}
+              <AvatarFavicon
+                borderColor={BorderColor.borderMuted}
                 className="connected-sites-list__subject-icon"
+                name={subject.name}
+                size={Size.MD}
+                src={subject.iconUrl}
               />
               <SiteOrigin
                 className="connected-sites-list__subject-name"

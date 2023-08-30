@@ -32,10 +32,12 @@ describe('Test Snap TxInsights', function () {
         await driver.delay(1000);
 
         // find and scroll to the bip32 test and connect
-        const snapButton1 = await driver.findElement('#connectInsightsSnap');
+        const snapButton1 = await driver.findElement(
+          '#connecttransaction-insights',
+        );
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
-        await driver.clickElement('#connectInsightsSnap');
+        await driver.clickElement('#connecttransaction-insights');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -102,7 +104,7 @@ describe('Test Snap TxInsights', function () {
         );
         await driver.delay(1000);
         await driver.clickElement({
-          text: 'TxInsightsTest',
+          text: 'Insights Example Snap',
           tag: 'button',
         });
 
@@ -111,7 +113,10 @@ describe('Test Snap TxInsights', function () {
         const txInsightsResult = await driver.findElement(
           '.snap-ui-renderer__content',
         );
-        assert.equal(await txInsightsResult.getText(), 'Test: Successful');
+        assert.equal(
+          await txInsightsResult.getText(),
+          'Transaction type:\nERC-20',
+        );
       },
     );
   });
