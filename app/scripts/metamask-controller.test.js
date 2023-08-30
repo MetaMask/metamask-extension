@@ -871,10 +871,7 @@ describe('MetaMaskController', function () {
         try {
           await metamaskController.verifySeedPhrase();
         } catch (error) {
-          assert.equal(
-            error.message,
-            'MetamaskController - No HD Key Tree found',
-          );
+          assert.equal(error.message, 'No HD keyring found.');
         }
       });
 

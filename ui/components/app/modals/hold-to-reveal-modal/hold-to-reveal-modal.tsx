@@ -7,8 +7,8 @@ import {
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  BUTTON_SIZES,
-  BUTTON_VARIANT,
+  ButtonSize,
+  ButtonVariant,
   Box,
   Button,
   Modal,
@@ -88,11 +88,10 @@ export default function HoldToRevealModal({
             </Text>,
             <Button
               key="hold-to-reveal-5"
-              variant={BUTTON_VARIANT.LINK}
-              size={BUTTON_SIZES.INHERIT}
+              variant={ButtonVariant.Link}
+              size={ButtonSize.Inherit}
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
-              target="_blank"
-              rel="noopener noreferrer"
+              externalLink
             >
               {t('holdToRevealContent5')}
             </Button>,

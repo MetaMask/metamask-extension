@@ -109,6 +109,9 @@ function getActionFunctionById(id, history) {
       history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
     },
     ///: END:ONLY_INCLUDE_IN
+    24: () => {
+      updateViewedNotifications({ 24: true });
+    },
   };
 
   return actionFunctions[id];
@@ -391,6 +394,7 @@ export default function WhatsNewPopup({
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IN
+    24: renderFirstNotification,
   };
 
   return (

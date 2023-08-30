@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   CONNECTED_ROUTE,
   DEFAULT_ROUTE,
@@ -26,10 +27,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { showSelectActionModal } from './app-footer-actions';
 
 export const AppFooter = () => {
   const t = useI18nContext();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const walletRoute = `#${DEFAULT_ROUTE}`;
   const connectedRoute = `#${CONNECTED_ROUTE}`;
@@ -78,7 +81,7 @@ export const AppFooter = () => {
         </Text>
       </Box>
       <Box
-        as="a"
+        as="button"
         width={BlockSize.OneThird}
         padding={2}
         display={Display.Flex}
@@ -96,6 +99,7 @@ export const AppFooter = () => {
           backgroundColor={BackgroundColor.primaryDefault}
           size={ButtonIconSize.Lg}
           borderRadius={BorderRadius.full}
+          onClick={() => dispatch(showSelectActionModal())}
         />
       </Box>
       <Box
