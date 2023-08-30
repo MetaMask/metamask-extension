@@ -3680,8 +3680,8 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityProviderAdviceBy": {
-    "message": "Security advice by $1",
+  "securityProviderPoweredBy": {
+    "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
   "seeDetails": {
