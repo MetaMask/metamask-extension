@@ -140,8 +140,7 @@ export const MMI_SWAPS_URL = 'https://metamask-institutional.io/swap';
 export const SWAPS_API_V2_BASE_URL = 'https://swap.metaswap.codefi.network';
 export const SWAPS_DEV_API_V2_BASE_URL = 'https://swap.dev-api.cx.metamask.io';
 export const GAS_API_BASE_URL = 'https://gas-api.metaswap.codefi.network';
-export const GAS_DEV_API_BASE_URL =
-  'https://gas-api.metaswap-dev.codefi.network';
+export const GAS_DEV_API_BASE_URL = 'https://gas.dev-api.cx.metamask.io';
 
 const BSC_DEFAULT_BLOCK_EXPLORER_URL = 'https://bscscan.com/';
 const MAINNET_DEFAULT_BLOCK_EXPLORER_URL = 'https://etherscan.io/';
