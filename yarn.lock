@@ -4527,13 +4527,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^6.0.0, @metamask/post-message-stream@npm:^6.1.1, @metamask/post-message-stream@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "@metamask/post-message-stream@npm:6.1.2"
+"@metamask/post-message-stream@npm:^6.0.0, @metamask/post-message-stream@npm:^6.1.1, @metamask/post-message-stream@npm:^6.1.2, @metamask/post-message-stream@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@metamask/post-message-stream@npm:6.2.0"
   dependencies:
     "@metamask/utils": "npm:^5.0.0"
     readable-stream: "npm:2.3.3"
-  checksum: 324e3fb944e38060d2872eb34dd84373e0923370e3d3952cedf543269ad1d67e8e454e55a1aa65abccf27284c1e39eecb0212f0a48a02b0dfb8441441ce5e9b4
+  checksum: da0cfd0fd43195d6ee2c50845408b723f9193fc932394527502b992a33c72294d28115fae964bb1562ffcc75379b2fc7cdc54ba84bf44b975553bcea81a33427
   languageName: node
   linkType: hard
 
@@ -16784,12 +16784,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extension-port-stream@npm:^2.0.0, extension-port-stream@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "extension-port-stream@npm:2.0.1"
+"extension-port-stream@npm:^2.0.0, extension-port-stream@npm:^2.0.1, extension-port-stream@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "extension-port-stream@npm:2.1.1"
   dependencies:
-    webextension-polyfill-ts: "npm:^0.22.0"
-  checksum: 81a3241b1fd847c3b66edbbafb864415c2ca7eb30953d90155eb2c45f846e60df7175e007010cf4ad7d287993839764e7eab2cbe5d056262eeca90f05b945007
+    webextension-polyfill: "npm:>=0.10.0 <1.0"
+  checksum: aee8bbeb2ed6f69a62f58a89580e0e9002dadb11062edbaedb7bb04cfc5a5e0b0d3980bfeaa1c3ee7e08dec7e5fac26e25497fc2f82000db7653442bd5eca157
   languageName: node
   linkType: hard
 
@@ -24231,7 +24231,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^4.0.0"
     "@metamask/phishing-controller": "npm:^6.0.0"
     "@metamask/phishing-warning": "npm:^2.1.0"
-    "@metamask/post-message-stream": "npm:^6.0.0"
+    "@metamask/post-message-stream": "npm:^6.2.0"
     "@metamask/ppom-validator": "npm:^0.3.0"
     "@metamask/providers": "npm:^11.1.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
@@ -24369,7 +24369,7 @@ __metadata:
     ethjs: "npm:^0.4.0"
     ethjs-contract: "npm:^0.2.3"
     ethjs-query: "npm:^0.3.4"
-    extension-port-stream: "npm:^2.0.0"
+    extension-port-stream: "npm:^2.1.1"
     fake-indexeddb: "npm:^4.0.1"
     fancy-log: "npm:^1.3.3"
     fast-glob: "npm:^3.2.2"
@@ -34738,15 +34738,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webextension-polyfill-ts@npm:^0.22.0":
-  version: 0.22.0
-  resolution: "webextension-polyfill-ts@npm:0.22.0"
-  dependencies:
-    webextension-polyfill: "npm:^0.7.0"
-  checksum: 3d07c8c2d8df3f25e4e62d59c1d8f6a16cf36a320f9fb3627e635f9e8fb4bbd72ca3f31ba60bb3ed39321b422a93413da55b061b952cfce571ff39cd0f9f3ce5
-  languageName: node
-  linkType: hard
-
 "webextension-polyfill-ts@npm:^0.25.0":
   version: 0.25.0
   resolution: "webextension-polyfill-ts@npm:0.25.0"
@@ -34756,7 +34747,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webextension-polyfill@npm:^0.10.0":
+"webextension-polyfill@npm:>=0.10.0 <1.0, webextension-polyfill@npm:^0.10.0":
   version: 0.10.0
   resolution: "webextension-polyfill@npm:0.10.0"
   checksum: 51ff30ebed4b1aa802b7f0347f05021b2fe492078bb1a597223d43995fcee96e2da8f914a2f6e36f988c1877ed5ab36ca7077f2f3ab828955151a59e4c01bf7e
