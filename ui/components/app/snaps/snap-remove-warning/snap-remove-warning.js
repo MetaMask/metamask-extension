@@ -85,11 +85,12 @@ export default function SnapRemoveWarning({
               size={ButtonSize.Lg}
               id="popoverRemoveSnapButton"
               danger
-              onClick={() => {
-                if (keyringAccounts.length > 0) {
-                  onSubmit();
+              onClick={async () => {
+                if (keyringAccounts.length === 0) {
+                  await onSubmit();
+                } else {
+                  setDisplayKeyringSnapRemovalModal(true);
                 }
-                setDisplayKeyringSnapRemovalModal(true);
               }}
             >
               {t('removeSnap')}
@@ -100,7 +101,7 @@ export default function SnapRemoveWarning({
       <RemoveKeyringSnapConfirmationModal
         isOpen={isOpen && displayKeyringSnapRemovalModal}
         onClose={onCancel}
-        onSubmit={onSubmit}
+        onSubmit={async () => await onSubmit()}
         onBack={() => setDisplayKeyringSnapRemovalModal(false)}
         snapName={snapName}
       />
