@@ -23,15 +23,15 @@ type ButtonPropsByVariant = {
   [ButtonVariant.Primary]: {
     variant?: ButtonVariant.Primary;
     size?: ValidButtonSize; // Allows for only ButtonSize.Sm, ButtonSize.Md, ButtonSize.Lg
-  } & Omit<ButtonPrimaryStyleUtilityProps, 'size'>;
+  } & Omit<ButtonPrimaryStyleUtilityProps, 'size' | 'variant'>;
   [ButtonVariant.Secondary]: {
     variant?: ButtonVariant.Secondary;
     size?: ValidButtonSize; // Allows for only ButtonSize.Sm, ButtonSize.Md, ButtonSize.Lg
-  } & Omit<ButtonSecondaryStyleUtilityProps, 'size'>;
+  } & Omit<ButtonSecondaryStyleUtilityProps, 'size' | 'variant'>;
   [ButtonVariant.Link]: {
     variant?: ButtonVariant.Link;
     size?: ButtonSize;
-  } & Omit<ButtonLinkStyleUtilityProps, 'size'>;
+  } & Omit<ButtonLinkStyleUtilityProps, 'size' | 'variant'>;
 };
 
 type ButtonPropsMap = {

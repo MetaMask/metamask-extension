@@ -1042,6 +1042,7 @@ function getAllowedAnnouncementIds(state) {
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: true,
     ///: END:ONLY_INCLUDE_IN
+    24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
   };
 }
 
