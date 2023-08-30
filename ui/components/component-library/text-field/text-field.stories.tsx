@@ -310,12 +310,16 @@ export const InputRef = (args) => {
 
 const CustomInputComponent: InputComponent = React.forwardRef(
   <C extends React.ElementType = 'input'>(
-    props: InputProps<C>,
+    { padding, paddingLeft, paddingRight, ...props }: InputProps<C>,
     ref: PolymorphicRef<C>,
   ) => (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      {...{ padding, paddingLeft, paddingRight }}
+    >
       <Box display={Display.InlineFlex}>
-        <Input ref={ref} {...(props as InputProps<C>)} style={{ padding: 0 }} />
+        <Input ref={ref} {...(props as InputProps<C>)} />
         <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
           GoerliETH
         </Text>
