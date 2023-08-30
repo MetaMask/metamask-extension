@@ -1201,6 +1201,7 @@ export default class MetamaskController extends EventEmitter {
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
+      accountsController: this.accountsController,
       networkController: this.networkController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
