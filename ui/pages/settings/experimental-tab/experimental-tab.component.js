@@ -86,14 +86,6 @@ export default class ExperimentalTab extends PureComponent {
               >
                 {t('securityAlertsDescription')}
               </Text>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                marginTop={3}
-                marginBottom={1}
-              >
-                {t('selectProvider')}
-              </Text>
               <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
                 <Text
                   variant={TextVariant.bodyMd}
@@ -117,13 +109,6 @@ export default class ExperimentalTab extends PureComponent {
                   }}
                 />
               </div>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textMuted}
-                marginTop={2}
-              >
-                {t('moreComingSoon')}
-              </Text>
             </div>
           </div>
         </div>

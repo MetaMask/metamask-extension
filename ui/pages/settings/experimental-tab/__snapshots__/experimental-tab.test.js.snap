@@ -27,11 +27,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           >
             This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transactions and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
           </p>
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--margin-bottom-1 mm-box--color-text-alternative"
-          >
-            Select providers:
-          </p>
           <div
             class="settings-page__content-item-col settings-page__content-item-col-open-sea"
           >
@@ -82,11 +77,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               </div>
             </label>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-muted"
-          >
-            More providers coming soon
-          </p>
         </div>
       </div>
     </div>
