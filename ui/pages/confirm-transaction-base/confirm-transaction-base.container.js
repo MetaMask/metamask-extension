@@ -121,14 +121,8 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const {
-    conversionRate,
-    identities,
-    addressBook,
-    networkId,
-    unapprovedTxs,
-    nextNonce,
-  } = metamask;
+  const { conversionRate, identities, addressBook, unapprovedTxs, nextNonce } =
+    metamask;
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
@@ -185,9 +179,7 @@ const mapStateToProps = (state, ownProps) => {
   } = transactionFeeSelector(state, transaction);
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
-    )
+    .filter((key) => transactionMatchesNetwork(unapprovedTxs[key], chainId))
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
 

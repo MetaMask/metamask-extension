@@ -68,7 +68,6 @@ interface TemporaryBackgroundState {
   unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
-  networkId: string | null;
   networksMetadata: {
     [NetworkClientId: string]: {
       EIPS: { [eip: string]: boolean };

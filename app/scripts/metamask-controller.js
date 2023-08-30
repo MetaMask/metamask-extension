@@ -2130,11 +2130,10 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    function selectPublicState(chainId, { isUnlocked, networkId }) {
+    function selectPublicState(chainId, { isUnlocked }) {
       return {
         isUnlocked,
         chainId,
-        networkVersion: networkId ?? 'loading',
       };
     }
 
@@ -2158,15 +2157,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Gets network state relevant for external providers.
    *
-   * @param {object} [memState] - The MetaMask memState. If not provided,
-   * this function will retrieve the most recent state.
    * @returns {object} An object with relevant network state properties.
    */
-  getProviderNetworkState(memState) {
-    const { networkId } = memState || this.getState();
+  getProviderNetworkState() {
     return {
       chainId: this.networkController.state.providerConfig.chainId,
-      networkVersion: networkId ?? 'loading',
     };
   }
 

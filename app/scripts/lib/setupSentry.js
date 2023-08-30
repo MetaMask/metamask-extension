@@ -66,7 +66,6 @@ export const SENTRY_BACKGROUND_STATE = {
     participateInMetaMetrics: true,
   },
   NetworkController: {
-    networkId: true,
     networkStatus: true,
     providerConfig: {
       nickname: true,

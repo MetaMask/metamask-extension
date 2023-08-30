@@ -327,11 +327,11 @@ describe('Transaction Selectors', () => {
   });
 
   describe('hasTransactionPendingApprovals', () => {
-    const mockNetworkId = 'mockNetworkId';
+    const mockChainId = 'mockChainId';
     const mockedState = {
       metamask: {
         providerConfig: {
-          chainId: mockNetworkId,
+          chainId: mockChainId,
         },
         pendingApprovalCount: 2,
         pendingApprovals: {
@@ -355,7 +355,7 @@ describe('Transaction Selectors', () => {
         unapprovedTxs: {
           2: {
             id: '2',
-            chainId: mockNetworkId,
+            chainId: mockChainId,
           },
         },
       },
@@ -366,7 +366,7 @@ describe('Transaction Selectors', () => {
       expect(result).toBe(true);
     });
     it('should return false if there is a pending transaction on different network', () => {
-      mockedState.metamask.unapprovedTxs['2'].chainId = 'differentNetworkId';
+      mockedState.metamask.unapprovedTxs['2'].chainId = 'differentChainId';
       const result = hasTransactionPendingApprovals(mockedState);
       expect(result).toBe(false);
     });

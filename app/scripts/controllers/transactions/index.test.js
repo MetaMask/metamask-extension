@@ -131,7 +131,6 @@ describe('Transaction Controller', function () {
       getGasPrice() {
         return '0xee6b2800';
       },
-      getNetworkId: () => currentNetworkId,
       getNetworkStatus: () => networkStatusStore.getState(),
       onNetworkStateChange: (listener) =>
         networkStatusStore.subscribe(listener),

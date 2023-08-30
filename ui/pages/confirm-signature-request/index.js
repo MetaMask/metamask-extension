@@ -60,7 +60,6 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTypedMessages,
-    networkId,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
   const { chainId } = useSelector(getProviderConfig);
@@ -74,14 +73,7 @@ const ConfirmTxScreen = ({ match }) => {
   const history = useHistory();
 
   useEffect(() => {
-    const unconfTxList = txHelper(
-      unapprovedTxs || {},
-      {},
-      {},
-      {},
-      networkId,
-      chainId,
-    );
+    const unconfTxList = txHelper(unapprovedTxs || {}, {}, {}, {}, chainId);
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
@@ -99,27 +91,13 @@ const ConfirmTxScreen = ({ match }) => {
       prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId);
     } else {
       const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevValue;
-      const prevUnconfTxList = txHelper(
-        prevUnapprovedTxs,
-        {},
-        {},
-        {},
-        networkId,
-        chainId,
-      );
+      const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, chainId);
       const prevTxData = prevUnconfTxList[prevIndex] || {};
       prevTx =
         currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
     }
 
-    const unconfTxList = txHelper(
-      unapprovedTxs || {},
-      {},
-      {},
-      {},
-      networkId,
-      chainId,
-    );
+    const unconfTxList = txHelper(unapprovedTxs || {}, {}, {}, {}, chainId);
 
     if (prevTx && prevTx.status === TransactionStatus.dropped) {
       dispatch(
@@ -140,7 +118,6 @@ const ConfirmTxScreen = ({ match }) => {
     chainId,
     currentNetworkTxList,
     match,
-    networkId,
     sendTo,
     unapprovedMessagesTotal,
     unapprovedTxs,
@@ -154,7 +131,6 @@ const ConfirmTxScreen = ({ match }) => {
       unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
-      networkId,
       chainId,
     );
 

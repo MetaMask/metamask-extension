@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
-import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
 import { getInsightSnaps } from '../selectors';
 import { Tab } from '../components/ui/tabs';
@@ -40,8 +38,7 @@ const useTransactionInsights = ({ txData }) => {
   );
 
   const { txParams, chainId, origin } = txData;
-  const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-  const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
+  const caip2ChainId = `eip155:${parseInt(chainId, 16).toString()}`;
 
   if (insightSnaps.length === 1) {
     return (
