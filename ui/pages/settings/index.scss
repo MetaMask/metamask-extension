@@ -369,10 +369,11 @@
     }
   }
 
-  &__content-item-col-open-sea {
+  &__content-item-col__security-toggle-option {
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    margin-top: 16px;
   }
 
   &__button {
