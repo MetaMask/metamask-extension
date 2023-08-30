@@ -84,15 +84,8 @@ export default class ExperimentalTab extends PureComponent {
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {t('securityAlertsDescription1')}
+                {t('securityAlertsDescription')}
               </Text>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('securityAlertsDescription2')}
-              </Text>
-
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}

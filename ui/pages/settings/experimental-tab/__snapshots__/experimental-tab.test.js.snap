@@ -25,12 +25,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
-            This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          >
-            Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature.
+            This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transactions and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
           </p>
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--margin-bottom-1 mm-box--color-text-alternative"

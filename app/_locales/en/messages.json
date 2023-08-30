@@ -3677,11 +3677,8 @@
   "securityAlerts": {
     "message": "Security alerts"
   },
-  "securityAlertsDescription1": {
-    "message": "This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
-  },
-  "securityAlertsDescription2": {
-    "message": "Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature."
+  "securityAlertsDescription": {
+    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transactions and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
