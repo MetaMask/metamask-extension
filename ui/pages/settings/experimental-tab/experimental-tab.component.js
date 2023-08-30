@@ -90,7 +90,6 @@ export default class ExperimentalTab extends PureComponent {
                 <Text
                   variant={TextVariant.bodyMd}
                   color={TextColor.textDefault}
-                  marginBottom={0}
                 >
                   {t('blockaid')}
                 </Text>

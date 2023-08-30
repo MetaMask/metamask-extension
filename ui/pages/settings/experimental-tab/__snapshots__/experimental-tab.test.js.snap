@@ -31,7 +31,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             class="settings-page__content-item-col settings-page__content-item-col-open-sea"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-0 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
               Blockaid
             </p>
