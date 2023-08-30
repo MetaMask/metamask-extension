@@ -158,7 +158,7 @@ import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-// import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
+import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import * as PPOMModule from './lib/ppom/ppom';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -4061,9 +4061,9 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.permissionLogController.createMiddleware());
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    // engine.push(
-    //   createPPOMMiddleware(this.ppomController, this.preferencesController),
-    // );
+    engine.push(
+      createPPOMMiddleware(this.ppomController, this.preferencesController),
+    );
     ///: END:ONLY_INCLUDE_IN
 
     engine.push(
