@@ -11,7 +11,7 @@ export const txMetaStub = {
     {
       id: 405984854664302,
       loadingDefaults: true,
-      metamaskNetworkId: '5',
+      chainId: '0x5',
       status: TransactionStatus.unapproved,
       time: 1572395156620,
       type: TransactionType.simpleSend,
@@ -163,7 +163,7 @@ export const txMetaStub = {
   ],
   id: 405984854664302,
   loadingDefaults: false,
-  metamaskNetworkId: '5',
+  chainId: '0x5',
   nonceDetails: {
     local: {
       details: {
