@@ -80,7 +80,6 @@
       "dismissSeedBackUpReminder": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "identities": "object",
       "infuraBlocked": false,
       "ipfsGateway": "string",
       "knownMethodData": "object",
@@ -93,7 +92,6 @@
         "showTestNetworks": false,
         "useNativeCurrencyAsPrimaryCurrency": true
       },
-      "selectedAddress": "string",
       "theme": "light",
       "useBlockie": false,
       "useNftDetection": false,
