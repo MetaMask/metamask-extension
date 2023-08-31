@@ -2755,9 +2755,6 @@
   "notifications23ActionText": {
     "message": "Aktifkan peringatan keamanan"
   },
-  "notifications23DescriptionOne": {
-    "message": "Hindari penipuan yang terdeteksi sambil tetap menjaga privasi Anda dengan peringatan keamanan yang didukung oleh Blockaid."
-  },
   "notifications23DescriptionThree": {
     "message": "Jika Anda mengaktifkan peringatan keamanan dari OpenSea, kami telah memindahkan Anda ke fitur ini."
   },
