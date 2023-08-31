@@ -439,6 +439,9 @@ export default class MetamaskController extends EventEmitter {
       onTokenListStateChange: this.onTokenListStateChange,
       config: { provider: this.provider },
       state: initState.TokensController,
+      getERC20TokenName: this.assetsContractController.getERC20TokenName.bind(
+        this.assetsContractController,
+      ),
     });
 
     this.assetsContractController = new AssetsContractController(
