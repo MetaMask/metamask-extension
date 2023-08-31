@@ -648,6 +648,7 @@ export default class MetaMetricsController {
         ...mmiProps,
         ///: END:ONLY_INCLUDE_IN
       },
+      /* eslint-disable-next-line no-restricted-globals */
       userAgent: window.navigator.userAgent,
       page,
       referrer,

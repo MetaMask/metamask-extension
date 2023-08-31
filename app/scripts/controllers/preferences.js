@@ -94,6 +94,7 @@ export default class PreferencesController {
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       useAddressBarEnsResolution: true,
       infuraBlocked: null,
+      /* eslint-disable-next-line no-restricted-globals */
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,

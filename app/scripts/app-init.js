@@ -1,6 +1,7 @@
 /* global chrome */
 // This file is used only for manifest version 3
 
+/* eslint-disable no-restricted-globals */
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
 let scriptsLoadInitiated = false;
