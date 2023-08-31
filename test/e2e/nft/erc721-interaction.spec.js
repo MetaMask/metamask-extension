@@ -15,7 +15,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
     ],
   };
 
-  it.only('should prompt users to add their NFTs to their wallet (one by one)', async function () {
+  it('should prompt users to add their NFTs to their wallet (one by one)', async function () {
     await withFixtures(
       {
         dapp: true,
