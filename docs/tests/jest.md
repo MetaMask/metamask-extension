@@ -26,7 +26,7 @@ Additional methods and information to debug in VS Code can be found [here](https
 1. Run Jest using Node with the V8 Inspector
 
     ```bash
-    > node --inspect ./node_modules/.bin/jest --watch -i <path>
+    > node --inspect ./node_modules/.bin/jest --watch <path>
 
     or
 
@@ -35,28 +35,30 @@ Additional methods and information to debug in VS Code can be found [here](https
 
     **Options:**
 
-    ```jsx
+    ```bash
     node:
 
-    			--inspect=[host:]port
-                 Activate inspector on host:port.  Default is 127.0.0.1:9229.
+    	--inspect=[host:]port
+            Activate inspector on host:port.  Default is 127.0.0.1:9229.
 
-                 V8 Inspector integration allows attaching Chrome DevTools and IDEs
-    						 to Node.js instances for debugging and profiling.  It uses the
-    						 Chrome DevTools Protocol.
+            V8 Inspector integration allows attaching Chrome DevTools and IDEs
+    		to Node.js instances for debugging and profiling.  It uses the
+    		Chrome DevTools Protocol.
 
     jest:
 
-    			--watch                       Watch files for changes and rerun tests
-                                        related to changed files. If you want to
-                                        re-run all tests when a file has changed,
-                                        use the `--watchAll` option.       [boolean]
+    	--watch
+            Watch files for changes and rerun tests
+            related to changed files. If you want to
+            re-run all tests when a file has changed,
+            use the `--watchAll` option.       [boolean]
 
-    	-i, --runInBand                   Run all tests serially in the current
-                                        process (rather than creating a worker pool
-                                        of child processes that run tests). This is
-                                        sometimes useful for debugging, but such use
-                                        cases are pretty rare.             [boolean]
+    	-i, --runInBand
+            Run all tests serially in the current
+            process (rather than creating a worker pool
+            of child processes that run tests). This is
+            sometimes useful for debugging, but such use
+            cases are pretty rare.             [boolean]
     ```
 
 
