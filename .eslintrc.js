@@ -101,7 +101,7 @@ module.exports = {
       parserOptions: {
         sourceType: 'module',
         tsconfigRootDir: __dirname,
-        project: ['./tsconfig.json'],
+        project: ['tsconfig.json'],
       },
       settings: {
         'import/resolver': {
@@ -133,7 +133,7 @@ module.exports = {
       ],
       parserOptions: {
         tsconfigRootDir: __dirname,
-        project: ['./tsconfig.json'],
+        project: ['tsconfig.json'],
       },
       rules: {
         '@typescript-eslint/consistent-type-imports': 'off',
@@ -179,7 +179,7 @@ module.exports = {
       parserOptions: {
         sourceType: 'script',
         tsconfigRootDir: __dirname,
-        project: ['./tsconfig.json'],
+        project: ['tsconfig.json'],
       },
     },
     /**
