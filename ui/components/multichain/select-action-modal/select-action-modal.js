@@ -55,6 +55,7 @@ import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IN
 
 export const SelectActionModal = ({ onClose }) => {
@@ -159,7 +160,7 @@ export const SelectActionModal = ({ onClose }) => {
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
                   properties: {
-                    token_symbol: 'ETH',
+                    token_symbol: CURRENCY_SYMBOLS.ETH,
                     location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
                     chain_id: chainId,
@@ -185,7 +186,7 @@ export const SelectActionModal = ({ onClose }) => {
                 event: MetaMetricsEventName.NavSendButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
-                  token_symbol: 'ETH',
+                  token_symbol: CURRENCY_SYMBOLS.ETH.ETH,
                   location: 'Home',
                   text: 'Send',
                   chain_id: chainId,
@@ -226,7 +227,7 @@ export const SelectActionModal = ({ onClose }) => {
                       location: 'Home',
                       text: 'Bridge',
                       chain_id: chainId,
-                      token_symbol: 'ETH',
+                      token_symbol: CURRENCY_SYMBOLS.ETH,
                     },
                   });
                 }

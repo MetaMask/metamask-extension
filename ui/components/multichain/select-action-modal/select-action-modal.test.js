@@ -10,22 +10,31 @@ import { KeyringType } from '../../../../shared/constants/keyring';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SelectActionModal } from '.';
 
+const NETWORK_CONSTANTS_PATH = '../../../../shared/constants/network';
+
 // Mock BUYABLE_CHAINS_MAP
-jest.mock('../../../../shared/constants/network', () => ({
-  ...jest.requireActual('../../../../shared/constants/network'),
-  BUYABLE_CHAINS_MAP: {
-    // MAINNET
-    '0x1': {
-      nativeCurrency: 'ETH',
-      network: 'ethereum',
+jest.mock(NETWORK_CONSTANTS_PATH, () => {
+  const networkConstants = jest.requireActual(NETWORK_CONSTANTS_PATH);
+
+  return {
+    ...networkConstants,
+    BUYABLE_CHAINS_MAP: {
+      // MAINNET
+      [networkConstants.CHAIN_IDS.MAINNET]: {
+        nativeCurrency: networkConstants.ETH_SYMBOL,
+        network: 'ethereum',
+      },
+      // POLYGON
+      [networkConstants.CHAIN_IDS.POLYGON]: {
+        nativeCurrency: networkConstants.POLYGON_SYMBOL,
+        network:
+          networkConstants.BUYABLE_CHAINS_MAP[
+            networkConstants.CHAIN_IDS.POLYGON
+          ].network,
+      },
     },
-    // POLYGON
-    '0x89': {
-      nativeCurrency: 'MATIC',
-      network: 'polygon',
-    },
-  },
-}));
+  };
+});
 let openTabSpy;
 
 describe('Select Action Modal', () => {
