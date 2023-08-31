@@ -283,14 +283,11 @@ export const SENTRY_BACKGROUND_STATE = {
     tokens: false,
   },
   TransactionController: {
-    currentNetworkTxList: false,
     transactions: false,
     lastFetchedBlockNumbers: false,
   },
   TxController: {
-    currentNetworkTxList: false,
     transactions: false,
-    unapprovedTxs: false,
   },
 };
 

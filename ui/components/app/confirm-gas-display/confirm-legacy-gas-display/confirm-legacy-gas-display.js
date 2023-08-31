@@ -7,10 +7,10 @@ import {
   getIsMainnet,
   getIsMultiLayerFeeNetwork,
   getPreferences,
+  getUnapprovedTransactions,
   getUseCurrencyRateCheck,
   transactionFeeSelector,
   txDataSelector,
-  getUnapprovedTransactions,
 } from '../../../../selectors';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 
