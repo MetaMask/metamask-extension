@@ -100,6 +100,8 @@ module.exports = {
       ],
       parserOptions: {
         sourceType: 'module',
+        tsconfigRootDir: __dirname,
+        project: ['./tsconfig.json'],
       },
       settings: {
         'import/resolver': {
@@ -129,6 +131,10 @@ module.exports = {
         '@metamask/eslint-config-typescript',
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: ['./tsconfig.json'],
+      },
       rules: {
         '@typescript-eslint/consistent-type-imports': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
@@ -172,6 +178,8 @@ module.exports = {
       files: ['*.d.ts'],
       parserOptions: {
         sourceType: 'script',
+        tsconfigRootDir: __dirname,
+        project: ['./tsconfig.json'],
       },
     },
     /**
@@ -336,6 +344,7 @@ module.exports = {
     {
       files: ['app/scripts/migrations/*.js', '**/*.stories.js'],
       rules: {
+        'no-restricted-globals': 'off',
         'import/no-anonymous-default-export': [
           'error',
           {
