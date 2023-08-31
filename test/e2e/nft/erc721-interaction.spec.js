@@ -15,7 +15,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
     ],
   };
 
-  it('should prompt users to add their NFTs to their wallet (one by one)', async function () {
+  it.only('should prompt users to add their NFTs to their wallet (one by one)', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -120,6 +120,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
           'MetaMask Notification',
           windowHandles,
         );
+
+        // avoid race condition
+        await driver.waitForSelector({
+          css: '.confirm-add-suggested-nft__nft-tokenId',
+          text: '#6',
+        });
 
         // confirm watchNFT
         await driver.waitForSelector({
