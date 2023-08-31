@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { TextField } from '../text-field';
+import { TextField, TextFieldSize, TextFieldType } from '../text-field';
 import { HelpText, HelpTextSeverity } from '../help-text';
 import { Label } from '../label';
 
@@ -156,4 +156,91 @@ FormTextField.propTypes = {
    * Props that are applied to the TextField component
    */
   textFieldProps: PropTypes.object,
+  /**
+   * Autocomplete allows the browser to predict the value based on earlier typed values
+   */
+  autoComplete: PropTypes.bool,
+  /**
+   * If `true`, the input will be focused during the first mount.
+   */
+  autoFocus: PropTypes.bool,
+  /**
+   * The default input value, useful when not controlling the component.
+   */
+  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * If `true`, the input will be disabled.
+   */
+  disabled: PropTypes.bool,
+  /**
+   * If `true`, aria-invalid will be true
+   */
+  error: PropTypes.bool,
+  /**
+   * Name attribute of the `input` element.
+   */
+  name: PropTypes.string,
+  /**
+   * Callback fired on blur
+   */
+  onBlur: PropTypes.func,
+  /**
+   * Callback fired when the value is changed.
+   */
+  onChange: PropTypes.func,
+  /**
+   * Callback fired on focus
+   */
+  onFocus: PropTypes.func,
+  /**
+   * The short hint displayed in the input before the user enters a value.
+   */
+  placeholder: PropTypes.string,
+  /**
+   * It prevents the user from changing the value of the field (not from interacting with the field).
+   */
+  readOnly: PropTypes.bool,
+  /**
+   * If `true`, the input will be required. Currently no visual difference is shown.
+   */
+  required: PropTypes.bool,
+  /**
+   * The start(default left) content area of FormTextField
+   */
+  startAccessory: PropTypes.node,
+  /**
+   * The start(default right) content area of FormTextField
+   */
+  endAccessory: PropTypes.node,
+  /**
+   * If true will ellipse the text of the input
+   * Defaults to true
+   */
+  truncate: PropTypes.bool,
+  /**
+   * Max number of characters to allow
+   */
+  maxLength: PropTypes.number,
+  /**
+   * The input value, required for a controlled component.
+   */
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * The size of the text field. Changes the height of the component
+   * Accepts TextFieldSize.Sm(32px), TextFieldSize.Md(40px), TextFieldSize.Lg(48px)
+   */
+  size: PropTypes.oneOf(Object.values(TextFieldSize)),
+  /**
+   * Type of the input element. Can be TextFieldType.Text, TextFieldType.Password, TextFieldType.Number
+   * Defaults to TextFieldType.Text ('text')
+   */
+  type: PropTypes.oneOf(Object.values(TextFieldType)),
+  /**
+   * Attributes applied to the `input` element.
+   */
+  inputProps: PropTypes.object,
+  /**
+   * Use inputRef to pass a ref to the html input element.
+   */
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
