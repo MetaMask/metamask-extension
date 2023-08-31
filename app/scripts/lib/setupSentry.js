@@ -32,6 +32,12 @@ export const SENTRY_BACKGROUND_STATE = {
     accounts: false,
     currentBlockGasLimit: true,
   },
+  AccountsController: {
+    internalAccounts: {
+      accounts: true,
+      selectedAccount: true,
+    },
+  },
   AddressBookController: {
     addressBook: false,
   },
@@ -184,7 +190,6 @@ export const SENTRY_BACKGROUND_STATE = {
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
-    selectedAddress: false,
     snapRegistryList: false,
     theme: true,
     transactionSecurityCheckEnabled: true,
