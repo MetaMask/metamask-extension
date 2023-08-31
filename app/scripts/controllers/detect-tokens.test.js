@@ -15,7 +15,7 @@ import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import PreferencesController from './preferences';
-import AccountsController from './accounts-controller';
+import { AccountsController } from './accounts-controller';
 
 function buildMessenger() {
   return new ControllerMessenger().getRestricted({

@@ -156,7 +156,7 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
-import AccountsController from './controllers/accounts-controller';
+import { AccountsController } from './controllers/accounts-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -435,7 +435,7 @@ export default class MetamaskController extends EventEmitter {
           (newlySelectedInternalAccount) => {
             listener({ selectedAddress: newlySelectedInternalAccount.address });
           },
-      ),
+        ),
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
@@ -845,6 +845,8 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const keyringApiEnabled = process.env.KEYRING_API_ENABLED ?? false;
+
     this.accountsController = new AccountsController({
       messenger: accountsControllerMessenger,
       state: initState.AccountsController,
@@ -862,6 +864,7 @@ export default class MetamaskController extends EventEmitter {
         keyringControllerMessenger,
         'KeyringController:stateChange',
       ),
+      keyringApiEnabled,
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       onSnapStateChange: this.controllerMessenger.subscribe.bind(
         this.controllerMessenger,
