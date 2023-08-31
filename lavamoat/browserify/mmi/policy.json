@@ -2580,13 +2580,7 @@
     },
     "@metamask/snaps-utils>validate-npm-package-name": {
       "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
-      }
-    },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
-      "packages": {
-        "browserify>process": true,
-        "semver": true
+        "eslint-plugin-n>builtins": true
       }
     },
     "@metamask/utils": {
@@ -3767,6 +3761,12 @@
       "packages": {
         "browserify>process": true,
         "pump>once": true
+      }
+    },
+    "eslint-plugin-n>builtins": {
+      "packages": {
+        "browserify>process": true,
+        "semver": true
       }
     },
     "eslint>optionator>fast-levenshtein": {
