@@ -3286,11 +3286,6 @@
         "@typescript-eslint/eslint-plugin>graphemer": true
       }
     },
-    "@typescript-eslint/eslint-plugin": {
-      "packages": {
-        "@typescript-eslint/eslint-plugin>graphemer": true
-      }
-    },
     "@zxing/browser": {
       "globals": {
         "HTMLElement": true,
