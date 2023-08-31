@@ -1,4 +1,5 @@
 {
+
   "resources": {
     "@babel/core": {
       "packages": {
@@ -165,6 +166,7 @@
     },
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": {
       "packages": {
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
@@ -187,6 +189,7 @@
     "@typescript-eslint/eslint-plugin": {
       "packages": {
         "typescript": true,
+        "@typescript-eslint/eslint-plugin>graphemer": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
