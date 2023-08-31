@@ -38,6 +38,7 @@ buildTypes:
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - KEYRING_API_ENABLED: false
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -63,7 +64,7 @@ buildTypes:
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
-      - KEYRING_API: true
+      - KEYRING_API_ENABLED: true
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
 
@@ -83,6 +84,7 @@ buildTypes:
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
+      - KEYRING_API_ENABLED: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
 
@@ -97,6 +99,7 @@ buildTypes:
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v1/configuration/default
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
+      - KEYRING_API_ENABLED: false
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
@@ -115,6 +118,7 @@ features:
       # Whether to verify that a snap can be installed using an allow list
       - REQUIRE_SNAPS_ALLOWLIST
       - IFRAME_EXECUTION_ENVIRONMENT_URL
+      - KEYRING_API_ENABLED
     assets:
       - ./{app,shared,ui}/**/snaps/**
   desktop:
