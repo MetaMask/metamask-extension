@@ -1201,6 +1201,7 @@
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
+        "@typescript-eslint/eslint-plugin>graphemer": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint": true,
@@ -1217,6 +1218,7 @@
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
         "madge>debug": true,
