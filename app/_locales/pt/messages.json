@@ -2752,15 +2752,6 @@
   "notifications22Title": {
     "message": "Procurando os dados da sua conta ou o URL do explorador de blocos?"
   },
-  "notifications23ActionText": {
-    "message": "Ativar alertas de segurança"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Fique longe de golpes conhecidos enquanto preserva sua privacidade com alertas de segurança com tecnologia da Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Se você ativou os alertas de segurança da OpenSea, fizemos sua transição para esse recurso."
-  },
   "notifications23DescriptionTwo": {
     "message": "Sempre faça sua própria devida diligência antes de aprovar solicitações."
   },

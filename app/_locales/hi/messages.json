@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "सुरक्षा अलर्ट सक्षम करें"
   },
-  "notifications23DescriptionOne": {
-    "message": "Blockaid द्वारा संचालित सुरक्षा अलर्ट के साथ अपनी गोपनीयता बनाए रखते हुए ज्ञात घोटालों से दूर रहें।"
-  },
-  "notifications23DescriptionThree": {
-    "message": "यदि आपने OpenSea से सुरक्षा अलर्ट सक्षम किया है, तो हमने आपको इस फीचर पर ला दिया है।"
-  },
   "notifications23DescriptionTwo": {
     "message": "अनुरोध को स्वीकार करने से पहले हमेशा अपनी खुद की सावधानी बरतें।"
   },

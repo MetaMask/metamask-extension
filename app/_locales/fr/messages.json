@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "Activer les alertes de sécurité"
   },
-  "notifications23DescriptionOne": {
-    "message": "Évitez les escroqueries et protégez vos donnés personnelles grâce aux alertes de sécurité fournies par Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Les utilisateurs qui ont déjà activé les alertes de sécurité OpenSea recevront désormais des alertes de sécurité de ce nouveau fournisseur."
-  },
   "notifications23DescriptionTwo": {
     "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande."
   },

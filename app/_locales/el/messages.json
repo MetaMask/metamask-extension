@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
   },
-  "notifications23DescriptionOne": {
-    "message": "Αποφύγετε τις γνωστές απάτες, διατηρώντας παράλληλα το απόρρητό σας με τις ειδοποιήσεις ασφαλείας της Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Εάν ενεργοποιήσατε τις ειδοποιήσεις ασφαλείας από το OpenSea, σας μεταφέραμε σε αυτή τη λειτουργία."
-  },
   "notifications23DescriptionTwo": {
     "message": "Κάνετε πάντα τον δικό σας επιμελή έλεγχο προτού εγκρίνετε τα αιτήματα."
   },

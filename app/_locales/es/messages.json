@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "Habilitar alertas de seguridad"
   },
-  "notifications23DescriptionOne": {
-    "message": "Aléjese de las estafas conocidas mientras conserva su privacidad con las alertas de seguridad impulsadas por Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Si habilitó las alertas de seguridad de OpenSea, lo trasladamos a esta función."
-  },
   "notifications23DescriptionTwo": {
     "message": "Siempre asegúrese de hacer su propia diligencia debida antes de aprobar cualquier solicitud."
   },

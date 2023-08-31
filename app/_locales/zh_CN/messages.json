@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "启用安全警报"
   },
-  "notifications23DescriptionOne": {
-    "message": "通过由 Blockaid 提供支持的安全警报，避开已知的诈骗，同时仍会保护您的隐私。"
-  },
-  "notifications23DescriptionThree": {
-    "message": "如果您从 OpenSea 启用了安全警报，则我们已将您转移到此功能。"
-  },
   "notifications23DescriptionTwo": {
     "message": "在批准请求之前，请务必自行作出审慎调查。"
   },

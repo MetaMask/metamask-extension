@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "セキュリティアラートを有効にする"
   },
-  "notifications23DescriptionOne": {
-    "message": "Blockaid によるセキュリティアラートを使用して、プライバシーを守りつつ既知の詐欺を回避しましょう。"
-  },
-  "notifications23DescriptionThree": {
-    "message": "OpenSea のセキュリティアラートを有効にしていた場合、この機能に移行されました。"
-  },
   "notifications23DescriptionTwo": {
     "message": "要求を承認する前に、必ず独自のデューデリジェンスを行ってください。"
   },

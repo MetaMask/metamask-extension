@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "Включить оповещения безопасности"
   },
-  "notifications23DescriptionOne": {
-    "message": "Избегайте известных мошенников, сохраняя при этом свою конфиденциальность с помощью оповещений безопасности Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Если вы включили оповещения безопасности от OpenSea, мы активировали для вас эту функцию."
-  },
   "notifications23DescriptionTwo": {
     "message": "Всегда проводите собственную комплексную проверку перед утверждением запросов."
   },

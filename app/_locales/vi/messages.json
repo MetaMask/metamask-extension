@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "Bật cảnh báo bảo mật"
   },
-  "notifications23DescriptionOne": {
-    "message": "Tránh xa các hành vi gian lận đã biết trong khi vẫn bảo vệ quyền riêng tư của bạn với các cảnh báo bảo mật do Blockaid cung cấp."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Nếu bạn đã bật cảnh báo bảo mật từ OpenSea, chúng tôi đã chuyển bạn sang tính năng này."
-  },
   "notifications23DescriptionTwo": {
     "message": "Luôn tự thẩm định trước khi phê duyệt các yêu cầu."
   },

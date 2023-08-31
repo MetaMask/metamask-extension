@@ -2755,12 +2755,6 @@
   "notifications23ActionText": {
     "message": "Güvenlik uyarılarını etkinleştir"
   },
-  "notifications23DescriptionOne": {
-    "message": "Blockaid tarafından desteklenen güvenlik uyarıları ile gizliliğinizi korumaya devam ederken bilinen dolandırıcılıklardan uzak durun."
-  },
-  "notifications23DescriptionThree": {
-    "message": "OpenSea'den güvenlik uyarılarını etkinleştirdiyseniz sizi bu özelliğe taşıdık."
-  },
   "notifications23DescriptionTwo": {
     "message": "Talepleri onaylamadan önce her zaman kendiniz gerekli özeni gösterin."
   },
