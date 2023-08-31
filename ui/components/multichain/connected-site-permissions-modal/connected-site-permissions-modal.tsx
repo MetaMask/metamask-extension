@@ -70,17 +70,18 @@ export const ConnectedSitePermissionsModal: FC<
 
           <Box className="site-permissions-modal-container">
             <Text
+              paddingBottom={4}
+              paddingTop={2}
               fontWeight={FontWeight.Normal}
               variant={TextVariant.bodyMd}
               color={TextColor.textDefault}
-              paddingBottom={2}
-              paddingTop={2}
             >
               {t('connectedSitePermissionsSubtitle')}
             </Text>
             <Box
               gap={4}
-              paddingBottom={4}
+              paddingBottom={2}
+              paddingTop={2}
               alignItems={AlignItems.center}
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
@@ -102,10 +103,11 @@ export const ConnectedSitePermissionsModal: FC<
             </Box>
             <Box
               gap={4}
+              paddingBottom={2}
+              paddingTop={2}
               alignItems={AlignItems.center}
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
-              paddingBottom={4}
             >
               <AvatarIcon
                 iconName={IconName.SecurityTick}
