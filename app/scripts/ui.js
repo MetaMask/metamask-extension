@@ -294,6 +294,14 @@ async function start() {
         ) {
           global.platform.openExtensionInBrowser();
         }
+
+        if (isManifestV3) {
+          browser.action.setBadgeText({ text: '' });
+          browser.action.setBadgeBackgroundColor({ color: '' });
+        } else {
+          browser.browserAction.setBadgeText({ text: '' });
+          browser.browserAction.setBadgeBackgroundColor({ color: '' });
+        }
       },
     );
   }

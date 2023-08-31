@@ -159,6 +159,10 @@ function getCopyTargets(
       dest: `globalthis.js`,
     },
     {
+      src: `./app/scripts/signal-app-loading.js`,
+      dest: `signal-app-loading.js`,
+    },
+    {
       src: shouldIncludeSnow
         ? `./node_modules/@lavamoat/snow/snow.prod.js`
         : EMPTY_JS_FILE,
