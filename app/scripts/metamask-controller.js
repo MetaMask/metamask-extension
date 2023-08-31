@@ -412,6 +412,10 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:infuraIsUnblocked',
       ),
+      onAccountRemoved: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'KeyringController:accountRemoved',
+      ),
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
@@ -757,6 +761,10 @@ export default class MetamaskController extends EventEmitter {
         initState.AccountTracker?.accounts
           ? { accounts: initState.AccountTracker.accounts }
           : { accounts: {} },
+      onAccountRemoved: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'KeyringController:accountRemoved',
+      ),
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -3551,10 +3559,6 @@ export default class MetamaskController extends EventEmitter {
   async removeAccount(address) {
     // Remove all associated permissions
     this.removeAllAccountPermissions(address);
-    // Remove account from the preferences controller
-    this.preferencesController.removeAddress(address);
-    // Remove account from the account tracker controller
-    this.accountTracker.removeAccount([address]);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.custodyController.removeAccount(address);
