@@ -48,7 +48,7 @@ describe('Swaps Util', () => {
     beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
-        .get('/networks/1/tokens')
+        .get('/networks/1/tokens?includeBlockedTokens=true')
         .reply(200, TOKENS);
     });
 
