@@ -1159,6 +1159,9 @@
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
   },
+  "desktopApp": {
+    "message": "Desktop App"
+  },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
   },
