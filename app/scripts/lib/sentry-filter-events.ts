@@ -29,6 +29,7 @@ export class FilterEvents implements Integration {
    * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
    * is enabled, `false` otherwise.
    */
+   /* eslint-disable no-restricted-syntax */
   private readonly getMetaMetricsEnabled: () => Promise<boolean>;
 
   /**

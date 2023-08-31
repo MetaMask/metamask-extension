@@ -1,3 +1,4 @@
+/* eslint-disable-next-line import/no-nodejs-modules */
 import EventEmitter from 'events';
 import log from 'loglevel';
 import {
@@ -125,6 +126,7 @@ export type DecryptMessageControllerOptions = {
 /**
  * Controller for decrypt signing requests requiring user approval.
  */
+/* eslint-disable no-restricted-syntax */
 export default class DecryptMessageController extends BaseControllerV2<
   typeof controllerName,
   DecryptMessageControllerState,
