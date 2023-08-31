@@ -3,12 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import { mmiActionsFactory } from '../../store/institutional/institution-background';
-import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-///: END:ONLY_INCLUDE_IN
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
@@ -77,9 +71,6 @@ import SecurityProviderBannerMessage from '../../components/app/security-provide
 import { Icon, IconName, Text } from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getAccountType } from '../../selectors/selectors';
-///: END:ONLY_INCLUDE_IN
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -109,9 +100,6 @@ export default function TokenAllowance({
   tokenSymbol,
   fromAddressIsLedger,
   warning,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  isNotification,
-  ///: END:ONLY_INCLUDE_IN
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -147,14 +135,6 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  const trackEvent = useContext(MetaMetricsContext);
-  const accountType = useSelector((state) =>
-    getAccountType(state, fromAccount.address),
-  );
-  ///: END:ONLY_INCLUDE_IN
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -251,44 +231,11 @@ export default function TokenAllowance({
       fullTxData.currentTokenBalance = currentTokenBalance;
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (accountType === 'custody') {
-      fullTxData.custodyStatus = 'created';
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
-    }
-    ///: END:ONLY_INCLUDE_IN
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     dispatch(updateCustomNonce(''));
-    ///: END:ONLY_INCLUDE_IN
 
     dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        fromAddress: fromAccount.address,
-        txId: fullTxData.id,
-        closeNotification: isNotification && unapprovedTxCount === 1,
-        showCustodyConfirmLink,
-        onDeepLinkFetched: () => {
-          trackEvent({
-            category: 'MMI',
-            event: 'Show deeplink for transaction',
-          });
-        },
-        onDeepLinkShown: () => {
-          clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
-          updateCustomNonce('');
-        },
-      });
-      ///: END:ONLY_INCLUDE_IN
-
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       dispatch(clearConfirmTransaction());
       history.push(mostRecentOverviewPage);
-      ///: END:ONLY_INCLUDE_IN
     });
   };
 
@@ -367,6 +314,18 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
+      {isSuspiciousResponse(txData?.securityProviderResponse) && (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
+      )}
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -408,19 +367,6 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-        <BlockaidBannerAlert
-          securityAlertResponse={txData?.securityAlertResponse}
-          margin={4}
-        />
-        ///: END:ONLY_INCLUDE_IN
-      }
-      {isSuspiciousResponse(txData?.securityProviderResponse) && (
-        <SecurityProviderBannerMessage
-          securityProviderResponse={txData.securityProviderResponse}
-        />
-      )}
       {warning && (
         <Box className="token-allowance-container__custom-nonce-warning">
           <ConfirmPageContainerWarning warning={warning} />
@@ -777,10 +723,4 @@ TokenAllowance.propTypes = {
    * Customize nonce warning message
    */
   warning: PropTypes.string,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  /**
-   * Whether the page is a notification or not
-   */
-  isNotification: PropTypes.bool,
-  ///: END:ONLY_INCLUDE_IN
 };
