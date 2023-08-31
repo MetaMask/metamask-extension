@@ -3640,10 +3640,6 @@
   "securityAndPrivacy": {
     "message": "Segurança e privacidade"
   },
-  "securityProviderAdviceBy": {
-    "message": "Conselhos de segurança de $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "Ver detalhes"
   },

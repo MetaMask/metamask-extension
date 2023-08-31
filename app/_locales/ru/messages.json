@@ -3643,10 +3643,6 @@
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
   },
-  "securityProviderAdviceBy": {
-    "message": "Совет по безопасности от $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "См. подробности"
   },

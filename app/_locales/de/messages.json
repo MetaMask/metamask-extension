@@ -3643,10 +3643,6 @@
   "securityAndPrivacy": {
     "message": "Sicherheit & Datenschutz"
   },
-  "securityProviderAdviceBy": {
-    "message": "Sicherheitstipp von $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "Details anzeigen"
   },

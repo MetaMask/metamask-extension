@@ -3643,10 +3643,6 @@
   "securityAndPrivacy": {
     "message": "安全和隐私"
   },
-  "securityProviderAdviceBy": {
-    "message": "$1的安全建议",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "查看详情"
   },

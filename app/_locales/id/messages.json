@@ -3649,10 +3649,6 @@
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
   },
-  "securityProviderAdviceBy": {
-    "message": "Saran keamanan dari $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "Lihat detailnya"
   },

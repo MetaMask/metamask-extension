@@ -3643,10 +3643,6 @@
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },
-  "securityProviderAdviceBy": {
-    "message": "Lời khuyên bảo mật bởi $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "Xem chi tiết"
   },

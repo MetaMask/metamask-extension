@@ -3643,10 +3643,6 @@
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
   },
-  "securityProviderAdviceBy": {
-    "message": "$1 によるセキュリティアドバイス",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "詳細を表示"
   },
