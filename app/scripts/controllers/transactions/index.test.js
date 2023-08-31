@@ -73,6 +73,7 @@ describe('Transaction Controller', function () {
     fromAccount,
     fragmentExists,
     networkStatusStore,
+    preferencesStore,
     getCurrentChainId,
     messengerMock,
     resultCallbacksMock,
@@ -97,6 +98,7 @@ describe('Transaction Controller', function () {
     }).provider;
 
     networkStatusStore = new ObservableStore(currentNetworkStatus);
+    preferencesStore = new ObservableStore({ advancedGasFee: {} });
 
     fromAccount = getTestAccounts()[0];
     const blockTrackerStub = new EventEmitter();
@@ -155,6 +157,7 @@ describe('Transaction Controller', function () {
       getAccountType: () => 'MetaMask',
       getDeviceModel: () => 'N/A',
       securityProviderRequest: () => undefined,
+      preferencesStore,
       messenger: messengerMock,
     });
 

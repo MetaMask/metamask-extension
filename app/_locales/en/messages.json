@@ -300,10 +300,8 @@
     "message": "Advanced configuration"
   },
   "advancedGasFeeDefaultOptIn": {
-    "message": "Save these $1 as my default for \"Advanced\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Always use these values and advanced setting as default."
+    "message": "Save these values as my default for the $1 network.",
+    "description": "$1 is the current network name."
   },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
@@ -598,6 +596,12 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeDescription": {
+    "message": "Transfer tokens from different networks"
+  },
+  "bridgeDisabled": {
+    "message": "Bridge is not available in this network"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -616,6 +620,12 @@
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyDescription": {
+    "message": "Hold up your crypto and earn potential profits"
+  },
+  "buyDisabled": {
+    "message": "Buy is not available in this network"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -836,6 +846,9 @@
   },
   "connectionRequest": {
     "message": "Connection request"
+  },
+  "connections": {
+    "message": "Connections"
   },
   "contactUs": {
     "message": "Contact us"
@@ -1145,6 +1158,9 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "desktopApp": {
+    "message": "Desktop App"
   },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
@@ -2498,9 +2514,6 @@
   "newTokensImportedTitle": {
     "message": "Token imported"
   },
-  "newValues": {
-    "message": "new values"
-  },
   "next": {
     "message": "Next"
   },
@@ -2781,6 +2794,15 @@
   },
   "notifications23Title": {
     "message": "Stay safe with security alerts"
+  },
+  "notifications24ActionText": {
+    "message": "Got it"
+  },
+  "notifications24Description": {
+    "message": "Advanced gas fee settings are now remembered based on the network you're using. This means you can set specific advanced gas fees for each network and avoid overpaying for gas or stuck transactions."
+  },
+  "notifications24Title": {
+    "message": "Advanced gas fees by network"
   },
   "notifications3ActionText": {
     "message": "Read more",
@@ -3755,6 +3777,9 @@
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
   },
+  "selectAnAction": {
+    "message": "Select an action"
+  },
   "selectHdPath": {
     "message": "Select HD path"
   },
@@ -3781,6 +3806,9 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
+  },
+  "sendDescription": {
+    "message": "Send crypto to any account"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -4228,6 +4256,9 @@
   "stake": {
     "message": "Stake"
   },
+  "stakeDescription": {
+    "message": "Hold up your crypto and earn potential profits"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4419,8 +4450,14 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
+  "swapDescription": {
+    "message": "Swap and trade your tokens"
+  },
   "swapDirectContract": {
     "message": "Direct contract"
+  },
+  "swapDisabled": {
+    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"
@@ -4695,6 +4732,9 @@
   "swapTokenBalanceUnavailable": {
     "message": "We were unable to retrieve your $1 balance",
     "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
+  "swapTokenNotAvailable": {
+    "message": "Token is not available to swap in this region"
   },
   "swapTokenToToken": {
     "message": "Swap $1 to $2",
@@ -5316,6 +5356,9 @@
   "visitWebSite": {
     "message": "Visit our website"
   },
+  "wallet": {
+    "message": "Wallet"
+  },
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
@@ -5343,8 +5386,7 @@
     "message": "Want to add this network?"
   },
   "wantsToAddThisAsset": {
-    "message": "$1 wants to add this asset to your wallet",
-    "description": "$1 is the name of the website that wants to add an asset to your wallet"
+    "message": "This allows the following asset to be added to your wallet."
   },
   "warning": {
     "message": "Warning"

@@ -781,6 +781,7 @@ export default class Home extends PureComponent {
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
+    const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
     const showWhatsNew =
       completedOnboarding &&
@@ -848,23 +849,25 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IN
           }
           <div className="home__main-view">
-            <div className="home__balance-wrapper">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                <EthOverview showAddress />
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <EthOverview
-                  showAddress
-                  mmiPortfolioEnabled={mmiPortfolioEnabled}
-                  mmiPortfolioUrl={mmiPortfolioUrl}
-                />
-                ///: END:ONLY_INCLUDE_IN
-              }
-            </div>
-            <Box style={{ flexGrow: '1' }}>
+            {process.env.MULTICHAIN ? null : (
+              <div className="home__balance-wrapper">
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  <EthOverview showAddress />
+                  ///: END:ONLY_INCLUDE_IN
+                }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                  <EthOverview
+                    showAddress
+                    mmiPortfolioEnabled={mmiPortfolioEnabled}
+                    mmiPortfolioUrl={mmiPortfolioUrl}
+                  />
+                  ///: END:ONLY_INCLUDE_IN
+                }
+              </div>
+            )}
+            <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
               <Tabs
                 t={this.context.t}
                 defaultActiveTabKey={defaultHomeActiveTabName}

@@ -1938,9 +1938,13 @@ export default class TransactionController extends EventEmitter {
      */
     this.getTransactions = (opts) => this.txStateManager.getTransactions(opts);
 
-    /** @returns {object} the saved default values for advancedGasFee */
+    /**
+     * @returns {object} the saved default values for advancedGasFee
+     */
     this.getAdvancedGasFee = () =>
-      this.preferencesStore.getState().advancedGasFee;
+      this.preferencesStore.getState().advancedGasFee[
+        this._getCurrentChainId()
+      ];
   }
 
   // called once on startup

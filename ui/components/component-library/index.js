@@ -15,7 +15,13 @@ export {
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
 export { Box } from './box';
-export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
+export {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
+} from './button';
 export { ButtonBase, ButtonBaseSize } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, ButtonLinkSize } from './button-link';
