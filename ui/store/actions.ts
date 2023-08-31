@@ -1566,14 +1566,14 @@ export function updateMetamaskState(
 
     // Also emit an event for the selected account changing, either due to a
     // property update or if the entire account changes.
-    if (!isEqual(oldSelectedAccount, newSelectedAccount)) {
+    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
       dispatch({
         type: actionConstants.SELECTED_ACCOUNT_CHANGED,
         payload: { account: newSelectedAccount },
       });
     }
     // We need to keep track of changing address book entries
-    if (!isEqual(oldAddressBook, newAddressBook)) {
+    if (isEqual(oldAddressBook, newAddressBook) === false) {
       dispatch({
         type: actionConstants.ADDRESS_BOOK_UPDATED,
         payload: { addressBook: newAddressBook },
@@ -1581,7 +1581,9 @@ export function updateMetamaskState(
     }
 
     // track when gasFeeEstimates change
-    if (!isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates)) {
+    if (
+      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
+    ) {
       dispatch({
         type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
         payload: {
