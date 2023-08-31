@@ -13,16 +13,23 @@ import {
   Box,
   Button,
   BUTTON_VARIANT,
+  ButtonSecondarySize,
+  ButtonPrimarySize,
 } from '../../../component-library';
 import {
+  AlignItems,
   BackgroundColor,
+  BlockSize,
+  Display,
+  FlexDirection,
   IconColor,
-  Size,
+  JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
+import { stripHttpSchemes } from '../../../../helpers/utils/util';
 
 export default function TxInsightWarnings({
   warnings,
@@ -32,17 +39,14 @@ export default function TxInsightWarnings({
   onSubmit,
 }) {
   const t = useI18nContext();
-  const defaultWarningsState = warnings.reduce((state, warning) => {
-    state[warning.snapId] = false;
-    return state;
-  }, {});
 
-  const [warningsState, setWarningsState] = useState(defaultWarningsState);
+  const [currentWarning, setCurrentWarning] = useState(warnings[0].snapId);
   const [isChecked, setIsChecked] = useState(false);
 
   const handleOnChange = () => setIsChecked(!isChecked);
 
   const Warnings = () => {
+    const lastWarningIdx = warnings.length - 1;
     return warnings.map((warning, idx) => {
       const { snapId, content } = warning;
       return (
@@ -52,9 +56,11 @@ export default function TxInsightWarnings({
           data={content}
           delineatorType={DelineatorType.Warning}
           onClick={() => {
-            setWarningsState({ ...warningsState, [snapId]: true });
+            setCurrentWarning(snapId);
           }}
           isCollapsable
+          isCollapsed={currentWarning !== snapId}
+          boxProps={{ paddingBottom: idx === lastWarningIdx ? 0 : 4 }}
         />
       );
     });
@@ -76,43 +82,67 @@ export default function TxInsightWarnings({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>
+        <ModalHeader
+          childrenWrapperProps={{
+            alignItems: AlignItems.center,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+          }}
+        >
           <AvatarIcon
             iconName={IconName.Warning}
             size={AvatarIconSize.Lg}
-            color={IconColor.errorInverse}
+            color={IconColor.errorDefault}
             backgroundColor={BackgroundColor.errorMuted}
           />
-          <Text variant={TextVariant.headingMd}>
+          <Text
+            variant={TextVariant.headingMd}
+            paddingTop={4}
+            paddingBottom={4}
+          >
             {t('transactionInsightWarningHeader')}
           </Text>
         </ModalHeader>
-        <Text variant={TextVariant.bodyMd}>
-          {t('transactionInsightWarningContent', [
-            warnings.length,
-            type,
-            results[type].noun,
-          ])}
+        <Text variant={TextVariant.bodyMd} paddingBottom={4}>
+          {warnings.length > 1
+            ? t('transactionInsightWarningContentPlural', [
+                warnings.length,
+                type,
+                results[type].noun,
+              ])
+            : t('transactionInsightWarningContentSingular', [
+                type,
+                results[type].noun,
+              ])}
         </Text>
         <Warnings />
         <Checkbox
+          variant={TextVariant.bodySm}
           isChecked={isChecked}
           onChange={handleOnChange}
           label={t('transactionInsightWarningCheckboxMessage', [
-            results[type].imperative,
-            origin,
+            t(`${results[type].imperative}`),
+            stripHttpSchemes(origin),
           ])}
+          paddingTop={4}
+          paddingBottom={4}
         />
-        <Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+        >
           <Button
-            size={Size.LG}
+            size={ButtonSecondarySize.Lg}
+            width={BlockSize.Half}
             variant={BUTTON_VARIANT.SECONDARY}
             onClick={onCancel}
+            marginRight={4}
           >
             {t('cancel')}
           </Button>
           <Button
-            size={Size.LG}
+            size={ButtonPrimarySize.Lg}
+            width={BlockSize.Half}
             danger
             onClick={onSubmit}
             disabled={!isChecked}

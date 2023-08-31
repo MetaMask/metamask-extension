@@ -87,8 +87,10 @@ export const SnapUIRenderer = ({
   snapId,
   delineatorType = DelineatorType.Content,
   isCollapsable = false,
+  isCollapsed = true,
   data,
   onClick,
+  boxProps,
 }) => {
   const t = useI18nContext();
   const targetSubjectMetadata = useSelector((state) =>
@@ -101,9 +103,11 @@ export const SnapUIRenderer = ({
     return (
       <SnapDelineator
         isCollapsable={isCollapsable}
+        isCollapsed={isCollapsed}
         snapName={snapName}
         type={DelineatorType.Error}
         onClick={onClick}
+        boxProps={boxProps}
       >
         <Text variant={TextVariant.bodySm} marginBottom={4}>
           {t('snapsUIError', [<b key="0">{snapName}</b>])}
@@ -122,6 +126,7 @@ export const SnapUIRenderer = ({
       type={delineatorType}
       isCollapsable={isCollapsable}
       onClick={onClick}
+      boxProps={boxProps}
     >
       <Box className="snap-ui-renderer__content">
         <MetaMaskTemplateRenderer sections={sections} />
@@ -135,5 +140,7 @@ SnapUIRenderer.propTypes = {
   delineatorType: PropTypes.string,
   data: PropTypes.object,
   isCollapsable: PropTypes.bool,
+  isCollapsed: PropTypes.bool,
   onClick: PropTypes.func,
+  boxProps: PropTypes.object,
 };

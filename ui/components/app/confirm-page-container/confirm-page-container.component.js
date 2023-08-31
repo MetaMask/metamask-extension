@@ -120,7 +120,8 @@ const ConfirmPageContainer = (props) => {
   const trackEvent = useContext(MetaMetricsContext);
   ///: END:ONLY_INCLUDE_IN
   const [collectionBalance, setCollectionBalance] = useState('0');
-
+  const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
+    useState(false);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
@@ -165,6 +166,14 @@ const ConfirmPageContainer = (props) => {
     txData,
   });
   ///: END:ONLY_INCLUDE_IN
+
+  const handleSubmit = () => {
+    if (isSetApproveForAll && isApprovalOrRejection) {
+      onSetApprovalForAll();
+    } else {
+      onSubmit();
+    }
+  };
 
   useEffect(() => {
     if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
@@ -328,11 +337,14 @@ const ConfirmPageContainer = (props) => {
           <PageContainerFooter
             onCancel={onCancel}
             cancelText={t('reject')}
-            onSubmit={
-              isSetApproveForAll && isApprovalOrRejection
-                ? onSetApprovalForAll
-                : onSubmit
-            }
+            onSubmit={() => {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+              if (warnings?.length > 0) {
+                return setIsShowingTxInsightWarnings(true);
+              }
+              ///: END:ONLY_INCLUDE_IN
+              return handleSubmit();
+            }}
             submitText={t('confirm')}
             submitButtonType={
               isSetApproveForAll && isApprovalOrRejection
@@ -362,14 +374,17 @@ const ConfirmPageContainer = (props) => {
           </>
         )}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
         }
-        {warnings?.length > 0 && (
+        {warnings?.length > 0 && isShowingTxInsightWarnings && (
           <TxInsightWarnings
             warnings={warnings}
             origin={origin}
             onCancel={onCancel}
-            onSubmit={onSubmit}
+            onSubmit={() => {
+              handleSubmit();
+              setIsShowingTxInsightWarnings(false);
+            }}
           />
         )}
         {

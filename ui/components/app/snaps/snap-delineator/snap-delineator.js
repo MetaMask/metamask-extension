@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -30,12 +30,15 @@ export const SnapDelineator = ({
   snapName,
   type = DelineatorType.default,
   isCollapsable = false,
+  isCollapsed = true,
   children,
   onClick,
+  boxProps,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(isCollapsable);
   const t = useI18nContext();
-  const isError = type === DelineatorType.Error;
+  const isError =
+    type === DelineatorType.Error || type === DelineatorType.Warning;
+
   return (
     <Box
       className="snap-delineator__wrapper"
@@ -45,24 +48,24 @@ export const SnapDelineator = ({
       backgroundColor={
         isError ? BackgroundColor.errorMuted : BackgroundColor.backgroundDefault
       }
+      {...boxProps}
     >
       <Box
         className="snap-delineator__header"
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         padding={1}
+        borderWidth={isCollapsed ? [1, 1, 0, 1] : 1}
       >
-        <>
+        <Box display={Display.Flex} alignItems={AlignItems.center}>
           <AvatarIcon
             iconName={IconName.Snaps}
-            size={IconSize.Sm}
+            size={IconSize.Xs}
             backgroundColor={
               isError ? IconColor.errorDefault : IconColor.infoDefault
             }
-            borderColor={BackgroundColor.backgroundDefault}
-            borderWidth={2}
             iconProps={{
-              size: IconSize.Sm,
+              size: IconSize.Xs,
               color: IconColor.infoInverse,
             }}
           />
@@ -76,23 +79,21 @@ export const SnapDelineator = ({
           >
             {t(getDelineatorTitle(type), [snapName])}
           </Text>
-        </>
+        </Box>
         {isCollapsable && (
           <Icon
-            name={IconName.ArrowDown}
+            name={isCollapsed ? IconName.ArrowDown : IconName.ArrowUp}
             size={IconSize.Sm}
             color={IconColor.iconMuted}
-            onClick={() => {
-              onClick();
-              setIsCollapsed(!isCollapsed);
-            }}
+            className="snap-delineator__expansion-icon"
+            onClick={onClick}
           />
         )}
       </Box>
       <Box
-        display={isCollapsed ? Display.None : Display.Block}
         className="snap-delineator__content"
         padding={4}
+        display={isCollapsed ? Display.None : Display.Block}
       >
         {children}
       </Box>
@@ -105,5 +106,7 @@ SnapDelineator.propTypes = {
   type: PropTypes.string,
   children: PropTypes.ReactNode,
   isCollapsable: PropTypes.bool,
+  isCollapsed: PropTypes.bool,
   onClick: PropTypes.func,
+  boxProps: PropTypes.object,
 };
