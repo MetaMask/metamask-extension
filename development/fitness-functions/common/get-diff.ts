@@ -1,3 +1,4 @@
+/* eslint-disable import/no-nodejs-modules */
 import { execSync } from 'child_process';
 import fs from 'fs';
 import { AUTOMATION_TYPE } from './constants';
