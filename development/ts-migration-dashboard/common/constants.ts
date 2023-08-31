@@ -1,3 +1,4 @@
+/* eslint-disable-next-line import/no-nodejs-modules */
 import path from 'path';
 
 export const ROOT_DIRECTORY_PATH = path.resolve(__dirname, '../../..');

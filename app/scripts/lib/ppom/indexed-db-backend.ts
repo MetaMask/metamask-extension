@@ -21,8 +21,10 @@ const validateChecksum = async (
 };
 
 export class IndexedDBPPOMStorage implements StorageBackend {
+  /* eslint-disable no-restricted-syntax */
   private readonly storeName: string;
 
+  /* eslint-disable no-restricted-syntax */
   private readonly dbVersion: number;
 
   constructor(storeName: string, dbVersion: number) {
@@ -63,6 +65,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     });
   }
 
+  /* eslint-disable no-restricted-syntax */
   private async objectStoreAction(
     method: 'get' | 'delete' | 'put' | 'getAllKeys',
     args?: any,
