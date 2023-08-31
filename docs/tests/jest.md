@@ -69,6 +69,10 @@ Additional methods and information to debug in VS Code can be found [here](https
             use the `--watchAll` option.       [boolean]
     ```
 
+    To view more jest options, run:
+    ```bash
+    > ./node_modules/.bin/jest help
+    ```
 
 1. Open Chrome DevTools for Node
     1. Open a **Chromium** browser
