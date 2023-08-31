@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const {
@@ -546,7 +547,6 @@ function logBrowserError(failOnConsoleError, errorMessage) {
   }
 }
 
-/* eslint-disable no-restricted-globals */
 function collectMetrics() {
   const results = {
     paint: {},

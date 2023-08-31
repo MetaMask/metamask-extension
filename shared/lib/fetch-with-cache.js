@@ -2,6 +2,7 @@ import { MINUTE, SECOND } from '../constants/time';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
+/* eslint-disable no-restricted-globals */
 const fetchWithCache = async (
   url,
   fetchOptions = {},

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { openCustomProtocol } from './deep-linking';
 
 describe('#openCustomProtocol', () => {
