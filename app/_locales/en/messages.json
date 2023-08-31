@@ -5092,12 +5092,12 @@
   "transactionHistoryPriorityFee": {
     "message": "Priority fee (GWEI)"
   },
+  "transactionHistoryTotalGasFee": {
+    "message": "Total gas fee"
+  },
   "transactionInsightWarningCheckboxMessage": {
     "message": "$1 the request by $2",
     "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
-  },
-  "transactionInsightWarningHeader": {
-    "message": "This request may be risky"
   },
   "transactionInsightWarningContentPlural": {
     "message": "Review $1 warnings before $2. Once made, your $3 is irreversible.",
@@ -5107,8 +5107,8 @@
     "message": "Review 1 warning before $1. Once made, your $2 is irreversible.",
     "description": "$1 is the action (i.e. signing) and $2 is the result (i.e. signature, transaction)"
   },
-  "transactionHistoryTotalGasFee": {
-    "message": "Total gas fee"
+  "transactionInsightWarningHeader": {
+    "message": "This request may be risky"
   },
   "transactionNote": {
     "message": "Transaction note"

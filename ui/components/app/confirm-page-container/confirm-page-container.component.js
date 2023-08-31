@@ -169,6 +169,14 @@ const ConfirmPageContainer = (props) => {
   const insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
 
+  const handleSubmit = () => {
+    if (isSetApproveForAll && isApprovalOrRejection) {
+      onSetApprovalForAll();
+    } else {
+      onSubmit();
+    }
+  };
+
   // TODO: Better name
   const topLevelHandleSubmit = () => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
@@ -177,14 +185,6 @@ const ConfirmPageContainer = (props) => {
     }
     ///: END:ONLY_INCLUDE_IN
     return handleSubmit();
-  };
-
-  const handleSubmit = () => {
-    if (isSetApproveForAll && isApprovalOrRejection) {
-      onSetApprovalForAll();
-    } else {
-      onSubmit();
-    }
   };
 
   useEffect(() => {

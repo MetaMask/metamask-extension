@@ -44,7 +44,7 @@ const useTransactionInsights = ({ txData }) => {
   }
 
   const selectedSnap = insightSnaps.find(
-    ({ snapId }) => snapId === selectedInsightSnapId,
+    ({ id }) => id === selectedInsightSnapId,
   );
 
   let insightComponent;
@@ -53,7 +53,7 @@ const useTransactionInsights = ({ txData }) => {
     insightComponent = (
       <Tab
         className="confirm-page-container-content__tab"
-        name={selectedSnap.manifest.proposedName}
+        name={selectedSnap?.manifest.proposedName}
       >
         <SnapInsight data={data?.[0]} loading={loading} />
       </Tab>

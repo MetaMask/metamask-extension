@@ -12,9 +12,9 @@ import {
   Checkbox,
   Box,
   Button,
-  BUTTON_VARIANT,
   ButtonSecondarySize,
   ButtonPrimarySize,
+  ButtonVariant,
 } from '../../../component-library';
 import {
   AlignItems,
@@ -134,7 +134,7 @@ export default function TxInsightWarnings({
           <Button
             size={ButtonSecondarySize.Lg}
             width={BlockSize.Half}
-            variant={BUTTON_VARIANT.SECONDARY}
+            variant={ButtonVariant.Secondary}
             onClick={onCancel}
             marginRight={4}
           >
