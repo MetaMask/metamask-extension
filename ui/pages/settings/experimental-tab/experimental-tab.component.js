@@ -13,8 +13,10 @@ import {
   TextVariant,
   FontWeight,
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  AlignItems,
   Display,
   FlexDirection,
+  FlexWrap,
   JustifyContent,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
@@ -245,22 +247,31 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     return (
-      <Box
-        ref={this.settingsRefs[6]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-desktop-pairing"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('desktopEnableButtonDescription')}</span>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <DesktopEnableButton />
-        </div>
-      </Box>
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          color={TextColor.textAlternative}
+          marginBottom={2}
+        >
+          {t('desktopApp')}
+        </Text>
+        <Box
+          ref={this.settingsRefs[6]}
+          data-testid="advanced-setting-desktop-pairing"
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          flexDirection={FlexDirection.Row}
+          flexWrap={FlexWrap.Wrap}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Text marginTop={3} paddingRight={2}>
+            {t('desktopEnableButtonDescription')}
+          </Text>
+          <Box className="settings-page__content-item-col" paddingTop={3}>
+            <DesktopEnableButton />
+          </Box>
+        </Box>
+      </>
     );
   }
   ///: END:ONLY_INCLUDE_IN
