@@ -2822,6 +2822,60 @@
         "eslint-plugin-mocha>eslint-utils>eslint-visitor-keys": true
       }
     },
+    "eslint-plugin-n": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path": true,
+        "url.URL": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true,
+        "util.format": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.emitWarning": true,
+        "process.platform": true
+      },
+      "packages": {
+        "brfs>resolve": true,
+        "depcheck>is-core-module": true,
+        "eslint-plugin-n>builtins": true,
+        "eslint-plugin-n>eslint-plugin-es": true,
+        "eslint-plugin-n>eslint-utils": true,
+        "eslint>ignore": true,
+        "eslint>minimatch": true,
+        "semver": true
+      }
+    },
+    "eslint-plugin-n>builtins": {
+      "globals": {
+        "process.version": true
+      },
+      "packages": {
+        "semver": true
+      }
+    },
+    "eslint-plugin-n>eslint-plugin-es": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "eslint-plugin-n>eslint-plugin-es>eslint-utils": true,
+        "eslint-plugin-n>eslint-plugin-es>regexpp": true
+      }
+    },
+    "eslint-plugin-n>eslint-plugin-es>eslint-utils": {
+      "packages": {
+        "eslint-plugin-n>eslint-plugin-es>eslint-utils>eslint-visitor-keys": true
+      }
+    },
+    "eslint-plugin-n>eslint-utils": {
+      "packages": {
+        "eslint-plugin-n>eslint-utils>eslint-visitor-keys": true
+      }
+    },
     "eslint-plugin-prettier": {
       "packages": {
         "eslint-plugin-prettier>prettier-linter-helpers": true,
@@ -3003,7 +3057,7 @@
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
         "eslint-plugin-jsdoc": true,
-        "eslint-plugin-node": true,
+        "eslint-plugin-n": true,
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,

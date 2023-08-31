@@ -62,7 +62,7 @@
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
         "eslint-plugin-jsdoc": true,
-        "eslint-plugin-node": true,
+        "eslint-plugin-n": true,
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true
