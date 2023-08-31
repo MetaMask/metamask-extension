@@ -275,12 +275,6 @@
   "advancedConfiguration": {
     "message": "Advanced na pagsasaayos"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "I-save itong mga $1bilang aking default para sa \"Advanced\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Laging gamitin ang mga value na ito at advanced setting bilang default."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Advanced na gas fee"
   },
@@ -2100,9 +2094,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Na-import ang token"
-  },
-  "newValues": {
-    "message": "bagong value"
   },
   "next": {
     "message": "Susunod"

@@ -106,9 +106,12 @@ const ConfirmAddSuggestedNFT = () => {
   }, [history, mostRecentOverviewPage, suggestedNfts]);
 
   let origin;
+  let link;
   if (suggestedNfts.length) {
     try {
-      origin = new URL(suggestedNfts[0].origin)?.host;
+      const url = new URL(suggestedNfts[0].origin);
+      origin = url.host;
+      link = url.href;
     } catch {
       origin = 'dapp';
     }
@@ -138,7 +141,7 @@ const ConfirmAddSuggestedNFT = () => {
               <ButtonLink
                 key={origin}
                 size={BUTTON_SIZES.INHERIT}
-                href={origin}
+                href={link}
                 target="_blank"
               >
                 {origin}
