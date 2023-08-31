@@ -24,6 +24,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -141,29 +142,30 @@ export const AppFooter = () => {
         tabIndex={0}
       >
         {connectedSite ? (
-          <BadgeWrapper
-            display={Display.Flex}
-            className="app-footer__connected-badge"
-            badge={
-              <AvatarNetwork
-                backgroundColor={testNetworkBackgroundColor}
-                size={AvatarNetworkSize.Xs}
-                name={currentChain.nickname}
-                src={currentChain.rpcPrefs?.imageUrl}
-                borderWidth={2}
-                borderColor={BackgroundColor.backgroundDefault}
+          <Box alignItems={AlignItems.center}>
+            <BadgeWrapper
+              display={Display.Flex}
+              className="app-footer__connected-badge"
+              badge={
+                <AvatarNetwork
+                  backgroundColor={testNetworkBackgroundColor}
+                  size={AvatarNetworkSize.Xs}
+                  name={currentChain.nickname}
+                  src={currentChain.rpcPrefs?.imageUrl}
+                  borderWidth={2}
+                  borderColor={BorderColor.borderDefault}
+                />
+              }
+            >
+              <AvatarFavicon
+                size={Size.SM}
+                src={connectedAvatar}
+                name={connectedAvatarName}
               />
-            }
-          >
-            <AvatarFavicon
-              size={Size.SM}
-              src={connectedAvatar}
-              name={connectedAvatarName}
-            />
-          </BadgeWrapper>
+            </BadgeWrapper>
+          </Box>
         ) : (
           <Icon
-            data-testid="app-footer-connections-button"
             color={
               activeConnections
                 ? IconColor.primaryDefault
