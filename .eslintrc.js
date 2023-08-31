@@ -130,6 +130,7 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       rules: {
+        '@typescript-eslint/consistent-type-imports': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         // Turn these off, as it's recommended by typescript-eslint.
         // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
@@ -142,9 +143,12 @@ module.exports = {
         '@typescript-eslint/consistent-type-definitions': 'off',
         // TODO: enable
         'import/order': 'off',
+        '@typescript-eslint/consistent-type-imports': 'off',
         '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-shadow': 'warn',
         '@typescript-eslint/no-throw-literal': 'off',
+        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'warn',
         '@typescript-eslint/naming-convention': 'off',
         '@typescript-eslint/restrict-template-expressions': 'off',
       },
