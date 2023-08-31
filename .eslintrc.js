@@ -143,6 +143,7 @@ module.exports = {
         '@typescript-eslint/consistent-type-definitions': 'off',
         // TODO: enable
         'import/order': 'off',
+        '@typescript-eslint/await-thenable': 'warn',
         '@typescript-eslint/consistent-type-imports': 'off',
         '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
@@ -151,6 +152,7 @@ module.exports = {
         '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'warn',
         '@typescript-eslint/naming-convention': 'off',
         '@typescript-eslint/restrict-template-expressions': 'off',
+        '@typescript-eslint/unbound-method': 'warn',
       },
       settings: {
         'import/resolver': {
