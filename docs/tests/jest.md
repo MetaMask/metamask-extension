@@ -26,11 +26,13 @@ Additional methods and information to debug in VS Code can be found [here](https
 1. Run Jest using Node with the V8 Inspector
 
     ```bash
-    > node --inspect ./node_modules/.bin/jest --watch <path>
+    > yarn jest:node <path>
+    ```
 
     or
 
-    > node --inspect ./node_modules/.bin/jest <path>
+    ```bash
+    > node --inspect ./node_modules/.bin/jest --watch <path>
     ```
 
     **Options:**
