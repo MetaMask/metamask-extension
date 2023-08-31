@@ -3640,12 +3640,6 @@
   "securityAlerts": {
     "message": "Mga alerto sa seguridad"
   },
-  "securityAlertsDescription1": {
-    "message": "Ang feature na ito ay nagbibigay ng alerto sa iyo sa malisyosong aktibidad sa pamamagitan ng lokal na pagsusuri sa iyong mga transaksyon at kahilingan sa pagpirma. Ang iyong data ay hindi ibinabahagi sa mga third party na nagbibigay ng serbisyong ito. Palaging gumawa ng sarili mong pagsusuri bago aprubahan ang anumang mga kahilingan. Walang garantiya na made-detect ng feature na ito ang lahat ng malisyosong aktibidad."
-  },
-  "securityAlertsDescription2": {
-    "message": "Laging tiyakin na isasagawa ang sariling pagsusuri bago pahintulutan ang anumang kahilingan. Walang garantiya na ang lahat ng malisyosong aktibidad ay matutuklasan ng feature na ito."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Pagkapribado"
   },

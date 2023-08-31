@@ -3640,12 +3640,6 @@
   "securityAlerts": {
     "message": "Alertas de seguridad"
   },
-  "securityAlertsDescription1": {
-    "message": "Esta función lo alerta sobre actividades maliciosas al revisar localmente sus transacciones y solicitudes de firma. Sus datos no se comparten con los terceros que brindan este servicio. Siempre haga su propia diligencia debida antes de aprobar cualquier solicitud. No hay garantía de que esta característica detecte todas la actividades maliciosas."
-  },
-  "securityAlertsDescription2": {
-    "message": "Siempre asegúrese de hacer su propia diligencia debida antes de aprobar cualquier solicitud. No hay garantía de que esta característica detecte toda la actividad maliciosa."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },

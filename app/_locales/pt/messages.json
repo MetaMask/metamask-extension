@@ -3637,12 +3637,6 @@
   "securityAlerts": {
     "message": "Alertas de segurança"
   },
-  "securityAlertsDescription1": {
-    "message": "Esse recurso alerta sobre atividades mal-intencionadas ao analisar localmente suas transações e solicitações de assinatura. Seus dados não são compartilhados com os terceiros prestadores do serviço. Sempre faça sua própria devida diligência antes de aprovar qualquer solicitação. Não há garantia de que esse recurso detectará toda e qualquer atividade mal-intencionada."
-  },
-  "securityAlertsDescription2": {
-    "message": "Sempre se certifique de fazer a devida diligência por conta própria antes de aprovar eventuais solicitações. Não há garantia de que toda e qualquer atividade mal-intencionada será detectada por esse recurso."
-  },
   "securityAndPrivacy": {
     "message": "Segurança e privacidade"
   },

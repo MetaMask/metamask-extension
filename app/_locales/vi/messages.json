@@ -3640,12 +3640,6 @@
   "securityAlerts": {
     "message": "Cảnh báo bảo mật"
   },
-  "securityAlertsDescription1": {
-    "message": "Tính năng này sẽ cảnh báo cho bạn khi có hoạt động độc hại bằng cách xem xét cục bộ các giao dịch và yêu cầu chữ ký của bạn. Dữ liệu của bạn không được chia sẻ với các bên thứ ba cung cấp dịch vụ này. Luôn tự thẩm định trước khi phê duyệt bất kỳ yêu cầu nào. Không có gì đảm bảo rằng tính năng này sẽ phát hiện được tất cả các hoạt động độc hại."
-  },
-  "securityAlertsDescription2": {
-    "message": "Nhớ luôn tự thẩm định trước khi phê duyệt bất kỳ yêu cầu nào. Không có gì đảm bảo tính năng này sẽ phát hiện được tất cả các hành vi độc hại."
-  },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },

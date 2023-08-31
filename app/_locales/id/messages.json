@@ -3646,12 +3646,6 @@
   "securityAlerts": {
     "message": "Peringatan keamanan"
   },
-  "securityAlertsDescription1": {
-    "message": "Fitur ini memberi tahu Anda seputar aktivitas berbahaya dengan meninjau transaksi dan permintaan tanda tangan Anda secara lokal. Data Anda tidak dibagikan kepada pihak ketiga yang menyediakan layanan ini. Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan apa pun. Tidak ada jaminan bahwa fitur ini akan mendeteksi semua aktivitas berbahaya."
-  },
-  "securityAlertsDescription2": {
-    "message": "Pastikan untuk selalu melakukan uji tuntas sebelum menyetujui permintaan apa pun. Tidak ada jaminan semua aktivitas berbahaya akan terdeteksi oleh fitur ini."
-  },
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
   },

@@ -3640,12 +3640,6 @@
   "securityAlerts": {
     "message": "Sicherheitswarnung"
   },
-  "securityAlertsDescription1": {
-    "message": "Diese Funktion warnt Sie vor schädlichen Aktivitäten, indem sie Ihre Transaktionen und Signaturanfragen lokal überprüft. Ihre Daten werden dazu nicht an Dritte weitergegeben, die diesen Dienst anbieten. Denken Sie immer an Ihre eigene Sorgfaltspflicht, bevor Sie Anfragen genehmigen, denn es gibt keine Garantie dafür, dass diese Funktion alle schädlichen Aktivitäten auch tatsächlich erkennt."
-  },
-  "securityAlertsDescription2": {
-    "message": "Achten Sie darauf, Ihrer eigenen Sorgfaltspflicht nachzukommen, bevor Sie eine Anfrage bestätigen. Es gibt keine Garantie dafür, dass alle E-Mail-Aktivitäten von dieser Funktion erkannt werden."
-  },
   "securityAndPrivacy": {
     "message": "Sicherheit & Datenschutz"
   },

@@ -3640,12 +3640,6 @@
   "securityAlerts": {
     "message": "Alertes de sécurité"
   },
-  "securityAlertsDescription1": {
-    "message": "Cette fonctionnalité vous avertit de toute activité malveillante en examinant localement vos transactions et vos demandes de signature. Vos données ne sont pas partagées avec les tiers qui fournissent ce service. Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande. Rien ne garantit que toutes les activités malveillantes seront détectées par cette fonctionnalité."
-  },
-  "securityAlertsDescription2": {
-    "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande. Rien ne garantit que toutes les activités malveillantes seront détectées par cette fonctionnalité."
-  },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"
   },

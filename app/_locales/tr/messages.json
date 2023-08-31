@@ -3640,12 +3640,6 @@
   "securityAlerts": {
     "message": "Güvenlik uyarıları"
   },
-  "securityAlertsDescription1": {
-    "message": "Bu özellik, işlemlerinizi ve imza taleplerinizi yerel olarak inceleyerek sizi kötü amaçlı aktivitelere karşı uyarır. Verileriniz bu hizmeti sunan üçüncü taraflarla paylaşılmaz. Herhangi bir talebi onaylamadan önce gerekli özeni her zaman kendiniz gösterin. Bu özelliğin tüm kötü amaçlı aktiviteleri algılayacağına dair herhangi bir garanti söz konusu değildir."
-  },
-  "securityAlertsDescription2": {
-    "message": "Talepleri onaylamadan önce her zaman gerekli özeni gösterdiğinizden emin olun. Tüm kötü niyetli aktivitelerin bu özellik tarafından algılanacağına dair herhangi bir garanti sunulmamaktadır."
-  },
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
   },

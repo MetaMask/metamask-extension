@@ -3640,12 +3640,6 @@
   "securityAlerts": {
     "message": "보안 알림"
   },
-  "securityAlertsDescription1": {
-    "message": "이 기능은 거래 및 서명 요청을 로컬에서 검토하여 악의적인 활동이 있는 경우 경고합니다. 사용자 데이터는 이 서비스를 제공하는 제3자와 공유되지 않습니다. 요청을 승인하기 전에 항상 직접 실사하세요. 이 기능이 모든 악성 활동 탐지를 보장하지는 않습니다."
-  },
-  "securityAlertsDescription2": {
-    "message": "요청을 승인하기 전에 항상 직접 확인하세요. 이 기능을 통해 모든 악의적인 활동이 감지된다는 보장이 없습니다."
-  },
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
   },
