@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 export function openCustomProtocol(protocolLink) {
   return new Promise((resolve, reject) => {
     // msLaunchUri is windows specific. It will open and app or service
