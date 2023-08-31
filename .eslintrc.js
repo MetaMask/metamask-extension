@@ -122,6 +122,16 @@ module.exports = {
       },
     },
     /**
+     * TypeScript test files
+     */
+    {
+      files: ['*.test.{ts,tsx}'],
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: ['tsconfig.test.json'],
+      },
+    },
+    /**
      * TypeScript files
      */
     {
