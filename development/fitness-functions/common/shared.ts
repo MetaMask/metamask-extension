@@ -65,6 +65,7 @@ function filterDiffFileCreations(diff: string): string {
   // split by `diff --git` and remove the first element which is empty
   const diffBlocks = diff.split(`diff --git`).slice(1);
 
+  /* eslint-disable @typescript-eslint/prefer-string-starts-ends-with */
   const filteredDiff = diffBlocks
     .map((block) => block.trim())
     .filter((block) => {
