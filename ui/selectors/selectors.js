@@ -618,6 +618,11 @@ export function getIsMainnet(state) {
   return chainId === CHAIN_IDS.MAINNET;
 }
 
+export function getIsLineaMainnet(state) {
+  const chainId = getCurrentChainId(state);
+  return chainId === CHAIN_IDS.LINEA_MAINNET;
+}
+
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
@@ -654,12 +659,13 @@ export function getDisabledRpcMethodPreferences(state) {
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
+  const isLineaMainNet = getIsLineaMainnet(state);
   const isCustomNetwork = getIsCustomNetwork(state);
   const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   const { showFiatInTestnets } = getPreferences(state);
   return Boolean(
-    (isMainNet || isCustomNetwork || showFiatInTestnets) &&
+    (isMainNet || isLineaMainNet || isCustomNetwork || showFiatInTestnets) &&
       useCurrencyRateCheck &&
       conversionRate,
   );
@@ -1138,6 +1144,16 @@ export function getUseTokenDetection(state) {
  */
 export function getUseNftDetection(state) {
   return Boolean(state.metamask.useNftDetection);
+}
+
+/**
+ * To get the useBlockie flag which determines whether we show blockies or Jazzicons
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseBlockie(state) {
+  return Boolean(state.metamask.useBlockie);
 }
 
 /**

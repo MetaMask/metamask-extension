@@ -485,7 +485,8 @@ export const ImportTokensModal = ({ onClose }) => {
                 ) : null}
                 <Tab tabKey="customToken" name={t('customToken')}>
                   <Box
-                    padding={[2, 4, 4, 4]}
+                    paddingTop={4}
+                    paddingBottom={4}
                     className="import-tokens-modal__custom-token-form"
                   >
                     {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
