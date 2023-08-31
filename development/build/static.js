@@ -204,7 +204,7 @@ function getCopyTargets(
 
   if (activeFeatures.includes('blockaid')) {
     allCopyTargets.push({
-      src: getPathInsideNodeModules('@blockaid/ppom', '/'),
+      src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
       dest: '',
     });
