@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable-next-line */
 import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
