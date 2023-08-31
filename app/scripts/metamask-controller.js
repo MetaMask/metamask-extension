@@ -427,8 +427,18 @@ export default class MetamaskController extends EventEmitter {
     this.tokensController = new TokensController({
       messenger: tokensControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
+      // TODO: The tokens controller is not updated to the latest version, it currently does not support internalAccounts.
+      // This is a temporary fix to prevent the tokens controller from breaking.
+      onPreferencesStateChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          `AccountsController:selectedAccountChange`,
+          (newlySelectedInternalAccount) => {
+            console.log(
+              'newlySelectedInternalAccount',
+              newlySelectedInternalAccount,
+            );
+            listener(newlySelectedInternalAccount.address);
+          },
       ),
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
