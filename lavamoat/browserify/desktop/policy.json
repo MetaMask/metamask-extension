@@ -3272,6 +3272,11 @@
         "@truffle/decoder>@truffle/source-map-utils>node-interval-tree>shallowequal": true
       }
     },
+    "@typescript-eslint/eslint-plugin": {
+      "packages": {
+        "@typescript-eslint/eslint-plugin>graphemer": true
+      }
+    },
     "@zxing/browser": {
       "globals": {
         "HTMLElement": true,
