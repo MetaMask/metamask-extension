@@ -2,8 +2,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconName } from '..';
-import { BUTTON_SIZES, BUTTON_VARIANT } from './button.constants';
 import { Button } from './button';
+import { ButtonSize, ButtonVariant } from '.';
 
 describe('Button', () => {
   it('should render button element correctly', () => {
@@ -47,30 +47,30 @@ describe('Button', () => {
     const { getByTestId, container } = render(
       <>
         <Button
-          variant={BUTTON_VARIANT.PRIMARY}
-          data-testid={BUTTON_VARIANT.PRIMARY}
+          variant={ButtonVariant.Primary}
+          data-testid={ButtonVariant.Primary}
         >
           Button
         </Button>
         <Button
-          variant={BUTTON_VARIANT.SECONDARY}
-          data-testid={BUTTON_VARIANT.SECONDARY}
+          variant={ButtonVariant.Secondary}
+          data-testid={ButtonVariant.Secondary}
         >
           Button
         </Button>
-        <Button variant={BUTTON_VARIANT.LINK} data-testid={BUTTON_VARIANT.LINK}>
+        <Button variant={ButtonVariant.Link} data-testid={ButtonVariant.Link}>
           Button
         </Button>
       </>,
     );
-    expect(getByTestId(BUTTON_VARIANT.PRIMARY)).toHaveClass(
-      `mm-button-${BUTTON_VARIANT.PRIMARY}`,
+    expect(getByTestId(ButtonVariant.Primary)).toHaveClass(
+      `mm-button-${ButtonVariant.Primary}`,
     );
-    expect(getByTestId(BUTTON_VARIANT.SECONDARY)).toHaveClass(
-      `mm-button-${BUTTON_VARIANT.SECONDARY}`,
+    expect(getByTestId(ButtonVariant.Secondary)).toHaveClass(
+      `mm-button-${ButtonVariant.Secondary}`,
     );
-    expect(getByTestId(BUTTON_VARIANT.LINK)).toHaveClass(
-      `mm-button-${BUTTON_VARIANT.LINK}`,
+    expect(getByTestId(ButtonVariant.Link)).toHaveClass(
+      `mm-button-${ButtonVariant.Link}`,
     );
     expect(container).toMatchSnapshot();
   });
@@ -79,34 +79,34 @@ describe('Button', () => {
     const { getByTestId } = render(
       <>
         <Button
-          size={BUTTON_SIZES.INHERIT}
-          variant={BUTTON_VARIANT.LINK}
-          data-testid={BUTTON_SIZES.INHERIT}
+          variant={ButtonVariant.Link}
+          size={ButtonSize.Inherit}
+          data-testid={ButtonSize.Inherit}
         >
-          Button {BUTTON_SIZES.INHERIT}
+          Button {ButtonSize.Inherit}
         </Button>
-        <Button size={BUTTON_SIZES.SM} data-testid={BUTTON_SIZES.SM}>
-          Button {BUTTON_SIZES.SM}
+        <Button size={ButtonSize.Sm} data-testid={ButtonSize.Sm}>
+          Button {ButtonSize.Sm}
         </Button>
-        <Button size={BUTTON_SIZES.MD} data-testid={BUTTON_SIZES.MD}>
-          Button {BUTTON_SIZES.MD}
+        <Button size={ButtonSize.Md} data-testid={ButtonSize.Md}>
+          Button {ButtonSize.Md}
         </Button>
-        <Button size={BUTTON_SIZES.LG} data-testid={BUTTON_SIZES.LG}>
-          Button {BUTTON_SIZES.LG}
+        <Button size={ButtonSize.Lg} data-testid={ButtonSize.Lg}>
+          Button {ButtonSize.Lg}
         </Button>
       </>,
     );
-    expect(getByTestId(BUTTON_SIZES.INHERIT)).toHaveClass(
-      `mm-button-link--size-${BUTTON_SIZES.INHERIT}`,
+    expect(getByTestId(ButtonSize.Inherit)).toHaveClass(
+      `mm-button-link--size-${ButtonSize.Inherit}`,
     );
-    expect(getByTestId(BUTTON_SIZES.SM)).toHaveClass(
-      `mm-button-base--size-${BUTTON_SIZES.SM}`,
+    expect(getByTestId(ButtonSize.Sm)).toHaveClass(
+      `mm-button-base--size-${ButtonSize.Sm}`,
     );
-    expect(getByTestId(BUTTON_SIZES.MD)).toHaveClass(
-      `mm-button-base--size-${BUTTON_SIZES.MD}`,
+    expect(getByTestId(ButtonSize.Md)).toHaveClass(
+      `mm-button-base--size-${ButtonSize.Md}`,
     );
-    expect(getByTestId(BUTTON_SIZES.LG)).toHaveClass(
-      `mm-button-base--size-${BUTTON_SIZES.LG}`,
+    expect(getByTestId(ButtonSize.Lg)).toHaveClass(
+      `mm-button-base--size-${ButtonSize.Lg}`,
     );
   });
 

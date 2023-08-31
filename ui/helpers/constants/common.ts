@@ -7,6 +7,7 @@ const _contractAddressLink =
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 const _mmiWebSite = 'https://metamask.io/institutions/';
 export const MMI_WEB_SITE = _mmiWebSite;
+export const MMI_STAKE_WEBSITE = 'https://metamask-institutional.io/stake';
 ///: END:ONLY_INCLUDE_IN
 
 // eslint-disable-next-line prefer-destructuring
