@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-readonly */
 /* eslint-disable-next-line import/no-nodejs-modules */
 import EventEmitter from 'events';
 import log from 'loglevel';
@@ -103,17 +104,15 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
 > {
   hub: EventEmitter;
 
-  private readonly _getEncryptionPublicKey: (
-    address: string,
-  ) => Promise<string>;
+  private _getEncryptionPublicKey: (address: string) => Promise<string>;
 
-  private readonly _getAccountKeyringType: (account: string) => Promise<string>;
+  private _getAccountKeyringType: (account: string) => Promise<string>;
 
-  private readonly _getState: () => any;
+  private _getState: () => any;
 
-  private readonly _encryptionPublicKeyManager: EncryptionPublicKeyManager;
+  private _encryptionPublicKeyManager: EncryptionPublicKeyManager;
 
-  private readonly _metricsEvent: (payload: any, options?: any) => void;
+  private _metricsEvent: (payload: any, options?: any) => void;
 
   /**
    * Construct a EncryptionPublicKey controller.

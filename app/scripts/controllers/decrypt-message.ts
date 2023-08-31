@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-readonly */
 /* eslint-disable-next-line import/no-nodejs-modules */
 import EventEmitter from 'events';
 import log from 'loglevel';
@@ -99,13 +100,13 @@ export default class DecryptMessageController extends BaseControllerV2<
 > {
   hub: EventEmitter;
 
-  private readonly _getState: () => any;
+  private _getState: () => any;
 
-  private readonly _keyringController: KeyringController;
+  private _keyringController: KeyringController;
 
-  private readonly _metricsEvent: (payload: any, options?: any) => void;
+  private _metricsEvent: (payload: any, options?: any) => void;
 
-  private readonly _decryptMessageManager: DecryptMessageManager;
+  private _decryptMessageManager: DecryptMessageManager;
 
   /**
    * Construct a DecryptMessage controller.
