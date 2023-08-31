@@ -1,7 +1,6 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
@@ -51,13 +50,6 @@ describe('Confirm Page Container Content', () => {
       disabled: true,
       origin: 'http://localhost:4200',
       hideTitle: false,
-      txData: {
-        securityProviderResponse: {
-          flagAsDangerous: '?',
-          reason: 'Some reason...',
-          reason_header: 'Some reason header...',
-        },
-      },
     };
   });
 
@@ -138,40 +130,6 @@ describe('Confirm Page Container Content', () => {
     expect(queryByText('Address Book Account 1')).not.toBeInTheDocument();
   });
 
-  it('should render SecurityProviderBannerMessage component properly', () => {
-    const { queryByText } = renderWithProvider(
-      <ConfirmPageContainerContent {...props} />,
-      store,
-    );
-
-    expect(queryByText('Request not verified')).toBeInTheDocument();
-    expect(
-      queryByText(
-        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
-      ),
-    ).toBeInTheDocument();
-    expect(queryByText('OpenSea')).toBeInTheDocument();
-  });
-
-  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
-    props.txData.securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
-    };
-
-    const { queryByText } = renderWithProvider(
-      <ConfirmPageContainerContent {...props} />,
-      store,
-    );
-
-    expect(queryByText('Request not verified')).toBeNull();
-    expect(
-      queryByText(
-        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
-      ),
-    ).toBeNull();
-    expect(queryByText('OpenSea')).toBeNull();
-  });
-
   it('should show insufficient funds error for EIP-1559 network', () => {
     const { getByRole } = renderWithProvider(
       <ConfirmPageContainerContent
@@ -196,27 +154,5 @@ describe('Confirm Page Container Content', () => {
       store,
     );
     expect(getByRole('button', { name: 'Buy' })).toBeInTheDocument();
-  });
-
-  it('should display security alert if present', () => {
-    const { getByText } = renderWithProvider(
-      <ConfirmPageContainerContent
-        {...props}
-        txData={{
-          securityAlertResponse: {
-            resultType: 'Malicious',
-            reason: 'blur_farming',
-            description:
-              'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
-            args: {
-              contract: '0xa7206d878c5c3871826dfdb42191c49b1d11f466',
-              operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
-            },
-          },
-        }}
-      />,
-      store,
-    );
-    expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 });

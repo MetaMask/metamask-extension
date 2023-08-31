@@ -111,9 +111,7 @@
     "alertEnabledness": {
       "unconnectedAccount": true
     },
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
+    "featureFlags": {},
     "network": "5",
     "providerConfig": {
       "type": "rpc",
