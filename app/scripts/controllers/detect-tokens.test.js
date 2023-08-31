@@ -232,27 +232,6 @@ describe('DetectTokensController', function () {
     });
     preferences.setUseTokenDetection(true);
 
-    tokensController = new TokensController({
-      config: { provider },
-      onPreferencesStateChange: preferences.store.subscribe.bind(
-        preferences.store,
-      ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
-    });
-
-    assetsContractController = new AssetsContractController({
-      onPreferencesStateChange: preferences.store.subscribe.bind(
-        preferences.store,
-      ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
-    });
-
     controllerMessenger = new ControllerMessenger();
 
     const accountsControllerMessenger = controllerMessenger.getRestricted({
@@ -270,14 +249,14 @@ describe('DetectTokensController', function () {
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x7e57e2',
+              address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
               id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
               metadata: {
                 keyring: {
                   type: 'HD Key Tree',
                 },
               },
-              name: 'Test Account',
+              name: 'Account 1',
               options: {},
               supportedMethods: [
                 'personal_sign',
@@ -300,7 +279,7 @@ describe('DetectTokensController', function () {
                   type: 'HD Key Tree',
                 },
               },
-              name: 'Test Account',
+              name: 'Account 2',
               options: {},
               supportedMethods: [
                 'personal_sign',
@@ -321,6 +300,34 @@ describe('DetectTokensController', function () {
       },
       onSnapStateChange: sinon.spy(),
       onKeyringStateChange: sinon.spy(),
+    });
+
+    tokensController = new TokensController({
+      config: {
+        provider,
+        selectedAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      },
+      onPreferencesStateChange: (listener) =>
+        controllerMessenger.subscribe(
+          `AccountsController:selectedAccountChange`,
+          (newlySelectedInternalAccount) => {
+            listener({ selectedAddress: newlySelectedInternalAccount.address });
+          },
+        ),
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
+    });
+
+    assetsContractController = new AssetsContractController({
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
     });
   });
 
@@ -485,16 +492,26 @@ describe('DetectTokensController', function () {
     const existingTokenAddress = erc20ContractAddresses[0];
     const existingToken = tokenList[existingTokenAddress];
 
-    await tokensController.addDetectedTokens([
+    accountsController.setSelectedAccount(
+      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    );
+
+    await tokensController.addDetectedTokens(
+      [
+        {
+          address: existingToken.address,
+          symbol: existingToken.symbol,
+          decimals: existingToken.decimals,
+          aggregators: undefined,
+          image: undefined,
+          isERC721: undefined,
+        },
+      ],
       {
-        address: existingToken.address,
-        symbol: existingToken.symbol,
-        decimals: existingToken.decimals,
-        aggregators: undefined,
-        image: undefined,
-        isERC721: undefined,
+        selectedAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        chainId: '0x1',
       },
-    ]);
+    );
     const tokenAddressToAdd = erc20ContractAddresses[1];
     const tokenToAdd = tokenList[tokenAddressToAdd];
     sandbox

@@ -433,11 +433,7 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger.subscribe(
           `AccountsController:selectedAccountChange`,
           (newlySelectedInternalAccount) => {
-            console.log(
-              'newlySelectedInternalAccount',
-              newlySelectedInternalAccount,
-            );
-            listener(newlySelectedInternalAccount.address);
+            listener({ selectedAddress: newlySelectedInternalAccount.address });
           },
       ),
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
