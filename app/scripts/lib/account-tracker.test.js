@@ -143,6 +143,10 @@ describe('Account Tracker', () => {
 
   describe('onAccountRemoved', () => {
     it('should remove an account from state', () => {
+      let accountRemovedListener;
+      const onAccountRemoved = (callback) => {
+        accountRemovedListener = callback;
+      };
       accountTracker = new AccountTracker({
         provider,
         blockTracker: blockTrackerStub,
@@ -160,11 +164,9 @@ describe('Account Tracker', () => {
             getState: noop,
           },
         },
-        onAccountRemoved: (callback) => {
-          callback(VALID_ADDRESS);
-        },
+        onAccountRemoved,
       });
-
+      accountRemovedListener(VALID_ADDRESS);
       expect(
         accountTracker.store.getState().accounts[VALID_ADDRESS],
       ).toStrictEqual(undefined);

@@ -113,7 +113,10 @@ describe('preferences controller', () => {
   describe('onAccountRemoved', () => {
     it('should remove an address from state', () => {
       const testAddress = '0xda22le';
-
+      let accountRemovedListener;
+      const onAccountRemoved = (callback) => {
+        accountRemovedListener = callback;
+      };
       preferencesController = new PreferencesController({
         initLangCode: 'en_US',
         tokenListController,
@@ -127,11 +130,11 @@ describe('preferences controller', () => {
             },
           },
         },
-        onAccountRemoved: (callback) => {
-          callback(testAddress);
-        },
+        onAccountRemoved,
         networkConfigurations: NETWORK_CONFIGURATION_DATA,
       });
+
+      accountRemovedListener(testAddress);
 
       expect(
         preferencesController.store.getState().identities['0xda22le'],
@@ -140,26 +143,28 @@ describe('preferences controller', () => {
 
     it('should throw an error if address not found', () => {
       const testAddress = '0xda22le';
-
-      expect(() => {
-        preferencesController = new PreferencesController({
-          initLangCode: 'en_US',
-          tokenListController,
-          onInfuraIsBlocked: jest.fn(),
-          onInfuraIsUnblocked: jest.fn(),
-          initState: {
-            identities: {
-              '0x7e57e2': {
-                name: 'Account 1',
-                address: '0x7e57e2',
-              },
+      let accountRemovedListener;
+      const onAccountRemoved = (callback) => {
+        accountRemovedListener = callback;
+      };
+      preferencesController = new PreferencesController({
+        initLangCode: 'en_US',
+        tokenListController,
+        onInfuraIsBlocked: jest.fn(),
+        onInfuraIsUnblocked: jest.fn(),
+        initState: {
+          identities: {
+            '0x7e57e2': {
+              name: 'Account 1',
+              address: '0x7e57e2',
             },
           },
-          onAccountRemoved: (callback) => {
-            callback(testAddress);
-          },
-          networkConfigurations: NETWORK_CONFIGURATION_DATA,
-        });
+        },
+        onAccountRemoved,
+        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+      });
+      expect(() => {
+        accountRemovedListener(testAddress);
       }).toThrow(`${testAddress} can't be deleted cause it was not found`);
     });
   });
