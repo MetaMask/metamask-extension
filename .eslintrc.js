@@ -315,6 +315,7 @@ module.exports = {
           },
         ],
         'jest/no-restricted-matchers': 'off',
+        'no-restricted-globals': 'off',
 
         /**
          * jest/prefer-to-be is a new rule that was disabled to reduce churn
