@@ -77,6 +77,7 @@ export default async function buildModulePartitions(): Promise<
 
   const possibleEntryFilePaths = (
     await Promise.all(
+      // eslint-disable-next-line @typescript-eslint/promise-function-async
       ENTRYPOINT_PATTERNS.map((entrypointPattern) => {
         return fg(
           path.resolve(ROOT_DIRECTORY_PATH, `${entrypointPattern}.{js,ts,tsx}`),
