@@ -2857,7 +2857,7 @@
     },
     "@typescript-eslint/eslint-plugin": {
       "packages": {
-        "@typescript-eslint/eslint-plugin>grapemer": true
+        "@typescript-eslint/eslint-plugin>graphemer": true
       }
     },
     "@zxing/browser": {
