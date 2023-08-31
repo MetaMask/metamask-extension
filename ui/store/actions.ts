@@ -3540,7 +3540,9 @@ export function rejectPermissionsRequest(
           reject(err);
           return;
         }
-        forceUpdateMetamaskState(dispatch).then(resolve).catch(reject);
+        forceUpdateMetamaskState(dispatch)
+          .then(resolve as any)
+          .catch(reject);
       });
     });
   };
@@ -3897,7 +3899,9 @@ export function setSeedPhraseBackedUp(
             reject(err);
             return;
           }
-          forceUpdateMetamaskState(dispatch).then(resolve).catch(reject);
+          forceUpdateMetamaskState(dispatch)
+            .then(resolve as any)
+            .catch(reject);
         },
       );
     });
