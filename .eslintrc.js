@@ -125,10 +125,7 @@ module.exports = {
      * TypeScript test files
      */
     {
-      files: [
-        '*.test.{ts,tsx}',
-        '*.stories.{ts,tsx}',
-      ],
+      files: ['*.test.{ts,tsx}', '*.stories.{ts,tsx}'],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
         '@metamask/eslint-config-typescript',
