@@ -100,7 +100,8 @@ const executeActionOrAddToRetryQueue = (item: BackgroundAction): void => {
  * @param [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue waiting for a retry.
  * @returns
  */
-export async function submitRequestToBackground<R>(
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+export function submitRequestToBackground<R>(
   method: string,
   args?: any[],
   actionId = generateActionId(), // current date is not guaranteed to be unique
