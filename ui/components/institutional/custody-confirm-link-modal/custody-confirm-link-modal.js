@@ -48,9 +48,8 @@ const CustodyConfirmLink = ({ hideModal }) => {
   const { custodians } = useSelector(getMMIConfiguration);
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address)] || {};
-  const { displayName, iconUrl } = custodians.find(
-    (item) => item.name === custodianName || {},
-  );
+  const { displayName, iconUrl } =
+    custodians.find((item) => item.name === custodianName) || {};
   const { url, ethereum, text, action } = useSelector(
     (state) => state.appState.modal.modalState.props.link || {},
   );
@@ -70,10 +69,10 @@ const CustodyConfirmLink = ({ hideModal }) => {
 
     trackEvent({
       category: MetaMetricsEventCategory.MMI,
-      event: MetaMetricsEventName.UserClickedDeepLink,
+      event: MetaMetricsEventName.DeeplinkClicked,
     });
     dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(false));
-    dispatch(hideModal());
+    hideModal();
   };
 
   return (

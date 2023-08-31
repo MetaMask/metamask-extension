@@ -11,6 +11,7 @@
 @import 'confirm-data/index';
 @import 'confirmation-warning-modal/index';
 @import 'custom-nonce/index';
+@import 'import-token/index';
 @import 'nfts-items/index';
 @import 'nfts-tab/index';
 @import 'nft-details/index';
@@ -20,7 +21,6 @@
 @import 'connected-accounts-permissions/index';
 @import 'connected-sites-list/index';
 @import 'create-new-vault/create-new-vault.scss';
-@import 'custom-spending-cap/index';
 @import 'edit-gas-display/index';
 @import 'edit-gas-fee-button/index';
 @import 'edit-gas-fee-popover/index';
@@ -31,7 +31,6 @@
 @import 'flask/experimental-area/index';
 @import 'snaps/snap-content-footer/index';
 @import 'snaps/snap-install-warning/index';
-@import 'snaps/snap-remove-warning/index';
 @import 'snaps/snap-ui-renderer/index';
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-delineator/index';
@@ -89,17 +88,16 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'currency-input/index';
-@import 'detected-token/detected-token-address/index';
 @import 'detected-token/detected-token-aggregators/index';
 @import 'detected-token/detected-token-values/index';
 @import 'detected-token/detected-token-details/index';
-@import 'detected-token/detected-token-ignored-popover/index';
 @import 'detected-token/detected-token-selection-popover/index';
 @import 'network-account-balance-header/index';
 @import 'approve-content-card/index';
 @import 'transaction-alerts/transaction-alerts';
-@import '../institutional/compliance-details/index';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import '../institutional/interactive-replacement-token-notification/index';
 @import '../institutional/confirm-remove-jwt-modal/index';
 @import '../institutional/custody-confirm-link-modal/index';
 @import '../institutional/transaction-failed-modal/index';
+///: END:ONLY_INCLUDE_IN

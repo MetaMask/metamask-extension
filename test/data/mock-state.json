@@ -23,6 +23,7 @@
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "metamask": {
+    "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
@@ -106,11 +107,8 @@
     "alertEnabledness": {
       "unconnectedAccount": true
     },
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
+    "featureFlags": {},
     "networkId": "5",
-    "networkStatus": "available",
     "providerConfig": {
       "type": "rpc",
       "nickname": "goerli",
@@ -173,9 +171,11 @@
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
       }
     },
-    "networkDetails": {
-      "EIPS": {
-        "1559": true
+    "selectedNetworkClientId": "goerli",
+    "networksMetadata": {
+      "goerli": {
+        "EIPS": { "1559": true },
+        "status": "available"
       }
     },
     "frequentRpcListDetail": [],
@@ -219,7 +219,15 @@
       }
     },
     "cachedBalances": {},
-    "incomingTransactions": {},
+    "incomingTransactionsPreferences": {
+      "0x1": true,
+      "0xe708": false,
+      "0xfa": true,
+      "0x5": false,
+      "0xaa36a7": true,
+      "0xe704": true
+    },
+
     "unapprovedTxs": {
       "8393540981007587": {
         "chainId": "0x5",
@@ -339,6 +347,8 @@
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
     "useCurrencyRateCheck": true,
+    "useNftDetection": true,
+    "openSeaEnabled": true,
     "advancedGasFee": {
       "0x5": {
         "maxBaseFee": "75",

@@ -2,6 +2,8 @@ import sinon from 'sinon';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -78,6 +80,7 @@ import { draftTransactionInitialState, editExistingTransaction } from '.';
 const mockStore = createMockStore([thunk]);
 
 const mockAddress1 = '0xdafea492d9c6733ae3d56b7ed1adb60692c98123';
+const mockNftAddress1 = 'f4831105676a5fc024684d056390b8bc529daf51c7';
 
 jest.mock('./send', () => {
   const actual = jest.requireActual('./send');
@@ -95,8 +98,8 @@ jest.mock('lodash', () => ({
 
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
-  addUnapprovedTransaction: jest.fn((_u, _v, _w, _x, _y, _z, cb) => {
-    cb(null);
+  addTransaction: jest.fn((_u, _v, cb) => {
+    cb(null, { transactionMeta: null });
   }),
   updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
 });
@@ -105,7 +108,7 @@ const getTestUUIDTx = (state) => state.draftTransactions['test-uuid'];
 
 describe('Send Slice', () => {
   let getTokenStandardAndDetailsStub;
-  let addUnapprovedTransactionAndRouteToConfirmationPageStub;
+  let addTransactionAndRouteToConfirmationPageStub;
   beforeEach(() => {
     jest.useFakeTimers();
     getTokenStandardAndDetailsStub = jest
@@ -118,9 +121,9 @@ describe('Send Slice', () => {
           decimals: 18,
         }),
       );
-    addUnapprovedTransactionAndRouteToConfirmationPageStub = jest.spyOn(
+    addTransactionAndRouteToConfirmationPageStub = jest.spyOn(
       Actions,
-      'addUnapprovedTransactionAndRouteToConfirmationPage',
+      'addTransactionAndRouteToConfirmationPage',
     );
     jest
       .spyOn(Actions, 'estimateGas')
@@ -543,7 +546,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateRecipient',
           payload: {
-            address: '0xNewAddress',
+            address: mockNftAddress1,
           },
         };
 
@@ -1271,9 +1274,13 @@ describe('Send Slice', () => {
           metamask: {
             gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
-            networkDetails: {
-              EIPS: {
-                1559: true,
+            selectedNetworkClientId: NetworkType.goerli,
+            networksMetadata: {
+              [NetworkType.goerli]: {
+                EIPS: {
+                  1559: true,
+                },
+                status: NetworkStatus.Available,
               },
             },
             selectedAddress: mockAddress1,
@@ -1297,6 +1304,7 @@ describe('Send Slice', () => {
             },
             providerConfig: {
               chainId: '0x5',
+              ticker: 'ETH',
             },
             useTokenDetection: true,
             tokenList: {
@@ -2276,7 +2284,7 @@ describe('Send Slice', () => {
       });
 
       describe('with token transfers', () => {
-        it('should pass the correct transaction parameters to addUnapprovedTransactionAndRouteToConfirmationPage', async () => {
+        it('should pass the correct transaction parameters to addTransactionAndRouteToConfirmationPage', async () => {
           const tokenTransferTxState = {
             metamask: {
               unapprovedTxs: {
@@ -2318,14 +2326,12 @@ describe('Send Slice', () => {
           await store.dispatch(signTransaction());
 
           expect(
-            addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
-              .calls[0][1].data,
+            addTransactionAndRouteToConfirmationPageStub.mock.calls[0][0].data,
           ).toStrictEqual(
             '0xa9059cbb0000000000000000000000004f90e18605fd46f9f9fab0e225d88e1acf5f53240000000000000000000000000000000000000000000000000000000000000001',
           );
           expect(
-            addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
-              .calls[0][1].to,
+            addTransactionAndRouteToConfirmationPageStub.mock.calls[0][0].to,
           ).toStrictEqual('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
         });
       });

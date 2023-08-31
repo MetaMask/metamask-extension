@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
 

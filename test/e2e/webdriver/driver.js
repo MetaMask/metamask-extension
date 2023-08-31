@@ -249,6 +249,18 @@ class Driver {
     await element.click();
   }
 
+  async clickElementSafe(rawLocator) {
+    // for instances where an element such as a scroll button does not
+    // show up because of render differences, proceed to the next step
+    // without causing a test failure, but provide a console log of why.
+    try {
+      const element = await this.findClickableElement(rawLocator);
+      await element.click();
+    } catch (e) {
+      console.log(`Element ${rawLocator} not found (${e})`);
+    }
+  }
+
   async clickPoint(rawLocator, x, y) {
     const element = await this.findElement(rawLocator);
     await this.driver

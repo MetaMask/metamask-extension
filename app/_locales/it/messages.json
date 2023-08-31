@@ -155,9 +155,6 @@
   "addContact": {
     "message": "Aggiungi contatto"
   },
-  "addCustomToken": {
-    "message": "Aggiungi token personalizzato"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
   },
@@ -576,9 +573,6 @@
   "copyAddress": {
     "message": "Copia l'indirizzo"
   },
-  "copyPrivateKey": {
-    "message": "Questa è la tua chiave privata (clicca per copiare)"
-  },
   "copyRawTransactionData": {
     "message": "Copia i dati grezzi della transazione"
   },
@@ -713,9 +707,6 @@
   "deleteNetwork": {
     "message": "Cancella la rete?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sei sicuro di voler eliminare questa rete?"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Scopri di più"
   },
@@ -840,9 +831,6 @@
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
   },
-  "enterPassword": {
-    "message": "Inserisci password"
-  },
   "enterPasswordContinue": {
     "message": "Inserisci la tua password per continuare"
   },
@@ -874,9 +862,6 @@
   },
   "expandView": {
     "message": "Espandi Vista"
-  },
-  "exportPrivateKey": {
-    "message": "Esporta Chiave Privata"
   },
   "externalExtension": {
     "message": "Estensione Esterna"
@@ -1377,9 +1362,6 @@
   "searchResults": {
     "message": "Risultati Ricerca"
   },
-  "searchTokens": {
-    "message": "Cerca Tokens"
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
@@ -1441,9 +1423,6 @@
   },
   "showPermissions": {
     "message": "Mostra permessi"
-  },
-  "showPrivateKeys": {
-    "message": "Mostra Chiave Privata"
   },
   "sigRequest": {
     "message": "Firma Richiesta"
@@ -1796,9 +1775,6 @@
   },
   "tryAgain": {
     "message": "Prova di nuovo"
-  },
-  "typePassword": {
-    "message": "Inserisci Password"
   },
   "unapproved": {
     "message": "Non approvata"

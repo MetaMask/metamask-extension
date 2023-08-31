@@ -9,8 +9,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Button, Box } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
+import { Button, Box, Text } from '../../../component-library';
 import { IQuizInformationProps } from '../types';
 
 export default function QuizContent({
@@ -61,8 +60,7 @@ export default function QuizContent({
           key={idx}
           size={btn.size}
           onClick={btn.onClick}
-          label={btn.label}
-          variant={btn.variant}
+          variant={btn.variant as any}
           width={BlockSize.Full}
           data-testid={btn['data-testid']}
         >

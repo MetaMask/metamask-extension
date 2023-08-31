@@ -7,7 +7,7 @@ import { Color, TextVariant } from '../../../helpers/constants/design-system';
 import { isNFTAssetStandard } from '../../../helpers/utils/transactions.util';
 import { getShouldShowFiat } from '../../../selectors';
 import { useTransactionInfo } from '../../../hooks/useTransactionInfo';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 
 const ConfirmSubTitle = ({

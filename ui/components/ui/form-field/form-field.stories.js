@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import Tooltip from '../tooltip';
 
-import { Icon, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Icon, IconName, Text } from '../../component-library';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import FormField from '.';

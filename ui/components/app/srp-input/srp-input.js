@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
-import ActionableMessage from '../../ui/actionable-message';
+import { BannerAlert, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
   TextAlign,
   TextVariant,
+  Severity,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library/text/deprecated';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const defaultNumberOfWords = 12;
@@ -132,11 +132,11 @@ export default function SrpInput({ onChange, srpText }) {
           {srpText}
         </Text>
       </label>
-      <ActionableMessage
+      <BannerAlert
         className="import-srp__paste-tip"
-        iconFillColor="var(--color-info-default)"
-        message={t('srpPasteTip')}
-        useIcon
+        severity={Severity.Info}
+        description={t('srpPasteTip')}
+        descriptionProps={{ className: 'import-srp__banner-alert-text' }}
       />
       <Dropdown
         className="import-srp__number-of-words-dropdown"
@@ -200,25 +200,21 @@ export default function SrpInput({ onChange, srpText }) {
         })}
       </div>
       {srpError ? (
-        <ActionableMessage
+        <BannerAlert
           className="import-srp__srp-error"
-          iconFillColor="var(--color-error-default)"
-          message={srpError}
-          type="danger"
-          useIcon
+          severity={Severity.Danger}
+          description={srpError}
+          descriptionProps={{ className: 'import-srp__banner-alert-text' }}
         />
       ) : null}
       {pasteFailed ? (
-        <ActionableMessage
+        <BannerAlert
           className="import-srp__srp-too-many-words-error"
-          iconFillColor="var(--color-error-default)"
-          message={t('srpPasteFailedTooManyWords')}
-          primaryAction={{
-            label: t('dismiss'),
-            onClick: () => setPasteFailed(false),
-          }}
-          type="danger"
-          useIcon
+          severity={Severity.Danger}
+          actionButtonLabel={t('dismiss')}
+          actionButtonOnClick={() => setPasteFailed(false)}
+          description={t('srpPasteFailedTooManyWords')}
+          descriptionProps={{ className: 'import-srp__banner-alert-text' }}
         />
       ) : null}
     </div>

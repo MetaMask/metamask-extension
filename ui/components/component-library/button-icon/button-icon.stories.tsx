@@ -8,7 +8,6 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/ButtonIcon',
-
   component: ButtonIcon,
   parameters: {
     docs: {
@@ -21,16 +20,15 @@ export default {
       options: ['button', 'a'],
     },
   },
+  args: {
+    iconName: IconName.Close,
+    ariaLabel: 'Close',
+  },
 } as Meta<typeof ButtonIcon>;
 
 const Template: StoryFn<typeof ButtonIcon> = (args) => <ButtonIcon {...args} />;
 
 export const DefaultStory = Template.bind({});
-
-DefaultStory.args = {
-  iconName: IconName.Close,
-  ariaLabel: 'Close',
-};
 
 DefaultStory.storyName = 'Default';
 
@@ -38,34 +36,13 @@ export const IconNameStory: StoryFn<typeof ButtonIcon> = (args) => (
   <ButtonIcon {...args} />
 );
 
-IconNameStory.args = {
-  iconName: IconName.Close,
-  ariaLabel: 'Close',
-};
-
 IconNameStory.storyName = 'IconName';
 
 export const SizeStory: StoryFn<typeof ButtonIcon> = (args) => (
   <>
-    <ButtonIcon
-      {...args}
-      size={ButtonIconSize.Sm}
-      iconName={IconName.Close}
-      ariaLabel="Close"
-    />
-    <ButtonIcon
-      {...args}
-      size={ButtonIconSize.Md}
-      iconName={IconName.Close}
-      ariaLabel="Close"
-    />
-    <ButtonIcon
-      {...args}
-      size={ButtonIconSize.Lg}
-      color={IconColor.primaryDefault}
-      iconName={IconName.Close}
-      ariaLabel="Close"
-    />
+    <ButtonIcon {...args} size={ButtonIconSize.Sm} />
+    <ButtonIcon {...args} size={ButtonIconSize.Md} />
+    <ButtonIcon {...args} size={ButtonIconSize.Lg} />
   </>
 );
 
@@ -73,12 +50,7 @@ SizeStory.storyName = 'Size';
 
 export const AriaLabel: StoryFn<typeof ButtonIcon> = (args) => (
   <>
-    <ButtonIcon
-      {...args}
-      as="button"
-      iconName={IconName.Close}
-      ariaLabel="Close"
-    />
+    <ButtonIcon {...args} />
     <ButtonIcon
       {...args}
       as="a"
@@ -93,11 +65,11 @@ export const AriaLabel: StoryFn<typeof ButtonIcon> = (args) => (
 
 export const As: StoryFn<typeof ButtonIcon> = (args) => (
   <>
-    <ButtonIcon {...args} iconName={IconName.Close} ariaLabel="close" />
+    <ButtonIcon {...args} />
     <ButtonIcon
+      {...args}
       as="a"
       href="#"
-      {...args}
       color={IconColor.primaryDefault}
       iconName={IconName.Export}
       ariaLabel="demo"
@@ -106,17 +78,19 @@ export const As: StoryFn<typeof ButtonIcon> = (args) => (
 );
 
 export const Href: StoryFn<typeof ButtonIcon> = (args) => (
-  <ButtonIcon {...args} iconName={IconName.Export} target="_blank" />
+  <ButtonIcon {...args} />
 );
 
 Href.args = {
   ariaLabel: 'Visit Metamask.io',
   href: 'https://metamask.io/',
+  target: '_blank',
   color: IconColor.primaryDefault,
+  iconName: IconName.Export,
 };
 
 export const ColorStory: StoryFn<typeof ButtonIcon> = (args) => (
-  <ButtonIcon {...args} iconName={IconName.Close} ariaLabel="close" />
+  <ButtonIcon {...args} />
 );
 ColorStory.storyName = 'Color';
 
@@ -125,7 +99,7 @@ ColorStory.args = {
 };
 
 export const Disabled: StoryFn<typeof ButtonIcon> = (args) => (
-  <ButtonIcon {...args} iconName={IconName.Close} ariaLabel="close" />
+  <ButtonIcon {...args} />
 );
 
 Disabled.args = {

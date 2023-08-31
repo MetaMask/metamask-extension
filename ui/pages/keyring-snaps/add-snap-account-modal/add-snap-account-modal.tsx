@@ -1,14 +1,14 @@
 import React from 'react';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Button,
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
   Display,
@@ -53,7 +53,7 @@ export default function AddSnapAccountModal({
             {t('addSnapAccountModalDescription')}
           </Text>
           <Button
-            variant={BUTTON_VARIANT.PRIMARY}
+            variant={ButtonVariant.Primary}
             block
             className="get-started_button"
             data-testid="get-started-button"

@@ -1,33 +1,17 @@
 import React from 'react';
 import { useState } from '@storybook/addons';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  SEVERITIES,
+  Display,
+  FlexDirection,
   Size,
+  Severity,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
-import { ButtonLink, ButtonPrimary, IconName } from '..';
-import README from './README.mdx';
-import { BannerAlert, BANNER_ALERT_SEVERITIES } from '.';
 
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
+import { ButtonLink, ButtonPrimary, IconName, Box } from '..';
+
+import README from './README.mdx';
+
+import { BannerAlert } from './banner-alert';
 
 export default {
   title: 'Components/ComponentLibrary/BannerAlert',
@@ -36,12 +20,11 @@ export default {
     docs: {
       page: README,
     },
-    backgrounds: { default: 'alternative' },
   },
   argTypes: {
     severity: {
-      options: Object.values(BANNER_ALERT_SEVERITIES),
       control: 'select',
+      options: Object.values(Severity),
     },
     className: {
       control: 'text',
@@ -55,14 +38,11 @@ export default {
     children: {
       control: 'text',
     },
-    action: {
-      control: 'func',
-    },
     actionButtonLabel: {
       control: 'text',
     },
     actionButtonOnClick: {
-      control: 'func',
+      action: 'actionButtonOnClick',
     },
     actionButtonProps: {
       control: 'object',
@@ -70,95 +50,65 @@ export default {
     onClose: {
       action: 'onClose',
     },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
   },
 };
 
-export const DefaultStory = (args) => {
-  const onClose = () => console.log('BannerAlert onClose trigger');
-  return <BannerAlert {...args} onClose={onClose} />;
-};
+const Template = (args) => <BannerAlert {...args} />;
 
+export const DefaultStory = Template.bind({});
+DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   title: 'Title is sentence case no period',
   children: "Description shouldn't repeat title. 1-3 lines.",
   actionButtonLabel: 'Action',
 };
 
-DefaultStory.storyName = 'Default';
-
-export const Severity = (args) => {
+export const SeverityStory = (args) => {
   return (
-    <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={3}>
-      <BannerAlert {...args} severity={SEVERITIES.INFO} title="Info">
+    <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+      <BannerAlert {...args} severity={Severity.Info} title="Info">
         This is a demo of severity Info.
       </BannerAlert>
-      <BannerAlert {...args} severity={SEVERITIES.WARNING} title="Warning">
+      <BannerAlert {...args} severity={Severity.Warning} title="Warning">
         This is a demo of severity Warning.
       </BannerAlert>
-      <BannerAlert {...args} severity={SEVERITIES.DANGER} title="Danger">
+      <BannerAlert {...args} severity={Severity.Danger} title="Danger">
         This is a demo of severity Danger.
       </BannerAlert>
-      <BannerAlert {...args} severity={SEVERITIES.SUCCESS} title="Success">
+      <BannerAlert {...args} severity={Severity.Success} title="Success">
         This is a demo of severity Success.
       </BannerAlert>
     </Box>
   );
 };
+SeverityStory.storyName = 'Severity';
 
-export const Title = (args) => {
-  return <BannerAlert {...args} />;
-};
-
+export const Title = Template.bind({});
 Title.args = {
   title: 'Title is sentence case no period',
   children: 'Pass only a string through the title prop',
 };
 
-export const Description = (args) => {
-  return <BannerAlert {...args} />;
-};
-
+export const Description = Template.bind({});
 Description.args = {
   title: 'Description vs children',
   description:
     'Pass only a string through the description prop or you can use children if the contents require more',
 };
 
-export const Children = (args) => {
-  return (
-    <BannerAlert {...args}>
+export const Children = Template.bind({});
+Children.args = {
+  children: (
+    <>
       {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
-      <ButtonLink size={Size.auto} href="https://metamask.io/" target="_blank">
+      <ButtonLink size={Size.auto} href="https://metamask.io/" externalLink>
         hyperlink.
       </ButtonLink>
-    </BannerAlert>
-  );
+    </>
+  ),
 };
 
-export const ActionButton = (args) => {
-  return <BannerAlert {...args} />;
-};
-
+export const ActionButton = Template.bind({});
 ActionButton.args = {
   title: 'Action prop demo',
   actionButtonLabel: 'Action',

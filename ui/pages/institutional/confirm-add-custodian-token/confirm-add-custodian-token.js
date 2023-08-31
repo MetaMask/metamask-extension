@@ -24,12 +24,13 @@ import {
   BUTTON_SIZES,
   BUTTON_VARIANT,
   Box,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
-  complianceActivated,
-  getInstitutionalConnectRequests,
-} from '../../../ducks/institutional/institutional';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);
@@ -40,7 +41,6 @@ const ConfirmAddCustodianToken = () => {
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
-  const isComplianceActivated = useSelector(complianceActivated);
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
@@ -59,8 +59,8 @@ const ConfirmAddCustodianToken = () => {
   }
 
   trackEvent({
-    category: 'MMI',
-    event: 'Custodian onboarding',
+    category: MetaMetricsEventCategory.MMI,
+    event: MetaMetricsEventName.TokenAdded,
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
@@ -156,13 +156,11 @@ const ConfirmAddCustodianToken = () => {
         )}
       </Box>
 
-      {!isComplianceActivated && (
-        <Box marginTop={4} data-testid="connect-custodian-token-error">
-          <Text data-testid="error-message" textAlign={TextAlign.Center}>
-            {connectError}
-          </Text>
-        </Box>
-      )}
+      <Box marginTop={4} data-testid="connect-custodian-token-error">
+        <Text data-testid="error-message" textAlign={TextAlign.Center}>
+          {connectError}
+        </Text>
+      </Box>
 
       <Box as="footer" className="page-container__footer" padding={4}>
         {isLoading ? (
@@ -184,8 +182,8 @@ const ConfirmAddCustodianToken = () => {
                 );
 
                 trackEvent({
-                  category: 'MMI',
-                  event: 'Custodian onboarding',
+                  category: MetaMetricsEventCategory.MMI,
+                  event: MetaMetricsEventName.TokenAdded,
                   properties: {
                     actions: 'Custodian RPC cancel',
                     custodian: connectRequest.custodian,
@@ -238,8 +236,8 @@ const ConfirmAddCustodianToken = () => {
                   );
 
                   trackEvent({
-                    category: 'MMI',
-                    event: 'Custodian onboarding',
+                    category: MetaMetricsEventCategory.MMI,
+                    event: MetaMetricsEventName.TokenAdded,
                     properties: {
                       actions: 'Custodian RPC confirm',
                       custodian: connectRequest.custodian,

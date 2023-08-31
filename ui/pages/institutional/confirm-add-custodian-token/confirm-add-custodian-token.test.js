@@ -24,7 +24,6 @@ describe('Confirm Add Custodian Token', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       institutionalFeatures: {
-        complianceProjectId: '',
         connectRequests: [
           {
             labels: [
@@ -78,7 +77,6 @@ describe('Confirm Add Custodian Token', () => {
           useNativeCurrencyAsPrimaryCurrency: true,
         },
         institutionalFeatures: {
-          complianceProjectId: '',
           connectRequests: [
             {
               labels: [

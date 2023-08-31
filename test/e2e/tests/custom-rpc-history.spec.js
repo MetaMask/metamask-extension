@@ -185,7 +185,7 @@ describe('Stores custom RPC history', function () {
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
       },
     );
   });
@@ -237,7 +237,7 @@ describe('Stores custom RPC history', function () {
         });
 
         // click Mainnet to dismiss network dropdown
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
 
         assert.equal(customRpcs.length, 2);
       },

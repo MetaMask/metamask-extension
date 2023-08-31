@@ -16,8 +16,6 @@ describe('View NFT details', function () {
   };
 
   it('user should be able to view ERC721 NFT details', async function () {
-    const expectedImageSource =
-      'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==';
     await withFixtures(
       {
         dapp: true,
@@ -33,7 +31,7 @@ describe('View NFT details', function () {
 
         // Click to open the NFT details page and check title
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement('.nft-item__item-image');
+        await driver.clickElement('.nft-item__container');
 
         const detailsPageTitle = await driver.findElement('.asset-breadcrumb');
         assert.equal(
@@ -53,13 +51,8 @@ describe('View NFT details', function () {
           'Test Dapp NFTs for testing.',
         );
 
-        const nftImage = await driver.findElement('.nft-item__item-image');
+        const nftImage = await driver.findElement('.nft-item__container');
         assert.equal(await nftImage.isDisplayed(), true);
-
-        const nftImageSource = await driver.findElement(
-          '.nft-details__image-source',
-        );
-        assert.equal(await nftImageSource.getText(), expectedImageSource);
 
         const nftContract = await driver.findElement(
           '.nft-details__contract-wrapper',

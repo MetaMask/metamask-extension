@@ -13,9 +13,9 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-  SLIPPAGE_OVER_LIMIT_ERROR,
   SLIPPAGE_VERY_HIGH_ERROR,
-  SLIPPAGE_TOO_LOW_ERROR,
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
 import SwapsBannerAlert from './swaps-banner-alert';
@@ -23,52 +23,95 @@ import SwapsBannerAlert from './swaps-banner-alert';
 const middleware = [thunk];
 
 describe('SwapsBannerAlert', () => {
-  it('renders the component with the SLIPPAGE_OVER_LIMIT_ERROR', () => {
-    const mockStore = createSwapsMockStore();
-    const store = configureMockStore(middleware)(mockStore);
-    const { getByText } = renderWithProvider(
-      <SwapsBannerAlert swapsErrorKey={SLIPPAGE_OVER_LIMIT_ERROR} />,
-      store,
-    );
-    expect(getByText('Reduce slippage to continue')).toBeInTheDocument();
-    expect(
-      getByText(
-        'Slippage tolerance must be 15% or less. Anything higher will result in a bad rate.',
-      ),
-    ).toBeInTheDocument();
-    expect(getByText('Edit transaction settings')).toBeInTheDocument();
-  });
-
   it('renders the component with the SLIPPAGE_VERY_HIGH_ERROR', () => {
     const mockStore = createSwapsMockStore();
     const store = configureMockStore(middleware)(mockStore);
     const { getByText } = renderWithProvider(
-      <SwapsBannerAlert swapsErrorKey={SLIPPAGE_VERY_HIGH_ERROR} />,
+      <SwapsBannerAlert
+        swapsErrorKey={SLIPPAGE_VERY_HIGH_ERROR}
+        currentSlippage={16}
+      />,
       store,
     );
     expect(getByText('Very high slippage')).toBeInTheDocument();
     expect(
       getByText(
-        'The slippage entered is considered very high and may result in a bad rate',
+        'Slippage tolerance must be 15% or less. Anything higher will result in a bad rate.',
+      ),
+    ).toBeInTheDocument();
+    expect(getByText('Adjust slippage')).toBeInTheDocument();
+  });
+
+  it('renders the component with the SLIPPAGE_HIGH_ERROR', () => {
+    const mockStore = createSwapsMockStore();
+    const store = configureMockStore(middleware)(mockStore);
+    const { getByText } = renderWithProvider(
+      <SwapsBannerAlert
+        swapsErrorKey={SLIPPAGE_HIGH_ERROR}
+        currentSlippage={5}
+      />,
+      store,
+    );
+    expect(getByText('High slippage')).toBeInTheDocument();
+    expect(
+      getByText(
+        'The slippage entered (5%) is considered very high and may result in a bad rate',
       ),
     ).toBeInTheDocument();
   });
 
-  it('renders the component with the SLIPPAGE_TOO_LOW_ERROR', () => {
+  it('renders the component with the SLIPPAGE_HIGH_ERROR with the "Adjust slippage" link', () => {
     const mockStore = createSwapsMockStore();
     const store = configureMockStore(middleware)(mockStore);
     const { getByText } = renderWithProvider(
-      <SwapsBannerAlert swapsErrorKey={SLIPPAGE_TOO_LOW_ERROR} />,
+      <SwapsBannerAlert
+        swapsErrorKey={SLIPPAGE_HIGH_ERROR}
+        showTransactionSettingsLink
+        currentSlippage={10}
+      />,
       store,
     );
-    expect(
-      getByText('Increase slippage to avoid transaction failure'),
-    ).toBeInTheDocument();
+    expect(getByText('High slippage')).toBeInTheDocument();
     expect(
       getByText(
-        'Max slippage is too low which may cause your transaction to fail.',
+        'The slippage entered (10%) is considered very high and may result in a bad rate',
       ),
     ).toBeInTheDocument();
+    expect(getByText('Adjust slippage')).toBeInTheDocument();
+  });
+
+  it('renders the component with the SLIPPAGE_LOW_ERROR', () => {
+    const mockStore = createSwapsMockStore();
+    const store = configureMockStore(middleware)(mockStore);
+    const { getByText } = renderWithProvider(
+      <SwapsBannerAlert
+        swapsErrorKey={SLIPPAGE_LOW_ERROR}
+        currentSlippage={1}
+      />,
+      store,
+    );
+    expect(getByText('Low slippage')).toBeInTheDocument();
+    expect(
+      getByText('A value this low (1%) may result in a failed swap'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the component with the SLIPPAGE_LOW_ERROR with the "Adjust slippage" link', () => {
+    const mockStore = createSwapsMockStore();
+    const store = configureMockStore(middleware)(mockStore);
+    const { getByText } = renderWithProvider(
+      <SwapsBannerAlert
+        swapsErrorKey={SLIPPAGE_LOW_ERROR}
+        showTransactionSettingsLink
+        currentSlippage={1}
+      />,
+      store,
+    );
+    expect(getByText('Low slippage')).toBeInTheDocument();
+    expect(
+      getByText('A value this low (1%) may result in a failed swap'),
+    ).toBeInTheDocument();
+    expect(getByText('Adjust slippage')).toBeInTheDocument();
   });
 
   it('renders the component with the SLIPPAGE_NEGATIVE_ERROR', () => {
@@ -82,7 +125,7 @@ describe('SwapsBannerAlert', () => {
     expect(
       getByText('Slippage must be greater or equal to zero'),
     ).toBeInTheDocument();
-    expect(getByText('Edit transaction settings')).toBeInTheDocument();
+    expect(getByText('Adjust slippage')).toBeInTheDocument();
   });
 
   it('renders the component with the QUOTES_NOT_AVAILABLE_ERROR', () => {

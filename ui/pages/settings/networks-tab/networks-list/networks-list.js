@@ -8,7 +8,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import NetworksListItem from '../networks-list-item';
-import { Text } from '../../../../components/component-library/text/deprecated';
+import { Text } from '../../../../components/component-library';
 
 const NetworksList = ({
   networkIsSelected,

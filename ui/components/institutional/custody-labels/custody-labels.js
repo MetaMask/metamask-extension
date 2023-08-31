@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Label } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Label, Text } from '../../component-library';
+
 import {
   TextTransform,
   BackgroundColor,

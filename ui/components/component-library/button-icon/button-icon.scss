@@ -3,6 +3,7 @@
 
   height: var(--button-icon-size);
   width: var(--button-icon-size);
+  min-width: var(--button-icon-size); // fixes width for flexbox
   padding: 0;
   cursor: pointer;
 

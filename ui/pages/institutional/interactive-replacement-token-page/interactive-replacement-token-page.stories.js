@@ -30,7 +30,6 @@ const customData = {
       ],
     },
     institutionalFeatures: {
-      complianceProjectId: '',
       connectRequests: [
         {
           labels: [
