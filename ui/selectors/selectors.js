@@ -93,6 +93,7 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
+import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
@@ -1042,7 +1043,9 @@ function getAllowedAnnouncementIds(state) {
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: true,
     ///: END:ONLY_INCLUDE_IN
-    24: currentKeyringIsLedger && isFirefox,
+    24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
+    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
   };
 }
 
