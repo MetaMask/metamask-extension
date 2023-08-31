@@ -4,8 +4,24 @@ const { strict: assert } = require('assert');
 const { get, has, set, unset } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { isObject } = require('@metamask/utils');
+const { SENTRY_UI_STATE } = require('../../../app/scripts/lib/setupSentry');
 const FixtureBuilder = require('../fixture-builder');
+const { convertToHexValue, withFixtures } = require('../helpers');
+
+/**
+ * Derive a UI state field from a background state field.
+ *
+ * @param {string} backgroundField - The path of a background field.
+ * @returns {string} The path for the corresponding UI field.
+ */
+function backgroundToUiField(backgroundField) {
+  // The controller name is lost in the UI due to state flattening
+  const [, ...rest] = backgroundField.split('.');
+  const flattenedBackgroundField = rest.join('.');
+  // Controller state is under the 'metamask' slice in the UI
+  return `metamask.${flattenedBackgroundField}`;
+}
 
 const maskedBackgroundFields = [
   'CurrencyController.conversionDate', // This is a timestamp that changes each run
@@ -13,14 +29,13 @@ const maskedBackgroundFields = [
   // part of the release process
   'AppMetadataController.currentAppVersion',
   'AppMetadataController.currentMigrationVersion',
+  'AppStateController.browserEnvironment.browser',
+  'AppStateController.browserEnvironment.os',
+  'AppStateController.outdatedBrowserWarningLastShown',
+  'AppStateController.recoveryPhraseReminderLastShown',
+  'AppStateController.termsOfUseLastAgreed',
 ];
-const maskedUiFields = [
-  'metamask.conversionDate', // This is a timestamp that changes each run
-  // App metadata is masked so that we don't have to update the snapshot as
-  // part of the release process
-  'metamask.currentAppVersion',
-  'metamask.currentMigrationVersion',
-];
+const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
   // This property is timing-dependent
@@ -30,13 +45,7 @@ const removedBackgroundFields = [
   'AppStateController.timeoutMinutes',
 ];
 
-const removedUiFields = [
-  // This property is timing-dependent
-  'metamask.currentBlockGasLimit',
-  // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
-  'metamask.currentPopupId',
-  'metamask.timeoutMinutes',
-];
+const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
 
 /**
  * Transform background state to make it consistent between test runs.
@@ -113,6 +122,38 @@ async function matchesSnapshot({
     }
     throw error;
   }
+}
+
+/**
+ * Get an object consisting of all properties in the complete
+ * object that are missing from the given object.
+ *
+ * @param {object} complete - The complete object to compare to.
+ * @param {object} object - The object to test for missing properties.
+ */
+function getMissingProperties(complete, object) {
+  const missing = {};
+  for (const [key, value] of Object.entries(complete)) {
+    if (key in object) {
+      if (isObject(value) && isObject(object[key])) {
+        const missingNestedProperties = getMissingProperties(
+          value,
+          object[key],
+        );
+        if (Object.keys(missingNestedProperties).length > 0) {
+          missing[key] = missingNestedProperties;
+        } else {
+          // no missing nested properties
+        }
+      } else {
+        // Skip non-object values, they are considered as present
+        // even if they represent masked data structures
+      }
+    } else {
+      missing[key] = value;
+    }
+  }
+  return missing;
 }
 
 describe('Sentry errors', function () {
@@ -320,7 +361,10 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: transformBackgroundState(appState.persistedState),
+            data: {
+              ...appState.persistedState,
+              data: transformBackgroundState(appState.persistedState.data),
+            },
             snapshot: 'errors-before-init-opt-in-background-state',
           });
         },
@@ -468,7 +512,10 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: transformBackgroundState(appState.persistedState),
+            data: {
+              ...appState.persistedState,
+              data: transformBackgroundState(appState.persistedState.data),
+            },
             snapshot: 'errors-before-init-opt-in-ui-state',
           });
         },
@@ -735,5 +782,81 @@ describe('Sentry errors', function () {
         },
       );
     });
+  });
+
+  it('should have no policy gaps for UI controller state', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.findElement('#password');
+
+        const fullUiState = await driver.executeScript(() =>
+          window.stateHooks?.getCleanAppState?.(),
+        );
+
+        const missingState = getMissingProperties(
+          fullUiState.metamask,
+          SENTRY_UI_STATE.metamask,
+        );
+        assert.deepEqual(missingState, {});
+      },
+    );
+  });
+
+  it('should not have extra properties in UI state mask', async function () {
+    const expectedMissingState = {
+      currentPopupId: false, // Initialized as undefined
+      // Part of transaction controller store, but missing from the initial
+      // state
+      lastFetchedBlockNumbers: false,
+      preferences: {
+        autoLockTimeLimit: true, // Initialized as undefined
+      },
+      smartTransactionsState: {
+        fees: {
+          approvalTxFees: true, // Initialized as undefined
+          tradeTxFees: true, // Initialized as undefined
+        },
+        userOptIn: true, // Initialized as undefined
+      },
+      swapsState: {
+        // This can get wiped out during initialization due to a bug in
+        // the "resetState" method
+        swapsFeatureFlags: true,
+      },
+      // This can get erased due to a bug in the app state controller's
+      // preferences state change handler
+      timeoutMinutes: true,
+    };
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.findElement('#password');
+
+        const fullUiState = await driver.executeScript(() =>
+          window.stateHooks?.getCleanAppState?.(),
+        );
+
+        const extraMaskProperties = getMissingProperties(
+          SENTRY_UI_STATE.metamask,
+          fullUiState.metamask,
+        );
+        const unexpectedExtraMaskProperties = getMissingProperties(
+          extraMaskProperties,
+          expectedMissingState,
+        );
+        assert.deepEqual(unexpectedExtraMaskProperties, {});
+      },
+    );
   });
 });

@@ -871,10 +871,7 @@ describe('MetaMaskController', function () {
         try {
           await metamaskController.verifySeedPhrase();
         } catch (error) {
-          assert.equal(
-            error.message,
-            'MetamaskController - No HD Key Tree found',
-          );
+          assert.equal(error.message, 'No HD keyring found.');
         }
       });
 
@@ -1686,24 +1683,24 @@ describe('MetaMaskController', function () {
         controllerMessengerSpy = ControllerMessenger.prototype;
       });
 
-      it('starts incoming transaction polling if show incoming transactions enabled', async function () {
+      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async function () {
         assert(txControllerStub.startIncomingTransactionPolling.notCalled);
 
         await preferencesControllerSpy.store.subscribe.lastCall.args[0]({
-          featureFlags: {
-            showIncomingTransactions: true,
+          incomingTransactionsPreferences: {
+            [MAINNET_CHAIN_ID]: true,
           },
         });
 
         assert(txControllerStub.startIncomingTransactionPolling.calledOnce);
       });
 
-      it('stops incoming transaction polling if show incoming transactions disabled', async function () {
+      it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainIdd', async function () {
         assert(txControllerStub.stopIncomingTransactionPolling.notCalled);
 
         await preferencesControllerSpy.store.subscribe.lastCall.args[0]({
-          featureFlags: {
-            showIncomingTransactions: false,
+          incomingTransactionsPreferences: {
+            [MAINNET_CHAIN_ID]: false,
           },
         });
 

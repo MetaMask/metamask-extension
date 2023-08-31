@@ -20,7 +20,6 @@ jest.mock('../../../../app/scripts/lib/util', () => {
 });
 
 describe('Security Tab', () => {
-  delete mockState.metamask.featureFlags; // Unset featureFlags in order to test the default value
   mockState.appState.warning = 'warning'; // This tests an otherwise untested render branch
 
   const mockStore = configureMockStore([thunk])(mockState);
@@ -89,10 +88,6 @@ describe('Security Tab', () => {
 
   it('toggles balance and token price checker', async () => {
     expect(await toggleCheckbox('currencyRateCheckToggle', true)).toBe(true);
-  });
-
-  it('toggles incoming txs', async () => {
-    expect(await toggleCheckbox('showIncomingTransactions', false)).toBe(true);
   });
 
   it('should toggle token detection', async () => {

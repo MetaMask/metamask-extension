@@ -10,7 +10,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  SEVERITIES,
+  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getPlatform } from '../../../../app/scripts/lib/util';
@@ -262,6 +262,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
         data-testid="advanced-setting-hex-data"
       >
         <div className="settings-page__content-item">
@@ -294,6 +295,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
         data-testid="advanced-setting-show-testnet-conversion"
       >
         <div className="settings-page__content-item">
@@ -329,6 +331,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('showTestnetNetworks')}</span>
@@ -361,6 +364,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('nonceField')}</span>
@@ -551,6 +555,7 @@ export default class AdvancedTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('dismissReminderField')}</span>
@@ -595,8 +600,7 @@ export default class AdvancedTab extends PureComponent {
         className="settings-page__content-row"
         data-testid="advanced-setting-toggle-ethsign"
         display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={FlexDirection.Column}
       >
         <div className="settings-page__content-item">
           <span>{t('toggleEthSignField')}</span>
@@ -604,11 +608,11 @@ export default class AdvancedTab extends PureComponent {
             {t('toggleEthSignDescriptionField')}
           </div>
         </div>
-
         {disabledRpcMethodPreferences?.eth_sign ? (
           <BannerAlert
-            severity={SEVERITIES.DANGER}
-            marginBottom={5}
+            severity={Severity.Danger}
+            marginTop={3}
+            marginBottom={4}
             descriptionProps={{ variant: TextVariant.bodyMd }}
           >
             {t('toggleEthSignBannerDescription')}
