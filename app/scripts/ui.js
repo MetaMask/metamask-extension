@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 // Disabled to allow setting up initial state hooks first
 
 // This import sets up global functions required for Sentry to function.
