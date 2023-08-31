@@ -35,6 +35,7 @@ import {
   ImportNftsModal,
   ImportTokensModal,
   SelectActionModal,
+  ConnectionHeader,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -566,6 +567,7 @@ export default class Routes extends Component {
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && <AppHeader location={location} />}
+        {!this.hideAppHeader() && <ConnectionHeader location={location} />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

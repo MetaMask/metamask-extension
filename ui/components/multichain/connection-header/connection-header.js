@@ -5,6 +5,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -12,9 +13,13 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  ModalFocus,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   Text,
 } from '../../component-library';
-import { Menu, MenuItem } from '../../ui/menu';
+import { MenuItem } from '../../ui/menu';
 
 export const ConnectionHeader = () => {
   const t = useI18nContext();
@@ -43,16 +48,24 @@ export const ConnectionHeader = () => {
           size={ButtonIconSize.Sm}
         />
       </Box>
-      {showConnectionsBox && (
-        <Menu
-          className="connection-header__menu"
-          anchorElement={menuRef.current}
-        >
-          <MenuItem>
-            <Text>All Connected Sites</Text>
+
+      <Popover
+        className="connection-header__popover"
+        referenceElement={menuRef.current}
+        role={PopoverRole.Dialog}
+        position={PopoverPosition.Bottom}
+        offset={[0, 0]}
+        padding={0}
+        isOpen={showConnectionsBox}
+        isPortal
+        preventOverflow
+      >
+        <ModalFocus restoreFocus initialFocusRef={menuRef.current}>
+          <MenuItem className="connection-header__popover-menu">
+            <Text variant={TextVariant.bodySm}>All Connected Sites</Text>
           </MenuItem>
-        </Menu>
-      )}
+        </ModalFocus>
+      </Popover>
     </Box>
   );
 };
