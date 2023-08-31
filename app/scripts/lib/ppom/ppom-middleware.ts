@@ -1,4 +1,4 @@
-import { PPOM } from '@blockaid/ppom';
+import { PPOM } from '@blockaid/ppom_release';
 import { PPOMController } from '@metamask/ppom-validator';
 
 import {

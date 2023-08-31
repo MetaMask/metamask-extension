@@ -197,19 +197,22 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         </div>
       </div>
     </div>
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-box--margin-bottom-2 mm-box--color-text-alternative"
+    >
+      Desktop App
+    </h4>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center"
       data-testid="advanced-setting-desktop-pairing"
     >
-      <div
-        class="settings-page__content-item"
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-right-2 mm-box--color-text-default"
       >
-        <span>
-          Click to run all background processes in the desktop app.
-        </span>
-      </div>
+        Click to run all background processes in the desktop app.
+      </p>
       <div
-        class="settings-page__content-item-col"
+        class="mm-box settings-page__content-item-col mm-box--padding-top-3"
       >
         <button
           class="button btn--rounded btn-primary btn--large"
