@@ -77,7 +77,7 @@ export default async function buildModulePartitions(): Promise<
 
   const possibleEntryFilePaths = (
     await Promise.all(
-      ENTRYPOINT_PATTERNS.map(async (entrypointPattern) => {
+      ENTRYPOINT_PATTERNS.map((entrypointPattern) => {
         return fg(
           path.resolve(ROOT_DIRECTORY_PATH, `${entrypointPattern}.{js,ts,tsx}`),
         );
