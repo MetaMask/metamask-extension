@@ -29,7 +29,7 @@ export class FilterEvents implements Integration {
    * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
    * is enabled, `false` otherwise.
    */
-  private getMetaMetricsEnabled: () => Promise<boolean>;
+  private readonly getMetaMetricsEnabled: () => Promise<boolean>;
 
   /**
    * @param options - Constructor options.

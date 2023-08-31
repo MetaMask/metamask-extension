@@ -419,7 +419,7 @@ export const draftTransactionInitialState = {
  * @property {string} gasPriceEstimate - Expected price in wei necessary to
  *  pay per gas used for a transaction to be included in a reasonable timeframe.
  *  Comes from the GasFeeController.
- * @property {string} gasTotalForLayer1 -  Layer 1 gas fee total on multi-layer
+ * @property {string} gasTotalForLayer1 - Layer 1 gas fee total on multi-layer
  *  fee networks
  * @property {string} recipientInput - The user input of the recipient
  *  which is updated quickly to avoid delays in the UI reflecting manual entry
