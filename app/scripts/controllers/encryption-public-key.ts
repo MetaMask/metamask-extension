@@ -101,15 +101,17 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
 > {
   hub: EventEmitter;
 
-  private _getEncryptionPublicKey: (address: string) => Promise<string>;
+  private readonly _getEncryptionPublicKey: (
+    address: string,
+  ) => Promise<string>;
 
-  private _getAccountKeyringType: (account: string) => Promise<string>;
+  private readonly _getAccountKeyringType: (account: string) => Promise<string>;
 
-  private _getState: () => any;
+  private readonly _getState: () => any;
 
-  private _encryptionPublicKeyManager: EncryptionPublicKeyManager;
+  private readonly _encryptionPublicKeyManager: EncryptionPublicKeyManager;
 
-  private _metricsEvent: (payload: any, options?: any) => void;
+  private readonly _metricsEvent: (payload: any, options?: any) => void;
 
   /**
    * Construct a EncryptionPublicKey controller.

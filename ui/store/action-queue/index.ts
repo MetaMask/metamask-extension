@@ -100,7 +100,7 @@ const executeActionOrAddToRetryQueue = (item: BackgroundAction): void => {
  * @param [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue waiting for a retry.
  * @returns
  */
-export function submitRequestToBackground<R>(
+export async function submitRequestToBackground<R>(
   method: string,
   args?: any[],
   actionId = generateActionId(), // current date is not guaranteed to be unique
