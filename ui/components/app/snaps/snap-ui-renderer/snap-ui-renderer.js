@@ -125,6 +125,7 @@ export const SnapUIRenderer = ({
       snapName={snapName}
       type={delineatorType}
       isCollapsable={isCollapsable}
+      isCollapsed={isCollapsed}
       onClick={onClick}
       boxProps={boxProps}
     >

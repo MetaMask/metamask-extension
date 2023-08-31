@@ -93,7 +93,7 @@ export const SnapDelineator = ({
       <Box
         className="snap-delineator__content"
         padding={4}
-        display={isCollapsed ? Display.None : Display.Block}
+        display={isCollapsable && isCollapsed ? Display.None : Display.Block}
       >
         {children}
       </Box>

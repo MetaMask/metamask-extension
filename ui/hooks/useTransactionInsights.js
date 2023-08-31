@@ -30,12 +30,12 @@ const useTransactionInsights = ({ txData }) => {
   });
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
-    insightSnaps[0]?.snapId,
+    insightSnaps[0]?.id,
   );
 
   useEffect(() => {
     if (insightSnaps.length && !selectedInsightSnapId) {
-      setSelectedInsightSnapId(insightSnaps[0]?.snapId);
+      setSelectedInsightSnapId(insightSnaps[0]?.id);
     }
   }, [insightSnaps, selectedInsightSnapId, setSelectedInsightSnapId]);
 

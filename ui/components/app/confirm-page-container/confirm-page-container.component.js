@@ -162,10 +162,22 @@ const ConfirmPageContainer = (props) => {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
-  const { warnings, insightComponent } = useTransactionInsights({
+  const insightObject = useTransactionInsights({
     txData,
   });
+  const warnings = insightObject?.warnings;
+  const insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
+
+  // TODO: Better name
+  const topLevelHandleSubmit = () => {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    if (warnings?.length > 0) {
+      return setIsShowingTxInsightWarnings(true);
+    }
+    ///: END:ONLY_INCLUDE_IN
+    return handleSubmit();
+  };
 
   const handleSubmit = () => {
     if (isSetApproveForAll && isApprovalOrRejection) {
@@ -242,7 +254,7 @@ const ConfirmPageContainer = (props) => {
             onCancelAll={onCancelAll}
             onCancel={onCancel}
             cancelText={t('reject')}
-            onSubmit={onSubmit}
+            onSubmit={topLevelHandleSubmit}
             submitText={t('confirm')}
             disabled={disabled}
             unapprovedTxCount={unapprovedTxCount}
@@ -337,14 +349,7 @@ const ConfirmPageContainer = (props) => {
           <PageContainerFooter
             onCancel={onCancel}
             cancelText={t('reject')}
-            onSubmit={() => {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-              if (warnings?.length > 0) {
-                return setIsShowingTxInsightWarnings(true);
-              }
-              ///: END:ONLY_INCLUDE_IN
-              return handleSubmit();
-            }}
+            onSubmit={topLevelHandleSubmit}
             submitText={t('confirm')}
             submitButtonType={
               isSetApproveForAll && isApprovalOrRejection
