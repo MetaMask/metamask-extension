@@ -2755,9 +2755,6 @@
   "notifications23ActionText": {
     "message": "Aktifkan peringatan keamanan"
   },
-  "notifications23DescriptionThree": {
-    "message": "Jika Anda mengaktifkan peringatan keamanan dari OpenSea, kami telah memindahkan Anda ke fitur ini."
-  },
   "notifications23DescriptionTwo": {
     "message": "Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan."
   },
