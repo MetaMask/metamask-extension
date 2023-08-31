@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
@@ -175,6 +176,7 @@ function setupPhishingPageStreams() {
   phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
 }
 
+/* eslint-disable no-restricted-globals */
 const setupPhishingExtStreams = () => {
   phishingExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
