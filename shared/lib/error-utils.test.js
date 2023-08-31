@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import browser from 'webextension-polyfill';
 import { fetchLocale } from '../modules/i18n';
 import { SUPPORT_LINK } from './ui-utils';
