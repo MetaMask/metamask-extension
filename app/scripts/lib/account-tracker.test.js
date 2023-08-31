@@ -4,7 +4,7 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 
 import { createTestProviderTools } from '../../../test/stub/provider';
-import AccountsController from '../controllers/accounts-controller';
+import { AccountsController } from '../controllers/accounts-controller';
 import AccountTracker from './account-tracker';
 
 const noop = () => true;
