@@ -347,7 +347,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     originalGasEstimate: '14609',
     userEditedGasLimit: false,
     chainId: '0x5',
-
     dappSuggestedGasFees: null,
     sendFlowHistory: [],
     txParams: {
@@ -377,7 +376,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         originalGasEstimate: '14609',
         userEditedGasLimit: false,
         chainId: '0x5',
-
         dappSuggestedGasFees: null,
         sendFlowHistory: [],
         txParams: {
@@ -587,7 +585,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     time: 1589314601567,
     status: 'confirmed',
     metamaskNetworkId: '5',
-
     txParams: {
       from: '0xabca64466f257793eaa52fcfff5066894b76a149',
       to: '0xefg5bc4e8f1f969934d773fa67da095d2e491a97',
@@ -665,7 +662,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     originalGasEstimate: '0xb427',
     userEditedGasLimit: false,
     chainId: '0x5',
-
     dappSuggestedGasFees: {
       gasPrice: '0x4a817c800',
       gas: '0xb427',
@@ -693,7 +689,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         originalGasEstimate: '0xb427',
         userEditedGasLimit: false,
         chainId: '0x5',
-
         dappSuggestedGasFees: {
           gasPrice: '0x4a817c800',
           gas: '0xb427',
@@ -914,7 +909,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     originalGasEstimate: '0x118e0',
     userEditedGasLimit: false,
     chainId: '0x5',
-
     dappSuggestedGasFees: {
       maxPriorityFeePerGas: '0x3B9ACA00',
       maxFeePerGas: '0x7be830aec',
@@ -1038,7 +1032,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     originalGasEstimate: '0xea60',
     userEditedGasLimit: false,
     chainId: '0x5',
-
     dappSuggestedGasFees: {
       gasPrice: '0x4a817c800',
       gas: '0xea60',
@@ -1066,7 +1059,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         originalGasEstimate: '0xea60',
         userEditedGasLimit: false,
         chainId: '0x5',
-
         dappSuggestedGasFees: {
           gasPrice: '0x4a817c800',
           gas: '0xea60',
@@ -1437,7 +1429,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     originalGasEstimate: '0x10896',
     userEditedGasLimit: false,
     chainId: '0x5',
-
     dappSuggestedGasFees: null,
     sendFlowHistory: [
       {
@@ -1487,7 +1478,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         originalGasEstimate: '0x10896',
         userEditedGasLimit: false,
         chainId: '0x5',
-
         dappSuggestedGasFees: null,
         sendFlowHistory: [
           {

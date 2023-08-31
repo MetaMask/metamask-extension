@@ -574,7 +574,6 @@ const state = {
             chainId: '0x38',
             dappSuggestedGasFees: null,
             id: 2360388496987298,
-
             metamaskNetworkId: '56',
             origin: 'metamask',
             status: 'unapproved',
@@ -879,7 +878,6 @@ const state = {
           ],
         ],
         id: 7900715443136469,
-
         metamaskNetworkId: '56',
         nonceDetails: {
           local: {
@@ -1464,7 +1462,6 @@ const state = {
       status: 'unapproved',
       metamaskNetworkId: '5',
       chainId: '0x5',
-
       txParams: {
         from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
         to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
@@ -1483,7 +1480,6 @@ const state = {
           status: 'unapproved',
           metamaskNetworkId: '5',
           chainId: '0x5',
-
           txParams: {
             from: '0x983211ce699ea5ab57cc528086154b6db1ad8e55',
             to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',

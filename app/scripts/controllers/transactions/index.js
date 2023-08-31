@@ -566,7 +566,6 @@ export default class TransactionController extends EventEmitter {
         ...newGasParams,
       },
       previousGasParams,
-
       status: TransactionStatus.approved,
       type: TransactionType.cancel,
       actionId,
@@ -625,7 +624,6 @@ export default class TransactionController extends EventEmitter {
         ...newGasParams,
       },
       previousGasParams,
-
       status: TransactionStatus.approved,
       type: TransactionType.retry,
       originalType: originalTxMeta.type,

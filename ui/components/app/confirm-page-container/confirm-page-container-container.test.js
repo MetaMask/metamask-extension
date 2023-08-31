@@ -36,7 +36,6 @@ const props = {
     metamaskNetworkId: '5',
     originalGasEstimate: '0x5208',
     userEditedGasLimit: false,
-
     dappSuggestedGasFees: null,
     sendFlowHistory: [],
     txParams: {
@@ -70,7 +69,6 @@ const props = {
     originalGasEstimate: '0xea60',
     userEditedGasLimit: false,
     chainId: '0x13881',
-
     dappSuggestedGasFees: {
       gasPrice: '0x4a817c800',
       gas: '0xea60',
@@ -96,7 +94,6 @@ const props = {
         originalGasEstimate: '0xea60',
         userEditedGasLimit: false,
         chainId: '0x13881',
-
         dappSuggestedGasFees: {
           gasPrice: '0x4a817c800',
           gas: '0xea60',

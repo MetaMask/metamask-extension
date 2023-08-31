@@ -25,7 +25,6 @@ describe('TransactionActivityLog utils', () => {
               status: TransactionStatus.unapproved,
               metamaskNetworkId: '5',
               chainId: '0x5',
-
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
                 to: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -70,7 +69,6 @@ describe('TransactionActivityLog utils', () => {
             ],
           ],
           id: 6400627574331058,
-
           metamaskNetworkId: '5',
           chainId: '0x5',
           status: TransactionStatus.dropped,
@@ -95,7 +93,6 @@ describe('TransactionActivityLog utils', () => {
               status: TransactionStatus.unapproved,
               metamaskNetworkId: '5',
               chainId: '0x5',
-
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
                 to: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
@@ -163,7 +160,6 @@ describe('TransactionActivityLog utils', () => {
           ],
           id: 6400627574331060,
           lastGasPrice: '0x4190ab00',
-
           metamaskNetworkId: '5',
           chainId: '0x5',
           status: TransactionStatus.confirmed,
@@ -251,7 +247,6 @@ describe('TransactionActivityLog utils', () => {
         history: [
           {
             id: 5559712943815343,
-
             metamaskNetworkId: '5',
             chainId: '0x5',
             status: TransactionStatus.unapproved,

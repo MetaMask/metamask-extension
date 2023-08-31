@@ -769,7 +769,6 @@ class FixtureBuilder {
                 maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012623,
-
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
@@ -786,7 +785,6 @@ class FixtureBuilder {
             },
           ],
           id: 7911313280012623,
-
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
@@ -817,7 +815,6 @@ class FixtureBuilder {
                 maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012624,
-
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
@@ -834,7 +831,6 @@ class FixtureBuilder {
             },
           ],
           id: 7911313280012624,
-
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
@@ -865,7 +861,6 @@ class FixtureBuilder {
                 maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012625,
-
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
@@ -882,7 +877,6 @@ class FixtureBuilder {
             },
           ],
           id: 7911313280012625,
-
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
@@ -913,7 +907,6 @@ class FixtureBuilder {
                 maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012626,
-
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
@@ -930,7 +923,6 @@ class FixtureBuilder {
             },
           ],
           id: 7911313280012626,
-
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
@@ -958,7 +950,6 @@ class FixtureBuilder {
             {
               chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
-
               metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
@@ -974,13 +965,11 @@ class FixtureBuilder {
             },
           ],
           id: 4046084157914634,
-
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
-
             metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'unapproved',
@@ -1018,7 +1007,6 @@ class FixtureBuilder {
             {
               chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
-
               metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
@@ -1036,13 +1024,11 @@ class FixtureBuilder {
             },
           ],
           id: 4046084157914634,
-
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
-
             metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'unapproved',
@@ -1084,7 +1070,6 @@ class FixtureBuilder {
             {
               chainId: CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
-
               metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
@@ -1138,13 +1123,11 @@ class FixtureBuilder {
             ],
           ],
           id: 4046084157914634,
-
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
-
             metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'approved',
@@ -1186,7 +1169,6 @@ class FixtureBuilder {
             {
               chainId: CHAIN_IDS.LOCALHOST,
               id: 5748272735958801,
-
               metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
@@ -1316,7 +1298,6 @@ class FixtureBuilder {
             ],
           ],
           id: 5748272735958801,
-
           metamaskNetworkId: '5',
           nonceDetails: {
             local: {

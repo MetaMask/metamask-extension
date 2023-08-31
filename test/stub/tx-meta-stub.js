@@ -10,7 +10,6 @@ export const txMetaStub = {
   history: [
     {
       id: 405984854664302,
-
       metamaskNetworkId: '5',
       status: TransactionStatus.unapproved,
       time: 1572395156620,
@@ -154,7 +153,6 @@ export const txMetaStub = {
     ],
   ],
   id: 405984854664302,
-
   metamaskNetworkId: '5',
   nonceDetails: {
     local: {
