@@ -22,17 +22,17 @@ const validateChecksum = async (
 
 export class IndexedDBPPOMStorage implements StorageBackend {
   /* eslint-disable no-restricted-syntax */
-  private readonly storeName: string;
+  private storeName: string;
 
   /* eslint-disable no-restricted-syntax */
-  private readonly dbVersion: number;
+  private dbVersion: number;
 
   constructor(storeName: string, dbVersion: number) {
     this.storeName = storeName;
     this.dbVersion = dbVersion;
   }
 
-  async #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
+  #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.storeName, this.dbVersion);
 
