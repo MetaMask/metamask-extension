@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /*
 NOTICE:
 This Snow + LavaMoat scuttling integration is currently being used
