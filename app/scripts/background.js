@@ -330,6 +330,7 @@ async function loadPhishingWarningPage() {
     // error.
     extensionStartupPhishingPageUrl.hash = '#extensionStartup';
 
+    /* eslint-disable-next-line no-restricted-globals */
     iframe = window.document.createElement('iframe');
     iframe.setAttribute('src', extensionStartupPhishingPageUrl.href);
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
@@ -347,6 +348,7 @@ async function loadPhishingWarningPage() {
     iframe.addEventListener('load', deferredResolve);
 
     // This step initiates the page loading.
+    /* eslint-disable-next-line no-restricted-globals */
     window.document.body.appendChild(iframe);
 
     // This timeout ensures that this iframe gets cleaned up in a reasonable
