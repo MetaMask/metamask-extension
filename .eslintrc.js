@@ -181,7 +181,7 @@ module.exports = {
      */
     {
       files: ['*.{ts,tsx}'],
-      excludedFiles: ['*.test.{ts,tsx}'],
+      excludedFiles: ['*.test.{ts,tsx}', '*.stories.{ts,tsx}'],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
         '@metamask/eslint-config-typescript',
