@@ -39,11 +39,36 @@ export default function TxInsightWarnings({
   onSubmit,
 }) {
   const t = useI18nContext();
+  // values represent if a warning is collapsed
+  const defaultWarningState = warnings.reduce((warningState, warning, idx) => {
+    if (idx === 0) {
+      warningState[warning.snapId] = false;
+    } else {
+      warningState[warning.snapId] = true;
+    }
+    return warningState;
+  }, {});
 
-  const [currentWarning, setCurrentWarning] = useState(warnings[0].snapId);
+  const [warningState, setWarningState] = useState(defaultWarningState);
   const [isChecked, setIsChecked] = useState(false);
 
   const handleOnChange = () => setIsChecked(!isChecked);
+
+  const handleWarningClick = (snapId) => {
+    const newState = { ...warningState };
+    const nextSnapState = !warningState[snapId];
+    const willClose = nextSnapState;
+    newState[snapId] = nextSnapState;
+    if (!willClose) {
+      const openWarningId = Object.keys(warningState).find(
+        (warningId) => warningId !== snapId && !warningState[warningId],
+      );
+      if (openWarningId !== undefined) {
+        newState[openWarningId] = true;
+      }
+    }
+    setWarningState(newState);
+  };
 
   const Warnings = () => {
     const lastWarningIdx = warnings.length - 1;
@@ -55,12 +80,10 @@ export default function TxInsightWarnings({
           snapId={snapId}
           data={content}
           delineatorType={DelineatorType.Warning}
-          onClick={() => {
-            setCurrentWarning(snapId);
-          }}
+          onClick={() => handleWarningClick(snapId)}
           isCollapsable
-          isCollapsed={currentWarning !== snapId}
-          boxProps={{ paddingBottom: idx === lastWarningIdx ? 0 : 4 }}
+          isCollapsed={warningState[snapId]}
+          boxProps={{ marginBottom: idx === lastWarningIdx ? 0 : 4 }}
         />
       );
     });

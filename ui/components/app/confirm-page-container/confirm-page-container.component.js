@@ -385,7 +385,7 @@ const ConfirmPageContainer = (props) => {
           <TxInsightWarnings
             warnings={warnings}
             origin={origin}
-            onCancel={onCancel}
+            onCancel={() => setIsShowingTxInsightWarnings(false)}
             onSubmit={() => {
               handleSubmit();
               setIsShowingTxInsightWarnings(false);

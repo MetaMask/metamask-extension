@@ -55,7 +55,7 @@ export const SnapDelineator = ({
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         padding={1}
-        borderWidth={isCollapsed ? [1, 1, 0, 1] : 1}
+        style={{ borderBottomWidth: isCollapsed ? 0 : 1 }}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center}>
           <AvatarIcon
