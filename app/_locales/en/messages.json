@@ -1804,6 +1804,9 @@
   "gotIt": {
     "message": "Got it!"
   },
+  "gotItButton": {
+    "message": "Got it"
+  },
   "grantedToWithColon": {
     "message": "Granted to:"
   },

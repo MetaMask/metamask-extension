@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, FC } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -9,24 +8,34 @@ import {
   ButtonPrimary,
   Box,
   IconName,
-  IconSize,
   AvatarIcon,
+  AvatarIconSize,
 } from '../../component-library';
 import { ConnectedSitePermissionsPill } from '../connected-site-permissions-pill';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
   IconColor,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export const ConnectedSitePermissionsModal = ({ onClose }) => {
+interface ConnectedSitePermissionsModalProps {
+  onClose: () => void;
+  siteIcon: string;
+  siteName: string;
+}
+
+export const ConnectedSitePermissionsModal: FC<
+  ConnectedSitePermissionsModalProps
+> = ({ onClose, siteIcon, siteName }) => {
   const [open, setOpen] = useState(true);
   const t = useI18nContext();
 
@@ -35,7 +44,7 @@ export const ConnectedSitePermissionsModal = ({ onClose }) => {
     onClose();
   };
   return (
-    <Modal isOpen={open} onClose={handleOnClose} autofocus>
+    <Modal isOpen={open} onClose={handleOnClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={handleOnClose}>
@@ -49,17 +58,23 @@ export const ConnectedSitePermissionsModal = ({ onClose }) => {
           paddingBottom={2}
           gap={4}
         >
-          <ConnectedSitePermissionsPill
-            siteName="app.uniswap.org"
-            siteIcon="https://uniswap.org/favicon.ico"
-          />
+          <Box
+            width={BlockSize.TenTwelfths}
+            justifyContent={JustifyContent.center}
+          >
+            <ConnectedSitePermissionsPill
+              siteName={siteName}
+              siteIcon={siteIcon}
+            />
+          </Box>
 
-          <Box className="container">
+          <Box className="site-permissions-modal-container">
             <Text
               fontWeight={FontWeight.Normal}
               variant={TextVariant.bodyMd}
               color={TextColor.textDefault}
-              paddingBottom={4}
+              paddingBottom={2}
+              paddingTop={2}
             >
               {t('connectedSitePermissionsSubtitle')}
             </Text>
@@ -72,7 +87,7 @@ export const ConnectedSitePermissionsModal = ({ onClose }) => {
             >
               <AvatarIcon
                 iconName={IconName.Eye}
-                size={IconSize.Md}
+                size={AvatarIconSize.Md}
                 color={IconColor.primaryDefault}
                 backgroundColor={BackgroundColor.primaryMuted}
                 borderRadius={BorderRadius.full}
@@ -94,7 +109,7 @@ export const ConnectedSitePermissionsModal = ({ onClose }) => {
             >
               <AvatarIcon
                 iconName={IconName.SecurityTick}
-                size={IconSize.Md}
+                size={AvatarIconSize.Md}
                 color={IconColor.primaryDefault}
                 backgroundColor={BackgroundColor.primaryMuted}
                 borderRadius={BorderRadius.full}
@@ -109,14 +124,10 @@ export const ConnectedSitePermissionsModal = ({ onClose }) => {
             </Box>
           </Box>
           <ButtonPrimary block onClick={handleOnClose} tabIndex={0}>
-            {t('gotIt')}
+            {t('gotItButton')}
           </ButtonPrimary>
         </Box>
       </ModalContent>
     </Modal>
   );
-};
-
-ConnectedSitePermissionsModal.propTypes = {
-  onClose: PropTypes.func.isRequired,
 };

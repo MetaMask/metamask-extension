@@ -1,36 +1,43 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
-import { ButtonPrimary } from '../../component-library';
 import { ConnectedSitePermissionsModal } from '.';
+
+interface ConnectedSitePermissionsModalProps {
+  onClose: () => void;
+  siteName: string;
+  siteIcon: string;
+}
 
 export default {
   title: 'Components/Multichain/ConnectedSitePermissionsModal',
   component: ConnectedSitePermissionsModal,
   argTypes: {
-    onClose: {
-      control: 'function',
-    },
+    onClose: { control: 'function', action: 'onClose' },
+    siteIcon: { control: 'text' },
+    siteName: { control: 'text' },
   },
-} as Meta<typeof ConnectedSitePermissionsModal>;
+} as Meta;
 
-export const DefaultStory: StoryFn<
-  typeof ConnectedSitePermissionsModal
-> = () => {
-  const [{ showModal }, updateArgs] = useArgs();
+const Template: StoryFn<ConnectedSitePermissionsModalProps> = (args) => (
+  <ConnectedSitePermissionsModal {...args} />
+);
 
-  return (
-    <>
-      <ButtonPrimary onClick={() => updateArgs({ showModal: true })}>
-        Open modal
-      </ButtonPrimary>
-      {showModal && (
-        <ConnectedSitePermissionsModal
-          onClose={() => updateArgs({ showModal: false })}
-        />
-      )}
-    </>
-  );
+export const DefaultView = Template.bind({});
+
+DefaultView.args = {
+  onClose: () => {
+    console.log('onClose');
+  },
+  siteName: 'app.uniswap.org',
+  siteIcon: 'https://uniswap.org/favicon.ico',
 };
 
-DefaultStory.storyName = 'Default';
+export const Overflow: StoryFn<ConnectedSitePermissionsModalProps> = () => (
+  <ConnectedSitePermissionsModal
+    onClose={() => {
+      console.log('onClose');
+    }}
+    siteName="reallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallylongsitename.com"
+    siteIcon="https://uniswap.org/favicon.ico"
+  />
+);
