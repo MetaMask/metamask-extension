@@ -65,8 +65,15 @@ export default function ItemList({
           if (hideItemIf?.(result)) {
             return null;
           }
+          const hasBalance = result.balance > 0;
+          if (result.blocked && !hasBalance && !searchQuery) {
+            return null;
+          }
 
           const onClick = () => {
+            if (result.blocked) {
+              return;
+            }
             if (result.notImported) {
               onOpenImportTokenModalClick(result);
             } else {
@@ -77,7 +84,7 @@ export default function ItemList({
             iconUrl,
             identiconAddress,
             selected,
-            disabled,
+            blocked,
             primaryLabel,
             secondaryLabel,
             rightPrimaryLabel,
@@ -89,12 +96,13 @@ export default function ItemList({
               tabIndex="0"
               className={classnames('searchable-item-list__item', {
                 'searchable-item-list__item--selected': selected,
-                'searchable-item-list__item--disabled': disabled,
+                'searchable-item-list__item--disabled': blocked,
               })}
               data-testid="searchable-item-list__item"
               onClick={onClick}
               onKeyUp={(e) => e.key === 'Enter' && onClick()}
               key={`searchable-item-list-item-${i}`}
+              title={blocked && t('swapTokenNotAvailable')}
             >
               {iconUrl || primaryLabel ? (
                 <UrlIcon url={iconUrl} name={primaryLabel} />
@@ -193,7 +201,7 @@ ItemList.propTypes = {
     PropTypes.shape({
       iconUrl: PropTypes.string,
       selected: PropTypes.bool,
-      disabled: PropTypes.bool,
+      blocked: PropTypes.bool,
       primaryLabel: PropTypes.string,
       secondaryLabel: PropTypes.string,
       rightPrimaryLabel: PropTypes.string,

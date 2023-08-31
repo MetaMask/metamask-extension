@@ -72,4 +72,8 @@ UserPreferencedCurrencyDisplay.propTypes = {
   ]),
   showFiat: PropTypes.bool,
   showCurrencySuffix: PropTypes.bool,
+  /**
+   * UserPreferencedCurrencyDisplay component should also accept all the props from Currency component
+   */
+  ...CurrencyDisplay.propTypes,
 };
