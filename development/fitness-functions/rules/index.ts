@@ -1,14 +1,13 @@
-// import { preventSinonAssertSyntax } from './sinon-assert-syntax';
+import { preventSinonAssertSyntax } from './sinon-assert-syntax';
 import { preventJavaScriptFileAdditions } from './javascript-additions';
 
 const RULES: IRule[] = [
-  // temporarily disable.
-  // {
-  //   name: "Don't use `sinon` or `assert` in unit tests",
-  //   fn: preventSinonAssertSyntax,
-  //   docURL:
-  //     'https://github.com/MetaMask/metamask-extension/blob/develop/docs/testing.md#favor-jest-instead-of-mocha',
-  // },
+  {
+    name: "Don't use `sinon` or `assert` in unit tests",
+    fn: preventSinonAssertSyntax,
+    docURL:
+      'https://github.com/MetaMask/metamask-extension/blob/develop/docs/testing.md#favor-jest-instead-of-mocha',
+  },
   {
     name: "Don't add JS or JSX files to the `shared` directory",
     fn: preventJavaScriptFileAdditions,
