@@ -12,6 +12,7 @@ import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
 import Home from '../home';
+import { Connections } from '../../components/multichain/pages';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
@@ -33,6 +34,7 @@ import {
   AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
+  SelectActionModal,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -78,6 +80,7 @@ import {
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
+  CONNECTIONS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -162,6 +165,8 @@ export default class Routes extends Component {
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
+    isSelectActionModalOpen: PropTypes.bool.isRequired,
+    hideSelectActionModal: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -352,6 +357,9 @@ export default class Routes extends Component {
           />
           ///: END:ONLY_INCLUDE_IN
         }
+        {process.env.MULTICHAIN && (
+          <Authenticated path={CONNECTIONS} component={Connections} />
+        )}
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
@@ -506,12 +514,14 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
+      isSelectActionModalOpen,
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
       isIpfsModalOpen,
       hideIpfsModal,
       hideImportTokensModal,
+      hideSelectActionModal,
     } = this.props;
 
     const loadMessage =
@@ -579,6 +589,9 @@ export default class Routes extends Component {
         ) : null}
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
+        ) : null}
+        {isSelectActionModalOpen ? (
+          <SelectActionModal onClose={() => hideSelectActionModal()} />
         ) : null}
         <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
