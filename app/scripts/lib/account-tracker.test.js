@@ -141,6 +141,36 @@ describe('Account Tracker', () => {
     });
   });
 
+  describe('onAccountRemoved', () => {
+    it('should remove an account from state', () => {
+      accountTracker = new AccountTracker({
+        provider,
+        blockTracker: blockTrackerStub,
+        preferencesController: {
+          store: {
+            getState: () => ({
+              useMultiAccountBalanceChecker,
+            }),
+            subscribe: noop,
+          },
+        },
+        onboardingController: {
+          store: {
+            subscribe: noop,
+            getState: noop,
+          },
+        },
+        onAccountRemoved: (callback) => {
+          callback(VALID_ADDRESS);
+        },
+      });
+
+      expect(
+        accountTracker.store.getState().accounts[VALID_ADDRESS],
+      ).toStrictEqual(undefined);
+    });
+  });
+
   describe('_updateAccountsViaBalanceChecker', () => {
     it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async () => {
       useMultiAccountBalanceChecker = true;
