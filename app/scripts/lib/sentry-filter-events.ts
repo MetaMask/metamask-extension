@@ -30,7 +30,7 @@ export class FilterEvents implements Integration {
    * is enabled, `false` otherwise.
    */
   /* eslint-disable no-restricted-syntax */
-  private readonly getMetaMetricsEnabled: () => Promise<boolean>;
+  private getMetaMetricsEnabled: () => Promise<boolean>;
 
   /**
    * @param options - Constructor options.

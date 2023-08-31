@@ -11,7 +11,7 @@ import { RemoteTransactionSource } from './types';
 jest.mock('@metamask/controller-utils', () => ({
   ...jest.requireActual('@metamask/controller-utils'),
   isSmartContractCode: jest.fn(),
-  query: async () => Promise.resolve({}),
+  query: () => Promise.resolve({}),
 }));
 
 const NETWORK_STATE_MOCK: NetworkState = {
@@ -64,7 +64,7 @@ const createRemoteTransactionSourceMock = (
   }: { isSupportedNetwork?: boolean; error?: boolean } = {},
 ): RemoteTransactionSource => ({
   isSupportedNetwork: jest.fn(() => isSupportedNetwork ?? true),
-  fetchTransactions: jest.fn(async () =>
+  fetchTransactions: jest.fn(() =>
     error
       ? Promise.reject(new Error('Test Error'))
       : Promise.resolve(remoteTransactions),
