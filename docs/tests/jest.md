@@ -35,7 +35,7 @@ Additional methods and information to debug in VS Code can be found [here](https
     > node --inspect ./node_modules/.bin/jest --watch <path>
     ```
 
-    **Options:**
+    **Useful Options**
 
     ```bash
     node:
@@ -49,18 +49,24 @@ Additional methods and information to debug in VS Code can be found [here](https
 
     jest:
 
-    	--watch
-            Watch files for changes and rerun tests
-            related to changed files. If you want to
-            re-run all tests when a file has changed,
-            use the `--watchAll` option.       [boolean]
-
     	-i, --runInBand
             Run all tests serially in the current
             process (rather than creating a worker pool
             of child processes that run tests). This is
             sometimes useful for debugging, but such use
             cases are pretty rare.             [boolean]
+
+        -u, --updateSnapshot
+            Use this flag to re-record snapshots. Can be
+            used together with a test suite pattern or
+            with `--testNamePattern` to re-record
+            snapshot for test matching the pattern
+
+    	--watch
+            Watch files for changes and rerun tests
+            related to changed files. If you want to
+            re-run all tests when a file has changed,
+            use the `--watchAll` option.       [boolean]
     ```
 
 
