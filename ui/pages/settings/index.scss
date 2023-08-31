@@ -259,10 +259,6 @@
 
   &__body {
     padding: 24px;
-
-    @include screen-sm-min {
-      padding: 12px;
-    }
   }
 
   &__content-row {
