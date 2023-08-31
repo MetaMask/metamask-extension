@@ -546,6 +546,7 @@ function logBrowserError(failOnConsoleError, errorMessage) {
   }
 }
 
+/* eslint-disable no-restricted-globals */
 function collectMetrics() {
   const results = {
     paint: {},
