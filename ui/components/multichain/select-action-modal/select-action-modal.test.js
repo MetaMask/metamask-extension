@@ -7,7 +7,10 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 
 import { KeyringType } from '../../../../shared/constants/keyring';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+} from '../../../../shared/constants/network';
 import { SelectActionModal } from '.';
 
 const NETWORK_CONSTANTS_PATH = '../../../../shared/constants/network';
@@ -22,7 +25,7 @@ jest.mock(NETWORK_CONSTANTS_PATH, () => {
       // MAINNET
       [networkConstants.CHAIN_IDS.MAINNET]: {
         nativeCurrency: networkConstants.ETH_SYMBOL,
-        network: 'ethereum',
+        network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
       },
       // POLYGON
       [networkConstants.CHAIN_IDS.POLYGON]: {
