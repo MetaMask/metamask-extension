@@ -38,7 +38,10 @@ export default class UnitInput extends PureComponent {
     const { value: propsValue } = this.props;
     const { value: stateValue } = this.state;
 
-    if (prevPropsValue !== propsValue && propsValue !== stateValue) {
+    if (
+      prevPropsValue !== propsValue &&
+      Number(propsValue) !== Number(stateValue)
+    ) {
       this.setState({ value: propsValue });
     }
   }

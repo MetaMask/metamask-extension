@@ -226,6 +226,7 @@ describe('DetectTokensController', function () {
       onInfuraIsBlocked: sinon.stub(),
       onInfuraIsUnblocked: sinon.stub(),
       networkConfigurations: {},
+      onAccountRemoved: sinon.stub(),
     });
     preferences.setAddresses([
       '0x7e57e2',

@@ -295,7 +295,7 @@ export const AppHeader = ({ location }) => {
                     });
                   }}
                   disabled={disableAccountPicker}
-                  showAddress={process.env.MULTICHAIN}
+                  showAddress={Boolean(process.env.MULTICHAIN)}
                 />
               ) : null}
               <Box
