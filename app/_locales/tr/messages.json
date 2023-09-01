@@ -2330,9 +2330,6 @@
   "more": {
     "message": "daha fazla"
   },
-  "moreComingSoon": {
-    "message": "Daha fazla sağlayıcı çok yakında"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1, $2 snap'lerine bağlanmak istiyor. Bu web sitesine güveniyorsanız ilerleyin.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "Güvenlik uyarılarını etkinleştir"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Blockaid tarafından desteklenen güvenlik uyarıları ile gizliliğinizi korumaya devam ederken bilinen dolandırıcılıklardan uzak durun."
-  },
-  "notifications23DescriptionThree": {
-    "message": "OpenSea'den güvenlik uyarılarını etkinleştirdiyseniz sizi bu özelliğe taşıdık."
   },
   "notifications23DescriptionTwo": {
     "message": "Talepleri onaylamadan önce her zaman kendiniz gerekli özeni gösterin."
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "Güvenlik uyarıları"
   },
-  "securityAlertsDescription1": {
-    "message": "Bu özellik, işlemlerinizi ve imza taleplerinizi yerel olarak inceleyerek sizi kötü amaçlı aktivitelere karşı uyarır. Verileriniz bu hizmeti sunan üçüncü taraflarla paylaşılmaz. Herhangi bir talebi onaylamadan önce gerekli özeni her zaman kendiniz gösterin. Bu özelliğin tüm kötü amaçlı aktiviteleri algılayacağına dair herhangi bir garanti söz konusu değildir."
-  },
-  "securityAlertsDescription2": {
-    "message": "Talepleri onaylamadan önce her zaman gerekli özeni gösterdiğinizden emin olun. Tüm kötü niyetli aktivitelerin bu özellik tarafından algılanacağına dair herhangi bir garanti sunulmamaktadır."
-  },
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
-  },
-  "securityProviderAdviceBy": {
-    "message": "$1 güvenlik önerisi",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Ayrıntılara bakın"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "Beklediğiniz hesapları görmüyorsanız HD yoluna geçmeyi deneyin."
-  },
-  "selectProvider": {
-    "message": "Sağlayıcıları seç:"
   },
   "selectType": {
     "message": "Tür Seç"

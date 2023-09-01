@@ -2330,9 +2330,6 @@
   "more": {
     "message": "selengkapnya"
   },
-  "moreComingSoon": {
-    "message": "Penyedia lainnya akan segera hadir"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 ingin terhubung dengan $2 snap. Hanya lanjutkan jika Anda memercayai situs web ini.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "Aktifkan peringatan keamanan"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Hindari penipuan yang terdeteksi sambil tetap menjaga privasi Anda dengan peringatan keamanan yang didukung oleh Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Jika Anda mengaktifkan peringatan keamanan dari OpenSea, kami telah memindahkan Anda ke fitur ini."
   },
   "notifications23DescriptionTwo": {
     "message": "Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan."
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "Peringatan keamanan"
   },
-  "securityAlertsDescription1": {
-    "message": "Fitur ini memberi tahu Anda seputar aktivitas berbahaya dengan meninjau transaksi dan permintaan tanda tangan Anda secara lokal. Data Anda tidak dibagikan kepada pihak ketiga yang menyediakan layanan ini. Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan apa pun. Tidak ada jaminan bahwa fitur ini akan mendeteksi semua aktivitas berbahaya."
-  },
-  "securityAlertsDescription2": {
-    "message": "Pastikan untuk selalu melakukan uji tuntas sebelum menyetujui permintaan apa pun. Tidak ada jaminan semua aktivitas berbahaya akan terdeteksi oleh fitur ini."
-  },
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
-  },
-  "securityProviderAdviceBy": {
-    "message": "Saran keamanan dari $1",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Lihat detailnya"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "Jika Anda tidak menemukan akun yang diharapkan, coba alihkan jalur HD."
-  },
-  "selectProvider": {
-    "message": "Pilih penyedia:"
   },
   "selectType": {
     "message": "Pilih Jenis"
