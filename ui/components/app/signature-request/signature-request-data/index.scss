@@ -1,5 +1,7 @@
 .signature-request-data {
   &__node {
+    align-items: center;
+
     &__value {
       white-space: pre-line;
       overflow: hidden;
@@ -21,6 +23,10 @@
           }
         }
       }
+    }
+
+    &__label {
+      min-width: 15px;
     }
   }
 }

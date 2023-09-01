@@ -6,6 +6,8 @@
     border-bottom: 1px solid var(--color-border-muted);
 
     &__contract {
+      align-items: center;
+
       &__identicon {
         margin: 16px;
         box-shadow: none;

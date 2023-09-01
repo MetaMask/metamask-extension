@@ -372,6 +372,7 @@ const SignatureRequest = ({ txData }) => {
           rpcPrefs={rpcPrefs}
           onClose={() => setShowContractDetails(false)}
           isContractRequestingSignature
+          useName
         />
       )}
       {unapprovedMessagesCount > 1 ? (

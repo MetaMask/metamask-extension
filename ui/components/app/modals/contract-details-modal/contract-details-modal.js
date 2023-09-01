@@ -25,6 +25,8 @@ import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
 import { ButtonIcon, IconName, Text } from '../../../component-library';
+import Name from '../../name/name';
+import { NameType } from '@metamask/name-controller';
 
 export default function ContractDetailsModal({
   onClose,
@@ -37,6 +39,7 @@ export default function ContractDetailsModal({
   assetName,
   assetStandard,
   isContractRequestingSignature,
+  useName,
 }) {
   const t = useI18nContext();
   const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
@@ -210,15 +213,21 @@ export default function ContractDetailsModal({
             address={toAddress}
           />
           <Box data-testid="recipient">
-            <Text
-              fontWeight={FontWeight.Bold}
-              variant={TextVariant.bodyMd}
-              as="h5"
-              marginTop={4}
-            >
-              {addressBookEntry?.data?.name || ellipsify(toAddress)}
-            </Text>
-            {addressBookEntry?.data?.name && (
+            {useName && (
+              <Text variant={TextVariant.bodyMd} as="h5">
+                <Name value={toAddress} type={NameType.ETHEREUM_ADDRESS} />
+              </Text>
+            )}
+            {!useName && (
+              <Text
+                fontWeight={FontWeight.Bold}
+                variant={TextVariant.bodyMd}
+                as="h5"
+              >
+                {addressBookEntry?.data?.name || ellipsify(toAddress)}
+              </Text>
+            )}
+            {!useName && addressBookEntry?.data?.name && (
               <Text
                 variant={TextVariant.bodySm}
                 as="h6"
@@ -336,4 +345,8 @@ ContractDetailsModal.propTypes = {
    * Whether contract requesting signature flow has started
    */
   isContractRequestingSignature: PropTypes.bool,
+  /**
+   * Whether to use the name component to display the address
+   */
+  useName: PropTypes.bool,
 };

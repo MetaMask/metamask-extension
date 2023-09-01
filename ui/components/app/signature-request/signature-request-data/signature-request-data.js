@@ -19,6 +19,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { sanitizeString } from '../../../../helpers/utils/util';
 import { Box, Text } from '../../../component-library';
+import Name from '../../name/name';
+import { NameType } from '@metamask/name-controller';
 
 function SignatureRequestData({ data }) {
   const identities = useSelector(getMemoizedMetaMaskIdentities);
@@ -40,6 +42,7 @@ function SignatureRequestData({ data }) {
             as="div"
             color={TextColor.textDefault}
             marginLeft={4}
+            className="signature-request-data__node__label"
             fontWeight={
               typeof value === 'object' ? FontWeight.Bold : FontWeight.Normal
             }
@@ -65,11 +68,7 @@ function SignatureRequestData({ data }) {
                   color={TextColor.infoDefault}
                   className="signature-request-data__node__value__address"
                 >
-                  <Address
-                    addressOnly
-                    checksummedRecipientAddress={toChecksumHexAddress(value)}
-                    recipientName={getAccountName(identities, value)}
-                  />
+                  <Name value={value} type={NameType.ETHEREUM_ADDRESS} />
                 </Text>
               ) : (
                 sanitizeString(`${value}`)
