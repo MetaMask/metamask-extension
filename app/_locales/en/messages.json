@@ -489,6 +489,9 @@
   "backupApprovalNotice": {
     "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
   },
+  "backupKeyringSnapReminder": {
+    "message": "Be sure you can access any accounts created by this snap on your own before removing it"
+  },
   "backupNow": {
     "message": "Backup now"
   },
@@ -2104,6 +2107,16 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keyringAccountName": {
+    "message": "Account name"
+  },
+  "keyringAccountPublicAddress": {
+    "message": "Public Address"
+  },
+  "keyringSnapRemoveConfirmation": {
+    "message": "Type $1 to confirm you want to remove this snap:",
+    "description": "Asks user to input the name nap prior to deleting the snap. $1 is the snap name"
+  },
   "keystone": {
     "message": "Keystone"
   },
@@ -3500,6 +3513,12 @@
   },
   "removeJWTDescription": {
     "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
+  },
+  "removeKeyringSnap": {
+    "message": "Removing this snap removes these accounts from MetaMask:"
+  },
+  "removeKeyringSnapToolTip": {
+    "message": "The snap controls the accounts, and by removing it, the accounts will be removed from MetaMask, too, but they will remain in the blockchain."
   },
   "removeNFT": {
     "message": "Remove NFT"
