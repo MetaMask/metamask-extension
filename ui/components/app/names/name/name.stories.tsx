@@ -55,15 +55,15 @@ export default {
       control: 'select',
       table: { category: 'type' },
     },
-    providerPriority: {
+    sourcePriority: {
       control: 'object',
-      table: { category: 'providerPriority' },
+      table: { category: 'sourcePriority' },
     },
   },
   args: {
     value: addressProposedMock,
     type: NameType.ETHEREUM_ADDRESS,
-    providerPriority: ['ens'],
+    sourcePriority: ['ens'],
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 };
@@ -79,7 +79,7 @@ export const ProposedNameStory = () => {
     <Name
       value={addressProposedMock}
       type={NameType.ETHEREUM_ADDRESS}
-      providerPriority={['ens']}
+      sourcePriority={['ens']}
     />
   );
 };
@@ -91,7 +91,7 @@ export const NoProposedNameStory = () => {
     <Name
       value={addressNoProposedMock}
       type={NameType.ETHEREUM_ADDRESS}
-      providerPriority={['ens']}
+      sourcePriority={['ens']}
     />
   );
 };
@@ -103,7 +103,7 @@ export const SavedNameStory = () => {
     <Name
       value={addressSavedNameMock}
       type={NameType.ETHEREUM_ADDRESS}
-      providerPriority={['ens']}
+      sourcePriority={['ens']}
     />
   );
 };

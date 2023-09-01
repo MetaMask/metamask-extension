@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,13 +28,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Name from '../name/name';
 import FormComboField from '../../form-combo-field/form-combo-field';
-import {
-  getCurrentChainId,
-  getNameSources,
-  getNames,
-} from '../../../../selectors';
+import { getNameSources } from '../../../../selectors';
 import { setName as saveName } from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useName } from '../../../../hooks/useName';
 
 export interface NameDetailsProps {
   onClose: () => void;
@@ -46,17 +44,19 @@ export default function NameDetails({
   type,
   value,
 }: NameDetailsProps) {
-  const names = useSelector(getNames, isEqual);
-  const nameProviders = useSelector(getNameSources, isEqual);
+  const { name: savedName, proposedNames } = useName(value, type);
+  const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
   const [selectedSourceId, setSelectedSourceId] = useState(undefined);
   const dispatch = useDispatch();
-  const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
-  const chainId = useSelector(getCurrentChainId);
+
+  const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
+    boolean,
+    (value: string) => void,
+  ];
 
   const handleSaveClick = useCallback(async () => {
     await dispatch(saveName({ value, type, name, sourceId: selectedSourceId }));
-
     onClose();
   }, [name, selectedSourceId, onClose]);
 
@@ -78,37 +78,33 @@ export default function NameDetails({
     [setSelectedSourceId],
   );
 
-  const options = useMemo(() => {
-    const proposedNames = names[type]?.[value]?.[chainId]?.proposedNames || {};
+  const proposedNameOptions = useMemo(() => {
     const sourceIds = Object.keys(proposedNames);
 
-    return sourceIds
-      .filter((sourceId) => proposedNames[sourceId]?.length)
-      .map((sourceId: string) =>
-        proposedNames[sourceId].map((proposedName: any) => ({
+    const sourceIdsWithProposedNames = sourceIds.filter(
+      (sourceId) => proposedNames[sourceId]?.length,
+    );
+
+    const options = sourceIdsWithProposedNames
+      .map((sourceId: string) => {
+        const sourceProposedNames = proposedNames[sourceId] ?? [];
+
+        return sourceProposedNames.map((proposedName: any) => ({
           primaryLabel: proposedName,
-          secondaryLabel: nameProviders[sourceId]?.label,
-        })),
-      )
-      .flat()
-      .sort((a, b) =>
-        a.primaryLabel
-          .toLowerCase()
-          .localeCompare(b.primaryLabel.toLowerCase()),
-      );
-  }, [names, nameProviders, type, value]);
+          secondaryLabel: nameSources[sourceId]?.label ?? sourceId,
+        }));
+      })
+      .flat();
+
+    return options.sort((a, b) =>
+      a.primaryLabel.toLowerCase().localeCompare(b.primaryLabel.toLowerCase()),
+    );
+  }, [proposedNames, nameSources]);
 
   useEffect(() => {
-    const savedName = names[type]?.[value]?.[chainId]?.name;
+    setName(savedName ?? '');
+  }, [savedName, setName]);
 
-    if (!savedName) {
-      return;
-    }
-
-    setName(savedName);
-  }, [names, setName, type, value]);
-
-  const savedName = names[type]?.[value]?.[chainId]?.name;
   const hasSavedName = Boolean(savedName);
 
   return (
@@ -123,7 +119,8 @@ export default function NameDetails({
             <Name
               value={value}
               type={NameType.ETHEREUM_ADDRESS}
-              providerPriority={['lens', 'token', 'ens', 'etherscan']}
+              sourcePriority={['lens', 'token', 'ens', 'etherscan']}
+              disableEdit
             />
           </div>
           {!hasSavedName && (
@@ -140,9 +137,10 @@ export default function NameDetails({
             </Text>
           )}
           <hr className="name-details__line" />
+          {/* @ts-ignore */}
           <FormTextField
+            id="address"
             className="name-details__address"
-            id="form-text-field"
             label="Contract address"
             value={value}
             marginBottom={4}
@@ -154,6 +152,7 @@ export default function NameDetails({
                 size={ButtonIconSize.Sm}
                 onClick={() => handleCopyAddress(value)}
                 color={IconColor.iconMuted}
+                ariaLabel="copy"
               />
             }
           />
@@ -165,7 +164,7 @@ export default function NameDetails({
           >
             Display name
             <FormComboField
-              options={options}
+              options={proposedNameOptions}
               placeholder="Set a personal display name..."
               onChange={handleNameChange}
               onOptionClick={handleProposedNameClick}

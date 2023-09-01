@@ -1,28 +1,26 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Icon, IconName, IconSize } from '../../../component-library';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { getCurrentChainId, getNames } from '../../../../selectors';
 import NameDetails from '../name-details/name-details';
+import { useName } from '../../../../hooks/useName';
 
 export interface NameProps {
   value: string;
   type: NameType;
-  providerPriority: string[];
-  canEdit?: boolean;
+  sourcePriority: string[];
+  disableEdit?: boolean;
 }
 
 export default function Name({
   value,
   type,
-  providerPriority,
-  canEdit,
+  sourcePriority,
+  disableEdit,
 }: NameProps) {
-  const names = useSelector(getNames);
   const [modalOpen, setModalOpen] = useState(false);
-  const chainId = useSelector(getCurrentChainId);
+  const { name, proposedNames } = useName(value, type);
 
   const handleClick = useCallback(() => {
     setModalOpen(true);
@@ -32,22 +30,17 @@ export default function Name({
     setModalOpen(false);
   }, [setModalOpen]);
 
-  const getProposedName = useCallback((): string | undefined => {
-    const proposedNames = names[type]?.[value]?.[chainId]?.proposedNames || {};
+  const proposedName = useMemo((): string | undefined => {
+    for (const sourceId of sourcePriority ?? []) {
+      const sourceProposedNames = proposedNames[sourceId] ?? [];
 
-    for (const providerId of providerPriority) {
-      const providerProposedNames = proposedNames[providerId] ?? [];
-
-      if (providerProposedNames.length) {
-        return providerProposedNames[0];
+      if (sourceProposedNames.length) {
+        return sourceProposedNames[0];
       }
     }
 
     return undefined;
-  }, [names]);
-
-  const name = names[type]?.[value]?.[chainId]?.name;
-  const proposedName = getProposedName();
+  }, [proposedNames, sourcePriority]);
 
   const formattedValue =
     type === NameType.ETHEREUM_ADDRESS ? shortenAddress(value) : value;
@@ -58,7 +51,7 @@ export default function Name({
 
   return (
     <div>
-      {canEdit !== false && modalOpen && (
+      {!disableEdit && modalOpen && (
         <NameDetails value={value} type={type} onClose={handleModalClose} />
       )}
       <div
