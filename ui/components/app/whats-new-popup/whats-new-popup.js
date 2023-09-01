@@ -16,7 +16,11 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
-import { getTranslatedUINotifications } from '../../../../shared/notifications';
+import {
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
+  NOTIFICATION_OPEN_BETA_SNAPS,
+  getTranslatedUINotifications,
+} from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import {
   BUILD_QUOTE_ROUTE,
@@ -112,8 +116,11 @@ function getActionFunctionById(id, history) {
     24: () => {
       updateViewedNotifications({ 24: true });
     },
-    25: () => {
-      updateViewedNotifications({ 25: true });
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: () => {
+      updateViewedNotifications({ [NOTIFICATION_DROP_LEDGER_FIREFOX]: true });
+    },
+    [NOTIFICATION_OPEN_BETA_SNAPS]: () => {
+      updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
       global.platform.openTab({
         url: 'https://metamask.io/snaps/',
       });
@@ -401,7 +408,9 @@ export default function WhatsNewPopup({
     23: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IN
     24: renderFirstNotification,
-    25: renderFirstNotification,
+    // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
+    [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
   };
 
   return (
