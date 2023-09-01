@@ -41,6 +41,8 @@ import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import TxInsightWarnings from '../snaps/tx-insight-warnings/tx-insight-warnings';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -120,8 +122,10 @@ const ConfirmPageContainer = (props) => {
   const trackEvent = useContext(MetaMetricsContext);
   ///: END:ONLY_INCLUDE_IN
   const [collectionBalance, setCollectionBalance] = useState('0');
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
     useState(false);
+  ///: END:ONLY_INCLUDE_IN
   const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
@@ -165,7 +169,9 @@ const ConfirmPageContainer = (props) => {
   const insightObject = useTransactionInsights({
     txData,
   });
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   const warnings = insightObject?.warnings;
+  ///: END:ONLY_INCLUDE_IN
   const insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
 
