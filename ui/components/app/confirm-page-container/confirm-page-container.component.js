@@ -172,10 +172,6 @@ const ConfirmPageContainer = (props) => {
   const insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-  const warnings = insightObject?.warnings;
-  ///: END:ONLY_INCLUDE_IN
-
   const handleSubmit = () => {
     if (isSetApproveForAll && isApprovalOrRejection) {
       onSetApprovalForAll();
@@ -187,7 +183,7 @@ const ConfirmPageContainer = (props) => {
   // TODO: Better name
   const topLevelHandleSubmit = () => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-    if (warnings?.length > 0) {
+    if (insightObject?.warnings?.length > 0) {
       return setIsShowingTxInsightWarnings(true);
     }
     ///: END:ONLY_INCLUDE_IN
@@ -388,9 +384,9 @@ const ConfirmPageContainer = (props) => {
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
         }
-        {warnings?.length > 0 && isShowingTxInsightWarnings && (
+        {insightObject?.warnings?.length > 0 && isShowingTxInsightWarnings && (
           <TxInsightWarnings
-            warnings={warnings}
+            warnings={insightObject.warnings}
             origin={origin}
             onCancel={() => setIsShowingTxInsightWarnings(false)}
             onSubmit={() => {
