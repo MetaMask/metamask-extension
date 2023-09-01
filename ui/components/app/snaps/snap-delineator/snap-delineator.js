@@ -13,13 +13,14 @@ import {
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box';
 import {
   AvatarIcon,
   Icon,
+  AvatarIconSize,
+  Box,
   IconName,
-  IconSize,
   Text,
+  IconSize,
 } from '../../../component-library';
 import {
   DelineatorType,
@@ -52,6 +53,7 @@ export const SnapDelineator = ({
     >
       <Box
         className="snap-delineator__header"
+        display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         padding={1}
@@ -60,12 +62,11 @@ export const SnapDelineator = ({
         <Box display={Display.Flex} alignItems={AlignItems.center}>
           <AvatarIcon
             iconName={IconName.Snaps}
-            size={IconSize.Xs}
+            size={AvatarIconSize.Xs}
             backgroundColor={
               isError ? IconColor.errorDefault : IconColor.infoDefault
             }
             iconProps={{
-              size: IconSize.Xs,
               color: IconColor.infoInverse,
             }}
           />

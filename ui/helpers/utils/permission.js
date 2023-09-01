@@ -16,6 +16,7 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
+  AvatarIconSize,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Icon,
   Text,
@@ -44,7 +45,7 @@ function getLeftIcon(iconName) {
   return (
     <AvatarIcon
       iconName={iconName}
-      size={IconSize.Sm}
+      size={AvatarIconSize.Sm}
       iconProps={{
         size: IconSize.Xs,
       }}
