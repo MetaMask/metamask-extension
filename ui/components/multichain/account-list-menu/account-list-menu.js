@@ -38,6 +38,7 @@ import {
   CONNECT_HARDWARE_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
+  CREATE_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
@@ -282,6 +283,24 @@ export const AccountListMenu = ({ onClose }) => {
                       }}
                     >
                       {t('settingAddSnapAccount')}
+                    </ButtonLink>
+                  </Box>
+                  <Box marginTop={4}>
+                    <ButtonLink
+                      size={Size.SM}
+                      startIconName={IconName.Snaps}
+                      onClick={() => {
+                        dispatch(toggleAccountMenu());
+                        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                          ? global.platform.openExtensionInBrowser(
+                              CREATE_SNAP_ACCOUNT_ROUTE,
+                              null,
+                              true,
+                            )
+                          : history.push(CREATE_SNAP_ACCOUNT_ROUTE);
+                      }}
+                    >
+                      Create Snap Account TEST
                     </ButtonLink>
                   </Box>
                 </>

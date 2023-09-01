@@ -46,6 +46,7 @@ import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
+import CreateSnapAccount from '../permissions-connect/snaps/create-snap-account/create-snap-account';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
@@ -93,6 +94,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
+  CREATE_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_PAIRING_ROUTE,
@@ -342,6 +344,10 @@ export default class Routes extends Component {
           />
           ///: END:ONLY_INCLUDE_IN
         }
+        <Authenticated
+          path={CREATE_SNAP_ACCOUNT_ROUTE}
+          component={CreateSnapAccount}
+        />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
