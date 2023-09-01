@@ -1,20 +1,21 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import { getPreferences } from '../../../selectors';
 import {
+  backupUserData,
   displayWarning,
+  restoreUserData,
+  setAutoLockTimeLimit,
+  setDisabledRpcMethodPreference,
+  setDismissSeedBackUpReminder,
   setFeatureFlag,
-  showModal,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
-  setAutoLockTimeLimit,
   setUseNonceField,
-  setDismissSeedBackUpReminder,
-  setDisabledRpcMethodPreference,
-  backupUserData,
-  restoreUserData,
+  showModal,
 } from '../../../store/actions';
-import { getPreferences } from '../../../selectors';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -31,7 +32,7 @@ export const mapStateToProps = (state) => {
   const {
     showFiatInTestnets,
     showTestNetworks,
-    autoLockTimeLimit = 0,
+    autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
 
   return {

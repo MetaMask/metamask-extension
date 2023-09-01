@@ -33,10 +33,10 @@ describe('Test Snap Management', function () {
         await driver.delay(1000);
 
         // find and scroll to the correct card and click first
-        const snapButton = await driver.findElement('#connectNotification');
+        const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectNotification');
+        await driver.clickElement('#connectnotifications');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -54,17 +54,17 @@ describe('Test Snap Management', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
@@ -91,7 +91,7 @@ describe('Test Snap Management', function () {
 
         // try to disable the snap
         await driver.clickElement({
-          text: 'Notification Test Snap',
+          text: 'Notifications Example Snap',
           tag: 'p',
         });
         await driver.clickElement('.toggle-button > div');
@@ -138,7 +138,7 @@ describe('Test Snap Management', function () {
 
         // try to remove snap
         await driver.clickElement({
-          text: 'Remove Notification Test Snap',
+          text: 'Remove Notifications Example Snap',
           tag: 'p',
         });
         await driver.delay(1000);

@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import * as actions from '../../../store/actions';
-import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import isMobileView from '../../../helpers/utils/is-mobile-view';
+import * as actions from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IN
@@ -14,30 +14,25 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
-import TransactionFailed from '../../institutional/transaction-failed-modal';
 import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
 import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
-import ComplianceModal from '../../institutional/compliance-modal';
-import ComplianceDetailsModal from '../../institutional/compliance-details';
+import TransactionFailed from '../../institutional/transaction-failed-modal';
 ///: END:ONLY_INCLUDE_IN
-import AccountDetailsModal from './account-details-modal';
-import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
-import HoldToRevealModal from './hold-to-reveal-modal';
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
 import TransactionConfirmed from './transaction-confirmed';
 
-import FadeModal from './fade-modal';
-import RejectTransactions from './reject-transactions';
 import ConfirmDeleteNetwork from './confirm-delete-network';
-import EditApprovalPermission from './edit-approval-permission';
-import NewAccountModal from './new-account-modal';
-import CustomizeNonceModal from './customize-nonce';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
+import CustomizeNonceModal from './customize-nonce';
+import EditApprovalPermission from './edit-approval-permission';
 import EthSignModal from './eth-sign-modal/eth-sign-modal';
+import FadeModal from './fade-modal';
+import NewAccountModal from './new-account-modal';
+import RejectTransactions from './reject-transactions';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -144,29 +139,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '10px',
-    },
-  },
-
-  ACCOUNT_DETAILS: {
-    contents: <AccountDetailsModal />,
-    ...accountModalStyle,
-  },
-
-  EXPORT_PRIVATE_KEY: {
-    contents: <ExportPrivateKeyModal />,
-    ...accountModalStyle,
-  },
-
-  HOLD_TO_REVEAL_SRP: {
-    contents: <HoldToRevealModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 
@@ -330,35 +302,6 @@ const MODALS = {
   },
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE: {
-    contents: <ComplianceModal />,
-    onHide: (props) => props.hideWarning(),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  COMPLIANCE_DETAILS: {
-    contents: <ComplianceDetailsModal />,
-    onHide: (props) => props.hideWarning(),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      padding: '0px',
-      borderRadius: '8px',
-    },
-  },
-
   CONFIRM_REMOVE_JWT: {
     contents: <ConfirmRemoveJWT />,
     mobileModalStyle: {
@@ -444,6 +387,13 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+/**
+ * @deprecated The `<Modal />` and the dispatch method of displaying modals has been deprecated in favor of local state and the `<Modal>` component from the component-library.
+ * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
+ * You can find documentation for the new Modal component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
+ * If you would like to help with the replacement of the old Modal component, please submit a pull request
+ */
 class Modal extends Component {
   static propTypes = {
     active: PropTypes.bool.isRequired,

@@ -2,21 +2,20 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../modal';
 import TextField from '../../../ui/text-field';
-import Button from '../../../ui/button';
 import {
   TextVariant,
-  FontWeight,
   AlignItems,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
+  ButtonLink,
   IconName,
   Text,
 } from '../../../component-library';
@@ -54,7 +53,6 @@ const CustomizeNonce = ({
             className="customize-nonce-modal__main-title"
             variant={TextVariant.headingSm}
             as="h4"
-            fontWeight={FontWeight.Bold}
           >
             {t('editNonceField')}
           </Text>
@@ -68,39 +66,32 @@ const CustomizeNonce = ({
         </div>
         <Box
           marginTop={2}
-          display={DISPLAY.INLINE_FLEX}
+          display={Display.InlineFlex}
           alignItems={AlignItems.center}
         >
-          <Text
-            variant={TextVariant.bodySm}
-            as="h6"
-            fontWeight={FontWeight.Normal}
-          >
+          <Text variant={TextVariant.bodyMd} as="h6">
             {t('editNonceMessage')}
-            <Button
-              type="link"
+            <ButtonLink
               className="customize-nonce-modal__link"
               rel="noopener noreferrer"
               target="_blank"
               href={ZENDESK_URLS.CUSTOMIZE_NONCE}
             >
               {t('learnMoreUpperCase')}
-            </Button>
+            </ButtonLink>
           </Text>
         </Box>
-        <Box marginTop={3}>
-          <Box alignItems={AlignItems.center} display={DISPLAY.FLEX}>
+        <Box marginTop={4}>
+          <Box alignItems={AlignItems.center} display={Display.Flex}>
             <Text
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodyMdBold}
               as="h6"
-              fontWeight={FontWeight.Bold}
-              boxProps={{ width: BLOCK_SIZES.FIVE_SIXTHS }}
+              width={BlockSize.FiveSixths}
             >
               {t('editNonceField')}
             </Text>
-            <Box width={BLOCK_SIZES.ONE_SIXTH}>
-              <Button
-                type="link"
+            <Box width={BlockSize.OneSixth}>
+              <ButtonLink
                 className="customize-nonce-modal__reset"
                 data-testid="customize-nonce-reset"
                 onClick={() => {
@@ -108,7 +99,7 @@ const CustomizeNonce = ({
                 }}
               >
                 {t('reset')}
-              </Button>
+              </ButtonLink>
             </Box>
           </Box>
           <div className="customize-nonce-modal__input">

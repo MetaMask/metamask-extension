@@ -1,7 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { fireEvent } from '@testing-library/react';
 
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
@@ -84,8 +87,12 @@ const baseStore = {
       },
     ],
     networkId: mockNetworkId,
-    networkDetails: {
-      EIPS: {},
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {},
+        status: NetworkStatus.Available,
+      },
     },
     tokens: [],
     preferences: {
@@ -232,7 +239,158 @@ describe('Confirm Transaction Base', () => {
       <ConfirmTransactionBase actionKey="confirm" />,
       store,
     );
-    expect(getByTestId('transaction-note')).toBeInTheDocument();
+
+    expect(getByTestId('note-tab')).toBeInTheDocument();
+  });
+
+  it('handleMainSubmit calls sendTransaction correctly', async () => {
+    const newMockedStore = {
+      ...mockedStore,
+      appState: {
+        ...mockedStore.appState,
+        gasLoadingAnimationIsShowing: false,
+      },
+      metamask: {
+        ...mockedStore.metamask,
+        accounts: {
+          [mockTxParamsFromAddress]: {
+            balance: '0x1000000000000000000',
+            address: mockTxParamsFromAddress,
+          },
+        },
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...mockedStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: { 1559: true },
+            status: NetworkStatus.Available,
+          },
+        },
+        customGas: {
+          gasLimit: '0x5208',
+          gasPrice: '0x59682f00',
+        },
+        noGasPrice: false,
+      },
+      send: {
+        ...mockedStore.send,
+        gas: {
+          ...mockedStore.send.gas,
+          gasEstimateType: GasEstimateTypes.legacy,
+          gasFeeEstimates: {
+            low: '0',
+            medium: '1',
+            high: '2',
+          },
+        },
+        hasSimulationError: false,
+        userAcknowledgedGasMissing: false,
+        submitting: false,
+        hardwareWalletRequiresConnection: false,
+        gasIsLoading: false,
+        gasFeeIsCustom: true,
+      },
+    };
+    const store = configureMockStore(middleware)(newMockedStore);
+    const sendTransaction = jest.fn().mockResolvedValue();
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase
+        actionKey="confirm"
+        sendTransaction={sendTransaction}
+        toAddress={mockPropsToAddress}
+        toAccounts={[{ address: mockPropsToAddress }]}
+      />,
+      store,
+    );
+    const confirmButton = getByTestId('page-container-footer-next');
+    fireEvent.click(confirmButton);
+    expect(sendTransaction).toHaveBeenCalled();
+  });
+
+  it('handleMMISubmit calls sendTransaction correctly and then showCustodianDeepLink', async () => {
+    const newMockedStore = {
+      ...mockedStore,
+      appState: {
+        ...mockedStore.appState,
+        gasLoadingAnimationIsShowing: false,
+      },
+      confirmTransaction: {
+        ...mockedStore.confirmTransaction,
+        txData: {
+          ...mockedStore.confirmTransaction.txData,
+          custodyStatus: true,
+        },
+      },
+      metamask: {
+        ...mockedStore.metamask,
+        accounts: {
+          [mockTxParamsFromAddress]: {
+            balance: '0x1000000000000000000',
+            address: mockTxParamsFromAddress,
+          },
+        },
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...mockedStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: {
+              1559: true,
+            },
+            status: NetworkStatus.Available,
+          },
+        },
+        customGas: {
+          gasLimit: '0x5208',
+          gasPrice: '0x59682f00',
+        },
+        noGasPrice: false,
+      },
+      send: {
+        ...mockedStore.send,
+        gas: {
+          ...mockedStore.send.gas,
+          gasEstimateType: GasEstimateTypes.legacy,
+          gasFeeEstimates: {
+            low: '0',
+            medium: '1',
+            high: '2',
+          },
+        },
+        hasSimulationError: false,
+        userAcknowledgedGasMissing: false,
+        submitting: false,
+        hardwareWalletRequiresConnection: false,
+        gasIsLoading: false,
+        gasFeeIsCustom: true,
+      },
+    };
+    const store = configureMockStore(middleware)(newMockedStore);
+    const sendTransaction = jest
+      .fn()
+      .mockResolvedValue(newMockedStore.confirmTransaction.txData);
+    const showCustodianDeepLink = jest.fn();
+    const setWaitForConfirmDeepLinkDialog = jest.fn();
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase
+        actionKey="confirm"
+        sendTransaction={sendTransaction}
+        showCustodianDeepLink={showCustodianDeepLink}
+        setWaitForConfirmDeepLinkDialog={setWaitForConfirmDeepLinkDialog}
+        toAddress={mockPropsToAddress}
+        toAccounts={[{ address: mockPropsToAddress }]}
+        isMainBetaFlask={false}
+      />,
+      store,
+    );
+    const confirmButton = getByTestId('page-container-footer-next');
+    fireEvent.click(confirmButton);
+    expect(setWaitForConfirmDeepLinkDialog).toHaveBeenCalled();
+    await expect(sendTransaction).toHaveBeenCalled();
+    expect(showCustodianDeepLink).toHaveBeenCalled();
   });
 
   describe('when rendering the recipient value', () => {

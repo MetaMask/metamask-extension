@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { toHex } = require('@metamask/controller-utils');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -18,7 +19,7 @@ describe('Hide token', function () {
         fixtures: new FixtureBuilder()
           .withTokensController({
             allTokens: {
-              '0x539': {
+              [toHex(1337)]: {
                 '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
                   {
                     address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
@@ -107,13 +108,15 @@ describe('Add existing token using search', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.fill('#search-tokens', 'BAT');
+        await driver.fill('input[placeholder="Search"]', 'BAT');
         await driver.clickElement({
           text: 'BAT',
           tag: 'span',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="import-tokens-modal-import-button"]',
+        );
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',

@@ -2,6 +2,10 @@
   &__collection {
     margin-bottom: 24px;
 
+    &:last-child {
+      margin-bottom: 0;
+    }
+
     &-accordion-title {
       cursor: pointer;
     }

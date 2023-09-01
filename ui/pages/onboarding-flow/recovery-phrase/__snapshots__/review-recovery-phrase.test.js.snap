@@ -600,7 +600,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="button__icon"
             >
               <span
-                class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-primary-default"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-default"
                 style="mask-image: url('./images/icons/copy.svg');"
               />
             </span>

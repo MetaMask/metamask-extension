@@ -5,6 +5,7 @@ const {
   withFixtures,
   openDapp,
   assertAccountBalanceForDOM,
+  logInWithBalanceValidation,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -27,15 +28,12 @@ describe('Send ETH from inside MetaMask using default gas', function () {
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
@@ -81,13 +79,13 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-1 ETH',
         });
       },
@@ -120,15 +118,12 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
@@ -181,7 +176,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
@@ -204,13 +199,13 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
 
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-1 ETH',
         });
       },
@@ -284,16 +279,16 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         // finds the transaction in the transactions list
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-0 ETH',
         });
 
         // the transaction has the expected gas price
         const txValue = await driver.findClickableElement(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         await txValue.click();
         const gasPrice = await driver.waitForSelector({
@@ -318,7 +313,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         },
         title: this.test.title,
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -361,20 +356,23 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
-        // finds the transaction in the transactions list
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        // Identify the transaction in the transactions list
+        await driver.waitForSelector(
+          '[data-testid="eth-overview__primary-currency"]',
+        );
+
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-0 ETH',
         });
 
         // the transaction has the expected gas value
         const txValue = await driver.findClickableElement(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         await txValue.click();
         const baseFeeValue = await driver.waitForSelector(
@@ -414,13 +412,12 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
           smartContract,
         );
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           contractAddress,
         );
 
@@ -428,17 +425,14 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         await inputAmount.fill('1');
 
         // Continue to next screen
-        await driver.findClickableElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-
-        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // Go back to home screen to check txn
         await assertAccountBalanceForDOM(driver, ganacheServer);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const txn = await driver.isElementPresent(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '.transaction-list__completed-transactions .activity-list-item',
         );
 
         assert.equal(txn, true);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import PermissionCell from '../../permission-cell';
-import Box from '../../../ui/box';
+import { Box } from '../../../component-library';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -18,6 +18,7 @@ export default function UpdateSnapPermissionList({
       {getWeightedPermissions(t, newPermissions, targetSubjectMetadata).map(
         (permission, index) => (
           <PermissionCell
+            permissionName={permission.permissionName}
             title={permission.label}
             description={permission.description}
             weight={permission.weight}
@@ -30,6 +31,7 @@ export default function UpdateSnapPermissionList({
       {getWeightedPermissions(t, revokedPermissions, targetSubjectMetadata).map(
         (permission, index) => (
           <PermissionCell
+            permissionName={permission.permissionName}
             title={permission.label}
             description={permission.description}
             weight={permission.weight}
@@ -46,6 +48,7 @@ export default function UpdateSnapPermissionList({
         targetSubjectMetadata,
       ).map((permission, index) => (
         <PermissionCell
+          permissionName={permission.permissionName}
           title={permission.label}
           description={permission.description}
           weight={permission.weight}

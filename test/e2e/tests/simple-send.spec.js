@@ -2,7 +2,7 @@ const {
   convertToHexValue,
   withFixtures,
   sendTransaction,
-  assertAccountBalanceForDOM,
+  logInWithBalanceValidation,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -25,9 +25,7 @@ describe('Simple send', function () {
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await sendTransaction(
           driver,

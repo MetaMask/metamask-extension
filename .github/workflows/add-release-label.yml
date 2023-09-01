@@ -1,0 +1,40 @@
+name: Add release label to PR and linked issues when PR gets merged
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - closed
+
+jobs:
+  add-release-label:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+            fetch-depth: 0 # This is needed to checkout all branches
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Get the next semver version
+        id: get-next-semver-version
+        env:
+          FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
+        run: ./development/get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+
+      - name: Add release label to PR and linked issues
+        id: add-release-label-to-pr-and-linked-issues
+        env:
+          RELEASE_LABEL_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
+          NEXT_SEMVER_VERSION: ${{ env.NEXT_SEMVER_VERSION }}
+        run: yarn run add-release-label-to-pr-and-linked-issues

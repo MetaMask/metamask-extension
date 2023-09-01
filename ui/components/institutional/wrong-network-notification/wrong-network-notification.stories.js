@@ -1,5 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { toHex } from '@metamask/controller-utils';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import WrongNetworkNotification from '.';
@@ -10,10 +11,10 @@ const customData = {
     ...testData.metamask,
     providerConfig: {
       type: 'test',
-      chainId: '3',
+      chainId: toHex(3),
     },
     cachedBalances: {
-      3: {
+      [toHex(3)]: {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
       },
     },

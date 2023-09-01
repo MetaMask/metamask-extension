@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { TokenStandard } from '../../../../shared/constants/transaction';
+import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
@@ -15,7 +16,7 @@ const renderComponent = (props) => {
 const props = {
   siteImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
   origin: 'https://metamask.github.io/test-dapp/',
-  tokenSymbol: 'TestDappCollectibles (#1)',
+  tokenSymbol: 'TestDappNFTs (#1)',
   assetStandard: TokenStandard.ERC721,
   tokenImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
   showCustomizeGasModal: jest.fn(),
@@ -49,7 +50,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappNFTs (#1)? ',
     );
     expect(
       queryByText(
@@ -112,7 +113,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappNFTs (#1)? ',
     );
     expect(
       queryByText(
@@ -174,7 +175,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappNFTs (#1)? ',
     );
     expect(
       queryByText(
@@ -232,7 +233,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappNFTs (#1)? ',
     );
     expect(
       queryByText(
@@ -342,5 +343,22 @@ describe('ConfirmApproveContent Component', () => {
     });
 
     expect(getByText(securityProviderResponse.reason)).toBeInTheDocument();
+  });
+
+  it('should render security alert if provided', () => {
+    const mockSecurityAlertResponse = {
+      result_type: BlockaidResultType.Malicious,
+      reason: 'blur_farming',
+    };
+
+    const { getByText } = renderComponent({
+      ...props,
+      txData: {
+        ...props.txData,
+        securityAlertResponse: mockSecurityAlertResponse,
+      },
+    });
+
+    expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 });

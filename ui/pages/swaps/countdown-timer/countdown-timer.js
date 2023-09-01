@@ -10,7 +10,6 @@ import {
   getSwapsQuotePrefetchingRefreshTime,
 } from '../../../ducks/swaps/swaps';
 import { SECOND } from '../../../../shared/constants/time';
-import TimerIcon from './timer-icon';
 
 // Return the mm:ss start time of the countdown timer.
 // If time has elapsed between `timeStarted` the time current time,
@@ -111,7 +110,6 @@ export default function CountdownTimer({
             warningTime && timeBelowWarningTime(timer, warningTime),
         })}
       >
-        <TimerIcon />
         {time}
       </div>
       {!timeOnly && infoTooltipLabelKey ? (

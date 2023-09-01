@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
@@ -22,6 +23,7 @@ import {
   IconSize,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
+import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 
 const NetworksListItem = ({
   network,
@@ -95,13 +97,13 @@ const NetworksListItem = ({
           <UrlIcon
             className="networks-tab__content__icon-with-fallback"
             fallbackClassName="networks-tab__content__icon-with-fallback"
-            name={label}
+            name={label || getNetworkLabelKey(labelKey)}
           />
         )
       )}
-      {network.isATestNetwork && (
+      {network.isATestNetwork && network.chainId !== CHAIN_IDS.LINEA_GOERLI && (
         <UrlIcon
-          name={label || labelKey}
+          name={label || getNetworkLabelKey(labelKey)}
           fallbackClassName={classnames(
             'networks-tab__content__icon-with-fallback',
             {
@@ -119,7 +121,7 @@ const NetworksListItem = ({
             !displayNetworkListItemAsSelected,
         })}
       >
-        {label || t(labelKey)}
+        {label || t(getNetworkLabelKey(labelKey))}
         {currentProviderType !== NETWORK_TYPES.RPC && (
           <Icon
             name={IconName.Lock}

@@ -9,18 +9,17 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  getSelectedNetworkClientId,
   getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
 import { KeyringType } from '../../../shared/constants/keyring';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import {
-  decGWEIToHexWEI,
-  hexToDecimal,
-} from '../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 
 const initialState = {
   isInitialized: false,
@@ -40,7 +39,7 @@ const initialState = {
   currentLocale: '',
   currentBlockGasLimit: '',
   preferences: {
-    autoLockTimeLimit: undefined,
+    autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showFiatInTestnets: false,
     showTestNetworks: false,
     useNativeCurrencyAsPrimaryCurrency: true,
@@ -48,6 +47,7 @@ const initialState = {
   firstTimeFlowType: null,
   completedOnboarding: false,
   knownMethodData: {},
+  use4ByteResolution: true,
   participateInMetaMetrics: null,
   nextNonce: null,
   conversionRate: null,
@@ -263,9 +263,7 @@ export const getNfts = (state) => {
   } = state;
   const { chainId } = getProviderConfig(state);
 
-  const chainIdAsDecimal = hexToDecimal(chainId);
-
-  return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export const getNftContracts = (state) => {
@@ -274,9 +272,7 @@ export const getNftContracts = (state) => {
   } = state;
   const { chainId } = getProviderConfig(state);
 
-  const chainIdAsDecimal = hexToDecimal(chainId);
-
-  return allNftContracts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export function getBlockGasLimit(state) {
@@ -314,7 +310,11 @@ export function getUnapprovedTxs(state) {
  * @param state
  */
 export function isNotEIP1559Network(state) {
-  return state.metamask.networkDetails?.EIPS[1559] === false;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata[selectedNetworkClientId].EIPS[1559] ===
+    false
+  );
 }
 
 /**
@@ -323,7 +323,11 @@ export function isNotEIP1559Network(state) {
  * @param state
  */
 export function isEIP1559Network(state) {
-  return state.metamask.networkDetails?.EIPS[1559] === true;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata?.[selectedNetworkClientId].EIPS[1559] ===
+    true
+  );
 }
 
 export function getGasEstimateType(state) {
@@ -432,4 +436,8 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
+}
+
+export function isLineaMainnetNetworkReleased(state) {
+  return state.metamask.isLineaMainnetReleased;
 }

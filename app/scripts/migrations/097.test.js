@@ -1,6 +1,6 @@
 import { migrate, version } from './097';
 
-describe('migration #' + version, () => {
+describe(`migration #${version}`, () => {
   it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {

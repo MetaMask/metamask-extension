@@ -16,8 +16,6 @@ describe('View ERC1155 NFT details', function () {
   };
 
   it('user should be able to view ERC1155 NFT details', async function () {
-    const expectedImageSource =
-      'https://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link';
     await withFixtures(
       {
         dapp: true,
@@ -34,7 +32,7 @@ describe('View ERC1155 NFT details', function () {
         // Click to open the NFT details page and check displayed account
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         const importedNftImage = await driver.findVisibleElement(
-          '.nft-item__item',
+          '.nft-item__container',
         );
         await importedNftImage.click();
         const detailsPageAccount = await driver.findElement(
@@ -54,13 +52,8 @@ describe('View ERC1155 NFT details', function () {
           'This is a collection of Rock NFTs.',
         );
 
-        const nftImage = await driver.findElement('.nft-item__item-image');
+        const nftImage = await driver.findElement('.nft-item__container');
         assert.equal(await nftImage.isDisplayed(), true);
-
-        const nftImageSource = await driver.findElement(
-          '.nft-details__image-source',
-        );
-        assert.equal(await nftImageSource.getText(), expectedImageSource);
 
         const nftContract = await driver.findElement(
           '.nft-details__contract-wrapper',

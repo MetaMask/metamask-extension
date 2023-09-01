@@ -93,9 +93,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Назад към всички"
-  },
   "backupApprovalInfo": {
     "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново MetaMask или искате да получите достъп до портфейла си на друго устройство."
   },
@@ -160,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Свързване с тестова мрежа на Linea Goerli"
   },
   "connectingToMainnet": {
@@ -177,9 +174,6 @@
   },
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"
-  },
-  "copyPrivateKey": {
-    "message": "Това е Вашият личен ключ (кликнете, за да го копирате)"
   },
   "copyToClipboard": {
     "message": "Копиране в буферната памет"
@@ -214,14 +208,8 @@
   "delete": {
     "message": "Изтриване"
   },
-  "deleteAccount": {
-    "message": "Изтриване на акаунт"
-  },
   "deleteNetwork": {
     "message": "Да се изтрие ли мрежата?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Наистина ли искате да изтриете тази мрежа?"
   },
   "details": {
     "message": "Подробности"
@@ -250,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Грешка при регистрацията на име на ENS"
   },
-  "enterPassword": {
-    "message": "Въведете парола"
-  },
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
   },
@@ -264,9 +249,6 @@
   },
   "expandView": {
     "message": "Разгъване на изглед"
-  },
-  "exportPrivateKey": {
-    "message": "Експортиране на частен ключ"
   },
   "failed": {
     "message": "Неуспешно"
@@ -405,7 +387,7 @@
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Тестова мрежа на Linea Goerli"
   },
   "links": {
@@ -443,9 +425,6 @@
   },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
-  },
-  "myAccounts": {
-    "message": "Моите акаунти"
   },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
@@ -565,14 +544,8 @@
   "privateNetwork": {
     "message": "Частна мрежа"
   },
-  "queue": {
-    "message": "Опашка"
-  },
   "readdToken": {
     "message": "Можете да добавите този жетон в бъдеще, като отидете на „Добавяне на жетон“ в менюто с опции на акаунти."
-  },
-  "recents": {
-    "message": "Скорошни"
   },
   "recipientAddressPlaceholder": {
     "message": "Търсене, публичен адрес (0x) или ENS"
@@ -638,9 +611,6 @@
   "searchResults": {
     "message": "Резултати от търсенето"
   },
-  "searchTokens": {
-    "message": "Търсене на маркери"
-  },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
@@ -679,9 +649,6 @@
   },
   "showHexDataDescription": {
     "message": "Изберете това, за да се покаже полето с шестнадесетични данни на екрана за изпращане"
-  },
-  "showPrivateKeys": {
-    "message": "Показване на частни ключове"
   },
   "sigRequest": {
     "message": "Заявка за подпис"
@@ -797,17 +764,11 @@
   "transfer": {
     "message": "Трансфер"
   },
-  "transferBetweenAccounts": {
-    "message": "Прехвърляне между моите акаунти"
-  },
   "transferFrom": {
     "message": "Трансфер от"
   },
   "tryAgain": {
     "message": "Нов опит"
-  },
-  "typePassword": {
-    "message": "Въведете паролата си за MetaMask"
   },
   "unapproved": {
     "message": "Неодобрено"

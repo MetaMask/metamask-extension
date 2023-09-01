@@ -1,8 +1,8 @@
-import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { Severity } from '../../../helpers/constants/design-system';
 
 export const BANNER_ALERT_SEVERITIES = {
-  DANGER: SEVERITIES.DANGER,
-  INFO: SEVERITIES.INFO,
-  SUCCESS: SEVERITIES.SUCCESS,
-  WARNING: SEVERITIES.WARNING,
+  DANGER: Severity.Danger,
+  INFO: Severity.Info,
+  SUCCESS: Severity.Success,
+  WARNING: Severity.Warning,
 };

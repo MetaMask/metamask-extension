@@ -142,7 +142,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
@@ -159,13 +159,13 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-1 ETH',
         });
       },

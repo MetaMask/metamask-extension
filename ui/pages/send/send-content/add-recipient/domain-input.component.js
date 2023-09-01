@@ -10,7 +10,6 @@ import {
 } from '../../../../../shared/modules/hexstring-utils';
 import {
   ButtonIcon,
-  Icon,
   IconName,
   IconSize,
 } from '../../../../components/component-library';
@@ -105,19 +104,6 @@ export default class DomainInput extends Component {
           })}
         >
           {hasSelectedAddress ? (
-            <Icon
-              className="ens-input__wrapper__status-icon"
-              name={IconName.Check}
-              color={IconColor.successDefault}
-            />
-          ) : (
-            <Icon
-              name={IconName.Search}
-              color={IconColor.iconMuted}
-              className="ens-input__wrapper__status-icon"
-            />
-          )}
-          {hasSelectedAddress ? (
             <>
               <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
                 <div className="ens-input__selected-input__title">
@@ -160,7 +146,7 @@ export default class DomainInput extends Component {
                     this.props.scanQrCode();
                   }
                 }}
-                iconName={userInput ? IconName.Close : IconName.ScanBarcode}
+                iconName={userInput ? IconName.Close : IconName.Scan}
                 ariaLabel={t(userInput ? 'close' : 'scanQrCode')}
                 color={
                   userInput ? IconColor.iconDefault : IconColor.primaryDefault

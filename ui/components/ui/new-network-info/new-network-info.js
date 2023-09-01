@@ -26,6 +26,7 @@ import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Icon, IconName, Text } from '../../component-library';
+import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
 
 const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
@@ -95,7 +96,7 @@ const NewNetworkInfo = () => {
         label={
           providerConfig.type === NETWORK_TYPES.RPC
             ? providerConfig.nickname ?? t('privateNetwork')
-            : t(providerConfig.type)
+            : t(getNetworkLabelKey(providerConfig.type))
         }
         labelProps={{
           color: Color.textDefault,

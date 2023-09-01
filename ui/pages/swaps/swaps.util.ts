@@ -545,13 +545,38 @@ export function quotesToRenderableData({
   });
 }
 
-export function formatSwapsValueForDisplay(destinationAmount: string): string {
-  let amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12);
+export function formatSwapsValueForDisplay(
+  destinationAmount: string | BigNumber,
+): string {
+  let amountToDisplay;
+  if (
+    typeof destinationAmount === 'string' &&
+    destinationAmount.includes('...')
+  ) {
+    amountToDisplay = destinationAmount;
+  } else {
+    amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12);
+  }
   if (amountToDisplay.match(/e[+-]/u)) {
     amountToDisplay = new BigNumber(amountToDisplay).toFixed();
   }
   return amountToDisplay;
 }
+
+export const getClassNameForCharLength = (
+  num: string,
+  classNamePrefix: string,
+): string => {
+  let modifier;
+  if (!num || num.length <= 10) {
+    modifier = 'lg';
+  } else if (num.length > 10 && num.length <= 13) {
+    modifier = 'md';
+  } else {
+    modifier = 'sm';
+  }
+  return `${classNamePrefix}--${modifier}`;
+};
 
 /**
  * Checks whether a contract address is valid before swapping tokens.
@@ -671,11 +696,11 @@ export const getTranslatedStxErrorMessage = (
   switch (errorType) {
     case StxErrorTypes.unavailable:
     case StxErrorTypes.regularTxPending:
-      return t('stxErrorUnavailable');
+      return t('smartSwapsErrorUnavailable');
     case StxErrorTypes.notEnoughFunds:
-      return t('stxErrorNotEnoughFunds');
+      return t('smartSwapsErrorNotEnoughFunds');
     default:
-      return t('stxErrorUnavailable');
+      return t('smartSwapsErrorUnavailable');
   }
 };
 

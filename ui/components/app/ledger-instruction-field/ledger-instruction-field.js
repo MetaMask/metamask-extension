@@ -180,7 +180,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
               </span>,
               usingWebHID &&
                 webHidConnectedStatus === WebHIDConnectedStatuses.notConnected,
-              TextColor.WARNING_DEFAULT,
+              TextColor.warningDefault,
             )}
           </div>
         </BannerAlert>

@@ -38,7 +38,7 @@ describe('Auto-Lock Timer', function () {
         await autoLockTimerInput.fill(10081);
         await driver.waitForSelector({
           css: '#autoTimeout-helper-text',
-          text: 'Lock time is too great',
+          text: 'Lock time must be a number between 0 and 10080',
         });
         await autoLockTimerInput.fill(sixSecsInMins);
         await driver.assertElementNotPresent('#autoTimeout-helper-text');

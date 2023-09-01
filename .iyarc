@@ -1,6 +1,0 @@
-# improved-yarn-audit advisory exclusions
-GHSA-257v-vj4p-3w2h
-
-# request library is subject to SSRF.
-# addressed by temporary patch in .yarn/patches/request-npm-2.88.2-f4a57c72c4.patch
-GHSA-p8p7-x288-28g6

@@ -2,20 +2,23 @@
   box-shadow: none;
 
   &__content {
-    flex: 1;
-
     &__loader-container {
       height: 100%;
     }
+  }
 
-    &__permission-description {
-      border-bottom: 1px solid var(--color-border-default);
-    }
+  &__scroll-button {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    right: 0;
+    left: 0;
+    bottom: 90px;
   }
 
   .page-container__footer {
     width: 100%;
-    margin-top: 12px;
+    border-top: 0;
 
     button {
       padding: 0.75rem;

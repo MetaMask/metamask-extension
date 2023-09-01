@@ -51,6 +51,7 @@ export default class ComposableObservableStore extends ObservableStore {
   updateStructure(config) {
     this.config = config;
     this.removeAllListeners();
+    const initialState = {};
     for (const key of Object.keys(config)) {
       if (!config[key]) {
         throw new Error(`Undefined '${key}'`);
@@ -72,7 +73,10 @@ export default class ComposableObservableStore extends ObservableStore {
           },
         );
       }
+
+      initialState[key] = store.state ?? store.getState?.();
     }
+    this.updateState(initialState);
   }
 
   /**

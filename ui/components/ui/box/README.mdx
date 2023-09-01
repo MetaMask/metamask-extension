@@ -1,15 +1,30 @@
 import { Story, Canvas } from '@storybook/addon-docs';
 
-import ActionableMessage from '../actionable-message';
+import { Severity } from '../../../helpers/constants/design-system';
+
+import { BannerAlert } from '../../component-library/banner-alert';
+
+<BannerAlert
+  severity={Severity.Warning}
+  title="Deprecated"
+  description="The JS version of <Box/> has been deprecated in favor of the TS version from component-library"
+  actionButtonLabel="See details"
+  actionButtonProps={{
+    href: 'https://github.com/MetaMask/metamask-extension/issues/19526',
+  }}
+  marginBottom={4}
+/>
+
+<br />
 
 import Box from '.';
 
-# Box
+# Box (deprecated)
 
 Box is a utility component that can be used for layout or as a base for other UI components.
 
 <Canvas>
-  <Story id="components-ui-box--default-story" />
+  <Story id="components-ui-box-deprecated--default-story" />
 </Canvas>
 
 ## Props
@@ -62,7 +77,7 @@ The margin props `margin`, `marginTop`, `marginRight`, `marginBottom`, `marginLe
 Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto` or array of these values
 
 <Canvas>
-  <Story id="components-ui-box--margin" />
+  <Story id="components-ui-box-deprecated--margin" />
 </Canvas>
 
 ```jsx
@@ -93,7 +108,7 @@ The padding props work very similarly to margin. The padding props `padding`, `p
 Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12` or array of these values
 
 <Canvas>
-  <Story id="components-ui-box--padding" />
+  <Story id="components-ui-box-deprecated--padding" />
 </Canvas>
 
 ```jsx
@@ -147,7 +162,7 @@ import Box from '../ui/box';
 The `color` prop can be used to set the color of the content in Box component. The `color` prop accepts [responsive props](#responsive-props) in the form of array props. Defaults to `Color.textDefault`.
 
 <Canvas>
-  <Story id="components-ui-box--color-story" />
+  <Story id="components-ui-box-deprecated--color-story" />
 </Canvas>
 
 Example of importing `TextColor` object with `Box` component
@@ -164,7 +179,7 @@ import Box from '../ui/box';
 Use the `backgroundColor` prop along with the `Color` or `BackgroundColor` object from `ui/helpers/constants/design-system.js` to change background color. The `backgroundColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
 <Canvas>
-  <Story id="components-ui-box--background-color-story" />
+  <Story id="components-ui-box-deprecated--background-color-story" />
 </Canvas>
 
 Example of importing `BackgroundColor` object with `Box` component
@@ -188,7 +203,7 @@ import Box from '../ui/box';
 Use the `borderColor` prop along with the `Color` or `BorderColor` object from `ui/helpers/constants/design-system.js` to change border color. The `borderColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
 <Canvas>
-  <Story id="components-ui-box--border-color-story" />
+  <Story id="components-ui-box-deprecated--border-color-story" />
 </Canvas>
 
 Example of importing `BorderColor` object with `Box` component
@@ -216,7 +231,7 @@ import Box from '../ui/box';
 Use the `borderRadius` prop along with the `BorderRadius` object from `ui/helpers/constants/design-system.js` to change border radius. The `borderRadius` prop accepts [responsive props](#responsive-props) in the form of array props.
 
 <Canvas>
-  <Story id="components-ui-box--border-radius-story" />
+  <Story id="components-ui-box-deprecated--border-radius-story" />
 </Canvas>
 
 Example of importing `BorderRadius` object with `Box` component
@@ -257,7 +272,7 @@ The box component provides a responsive props api in the form of array props. Ar
 ```
 
 <Canvas>
-  <Story id="components-ui-box--responsive-props" />
+  <Story id="components-ui-box-deprecated--responsive-props" />
 </Canvas>
 
 ```jsx
@@ -303,7 +318,7 @@ import Box from '../ui/box';
 The polymorphic `as` prop allows you to change the root HTML element of the Box component. Defaults to `'div'`
 
 <Canvas>
-  <Story id="components-ui-box--as" />
+  <Story id="components-ui-box-deprecated--as" />
 </Canvas>
 
 ```jsx
@@ -330,7 +345,7 @@ Example: [BlockSize.Half, BlockSize.ThreeFourths, BlockSize.OneFifth, BlockSize.
 - BlockSize.ThreeSixths is the width for `large screen size (1280px)` and up
 
 <Canvas>
-  <Story id="components-ui-box--width" />
+  <Story id="components-ui-box-deprecated--width" />
 </Canvas>
 
 ```jsx

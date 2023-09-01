@@ -9,12 +9,19 @@ import {
   TokensController,
   AssetsContractController,
 } from '@metamask/assets-controllers';
-import { convertHexToDecimal } from '@metamask/controller-utils';
+import { toHex } from '@metamask/controller-utils';
+import { NetworkController } from '@metamask/network-controller';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
-import { NetworkController } from './network';
 import PreferencesController from './preferences';
+
+function buildMessenger() {
+  return new ControllerMessenger().getRestricted({
+    name: 'DetectTokensController',
+    allowedEvents: ['NetworkController:stateChange'],
+  });
+}
 
 describe('DetectTokensController', function () {
   let sandbox,
@@ -204,7 +211,7 @@ describe('DetectTokensController', function () {
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: '1',
+      chainId: toHex(1),
       preventPollingOnNetworkRestart: false,
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
@@ -218,6 +225,8 @@ describe('DetectTokensController', function () {
       tokenListController,
       onInfuraIsBlocked: sinon.stub(),
       onInfuraIsUnblocked: sinon.stub(),
+      networkConfigurations: {},
+      onAccountRemoved: sinon.stub(),
     });
     preferences.setAddresses([
       '0x7e57e2',
@@ -230,39 +239,20 @@ describe('DetectTokensController', function () {
       onPreferencesStateChange: preferences.store.subscribe.bind(
         preferences.store,
       ),
-      onNetworkStateChange: (cb) =>
-        network.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
     });
 
     assetsContractController = new AssetsContractController({
       onPreferencesStateChange: preferences.store.subscribe.bind(
         preferences.store,
       ),
-      onNetworkStateChange: (cb) =>
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => {
-            const networkState = network.store.getState();
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.providerConfig,
-                chainId: convertHexToDecimal(
-                  networkState.providerConfig.chainId,
-                ),
-              },
-            };
-            return cb(modifiedNetworkState);
-          },
-        ),
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
     });
   });
 
@@ -273,7 +263,7 @@ describe('DetectTokensController', function () {
 
   it('should poll on correct interval', async function () {
     const stub = sinon.stub(global, 'setInterval');
-    new DetectTokensController({ interval: 1337 }); // eslint-disable-line no-new
+    new DetectTokensController({ messenger: buildMessenger(), interval: 1337 }); // eslint-disable-line no-new
     assert.strictEqual(stub.getCall(0).args[1], 1337);
     stub.restore();
   });
@@ -282,6 +272,7 @@ describe('DetectTokensController', function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
+      messenger: buildMessenger(),
       preferences,
       network,
       keyringMemStore,
@@ -311,13 +302,14 @@ describe('DetectTokensController', function () {
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: '11155111',
+      chainId: toHex(11155111),
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessengerSepolia,
     });
     await tokenListController.start();
     const controller = new DetectTokensController({
+      messenger: buildMessenger(),
       preferences,
       network,
       keyringMemStore,
@@ -341,6 +333,7 @@ describe('DetectTokensController', function () {
     sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
+      messenger: buildMessenger(),
       preferences,
       network,
       keyringMemStore,
@@ -392,6 +385,7 @@ describe('DetectTokensController', function () {
     sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
+      messenger: buildMessenger(),
       preferences,
       network,
       keyringMemStore,
@@ -450,6 +444,7 @@ describe('DetectTokensController', function () {
   it('should trigger detect new tokens when change address', async function () {
     sandbox.useFakeTimers();
     const controller = new DetectTokensController({
+      messenger: buildMessenger(),
       preferences,
       network,
       keyringMemStore,
@@ -469,6 +464,7 @@ describe('DetectTokensController', function () {
   it('should trigger detect new tokens when submit password', async function () {
     sandbox.useFakeTimers();
     const controller = new DetectTokensController({
+      messenger: buildMessenger(),
       preferences,
       network,
       keyringMemStore,
@@ -487,6 +483,7 @@ describe('DetectTokensController', function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
+      messenger: buildMessenger(),
       preferences,
       network,
       keyringMemStore,
@@ -508,6 +505,7 @@ describe('DetectTokensController', function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
+      messenger: buildMessenger(),
       preferences,
       network,
       keyringMemStore,

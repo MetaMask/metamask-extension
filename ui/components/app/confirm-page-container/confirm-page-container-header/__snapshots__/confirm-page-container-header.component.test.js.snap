@@ -14,7 +14,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         style="visibility: hidden;"
       >
         <span
-          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-left.svg');"
         />
         <span

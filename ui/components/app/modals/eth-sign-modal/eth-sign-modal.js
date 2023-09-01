@@ -9,6 +9,7 @@ import {
   ButtonLink,
   ButtonPrimary,
   ButtonSecondary,
+  ButtonSecondarySize,
   FormTextField,
   Icon,
   IconName,
@@ -18,11 +19,11 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   IconColor,
   JustifyContent,
-  SEVERITIES,
+  Severity,
   Size,
   TextAlign,
   TextVariant,
@@ -63,14 +64,14 @@ const EthSignModal = ({ hideModal }) => {
   return (
     <Box
       className="eth-sign-modal"
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.flexStart}
       padding={4}
     >
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         marginBottom={4}
         justifyContent={JustifyContent.center}
       >
@@ -105,7 +106,7 @@ const EthSignModal = ({ hideModal }) => {
           {t('learnMoreUpperCase')}
         </ButtonLink>
       </Text>
-      <BannerAlert severity={SEVERITIES.DANGER} marginTop={6} marginBottom={6}>
+      <BannerAlert severity={Severity.Danger} marginTop={6} marginBottom={6}>
         {t('toggleEthSignModalBannerText')}
         {t('toggleEthSignModalBannerBoldText')}
       </BannerAlert>
@@ -125,7 +126,7 @@ const EthSignModal = ({ hideModal }) => {
         />
       ) : (
         <Box
-          flexDirection={FLEX_DIRECTION.ROW}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.flexStart}
           gap={2}
         >
@@ -146,13 +147,17 @@ const EthSignModal = ({ hideModal }) => {
         </Box>
       )}
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         gap={4}
         marginTop={6}
       >
-        <ButtonSecondary onClick={() => hideModal()} size={Size.LG} block>
+        <ButtonSecondary
+          onClick={() => hideModal()}
+          size={ButtonSecondarySize.Lg}
+          block
+        >
           {t('cancel')}
         </ButtonSecondary>
         {showTextField ? (

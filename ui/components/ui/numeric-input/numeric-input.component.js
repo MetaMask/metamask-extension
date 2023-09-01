@@ -1,12 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import Typography from '../typography/typography';
 import {
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { DECIMAL_REGEX } from '../../../../shared/constants/tokens';
+import { Text } from '../../component-library';
 
 export default function NumericInput({
   detailText = '',
@@ -52,13 +52,13 @@ export default function NumericInput({
         ref={inputRef}
       />
       {detailText && (
-        <Typography
+        <Text
           color={TextColor.textAlternative}
-          variant={TypographyVariant.H7}
+          variant={TextVariant.bodySm}
           as="span"
         >
           {detailText}
-        </Typography>
+        </Text>
       )}
     </div>
   );

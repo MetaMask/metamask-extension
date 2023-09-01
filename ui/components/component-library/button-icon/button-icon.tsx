@@ -5,26 +5,31 @@ import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
-import { Icon, IconSize } from '../icon';
-
-import { ButtonIconSize, ButtonIconProps } from './button-icon.types';
+import { Box, Icon } from '..';
+import { IconSize } from '../icon';
+import { BoxProps, PolymorphicRef } from '../box';
+import {
+  ButtonIconSize,
+  ButtonIconProps,
+  ButtonIconComponent,
+} from './button-icon.types';
 
 const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
   [ButtonIconSize.Sm]: IconSize.Sm,
+  [ButtonIconSize.Md]: IconSize.Md,
   [ButtonIconSize.Lg]: IconSize.Lg,
 };
 
-export const ButtonIcon = React.forwardRef(
-  (
+export const ButtonIcon: ButtonIconComponent = React.forwardRef(
+  <C extends React.ElementType = 'button' | 'a'>(
     {
       ariaLabel,
-      as = 'button',
+      as,
       className = '',
       color = IconColor.iconDefault,
       href,
@@ -33,15 +38,15 @@ export const ButtonIcon = React.forwardRef(
       disabled,
       iconProps,
       ...props
-    }: ButtonIconProps,
-    ref: React.Ref<HTMLElement>,
+    }: ButtonIconProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
-    const Tag = href ? 'a' : as;
-    const isDisabled = disabled && Tag === 'button';
+    const tag = href ? 'a' : as || 'button';
+    const isDisabled = disabled && tag === 'button';
     return (
       <Box
         aria-label={ariaLabel}
-        as={Tag}
+        as={tag}
         className={classnames(
           'mm-button-icon',
           `mm-button-icon--size-${String(size)}`,
@@ -52,14 +57,14 @@ export const ButtonIcon = React.forwardRef(
         )}
         color={color}
         {...(isDisabled ? { disabled: true } : {})} // only allow disabled attribute to be passed down to the Box when the as prop is equal to a button element
-        display={DISPLAY.INLINE_FLEX}
+        display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.transparent}
         {...(href ? { href } : {})}
         ref={ref}
-        {...props}
+        {...(props as BoxProps<C>)}
       >
         <Icon
           name={iconName}

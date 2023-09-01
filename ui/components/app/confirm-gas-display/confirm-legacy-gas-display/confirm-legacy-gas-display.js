@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -17,7 +18,6 @@ import TransactionDetailItem from '../../transaction-detail-item';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 import InfoTooltip from '../../../ui/info-tooltip';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
-import { Text } from '../../../component-library/text';
 import {
   FONT_STYLE,
   TextVariant,
@@ -26,12 +26,12 @@ import {
 import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import MultilayerFeeMessage from '../../multilayer-fee-message/multi-layer-fee-message';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, Text } from '../../../component-library';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
-const ConfirmLegacyGasDisplay = () => {
+const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   const t = useI18nContext();
 
   // state selectors
@@ -55,6 +55,7 @@ const ConfirmLegacyGasDisplay = () => {
     return [
       <TransactionDetailItem
         key="legacy-total-item"
+        data-testid={dataTestId}
         detailTitle={t('transactionDetailLayer2GasHeading')}
         detailTotal={
           <UserPreferencedCurrencyDisplay
@@ -88,6 +89,7 @@ const ConfirmLegacyGasDisplay = () => {
   return (
     <TransactionDetailItem
       key="legacy-gas-details"
+      data-testid={dataTestId}
       detailTitle={
         dappSuggestedGasFees ? (
           <>
@@ -184,6 +186,10 @@ const ConfirmLegacyGasDisplay = () => {
       }
     />
   );
+};
+
+ConfirmLegacyGasDisplay.propTypes = {
+  'data-testid': PropTypes.string,
 };
 
 export default ConfirmLegacyGasDisplay;

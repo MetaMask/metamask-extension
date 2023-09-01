@@ -10,6 +10,7 @@ const DEFAULT_PROPS = {
   name: 'Account 1',
   address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   onClick: () => undefined,
+  disabled: false,
 };
 
 const render = (props = {}, state = {}) => {
@@ -43,5 +44,10 @@ describe('AccountPicker', () => {
   it('displays a jazzicon per the setting', () => {
     const { container } = render({}, { useBlockie: false });
     expect(container.querySelector('svg')).toBeDefined();
+  });
+
+  it('should show the address in the account button for multichain', () => {
+    const { getByText } = render({ showAddress: true });
+    expect(getByText('0x0DC...E7bc')).toBeInTheDocument();
   });
 });
