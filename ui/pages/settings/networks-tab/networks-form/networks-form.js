@@ -1,3 +1,7 @@
+import classnames from 'classnames';
+import { isEqual } from 'lodash';
+import log from 'loglevel';
+import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useContext,
@@ -6,12 +10,18 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
-import validUrl from 'valid-url';
-import log from 'loglevel';
-import classnames from 'classnames';
-import { isEqual } from 'lodash';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { isWebUrl } from '../../../../../app/scripts/lib/util';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from '../../../../../shared/constants/metametrics';
+import {
+  FEATURED_RPCS,
+  infuraProjectId,
+} from '../../../../../shared/constants/network';
+import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -20,27 +30,17 @@ import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import ActionableMessage from '../../../../components/ui/actionable-message';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
-import {
-  setSelectedNetworkConfigurationId,
-  upsertNetworkConfiguration,
-  editAndSetNetworkConfiguration,
-  showModal,
-  setNewNetworkAdded,
-} from '../../../../store/actions';
-import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
-import { usePrevious } from '../../../../hooks/usePrevious';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsNetworkEventSource,
-} from '../../../../../shared/constants/metametrics';
-import {
-  infuraProjectId,
-  FEATURED_RPCS,
-} from '../../../../../shared/constants/network';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePrevious } from '../../../../hooks/usePrevious';
+import {
+  editAndSetNetworkConfiguration,
+  setNewNetworkAdded,
+  setSelectedNetworkConfigurationId,
+  showModal,
+  upsertNetworkConfiguration,
+} from '../../../../store/actions';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -72,11 +72,6 @@ const prefixChainId = (chainId) => {
     prefixedChainId = `0x${parseInt(chainId, 10).toString(16)}`;
   }
   return prefixedChainId;
-};
-
-const isValidWhenAppended = (url) => {
-  const appendedRpc = `http://${url}`;
-  return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/u);
 };
 
 const NetworksForm = ({
@@ -208,23 +203,20 @@ const NetworksForm = ({
 
   const validateBlockExplorerURL = useCallback(
     (url) => {
-      if (!validUrl.isWebUri(url) && url !== '') {
-        let errorKey;
-        let errorMessage;
-
-        if (isValidWhenAppended(url)) {
-          errorKey = 'urlErrorMsg';
-          errorMessage = t('urlErrorMsg');
-        } else {
-          errorKey = 'invalidBlockExplorerURL';
-          errorMessage = t('invalidBlockExplorerURL');
+      if (url.length > 0 && !isWebUrl(url)) {
+        if (isWebUrl(`https://${url}`)) {
+          return {
+            key: 'urlErrorMsg',
+            msg: t('urlErrorMsg'),
+          };
         }
 
         return {
-          key: errorKey,
-          msg: errorMessage,
+          key: 'invalidBlockExplorerURL',
+          msg: t('invalidBlockExplorerURL'),
         };
       }
+
       return null;
     },
     [t],
@@ -407,7 +399,6 @@ const NetworksForm = ({
 
   const validateRPCUrl = useCallback(
     (url) => {
-      const isValidUrl = validUrl.isWebUri(url);
       const [
         {
           rpcUrl: matchingRPCUrl = null,
@@ -417,20 +408,16 @@ const NetworksForm = ({
       ] = networksToRender.filter((e) => e.rpcUrl === url);
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
-      if (!isValidUrl && url !== '') {
-        let errorKey;
-        let errorMessage;
-        if (isValidWhenAppended(url)) {
-          errorKey = 'urlErrorMsg';
-          errorMessage = t('urlErrorMsg');
-        } else {
-          errorKey = 'invalidRPC';
-          errorMessage = t('invalidRPC');
+      if (url.length > 0 && !isWebUrl(url)) {
+        if (isWebUrl(`https://${url}`)) {
+          return {
+            key: 'urlErrorMsg',
+            msg: t('urlErrorMsg'),
+          };
         }
-
         return {
-          key: errorKey,
-          msg: errorMessage,
+          key: 'invalidRPC',
+          msg: t('invalidRPC'),
         };
       } else if (matchingRPCUrl && matchingRPCUrl !== selectedNetworkRpcUrl) {
         return {

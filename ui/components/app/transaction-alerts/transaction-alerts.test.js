@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import { renderWithProvider } from '../../../../test/jest';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -29,6 +30,68 @@ function render({
 }
 
 describe('TransactionAlerts', () => {
+  it('should display security alert if present', () => {
+    const { getByText } = render({
+      componentProps: {
+        txData: {
+          securityAlertResponse: {
+            resultType: 'Malicious',
+            reason: 'blur_farming',
+            description:
+              'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
+            args: {
+              contract: '0xa7206d878c5c3871826dfdb42191c49b1d11f466',
+              operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
+            },
+          },
+        },
+      },
+    });
+    expect(getByText('This is a deceptive request')).toBeInTheDocument();
+  });
+
+  it('should render SecurityProviderBannerMessage component properly', () => {
+    const { queryByText } = render({
+      componentProps: {
+        txData: {
+          securityProviderResponse: {
+            flagAsDangerous: '?',
+            reason: 'Some reason...',
+            reason_header: 'Some reason header...',
+          },
+        },
+      },
+    });
+
+    expect(queryByText('Request not verified')).toBeInTheDocument();
+    expect(
+      queryByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeInTheDocument();
+    expect(queryByText('OpenSea')).toBeInTheDocument();
+  });
+
+  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
+    const { queryByText } = render({
+      componentProps: {
+        txData: {
+          securityProviderResponse: {
+            flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
+          },
+        },
+      },
+    });
+
+    expect(queryByText('Request not verified')).toBeNull();
+    expect(
+      queryByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeNull();
+    expect(queryByText('OpenSea')).toBeNull();
+  });
+
   describe('when supportsEIP1559 from useGasFeeContext is truthy', () => {
     describe('if hasSimulationError from useGasFeeContext is true', () => {
       it('informs the user that a simulation of the transaction failed', () => {

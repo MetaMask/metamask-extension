@@ -8,6 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { isEqual } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -42,6 +43,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
+import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 import {
@@ -74,14 +76,15 @@ const CustodyPage = () => {
   const [apiUrl, setApiUrl] = useState('');
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
-  const [connectRequest, setConnectRequest] = useState(undefined);
+  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const [accounts, setAccounts] = useState();
   const address = useSelector(getSelectedAddress);
+  const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
 
-    const sortedCustodians = custodians.sort(function (a, b) {
+    const sortedCustodians = [...custodians].sort(function (a, b) {
       const nameA = a.name.toLowerCase();
       const nameB = b.name.toLowerCase();
 
@@ -94,14 +97,34 @@ const CustodyPage = () => {
       return 0;
     });
 
+    function shouldShowInProduction(custodian) {
+      return (
+        custodian &&
+        'production' in custodian &&
+        !custodian.production &&
+        process.env.METAMASK_ENVIRONMENT === 'production'
+      );
+    }
+
+    function isHidden(custodian) {
+      return custodian && 'hidden' in custodian && custodian.hidden;
+    }
+
+    function isNotSelectedCustodian(custodian) {
+      return (
+        custodian &&
+        'name' in custodian &&
+        connectRequest &&
+        Object.keys(connectRequest).length &&
+        custodian.name !== selectedCustodianName
+      );
+    }
+
     sortedCustodians.forEach((custodian) => {
       if (
-        (!custodian.production &&
-          process.env.METAMASK_ENVIRONMENT === 'production') ||
-        custodian.hidden ||
-        (connectRequest &&
-          Object.keys(connectRequest).length &&
-          custodian.name !== selectedCustodianName)
+        shouldShowInProduction(custodian) ||
+        isHidden(custodian) ||
+        isNotSelectedCustodian(custodian)
       ) {
         return;
       }
@@ -134,23 +157,27 @@ const CustodyPage = () => {
             size={BUTTON_SIZES.SM}
             data-testid="custody-connect-button"
             onClick={async () => {
-              const jwtListValue = await dispatch(
-                mmiActions.getCustodianJWTList(custodian.name),
-              );
-              setSelectedCustodianName(custodian.name);
-              setSelectedCustodianType(custodian.type);
-              setSelectedCustodianImage(custodian.iconUrl);
-              setSelectedCustodianDisplayName(custodian.displayName);
-              setApiUrl(custodian.apiUrl);
-              setCurrentJwt(jwtListValue[0] || '');
-              setJwtList(jwtListValue);
-              trackEvent({
-                category: MetaMetricsEventCategory.MMI,
-                event: MetaMetricsEventName.CustodianSelected,
-                properties: {
-                  custodian: custodian.name,
-                },
-              });
+              try {
+                const jwtListValue = await dispatch(
+                  mmiActions.getCustodianJWTList(custodian.name),
+                );
+                setSelectedCustodianName(custodian.name);
+                setSelectedCustodianType(custodian.type);
+                setSelectedCustodianImage(custodian.iconUrl);
+                setSelectedCustodianDisplayName(custodian.displayName);
+                setApiUrl(custodian.apiUrl);
+                setCurrentJwt(jwtListValue[0] || '');
+                setJwtList(jwtListValue);
+                trackEvent({
+                  category: MetaMetricsEventCategory.MMI,
+                  event: MetaMetricsEventName.CustodianSelected,
+                  properties: {
+                    custodian: custodian.name,
+                  },
+                });
+              } catch (error) {
+                console.error('Error:', error);
+              }
             }}
           >
             {t('select')}
@@ -208,58 +235,54 @@ const CustodyPage = () => {
 
   useEffect(() => {
     const fetchConnectRequest = async () => {
-      const connectRequestValue = await dispatch(
-        mmiActions.getCustodianConnectRequest(),
-      );
+      try {
+        if (connectRequest && Object.keys(connectRequest).length) {
+          const {
+            token,
+            environment: custodianName,
+            service: custodianType,
+            apiUrl: custodianApiUrl,
+          } = connectRequest;
 
-      if (Object.keys(connectRequestValue).length) {
-        const {
-          token,
-          custodianName,
-          custodianType,
-          apiUrl: custodianApiUrl,
-        } = connectRequestValue;
+          const custodianToken =
+            token || (await dispatch(mmiActions.getCustodianToken(address)));
 
-        const jwt =
-          token || (await dispatch(mmiActions.getCustodianToken(address)));
-        const accountsValue = await dispatch(
-          mmiActions.getCustodianAccounts(
-            jwt,
-            custodianApiUrl,
-            custodianType,
-            true,
-          ),
-        );
+          setCurrentJwt(custodianToken);
+          setSelectedCustodianType(custodianType);
+          setSelectedCustodianName(custodianName || custodianType);
+          setApiUrl(custodianApiUrl);
+          setConnectError('');
 
-        setConnectRequest(connectRequestValue);
-        setCurrentJwt(jwt);
-        setSelectedCustodianType(custodianType);
-        setSelectedCustodianName(custodianName);
-        setApiUrl(custodianApiUrl);
-        setConnectError('');
-        setAccounts(accountsValue);
+          const accountsValue = await dispatch(
+            mmiActions.getCustodianAccounts(
+              custodianToken,
+              custodianApiUrl,
+              custodianType,
+              true,
+            ),
+          );
 
-        trackEvent({
-          category: MetaMetricsEventCategory.MMI,
-          event: MetaMetricsEventName.CustodianConnected,
-          properties: {
-            custodian: custodianName,
-            apiUrl,
-            rpc: Boolean(connectRequest),
-          },
-        });
+          setAccounts(accountsValue);
+
+          trackEvent({
+            category: MetaMetricsEventCategory.MMI,
+            event: MetaMetricsEventName.CustodianConnected,
+            properties: {
+              custodian: custodianName,
+              apiUrl,
+              rpc: Boolean(connectRequest),
+            },
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        handleConnectError(error);
       }
     };
 
-    const handleFetchConnectRequest = async () => {
-      try {
-        setLoading(true);
-        await fetchConnectRequest();
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-        setLoading(false);
-      }
+    const handleFetchConnectRequest = () => {
+      setLoading(true);
+      fetchConnectRequest().finally(() => setLoading(false));
     };
 
     handleFetchConnectRequest();
@@ -343,8 +366,7 @@ const CustodyPage = () => {
           {selectError}
         </Text>
       )}
-
-      {!accounts && !selectedCustodianType ? (
+      {!accounts && !selectedCustodianType && (
         <Box
           padding={4}
           display={Display.Flex}
@@ -383,7 +405,7 @@ const CustodyPage = () => {
             <ul width={BlockSize.Full}>{custodianButtons}</ul>
           </Box>
         </Box>
-      ) : null}
+      )}
       {!accounts && selectedCustodianType && (
         <>
           <Box

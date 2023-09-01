@@ -452,6 +452,7 @@ export default class ConfirmTransactionBase extends Component {
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
+          txData={txData}
           setUserAcknowledgedGasMissing={() =>
             this.setUserAcknowledgedGasMissing()
           }
@@ -746,9 +747,6 @@ export default class ConfirmTransactionBase extends Component {
 
         sendTransaction(txData)
           .then(() => {
-            if (!this._isMounted) {
-              return;
-            }
             if (txData.custodyStatus) {
               showCustodianDeepLink({
                 fromAddress,
@@ -762,6 +760,9 @@ export default class ConfirmTransactionBase extends Component {
                 },
                 onDeepLinkShown: () => {
                   clearConfirmTransaction();
+                  if (!this._isMounted) {
+                    return;
+                  }
                   this.setState({ submitting: false }, () => {
                     history.push(mostRecentOverviewPage);
                     updateCustomNonce('');
@@ -769,6 +770,9 @@ export default class ConfirmTransactionBase extends Component {
                 },
               });
             } else {
+              if (!this._isMounted) {
+                return;
+              }
               this.setState(
                 {
                   submitting: false,

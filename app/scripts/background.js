@@ -2,9 +2,11 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// This import sets up a global function required for Sentry to function.
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-import './lib/setup-persisted-state-hook';
+import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
@@ -69,6 +71,12 @@ import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 ///: END:ONLY_INCLUDE_IN
 /* eslint-enable import/order */
 
+// Setup global hook for improved Sentry state snapshots during initialization
+const inTest = process.env.IN_TEST;
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+global.stateHooks.getMostRecentPersistedState = () =>
+  localStore.mostRecentRetrievedState;
+
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
@@ -80,7 +88,7 @@ const metamaskInternalProcessHash = {
 
 const metamaskBlockedPorts = ['trezor-connect'];
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
+log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
@@ -91,10 +99,6 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-
-// state persistence
-const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {
@@ -356,7 +360,7 @@ async function loadPhishingWarningPage() {
   } catch (error) {
     if (error instanceof PhishingWarningPageTimeoutError) {
       console.warn(
-        'Phishing warning page timeout; page not guaraneteed to work offline.',
+        'Phishing warning page timeout; page not guaranteed to work offline.',
       );
     } else {
       console.error('Failed to initialize phishing warning page', error);
@@ -899,17 +903,9 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 function setupSentryGetStateGlobal(store) {
-  global.stateHooks.getSentryState = function () {
+  global.stateHooks.getSentryAppState = function () {
     const backgroundState = store.memStore.getState();
-    const maskedBackgroundState = maskObject(
-      backgroundState,
-      SENTRY_BACKGROUND_STATE,
-    );
-    return {
-      browser: window.navigator.userAgent,
-      store: maskedBackgroundState,
-      version: platform.getVersion(),
-    };
+    return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }
 

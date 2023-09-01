@@ -6,6 +6,7 @@ import {
   renderWithProvider,
   setBackgroundConnection,
 } from '../../../../test/jest';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import PrivacySettings from './privacy-settings';
 
 describe('Privacy Settings Onboarding View', () => {
@@ -14,6 +15,13 @@ describe('Privacy Settings Onboarding View', () => {
       networkConfigurations: {},
       providerConfig: {
         type: 'test',
+      },
+      incomingTransactionsPreferences: {
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.LINEA_MAINNET]: false,
+        [CHAIN_IDS.GOERLI]: false,
+        [CHAIN_IDS.SEPOLIA]: false,
+        [CHAIN_IDS.LINEA_GOERLI]: true,
       },
     },
   };
@@ -30,6 +38,7 @@ describe('Privacy Settings Onboarding View', () => {
     .mockImplementation(() => Promise.resolve());
   const setUseMultiAccountBalanceCheckerStub = jest.fn();
   const setUseAddressBarEnsResolutionStub = jest.fn();
+  const setIncomingTransactionsPreferencesStub = jest.fn();
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -41,6 +50,7 @@ describe('Privacy Settings Onboarding View', () => {
     completeOnboarding: completeOnboardingStub,
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
     setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
+    setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
   });
 
   it('should update preferences', () => {
@@ -49,28 +59,28 @@ describe('Privacy Settings Onboarding View', () => {
       store,
     );
     // All settings are initialized toggled to true
-    expect(setFeatureFlagStub).toHaveBeenCalledTimes(0);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(0);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(0);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(0);
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(0);
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(0);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(0);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(0);
 
     const toggles = container.querySelectorAll('input[type=checkbox]');
     const submitButton = getByText('Done');
-
     // toggle to false
-    fireEvent.click(toggles[0]);
     fireEvent.click(toggles[1]);
-    fireEvent.click(toggles[2]);
-    fireEvent.click(toggles[3]);
-    fireEvent.click(toggles[4]);
-    fireEvent.click(toggles[5]);
     fireEvent.click(toggles[6]);
+    fireEvent.click(toggles[7]);
+    fireEvent.click(toggles[8]);
+    fireEvent.click(toggles[9]);
+    fireEvent.click(toggles[10]);
+    fireEvent.click(toggles[11]);
+
     fireEvent.click(submitButton);
 
-    expect(setFeatureFlagStub).toHaveBeenCalledTimes(1);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(1);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
@@ -78,7 +88,12 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(1);
 
-    expect(setFeatureFlagStub.mock.calls[0][1]).toStrictEqual(false);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledWith(
+      CHAIN_IDS.MAINNET,
+      false,
+      expect.anything(),
+    );
+
     expect(setUsePhishDetectStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(false);
@@ -88,35 +103,6 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUseAddressBarEnsResolutionStub.mock.calls[0][0]).toStrictEqual(
       false,
-    );
-
-    // toggle back to true
-    fireEvent.click(toggles[0]);
-    fireEvent.click(toggles[1]);
-    fireEvent.click(toggles[2]);
-    fireEvent.click(toggles[3]);
-    fireEvent.click(toggles[4]);
-    fireEvent.click(toggles[5]);
-    fireEvent.click(toggles[6]);
-    fireEvent.click(submitButton);
-    expect(setFeatureFlagStub).toHaveBeenCalledTimes(2);
-    expect(setUsePhishDetectStub).toHaveBeenCalledTimes(2);
-    expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(2);
-    expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(2);
-    expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(2);
-    expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(2);
-    expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(2);
-
-    expect(setFeatureFlagStub.mock.calls[1][1]).toStrictEqual(true);
-    expect(setUsePhishDetectStub.mock.calls[1][0]).toStrictEqual(true);
-    expect(setUse4ByteResolutionStub.mock.calls[1][0]).toStrictEqual(true);
-    expect(setUseTokenDetectionStub.mock.calls[1][0]).toStrictEqual(true);
-    expect(setUseMultiAccountBalanceCheckerStub.mock.calls[1][0]).toStrictEqual(
-      true,
-    );
-    expect(setUseCurrencyRateCheckStub.mock.calls[1][0]).toStrictEqual(true);
-    expect(setUseAddressBarEnsResolutionStub.mock.calls[1][0]).toStrictEqual(
-      true,
     );
   });
 
