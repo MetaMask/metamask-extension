@@ -14,7 +14,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getMetaMaskAccountsOrdered } from '../../../selectors';
+import { getMetaMaskAccountsOrdered, getUseBlockie } from '../../../selectors';
 import {
   clearAccountDetails,
   hideWarning,
@@ -41,7 +41,7 @@ export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+  const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const { name } = accounts.find((account) => account.address === address);
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
