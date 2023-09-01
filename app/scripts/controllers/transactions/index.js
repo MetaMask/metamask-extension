@@ -229,7 +229,7 @@ export default class TransactionController extends EventEmitter {
       isEnabled: () =>
         Boolean(
           this.preferencesStore.getState().incomingTransactionsPreferences?.[
-            this._getChainId()
+            this._getCurrentChainId()
           ] && this._hasCompletedOnboarding(),
         ),
       lastFetchedBlockNumbers: opts.initState?.lastFetchedBlockNumbers || {},
