@@ -1,5 +1,5 @@
 import React from 'react';
-import { InternalAccount } from '@metamask/eth-snap-keyring';
+import { InternalAccount } from '@metamask/keyring-api';
 import { ButtonIcon, IconName, Text, Box } from '../../../component-library';
 import {
   BlockSize,
@@ -39,7 +39,7 @@ export const KeyringAccountListItem = ({
       >
         <Box flexDirection={FlexDirection.Column} marginBottom={2}>
           <Text color={TextColor.textMuted}>{t('keyringAccountName')}</Text>
-          <Text>{account.name}</Text>
+          <Text>{account.metadata.name}</Text>
         </Box>
         <Box flexDirection={FlexDirection.Column}>
           <Text color={TextColor.textMuted}>

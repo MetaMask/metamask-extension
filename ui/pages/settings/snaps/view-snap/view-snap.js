@@ -17,6 +17,7 @@ import {
 import SnapAuthorshipExpanded from '../../../../components/app/snaps/snap-authorship-expanded';
 import Box from '../../../../components/ui/box';
 import SnapRemoveWarning from '../../../../components/app/snaps/snap-remove-warning';
+import KeyringSnapRemovalWarning from '../../../../components/app/snaps/keyring-snap-removal-warning';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
 
 import { SNAPS_LIST_ROUTE } from '../../../../helpers/constants/routes';
@@ -201,7 +202,7 @@ function ViewSnap() {
             </Text>
           </Button>
           <SnapRemoveWarning
-            isOpen={isShowingRemoveWarning}
+            isOpen={isShowingRemoveWarning && !isKeyringSnap}
             keyringAccounts={keyringAccounts}
             snapUrl={snap.url}
             onCancel={() => setIsShowingRemoveWarning(false)}
@@ -209,6 +210,18 @@ function ViewSnap() {
               await dispatch(removeSnap(snap.id));
             }}
             snapName={snapName}
+          />
+          <KeyringSnapRemovalWarning
+            snap={snap}
+            keyringAccounts={keyringAccounts}
+            snapUrl={snap.url}
+            onCancel={() => setIsShowingRemoveWarning(false)}
+            onClose={() => setIsShowingRemoveWarning(false)}
+            onBack={() => setIsShowingRemoveWarning(false)}
+            onSubmit={async () => {
+              await dispatch(removeSnap(snap.id));
+            }}
+            isOpen={isShowingRemoveWarning && isKeyringSnap}
           />
         </Box>
       </Box>

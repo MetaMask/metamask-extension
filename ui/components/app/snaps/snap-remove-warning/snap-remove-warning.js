@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -11,37 +11,25 @@ import {
   ModalOverlay,
   ButtonSize,
   ButtonVariant,
-  BannerAlert,
 } from '../../../component-library';
 
 import {
   BlockSize,
   Display,
   FlexDirection,
-  Severity,
 } from '../../../../helpers/constants/design-system';
-
-import { KeyringAccountListItem } from './keyring-account-list-item';
-import { RemoveKeyringSnapConfirmationModal } from './remove-keyring-snap-confirmation-modal';
 
 export default function SnapRemoveWarning({
   isOpen,
   onCancel,
   onSubmit,
   snapName,
-  keyringAccounts = [],
-  snapUrl,
 }) {
   const t = useI18nContext();
-  const [displayKeyringSnapRemovalModal, setDisplayKeyringSnapRemovalModal] =
-    useState(false);
 
   return (
     <>
-      <Modal
-        isOpen={isOpen && !displayKeyringSnapRemovalModal}
-        onClose={onCancel}
-      >
+      <Modal isOpen={isOpen} onClose={onCancel}>
         <ModalOverlay />
         <ModalContent
           modalDialogProps={{
@@ -51,25 +39,7 @@ export default function SnapRemoveWarning({
           }}
         >
           <ModalHeader onClose={onCancel}>{t('pleaseConfirm')}</ModalHeader>
-          {keyringAccounts.length > 0 ? (
-            <>
-              <BannerAlert severity={Severity.Warning}>
-                {t('backupKeyringSnapReminder')}
-              </BannerAlert>
-              <Text>{t('removeKeyringSnap')}</Text>
-              {keyringAccounts.map((account, index) => {
-                return (
-                  <KeyringAccountListItem
-                    key={index}
-                    account={account}
-                    snapUrl={snapUrl}
-                  />
-                );
-              })}
-            </>
-          ) : (
-            <Text>{t('removeSnapConfirmation', [snapName])}</Text>
-          )}
+          <Text>{t('removeSnapConfirmation', [snapName])}</Text>
 
           <Box width={BlockSize.Full} display={Display.Flex} gap={4}>
             <Button
@@ -86,11 +56,7 @@ export default function SnapRemoveWarning({
               id="popoverRemoveSnapButton"
               danger
               onClick={async () => {
-                if (keyringAccounts.length === 0) {
-                  await onSubmit();
-                } else {
-                  setDisplayKeyringSnapRemovalModal(true);
-                }
+                await onSubmit();
               }}
             >
               {t('removeSnap')}
@@ -98,13 +64,6 @@ export default function SnapRemoveWarning({
           </Box>
         </ModalContent>
       </Modal>
-      <RemoveKeyringSnapConfirmationModal
-        isOpen={isOpen && displayKeyringSnapRemovalModal}
-        onClose={onCancel}
-        onSubmit={async () => await onSubmit()}
-        onBack={() => setDisplayKeyringSnapRemovalModal(false)}
-        snapName={snapName}
-      />
     </>
   );
 }
@@ -126,12 +85,4 @@ SnapRemoveWarning.propTypes = {
    * Whether the modal is open
    */
   isOpen: PropTypes.bool,
-  /**
-   * Array of keyring accounts
-   */
-  keyringAccounts: PropTypes.array,
-  /**
-   * Url of snap
-   */
-  snapUrl: PropTypes.string,
 };
