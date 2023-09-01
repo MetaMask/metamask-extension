@@ -2132,9 +2132,6 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "अपने लेजर डिवाइस पर \"स्मार्ट कॉन्ट्रैक्ट डेटा\" या \"ब्लाइंड साइनिंग\" एनेबल करें"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "सेटिंग्स> एडवांस्ड के तहत यूज़ लेज़र लाइव एनेबल करें"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "अपने लेजर डिवाइस में प्लग इन करें और Ethereum ऐप चुनें"
   },

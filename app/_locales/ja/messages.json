@@ -2132,18 +2132,8 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ledger デバイスで「スマートコントラクトデータ」または「ブラインド署名」を有効にしてください。"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "[設定] > [高度な設定] で Ledger Live を有効にしてください。"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledger が接続されていて、Ethereum アプリを選択していることを確認してください。"
-  },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Live アプリを開いてロックを解除してください。"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "LedgerをMetaMaskに接続する方法をカスタマイズします。$1が推奨されますが、他のオプションも利用できます。詳細はこちらをご覧ください: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledgerデバイスを開けませんでした。Ledgerが他のソフトウェアに接続されている可能性があります。Ledger LiveまたはLedgerデバイスに接続されている他のアプリケーションを閉じて、もう一度接続してみてください。"

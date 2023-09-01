@@ -2889,11 +2889,11 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
-  "notificationsU2fLedgerLiveDescription": {
+  "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
   },
-  "notificationsU2fLedgerLiveTitle": {
+  "notificationsU2FLedgerLiveTitle": {
     "message": "U2F and Ledger Live deprecation",
     "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
