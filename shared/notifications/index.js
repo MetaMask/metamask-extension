@@ -135,6 +135,14 @@ export const UI_NOTIFICATIONS = {
     id: 24,
     date: null,
   },
+  25: {
+    id: 25,
+    date: null,
+    image: {
+      src: 'images/introducing-snaps.svg',
+      width: '100%',
+    },
+  },
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -370,6 +378,21 @@ export const getTranslatedUINotifications = (t, locale) => {
       date: UI_NOTIFICATIONS[24].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[24].date),
+          )
+        : '',
+    },
+    25: {
+      ...UI_NOTIFICATIONS[25],
+      title: t('notifications25Title'),
+      description: [
+        t('notifications25DescriptionOne'),
+        t('notifications25DescriptionTwo'),
+        t('notifications25DescriptionThree'),
+      ],
+      actionText: t('notifications25ActionText'),
+      date: UI_NOTIFICATIONS[25].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[25].date),
           )
         : '',
     },

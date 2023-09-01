@@ -2804,6 +2804,21 @@
   "notifications24Title": {
     "message": "Advanced gas fees by network"
   },
+  "notifications25Title": {
+    "message": "Introducing MetaMask Snaps"
+  },
+  "notifications25DescriptionOne": {
+    "message": "🎉 We're excited to announce the Open Beta of MetaMask Snaps!"
+  },
+  "notifications25DescriptionTwo": {
+    "message": "Snaps help you do more with MetaMask — like connect to more networks, see transaction insights, and get custom notifications."
+  },
+  "notifications25DescriptionThree": {
+    "message": " Personalize your wallet with snaps built by the developer community!"
+  },
+  "notifications25ActionText": {
+    "message": "Got it"
+  },
   "notifications3ActionText": {
     "message": "Read more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
