@@ -2804,20 +2804,20 @@
   "notifications24Title": {
     "message": "Advanced gas fees by network"
   },
-  "notifications25Title": {
-    "message": "Introducing MetaMask Snaps"
+  "notifications25ActionText": {
+    "message": "Learn more"
   },
   "notifications25DescriptionOne": {
     "message": "🎉 We're excited to announce the Open Beta of MetaMask Snaps!"
   },
-  "notifications25DescriptionTwo": {
-    "message": "Snaps help you do more with MetaMask — like connect to more networks, see transaction insights, and get custom notifications."
-  },
   "notifications25DescriptionThree": {
     "message": " Personalize your wallet with snaps built by the developer community!"
   },
-  "notifications25ActionText": {
-    "message": "Learn more"
+  "notifications25DescriptionTwo": {
+    "message": "Snaps help you do more with MetaMask — like connect to more networks, see transaction insights, and get custom notifications."
+  },
+  "notifications25Title": {
+    "message": "Introducing MetaMask Snaps"
   },
   "notifications3ActionText": {
     "message": "Read more",
