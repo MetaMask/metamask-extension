@@ -82,6 +82,9 @@ export const SENTRY_BACKGROUND_STATE = {
   CachedBalancesController: {
     cachedBalances: false,
   },
+  CronjobController: {
+    jobs: false,
+  },
   CurrencyController: {
     conversionDate: true,
     conversionRate: true,
@@ -145,6 +148,9 @@ export const SENTRY_BACKGROUND_STATE = {
     allNftContracts: false,
     allNfts: false,
     ignoredNfts: false,
+  },
+  NotificationController: {
+    notifications: false,
   },
   OnboardingController: {
     completedOnboarding: true,
@@ -212,6 +218,15 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactions: false,
       userOptIn: true,
     },
+  },
+  SnapController: {
+    snapErrors: false,
+    snapStates: false,
+    snaps: false,
+  },
+  SnapsRegistry: {
+    database: false,
+    lastUpdated: false,
   },
   SubjectMetadataController: {
     subjectMetadata: false,
