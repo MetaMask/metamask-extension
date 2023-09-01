@@ -169,10 +169,11 @@ const ConfirmPageContainer = (props) => {
   const insightObject = useTransactionInsights({
     txData,
   });
+  const insightComponent = insightObject?.insightComponent;
+  ///: END:ONLY_INCLUDE_IN
+
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   const warnings = insightObject?.warnings;
-  ///: END:ONLY_INCLUDE_IN
-  const insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
 
   const handleSubmit = () => {
