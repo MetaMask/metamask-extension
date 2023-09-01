@@ -6,7 +6,6 @@ import { getPermissionSubjects } from '../../selectors';
 
 const INSIGHT_PERMISSION = 'endowment:transaction-insight';
 
-// If snapId is provided then we do some different excecution (i.e. old way of doing it)
 export function useTransactionInsightSnaps({
   transaction,
   chainId,
