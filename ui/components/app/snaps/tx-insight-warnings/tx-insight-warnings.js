@@ -144,7 +144,7 @@ export default function TxInsightWarnings({
           isChecked={isChecked}
           onChange={handleOnChange}
           label={t('transactionInsightWarningCheckboxMessage', [
-            t(`${results[type].imperative}`),
+            t(results[type].imperative),
             stripHttpSchemes(origin),
           ])}
           paddingTop={4}
@@ -170,7 +170,7 @@ export default function TxInsightWarnings({
             onClick={onSubmit}
             disabled={!isChecked}
           >
-            {t(`${results[type].imperative}`)}
+            {t(results[type].imperative)}
           </Button>
         </Box>
       </ModalContent>
