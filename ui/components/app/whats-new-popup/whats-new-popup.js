@@ -114,6 +114,9 @@ function getActionFunctionById(id, history) {
     },
     25: () => {
       updateViewedNotifications({ 25: true });
+      global.platform.openTab({
+        url: 'https://metamask.io/snaps/',
+      });
     },
   };
 
