@@ -2330,9 +2330,6 @@
   "more": {
     "message": "अधिक"
   },
-  "moreComingSoon": {
-    "message": "जल्द ही और प्रोवाइडर उपलब्ध होंगे"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 चाहता है कि $2 स्नैप्स के साथ जुड़े। तभी आगे बढ़ें अगर आप इस वेबसाइट पर भरोसा करते हैं।",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "सुरक्षा अलर्ट सक्षम करें"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Blockaid द्वारा संचालित सुरक्षा अलर्ट के साथ अपनी गोपनीयता बनाए रखते हुए ज्ञात घोटालों से दूर रहें।"
-  },
-  "notifications23DescriptionThree": {
-    "message": "यदि आपने OpenSea से सुरक्षा अलर्ट सक्षम किया है, तो हमने आपको इस फीचर पर ला दिया है।"
   },
   "notifications23DescriptionTwo": {
     "message": "अनुरोध को स्वीकार करने से पहले हमेशा अपनी खुद की सावधानी बरतें।"
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "सुरक्षा चेतावनी"
   },
-  "securityAlertsDescription1": {
-    "message": "यह फीचर स्थानीय रूप से आपके लेनदेन और हस्ताक्षर अनुरोधों की समीक्षा करके आपको दुर्भावनापूर्ण गतिविधि के प्रति सचेत करती है। आपका डेटा यह सेवा प्रदान करने वाले तृतीय पक्षों के साथ साझा नहीं किया जाता है। किसी भी अनुरोध को मंजूरी देने से पहले हमेशा जांच करें। इस बात की कोई गारंटी नहीं है कि यह फीचर सभी दुर्भावनापूर्ण गतिविधियों का पता लगा लेगी।"
-  },
-  "securityAlertsDescription2": {
-    "message": "किसी भी अनुरोध को मंज़ूरी देने से पहले हमेशा पूरी जांच-पड़ताल ज़रूर करें। इस बात की कोई गारंटी नहीं है कि इस सुविधा के माध्यम से बुरी नीयत से की गई सभी गतिविधि का पता लगाया जा सकेगा।"
-  },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
-  },
-  "securityProviderAdviceBy": {
-    "message": "$1 की ओर से सुरक्षा सलाह",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "ब्यौरा देखें"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "यदि आपको अपेक्षित खाते दिखाई नहीं देते हैं, तो HD पथ बदलने का प्रयास करें।"
-  },
-  "selectProvider": {
-    "message": "प्रदाताओं का चयन करें:"
   },
   "selectType": {
     "message": "प्रकार का चयन करें"

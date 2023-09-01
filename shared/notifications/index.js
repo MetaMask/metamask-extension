@@ -364,7 +364,6 @@ export const getTranslatedUINotifications = (t, locale) => {
       description: [
         t('notifications23DescriptionOne'),
         t('notifications23DescriptionTwo'),
-        t('notifications23DescriptionThree'),
       ],
       actionText: t('notifications23ActionText'),
       date: UI_NOTIFICATIONS[23].date

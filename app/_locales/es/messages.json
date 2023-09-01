@@ -2330,9 +2330,6 @@
   "more": {
     "message": "más"
   },
-  "moreComingSoon": {
-    "message": "Muy pronto más proveedores"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 quiere conectarse con $2 complementos. Continúe solo si confía en este sitio web.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "Habilitar alertas de seguridad"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Aléjese de las estafas conocidas mientras conserva su privacidad con las alertas de seguridad impulsadas por Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Si habilitó las alertas de seguridad de OpenSea, lo trasladamos a esta función."
   },
   "notifications23DescriptionTwo": {
     "message": "Siempre asegúrese de hacer su propia diligencia debida antes de aprobar cualquier solicitud."
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "Alertas de seguridad"
   },
-  "securityAlertsDescription1": {
-    "message": "Esta función lo alerta sobre actividades maliciosas al revisar localmente sus transacciones y solicitudes de firma. Sus datos no se comparten con los terceros que brindan este servicio. Siempre haga su propia diligencia debida antes de aprobar cualquier solicitud. No hay garantía de que esta característica detecte todas la actividades maliciosas."
-  },
-  "securityAlertsDescription2": {
-    "message": "Siempre asegúrese de hacer su propia diligencia debida antes de aprobar cualquier solicitud. No hay garantía de que esta característica detecte toda la actividad maliciosa."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
-  },
-  "securityProviderAdviceBy": {
-    "message": "Asesoramiento de seguridad por $1",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Ver detalles"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "Si no ve sus cuentas existentes en Ledger a continuación, intente cambiar de ruta de acceso a \"Legacy (MEW / MyCrypto)\""
-  },
-  "selectProvider": {
-    "message": "Seleccionar proveedores:"
   },
   "selectType": {
     "message": "Seleccionar tipo"

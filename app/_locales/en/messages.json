@@ -2355,9 +2355,6 @@
   "more": {
     "message": "more"
   },
-  "moreComingSoon": {
-    "message": "More providers coming soon"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2784,10 +2781,7 @@
     "message": "Enable security alerts"
   },
   "notifications23DescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "If you enabled security alerts from OpenSea, we've moved you over to this feature."
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid on Ethereum Mainnet."
   },
   "notifications23DescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
@@ -3691,17 +3685,14 @@
   "securityAlerts": {
     "message": "Security alerts"
   },
-  "securityAlertsDescription1": {
-    "message": "This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
-  },
-  "securityAlertsDescription2": {
-    "message": "Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature."
+  "securityAlertsDescription": {
+    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityProviderAdviceBy": {
-    "message": "Security advice by $1",
+  "securityProviderPoweredBy": {
+    "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
   "seeDetails": {
@@ -3799,9 +3790,6 @@
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
-  },
-  "selectProvider": {
-    "message": "Select providers:"
   },
   "selectType": {
     "message": "Select Type"
