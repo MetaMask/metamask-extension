@@ -48,6 +48,14 @@ const browserPolyfillMock = {
       set: () => undefined,
     },
   },
+  alarms: {
+    getAll: () => undefined,
+    create: () => undefined,
+    clear: () => undefined,
+    onAlarm: {
+      addListener: () => undefined
+    }
+  }
 };
 
 let loggerMiddlewareMock;
