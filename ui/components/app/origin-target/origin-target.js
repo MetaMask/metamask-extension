@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { useDispatch } from 'react-redux';
-import { NameValueType } from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
@@ -93,7 +93,7 @@ export function RecipientWithAddress({ checksummedRecipientAddress }) {
     dispatch(
       getProposedNames({
         value: checksummedRecipientAddress,
-        type: NameValueType.ETHEREUM_ADDRESS,
+        type: NameType.ETHEREUM_ADDRESS,
       }),
     );
   }, [checksummedRecipientAddress, dispatch]);
@@ -101,7 +101,7 @@ export function RecipientWithAddress({ checksummedRecipientAddress }) {
   return (
     <Name
       value={checksummedRecipientAddress}
-      type={NameValueType.ETHEREUM_ADDRESS}
+      type={NameType.ETHEREUM_ADDRESS}
       providerPriority={['lens', 'token', 'ens', 'etherscan']}
     />
   );

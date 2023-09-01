@@ -4499,7 +4499,7 @@ export function getProposedNames(
 ): ThunkAction<GetProposedNamesResult, MetaMaskReduxState, unknown, AnyAction> {
   return (async () => {
     const data = await submitRequestToBackground<GetProposedNamesResult>(
-      'getProposedNames',
+      'updateProposedNames',
       [request],
     );
 

@@ -13,7 +13,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   isEqual,
 } from 'lodash';
-import { NameValueType } from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -1566,7 +1566,11 @@ export function getNames(state) {
 }
 
 export function getEthereumAddressNames(state) {
-  return state.metamask.names?.[NameValueType.ETHEREUM_ADDRESS] || {};
+  return state.metamask.names?.[NameType.ETHEREUM_ADDRESS] || {};
+}
+
+export function getNameSources(state) {
+  return state.metamask.nameSources || {};
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)

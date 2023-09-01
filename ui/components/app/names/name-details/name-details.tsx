@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { NameValueType } from '@metamask/name-controller';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { NameType } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import {
@@ -7,9 +7,9 @@ import {
   Box,
   Button,
   ButtonIcon,
+  ButtonIconSize,
   FormTextField,
   IconName,
-  IconSize,
   Label,
   Modal,
   ModalContent,
@@ -27,21 +27,17 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Name from '../name/name';
 import FormComboField from '../../form-combo-field/form-combo-field';
-import { getNames } from '../../../../selectors';
+import {
+  getCurrentChainId,
+  getNameSources,
+  getNames,
+} from '../../../../selectors';
 import { setName as saveName } from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
-const PROVIDER_LABELS: { [providerId: string]: string } = {
-  ens: 'Ethereum Name Service (ENS)',
-  opensea: 'OpenSea',
-  etherscan: 'Etherscan (Verified Contract Name)',
-  token: 'Token Name (Blockchain)',
-  lens: 'Lens Protocol',
-};
-
 export interface NameDetailsProps {
   onClose: () => void;
-  type: NameValueType;
+  type: NameType;
   value: string;
 }
 
@@ -51,15 +47,18 @@ export default function NameDetails({
   value,
 }: NameDetailsProps) {
   const names = useSelector(getNames, isEqual);
+  const nameProviders = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
-  const [provider, setProvider] = useState(undefined);
+  const [selectedSourceId, setSelectedSourceId] = useState(undefined);
   const dispatch = useDispatch();
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
+  const chainId = useSelector(getCurrentChainId);
 
   const handleSaveClick = useCallback(async () => {
-    await dispatch(saveName({ value, type, name, provider }));
+    await dispatch(saveName({ value, type, name, sourceId: selectedSourceId }));
+
     onClose();
-  }, [name, provider, onClose]);
+  }, [name, selectedSourceId, onClose]);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -72,15 +71,35 @@ export default function NameDetails({
     [setName],
   );
 
-  const handleProviderClick = useCallback(
+  const handleProposedNameClick = useCallback(
     (option: any) => {
-      setProvider(option.providerId);
+      setSelectedSourceId(option.providerId);
     },
-    [setProvider],
+    [setSelectedSourceId],
   );
 
+  const options = useMemo(() => {
+    const proposedNames = names[type]?.[value]?.[chainId]?.proposedNames || {};
+    const sourceIds = Object.keys(proposedNames);
+
+    return sourceIds
+      .filter((sourceId) => proposedNames[sourceId]?.length)
+      .map((sourceId: string) =>
+        proposedNames[sourceId].map((proposedName: any) => ({
+          primaryLabel: proposedName,
+          secondaryLabel: nameProviders[sourceId]?.label,
+        })),
+      )
+      .flat()
+      .sort((a, b) =>
+        a.primaryLabel
+          .toLowerCase()
+          .localeCompare(b.primaryLabel.toLowerCase()),
+      );
+  }, [names, nameProviders, type, value]);
+
   useEffect(() => {
-    const savedName = names[type]?.[value]?.name;
+    const savedName = names[type]?.[value]?.[chainId]?.name;
 
     if (!savedName) {
       return;
@@ -89,16 +108,7 @@ export default function NameDetails({
     setName(savedName);
   }, [names, setName, type, value]);
 
-  const proposedNames = names[type]?.[value]?.proposed || {};
-
-  const options = Object.keys(proposedNames)
-    .sort()
-    .map((providerId: string) => ({
-      primaryLabel: proposedNames[providerId],
-      secondaryLabel: PROVIDER_LABELS[providerId] ?? providerId,
-    }));
-
-  const savedName = names[type]?.[value]?.name;
+  const savedName = names[type]?.[value]?.[chainId]?.name;
   const hasSavedName = Boolean(savedName);
 
   return (
@@ -112,7 +122,7 @@ export default function NameDetails({
           <div style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}>
             <Name
               value={value}
-              type={NameValueType.ETHEREUM_ADDRESS}
+              type={NameType.ETHEREUM_ADDRESS}
               providerPriority={['lens', 'token', 'ens', 'etherscan']}
             />
           </div>
@@ -141,7 +151,7 @@ export default function NameDetails({
               <ButtonIcon
                 display={Display.Flex}
                 iconName={copiedAddress ? IconName.CopySuccess : IconName.Copy}
-                size={IconSize.Sm}
+                size={ButtonIconSize.Sm}
                 onClick={() => handleCopyAddress(value)}
                 color={IconColor.iconMuted}
               />
@@ -158,7 +168,7 @@ export default function NameDetails({
               options={options}
               placeholder="Set a personal display name..."
               onChange={handleNameChange}
-              onOptionClick={handleProviderClick}
+              onOptionClick={handleProposedNameClick}
               value={name}
               maxDropdownHeight={170}
             />

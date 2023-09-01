@@ -1,6 +1,6 @@
 {
   "name": "@metamask/name-controller",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Stores and suggests names for values such as Ethereum addresses",
   "keywords": [
     "MetaMask",
@@ -29,7 +29,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/base-controller": "^3.2.0",
+    "@metamask/base-controller": "^3.2.1",
     "immer": "^9.0.6"
   },
   "engines": {
@@ -39,5 +39,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "yalcSig": "d3ef9737712bf22f8ba81dc76d352118"
+  "yalcSig": "db3c5c0c1eee637d69985ad5f50c8d5e"
 }

@@ -1,15 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { NameValueType } from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Icon, IconName, IconSize } from '../../../component-library';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { getNames } from '../../../../selectors';
+import { getCurrentChainId, getNames } from '../../../../selectors';
 import NameDetails from '../name-details/name-details';
 
 export interface NameProps {
   value: string;
-  type: NameValueType;
+  type: NameType;
   providerPriority: string[];
   canEdit?: boolean;
 }
@@ -22,6 +22,7 @@ export default function Name({
 }: NameProps) {
   const names = useSelector(getNames);
   const [modalOpen, setModalOpen] = useState(false);
+  const chainId = useSelector(getCurrentChainId);
 
   const handleClick = useCallback(() => {
     setModalOpen(true);
@@ -32,24 +33,24 @@ export default function Name({
   }, [setModalOpen]);
 
   const getProposedName = useCallback((): string | undefined => {
-    const proposedNames = names[type]?.[value]?.proposed || {};
+    const proposedNames = names[type]?.[value]?.[chainId]?.proposedNames || {};
 
     for (const providerId of providerPriority) {
-      const proposedName = proposedNames[providerId];
+      const providerProposedNames = proposedNames[providerId] ?? [];
 
-      if (proposedName) {
-        return proposedName;
+      if (providerProposedNames.length) {
+        return providerProposedNames[0];
       }
     }
 
     return undefined;
   }, [names]);
 
-  const name = names[type]?.[value]?.name;
+  const name = names[type]?.[value]?.[chainId]?.name;
   const proposedName = getProposedName();
 
   const formattedValue =
-    type === NameValueType.ETHEREUM_ADDRESS ? shortenAddress(value) : value;
+    type === NameType.ETHEREUM_ADDRESS ? shortenAddress(value) : value;
 
   const hasName = Boolean(name);
   const hasProposedName = Boolean(proposedName);

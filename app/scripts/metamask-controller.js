@@ -232,6 +232,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
+import { SnapsNameProvider } from './lib/SnapsNameProvider';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1019,7 +1020,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     const allowLocalSnaps = process.env.ALLOW_LOCAL_SNAPS;
-    const requireAllowlist = process.env.REQUIRE_SNAPS_ALLOWLIST;
+    const requireAllowlist = false;
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
@@ -1507,6 +1508,10 @@ export default class MetamaskController extends EventEmitter {
         new EtherscanNameProvider({}),
         new TokenNameProvider({}),
         new LensNameProvider(),
+        new SnapsNameProvider({
+          getSnaps: () => Object.values(this.snapController.state.snaps),
+          handleSnapRequest: this.handleSnapRequest.bind(this),
+        }),
       ],
     });
 
@@ -2851,7 +2856,8 @@ export default class MetamaskController extends EventEmitter {
       throwTestError: this.throwTestError.bind(this),
 
       // NameController
-      getProposedNames: nameController.getProposedNames.bind(nameController),
+      updateProposedNames:
+        nameController.updateProposedNames.bind(nameController),
       setName: nameController.setName.bind(nameController),
     };
   }

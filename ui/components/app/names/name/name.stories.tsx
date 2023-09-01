@@ -1,5 +1,5 @@
 import React from 'react';
-import { NameValueType } from '@metamask/name-controller';
+import { NameType } from '@metamask/name-controller';
 import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
 import Name from './name';
@@ -7,22 +7,30 @@ import Name from './name';
 const addressProposedMock = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
 const addressNoProposedMock = '0xc0ffee254729296a45a3885639AC7E10F9d54978';
 const addressSavedNameMock = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
+const chainIdMock = '0x1';
 
 const storeMock = configureStore({
   metamask: {
+    providerConfig: {
+      chainId: chainIdMock,
+    },
     names: {
-      [NameValueType.ETHEREUM_ADDRESS]: {
+      [NameType.ETHEREUM_ADDRESS]: {
         [addressProposedMock]: {
-          proposed: {
-            ens: 'opensea.eth',
-            opensea: 'OpenSea',
+          [chainIdMock]: {
+            proposedNames: {
+              ens: ['opensea.eth'],
+              opensea: ['OpenSea'],
+            },
           },
         },
         [addressSavedNameMock]: {
-          proposed: {
-            ens: 'opensea.eth',
+          [chainIdMock]: {
+            proposedNames: {
+              ens: ['opensea.eth'],
+            },
+            name: 'OpenSea',
           },
-          name: 'OpenSea',
         },
       },
     },
@@ -43,7 +51,7 @@ export default {
       table: { category: 'value' },
     },
     type: {
-      options: [NameValueType.ETHEREUM_ADDRESS],
+      options: [NameType.ETHEREUM_ADDRESS],
       control: 'select',
       table: { category: 'type' },
     },
@@ -54,7 +62,7 @@ export default {
   },
   args: {
     value: addressProposedMock,
-    type: NameValueType.ETHEREUM_ADDRESS,
+    type: NameType.ETHEREUM_ADDRESS,
     providerPriority: ['ens'],
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
@@ -70,7 +78,7 @@ export const ProposedNameStory = () => {
   return (
     <Name
       value={addressProposedMock}
-      type={NameValueType.ETHEREUM_ADDRESS}
+      type={NameType.ETHEREUM_ADDRESS}
       providerPriority={['ens']}
     />
   );
@@ -82,7 +90,7 @@ export const NoProposedNameStory = () => {
   return (
     <Name
       value={addressNoProposedMock}
-      type={NameValueType.ETHEREUM_ADDRESS}
+      type={NameType.ETHEREUM_ADDRESS}
       providerPriority={['ens']}
     />
   );
@@ -94,7 +102,7 @@ export const SavedNameStory = () => {
   return (
     <Name
       value={addressSavedNameMock}
-      type={NameValueType.ETHEREUM_ADDRESS}
+      type={NameType.ETHEREUM_ADDRESS}
       providerPriority={['ens']}
     />
   );
