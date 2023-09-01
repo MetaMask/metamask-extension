@@ -1855,14 +1855,16 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
    *
+   * @param {string} snapId - The ID of the snap the handler is being triggered on.
    * @param {string} handler - The handler to trigger on the snap for the request.
    */
   _trackSnapExportUsage = throttle(
-    (handler) =>
+    (snapId, handler) =>
       this.metaMetricsController.trackEvent({
         event: MetaMetricsEventName.SnapExportUsed,
         category: MetaMetricsEventCategory.Snaps,
         properties: {
+          snap_id: snapId,
           export: handler,
         },
       }),
@@ -1880,7 +1882,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   handleSnapRequest(args) {
-    this._trackSnapExportUsage(args.handler);
+    this._trackSnapExportUsage(args.snapId, args.handler);
 
     return this.controllerMessenger.call('SnapController:handleRequest', args);
   }
