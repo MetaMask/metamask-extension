@@ -2330,9 +2330,6 @@
   "more": {
     "message": "mais"
   },
-  "moreComingSoon": {
-    "message": "Mais provedores em breve"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 deseja conectar-se a $2 snaps. Prossiga apenas se você confia no site.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2754,15 +2751,6 @@
   },
   "notifications22Title": {
     "message": "Procurando os dados da sua conta ou o URL do explorador de blocos?"
-  },
-  "notifications23ActionText": {
-    "message": "Ativar alertas de segurança"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Fique longe de golpes conhecidos enquanto preserva sua privacidade com alertas de segurança com tecnologia da Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Se você ativou os alertas de segurança da OpenSea, fizemos sua transição para esse recurso."
   },
   "notifications23DescriptionTwo": {
     "message": "Sempre faça sua própria devida diligência antes de aprovar solicitações."
@@ -3649,18 +3637,8 @@
   "securityAlerts": {
     "message": "Alertas de segurança"
   },
-  "securityAlertsDescription1": {
-    "message": "Esse recurso alerta sobre atividades mal-intencionadas ao analisar localmente suas transações e solicitações de assinatura. Seus dados não são compartilhados com os terceiros prestadores do serviço. Sempre faça sua própria devida diligência antes de aprovar qualquer solicitação. Não há garantia de que esse recurso detectará toda e qualquer atividade mal-intencionada."
-  },
-  "securityAlertsDescription2": {
-    "message": "Sempre se certifique de fazer a devida diligência por conta própria antes de aprovar eventuais solicitações. Não há garantia de que toda e qualquer atividade mal-intencionada será detectada por esse recurso."
-  },
   "securityAndPrivacy": {
     "message": "Segurança e privacidade"
-  },
-  "securityProviderAdviceBy": {
-    "message": "Conselhos de segurança de $1",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Ver detalhes"
@@ -3754,9 +3732,6 @@
   },
   "selectPathHelp": {
     "message": "Se você não vir as contas esperadas, tente trocar o caminho do HD."
-  },
-  "selectProvider": {
-    "message": "Selecione os provedores:"
   },
   "selectType": {
     "message": "Selecionar Tipo"

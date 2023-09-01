@@ -28,7 +28,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
       />
       <span>
          
-        Security advice by 
+        Powered by 
         <a
           class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://blockaid.io/"
@@ -96,7 +96,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
       />
       <span>
          
-        Security advice by 
+        Powered by 
         <a
           class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://blockaid.io/"
@@ -180,7 +180,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
         />
         <span>
            
-          Security advice by 
+          Powered by 
           <a
             class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             href="https://blockaid.io/"
