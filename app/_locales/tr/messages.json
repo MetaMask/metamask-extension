@@ -275,12 +275,6 @@
   "advancedConfiguration": {
     "message": "Gelişmiş yapılandırma"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "\"Gelişmiş\" için şunları varsayılanım olarak kaydet: $1"
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Varsayılan olarak her zaman bu değerleri ve gelişmiş ayarı kullan."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Gelişmiş gaz ücreti"
   },
@@ -2100,9 +2094,6 @@
   },
   "newTokensImportedTitle": {
     "message": "Token içe aktarıldı"
-  },
-  "newValues": {
-    "message": "yeni değerler"
   },
   "next": {
     "message": "Sonraki"

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { capitalize } from 'lodash';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
@@ -11,7 +12,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { getAdvancedGasFeeValues } from '../../../../selectors';
+import {
+  getAdvancedGasFeeValues,
+  getCurrentChainId,
+  getNetworkIdentifier,
+} from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useAdvancedGasFeePopoverContext } from '../context';
@@ -24,6 +29,9 @@ const AdvancedGasFeeDefaults = () => {
   const { gasErrors, maxBaseFee, maxPriorityFeePerGas } =
     useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
+  // This will need to use a different chainId in multinetwork
+  const chainId = useSelector(getCurrentChainId);
+  const networkIdentifier = useSelector(getNetworkIdentifier);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { editGasMode } = useGasFeeContext();
   const [isDefaultSettingsSelected, setDefaultSettingsSelected] = useState(
@@ -42,7 +50,7 @@ const AdvancedGasFeeDefaults = () => {
 
   const handleUpdateDefaultSettings = () => {
     if (isDefaultSettingsSelected) {
-      dispatch(setAdvancedGasFee(null));
+      dispatch(setAdvancedGasFee({ chainId, gasFeePreferences: undefined }));
       setDefaultSettingsSelected(false);
       updateTransactionEventFragment({
         properties: {
@@ -53,8 +61,11 @@ const AdvancedGasFeeDefaults = () => {
     } else {
       dispatch(
         setAdvancedGasFee({
-          maxBaseFee,
-          priorityFee: maxPriorityFeePerGas,
+          chainId,
+          gasFeePreferences: {
+            maxBaseFee,
+            priorityFee: maxPriorityFeePerGas,
+          },
         }),
       );
       updateTransactionEventFragment({
@@ -91,11 +102,7 @@ const AdvancedGasFeeDefaults = () => {
           as="h6"
           color={TextColor.textAlternative}
         >
-          {isDefaultSettingsSelected
-            ? t('advancedGasFeeDefaultOptOut')
-            : t('advancedGasFeeDefaultOptIn', [
-                <strong key="default-value-change">{t('newValues')}</strong>,
-              ])}
+          {t('advancedGasFeeDefaultOptIn', [capitalize(networkIdentifier)])}
         </Text>
       </label>
     </Box>

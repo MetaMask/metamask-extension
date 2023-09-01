@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 
 describe('preferences controller', function () {
@@ -250,24 +251,31 @@ describe('preferences controller', function () {
   });
 
   describe('setAdvancedGasFee', function () {
-    it('should default to null', function () {
-      const state = preferencesController.store.getState();
-      assert.equal(state.advancedGasFee, null);
+    it('should default to an empty object', function () {
+      assert.deepEqual(
+        preferencesController.store.getState().advancedGasFee,
+        {},
+      );
     });
 
     it('should set the setAdvancedGasFee property in state', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.advancedGasFee, null);
+      assert.deepEqual(state.advancedGasFee, {});
       preferencesController.setAdvancedGasFee({
-        maxBaseFee: '1.5',
-        priorityFee: '2',
+        chainId: CHAIN_IDS.GOERLI,
+        gasFeePreferences: {
+          maxBaseFee: '1.5',
+          priorityFee: '2',
+        },
       });
       assert.equal(
-        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
+          .maxBaseFee,
         '1.5',
       );
       assert.equal(
-        preferencesController.store.getState().advancedGasFee.priorityFee,
+        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
+          .priorityFee,
         '2',
       );
     });
