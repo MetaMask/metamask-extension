@@ -1,7 +1,7 @@
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Provider } from 'react-redux';
-import configureStore from '../../../../store/store';
+import configureStore from '../../../store/store';
 import Name from './name';
 
 const addressProposedMock = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
@@ -43,7 +43,7 @@ const storeMock = configureStore({
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  title: 'Components/App/Names/Name',
+  title: 'Components/App/Name',
   component: Name,
   argTypes: {
     value: {

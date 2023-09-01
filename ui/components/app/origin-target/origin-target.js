@@ -7,7 +7,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getProposedNames } from '../../../store/actions';
-import Name from '../names/name/name';
+import Name from '../name/name';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';
 import Identicon from '../../ui/identicon/identicon.component';

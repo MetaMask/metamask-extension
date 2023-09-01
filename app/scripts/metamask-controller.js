@@ -1513,6 +1513,7 @@ export default class MetamaskController extends EventEmitter {
           handleSnapRequest: this.handleSnapRequest.bind(this),
         }),
       ],
+      state: initState.NameController,
     });
 
     this.txController.on('newSwapApproval', (txMeta) => {

@@ -26,7 +26,7 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import Name from '../name/name';
+import Name from '../name';
 import FormComboField from '../../form-combo-field/form-combo-field';
 import { getNameSources } from '../../../../selectors';
 import { setName as saveName } from '../../../../store/actions';

@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
-import { Icon, IconName, IconSize } from '../../../component-library';
-import { shortenAddress } from '../../../../helpers/utils/util';
-import NameDetails from '../name-details/name-details';
-import { useName } from '../../../../hooks/useName';
+import { Icon, IconName, IconSize } from '../../component-library';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { useName } from '../../../hooks/useName';
+import NameDetails from './name-details/name-details';
 
 export interface NameProps {
   value: string;
