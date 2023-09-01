@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Provider } from 'react-redux';
@@ -34,58 +35,65 @@ const storeMock = configureStore({
         },
       },
     },
-    nameProviders: {
-      ens: 'Ethereum Name Service (ENS)',
-      opensea: 'OpenSea',
+    nameSources: {
+      ens: { label: 'Ethereum Name Service (ENS)' },
+      opensea: { label: 'OpenSea' },
     },
   },
 });
 
-// eslint-disable-next-line import/no-anonymous-default-export
+/**
+ * Displays the saved or proposed name for a raw value such as an Ethereum address.<br/><br/>
+ * Proposed names are populated in the state using the `NameController` and the attached `NameProvider` instances.<br/><br/>
+ * These name providers use multiple sources such as ENS, Etherscan, and the Blockchain itself.<br/><br/>
+ * Clicking the component will display a modal to select a proposed name or enter a custom name.
+ */
 export default {
   title: 'Components/App/Name',
   component: Name,
   argTypes: {
     value: {
       control: 'text',
-      table: { category: 'value' },
+      description: 'The raw value to display the name of.',
     },
     type: {
       options: [NameType.ETHEREUM_ADDRESS],
       control: 'select',
-      table: { category: 'type' },
+      description: `The type of value.<br/><br/>
+        Limited to the values in the \`NameType\` enum.`,
     },
     sourcePriority: {
       control: 'object',
-      table: { category: 'sourcePriority' },
+      description: `The order of priority to use when choosing which proposed name to display.<br/><br/>
+         The available source IDs are defined by the \`NameProvider\` instances passed to the \`NameController\`.<br/><br/>
+         Current options include: <ul><li>- ens</li><li>- etherscan</li><li>- lens</li><li>- token</li></ul>`,
+    },
+    disableEdit: {
+      control: 'boolean',
+      description: `Whether to prevent the modal from opening when the component is clicked.`,
     },
   },
   args: {
     value: addressProposedMock,
     type: NameType.ETHEREUM_ADDRESS,
     sourcePriority: ['ens'],
+    disableEdit: false,
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 };
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * A proposed name matching the value and type has been found in the state.<br/><br/>
+ * Which proposed name is displayed is configurable by the `sourcePriority` property.
+ */
 export const DefaultStory = (args) => {
   return <Name {...args} />;
 };
 
-DefaultStory.storyName = 'Default';
+DefaultStory.storyName = 'Proposed Name';
 
-export const ProposedNameStory = () => {
-  return (
-    <Name
-      value={addressProposedMock}
-      type={NameType.ETHEREUM_ADDRESS}
-      sourcePriority={['ens']}
-    />
-  );
-};
-
-ProposedNameStory.storyName = 'Proposed Name';
-
+/** No proposed name matching the value and type has been found in the state. */
 export const NoProposedNameStory = () => {
   return (
     <Name
@@ -98,6 +106,10 @@ export const NoProposedNameStory = () => {
 
 NoProposedNameStory.storyName = 'No Proposed Name';
 
+/**
+ * A name was previously saved for this value and type.<br/><br/>
+ * The component will still display a modal when clicked to edit the name.
+ */
 export const SavedNameStory = () => {
   return (
     <Name
@@ -109,3 +121,19 @@ export const SavedNameStory = () => {
 };
 
 SavedNameStory.storyName = 'Saved Name';
+
+/**
+ * Clicking the component will not display a modal to edit the name.
+ */
+export const EditDisabledStory = () => {
+  return (
+    <Name
+      value={addressSavedNameMock}
+      type={NameType.ETHEREUM_ADDRESS}
+      sourcePriority={['ens']}
+      disableEdit
+    />
+  );
+};
+
+EditDisabledStory.storyName = 'Edit Disabled';
