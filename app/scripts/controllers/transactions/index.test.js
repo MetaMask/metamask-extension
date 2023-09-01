@@ -66,20 +66,18 @@ const MOCK_INTERNAL_ACCOUNT = {
   id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
   address: '0x88bb7F89eB5e5b30D3e15a57C68DBe03C6aCCB21',
   metadata: {
+    name: 'Account 1',
     keyring: {
       type: 'HD Key Tree',
     },
   },
-  name: 'Account 1',
   options: {},
-  supportedMethods: [
+  methods: [
     'personal_sign',
-    'eth_sendTransaction',
     'eth_sign',
     'eth_signTransaction',
     'eth_signTypedData',
     'eth_signTypedData_v1',
-    'eth_signTypedData_v2',
     'eth_signTypedData_v3',
     'eth_signTypedData_v4',
   ],
@@ -395,20 +393,18 @@ describe('Transaction Controller', function () {
       address: selectedAddress,
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
+        name: 'Test Account',
         keyring: {
           type: 'HD Key Tree',
         },
       },
-      name: 'Test Account',
       options: {},
-      supportedMethods: [
+      methods: [
         'personal_sign',
-        'eth_sendTransaction',
         'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData',
         'eth_signTypedData_v1',
-        'eth_signTypedData_v2',
         'eth_signTypedData_v3',
         'eth_signTypedData_v4',
       ],
@@ -1196,20 +1192,18 @@ describe('Transaction Controller', function () {
       address: selectedAddress,
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
+        name: 'Test Account',
         keyring: {
           type: 'HD Key Tree',
         },
       },
-      name: 'Test Account',
       options: {},
-      supportedMethods: [
+      methods: [
         'personal_sign',
-        'eth_sendTransaction',
         'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData',
         'eth_signTypedData_v1',
-        'eth_signTypedData_v2',
         'eth_signTypedData_v3',
         'eth_signTypedData_v4',
       ],
@@ -1685,20 +1679,18 @@ describe('Transaction Controller', function () {
       address: selectedAddress,
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
+        name: 'Test Account',
         keyring: {
           type: 'HD Key Tree',
         },
       },
-      name: 'Test Account',
       options: {},
-      supportedMethods: [
+      methods: [
         'personal_sign',
-        'eth_sendTransaction',
         'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData',
         'eth_signTypedData_v1',
-        'eth_signTypedData_v2',
         'eth_signTypedData_v3',
         'eth_signTypedData_v4',
       ],

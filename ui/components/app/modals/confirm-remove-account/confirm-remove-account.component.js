@@ -13,10 +13,10 @@ export default class ConfirmRemoveAccount extends Component {
     removeAccount: PropTypes.func.isRequired,
     account: PropTypes.shape({
       id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
       balance: PropTypes.string.isRequired,
       metadata: PropTypes.shape({
+        name: PropTypes.string.isRequired,
         snap: PropTypes.shape({
           id: PropTypes.string.isRequired,
           name: PropTypes.string,
@@ -58,7 +58,7 @@ export default class ConfirmRemoveAccount extends Component {
           <span className="confirm-remove-account__account__label">
             {t('name')}
           </span>
-          <span className="account_value">{account.name}</span>
+          <span className="account_value">{account.metadata.name}</span>
         </div>
         <div className="confirm-remove-account__account__address">
           <span className="confirm-remove-account__account__label">

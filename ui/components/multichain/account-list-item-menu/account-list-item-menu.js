@@ -237,14 +237,14 @@ AccountListItemMenu.propTypes = {
    */
   account: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
     metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
       snap: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        name: PropTypes.string,
-        enabled: PropTypes.bool,
+        name: PropTypes.string.isRequired,
+        enabled: PropTypes.bool.isRequired,
       }),
       keyring: PropTypes.shape({
         type: PropTypes.string.isRequired,

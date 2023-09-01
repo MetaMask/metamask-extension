@@ -126,21 +126,19 @@ describe('PermissionController specifications', () => {
                 address: '0x1',
                 id: '21066553-d8c8-4cdc-af33-efc921cd3ca9',
                 metadata: {
+                  name: 'Test Account 1',
                   lastSelected: 1,
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account 1',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -150,21 +148,19 @@ describe('PermissionController specifications', () => {
                 address: '0x3',
                 id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
                 metadata: {
+                  name: 'Test Account 3',
                   lastSelected: 3,
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account 3',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -273,21 +269,19 @@ describe('PermissionController specifications', () => {
                 address: '0x1',
                 id: '21066553-d8c8-4cdc-af33-efc921cd3ca9',
                 metadata: {
+                  name: 'Test Account',
                   lastSelected: 1,
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -297,20 +291,18 @@ describe('PermissionController specifications', () => {
                 address: '0x2',
                 id: '0bd7348e-bdfe-4f67-875c-de831a583857',
                 metadata: {
+                  name: 'Test Account',
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -320,21 +312,19 @@ describe('PermissionController specifications', () => {
                 address: '0x3',
                 id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
                 metadata: {
+                  name: 'Test Account',
                   keyring: {
                     type: 'HD Key Tree',
                   },
                   lastSelected: 3,
                 },
-                name: 'Test Account',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -344,14 +334,14 @@ describe('PermissionController specifications', () => {
                 address: '0x4',
                 id: '0bd7348e-bdfe-4f67-875c-de831a583857',
                 metadata: {
+                  name: 'Test Account',
                   lastSelected: 3,
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
                   'eth_sendTransaction',
                   'eth_sign',
@@ -390,21 +380,19 @@ describe('PermissionController specifications', () => {
                 address: '0x2',
                 id: '0bd7348e-bdfe-4f67-875c-de831a583857',
                 metadata: {
+                  name: 'Test Account',
                   lastSelected: 2,
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -414,21 +402,19 @@ describe('PermissionController specifications', () => {
                 address: '0x3',
                 id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
                 metadata: {
+                  name: 'Test Account',
                   lastSelected: 3,
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -458,21 +444,19 @@ describe('PermissionController specifications', () => {
                 address: '0x1',
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 metadata: {
+                  name: 'Test Account',
                   lastSelected: 1,
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -482,21 +466,19 @@ describe('PermissionController specifications', () => {
                 address: '0x3',
                 id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
                 metadata: {
+                  name: 'Test Account',
                   lastSelected: 3,
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],

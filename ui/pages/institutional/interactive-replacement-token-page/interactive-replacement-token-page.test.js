@@ -114,7 +114,12 @@ const render = ({ newState } = {}) => {
               mockState.metamask.internalAccounts.selectedAccount
             ],
             address,
-            name: accountName,
+            metadata: {
+              ...mockState.metamask.internalAccounts.accounts[
+                mockState.metamask.internalAccounts.selectedAccount
+              ].metadata,
+              name: accountName,
+            },
           },
         },
       },

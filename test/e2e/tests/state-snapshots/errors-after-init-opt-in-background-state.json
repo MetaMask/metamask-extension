@@ -1,6 +1,8 @@
 {
   "AccountTracker": { "accounts": "object" },
-  "AccountsController": "object",
+  "AccountsController": {
+    "internalAccounts": { "accounts": {}, "selectedAccount": "" }
+  },
   "AddressBookController": { "addressBook": "object" },
   "AlertController": {
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
@@ -29,12 +31,12 @@
     "showBetaHeader": false,
     "showProductTour": true,
     "trezorModel": null,
+    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
-    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "serviceWorkerLastActiveTime": 0
   },
   "ApprovalController": {

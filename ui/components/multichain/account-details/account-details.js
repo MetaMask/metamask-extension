@@ -47,7 +47,10 @@ export const AccountDetails = ({ accountId }) => {
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) => getInternalAccount(state, accountId));
-  const { name, address } = account;
+  const {
+    metadata: { name },
+    address,
+  } = account;
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   const [attemptingExport, setAttemptingExport] = useState(false);
 

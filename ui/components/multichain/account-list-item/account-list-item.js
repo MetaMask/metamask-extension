@@ -167,16 +167,17 @@ export const AccountListItem = ({
                 textAlign={TextAlign.Left}
                 ellipsis
               >
-                {account.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                {account.metadata.name.length >
+                MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={account.name}
+                    title={account.metadata.name}
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
-                    {account.name}
+                    {account.metadata.name}
                   </Tooltip>
                 ) : (
-                  account.name
+                  account.metadata.name
                 )}
               </Text>
             </Box>
@@ -239,7 +240,7 @@ export const AccountListItem = ({
         ) : null}
       </Box>
       <ButtonIcon
-        ariaLabel={`${account.name} ${t('options')}`}
+        ariaLabel={`${account.metadata.name} ${t('options')}`}
         iconName={IconName.MoreVertical}
         size={IconSize.Sm}
         ref={setAccountListItemMenuRef}
@@ -276,10 +277,10 @@ AccountListItem.propTypes = {
    */
   account: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
     metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
       snap: PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string,

@@ -23,8 +23,8 @@ import {
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   accountsWithSendEtherInfoSelector,
-  getSelectedAccount,
   getAccountType,
+  getSelectedInternalAccountWithBalance,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
@@ -124,7 +124,7 @@ const SignatureRequest = ({ txData }) => {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   // Used to show a warning if the signing account is not the selected account
   // Largely relevant for contract wallet custodians
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccountWithBalance);
   const mmiActions = mmiActionsFactory();
   const accountType = useSelector(getAccountType);
   const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;

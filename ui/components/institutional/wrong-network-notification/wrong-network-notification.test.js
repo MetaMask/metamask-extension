@@ -33,20 +33,18 @@ describe('Wrong Network Notification', function () {
             address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
+              name: 'Custody Account A',
               keyring: {
                 type: 'Custody',
               },
             },
-            name: 'Custody Account A',
             options: {},
-            supportedMethods: [
+            methods: [
               'personal_sign',
-              'eth_sendTransaction',
               'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData',
               'eth_signTypedData_v1',
-              'eth_signTypedData_v2',
               'eth_signTypedData_v3',
               'eth_signTypedData_v4',
             ],

@@ -12,7 +12,7 @@
     "isUnlocked": false,
     "isAccountMenuOpen": false,
     "isNetworkMenuOpen": false,
-    "internalAccounts": "object",
+    "internalAccounts": { "accounts": {}, "selectedAccount": "" },
     "unapprovedTxs": "object",
     "networkConfigurations": "object",
     "addressBook": "object",

@@ -1,7 +1,7 @@
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseControllerV2 } from '@metamask/base-controller';
-import type { InternalAccount } from '@metamask/eth-snap-keyring';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
+import type { InternalAccount } from '@metamask/keyring-api';
 import type {
   KeyringControllerState,
   KeyringController,
@@ -135,7 +135,7 @@ export class AccountsController extends BaseControllerV2<
           accounts.forEach((account) => {
             const currentAccount =
               currentState.internalAccounts.accounts[account.id];
-            if (currentAccount?.metadata.snap) {
+            if (currentAccount && currentAccount.metadata.snap) {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore this account is guaranteed to have snap metadata
               currentState.internalAccounts.accounts[
@@ -218,12 +218,12 @@ export class AccountsController extends BaseControllerV2<
     if (!accountId) {
       return {
         id: '',
-        name: '',
         address: '',
         options: {},
-        supportedMethods: [],
+        methods: [],
         type: 'eip155:eoa',
         metadata: {
+          name: '',
           keyring: {
             type: '',
           },
@@ -248,6 +248,8 @@ export class AccountsController extends BaseControllerV2<
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore Type instantiation is excessively deep and possibly infinite.
     this.update((currentState: AccountsControllerState) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore lastSelected will be added in 0.2.2
       currentState.internalAccounts.accounts[account.id].metadata.lastSelected =
         Date.now();
       currentState.internalAccounts.selectedAccount = account.id;
@@ -262,7 +264,7 @@ export class AccountsController extends BaseControllerV2<
     if (
       this.listAccounts().find(
         (internalAccount) =>
-          internalAccount.name === accountName &&
+          internalAccount.metadata.name === accountName &&
           internalAccount.id !== accountId,
       )
     ) {
@@ -272,7 +274,10 @@ export class AccountsController extends BaseControllerV2<
     this.update((currentState: AccountsControllerState) => {
       currentState.internalAccounts.accounts[accountId] = {
         ...account,
-        name: accountName,
+        metadata: {
+          ...account.metadata,
+          name: accountName,
+        },
       };
     });
   }
@@ -313,11 +318,15 @@ export class AccountsController extends BaseControllerV2<
 
       internalAccountMap[internalAccount.id] = {
         ...internalAccount,
-        name: existingAccount
-          ? existingAccount.name
-          : `${keyringTypeName} ${keyringAccountIndex + 1}`,
+
         metadata: {
           ...internalAccount.metadata,
+          name:
+            existingAccount && existingAccount.metadata.name !== ''
+              ? existingAccount.metadata.name
+              : `${keyringTypeName} ${keyringAccountIndex + 1}`,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore lastSelected will be added in 0.2.2
           lastSelected: existingAccount?.metadata?.lastSelected,
         },
       };
@@ -354,20 +363,26 @@ export class AccountsController extends BaseControllerV2<
         snap: {
           id: snapId,
           enabled: true,
+          name: '',
         },
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore snap keyring not updated yet
+        name: '',
         keyring: {
           type: (snapKeyring as SnapKeyring).type,
         },
       };
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore lastSelected will be added in 0.2.2
     return snapAccounts;
   }
 
   // Note: listLegacyAccounts is a temporary method until the keyrings all implement the InternalAccount interface
-  async #listLegacyAccounts(): Promise<Omit<InternalAccount, 'name'>[]> {
+  async #listLegacyAccounts(): Promise<InternalAccount[]> {
     const addresses = await this.getAccounts();
-    const internalAccounts: Omit<InternalAccount, 'name'>[] = [];
+    const internalAccounts: InternalAccount[] = [];
     for (const address of addresses) {
       const keyring = await this.getKeyringForAccount(address);
       const v4options = {
@@ -378,19 +393,18 @@ export class AccountsController extends BaseControllerV2<
         id: uuid(v4options),
         address,
         options: {},
-        supportedMethods: [
+        methods: [
           'personal_sign',
-          'eth_sendTransaction',
           'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData',
           'eth_signTypedData_v1',
-          'eth_signTypedData_v2',
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
         metadata: {
+          name: '',
           keyring: {
             type: (keyring as any).type as string,
           },
@@ -411,7 +425,11 @@ export class AccountsController extends BaseControllerV2<
       .sort((accountA, accountB) => {
         // sort by lastSelected descending
         return (
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           (accountB.metadata?.lastSelected ?? 0) -
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           (accountA.metadata?.lastSelected ?? 0)
         );
       })[0];

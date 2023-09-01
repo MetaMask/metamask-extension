@@ -125,13 +125,13 @@ const TEST_INTERNAL_ACCOUNT = {
   id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
   address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   metadata: {
+    name: 'Account 1',
     keyring: {
       type: 'HD Key Tree',
     },
   },
-  name: 'Account 1',
   options: {},
-  supportedMethods: [
+  methods: [
     'personal_sign',
     'eth_sendTransaction',
     'eth_sign',
@@ -540,22 +540,20 @@ describe('MetaMaskController', function () {
           id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           options: {},
-          supportedMethods: [
+          methods: [
             'personal_sign',
-            'eth_sendTransaction',
             'eth_sign',
             'eth_signTransaction',
             'eth_signTypedData',
             'eth_signTypedData_v1',
-            'eth_signTypedData_v2',
             'eth_signTypedData_v3',
             'eth_signTypedData_v4',
           ],
           type: 'eip155:eoa',
           metadata: {
+            name: DEFAULT_LABEL,
             keyring: { type: 'HD Key Tree' },
           },
-          name: DEFAULT_LABEL,
         });
 
         metamaskController.setAccountName(testAccount.id, 'Account Foo');
@@ -575,22 +573,20 @@ describe('MetaMaskController', function () {
           id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
           address: TEST_ADDRESS,
           options: {},
-          supportedMethods: [
+          methods: [
             'personal_sign',
-            'eth_sendTransaction',
             'eth_sign',
             'eth_signTransaction',
             'eth_signTypedData',
             'eth_signTypedData_v1',
-            'eth_signTypedData_v2',
             'eth_signTypedData_v3',
             'eth_signTypedData_v4',
           ],
           type: 'eip155:eoa',
           metadata: {
+            name: 'Account Foo',
             keyring: { type: 'HD Key Tree' },
           },
-          name: 'Account Foo',
         });
 
         startTime = Date.now();
@@ -621,22 +617,20 @@ describe('MetaMaskController', function () {
           id: 'f73954ab-4605-459c-b0ff-23978b190709',
           address: TEST_ADDRESS_ALT,
           options: {},
-          supportedMethods: [
+          methods: [
             'personal_sign',
-            'eth_sendTransaction',
             'eth_sign',
             'eth_signTransaction',
             'eth_signTypedData',
             'eth_signTypedData_v1',
-            'eth_signTypedData_v2',
             'eth_signTypedData_v3',
             'eth_signTypedData_v4',
           ],
           type: 'eip155:eoa',
           metadata: {
+            name: DEFAULT_LABEL,
             keyring: { type: 'HD Key Tree' },
           },
-          name: DEFAULT_LABEL,
         });
       });
 
@@ -678,22 +672,20 @@ describe('MetaMaskController', function () {
           id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
           address: TEST_ADDRESS,
           options: {},
-          supportedMethods: [
+          methods: [
             'personal_sign',
-            'eth_sendTransaction',
             'eth_sign',
             'eth_signTransaction',
             'eth_signTypedData',
             'eth_signTypedData_v1',
-            'eth_signTypedData_v2',
             'eth_signTypedData_v3',
             'eth_signTypedData_v4',
           ],
           type: 'eip155:eoa',
           metadata: {
+            name: DEFAULT_LABEL,
             keyring: { type: 'HD Key Tree' },
           },
-          name: DEFAULT_LABEL,
         });
       });
     });

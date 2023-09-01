@@ -1,7 +1,7 @@
 import { NetworkType } from '@metamask/controller-utils';
 import type { BlockTracker, NetworkState } from '@metamask/network-controller';
 
-import { InternalAccount } from '@metamask/eth-snap-keyring';
+import { InternalAccount } from '@metamask/keyring-api';
 import {
   TransactionMeta,
   TransactionStatus,
@@ -27,20 +27,18 @@ const INTERNAL_ACCOUNT_MOCK: InternalAccount = {
   address: '0x1',
   id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
   metadata: {
+    name: 'Test Account',
     keyring: {
       type: 'HD Key Tree',
     },
   },
-  name: 'Test Account',
   options: {},
-  supportedMethods: [
+  methods: [
     'personal_sign',
-    'eth_sendTransaction',
     'eth_sign',
     'eth_signTransaction',
     'eth_signTypedData',
     'eth_signTypedData_v1',
-    'eth_signTypedData_v2',
     'eth_signTypedData_v3',
     'eth_signTypedData_v4',
   ],

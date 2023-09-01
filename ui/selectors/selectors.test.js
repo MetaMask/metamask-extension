@@ -467,20 +467,18 @@ describe('Selectors', () => {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
+        name: 'Test Account',
         keyring: {
           type: 'HD Key Tree',
         },
       },
-      name: 'Test Account',
       options: {},
-      supportedMethods: [
+      methods: [
         'personal_sign',
-        'eth_sendTransaction',
         'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData',
         'eth_signTypedData_v1',
-        'eth_signTypedData_v2',
         'eth_signTypedData_v3',
         'eth_signTypedData_v4',
       ],
@@ -575,7 +573,9 @@ describe('Selectors', () => {
     expect(accountsWithSendEther[0].address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
-    expect(accountsWithSendEther[0].name).toStrictEqual('Test Account');
+    expect(accountsWithSendEther[0].metadata.name).toStrictEqual(
+      'Test Account',
+    );
   });
 
   it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', () => {
@@ -587,7 +587,9 @@ describe('Selectors', () => {
     expect(currentAccountwithSendEther.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
-    expect(currentAccountwithSendEther.name).toStrictEqual('Test Account');
+    expect(currentAccountwithSendEther.metadata.name).toStrictEqual(
+      'Test Account',
+    );
   });
 
   it('#getGasIsLoading', () => {

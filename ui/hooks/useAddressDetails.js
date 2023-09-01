@@ -28,7 +28,7 @@ const useAddressDetails = (toAddress) => {
     return { toName: addressBookEntryObject.name, isTrusted: true };
   }
   if (toAccount) {
-    return { toName: toAccount.name, isTrusted: true };
+    return { toName: toAccount.metadata.name, isTrusted: true };
   }
   if (tokenList[toAddress?.toLowerCase()]?.name) {
     return {

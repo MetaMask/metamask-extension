@@ -50,7 +50,7 @@ export const ConnectedSiteMenu = ({
         title={
           status === STATUS_NOT_CONNECTED
             ? t('statusNotConnectedAccount')
-            : `${selectedAccount?.name} ${text}`
+            : `${selectedAccount?.metadata.name} ${text}`
         }
         data-testid="multichain-connected-site-menu__tooltip"
         position="bottom"

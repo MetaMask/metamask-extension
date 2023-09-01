@@ -32,6 +32,8 @@ const SignatureRequestHeader = ({ txData }) => {
   } = txData;
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const fromAccount = getAccountByAddress(allAccounts, from);
+
+  console.log(333, fromAccount);
   const nativeCurrency = useSelector(getNativeCurrency);
   const currentCurrency = useSelector(getCurrentCurrency);
   const currentChainId = useSelector(getCurrentChainId);
@@ -70,7 +72,7 @@ const SignatureRequestHeader = ({ txData }) => {
   return (
     <NetworkAccountBalanceHeader
       networkName={currentNetwork}
-      accountName={fromAccount.name}
+      accountName={fromAccount.metadata.name}
       accountBalance={balanceInBaseAsset}
       tokenName={
         conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency

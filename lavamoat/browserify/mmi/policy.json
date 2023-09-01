@@ -1305,27 +1305,9 @@
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-api": {
       "packages": {
-        "@metamask/eth-snap-keyring>@metamask/keyring-api>@metamask/utils": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-api>uuid": true,
+        "@metamask/eth-snap-keyring>@metamask/utils": true,
+        "@metamask/eth-snap-keyring>uuid": true,
         "superstruct": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/keyring-api>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/keyring-api>uuid": {
-      "globals": {
-        "crypto": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/utils": {

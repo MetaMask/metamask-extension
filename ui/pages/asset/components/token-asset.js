@@ -27,7 +27,7 @@ export default function TokenAsset({ token }) {
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAccountName = selectedAccount.name;
+  const selectedAccountName = selectedAccount.metadata.name;
   const selectedAddress = selectedAccount.address;
   const history = useHistory();
   const tokenTrackerLink = getTokenTrackerLink(

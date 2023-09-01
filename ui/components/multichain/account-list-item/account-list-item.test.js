@@ -33,7 +33,7 @@ const render = (props = {}) => {
 describe('AccountListItem', () => {
   it('renders AccountListItem component and shows account name, address, and balance', () => {
     const { container } = render();
-    expect(screen.getByText(account.name)).toBeInTheDocument();
+    expect(screen.getByText(account.metadata.name)).toBeInTheDocument();
     expect(
       screen.getByText(shortenAddress(toChecksumHexAddress(account.address))),
     ).toBeInTheDocument();
@@ -54,7 +54,10 @@ describe('AccountListItem', () => {
       selected: true,
       account: {
         ...account,
-        name: 'This is a super long name that requires tooltip',
+        metadata: {
+          ...account.metadata,
+          name: 'This is a super long name that requires tooltip',
+        },
       },
     });
     expect(
@@ -110,20 +113,18 @@ describe('AccountListItem', () => {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
+          name: 'Snap Account',
           keyring: {
             type: 'Snap Keyring',
           },
         },
-        name: 'Snap Account',
         options: {},
-        supportedMethods: [
+        methods: [
           'personal_sign',
-          'eth_sendTransaction',
           'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData',
           'eth_signTypedData_v1',
-          'eth_signTypedData_v2',
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
         ],

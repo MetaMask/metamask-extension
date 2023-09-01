@@ -614,7 +614,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
-      isUnlocked: this.isUnlocked.bind(this),
+      isUnlocked: this.isUnlocked.bind(this)
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
       preferencesStore: this.preferencesController.store,
@@ -3272,7 +3272,7 @@ export default class MetamaskController extends EventEmitter {
 
   setAccountName(accountId, accountName) {
     const accounts = this.accountsController.listAccounts();
-    if (accounts.some((account) => account.name === accountName)) {
+    if (accounts.some((account) => account.metadata.name === accountName)) {
       throw new Error(
         `An account with the name ${accountName} already exists.`,
       );

@@ -169,21 +169,19 @@ const jsonData = JSON.stringify({
         address: '0x129af01f4b770b30615f049790e1e206ebaa7b10',
         id: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
         metadata: {
+          name: 'Account 1',
           keyring: {
             type: 'HD Key Tree',
           },
           lastSelected: 1693289751176,
         },
-        name: 'Account 1',
         options: {},
-        supportedMethods: [
+        methods: [
           'personal_sign',
-          'eth_sendTransaction',
           'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData',
           'eth_signTypedData_v1',
-          'eth_signTypedData_v2',
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
         ],

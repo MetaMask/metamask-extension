@@ -93,7 +93,10 @@ export default function reduceMetamask(state = initialState, action) {
           ...metamaskState.internalAccounts.accounts,
           [accountId]: {
             ...metamaskState.internalAccounts.accounts[accountId],
-            name: label,
+            metadata: {
+              ...metamaskState.internalAccounts.accounts[accountId].metadata,
+              name: label,
+            },
           },
         },
       };

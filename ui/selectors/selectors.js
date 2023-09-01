@@ -505,7 +505,7 @@ export function getAccountName(accounts, accountAddress) {
   const account = accounts.find((internalAccount) =>
     isEqualCaseInsensitive(internalAccount.address, accountAddress),
   );
-  return account && account.name !== '' ? account.name : '';
+  return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
 export function getFirstInternalAccountByAddress(state, address) {
@@ -541,7 +541,7 @@ export function accountsWithSendEtherInfoSelector(state) {
 
 export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
-    ({ address, name, balance }) => ({
+    ({ address, balance, metadata: { name } }) => ({
       address,
       addressLabel: `${
         name.length < TRUNCATED_NAME_CHAR_LIMIT

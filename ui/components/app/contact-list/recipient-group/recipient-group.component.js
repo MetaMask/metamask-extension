@@ -40,43 +40,47 @@ export default function RecipientGroup({
           <Text variant={TextVariant.bodyMd}>{label}</Text>
         </Box>
       )}
-      {items.map(({ address, name }) => (
-        <Box
-          key={address}
-          onClick={() => onSelect(address, name)}
-          className={classnames({
-            'send__select-recipient-wrapper__group-item': !addressesEqual(
-              address,
-              selectedAddress,
-            ),
-            'send__select-recipient-wrapper__group-item--selected':
-              addressesEqual(address, selectedAddress),
-          })}
-          padding={4}
-        >
-          <Identicon address={address} diameter={28} />
+      {items.map((item) => {
+        const { address } = item;
+        const name = item.name ? item.name : item.metadata.name; // item could be an address book entry or internal account
+        return (
           <Box
-            className="send__select-recipient-wrapper__group-item__content"
-            data-testid="recipient"
+            key={address}
+            onClick={() => onSelect(address, name)}
+            className={classnames({
+              'send__select-recipient-wrapper__group-item': !addressesEqual(
+                address,
+                selectedAddress,
+              ),
+              'send__select-recipient-wrapper__group-item--selected':
+                addressesEqual(address, selectedAddress),
+            })}
+            padding={4}
           >
-            <Text
-              variant={TextVariant.bodyLgMedium}
-              className="send__select-recipient-wrapper__group-item__title"
+            <Identicon address={address} diameter={28} />
+            <Box
+              className="send__select-recipient-wrapper__group-item__content"
+              data-testid="recipient"
             >
-              {name || ellipsify(address)}
-            </Text>
-            {name && (
               <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-                className="send__select-recipient-wrapper__group-item__subtitle"
+                variant={TextVariant.bodyLgMedium}
+                className="send__select-recipient-wrapper__group-item__title"
               >
-                {ellipsify(address)}
+                {name || ellipsify(address)}
               </Text>
-            )}
+              {name && (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                  className="send__select-recipient-wrapper__group-item__subtitle"
+                >
+                  {ellipsify(address)}
+                </Text>
+              )}
+            </Box>
           </Box>
-        </Box>
-      ))}
+        );
+      })}
     </Box>
   );
 }
@@ -86,7 +90,9 @@ RecipientGroup.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       address: PropTypes.string.isRequired,
-      name: PropTypes.string,
+      metadata: PropTypes.shape({
+        name: PropTypes.string,
+      }),
     }),
   ),
   onSelect: PropTypes.func.isRequired,

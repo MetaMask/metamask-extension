@@ -16,8 +16,9 @@ import {
   getMemoizedAddressBook,
   getPreferences,
   getSelectedAccount,
-  getInternalAccounts,
+  getSelectedInternalAccountWithBalance,
   getTotalUnapprovedMessagesCount,
+  getInternalAccounts,
   unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
 import SignatureRequest from './signature-request';
@@ -55,20 +56,18 @@ const mockStore = {
           address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
           id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           metadata: {
+            name: 'John Doe',
             keyring: {
               type: 'HD Key Tree',
             },
           },
-          name: 'Account 1',
           options: {},
-          supportedMethods: [
+          methods: [
             'personal_sign',
-            'eth_sendTransaction',
             'eth_sign',
             'eth_signTransaction',
             'eth_signTypedData',
             'eth_signTypedData_v1',
-            'eth_signTypedData_v2',
             'eth_signTypedData_v3',
             'eth_signTypedData_v4',
           ],
@@ -115,10 +114,31 @@ const generateUseSelectorRouter = (opts) => (selector) => {
       ];
     case getInternalAccounts:
       return Object.values(opts.metamask.internalAccounts.accounts);
+    case getSelectedInternalAccountWithBalance:
+      return {
+        ...opts.metamask.internalAccounts.accounts[
+          opts.metamask.internalAccounts.selectedAccount
+        ],
+        balance:
+          opts.metamask.accounts[
+            opts.metamask.internalAccounts.accounts[
+              opts.metamask.internalAccounts.selectedAccount
+            ].address
+          ]?.balance ?? 0,
+      };
     case getMemoizedAddressBook:
       return [];
     case accountsWithSendEtherInfoSelector:
-      return Object.values(opts.metamask.accounts);
+      return Object.values(opts.metamask.internalAccounts.accounts).map(
+        (internalAccount) => {
+          return {
+            ...internalAccount,
+            ...(opts.metamask.accounts[internalAccount.address] ?? {}),
+            balance:
+              opts.metamask.accounts[internalAccount.address]?.balance ?? 0,
+          };
+        },
+      );
     case unconfirmedTransactionsHashSelector:
       return {};
     default:
@@ -456,34 +476,58 @@ describe('Signature Request Component', () => {
                 balance: '0x0',
                 name: 'Account 1',
               },
+              '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
+                address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+                balance: '0x0',
+                name: 'Account 2',
+              },
             },
             internalAccounts: {
               accounts: {
-                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                'b7e813d6-e31c-4bad-8615-8d4eff9f44f1': {
                   address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  id: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
                   metadata: {
+                    name: 'Account 1',
                     keyring: {
                       type: 'HD Key Tree',
                     },
                   },
-                  name: 'Account 1',
                   options: {},
-                  supportedMethods: [
+                  methods: [
                     'personal_sign',
-                    'eth_sendTransaction',
                     'eth_sign',
                     'eth_signTransaction',
                     'eth_signTypedData',
                     'eth_signTypedData_v1',
-                    'eth_signTypedData_v2',
+                    'eth_signTypedData_v3',
+                    'eth_signTypedData_v4',
+                  ],
+                  type: 'eip155:eoa',
+                },
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Account 2',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [
+                    'personal_sign',
+                    'eth_sign',
+                    'eth_signTransaction',
+                    'eth_signTypedData',
+                    'eth_signTypedData_v1',
                     'eth_signTypedData_v3',
                     'eth_signTypedData_v4',
                   ],
                   type: 'eip155:eoa',
                 },
               },
-              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              selectedAccount: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
             },
           },
         }),

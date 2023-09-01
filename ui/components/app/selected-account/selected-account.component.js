@@ -106,7 +106,9 @@ class SelectedAccount extends Component {
               copyToClipboard(checksummedAddress);
             }}
           >
-            <div className="selected-account__name">{selectedAccount.name}</div>
+            <div className="selected-account__name">
+              {selectedAccount.metadata.name}
+            </div>
             <div className="selected-account__address">
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

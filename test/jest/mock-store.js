@@ -236,20 +236,18 @@ export const createSwapsMockStore = () => {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
+              name: 'Test Account',
               keyring: {
                 type: 'HD Key Tree',
               },
             },
-            name: 'Test Account',
             options: {},
-            supportedMethods: [
+            methods: [
               'personal_sign',
-              'eth_sendTransaction',
               'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData',
               'eth_signTypedData_v1',
-              'eth_signTypedData_v2',
               'eth_signTypedData_v3',
               'eth_signTypedData_v4',
             ],
@@ -259,20 +257,18 @@ export const createSwapsMockStore = () => {
             address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
             id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
             metadata: {
+              name: 'Test Account 2',
               keyring: {
                 type: 'HD Key Tree',
               },
             },
-            name: 'Test Account 2',
             options: {},
-            supportedMethods: [
+            methods: [
               'personal_sign',
-              'eth_sendTransaction',
               'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData',
               'eth_signTypedData_v1',
-              'eth_signTypedData_v2',
               'eth_signTypedData_v3',
               'eth_signTypedData_v4',
             ],
@@ -282,20 +278,18 @@ export const createSwapsMockStore = () => {
             address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
             id: '15e69915-2a1a-4019-93b3-916e11fd432f',
             metadata: {
+              name: 'Ledger Hardware 2',
               keyring: {
                 type: 'Ledger Hardware',
               },
             },
-            name: 'Ledger Hardware 2',
             options: {},
-            supportedMethods: [
+            methods: [
               'personal_sign',
-              'eth_sendTransaction',
               'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData',
               'eth_signTypedData_v1',
-              'eth_signTypedData_v2',
               'eth_signTypedData_v3',
               'eth_signTypedData_v4',
             ],
@@ -305,20 +299,18 @@ export const createSwapsMockStore = () => {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             id: '784225f4-d30b-4e77-a900-c8bbce735b88',
             metadata: {
+              name: 'Test Account 3',
               keyring: {
                 type: 'HD Key Tree',
               },
             },
-            name: 'Test Account 3',
             options: {},
-            supportedMethods: [
+            methods: [
               'personal_sign',
-              'eth_sendTransaction',
               'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData',
               'eth_signTypedData_v1',
-              'eth_signTypedData_v2',
               'eth_signTypedData_v3',
               'eth_signTypedData_v4',
             ],

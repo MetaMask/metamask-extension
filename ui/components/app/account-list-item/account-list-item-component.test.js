@@ -12,8 +12,25 @@ describe('AccountListItem Component', () => {
     const props = {
       account: {
         address: 'mockAddress',
-        name: 'mockName',
         balance: 'mockBalance',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'mockName',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
       },
       className: 'mockClassName',
       displayAddress: false,
@@ -58,6 +75,25 @@ describe('AccountListItem Component', () => {
         ...props,
         account: {
           address: 'addressButNoName',
+          balance: 'mockBalance',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: '',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [
+            'personal_sign',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
         },
       };
 

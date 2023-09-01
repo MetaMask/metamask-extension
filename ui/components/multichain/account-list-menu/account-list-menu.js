@@ -72,7 +72,7 @@ export const AccountListMenu = ({ onClose }) => {
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: ['name', 'address', 'id'],
+      keys: ['metadata.name', 'address', 'id'],
     });
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);

@@ -7,7 +7,10 @@ import {
 import { BackgroundColor } from '../constants/design-system';
 import { getAccountNameErrorMessage, getAvatarNetworkColor } from './accounts';
 
-const mockAccounts = [{ name: 'Account 1' }, { name: 'Account 2' }];
+const mockAccounts = [
+  { metadata: { name: 'Account 1' } },
+  { metadata: { name: 'Account 2' } },
+];
 
 const mockLocalization = { t: jest.fn().mockReturnValue('Account') };
 

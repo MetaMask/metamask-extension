@@ -27,20 +27,18 @@ const defaultState = {
           address: '0xFirstAddress',
           id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           metadata: {
+            name: 'Test Account',
             keyring: {
               type: 'HD Key Tree',
             },
           },
-          name: 'Test Account',
           options: {},
-          supportedMethods: [
+          methods: [
             'personal_sign',
-            'eth_sendTransaction',
             'eth_sign',
             'eth_signTransaction',
             'eth_signTypedData',
             'eth_signTypedData_v1',
-            'eth_signTypedData_v2',
             'eth_signTypedData_v3',
             'eth_signTypedData_v4',
           ],
@@ -268,20 +266,18 @@ describe('Actions', () => {
                 address: '0xAnotherAddress',
                 id: '22497cc9-e791-42b8-adef-2f13ef216b86',
                 metadata: {
+                  name: 'Test Account 2',
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account 2',
                 options: {},
-                supportedMethods: [
+                methods: [
                   'personal_sign',
-                  'eth_sendTransaction',
                   'eth_sign',
                   'eth_signTransaction',
                   'eth_signTypedData',
                   'eth_signTypedData_v1',
-                  'eth_signTypedData_v2',
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
@@ -502,20 +498,18 @@ describe('Actions', () => {
               address: '0xNewAddress',
               id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb5',
               metadata: {
+                name: 'new name',
                 keyring: {
                   type: 'HD Key Tree',
                 },
               },
-              name: 'new name',
               options: {},
-              supportedMethods: [
+              methods: [
                 'personal_sign',
-                'eth_sendTransaction',
                 'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData',
                 'eth_signTypedData_v1',
-                'eth_signTypedData_v2',
                 'eth_signTypedData_v3',
                 'eth_signTypedData_v4',
               ],
@@ -1997,20 +1991,18 @@ describe('Actions', () => {
                   address: '0xFirstAddress',
                   id: '8e110453-2231-4e62-82de-29b913dfef4b',
                   metadata: {
+                    name: 'Test Account 2',
                     keyring: {
                       type: 'HD Key Tree',
                     },
                   },
-                  name: 'Test Account 2',
                   options: {},
-                  supportedMethods: [
+                  methods: [
                     'personal_sign',
-                    'eth_sendTransaction',
                     'eth_sign',
                     'eth_signTransaction',
                     'eth_signTypedData',
                     'eth_signTypedData_v1',
-                    'eth_signTypedData_v2',
                     'eth_signTypedData_v3',
                     'eth_signTypedData_v4',
                   ],

@@ -281,7 +281,7 @@ export const AppHeader = ({ location }) => {
               {internalAccount ? (
                 <AccountPicker
                   address={internalAccount.address}
-                  name={internalAccount.name}
+                  name={internalAccount.metadata.name}
                   onClick={() => {
                     dispatch(toggleAccountMenu());
 

@@ -7,7 +7,11 @@ import SignatureRequestHeader from './signature-request-header.component';
 describe('SignatureRequestHeader', () => {
   const store = configureMockStore()(mockState);
   it('renders correctly with fromAccount', () => {
-    const fromAccount = { address: '0x' };
+    const fromAccount = {
+      address: '0x',
+      metadata: { name: '' },
+      balance: '0x',
+    };
 
     const { container } = renderWithProvider(
       <SignatureRequestHeader fromAccount={fromAccount} />,

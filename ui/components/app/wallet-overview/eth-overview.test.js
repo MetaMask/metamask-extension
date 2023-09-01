@@ -54,20 +54,18 @@ describe('EthOverview', () => {
             address: '0x1',
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
+              name: 'Account 1',
               keyring: {
                 type: KeyringType.imported,
               },
             },
-            name: 'Account 1',
             options: {},
-            supportedMethods: [
+            methods: [
               'personal_sign',
-              'eth_sendTransaction',
               'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData',
               'eth_signTypedData_v1',
-              'eth_signTypedData_v2',
               'eth_signTypedData_v3',
               'eth_signTypedData_v4',
             ],
@@ -77,20 +75,18 @@ describe('EthOverview', () => {
             address: '0x2',
             id: 'e9b992f9-e151-4317-b8b7-c771bb73dd02',
             metadata: {
+              name: 'Account 2',
               keyring: {
                 type: KeyringType.imported,
               },
             },
-            name: 'Account 2',
             options: {},
-            supportedMethods: [
+            methods: [
               'personal_sign',
-              'eth_sendTransaction',
               'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData',
               'eth_signTypedData_v1',
-              'eth_signTypedData_v2',
               'eth_signTypedData_v3',
               'eth_signTypedData_v4',
             ],

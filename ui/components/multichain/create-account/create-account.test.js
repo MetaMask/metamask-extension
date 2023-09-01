@@ -12,22 +12,20 @@ const render = (props = { onActionComplete: () => jest.fn() }) => {
 
 const mockInternalAccount = {
   id: '0179ecc1-19c2-4c78-8df9-e08b604665e9',
-  name: 'test',
   address: '0x1',
   metadata: {
+    name: 'test',
     keyring: {
       type: 'HD Key Tree',
     },
   },
   options: {},
-  supportedMethods: [
+  methods: [
     'personal_sign',
-    'eth_sendTransaction',
     'eth_sign',
     'eth_signTransaction',
     'eth_signTypedData',
     'eth_signTypedData_v1',
-    'eth_signTypedData_v2',
     'eth_signTypedData_v3',
     'eth_signTypedData_v4',
   ],

@@ -81,7 +81,9 @@ export default function NftDetails({ nft }) {
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
     isEqualCaseInsensitive(contractAddress, address),
   )?.name;
-  const { name: selectedAccountName } = useSelector(getSelectedInternalAccount);
+  const {
+    metadata: { name: selectedAccountName },
+  } = useSelector(getSelectedInternalAccount);
   const nftImageAlt = getNftImageAlt(nft);
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
 

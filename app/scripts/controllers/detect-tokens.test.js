@@ -252,13 +252,13 @@ describe('DetectTokensController', function () {
               address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
               id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
               metadata: {
+                name: 'Account 1',
                 keyring: {
                   type: 'HD Key Tree',
                 },
               },
-              name: 'Account 1',
               options: {},
-              supportedMethods: [
+              methods: [
                 'personal_sign',
                 'eth_sendTransaction',
                 'eth_sign',
@@ -275,20 +275,18 @@ describe('DetectTokensController', function () {
               address: '0xbc86727e770de68b1060c91f6bb6945c73e10388',
               id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
               metadata: {
+                name: 'Account 2',
                 keyring: {
                   type: 'HD Key Tree',
                 },
               },
-              name: 'Account 2',
               options: {},
-              supportedMethods: [
+              methods: [
                 'personal_sign',
-                'eth_sendTransaction',
                 'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData',
                 'eth_signTypedData_v1',
-                'eth_signTypedData_v2',
                 'eth_signTypedData_v3',
                 'eth_signTypedData_v4',
               ],

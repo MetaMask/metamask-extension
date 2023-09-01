@@ -145,7 +145,10 @@ const mapStateToProps = (state, ownProps) => {
     state,
     fromAddress,
   );
-  const { name: fromName, balance } = fromAccount;
+  const {
+    metadata: { name: fromName },
+    balance,
+  } = fromAccount;
 
   const isSendingAmount =
     type === TransactionType.simpleSend || !isEmptyHexString(amount);
@@ -159,7 +162,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenList = getTokenList(state);
 
   const toName =
-    getFirstInternalAccountByAddress(state, toAddress)?.name ||
+    getFirstInternalAccountByAddress(state, toAddress)?.metadata.name ||
     tokenList[toAddress?.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
