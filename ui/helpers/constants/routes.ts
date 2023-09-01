@@ -50,6 +50,7 @@ const NOTIFICATIONS_ROUTE = '/notifications';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 const ADD_SNAP_ACCOUNT_ROUTE = '/add-snap-account';
+const CREATE_SNAP_ACCOUNT_ROUTE = '/create-snap-account';
 ///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
@@ -135,6 +136,7 @@ const PATH_NAME_MAP = {
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   [ADD_SNAP_ACCOUNT_ROUTE]: 'Add Snap Account List Page',
   [`${ADD_SNAP_ACCOUNT_ROUTE}/:snapId`]: `Add Snap Account Page`,
+  [CREATE_SNAP_ACCOUNT_ROUTE]: 'Create Snap Account Page',
   ///: END:ONLY_INCLUDE_IN
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
@@ -252,6 +254,7 @@ export {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
+  CREATE_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
