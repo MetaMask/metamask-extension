@@ -348,7 +348,7 @@ export default class AdvancedTab extends PureComponent {
     const { setAutoLockTimeLimit } = this.props;
 
     return (
-      <div
+      <Box
         ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
@@ -386,7 +386,7 @@ export default class AdvancedTab extends PureComponent {
             </Button>
           </div>
         </div>
-      </div>
+      </Box>
     );
   }
 
