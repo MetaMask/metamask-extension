@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
@@ -32,6 +38,7 @@ import { getNameSources } from '../../../../selectors';
 import { setName as saveName } from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
+import { I18nContext } from '../../../../contexts/i18n';
 
 export interface NameDetailsProps {
   onClose: () => void;
@@ -49,6 +56,7 @@ export default function NameDetails({
   const [name, setName] = useState('');
   const [selectedSourceId, setSelectedSourceId] = useState(undefined);
   const dispatch = useDispatch();
+  const t = useContext(I18nContext);
 
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
     boolean,
@@ -113,7 +121,7 @@ export default function NameDetails({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader onClose={handleClose} onBack={handleClose}>
-            {hasSavedName ? 'Saved address' : 'Unknown address'}
+            {hasSavedName ? t('nameModalTitleSaved') : t('nameModalTitleNew')}
           </ModalHeader>
           <div style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}>
             <Name
@@ -123,25 +131,17 @@ export default function NameDetails({
               disableEdit
             />
           </div>
-          {!hasSavedName && (
-            <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-              You are interacting with an unknown contract address. If you trust
-              this author, set a personal display name to identify it going
-              forward.
-            </Text>
-          )}
-          {hasSavedName && (
-            <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-              Interactions with this address will always be identified using
-              this personal display name.
-            </Text>
-          )}
+          <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
+            {hasSavedName
+              ? t('nameInstructionsSaved')
+              : t('nameInstructionsNew')}
+          </Text>
           <hr className="name-details__line" />
           {/* @ts-ignore */}
           <FormTextField
             id="address"
             className="name-details__address"
-            label="Contract address"
+            label={t('nameAddressLabel')}
             value={value}
             marginBottom={4}
             disabled
@@ -152,7 +152,7 @@ export default function NameDetails({
                 size={ButtonIconSize.Sm}
                 onClick={() => handleCopyAddress(value)}
                 color={IconColor.iconMuted}
-                ariaLabel="copy"
+                ariaLabel={t('copyAddress')}
               />
             }
           />
@@ -162,10 +162,10 @@ export default function NameDetails({
             marginBottom={2}
             className="name-details__display-name"
           >
-            Display name
+            {t('nameLabel')}
             <FormComboField
               options={proposedNameOptions}
-              placeholder="Set a personal display name..."
+              placeholder={t('nameSetPlaceholder')}
               onChange={handleNameChange}
               onOptionClick={handleProposedNameClick}
               value={name}
@@ -179,7 +179,7 @@ export default function NameDetails({
             width={BlockSize.Full}
             onClick={handleSaveClick}
           >
-            {hasSavedName ? 'OK' : 'Save'}
+            {hasSavedName ? t('ok') : t('save')}
           </Button>
         </ModalContent>
       </Modal>
