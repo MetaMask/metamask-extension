@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
@@ -6,6 +7,7 @@ import { TransactionType } from '../../shared/constants/transaction';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
 import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
+import { getInsightSnaps } from '../selectors';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -22,16 +24,21 @@ const useTransactionInsights = ({ txData }) => {
   const { txParams, chainId, origin } = txData;
   const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
   const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
-
-  const { data, loading, insightSnaps } = useTransactionInsightSnaps({
-    transaction: txParams,
-    chainId: caip2ChainId,
-    origin,
-  });
+  const insightSnaps = useSelector(getInsightSnaps);
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
   );
+
+  const { data, loading } = useTransactionInsightSnaps({
+    transaction: txParams,
+    chainId: caip2ChainId,
+    origin,
+    insightSnaps,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+    insightSnapId: selectedInsightSnapId,
+    ///: END:ONLY_INCLUDE_IN
+  });
 
   useEffect(() => {
     if (insightSnaps.length && !selectedInsightSnapId) {

@@ -2,14 +2,19 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getTransactionOriginCaveat } from '@metamask/snaps-controllers';
 import { handleSnapRequest } from '../../store/actions';
-import { getPermissionSubjects, getInsightSnaps } from '../../selectors';
+import { getPermissionSubjects } from '../../selectors';
 
 const INSIGHT_PERMISSION = 'endowment:transaction-insight';
 
 // If snapId is provided then we do some different excecution (i.e. old way of doing it)
-export function useTransactionInsightSnaps({ transaction, chainId, origin }) {
+export function useTransactionInsightSnaps({
+  transaction,
+  chainId,
+  origin,
+  insightSnaps,
+  insightSnapId = '',
+}) {
   const subjects = useSelector(getPermissionSubjects);
-  const insightSnaps = useSelector(getInsightSnaps);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
@@ -20,7 +25,10 @@ export function useTransactionInsightSnaps({ transaction, chainId, origin }) {
     async function fetchInsight() {
       setLoading(true);
 
-      const snapIds = insightSnaps.map((snap) => snap.id);
+      let snapIds = insightSnaps.map((snap) => snap.id);
+      if (insightSnapId.length > 0) {
+        snapIds = [insightSnapId];
+      }
       const newData = await Promise.allSettled(
         snapIds.map((snapId) => {
           const permission = subjects[snapId]?.permissions[INSIGHT_PERMISSION];
@@ -73,7 +81,7 @@ export function useTransactionInsightSnaps({ transaction, chainId, origin }) {
       fetchInsight();
     }
     return () => (cancelled = true);
-  }, [transaction, chainId, origin, subjects, insightSnaps]);
+  }, [transaction, chainId, origin, subjects, insightSnaps, insightSnapId]);
 
-  return { data, loading, insightSnaps };
+  return { data, loading };
 }
