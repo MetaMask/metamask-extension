@@ -229,6 +229,7 @@ describe('DetectTokensController', function () {
       onInfuraIsBlocked: sinon.stub(),
       onInfuraIsUnblocked: sinon.stub(),
       networkConfigurations: {},
+      onAccountRemoved: sinon.stub(),
     });
     preferences.setUseTokenDetection(true);
 

@@ -17,6 +17,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMetaMaskAccountsOrdered,
   getInternalAccount,
+  getUseBlockie,
 } from '../../../selectors';
 import {
   clearAccountDetails,
@@ -44,7 +45,7 @@ export const AccountDetails = ({ accountId }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+  const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) => getInternalAccount(state, accountId));
   const {
