@@ -186,7 +186,7 @@ export const SelectActionModal = ({ onClose }) => {
                 event: MetaMetricsEventName.NavSendButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
-                  token_symbol: CURRENCY_SYMBOLS.ETH.ETH,
+                  token_symbol: CURRENCY_SYMBOLS.ETH,
                   location: 'Home',
                   text: 'Send',
                   chain_id: chainId,
