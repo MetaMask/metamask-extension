@@ -12,6 +12,7 @@ const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
+const detectPort = require('detect-port');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -108,6 +109,9 @@ async function withFixtures(options, testSuite) {
     const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
       chainId: ganacheOptions?.chainId || 1337,
     });
+    if(await detectPort(8000) !== 8000) {
+      throw new Error('Failed to set up mock server, something else may be running on port 8000.');
+    }
     await mockServer.start(8000);
 
     driver = (await buildWebDriver(driverOptions)).driver;
