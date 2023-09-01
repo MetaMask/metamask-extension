@@ -7,10 +7,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 
 import { KeyringType } from '../../../../shared/constants/keyring';
-import {
-  CHAIN_IDS,
-  BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SelectActionModal } from '.';
 
 const NETWORK_CONSTANTS_PATH = '../../../../shared/constants/network';
@@ -18,6 +15,9 @@ const NETWORK_CONSTANTS_PATH = '../../../../shared/constants/network';
 // Mock BUYABLE_CHAINS_MAP
 jest.mock(NETWORK_CONSTANTS_PATH, () => {
   const networkConstants = jest.requireActual(NETWORK_CONSTANTS_PATH);
+  const { BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME } = jest.requireActual(
+    '../../../../shared/constants/network',
+  );
 
   return {
     ...networkConstants,

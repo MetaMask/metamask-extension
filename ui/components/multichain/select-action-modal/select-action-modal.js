@@ -55,8 +55,8 @@ import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IN
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 export const SelectActionModal = ({ onClose }) => {
   const dispatch = useDispatch();
