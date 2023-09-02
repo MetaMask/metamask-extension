@@ -131,7 +131,7 @@
     "description": "Exchange type"
   },
   "fileImportFail": {
-    "message": "นำเข้าไฟล์ไม่สำเร็จ กดที่นี่!",
+    "message": "นำเข้าไฟล์ไม่สำเร็จ คลิกที่นี่!",
     "description": "Helps user import their account from a JSON file"
   },
   "from": {
