@@ -86,28 +86,12 @@ export default class ExperimentalTab extends PureComponent {
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {t('securityAlertsDescription1')}
+                {t('securityAlertsDescription')}
               </Text>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('securityAlertsDescription2')}
-              </Text>
-
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                marginTop={3}
-                marginBottom={1}
-              >
-                {t('selectProvider')}
-              </Text>
-              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
                 <Text
                   variant={TextVariant.bodyMd}
                   color={TextColor.textDefault}
-                  marginBottom={0}
                 >
                   {t('blockaid')}
                 </Text>
@@ -126,13 +110,6 @@ export default class ExperimentalTab extends PureComponent {
                   }}
                 />
               </div>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textMuted}
-                marginTop={2}
-              >
-                {t('moreComingSoon')}
-              </Text>
             </div>
           </div>
         </div>
@@ -175,16 +152,7 @@ export default class ExperimentalTab extends PureComponent {
               >
                 {t('transactionSecurityCheckDescription')}
               </Text>
-              <Text
-                marginTop={3}
-                marginBottom={1}
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={TextColor.textAlternative}
-              >
-                {t('selectProvider')}
-              </Text>
-              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
                 <Text
                   variant={TextVariant.bodyMd}
                   as="h5"
@@ -225,15 +193,6 @@ export default class ExperimentalTab extends PureComponent {
                     {t('termsOfUse')}
                   </a>,
                 ])}
-              </Text>
-              <Text
-                variant={TextVariant.bodyMd}
-                as="h5"
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textMuted}
-                marginTop={2}
-              >
-                {t('moreComingSoon')}
               </Text>
             </div>
           </div>

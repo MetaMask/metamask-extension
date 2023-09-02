@@ -2330,9 +2330,6 @@
   "more": {
     "message": "그 외"
   },
-  "moreComingSoon": {
-    "message": "더 많은 공급업체가 곧 추가됩니다"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1에서 $2개의 스냅 연결을 원합니다. 해당 웹사이트를 신뢰할 수 있는 경우에만 진행하세요.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "보안 알림 활성화"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Blockaid가 제공하는 보안 알림을 통해 개인정보를 보호하면서 알려진 사기를 피하세요."
-  },
-  "notifications23DescriptionThree": {
-    "message": "OpenSea에서 보안 알림을 활성화하면, 이 기능으로 이동합니다."
   },
   "notifications23DescriptionTwo": {
     "message": "요청을 승인하기 전에 항상 직접 실사하세요."
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "보안 알림"
   },
-  "securityAlertsDescription1": {
-    "message": "이 기능은 거래 및 서명 요청을 로컬에서 검토하여 악의적인 활동이 있는 경우 경고합니다. 사용자 데이터는 이 서비스를 제공하는 제3자와 공유되지 않습니다. 요청을 승인하기 전에 항상 직접 실사하세요. 이 기능이 모든 악성 활동 탐지를 보장하지는 않습니다."
-  },
-  "securityAlertsDescription2": {
-    "message": "요청을 승인하기 전에 항상 직접 확인하세요. 이 기능을 통해 모든 악의적인 활동이 감지된다는 보장이 없습니다."
-  },
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
-  },
-  "securityProviderAdviceBy": {
-    "message": "$1의 보안 권고",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "세부 정보 보기"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "아래에 기존 Ledger 계정이 표시되지 않는다면 경로를 \"Legacy (MEW / MyCrypto)\"로 변경해 보세요."
-  },
-  "selectProvider": {
-    "message": "공급업체 선택"
   },
   "selectType": {
     "message": "유형 선택"

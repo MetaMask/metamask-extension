@@ -2330,9 +2330,6 @@
   "more": {
     "message": "更多"
   },
-  "moreComingSoon": {
-    "message": "即将有更多提供商加入"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1想连接$2个snap。只有在您信任此网站的情况下才能继续。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "启用安全警报"
-  },
-  "notifications23DescriptionOne": {
-    "message": "通过由 Blockaid 提供支持的安全警报，避开已知的诈骗，同时仍会保护您的隐私。"
-  },
-  "notifications23DescriptionThree": {
-    "message": "如果您从 OpenSea 启用了安全警报，则我们已将您转移到此功能。"
   },
   "notifications23DescriptionTwo": {
     "message": "在批准请求之前，请务必自行作出审慎调查。"
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "安全警告"
   },
-  "securityAlertsDescription1": {
-    "message": "此功能通过在本地检查您的交易和签名请求来向您发出恶意活动警报。您的数据不会与提供此服务的第三方共享。在批准任何请求之前，请务必自行作出审慎调查。无法保证此功能可以检测到所有恶意活动。"
-  },
-  "securityAlertsDescription2": {
-    "message": "在批准任何请求之前，请务必自行谨慎调查。无法保证此功能可以检测到所有恶意活动。"
-  },
   "securityAndPrivacy": {
     "message": "安全和隐私"
-  },
-  "securityProviderAdviceBy": {
-    "message": "$1的安全建议",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "查看详情"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "如果您没有看到您期望的账户，请尝试切换 HD 路径。"
-  },
-  "selectProvider": {
-    "message": "选择提供程序："
   },
   "selectType": {
     "message": "选择类型"
