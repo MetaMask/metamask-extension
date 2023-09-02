@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import Box from '../../../../components/ui/box';
 import SiteIcon from '../../../../components/ui/site-icon';
+import { Box } from '../../../../components/component-library';
 import Typography from '../../../../components/ui/typography/typography';
 import {
   TypographyVariant,
