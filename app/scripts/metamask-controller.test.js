@@ -505,6 +505,10 @@ describe('MetaMaskController', function () {
                 return Promise.resolve('0x14ced5122ce0a000');
               case TEST_ADDRESS_2:
                 return Promise.resolve('0x0');
+              default:
+                return Promise.reject(
+                  new Error('unexpected argument to mocked getBalance'),
+                );
             }
           });
 
@@ -603,17 +607,15 @@ describe('MetaMaskController', function () {
 
     describe('connectHardware', function () {
       it('should throw if it receives an unknown device name', async function () {
-        try {
-          await metamaskController.connectHardware(
-            'Some random device name',
-            0,
-            `m/44/0'/0'`,
-          );
-        } catch (e) {
-          expect(e.message).toStrictEqual(
-            'MetamaskController:getKeyringForDevice - Unknown device',
-          );
-        }
+        const result = metamaskController.connectHardware(
+          'Some random device name',
+          0,
+          `m/44/0'/0'`,
+        );
+
+        await expect(result).rejects.toThrow(
+          'MetamaskController:getKeyringForDevice - Unknown device',
+        );
       });
 
       it('should add the Trezor Hardware keyring', async function () {
@@ -675,16 +677,13 @@ describe('MetaMaskController', function () {
 
     describe('checkHardwareStatus', function () {
       it('should throw if it receives an unknown device name', async function () {
-        try {
-          await metamaskController.checkHardwareStatus(
-            'Some random device name',
-            `m/44/0'/0'`,
-          );
-        } catch (e) {
-          expect(e.message).toStrictEqual(
-            'MetamaskController:getKeyringForDevice - Unknown device',
-          );
-        }
+        const result = metamaskController.checkHardwareStatus(
+          'Some random device name',
+          `m/44/0'/0'`,
+        );
+        await expect(result).rejects.toThrow(
+          'MetamaskController:getKeyringForDevice - Unknown device',
+        );
       });
 
       it('should be locked by default', async function () {
@@ -700,13 +699,12 @@ describe('MetaMaskController', function () {
 
     describe('forgetDevice', function () {
       it('should throw if it receives an unknown device name', async function () {
-        try {
-          await metamaskController.forgetDevice('Some random device name');
-        } catch (e) {
-          expect(e.message).toStrictEqual(
-            'MetamaskController:getKeyringForDevice - Unknown device',
-          );
-        }
+        const result = metamaskController.forgetDevice(
+          'Some random device name',
+        );
+        await expect(result).rejects.toThrow(
+          'MetamaskController:getKeyringForDevice - Unknown device',
+        );
       });
 
       it('should wipe all the keyring info', async function () {
@@ -729,7 +727,6 @@ describe('MetaMaskController', function () {
       const accountToUnlock = 10;
       beforeEach(async function () {
         jest.spyOn(window, 'open').mockReturnValue();
-
         jest
           .spyOn(metamaskController.keyringController, 'addNewAccount')
           .mockReturnValue('0x123');
@@ -748,6 +745,7 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(metamaskController.preferencesController, 'setAccountLabel')
           .mockReturnValue();
+
         await metamaskController
           .connectHardware(HardwareDeviceNames.trezor, 0, `m/44'/1'/0'/0`)
           .catch(() => null);
@@ -857,6 +855,7 @@ describe('MetaMaskController', function () {
         ]);
 
         await metamaskController.resetAccount();
+
         expect(
           metamaskController.txController.txStateManager.getTransaction(1),
         ).toBeUndefined();
@@ -951,7 +950,7 @@ describe('MetaMaskController', function () {
         streamTest.end();
       });
 
-      it('adds a tabId and origin to requests', function (done) {
+      it('adds a tabId and origin to requests', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
@@ -975,29 +974,32 @@ describe('MetaMaskController', function () {
           params: [{ ...mockTxParams }],
           method: 'eth_sendTransaction',
         };
-        streamTest.write(
-          {
-            name: 'metamask-provider',
-            data: message,
-          },
-          null,
-          () => {
-            setTimeout(() => {
-              expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                'origin',
-                'http://mycrypto.com',
-              );
-              expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                'tabId',
-                456,
-              );
-              done();
-            });
-          },
-        );
+
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'tabId',
+                  456,
+                );
+                resolve();
+              });
+            },
+          );
+        });
       });
 
-      it('should add only origin to request if tabId not provided', function (done) {
+      it('should add only origin to request if tabId not provided', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
         };
@@ -1020,25 +1022,27 @@ describe('MetaMaskController', function () {
           params: [{ ...mockTxParams }],
           method: 'eth_sendTransaction',
         };
-        streamTest.write(
-          {
-            name: 'metamask-provider',
-            data: message,
-          },
-          null,
-          () => {
-            setTimeout(() => {
-              expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
-                'tabId',
-              );
-              expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
-                'origin',
-                'http://mycrypto.com',
-              );
-              done();
-            });
-          },
-        );
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                resolve();
+              });
+            },
+          );
+        });
       });
     });
 
@@ -1203,8 +1207,8 @@ describe('MetaMaskController', function () {
           );
 
         expect(tokenDetails.standard).toStrictEqual('ERC20');
-        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals)),
-          expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
+        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
+        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
         expect(tokenDetails.balance).toStrictEqual('3000000000000000000');
       });
 
@@ -1242,8 +1246,8 @@ describe('MetaMaskController', function () {
           );
 
         expect(tokenDetails.standard).toStrictEqual('ERC20');
-        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals)),
-          expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
+        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
+        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
         expect(tokenDetails.balance).toStrictEqual('3000000000000000000');
       });
 
@@ -1508,71 +1512,69 @@ describe('MetaMaskController', function () {
     });
 
     describe('incoming transactions', function () {
-      let txControllerStub, preferencesControllerSpy, controllerMessengerSpy;
-
-      beforeEach(function () {
-        txControllerStub = TransactionController.prototype;
-        preferencesControllerSpy = metamaskController.preferencesController;
-        controllerMessengerSpy = ControllerMessenger.prototype;
-      });
-
       it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async function () {
         expect(
-          txControllerStub.startIncomingTransactionPolling,
+          TransactionController.prototype.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
-        await preferencesControllerSpy.store.subscribe.mock.lastCall[0]({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: true,
+        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+          {
+            incomingTransactionsPreferences: {
+              [MAINNET_CHAIN_ID]: true,
+            },
           },
-        });
+        );
 
         expect(
-          txControllerStub.startIncomingTransactionPolling,
+          TransactionController.prototype.startIncomingTransactionPolling,
         ).toHaveBeenCalledTimes(1);
       });
 
       it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainId', async function () {
         expect(
-          txControllerStub.stopIncomingTransactionPolling,
+          TransactionController.prototype.stopIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
-        await preferencesControllerSpy.store.subscribe.mock.lastCall[0]({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: false,
+        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+          {
+            incomingTransactionsPreferences: {
+              [MAINNET_CHAIN_ID]: false,
+            },
           },
-        });
+        );
 
         expect(
-          txControllerStub.stopIncomingTransactionPolling,
+          TransactionController.prototype.stopIncomingTransactionPolling,
         ).toHaveBeenCalledTimes(1);
       });
 
       it('updates incoming transactions when changing account', async function () {
         expect(
-          txControllerStub.updateIncomingTransactions,
+          TransactionController.prototype.updateIncomingTransactions,
         ).not.toHaveBeenCalled();
 
-        await preferencesControllerSpy.store.subscribe.mock.lastCall[0]({
-          selectedAddress: 'foo',
-        });
+        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+          {
+            selectedAddress: 'foo',
+          },
+        );
 
         expect(
-          txControllerStub.updateIncomingTransactions,
+          TransactionController.prototype.updateIncomingTransactions,
         ).toHaveBeenCalledTimes(1);
       });
 
       it('updates incoming transactions when changing network', async function () {
         expect(
-          txControllerStub.updateIncomingTransactions,
+          TransactionController.prototype.updateIncomingTransactions,
         ).not.toHaveBeenCalled();
 
-        await controllerMessengerSpy.subscribe.mock.calls
+        await ControllerMessenger.prototype.subscribe.mock.calls
           .filter((args) => args[0] === 'NetworkController:networkDidChange')
           .slice(-1)[0][1]();
 
         expect(
-          txControllerStub.updateIncomingTransactions,
+          TransactionController.prototype.updateIncomingTransactions,
         ).toHaveBeenCalledTimes(1);
       });
     });

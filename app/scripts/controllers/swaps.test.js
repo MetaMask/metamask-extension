@@ -1,4 +1,4 @@
-import { jestExpect as expect } from '@jest/expect';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 
 import { BigNumber } from '@ethersproject/bignumber';
@@ -196,12 +196,17 @@ describe('SwapsController', function () {
   describe('constructor', function () {
     it('should setup correctly', function () {
       const swapsController = getSwapsController();
-      expect(swapsController.store.getState()).toStrictEqual(EMPTY_INIT_STATE);
-      expect(swapsController.getBufferedGasLimit).toStrictEqual(
+      assert.deepStrictEqual(
+        swapsController.store.getState(),
+        EMPTY_INIT_STATE,
+      );
+      assert.deepStrictEqual(
+        swapsController.getBufferedGasLimit,
         MOCK_GET_BUFFERED_GAS_LIMIT,
       );
-      expect(swapsController.pollCount).toStrictEqual(0);
-      expect(swapsController.getProviderConfig).toStrictEqual(
+      assert.strictEqual(swapsController.pollCount, 0);
+      assert.deepStrictEqual(
+        swapsController.getProviderConfig,
         MOCK_GET_PROVIDER_CONFIG,
       );
     });
@@ -237,7 +242,11 @@ describe('SwapsController', function () {
       networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
-      expect(currentEthersInstance).not.toStrictEqual(newEthersInstance);
+      assert.notStrictEqual(
+        currentEthersInstance,
+        newEthersInstance,
+        'Ethers provider should be replaced',
+      );
     });
 
     it('should not replace ethers instance when network changes to loading', function () {
@@ -271,7 +280,11 @@ describe('SwapsController', function () {
       networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
-      expect(currentEthersInstance).toStrictEqual(newEthersInstance);
+      assert.strictEqual(
+        currentEthersInstance,
+        newEthersInstance,
+        'Ethers provider should not be replaced',
+      );
     });
 
     it('should not replace ethers instance when network changes to the same network', function () {
@@ -305,7 +318,11 @@ describe('SwapsController', function () {
       networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
-      expect(currentEthersInstance).toStrictEqual(newEthersInstance);
+      assert.strictEqual(
+        currentEthersInstance,
+        newEthersInstance,
+        'Ethers provider should not be replaced',
+      );
     });
   });
 
@@ -319,57 +336,64 @@ describe('SwapsController', function () {
       it('should set selected quote agg id', function () {
         const selectedAggId = 'test';
         swapsController.setSelectedQuoteAggId(selectedAggId);
-        expect(
+        assert.deepStrictEqual(
           swapsController.store.getState().swapsState.selectedAggId,
-        ).toStrictEqual(selectedAggId);
+          selectedAggId,
+        );
       });
 
       it('should set swaps tokens', function () {
         const tokens = [];
         swapsController.setSwapsTokens(tokens);
-        expect(
+        assert.deepStrictEqual(
           swapsController.store.getState().swapsState.tokens,
-        ).toStrictEqual(tokens);
+          tokens,
+        );
       });
 
       it('should set trade tx id', function () {
         const tradeTxId = 'test';
         swapsController.setTradeTxId(tradeTxId);
-        expect(
+        assert.strictEqual(
           swapsController.store.getState().swapsState.tradeTxId,
-        ).toStrictEqual(tradeTxId);
+          tradeTxId,
+        );
       });
 
       it('should set swaps tx gas price', function () {
         const gasPrice = 1;
         swapsController.setSwapsTxGasPrice(gasPrice);
-        expect(
+        assert.deepStrictEqual(
           swapsController.store.getState().swapsState.customGasPrice,
-        ).toStrictEqual(gasPrice);
+          gasPrice,
+        );
       });
 
       it('should set swaps tx gas limit', function () {
         const gasLimit = '1';
         swapsController.setSwapsTxGasLimit(gasLimit);
-        expect(
+        assert.deepStrictEqual(
           swapsController.store.getState().swapsState.customMaxGas,
-        ).toStrictEqual(gasLimit);
+          gasLimit,
+        );
       });
 
       it('should set background swap route state', function () {
         const routeState = 'test';
         swapsController.setBackgroundSwapRouteState(routeState);
-        expect(
+        assert.deepStrictEqual(
           swapsController.store.getState().swapsState.routeState,
-        ).toStrictEqual(routeState);
+          routeState,
+        );
       });
 
       it('should set swaps error key', function () {
         const errorKey = 'test';
         swapsController.setSwapsErrorKey(errorKey);
-        expect(
+        assert.deepStrictEqual(
           swapsController.store.getState().swapsState.errorKey,
-        ).toStrictEqual(errorKey);
+          errorKey,
+        );
       });
 
       it('should set initial gas estimate', async function () {
@@ -392,8 +416,9 @@ describe('SwapsController', function () {
           await swapsController.getBufferedGasLimit();
         const { gasEstimate, gasEstimateWithRefund } =
           swapsController.store.getState().swapsState.quotes[initialAggId];
-        expect(gasEstimate).toStrictEqual(bufferedGasLimit);
-        expect(gasEstimateWithRefund).toStrictEqual(
+        assert.strictEqual(gasEstimate, bufferedGasLimit);
+        assert.strictEqual(
+          gasEstimateWithRefund,
           `0x${new BigNumberjs(maxGas, 10)
             .minus(estimatedRefund, 10)
             .toString(16)}`,
@@ -403,9 +428,10 @@ describe('SwapsController', function () {
       it('should set custom approve tx data', function () {
         const data = 'test';
         swapsController.setCustomApproveTxData(data);
-        expect(
+        assert.deepStrictEqual(
           swapsController.store.getState().swapsState.customApproveTxData,
-        ).toStrictEqual(data);
+          data,
+        );
       });
     });
 
@@ -418,9 +444,14 @@ describe('SwapsController', function () {
       });
 
       it('returns empty object if passed undefined or empty object', async function () {
-        expect(
+        assert.deepStrictEqual(
           await swapsController._findTopQuoteAndCalculateSavings(),
-        ).toStrictEqual({});
+          {},
+        );
+        assert.deepStrictEqual(
+          await swapsController._findTopQuoteAndCalculateSavings({}),
+          {},
+        );
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
@@ -428,8 +459,9 @@ describe('SwapsController', function () {
           await swapsController._findTopQuoteAndCalculateSavings(
             getTopQuoteAndSavingsMockQuotes(),
           );
-        expect(topAggId).toEqual(TEST_AGG_ID_1);
-        expect(resultQuotes).toStrictEqual(
+        assert.equal(topAggId, TEST_AGG_ID_1);
+        assert.deepStrictEqual(
+          resultQuotes,
           getTopQuoteAndSavingsBaseExpectedResults(),
         );
       });
@@ -449,8 +481,8 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        expect(topAggId).toEqual(TEST_AGG_ID_1);
-        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
+        assert.equal(topAggId, TEST_AGG_ID_1);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
 
       it('returns the top aggId, without best quote flagged, and quotes with fee values if passed necessary data but no custom convert rate exists', async function () {
@@ -490,8 +522,8 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        expect(topAggId).toEqual(TEST_AGG_ID_1);
-        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
+        assert.equal(topAggId, TEST_AGG_ID_1);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH', async function () {
@@ -553,8 +585,8 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        expect(topAggId).toEqual(TEST_AGG_ID_1);
-        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
+        assert.equal(topAggId, TEST_AGG_ID_1);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
@@ -629,8 +661,8 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        expect(topAggId).toEqual(TEST_AGG_ID_2);
-        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
+        assert.equal(topAggId, TEST_AGG_ID_2);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is not ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
@@ -664,15 +696,15 @@ describe('SwapsController', function () {
 
         const [topAggId, resultQuotes] =
           await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        expect(topAggId).toEqual(TEST_AGG_ID_2);
-        expect(resultQuotes).toStrictEqual(expectedResultQuotes);
+        assert.equal(topAggId, TEST_AGG_ID_2);
+        assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
     });
 
     describe('fetchAndSetQuotes', function () {
       it('returns null if fetchParams is not provided', async function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined);
-        expect(quotes).toStrictEqual(null);
+        assert.strictEqual(quotes, null);
       });
 
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
@@ -688,7 +720,7 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        expect(newQuotes[TEST_AGG_ID_BEST]).toStrictEqual({
+        assert.deepStrictEqual(newQuotes[TEST_AGG_ID_BEST], {
           ...getMockQuotes()[TEST_AGG_ID_BEST],
           sourceTokenInfo: undefined,
           destinationTokenInfo: {
@@ -711,11 +743,12 @@ describe('SwapsController', function () {
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
         });
-        expect(
+        assert.strictEqual(
           fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
             ...MOCK_FETCH_METADATA,
           }),
-        ).toEqual(true);
+          true,
+        );
       });
 
       it('calls returns the correct quotes on the optimism chain', async function () {
@@ -752,7 +785,7 @@ describe('SwapsController', function () {
           OPTIMISM_MOCK_FETCH_METADATA,
         );
 
-        expect(newQuotes[TEST_AGG_ID_BEST]).toStrictEqual({
+        assert.deepStrictEqual(newQuotes[TEST_AGG_ID_BEST], {
           ...getMockQuotes()[TEST_AGG_ID_BEST],
           sourceTokenInfo: undefined,
           destinationTokenInfo: {
@@ -776,11 +809,12 @@ describe('SwapsController', function () {
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
         });
-        expect(
+        assert.strictEqual(
           fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
             ...OPTIMISM_MOCK_FETCH_METADATA,
           }),
-        ).toStrictEqual(true);
+          true,
+        );
       });
 
       it('performs the allowance check', async function () {
@@ -796,13 +830,14 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        expect(
+        assert.strictEqual(
           allowanceStub.calledOnceWithExactly(
             MOCK_FETCH_PARAMS.sourceToken,
             MOCK_FETCH_PARAMS.fromAddress,
             CHAIN_IDS.MAINNET,
           ),
-        ).toEqual(true);
+          true,
+        );
       });
 
       it('gets the gas limit if approval is required', async function () {
@@ -824,12 +859,13 @@ describe('SwapsController', function () {
         );
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
-        expect(
+        assert.strictEqual(
           timedoutGasReturnStub.calledOnceWithExactly(
             MOCK_APPROVAL_NEEDED,
             TEST_AGG_ID_APPROVAL,
           ),
-        ).toEqual(true);
+          true,
+        );
       });
 
       it('marks the best quote', async function () {
@@ -845,8 +881,8 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        expect(topAggId).toStrictEqual(TEST_AGG_ID_BEST);
-        expect(newQuotes[topAggId].isBestQuote).toStrictEqual(true);
+        assert.strictEqual(topAggId, TEST_AGG_ID_BEST);
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, true);
       });
 
       it('selects the best quote', async function () {
@@ -875,8 +911,8 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        expect(topAggId).toStrictEqual(bestAggId);
-        expect(newQuotes[topAggId].isBestQuote).toStrictEqual(true);
+        assert.strictEqual(topAggId, bestAggId);
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, true);
       });
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
@@ -896,7 +932,7 @@ describe('SwapsController', function () {
           MOCK_FETCH_METADATA,
         );
 
-        expect(newQuotes[topAggId].isBestQuote).toStrictEqual(undefined);
+        assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined);
       });
     });
 
@@ -905,7 +941,7 @@ describe('SwapsController', function () {
         const { swapsState: old } = swapsController.store.getState();
         swapsController.resetSwapsState();
         const { swapsState } = swapsController.store.getState();
-        expect(swapsState).toStrictEqual({
+        assert.deepStrictEqual(swapsState, {
           ...EMPTY_INIT_STATE.swapsState,
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
@@ -923,7 +959,7 @@ describe('SwapsController', function () {
           POLLING_TIMEOUT,
         );
         swapsController.resetSwapsState();
-        expect(swapsController.pollingTimeout._idleTimeout).toStrictEqual(-1);
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
       });
     });
 
@@ -934,14 +970,14 @@ describe('SwapsController', function () {
           POLLING_TIMEOUT,
         );
         swapsController.stopPollingForQuotes();
-        expect(swapsController.pollingTimeout._idleTimeout).toStrictEqual(-1);
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
       });
 
       it('resets quotes state correctly', function () {
         swapsController.stopPollingForQuotes();
         const { swapsState } = swapsController.store.getState();
-        expect(swapsState.quotes).toStrictEqual({});
-        expect(swapsState.quotesLastFetched).toStrictEqual(null);
+        assert.deepStrictEqual(swapsState.quotes, {});
+        assert.strictEqual(swapsState.quotesLastFetched, null);
       });
     });
 
@@ -952,7 +988,7 @@ describe('SwapsController', function () {
           POLLING_TIMEOUT,
         );
         swapsController.resetPostFetchState();
-        expect(swapsController.pollingTimeout._idleTimeout).toStrictEqual(-1);
+        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
       });
 
       it('updates state correctly', function () {
@@ -980,7 +1016,7 @@ describe('SwapsController', function () {
         swapsController.resetPostFetchState();
 
         const { swapsState } = swapsController.store.getState();
-        expect(swapsState).toStrictEqual({
+        assert.deepStrictEqual(swapsState, {
           ...EMPTY_INIT_STATE.swapsState,
           tokens,
           fetchParams,
@@ -1025,7 +1061,11 @@ describe('SwapsController', function () {
 
         const median = getMedianEthValueQuote(values);
 
-        expect(median).toEqual(expectedResult);
+        assert.deepEqual(
+          median,
+          expectedResult,
+          'should have returned correct median quote object',
+        );
       });
 
       it('calculates median correctly with even sample', function () {
@@ -1062,7 +1102,11 @@ describe('SwapsController', function () {
         ];
         const median = getMedianEthValueQuote(values);
 
-        expect(median).toEqual(expectedResult);
+        assert.deepEqual(
+          median,
+          expectedResult,
+          'should have returned correct median quote object',
+        );
       });
 
       it('calculates median correctly with an uneven sample where multiple quotes have the median overall value', function () {
@@ -1118,7 +1162,11 @@ describe('SwapsController', function () {
         ];
         const median = getMedianEthValueQuote(values);
 
-        expect(median).toEqual(expectedResult);
+        assert.deepEqual(
+          median,
+          expectedResult,
+          'should have returned correct median quote object',
+        );
       });
 
       it('calculates median correctly with an even sample where multiple quotes have the same overall value as either of the two middle values', function () {
@@ -1168,15 +1216,28 @@ describe('SwapsController', function () {
         ];
         const median = getMedianEthValueQuote(values);
 
-        expect(median).toEqual(expectedResult);
+        assert.deepEqual(
+          median,
+          expectedResult,
+          'should have returned correct median quote object',
+        );
       });
 
       it('throws on empty or non-array sample', function () {
-        expect(() => getMedianEthValueQuote([])).toThrow();
+        assert.throws(
+          () => getMedianEthValueQuote([]),
+          'should throw on empty array',
+        );
 
-        expect(() => getMedianEthValueQuote()).toThrow();
+        assert.throws(
+          () => getMedianEthValueQuote(),
+          'should throw on non-array param',
+        );
 
-        expect(() => getMedianEthValueQuote({})).toThrow();
+        assert.throws(
+          () => getMedianEthValueQuote({}),
+          'should throw on non-array param',
+        );
       });
     });
   });
