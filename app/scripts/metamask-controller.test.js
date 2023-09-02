@@ -34,12 +34,12 @@ const browserPolyfillMock = {
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
-      addListener: () => undefined,
+      addListener: jest.fn()
     },
     onMessageExternal: {
-      addListener: () => undefined,
+      addListener: jest.fn()
     },
-    getPlatformInfo: async () => 'mac',
+    getPlatformInfo: jest.fn().mockResolvedValue('mac')
   },
   storage: {
     session: {
@@ -47,11 +47,11 @@ const browserPolyfillMock = {
     },
   },
   alarms: {
-    getAll: () => undefined,
-    create: () => undefined,
-    clear: () => undefined,
+    getAll: jest.fn(),
+    create: jest.fn(),
+    clear: jest.fn(),
     onAlarm: {
-      addListener: () => undefined
+      addListener: jest.fn()
     }
   }
 };
@@ -79,22 +79,7 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
-const MOCK_TOKEN_BALANCE = '888';
-
-function MockEthContract() {
-  return () => {
-    return {
-      at: () => {
-        return {
-          balanceOf: () => MOCK_TOKEN_BALANCE,
-        };
-      },
-    };
-  };
-}
-
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock)
-jest.mock('ethjs-contract', () => MockEthContract)
 jest.mock('./controllers/preferences', () => function (...args) {
     const PreferencesController = jest.requireActual('./controllers/preferences').default
     const controller = new PreferencesController(...args);
@@ -301,26 +286,6 @@ describe('MetaMaskController', function () {
       ).mockReturnValue();
 
       jest.spyOn(ControllerMessenger.prototype, 'subscribe');
-
-
-      // jest.spyOn(MetaMaskController.prototype, 'resetStates');
-
-      // jest.spyOn(
-      //   TransactionController.prototype,
-      //   'updateIncomingTransactions',
-      // ).mockReturnValue();
-
-      // jest.spyOn(
-      //   TransactionController.prototype,
-      //   'startIncomingTransactionPolling',
-      // ).mockReturnValue();
-
-      // jest.spyOn(
-      //   TransactionController.prototype,
-      //   'stopIncomingTransactionPolling',
-      // ).mockReturnValue();
-
-      // jest.spyOn(ControllerMessenger.prototype, 'subscribe');
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
@@ -890,11 +855,6 @@ describe('MetaMaskController', function () {
           .mockResolvedValue(mockKeyring);
 
         ret = await metamaskController.removeAccount(addressToRemove);
-      });
-
-      afterEach(function () {
-        // mockKeyring.getAccounts.mockCL();
-        // mockKeyring.destroy.resetHistory();
       });
 
       it('should call keyringController.removeAccount', async function () {
