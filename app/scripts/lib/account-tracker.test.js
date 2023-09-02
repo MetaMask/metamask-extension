@@ -195,6 +195,8 @@ describe('Account Tracker', () => {
             getState: noop,
           },
         },
+        controllerMessenger,
+        accountsController,
         onAccountRemoved,
       });
       accountRemovedListener(VALID_ADDRESS);
