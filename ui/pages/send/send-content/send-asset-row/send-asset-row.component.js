@@ -28,10 +28,10 @@ export default class SendAssetRow extends Component {
     accounts: PropTypes.object.isRequired,
     selectedAccount: PropTypes.shape({
       id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
       balance: PropTypes.string.isRequired,
       metadata: PropTypes.shape({
+        name: PropTypes.string.isRequired,
         snap: PropTypes.shape({
           id: PropTypes.string.isRequired,
           name: PropTypes.string,
