@@ -7287,7 +7287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@truffle/abi-utils@npm:^1.0.1, @truffle/abi-utils@npm:^1.0.2":
+"@truffle/abi-utils@npm:^1.0.2":
   version: 1.0.2
   resolution: "@truffle/abi-utils@npm:1.0.2"
   dependencies:
@@ -7304,24 +7304,6 @@ __metadata:
   dependencies:
     cbor: "npm:^5.2.0"
   checksum: 6b255595568ab8e5bee8ab771f4bbd69df940d8b2c246b619874462520cbee30fab0f7ccb181be7cec2866c1fb240f42bd4aa160beb1a791ea499a0d12b9fde3
-  languageName: node
-  linkType: hard
-
-"@truffle/codec@npm:^0.15.3":
-  version: 0.15.3
-  resolution: "@truffle/codec@npm:0.15.3"
-  dependencies:
-    "@truffle/abi-utils": "npm:^1.0.1"
-    "@truffle/compile-common": "npm:^0.9.6"
-    big.js: "npm:^6.0.3"
-    bn.js: "npm:^5.1.3"
-    cbor: "npm:^5.2.0"
-    debug: "npm:^4.3.1"
-    lodash: "npm:^4.17.21"
-    semver: "npm:7.3.7"
-    utf8: "npm:^3.0.0"
-    web3-utils: "npm:1.10.0"
-  checksum: 3a84301569d0fb617b291a583722f1ffc4a7661de428df351479d3379d459ab9d84088c1fdab9e5fdbe7866a149e42eaed5c491ad3d8e2f353652916a479e9b0
   languageName: node
   linkType: hard
 
@@ -7343,7 +7325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@truffle/compile-common@npm:^0.9.6, @truffle/compile-common@npm:^0.9.7":
+"@truffle/compile-common@npm:^0.9.7":
   version: 0.9.7
   resolution: "@truffle/compile-common@npm:0.9.7"
   dependencies:
@@ -7353,26 +7335,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@truffle/decoder@npm:^5.5.0":
-  version: 5.5.0
-  resolution: "@truffle/decoder@npm:5.5.0"
+"@truffle/decoder@npm:^6.1.3":
+  version: 6.1.3
+  resolution: "@truffle/decoder@npm:6.1.3"
   dependencies:
     "@ensdomains/ensjs": "npm:^2.1.0"
-    "@truffle/abi-utils": "npm:^1.0.1"
-    "@truffle/codec": "npm:^0.15.3"
-    "@truffle/compile-common": "npm:^0.9.6"
-    "@truffle/encoder": "npm:^1.0.20"
-    "@truffle/source-map-utils": "npm:^1.3.114"
+    "@truffle/abi-utils": "npm:^1.0.2"
+    "@truffle/codec": "npm:^0.17.2"
+    "@truffle/compile-common": "npm:^0.9.7"
+    "@truffle/encoder": "npm:^1.0.25"
+    "@truffle/source-map-utils": "npm:^1.3.118"
     async-retry: "npm:^1.3.1"
     axios: "npm:1.2.4"
     bn.js: "npm:^5.1.3"
     debug: "npm:^4.3.1"
     web3-utils: "npm:1.10.0"
-  checksum: 6860bacab2f2b12f4f0e7f4dcf6e9bc394bbba55fcf614c038a458c4d5afd303b0faca673f0273e6c864c77661b3ebfdf33884699d00deeeab56768b633a5984
+  checksum: b1998cf4d7df320ff746b5f25e87f44743bcaabab3d7fd719df528d64e990ca61c3e8d5978c049b8bfbcdfe0a7bfce40a4c3454bab2ad686d3b6851ea3517d09
   languageName: node
   linkType: hard
 
-"@truffle/encoder@npm:^1.0.20":
+"@truffle/encoder@npm:^1.0.25":
   version: 1.0.25
   resolution: "@truffle/encoder@npm:1.0.25"
   dependencies:
@@ -7398,7 +7380,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@truffle/source-map-utils@npm:^1.3.114":
+"@truffle/source-map-utils@npm:^1.3.118":
   version: 1.3.118
   resolution: "@truffle/source-map-utils@npm:1.3.118"
   dependencies:
@@ -24398,7 +24380,7 @@ __metadata:
     "@testing-library/react-hooks": "npm:^8.0.1"
     "@testing-library/user-event": "npm:^14.4.3"
     "@truffle/codec": "npm:^0.17.2"
-    "@truffle/decoder": "npm:^5.5.0"
+    "@truffle/decoder": "npm:^6.1.3"
     "@tsconfig/node16": "npm:^1.0.3"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
@@ -30857,17 +30839,6 @@ __metadata:
   bin:
     semver: bin/semver
   checksum: fca14418a174d4b4ef1fecb32c5941e3412d52a4d3d85165924ce3a47fbc7073372c26faf7484ceb4bbc2bde25880c6b97e492473dc7e9708fdfb1c6a02d546e
-  languageName: node
-  linkType: hard
-
-"semver@npm:7.3.7":
-  version: 7.3.7
-  resolution: "semver@npm:7.3.7"
-  dependencies:
-    lru-cache: "npm:^6.0.0"
-  bin:
-    semver: bin/semver.js
-  checksum: 6f60700810ef4879eb0af1d8d0626e5a2d11ba57ca7889e041d88155cb4b45629d1efebb8c6d381ecac4f87870ecb4e1b27760019d017ed1bf74a5083f4eeeb8
   languageName: node
   linkType: hard
 

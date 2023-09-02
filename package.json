@@ -286,7 +286,7 @@
     "@sentry/types": "^7.53.0",
     "@sentry/utils": "^7.53.0",
     "@truffle/codec": "^0.17.2",
-    "@truffle/decoder": "^5.5.0",
+    "@truffle/decoder": "^6.1.3",
     "@zxing/browser": "^0.1.3",
     "@zxing/library": "0.20.0",
     "await-semaphore": "^0.1.1",
