@@ -135,7 +135,7 @@ export class AccountsController extends BaseControllerV2<
           accounts.forEach((account) => {
             const currentAccount =
               currentState.internalAccounts.accounts[account.id];
-            if (currentAccount && currentAccount.metadata.snap) {
+            if (currentAccount?.metadata?.snap) {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore this account is guaranteed to have snap metadata
               currentState.internalAccounts.accounts[
