@@ -13,6 +13,8 @@ import {
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isBeta } from '../../helpers/utils/build-types';
 import { getCaretCoordinates } from './unlock-page.util';
+import { Text } from '../../components/component-library';
+import { TextColor, TextVariant } from '../../helpers/constants/design-system';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -176,7 +178,14 @@ export default class UnlockPage extends Component {
               </div>
             ) : null}
           </div>
-          <h1 className="unlock-page__title">{t('welcomeBack')}</h1>
+          <Text
+            as="h1"
+            variant={TextVariant.displayMd}
+            color={TextColor.textAlternative}
+            marginTop={1}
+          >
+            {t('welcomeBack')}
+          </Text>
           <div>{t('unlockMessage')}</div>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField

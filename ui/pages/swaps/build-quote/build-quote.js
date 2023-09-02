@@ -104,6 +104,12 @@ import {
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-popover';
+import { Text } from '../../../components/component-library';
+import {
+  FontWeight,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -583,7 +589,15 @@ export default function BuildQuote({
         />
 
         <div className="build-quote__dropdown-input-pair-header">
-          <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
+          <Text
+            as="h5"
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Bold}
+            color={TextColor.textDefault}
+            marginTop={1}
+          >
+            {t('swapSwapFrom')}
+          </Text>
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
             <div
               className="build-quote__max-button"

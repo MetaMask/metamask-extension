@@ -37,14 +37,6 @@
     max-height: 56px;
   }
 
-  &__title,
-  &__input-label {
-    @include H5;
-
-    font-weight: bold;
-    color: var(--color-text-default);
-    margin-top: 3px;
-  }
 
   &__swap-arrows-row {
     width: 100%;
