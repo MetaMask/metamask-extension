@@ -16,7 +16,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
-import { getTranslatedUINotifications } from '../../../../shared/notifications';
+import {
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
+  getTranslatedUINotifications,
+} from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import {
   BUILD_QUOTE_ROUTE,
@@ -395,6 +398,8 @@ export default function WhatsNewPopup({
     23: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IN
     24: renderFirstNotification,
+    // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
   };
 
   return (

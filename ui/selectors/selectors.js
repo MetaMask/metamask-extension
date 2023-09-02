@@ -88,6 +88,7 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
+import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -618,6 +619,11 @@ export function getIsMainnet(state) {
   return chainId === CHAIN_IDS.MAINNET;
 }
 
+export function getIsLineaMainnet(state) {
+  const chainId = getCurrentChainId(state);
+  return chainId === CHAIN_IDS.LINEA_MAINNET;
+}
+
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
@@ -654,12 +660,13 @@ export function getDisabledRpcMethodPreferences(state) {
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
+  const isLineaMainNet = getIsLineaMainnet(state);
   const isCustomNetwork = getIsCustomNetwork(state);
   const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   const { showFiatInTestnets } = getPreferences(state);
   return Boolean(
-    (isMainNet || isCustomNetwork || showFiatInTestnets) &&
+    (isMainNet || isLineaMainNet || isCustomNetwork || showFiatInTestnets) &&
       useCurrencyRateCheck &&
       conversionRate,
   );
@@ -1036,6 +1043,8 @@ function getAllowedAnnouncementIds(state) {
     23: true,
     ///: END:ONLY_INCLUDE_IN
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
+    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
   };
 }
 

@@ -2330,9 +2330,6 @@
   "more": {
     "message": "higit pa"
   },
-  "moreComingSoon": {
-    "message": "Parating na ang mas maraming provider"
-  },
   "multipleSnapConnectionWarning": {
     "message": "Gustong kumonekta ng $1 sa $2 (na) snap. Magpatuloy lang kung pinagkakatiwalaan mo ang website na ito.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "Pinapagana ang mga alerto sa seguridad"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Iniiwasan ang mga kilalang scam habang pinapanatili pa rin ang pagpapanatili ng iyong privacy gamit ang mga alerto ng seguridad na pinatatakbo ng Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Kung pinagana mo ang mga alerto ng seguridad mula sa OpenSea, inilipat ka namin sa feature na ito."
   },
   "notifications23DescriptionTwo": {
     "message": "Palaging gumawa ng sarili mong pagsusuri bago aprubahan ang mga kahilingan."
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "Mga alerto sa seguridad"
   },
-  "securityAlertsDescription1": {
-    "message": "Ang feature na ito ay nagbibigay ng alerto sa iyo sa malisyosong aktibidad sa pamamagitan ng lokal na pagsusuri sa iyong mga transaksyon at kahilingan sa pagpirma. Ang iyong data ay hindi ibinabahagi sa mga third party na nagbibigay ng serbisyong ito. Palaging gumawa ng sarili mong pagsusuri bago aprubahan ang anumang mga kahilingan. Walang garantiya na made-detect ng feature na ito ang lahat ng malisyosong aktibidad."
-  },
-  "securityAlertsDescription2": {
-    "message": "Laging tiyakin na isasagawa ang sariling pagsusuri bago pahintulutan ang anumang kahilingan. Walang garantiya na ang lahat ng malisyosong aktibidad ay matutuklasan ng feature na ito."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Pagkapribado"
-  },
-  "securityProviderAdviceBy": {
-    "message": "Abiso sa seguridad ng $1",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Tingnan ang mga detalye"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "Kung hindi mo makita ang mga account na inaasahan mo, subukang ilipat sa HD path."
-  },
-  "selectProvider": {
-    "message": "Pumili ng mga provider:"
   },
   "selectType": {
     "message": "Pumili ng Uri"
