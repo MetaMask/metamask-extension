@@ -196,17 +196,12 @@ describe('SwapsController', function () {
   describe('constructor', function () {
     it('should setup correctly', function () {
       const swapsController = getSwapsController();
-      expect(
-        swapsController.store.getState()).toStrictEqual(
-        EMPTY_INIT_STATE,
-      );
-      expect(
-        swapsController.getBufferedGasLimit).toStrictEqual(
+      expect(swapsController.store.getState()).toStrictEqual(EMPTY_INIT_STATE);
+      expect(swapsController.getBufferedGasLimit).toStrictEqual(
         MOCK_GET_BUFFERED_GAS_LIMIT,
       );
       expect(swapsController.pollCount).toStrictEqual(0);
-      expect(
-        swapsController.getProviderConfig).toStrictEqual(
+      expect(swapsController.getProviderConfig).toStrictEqual(
         MOCK_GET_PROVIDER_CONFIG,
       );
     });
@@ -242,10 +237,7 @@ describe('SwapsController', function () {
       networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
-      expect(
-        currentEthersInstance).not.toStrictEqual(
-        newEthersInstance,
-      );
+      expect(currentEthersInstance).not.toStrictEqual(newEthersInstance);
     });
 
     it('should not replace ethers instance when network changes to loading', function () {
@@ -279,10 +271,7 @@ describe('SwapsController', function () {
       networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
-      expect(
-        currentEthersInstance).toStrictEqual(
-        newEthersInstance,
-      );
+      expect(currentEthersInstance).toStrictEqual(newEthersInstance);
     });
 
     it('should not replace ethers instance when network changes to the same network', function () {
@@ -316,10 +305,7 @@ describe('SwapsController', function () {
       networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
-      expect(
-        currentEthersInstance).toStrictEqual(
-        newEthersInstance,
-      );
+      expect(currentEthersInstance).toStrictEqual(newEthersInstance);
     });
   });
 
@@ -334,63 +320,56 @@ describe('SwapsController', function () {
         const selectedAggId = 'test';
         swapsController.setSelectedQuoteAggId(selectedAggId);
         expect(
-          swapsController.store.getState().swapsState.selectedAggId).toStrictEqual(
-          selectedAggId,
-        );
+          swapsController.store.getState().swapsState.selectedAggId,
+        ).toStrictEqual(selectedAggId);
       });
 
       it('should set swaps tokens', function () {
         const tokens = [];
         swapsController.setSwapsTokens(tokens);
         expect(
-          swapsController.store.getState().swapsState.tokens).toStrictEqual(
-          tokens,
-        );
+          swapsController.store.getState().swapsState.tokens,
+        ).toStrictEqual(tokens);
       });
 
       it('should set trade tx id', function () {
         const tradeTxId = 'test';
         swapsController.setTradeTxId(tradeTxId);
         expect(
-          swapsController.store.getState().swapsState.tradeTxId).toStrictEqual(
-          tradeTxId,
-        );
+          swapsController.store.getState().swapsState.tradeTxId,
+        ).toStrictEqual(tradeTxId);
       });
 
       it('should set swaps tx gas price', function () {
         const gasPrice = 1;
         swapsController.setSwapsTxGasPrice(gasPrice);
         expect(
-          swapsController.store.getState().swapsState.customGasPrice).toStrictEqual(
-          gasPrice,
-        );
+          swapsController.store.getState().swapsState.customGasPrice,
+        ).toStrictEqual(gasPrice);
       });
 
       it('should set swaps tx gas limit', function () {
         const gasLimit = '1';
         swapsController.setSwapsTxGasLimit(gasLimit);
         expect(
-          swapsController.store.getState().swapsState.customMaxGas).toStrictEqual(
-          gasLimit,
-        );
+          swapsController.store.getState().swapsState.customMaxGas,
+        ).toStrictEqual(gasLimit);
       });
 
       it('should set background swap route state', function () {
         const routeState = 'test';
         swapsController.setBackgroundSwapRouteState(routeState);
         expect(
-          swapsController.store.getState().swapsState.routeState).toStrictEqual(
-          routeState,
-        );
+          swapsController.store.getState().swapsState.routeState,
+        ).toStrictEqual(routeState);
       });
 
       it('should set swaps error key', function () {
         const errorKey = 'test';
         swapsController.setSwapsErrorKey(errorKey);
         expect(
-          swapsController.store.getState().swapsState.errorKey).toStrictEqual(
-          errorKey,
-        );
+          swapsController.store.getState().swapsState.errorKey,
+        ).toStrictEqual(errorKey);
       });
 
       it('should set initial gas estimate', async function () {
@@ -414,8 +393,7 @@ describe('SwapsController', function () {
         const { gasEstimate, gasEstimateWithRefund } =
           swapsController.store.getState().swapsState.quotes[initialAggId];
         expect(gasEstimate).toStrictEqual(bufferedGasLimit);
-        expect(
-          gasEstimateWithRefund).toStrictEqual(
+        expect(gasEstimateWithRefund).toStrictEqual(
           `0x${new BigNumberjs(maxGas, 10)
             .minus(estimatedRefund, 10)
             .toString(16)}`,
@@ -426,9 +404,8 @@ describe('SwapsController', function () {
         const data = 'test';
         swapsController.setCustomApproveTxData(data);
         expect(
-          swapsController.store.getState().swapsState.customApproveTxData).toStrictEqual(
-          data,
-        );
+          swapsController.store.getState().swapsState.customApproveTxData,
+        ).toStrictEqual(data);
       });
     });
 
@@ -442,9 +419,8 @@ describe('SwapsController', function () {
 
       it('returns empty object if passed undefined or empty object', async function () {
         expect(
-          await swapsController._findTopQuoteAndCalculateSavings()).toStrictEqual(
-          {},
-        );
+          await swapsController._findTopQuoteAndCalculateSavings(),
+        ).toStrictEqual({});
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
@@ -453,8 +429,7 @@ describe('SwapsController', function () {
             getTopQuoteAndSavingsMockQuotes(),
           );
         expect(topAggId).toEqual(TEST_AGG_ID_1);
-        expect(
-          resultQuotes).toStrictEqual(
+        expect(resultQuotes).toStrictEqual(
           getTopQuoteAndSavingsBaseExpectedResults(),
         );
       });
@@ -739,9 +714,8 @@ describe('SwapsController', function () {
         expect(
           fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
             ...MOCK_FETCH_METADATA,
-          })).toEqual(
-          true,
-        );
+          }),
+        ).toEqual(true);
       });
 
       it('calls returns the correct quotes on the optimism chain', async function () {
@@ -805,9 +779,8 @@ describe('SwapsController', function () {
         expect(
           fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
             ...OPTIMISM_MOCK_FETCH_METADATA,
-          })).toStrictEqual(
-          true,
-        );
+          }),
+        ).toStrictEqual(true);
       });
 
       it('performs the allowance check', async function () {
@@ -828,9 +801,8 @@ describe('SwapsController', function () {
             MOCK_FETCH_PARAMS.sourceToken,
             MOCK_FETCH_PARAMS.fromAddress,
             CHAIN_IDS.MAINNET,
-          )).toEqual(
-          true,
-        );
+          ),
+        ).toEqual(true);
       });
 
       it('gets the gas limit if approval is required', async function () {
@@ -856,9 +828,8 @@ describe('SwapsController', function () {
           timedoutGasReturnStub.calledOnceWithExactly(
             MOCK_APPROVAL_NEEDED,
             TEST_AGG_ID_APPROVAL,
-          )).toEqual(
-          true,
-        );
+          ),
+        ).toEqual(true);
       });
 
       it('marks the best quote', async function () {
@@ -1054,11 +1025,7 @@ describe('SwapsController', function () {
 
         const median = getMedianEthValueQuote(values);
 
-        expect(
-          median,
-        ).toEqual(
-          expectedResult,
-        );
+        expect(median).toEqual(expectedResult);
       });
 
       it('calculates median correctly with even sample', function () {
@@ -1095,10 +1062,7 @@ describe('SwapsController', function () {
         ];
         const median = getMedianEthValueQuote(values);
 
-        expect(
-          median).toEqual(
-          expectedResult,
-        );
+        expect(median).toEqual(expectedResult);
       });
 
       it('calculates median correctly with an uneven sample where multiple quotes have the median overall value', function () {
@@ -1154,10 +1118,7 @@ describe('SwapsController', function () {
         ];
         const median = getMedianEthValueQuote(values);
 
-        expect(
-          median).toEqual(
-          expectedResult,
-        );
+        expect(median).toEqual(expectedResult);
       });
 
       it('calculates median correctly with an even sample where multiple quotes have the same overall value as either of the two middle values', function () {
@@ -1207,18 +1168,15 @@ describe('SwapsController', function () {
         ];
         const median = getMedianEthValueQuote(values);
 
-        expect(
-          median).toEqual(
-          expectedResult,
-        );
+        expect(median).toEqual(expectedResult);
       });
 
       it('throws on empty or non-array sample', function () {
-        expect(() => getMedianEthValueQuote([])).toThrow()
+        expect(() => getMedianEthValueQuote([])).toThrow();
 
-        expect(() => getMedianEthValueQuote()).toThrow()
+        expect(() => getMedianEthValueQuote()).toThrow();
 
-        expect(() => getMedianEthValueQuote({})).toThrow()
+        expect(() => getMedianEthValueQuote({})).toThrow();
       });
     });
   });

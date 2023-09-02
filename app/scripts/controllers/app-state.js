@@ -28,7 +28,7 @@ export default class AppStateController extends EventEmitter {
       preferencesStore,
       qrHardwareStore,
       messenger,
-      extension
+      extension,
     } = opts;
     super();
 

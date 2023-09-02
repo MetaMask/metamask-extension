@@ -183,10 +183,13 @@ export default class MetaMetricsController {
         );
 
         if (!hasAlarm) {
-          this.extension.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
-            delayInMinutes: 1,
-            periodInMinutes: 1,
-          });
+          this.extension.alarms.create(
+            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+            {
+              delayInMinutes: 1,
+              periodInMinutes: 1,
+            },
+          );
         }
       });
       this.extension.alarms.onAlarm.addListener((alarmInfo) => {
