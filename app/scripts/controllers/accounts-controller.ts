@@ -353,6 +353,10 @@ export class AccountsController extends BaseControllerV2<
     const [snapKeyring] = this.getKeyringByType(SnapKeyring.type);
 
     const snapAccounts = await (snapKeyring as SnapKeyring).listAccounts(false);
+    // snap keyring is not available until the first account is created in the keyring controller
+    if (!snapKeyring) {
+      return [];
+    }
 
     for (const account of snapAccounts) {
       // The snap account is guaranteed to have a snap metadata
