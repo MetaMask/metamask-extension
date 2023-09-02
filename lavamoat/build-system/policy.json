@@ -558,10 +558,10 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -1194,7 +1194,12 @@
         "process": true
       },
       "packages": {
-        "addons-linter>glob>minimatch>brace-expansion": true
+        "@storybook/test-runner>glob>minimatch>brace-expansion": true
+      }
+    },
+    "@storybook/test-runner>glob>minimatch>brace-expansion": {
+      "packages": {
+        "stylelint>balanced-match": true
       }
     },
     "@typescript-eslint/eslint-plugin": {
@@ -1300,9 +1305,32 @@
         "typescript": true
       }
     },
-    "addons-linter>glob>minimatch>brace-expansion": {
+    "addons-linter>postcss": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true
+      },
+      "globals": {
+        "Buffer": true,
+        "URL": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "process.env.LANG": true,
+        "process.env.NODE_ENV": true
+      },
       "packages": {
-        "stylelint>balanced-match": true
+        "addons-linter>postcss>nanoid": true,
+        "addons-linter>postcss>source-map-js": true,
+        "gulp-sass>picocolors": true
       }
     },
     "babel-plugin-module-resolver": {
@@ -3055,8 +3083,8 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>globals": true,
         "eslint>ajv": true,
+        "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
@@ -3065,7 +3093,9 @@
     },
     "eslint>@humanwhocodes/config-array": {
       "builtin": {
-        "path": true
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true
       },
       "packages": {
         "eslint>@humanwhocodes/config-array>@humanwhocodes/object-schema": true,
@@ -3259,13 +3289,7 @@
         "console": true
       },
       "packages": {
-        "eslint>minimatch>brace-expansion": true
-      }
-    },
-    "eslint>minimatch>brace-expansion": {
-      "packages": {
-        "mocha>minimatch>brace-expansion>concat-map": true,
-        "stylelint>balanced-match": true
+        "mocha>minimatch>brace-expansion": true
       }
     },
     "eslint>strip-ansi": {
@@ -3482,9 +3506,9 @@
         "setImmediate": true
       },
       "packages": {
+        "addons-linter>postcss": true,
         "fancy-log": true,
         "gulp-autoprefixer>autoprefixer": true,
-        "gulp-autoprefixer>postcss": true,
         "gulp-zip>plugin-error": true,
         "through2": true,
         "vinyl-sourcemaps-apply": true
@@ -3497,8 +3521,8 @@
         "process.env.AUTOPREFIXER_GRID": true
       },
       "packages": {
+        "addons-linter>postcss": true,
         "gulp-autoprefixer>autoprefixer>fraction.js": true,
-        "gulp-autoprefixer>postcss": true,
         "gulp-sass>picocolors": true,
         "stylelint>autoprefixer>normalize-range": true,
         "stylelint>postcss-value-parser": true,
@@ -3509,34 +3533,6 @@
     "gulp-autoprefixer>autoprefixer>fraction.js": {
       "globals": {
         "define": true
-      }
-    },
-    "gulp-autoprefixer>postcss": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "path.dirname": true,
-        "path.isAbsolute": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true,
-        "url.fileURLToPath": true,
-        "url.pathToFileURL": true
-      },
-      "globals": {
-        "Buffer": true,
-        "URL": true,
-        "atob": true,
-        "btoa": true,
-        "console": true,
-        "process.env.LANG": true,
-        "process.env.NODE_ENV": true
-      },
-      "packages": {
-        "addons-linter>postcss>source-map-js": true,
-        "gulp-autoprefixer>postcss>nanoid": true,
-        "gulp-sass>picocolors": true
       }
     },
     "gulp-livereload": {
@@ -4333,7 +4329,7 @@
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>is-number>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>is-number>kind-of>is-buffer": true
       }
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>isobject": {
@@ -4370,7 +4366,7 @@
     },
     "gulp-watch>anymatch>micromatch>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>anymatch>micromatch>kind-of>is-buffer": true
       }
     },
     "gulp-watch>anymatch>micromatch>object.omit": {
@@ -4575,7 +4571,7 @@
     },
     "gulp-watch>chokidar>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-accessor-descriptor>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>anymatch>micromatch>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor": {
@@ -4585,7 +4581,7 @@
     },
     "gulp-watch>chokidar>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>anymatch>micromatch>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>anymatch>micromatch>extglob>expand-brackets>extend-shallow": {
@@ -4650,7 +4646,7 @@
     },
     "gulp-watch>chokidar>braces>fill-range>is-number>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>anymatch>micromatch>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>fill-range>to-regex-range": {
@@ -4698,7 +4694,7 @@
     },
     "gulp-watch>chokidar>braces>snapdragon-node>snapdragon-util>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>chokidar>braces>snapdragon-node>snapdragon-util>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base": {
@@ -4767,12 +4763,12 @@
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>is-number>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>has-value>has-values>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>set-value": {
@@ -4795,7 +4791,7 @@
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>to-object-path>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>to-object-path>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>union-value": {
@@ -4853,7 +4849,7 @@
     },
     "gulp-watch>chokidar>braces>snapdragon>base>class-utils>static-extend>object-copy>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>chokidar>braces>snapdragon>base>class-utils>static-extend>object-copy>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>define-property": {
@@ -4916,7 +4912,7 @@
     },
     "gulp-watch>chokidar>braces>snapdragon>define-property>is-descriptor>is-data-descriptor>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp-watch>chokidar>braces>snapdragon>define-property>is-descriptor>is-data-descriptor>kind-of>is-buffer": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>extend-shallow": {
@@ -5432,7 +5428,7 @@
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-accessor-descriptor>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of>is-buffer": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor": {
@@ -5442,7 +5438,7 @@
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of>is-buffer": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>extend-shallow": {
@@ -5559,7 +5555,7 @@
     },
     "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "gulp>glob-watcher>chokidar>braces>fill-range>is-number>kind-of>is-buffer": true
       }
     },
     "gulp>glob-watcher>chokidar>braces>fill-range>to-regex-range": {
@@ -6053,7 +6049,7 @@
     },
     "gulp>vinyl-fs>remove-bom-buffer": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true,
+        "gulp>vinyl-fs>remove-bom-buffer>is-buffer": true,
         "gulp>vinyl-fs>remove-bom-buffer>is-utf8": true
       }
     },
@@ -6369,7 +6365,7 @@
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -6391,7 +6387,7 @@
         "Buffer": true
       },
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
@@ -6407,7 +6403,7 @@
     },
     "lavamoat>lavamoat-core>merge-deep>kind-of": {
       "packages": {
-        "browserify>insert-module-globals>is-buffer": true
+        "lavamoat>lavamoat-core>merge-deep>kind-of>is-buffer": true
       }
     },
     "lavamoat>lavamoat-tofu": {
@@ -6488,6 +6484,12 @@
       "packages": {
         "chalk": true,
         "madge>ora>is-unicode-supported": true
+      }
+    },
+    "mocha>minimatch>brace-expansion": {
+      "packages": {
+        "mocha>minimatch>brace-expansion>concat-map": true,
+        "stylelint>balanced-match": true
       }
     },
     "mocha>supports-color": {
@@ -7481,10 +7483,10 @@
     },
     "react-markdown>unified": {
       "packages": {
+        "ganache>abstract-level>is-buffer": true,
         "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
-        "react-markdown>unified>is-buffer": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
@@ -7511,7 +7513,7 @@
         "process.cwd": true
       },
       "packages": {
-        "react-markdown>vfile>is-buffer": true,
+        "ganache>abstract-level>is-buffer": true,
         "react-markdown>vfile>vfile-message": true,
         "vinyl>replace-ext": true
       }
