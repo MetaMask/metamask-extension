@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../../ui/box';
+import { Box } from '../../component-library/box';
 import {
   AlignItems,
   Display,

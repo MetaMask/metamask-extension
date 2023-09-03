@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
-import Box from '../../ui/box';
+import { Box } from '../../component-library/box';
 import Popover from '../../ui/popover';
 
 import { AdvancedGasFeePopoverContextProvider } from './context';

@@ -14,7 +14,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
-import Box from '../../ui/box';
+import { Box } from '../../component-library/box';
 import InfoTooltip from '../../ui/info-tooltip';
 import AppLoadingSpinner from '../app-loading-spinner';
 import {
