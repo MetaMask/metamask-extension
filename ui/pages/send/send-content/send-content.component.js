@@ -10,6 +10,8 @@ import {
 } from '../../../helpers/constants/error-keys';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
+import { BannerAlert } from '../../../components/component-library';
+import { Severity } from '../../../helpers/constants/design-system';
 import GasDisplay from '../gas-display';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
@@ -131,9 +133,9 @@ export default class SendContent extends Component {
   renderError(error) {
     const { t } = this.context;
     return (
-      <Dialog type="error" className="send__error-dialog">
+      <BannerAlert severity={Severity.Danger} className="send__error-dialog">
         {t(error)}
-      </Dialog>
+      </BannerAlert>
     );
   }
 }
