@@ -1,0 +1,66 @@
+diff --git a/lib/typescript.js b/lib/typescript.js
+index 589e2c2e3116563eb6ac510f4e3008107ffcc3ca..91b3721e661db3bda1b8eb85ea382718df5b73dc 100644
+--- a/lib/typescript.js
++++ b/lib/typescript.js
+@@ -25549,11 +25549,58 @@ ${lanes.join("\n")}
+         priority: 1,
+         text: `
+             var __assign = (this && this.__assign) || function () {
+-                __assign = Object.assign || function(t) {
++                __assign = function(t) {
+                     for (var s, i = 1, n = arguments.length; i < n; i++) {
+                         s = arguments[i];
+-                        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+-                            t[p] = s[p];
++                        for (var p in s) {
++                          if (Object.prototype.hasOwnProperty.call(s, p)) {
++                            /**
++                             * In the original version of this package, this was:
++                             *
++                             *     t[p] = s[p]
++                             *
++                             * Unfortunately LavaMoat trips up on this, so we have to change
++                             * it.
++                             *
++                             * Internally LavaMoat uses "lockdown" (part of SES, which is
++                             * part of Endo) to freeze modifications to "intrinsics" — core
++                             * things like "Object.prototype", "Function.prototype", etc.
++                             * This will cause code which is responsible for said
++                             * modifications to fail at runtime, because it makes the
++                             * properties of these intrinsics non-writable.
++                             *
++                             * The reason we have to change *this* code is that later on,
++                             * this "__assign" function is used to merge two objects, and
++                             * one of those objects contains a "constructor" property. As we
++                             * know, "constructor" is a special property, as it's a property
++                             * on "Object.prototype" that stores the constructor used to
++                             * create that object. But when used in this context, there is
++                             * nothing inherently special about it – it's just a property on
++                             * an object we're setting. Unfortunately, that's not how it's
++                             * being treated. Because "lockdown" freezes "Object.prototype",
++                             * "Object.prototype.constructor" is non-writable, and due to a
++                             * "mistake" in the ES5 spec [1], that means "constructor" on
++                             * *any* object is non-writable too. So an error is thrown when
++                             * this code is executed.
++                             *
++                             * There is a way to get around this, which is to configure
++                             * "lockdown" with the option "overrideTaming: 'severe'".
++                             * The mechanics of this option, as well as more information
++                             * about the "mistake" this option solves, are explained here
++                             * [2]. Unfortunately, we cannot enable this option because
++                             * LavaMoat is the one running "lockdown" here [3]. So to work
++                             * around this, we use "Object.defineProperty" to define the
++                             * property we want. As this does not use property assignment
++                             * ("object[key] = value") but rather defines the property more
++                             * directly, this bypasses the "override mistake".
++                             *
++                             * [1]: https://web.archive.org/web/20141230041441/http://wiki.ecmascript.org/doku.php?id=strawman:fixing_override_mistake
++                             * [2]: https://github.com/endojs/endo/blob/864f086f87e1e7ef78a401a7550ff0aeb664bba0/packages/ses/src/enable-property-overrides.js#L28
++                             * [3]: https://github.com/LavaMoat/LavaMoat/blob/7c15bf8ba34ba1a9ceb3ffe591b1b2bfb084bead/packages/core/src/kernelTemplate.js#L32-L43
++                             */
++                            Object.defineProperty(t, p, Object.getOwnPropertyDescriptor(s, p))
++                          }
++                        }
+                     }
+                     return t;
+                 };

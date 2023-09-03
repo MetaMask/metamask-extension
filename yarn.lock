@@ -24411,7 +24411,7 @@ __metadata:
     through2: "npm:^4.0.2"
     ts-node: "npm:^10.5.0"
     ttest: "npm:^2.1.1"
-    typescript: "npm:~5.1.6"
+    typescript: "patch:typescript@npm%3A5.1.6#~/.yarn/patches/typescript-npm-5.1.6-b157762de3.patch"
     unicode-confusables: "npm:^0.1.1"
     uuid: "npm:^8.3.2"
     vinyl: "npm:^2.2.1"
@@ -33256,6 +33256,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:5.1.6":
+  version: 5.1.6
+  resolution: "typescript@npm:5.1.6"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: f347cde665cf43dc4c1c7d9821c7d9bbec3c3914f4bdd82ee490e9fb9f6d99036ed8666463b6a192dd005eeef333c5087d5931bdd51ec853436ff9a670a7417e
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^3.9.10, typescript@npm:^3.9.7":
   version: 3.9.10
   resolution: "typescript@npm:3.9.10"
@@ -33276,13 +33286,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.0.4, typescript@npm:~5.1.6":
+"typescript@patch:typescript@npm%3A5.1.6#~/.yarn/patches/typescript-npm-5.1.6-b157762de3.patch":
   version: 5.1.6
-  resolution: "typescript@npm:5.1.6"
+  resolution: "typescript@patch:typescript@npm%3A5.1.6#~/.yarn/patches/typescript-npm-5.1.6-b157762de3.patch::version=5.1.6&hash=b1f8f0"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: f347cde665cf43dc4c1c7d9821c7d9bbec3c3914f4bdd82ee490e9fb9f6d99036ed8666463b6a192dd005eeef333c5087d5931bdd51ec853436ff9a670a7417e
+  checksum: e57135dfa190624baabc53e7177e5865243a2748fa6af0d3f0b1b6d9a4f759ab8de2c65b5f85d57991e19839f19a666ebfb1845d8109b94c831b6df85aa3f55c
   languageName: node
   linkType: hard
 
@@ -33306,13 +33316,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.0.4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~5.1.6#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@patch%3Atypescript@npm%253A5.1.6%23~/.yarn/patches/typescript-npm-5.1.6-b157762de3.patch#optional!builtin<compat/typescript>":
   version: 5.1.6
-  resolution: "typescript@patch:typescript@npm%3A5.1.6#optional!builtin<compat/typescript>::version=5.1.6&hash=5da071"
+  resolution: "typescript@patch:typescript@patch%3Atypescript@npm%253A5.1.6%23~/.yarn/patches/typescript-npm-5.1.6-b157762de3.patch%3A%3Aversion=5.1.6&hash=b1f8f0#optional!builtin<compat/typescript>::version=5.1.6&hash=5da071"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: f5481fa3ba0eee8970f46708d13c05650a865ad093b586fc9573f425c64c57ca97e3308e110bb528deb3ccebe83f6fd7b5a8ac90018038da96326a9ccdf8e77c
+  checksum: 2ac0e121d5d0b18a4115573449228d5732e034e61c5c20be986a1ae08d6775e8e773113c04a134cca5ef51eaf1ee10e26f98ddb0fed76ae3d823b1e399a6c0d1
   languageName: node
   linkType: hard
 

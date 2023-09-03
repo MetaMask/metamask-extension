@@ -203,7 +203,8 @@
     "@metamask/keyring-controller@^7.2.0": "patch:@metamask/keyring-controller@npm%3A7.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-7.2.0-fcc0c7893b.patch",
     "@metamask/signature-controller@^5.3.0": "patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch",
     "semver@7.3.7": "^7.5.4",
-    "semver@7.3.8": "^7.5.4"
+    "semver@7.3.8": "^7.5.4",
+    "typescript@npm:^5.0.4": "patch:typescript@npm%3A5.1.6#~/.yarn/patches/typescript-npm-5.1.6-b157762de3.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -547,7 +548,7 @@
     "through2": "^4.0.2",
     "ts-node": "^10.5.0",
     "ttest": "^2.1.1",
-    "typescript": "~5.1.6",
+    "typescript": "patch:typescript@npm%3A5.1.6#~/.yarn/patches/typescript-npm-5.1.6-b157762de3.patch",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
