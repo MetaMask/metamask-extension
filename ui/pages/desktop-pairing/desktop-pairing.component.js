@@ -5,15 +5,15 @@ import { SECOND } from '../../../shared/constants/time';
 import { I18nContext } from '../../contexts/i18n';
 import IconDesktopPairing from '../../components/ui/icon/icon-desktop-pairing';
 import {
-  TEXT_ALIGN,
   TextVariant,
-  DISPLAY,
   AlignItems,
   JustifyContent,
   BackgroundColor,
   BorderRadius,
+  Display,
+  TextAlign,
 } from '../../helpers/constants/design-system';
-import Box from '../../components/ui/box/box';
+import { Box } from '../../components/component-library/box';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Tooltip from '../../components/ui/tooltip';
 import { Button, Text } from '../../components/component-library';
@@ -77,7 +77,7 @@ export default function DesktopPairingPage({
   const renderIcon = () => {
     return (
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         marginTop={8}
         marginBottom={8}
@@ -101,10 +101,10 @@ export default function DesktopPairingPage({
 
     return (
       <>
-        <Text variant={TextVariant.headingMd} align={TEXT_ALIGN.CENTER}>
+        <Text variant={TextVariant.headingMd} align={TextAlign.Center}>
           {t('desktopPageTitle')}
         </Text>
-        <Text marginTop={2} align={TEXT_ALIGN.CENTER}>
+        <Text marginTop={2} align={TextAlign.Center}>
           {t('desktopPageSubTitle')}
         </Text>
         <Box
@@ -122,7 +122,7 @@ export default function DesktopPairingPage({
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
             <Text
-              align={TEXT_ALIGN.CENTER}
+              align={TextAlign.Center}
               variant={TextVariant.displayMd}
               className="desktop-pairing__otp"
             >
@@ -130,7 +130,7 @@ export default function DesktopPairingPage({
             </Text>
           </Tooltip>
           <Box
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
             marginTop={4}
@@ -139,7 +139,7 @@ export default function DesktopPairingPage({
             <Text
               className="desktop-pairing__countdown-timer"
               variant={TextVariant.paragraph}
-              align={TEXT_ALIGN.CENTER}
+              align={TextAlign.Center}
               backgroundColor={BackgroundColor.backgroundDefault}
               borderRadius={BorderRadius.XL}
               padding={2}
@@ -154,7 +154,7 @@ export default function DesktopPairingPage({
               ])}
             </Text>
           </Box>
-          <Text align={TEXT_ALIGN.CENTER} variant={TextVariant.bodySm}>
+          <Text align={TextAlign.Center} variant={TextVariant.bodySm}>
             {t('desktopPageDescription')}
           </Text>
         </Box>
@@ -178,7 +178,7 @@ export default function DesktopPairingPage({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       flexDirection="column"
       alignItems={AlignItems.center}
       marginLeft={2}

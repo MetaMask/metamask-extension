@@ -3,10 +3,10 @@
 exports[`Desktop Pairing page should render otp component 1`] = `
 <div>
   <div
-    class="box box--margin-right-2 box--margin-left-2 box--display-flex box--flex-direction-column box--align-items-center"
-  >
+    class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+    >
     <div
-      class="box box--margin-top-8 box--margin-bottom-8 box--display-flex box--flex-direction-row box--justify-content-center"
+      class="mm-box mm-box--margin-top-8 mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
     >
       <svg
         class="desktop-pairing__icon"
@@ -103,7 +103,7 @@ exports[`Desktop Pairing page should render otp component 1`] = `
       Open your MetaMask Desktop and type this code
     </p>
     <div
-      class="box desktop-pairing__clickable box--margin-top-6 box--margin-bottom-6 box--flex-direction-row"
+      class="mm-box desktop-pairing__clickable mm-box--margin-top-6 mm-box--margin-bottom-6"
       data-testid="desktop-pairing-otp-content"
     >
       <div
@@ -126,22 +126,22 @@ exports[`Desktop Pairing page should render otp component 1`] = `
         </div>
       </div>
       <div
-        class="box box--margin-top-4 box--margin-bottom-6 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center"
+        class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
       >
         <p
           align="center"
           class="mm-box mm-text desktop-pairing__countdown-timer mm-text--body-md mm-box--padding-2 mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
         >
           <span>
-             
-            Code expires in 
+
+            Code expires in
             <span
               class="desktop-pairing__countdown-timer-seconds"
             >
               30
             </span>
              seconds
-             
+
           </span>
         </p>
       </div>
@@ -153,7 +153,7 @@ exports[`Desktop Pairing page should render otp component 1`] = `
       </p>
     </div>
     <div
-      class="box box--flex-direction-row"
+      class="mm-box"
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
