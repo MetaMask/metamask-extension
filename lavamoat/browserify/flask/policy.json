@@ -553,6 +553,24 @@
         "watchify>xtend": true
       }
     },
+    "@lgbot/madge>ora>bl": {
+      "packages": {
+        "@lgbot/madge>ora>bl>readable-stream": true,
+        "browserify>buffer": true,
+        "pumpify>inherits": true
+      }
+    },
+    "@lgbot/madge>ora>bl>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
     "@material-ui/core": {
       "globals": {
         "Image": true,
@@ -2468,6 +2486,7 @@
     },
     "@metamask/snaps-controllers>tar-stream": {
       "packages": {
+        "@lgbot/madge>ora>bl": true,
         "@metamask/snaps-controllers>tar-stream>fs-constants": true,
         "@metamask/snaps-controllers>tar-stream>readable-stream": true,
         "browserify>buffer": true,
@@ -2475,7 +2494,6 @@
         "browserify>string_decoder": true,
         "browserify>util": true,
         "end-of-stream": true,
-        "madge>ora>bl": true,
         "pumpify>inherits": true
       }
     },
@@ -4576,24 +4594,6 @@
     "luxon": {
       "globals": {
         "Intl": true
-      }
-    },
-    "madge>ora>bl": {
-      "packages": {
-        "browserify>buffer": true,
-        "madge>ora>bl>readable-stream": true,
-        "pumpify>inherits": true
-      }
-    },
-    "madge>ora>bl>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
       }
     },
     "mocha>serialize-javascript>randombytes": {

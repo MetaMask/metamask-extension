@@ -3489,9 +3489,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lgbot/madge@npm:^6.2.0-rc1":
-  version: 6.2.0-rc1
-  resolution: "@lgbot/madge@npm:6.2.0-rc1"
+"@lgbot/madge@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@lgbot/madge@npm:6.2.0"
   dependencies:
     chalk: "npm:^4.1.2"
     commander: "npm:^7.2.0"
@@ -3513,7 +3513,7 @@ __metadata:
       optional: true
   bin:
     madge: bin/cli.js
-  checksum: 483bef6c46056f77b89aa04f78d1e4ba65f14706adfa0b76695abad87aa62b77fc4e26842625e8c627f888ec2c0225574400b32a88e5d20d503073524474d087
+  checksum: e98a634bf0b7338b0164c22abecf8788a3c9127c038cc252212bd5c93fe565a9eda9ed1d7521fd9625d5aa3fb057062101567c9979648810ffca389e8e9da6f8
   languageName: node
   linkType: hard
 
@@ -23851,7 +23851,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^2.3.1"
     "@lavamoat/lavapack": "npm:^5.2.0"
     "@lavamoat/snow": "npm:^1.5.0"
-    "@lgbot/madge": "npm:^6.2.0-rc1"
+    "@lgbot/madge": "npm:^6.2.0"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.10"
     "@metamask-institutional/custody-keyring": "npm:^0.0.27"

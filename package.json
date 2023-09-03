@@ -378,7 +378,7 @@
     "@ethersproject/bignumber": "^5.7.0",
     "@lavamoat/allow-scripts": "^2.3.1",
     "@lavamoat/lavapack": "^5.2.0",
-    "@lgbot/madge": "^6.2.0-rc1",
+    "@lgbot/madge": "^6.2.0",
     "@metamask/auto-changelog": "^2.1.0",
     "@metamask/eslint-config": "^9.0.0",
     "@metamask/eslint-config-jest": "^9.0.0",
