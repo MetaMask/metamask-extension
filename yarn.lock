@@ -3624,7 +3624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lgbot/madge@npm:^6.1.1":
+"@lgbot/madge@npm:^6.2.0":
   version: 6.2.0
   resolution: "@lgbot/madge@npm:6.2.0"
   dependencies:
@@ -9691,24 +9691,6 @@ __metadata:
   version: 5.1.1
   resolution: "@types/lru-cache@npm:5.1.1"
   checksum: 0afadefc983306684a8ef95b6337a0d9e3f687e7e89e1f1f3f2e1ce3fbab5b018bb84cf277d781f871175a2c8f0176762b69e58b6f4296ee1b816cea94d5ef06
-  languageName: node
-  linkType: hard
-
-"@types/madge@npm:5.0.0":
-  version: 5.0.0
-  resolution: "@types/madge@npm:5.0.0"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: c5c9b4328c05309d58986d47eedc111387324fd08e7e50a95012fa3c943152e5957761b457c9b07c85f02f304933c953fb12fdafdb01f54ac7c2592aff9d83c6
-  languageName: node
-  linkType: hard
-
-"@types/madge@patch:@types/madge@npm%3A5.0.0#./.yarn/patches/@types-madge-npm-5.0.0-654566c2d2.patch::locator=metamask-crx%40workspace%3A.":
-  version: 5.0.0
-  resolution: "@types/madge@patch:@types/madge@npm%3A5.0.0#./.yarn/patches/@types-madge-npm-5.0.0-654566c2d2.patch::version=5.0.0&hash=dfcb37&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: e567c0cd63f2cca8770df350dc374ac7b4681c144739fc39a6ef04cb727dad9ad42ef0d138f79273f8e0df9949d9e9c7a685b8784d25a306e6a601e95bf440f1
   languageName: node
   linkType: hard
 
@@ -24788,7 +24770,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.17"
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.1"
-    "@lgbot/madge": "npm:^6.1.1"
+    "@lgbot/madge": "npm:^6.2.0"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.22"
     "@metamask-institutional/custody-keyring": "npm:^1.0.10"
@@ -24912,7 +24894,6 @@ __metadata:
     "@types/gulp-sass": "npm:^5.0.0"
     "@types/gulp-sourcemaps": "npm:^0.0.35"
     "@types/jest": "npm:^29.1.2"
-    "@types/madge": "npm:^5.0.0"
     "@types/mocha": "npm:^10.0.3"
     "@types/node": "npm:^20"
     "@types/pify": "npm:^5.0.1"
