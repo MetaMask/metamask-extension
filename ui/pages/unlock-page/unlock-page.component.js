@@ -12,9 +12,9 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isBeta } from '../../helpers/utils/build-types';
-import { getCaretCoordinates } from './unlock-page.util';
 import { Text } from '../../components/component-library';
 import { TextColor, TextVariant } from '../../helpers/constants/design-system';
+import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
