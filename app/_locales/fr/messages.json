@@ -2330,9 +2330,6 @@
   "more": {
     "message": "plus"
   },
-  "moreComingSoon": {
-    "message": "D’autres fournisseurs seront bientôt disponibles"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 veut se connecter avec $2 snaps. Ne procédez que si vous avez confiance dans ce site web.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "Activer les alertes de sécurité"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Évitez les escroqueries et protégez vos donnés personnelles grâce aux alertes de sécurité fournies par Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Les utilisateurs qui ont déjà activé les alertes de sécurité OpenSea recevront désormais des alertes de sécurité de ce nouveau fournisseur."
   },
   "notifications23DescriptionTwo": {
     "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande."
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "Alertes de sécurité"
   },
-  "securityAlertsDescription1": {
-    "message": "Cette fonctionnalité vous avertit de toute activité malveillante en examinant localement vos transactions et vos demandes de signature. Vos données ne sont pas partagées avec les tiers qui fournissent ce service. Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande. Rien ne garantit que toutes les activités malveillantes seront détectées par cette fonctionnalité."
-  },
-  "securityAlertsDescription2": {
-    "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande. Rien ne garantit que toutes les activités malveillantes seront détectées par cette fonctionnalité."
-  },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"
-  },
-  "securityProviderAdviceBy": {
-    "message": "Conseils de sécurité fournis par $1",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Voir les détails"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "Si vos comptes n’apparaissent pas ci-dessous, essayez de sélectionner le chemin HD."
-  },
-  "selectProvider": {
-    "message": "Sélectionner les fournisseurs :"
   },
   "selectType": {
     "message": "Sélectionner le type"

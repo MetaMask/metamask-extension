@@ -2330,9 +2330,6 @@
   "more": {
     "message": "他"
   },
-  "moreComingSoon": {
-    "message": "他のプロバイダーも近日追加予定"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 が $2 個のスナップとの接続を要求しています。この Web サイトが信頼できる場合にのみ続行してください。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "セキュリティアラートを有効にする"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Blockaid によるセキュリティアラートを使用して、プライバシーを守りつつ既知の詐欺を回避しましょう。"
-  },
-  "notifications23DescriptionThree": {
-    "message": "OpenSea のセキュリティアラートを有効にしていた場合、この機能に移行されました。"
   },
   "notifications23DescriptionTwo": {
     "message": "要求を承認する前に、必ず独自のデューデリジェンスを行ってください。"
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "、セキュリティアラート"
   },
-  "securityAlertsDescription1": {
-    "message": "この機能は、トランザクションと署名要求をローカルで確認することで、悪質な行為に対する警告を発します。ユーザーのデータはこのサービスを提供するサードパーティと共有されません。要求を承認する前には、必ず独自のデューデリジェンスを行ってください。この機能がすべての悪質な行為を検出するという保証はありません。"
-  },
-  "securityAlertsDescription2": {
-    "message": "要求を承認する前に、常に独自のデューデリジェンスを行うようにしてください。この機能によりすべての悪質な行為の検出が保証されているわけではありません。"
-  },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
-  },
-  "securityProviderAdviceBy": {
-    "message": "$1 によるセキュリティアドバイス",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "詳細を表示"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "アカウントが見当たらない場合は、HDパスを切り替えてみてください。"
-  },
-  "selectProvider": {
-    "message": "プロバイダーを選択してください:"
   },
   "selectType": {
     "message": "種類を選択"

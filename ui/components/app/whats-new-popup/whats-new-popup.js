@@ -16,7 +16,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
-import { getTranslatedUINotifications } from '../../../../shared/notifications';
+import {
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
+  getTranslatedUINotifications,
+} from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import {
   BUILD_QUOTE_ROUTE,
@@ -109,6 +112,9 @@ function getActionFunctionById(id, history) {
       history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
     },
     ///: END:ONLY_INCLUDE_IN
+    24: () => {
+      updateViewedNotifications({ 24: true });
+    },
   };
 
   return actionFunctions[id];
@@ -391,6 +397,9 @@ export default function WhatsNewPopup({
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IN
+    24: renderFirstNotification,
+    // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
   };
 
   return (

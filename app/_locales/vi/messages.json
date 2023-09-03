@@ -2330,9 +2330,6 @@
   "more": {
     "message": "thêm"
   },
-  "moreComingSoon": {
-    "message": "Sắp có thêm nhiều nhà cung cấp khác"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 muốn kết nối với $2 snap. Chỉ tiến hành nếu bạn tin tưởng trang web này.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "Bật cảnh báo bảo mật"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Tránh xa các hành vi gian lận đã biết trong khi vẫn bảo vệ quyền riêng tư của bạn với các cảnh báo bảo mật do Blockaid cung cấp."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Nếu bạn đã bật cảnh báo bảo mật từ OpenSea, chúng tôi đã chuyển bạn sang tính năng này."
   },
   "notifications23DescriptionTwo": {
     "message": "Luôn tự thẩm định trước khi phê duyệt các yêu cầu."
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "Cảnh báo bảo mật"
   },
-  "securityAlertsDescription1": {
-    "message": "Tính năng này sẽ cảnh báo cho bạn khi có hoạt động độc hại bằng cách xem xét cục bộ các giao dịch và yêu cầu chữ ký của bạn. Dữ liệu của bạn không được chia sẻ với các bên thứ ba cung cấp dịch vụ này. Luôn tự thẩm định trước khi phê duyệt bất kỳ yêu cầu nào. Không có gì đảm bảo rằng tính năng này sẽ phát hiện được tất cả các hoạt động độc hại."
-  },
-  "securityAlertsDescription2": {
-    "message": "Nhớ luôn tự thẩm định trước khi phê duyệt bất kỳ yêu cầu nào. Không có gì đảm bảo tính năng này sẽ phát hiện được tất cả các hành vi độc hại."
-  },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
-  },
-  "securityProviderAdviceBy": {
-    "message": "Lời khuyên bảo mật bởi $1",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Xem chi tiết"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "Nếu bạn không thấy các tài khoản như mong đợi, hãy chuyển sang đường dẫn HD."
-  },
-  "selectProvider": {
-    "message": "Chọn nhà cung cấp:"
   },
   "selectType": {
     "message": "Chọn loại"

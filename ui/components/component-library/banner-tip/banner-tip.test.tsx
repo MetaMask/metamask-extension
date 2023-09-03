@@ -22,13 +22,19 @@ describe('BannerTip', () => {
       <>
         <BannerTip
           logoType={BannerTipLogoType.Greeting}
-          logoProps={{ 'data-testid': 'banner-tip-greeting' }}
+          logoProps={{
+            'data-testid': 'banner-tip-greeting',
+            className: 'custom-logo-class',
+          }}
         >
           should render BannerTip element correctly
         </BannerTip>
         <BannerTip
           logoType={BannerTipLogoType.Chat}
-          logoProps={{ 'data-testid': 'banner-tip-chat' }}
+          logoProps={{
+            'data-testid': 'banner-tip-chat',
+            className: 'custom-logo-class',
+          }}
         >
           should render BannerTip element correctly
         </BannerTip>
@@ -39,7 +45,9 @@ describe('BannerTip', () => {
     expect(getByTestId('banner-tip-greeting')).toHaveClass(
       'mm-banner-tip--logo',
     );
+    expect(getByTestId('banner-tip-greeting')).toHaveClass('custom-logo-class');
     expect(getByTestId('banner-tip-chat')).toHaveClass('mm-banner-tip--logo');
+    expect(getByTestId('banner-tip-chat')).toHaveClass('custom-logo-class');
   });
 
   it('should render with added classname', () => {

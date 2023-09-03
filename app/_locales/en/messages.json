@@ -596,6 +596,12 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeDescription": {
+    "message": "Transfer tokens from different networks"
+  },
+  "bridgeDisabled": {
+    "message": "Bridge is not available in this network"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -614,6 +620,12 @@
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyDescription": {
+    "message": "Hold up your crypto and earn potential profits"
+  },
+  "buyDisabled": {
+    "message": "Buy is not available in this network"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -1146,6 +1158,9 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "desktopApp": {
+    "message": "Desktop App"
   },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
@@ -2340,9 +2355,6 @@
   "more": {
     "message": "more"
   },
-  "moreComingSoon": {
-    "message": "More providers coming soon"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2769,16 +2781,22 @@
     "message": "Enable security alerts"
   },
   "notifications23DescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "If you enabled security alerts from OpenSea, we've moved you over to this feature."
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid on Ethereum Mainnet."
   },
   "notifications23DescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
   },
   "notifications23Title": {
     "message": "Stay safe with security alerts"
+  },
+  "notifications24ActionText": {
+    "message": "Got it"
+  },
+  "notifications24Description": {
+    "message": "Advanced gas fee settings are now remembered based on the network you're using. This means you can set specific advanced gas fees for each network and avoid overpaying for gas or stuck transactions."
+  },
+  "notifications24Title": {
+    "message": "Advanced gas fees by network"
   },
   "notifications3ActionText": {
     "message": "Read more",
@@ -2860,6 +2878,14 @@
   },
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
+  },
+  "notificationsDropLedgerFirefoxDescription": {
+    "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
+  },
+  "notificationsDropLedgerFirefoxTitle": {
+    "message": "Dropping Ledger Support for Firefox",
+    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsEmptyText": {
     "message": "This is where you can find notifications from your installed snaps."
@@ -3659,17 +3685,14 @@
   "securityAlerts": {
     "message": "Security alerts"
   },
-  "securityAlertsDescription1": {
-    "message": "This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
-  },
-  "securityAlertsDescription2": {
-    "message": "Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature."
+  "securityAlertsDescription": {
+    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityProviderAdviceBy": {
-    "message": "Security advice by $1",
+  "securityProviderPoweredBy": {
+    "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
   "seeDetails": {
@@ -3753,6 +3776,9 @@
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
   },
+  "selectAnAction": {
+    "message": "Select an action"
+  },
   "selectHdPath": {
     "message": "Select HD path"
   },
@@ -3765,9 +3791,6 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
-  "selectProvider": {
-    "message": "Select providers:"
-  },
   "selectType": {
     "message": "Select Type"
   },
@@ -3779,6 +3802,9 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
+  },
+  "sendDescription": {
+    "message": "Send crypto to any account"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -4226,6 +4252,9 @@
   "stake": {
     "message": "Stake"
   },
+  "stakeDescription": {
+    "message": "Hold up your crypto and earn potential profits"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4417,8 +4446,14 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
+  "swapDescription": {
+    "message": "Swap and trade your tokens"
+  },
   "swapDirectContract": {
     "message": "Direct contract"
+  },
+  "swapDisabled": {
+    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"
@@ -4693,6 +4728,9 @@
   "swapTokenBalanceUnavailable": {
     "message": "We were unable to retrieve your $1 balance",
     "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
+  "swapTokenNotAvailable": {
+    "message": "Token is not available to swap in this region"
   },
   "swapTokenToToken": {
     "message": "Swap $1 to $2",

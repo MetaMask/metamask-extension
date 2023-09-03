@@ -259,10 +259,6 @@
 
   &__body {
     padding: 24px;
-
-    @include screen-sm-min {
-      padding: 12px;
-    }
   }
 
   &__content-row {
@@ -330,7 +326,7 @@
   }
 
   &__content-row-experimental {
-    padding: 10px 0 0 12px;
+    padding: 16px 0 16px 12px;
   }
 
   &__content-label {
@@ -369,10 +365,11 @@
     }
   }
 
-  &__content-item-col-open-sea {
+  &__content-item-col__security-toggle-option {
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    margin-top: 16px;
   }
 
   &__button {

@@ -2330,9 +2330,6 @@
   "more": {
     "message": "mehr"
   },
-  "moreComingSoon": {
-    "message": "Mehr Anbieter in Kürze"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 möchte sich mit $2 Snaps verbinden. Fahren Sie nur fort, wenn Sie dieser Webseite vertrauen.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2757,12 +2754,6 @@
   },
   "notifications23ActionText": {
     "message": "Sicherheitswarnungen aktivieren"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Fallen Sie nicht bekannten Betrügereien zum Opfer und schützen Sie gleichzeitig Ihre Privatsphäre mit Sicherheitswarnungen von Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "Wir haben für Sie diese Funktion aktiviert, wenn Sie die Sicherheitswarnungen von OpenSea erhalten haben."
   },
   "notifications23DescriptionTwo": {
     "message": "Vor der Bestätigung von Anfragen lassen Sie stets die nötige Sorgfalt walten."
@@ -3649,18 +3640,8 @@
   "securityAlerts": {
     "message": "Sicherheitswarnung"
   },
-  "securityAlertsDescription1": {
-    "message": "Diese Funktion warnt Sie vor schädlichen Aktivitäten, indem sie Ihre Transaktionen und Signaturanfragen lokal überprüft. Ihre Daten werden dazu nicht an Dritte weitergegeben, die diesen Dienst anbieten. Denken Sie immer an Ihre eigene Sorgfaltspflicht, bevor Sie Anfragen genehmigen, denn es gibt keine Garantie dafür, dass diese Funktion alle schädlichen Aktivitäten auch tatsächlich erkennt."
-  },
-  "securityAlertsDescription2": {
-    "message": "Achten Sie darauf, Ihrer eigenen Sorgfaltspflicht nachzukommen, bevor Sie eine Anfrage bestätigen. Es gibt keine Garantie dafür, dass alle E-Mail-Aktivitäten von dieser Funktion erkannt werden."
-  },
   "securityAndPrivacy": {
     "message": "Sicherheit & Datenschutz"
-  },
-  "securityProviderAdviceBy": {
-    "message": "Sicherheitstipp von $1",
-    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Details anzeigen"
@@ -3754,9 +3735,6 @@
   },
   "selectPathHelp": {
     "message": "Wenn Sie Ihre bestehenden Ledger-Konten nachfolgend nicht sehen, versuchen Sie, die Pfade zu \"Legacy (MEW / MyCrypto)\" zu ändern"
-  },
-  "selectProvider": {
-    "message": "Anbieter auswählen:"
   },
   "selectType": {
     "message": "Typ auswählen"
