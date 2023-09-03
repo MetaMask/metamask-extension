@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import fg from 'fast-glob';
-import madge from 'madge';
+import madge from '@lgbot/madge';
 import {
   ROOT_DIRECTORY_PATH,
   ENTRYPOINT_PATTERNS,
