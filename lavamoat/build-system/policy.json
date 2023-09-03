@@ -8696,7 +8696,7 @@
         "crypto": true,
         "fs": true,
         "inspector": true,
-        "module": true,
+        "module.findPnpApi": true,
         "os.EOL": true,
         "os.platform": true,
         "path.dirname": true,
@@ -8708,18 +8708,16 @@
       "globals": {
         "Intl": true,
         "PerformanceObserver": true,
-        "TypeScript": "write",
         "__dirname": true,
         "__filename": true,
-        "__magic__": true,
         "clearTimeout": true,
-        "console.log": true,
+        "console": true,
         "gc": true,
         "globalThis": true,
+        "onProfilerEvent": true,
         "performance": true,
         "process": true,
-        "setTimeout": true,
-        "toolsVersion": "write"
+        "setTimeout": true
       },
       "packages": {
         "terser>source-map-support": true
