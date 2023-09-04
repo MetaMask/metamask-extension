@@ -13,6 +13,12 @@ import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
 } from '../../../store/actions';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../shared/constants/network';
 import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');
@@ -159,7 +165,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://testnets.opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://testnets.opensea.io/assets/goerli/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
@@ -172,7 +178,10 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           providerConfig: {
-            chainId: '0x1',
+            chainId: CHAIN_IDS.MAINNET,
+            type: NETWORK_TYPES.MAINNET,
+            ticker: CURRENCY_SYMBOLS.ETH,
+            nickname: MAINNET_DISPLAY_NAME,
           },
         },
       };
@@ -191,7 +200,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://opensea.io/assets/ethereum/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
@@ -203,12 +212,16 @@ describe('NFT Details', () => {
           ...mockState.metamask,
           providerConfig: {
             chainId: '0x89',
+            type: 'rpc',
+            id: 'custom-mainnet',
           },
           networkConfigurations: {
             testNetworkConfigurationId: {
               rpcUrl: 'https://testrpc.com',
               chainId: '0x89',
               nickname: 'Custom Mainnet RPC',
+              type: 'rpc',
+              id: 'custom-mainnet',
             },
           },
         },
@@ -239,7 +252,8 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           providerConfig: {
-            chainId: '0xaa36a7',
+            chainId: CHAIN_IDS.SEPOLIA,
+            type: NETWORK_TYPES.SEPOLIA,
           },
         },
       };
@@ -258,7 +272,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://testnets.opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://testnets.opensea.io/assets/sepolia/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });

@@ -1,16 +1,16 @@
-import { ethErrors, errorCodes } from 'eth-rpc-errors';
-import validUrl from 'valid-url';
-import { omit } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
+import { errorCodes, ethErrors } from 'eth-rpc-errors';
+import { omit } from 'lodash';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
 } from '../../../../../shared/constants/app';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { getValidUrl } from '../../util';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -22,6 +22,8 @@ const addEthereumChain = {
     findNetworkConfigurationBy: true,
     setActiveNetwork: true,
     requestUserApproval: true,
+    startApprovalFlow: true,
+    endApprovalFlow: true,
   },
 };
 export default addEthereumChain;
@@ -38,6 +40,8 @@ async function addEthereumChainHandler(
     findNetworkConfigurationBy,
     setActiveNetwork,
     requestUserApproval,
+    startApprovalFlow,
+    endApprovalFlow,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -79,27 +83,25 @@ async function addEthereumChainHandler(
     );
   }
 
-  const isLocalhost = (strUrl) => {
-    try {
-      const url = new URL(strUrl);
-      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
-    } catch (error) {
-      return false;
-    }
-  };
+  function isLocalhostOrHttps(urlString) {
+    const url = getValidUrl(urlString);
+
+    return (
+      url !== null &&
+      (url.hostname === 'localhost' ||
+        url.hostname === '127.0.0.1' ||
+        url.protocol === 'https:')
+    );
+  }
 
   const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find(
-        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
-      )
+    ? rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl))
     : null;
 
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find(
-          (blockExplorerUrl) =>
-            isLocalhost(blockExplorerUrl) ||
-            validUrl.isHttpsUri(blockExplorerUrl),
+      ? blockExplorerUrls.find((blockExplorerUrl) =>
+          isLocalhostOrHttps(blockExplorerUrl),
         )
       : null;
 
@@ -242,6 +244,9 @@ async function addEthereumChainHandler(
     );
   }
   let networkConfigurationId;
+
+  const { id: approvalFlowId } = await startApprovalFlow();
+
   try {
     await requestUserApproval({
       origin,
@@ -269,6 +274,7 @@ async function addEthereumChainHandler(
     // Once the network has been added, the requested is considered successful
     res.result = null;
   } catch (error) {
+    endApprovalFlow({ id: approvalFlowId });
     return end(error);
   }
 
@@ -285,14 +291,24 @@ async function addEthereumChainHandler(
         networkConfigurationId,
       },
     });
-    await setActiveNetwork(networkConfigurationId);
   } catch (error) {
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate
     // that something is wrong.
-    if (error.code !== errorCodes.provider.userRejectedRequest) {
-      return end(error);
-    }
+    return end(
+      error.code === errorCodes.provider.userRejectedRequest
+        ? undefined
+        : error,
+    );
+  } finally {
+    endApprovalFlow({ id: approvalFlowId });
   }
+
+  try {
+    await setActiveNetwork(networkConfigurationId);
+  } catch (error) {
+    return end(error);
+  }
+
   return end();
 }

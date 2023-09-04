@@ -60,9 +60,6 @@
   "copiedExclamation": {
     "message": "Gekopieerd!"
   },
-  "copyPrivateKey": {
-    "message": "Dit is uw privésleutel (klik om te kopiëren)"
-  },
   "copyToClipboard": {
     "message": "Kopieer naar klembord"
   },
@@ -84,14 +81,8 @@
   "edit": {
     "message": "Bewerk"
   },
-  "enterPassword": {
-    "message": "Voer wachtwoord in"
-  },
   "etherscanView": {
     "message": "Bekijk account op Etherscan"
-  },
-  "exportPrivateKey": {
-    "message": "Exporteer privésleutel"
   },
   "failed": {
     "message": "mislukt"
@@ -183,9 +174,6 @@
   "mustSelectOne": {
     "message": "Moet ten minste één token selecteren."
   },
-  "myAccounts": {
-    "message": "Mijn accounts"
-  },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
     "description": "User is important an account and needs to add a file to continue"
@@ -274,9 +262,6 @@
   "settings": {
     "message": "instellingen"
   },
-  "showPrivateKeys": {
-    "message": "Privésleutels weergeven"
-  },
   "sigRequest": {
     "message": "Ondertekeningsverzoek"
   },
@@ -309,9 +294,6 @@
   },
   "total": {
     "message": "Totaal"
-  },
-  "typePassword": {
-    "message": "Typ uw wachtwoord"
   },
   "unknown": {
     "message": "Onbekend"

@@ -161,7 +161,7 @@
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "الاتصال بشبكة اختبار Linea Goerli"
   },
   "connectingToMainnet": {
@@ -178,9 +178,6 @@
   },
   "copyAddress": {
     "message": "نسخ العنوان إلى الحافظة"
-  },
-  "copyPrivateKey": {
-    "message": "هذا هو مفتاحك الخاص (انقر للنسخ)"
   },
   "copyToClipboard": {
     "message": "نسخ إلى الحافظة"
@@ -215,14 +212,8 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteAccount": {
-    "message": "حذف الحساب"
-  },
   "deleteNetwork": {
     "message": "هل تريد حذف الشبكة؟"
-  },
-  "deleteNetworkDescription": {
-    "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
   },
   "details": {
     "message": "التفاصيل"
@@ -251,9 +242,6 @@
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
   },
-  "enterPassword": {
-    "message": "أدخل كلمة مرور"
-  },
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
   },
@@ -265,9 +253,6 @@
   },
   "expandView": {
     "message": "توسيع العرض"
-  },
-  "exportPrivateKey": {
-    "message": "تصدير المفتاح الخاص"
   },
   "failed": {
     "message": "فشل"
@@ -406,7 +391,7 @@
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "شبكة اختبار Linea Goerli"
   },
   "links": {
@@ -441,9 +426,6 @@
   },
   "mustSelectOne": {
     "message": "يجب تحديد عملة رمزية واحدة على الأقل."
-  },
-  "myAccounts": {
-    "message": "حساباتي"
   },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
@@ -563,9 +545,6 @@
   "privateNetwork": {
     "message": "شبكة خاصة"
   },
-  "queue": {
-    "message": "اللائحة"
-  },
   "readdToken": {
     "message": "يمكنك إضافة هذه العملة الرمزية مرة أخرى في المستقبل من خلال الانتقال إلى \"إضافة عملة رمزية\" في قائمة خيارات الحسابات الخاصة بك."
   },
@@ -633,9 +612,6 @@
   "searchResults": {
     "message": "نتائج البحث"
   },
-  "searchTokens": {
-    "message": "البحث عن العملات الرمزية"
-  },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
@@ -674,9 +650,6 @@
   },
   "showHexDataDescription": {
     "message": "حدد هذا لإظهار حقل بيانات سداسي عشرية على شاشة الإرسال"
-  },
-  "showPrivateKeys": {
-    "message": "عرض المفاتيح الخاصة"
   },
   "sigRequest": {
     "message": "طلب التوقيع"
@@ -797,9 +770,6 @@
   },
   "tryAgain": {
     "message": "إعادة المحاولة"
-  },
-  "typePassword": {
-    "message": "أدخل كلمة مرور MetaMask الخاصة بك"
   },
   "unapproved": {
     "message": "تم الرفض"

@@ -34,10 +34,10 @@ describe('Test Snap manageState', function () {
         await driver.delay(1000);
 
         // find and scroll to the connect button and click it
-        const snapButton1 = await driver.findElement('#connectManageState');
+        const snapButton1 = await driver.findElement('#connectmanage-state');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
-        await driver.clickElement('#connectManageState');
+        await driver.clickElement('#connectmanage-state');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -74,7 +74,7 @@ describe('Test Snap manageState', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectManageState',
+          css: '#connectmanage-state',
           text: 'Reconnect to Manage State Snap',
         });
 
@@ -101,7 +101,7 @@ describe('Test Snap manageState', function () {
         );
         assert.equal(
           await retrieveManageStateResult.getText(),
-          '{ "testState": [ "23" ] }',
+          '{ "items": [ "23" ] }',
         );
 
         // click clear results
@@ -121,7 +121,7 @@ describe('Test Snap manageState', function () {
         );
         assert.equal(
           await retrieveManageStateResult2.getText(),
-          '{ "testState": [] }',
+          '{ "items": [] }',
         );
       },
     );

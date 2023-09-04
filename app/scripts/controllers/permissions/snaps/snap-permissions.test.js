@@ -8,14 +8,6 @@ import {
   buildSnapRestrictedMethodSpecifications,
 } from './snap-permissions';
 
-// Temporarily replace the snaps packages with the Flask versions.
-jest.mock('@metamask/snaps-controllers', () =>
-  jest.requireActual('@metamask/snaps-controllers-flask'),
-);
-jest.mock('@metamask/rpc-methods', () =>
-  jest.requireActual('@metamask/rpc-methods-flask'),
-);
-
 describe('buildSnapRestrictedMethodSpecifications', () => {
   it('creates valid permission specification objects', () => {
     const hooks = {

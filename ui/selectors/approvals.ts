@@ -1,35 +1,49 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '../../shared/constants/transaction';
 
 type ApprovalsMetaMaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
-    unapprovedTxs: {
-      [transactionId: string]: TransactionMeta;
-    };
+    approvalFlows: ApprovalControllerState['approvalFlows'];
   };
-};
-
-export const getApprovalRequestsByType = (
-  state: ApprovalsMetaMaskState,
-  approvalType: ApprovalType,
-) => {
-  const pendingApprovalRequests = Object.values(
-    state.metamask.pendingApprovals,
-  ).filter(({ type }) => type === approvalType);
-
-  return pendingApprovalRequests;
 };
 
 export function hasPendingApprovals(
   state: ApprovalsMetaMaskState,
   approvalType: ApprovalType,
+  predicate?: (
+    approval: ApprovalControllerState['pendingApprovals'][string],
+  ) => boolean,
 ) {
-  const pendingApprovalRequests = getApprovalRequestsByType(
-    state,
-    approvalType,
-  );
+  const pendingApprovalRequests = Object.values(
+    state.metamask.pendingApprovals,
+  ).filter(({ type }) => type === approvalType);
+
+  if (predicate) {
+    return pendingApprovalRequests.some(predicate);
+  }
 
   return pendingApprovalRequests.length > 0;
+}
+
+export const getApprovalRequestsByType = (
+  state: ApprovalsMetaMaskState,
+  approvalType: ApprovalType,
+  predicate?: (
+    approval: ApprovalControllerState['pendingApprovals'][string],
+  ) => boolean,
+) => {
+  const pendingApprovalRequests = Object.values(
+    state.metamask.pendingApprovals,
+  ).filter(({ type }) => type === approvalType);
+
+  if (predicate) {
+    return pendingApprovalRequests.filter(predicate);
+  }
+
+  return pendingApprovalRequests;
+};
+
+export function getApprovalFlows(state: ApprovalsMetaMaskState) {
+  return state.metamask.approvalFlows;
 }

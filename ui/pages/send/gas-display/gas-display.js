@@ -27,6 +27,7 @@ import {
   transactionFeeSelector,
   getIsTestnet,
   getUseCurrencyRateCheck,
+  getUnapprovedTransactions,
 } from '../../../selectors';
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
@@ -62,12 +63,12 @@ export default function GasDisplay({ gasError }) {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
     useSelector(getPreferences);
-  const { unapprovedTxs } = useSelector((state) => state.metamask);
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const nativeCurrency = useSelector(getNativeCurrency);
   const { chainId } = providerConfig;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
-    draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
+    draftTransaction?.amount?.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
   const currentNetworkName = networkName || providerConfig.nickname;
 

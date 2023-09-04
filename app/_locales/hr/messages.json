@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Povezivanje na testnu mrežu Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Povezivanje na testnu mrežu Linea Goerli"
   },
   "connectingToMainnet": {
@@ -174,9 +174,6 @@
   },
   "copyAddress": {
     "message": "Kopiraj adresu u međuspremnik"
-  },
-  "copyPrivateKey": {
-    "message": "Ovo je vaš privatni ključ (kliknite za kopiranje)"
   },
   "copyToClipboard": {
     "message": "Kopiraj u međuspremnik"
@@ -211,14 +208,8 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteAccount": {
-    "message": "Izbriši račun"
-  },
   "deleteNetwork": {
     "message": "Izbrisati mrežu?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sigurno želite izbrisati ovu mrežu?"
   },
   "details": {
     "message": "Detalji"
@@ -247,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Greška u registraciji naziva ENS"
   },
-  "enterPassword": {
-    "message": "Upiši lozinku"
-  },
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
   },
@@ -261,9 +249,6 @@
   },
   "expandView": {
     "message": "Proširi prikaz"
-  },
-  "exportPrivateKey": {
-    "message": "Izvezi privatni ključ"
   },
   "failed": {
     "message": "Neuspješno"
@@ -402,7 +387,7 @@
   "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testna mreža Linea Goerli"
   },
   "links": {
@@ -437,9 +422,6 @@
   },
   "mustSelectOne": {
     "message": "Mora se odabrati barem jedan token."
-  },
-  "myAccounts": {
-    "message": "Moji računi"
   },
   "needImportFile": {
     "message": "Morate odabrati datoteku za uvoz.",
@@ -559,9 +541,6 @@
   "privateNetwork": {
     "message": "Privatna mreža"
   },
-  "queue": {
-    "message": "Red čekanja"
-  },
   "readdToken": {
     "message": "Ovaj token možete dodati kasnije odlaskom pod stavku „Dodaj token” u izborniku mogućnosti računa. "
   },
@@ -629,9 +608,6 @@
   "searchResults": {
     "message": "Rezultati pretraživanja"
   },
-  "searchTokens": {
-    "message": "Pretraži tokene"
-  },
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
   },
@@ -670,9 +646,6 @@
   },
   "showHexDataDescription": {
     "message": "Odaberite ovu stavku za prikaz polja namijenjenog za podatke hex na zaslonu za slanje"
-  },
-  "showPrivateKeys": {
-    "message": "Prikaži privatne ključe"
   },
   "sigRequest": {
     "message": "Zahtjev za potpisom"
@@ -790,9 +763,6 @@
   },
   "tryAgain": {
     "message": "Pokušaj ponovo"
-  },
-  "typePassword": {
-    "message": "Upišite svoju lozinku MetaMask."
   },
   "unapproved": {
     "message": "Neodobreno"

@@ -62,9 +62,10 @@ export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
     chainId === CHAIN_IDS.MAINNET ||
+    chainId === CHAIN_IDS.LINEA_MAINNET ||
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
-    chainId === CHAIN_IDS.LINEA_TESTNET ||
+    chainId === CHAIN_IDS.LINEA_GOERLI ||
     chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
@@ -492,11 +493,11 @@ export const sanitizeMessage = (msg, primaryType, types) => {
 };
 
 export function getAssetImageURL(image, ipfsGateway) {
-  if (!image || !ipfsGateway || typeof image !== 'string') {
+  if (!image || typeof image !== 'string') {
     return '';
   }
 
-  if (image.startsWith('ipfs://')) {
+  if (ipfsGateway && image.startsWith('ipfs://')) {
     return getFormattedIpfsUrl(ipfsGateway, image, true);
   }
   return image;
@@ -619,4 +620,14 @@ export const getNetworkNameFromProviderType = (providerName) => {
     return '';
   }
   return providerName;
+};
+
+/**
+ * Checks if the given keyring type is able to export an account.
+ *
+ * @param keyringType - The type of the keyring.
+ * @returns {boolean} `false` if the keyring type includes 'Hardware' or 'Snap', `true` otherwise.
+ */
+export const isAbleToExportAccount = (keyringType = '') => {
+  return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
 };

@@ -1,16 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import Button from '../../../components/ui/button';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Text } from '../../../components/component-library';
+import {
+  Box,
+  Button,
+  BUTTON_VARIANT,
+  Text,
+} from '../../../components/component-library';
 import {
   TextColor,
-  BorderRadius,
   TypographyVariant,
+  Display,
+  FlexDirection,
+  AlignItems,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
-import Box from '../../../components/ui/box';
 
 export default function InstitutionalEntityDonePage(props) {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -19,7 +25,7 @@ export default function InstitutionalEntityDonePage(props) {
   const { state } = location;
 
   return (
-    <Box borderRadius={BorderRadius.none}>
+    <Box className="page-container">
       <Box className="page-container__content">
         <Box
           paddingBottom={6}
@@ -28,46 +34,50 @@ export default function InstitutionalEntityDonePage(props) {
           className="institutional-entity-done__form"
         >
           <Box
-            display={['flex']}
-            flexDirection={['column']}
-            alignItems={['center']}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
           >
-            <img
-              className="institutional-entity-done__img"
-              src={state.imgSrc}
-              alt="Entity image"
-            />
+            {state.imgSrc && (
+              <img
+                className="institutional-entity-done__img"
+                src={state.imgSrc}
+                alt="Entity image"
+              />
+            )}
             <Text
               as="h4"
               marginTop={4}
               marginBottom={4}
               color={TextColor.textDefault}
+              textAlign={TextAlign.Left}
             >
               {state.title}
             </Text>
             <Text
               as="p"
-              color={TextColor.textAlternative}
+              color={TextColor.textDefault}
               marginTop={2}
               marginBottom={5}
               variant={TypographyVariant.headingSm}
+              textAlign={TextAlign.Left}
             >
               {state.description}
             </Text>
           </Box>
         </Box>
       </Box>
-      <Box className="page-container__footer">
-        <footer>
+      <Box as="footer" className="page-container__footer" padding={4}>
+        <Box display={Display.Flex} gap={4}>
           <Button
-            type="primary"
-            large
+            block
+            variant={BUTTON_VARIANT.PRIMARY}
             data-testid="click-most-recent-overview-page"
             onClick={() => history.push(mostRecentOverviewPage)}
           >
-            <Text>{t('close')}</Text>
+            {t('close')}
           </Button>
-        </footer>
+        </Box>
       </Box>
     </Box>
   );

@@ -36,9 +36,9 @@ async function loadNewAccount() {
       await driver.clickElement('[data-testid="account-menu-icon"]');
       const timestampBeforeAction = new Date();
       await driver.clickElement(
-        '[data-testid="multichain-account-menu-add-account"]',
+        '[data-testid="multichain-account-menu-popover-add-account"]',
       );
-      await driver.fill('.new-account-create-form input', '2nd account');
+      await driver.fill('[placeholder="Account 2"]', '2nd account');
       await driver.clickElement({ text: 'Create', tag: 'button' });
       await driver.waitForSelector({
         css: '.currency-display-component__text',

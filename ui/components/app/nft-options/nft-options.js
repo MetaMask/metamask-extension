@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../ui/menu';
-import { ButtonIcon, IconName } from '../../component-library';
+import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
 import { Color } from '../../../helpers/constants/design-system';
 
 const NftOptions = ({ onRemove, onViewOnOpensea }) => {
@@ -19,6 +19,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }) => {
         data-testid="nft-options__button"
         onClick={() => setNftOptionsOpen(true)}
         color={Color.textDefault}
+        size={ButtonIconSize.Sm}
         ariaLabel={t('nftOptions')}
       />
 

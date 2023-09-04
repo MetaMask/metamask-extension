@@ -33,8 +33,10 @@ export default class DetectTokensController {
    * @param config.tokensController
    * @param config.assetsContractController
    * @param config.trackMetaMetricsEvent
+   * @param config.messenger
    */
   constructor({
+    messenger,
     interval = DEFAULT_INTERVAL,
     preferences,
     network,
@@ -44,6 +46,7 @@ export default class DetectTokensController {
     assetsContractController = null,
     trackMetaMetricsEvent,
   } = {}) {
+    this.messenger = messenger;
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
     this.preferences = preferences;
@@ -59,7 +62,7 @@ export default class DetectTokensController {
     });
     this.hiddenTokens = this.tokensController?.state.ignoredTokens;
     this.detectedTokens = this.tokensController?.state.detectedTokens;
-    this.chainId = this.getChainIdFromNetworkStore(network);
+    this.chainId = this.getChainIdFromNetworkStore();
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
     preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
@@ -81,6 +84,13 @@ export default class DetectTokensController {
         this.detectedTokens = detectedTokens;
       },
     );
+    messenger.subscribe('NetworkController:stateChange', () => {
+      if (this.chainId !== this.getChainIdFromNetworkStore()) {
+        const chainId = this.getChainIdFromNetworkStore();
+        this.chainId = chainId;
+        this.restartTokenDetection({ chainId: this.chainId });
+      }
+    });
   }
 
   /**
@@ -93,7 +103,7 @@ export default class DetectTokensController {
   async detectNewTokens({ selectedAddress, chainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
     const chainIdAgainstWhichToDetect =
-      chainId ?? this.getChainIdFromNetworkStore(this._network);
+      chainId ?? this.getChainIdFromNetworkStore();
     if (!this.isActive) {
       return;
     }
@@ -208,8 +218,8 @@ export default class DetectTokensController {
     this.interval = DEFAULT_INTERVAL;
   }
 
-  getChainIdFromNetworkStore(network) {
-    return network?.store.getState().providerConfig.chainId;
+  getChainIdFromNetworkStore() {
+    return this.network?.state.providerConfig.chainId;
   }
 
   /* eslint-disable accessor-pairs */
@@ -224,23 +234,6 @@ export default class DetectTokensController {
     this._handle = setInterval(() => {
       this.detectNewTokens();
     }, interval);
-  }
-
-  /**
-   * @type {object}
-   */
-  set network(network) {
-    if (!network) {
-      return;
-    }
-    this._network = network;
-    this._network.store.subscribe(() => {
-      if (this.chainId !== this.getChainIdFromNetworkStore(network)) {
-        const chainId = this.getChainIdFromNetworkStore(network);
-        this.chainId = chainId;
-        this.restartTokenDetection({ chainId: this.chainId });
-      }
-    });
   }
 
   /**

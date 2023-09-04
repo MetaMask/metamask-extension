@@ -1,8 +1,10 @@
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { permittedMethods as permittedSnapMethods } from '@metamask/rpc-methods';
-///: END:ONLY_INCLUDE_IN
 import { permissionRpcMethods } from '@metamask/permission-controller';
-import { selectHooks } from '@metamask/rpc-methods/dist/utils';
+import {
+  selectHooks,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  permittedMethods as permittedSnapMethods,
+  ///: END:ONLY_INCLUDE_IN
+} from '@metamask/rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
 import { flatten } from 'lodash';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
@@ -63,7 +65,9 @@ export function createMethodMiddleware(hooks) {
           selectHooks(hooks, hookNames),
         );
       } catch (error) {
-        console.error(error);
+        if (process.env.METAMASK_DEBUG) {
+          console.error(error);
+        }
         return end(error);
       }
     }
@@ -99,7 +103,9 @@ export function createSnapMethodMiddleware(isSnap, hooks) {
           selectHooks(hooks, hookNames),
         );
       } catch (error) {
-        console.error(error);
+        if (process.env.METAMASK_DEBUG) {
+          console.error(error);
+        }
         return end(error);
       }
     }

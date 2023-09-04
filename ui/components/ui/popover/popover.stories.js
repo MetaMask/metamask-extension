@@ -5,7 +5,6 @@ import Popover from './popover.component';
 
 export default {
   title: 'Components/UI/Popover',
-
   component: Popover,
   argTypes: {
     title: { control: 'text' },

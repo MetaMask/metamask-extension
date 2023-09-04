@@ -1,24 +1,29 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
-  DISPLAY,
+  Display,
   FontWeight,
-  SEVERITIES,
+  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   BannerAlert,
+  Box,
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
-  Text,
 } from '../../component-library';
-import Box from '../../ui/box/box';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
 
-export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
+export const AccountDetailsAuthenticate = ({
+  address,
+  onCancel,
+  setPrivateKey,
+  setShowHoldToReveal,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -28,11 +33,13 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
   const warning = useSelector((state) => state.appState.warning);
 
   const onSubmit = useCallback(() => {
-    dispatch(exportAccount(password, address)).then((res) => {
+    dispatch(
+      exportAccount(password, address, setPrivateKey, setShowHoldToReveal),
+    ).then((res) => {
       dispatch(hideWarning());
       return res;
     });
-  }, [dispatch, password, address]);
+  }, [dispatch, password, address, setPrivateKey, setShowHoldToReveal]);
 
   const handleKeyPress = useCallback(
     (e) => {
@@ -60,10 +67,12 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         labelProps={{ fontWeight: FontWeight.Medium }}
         autoFocus
       />
-      <BannerAlert marginTop={6} severity={SEVERITIES.DANGER}>
-        <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
-      </BannerAlert>
-      <Box display={DISPLAY.FLEX} marginTop={6} gap={2}>
+      <BannerAlert
+        marginTop={6}
+        severity={Severity.Danger}
+        description={t('privateKeyWarning')}
+      />
+      <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={onCancel} block>
           {t('cancel')}
         </ButtonSecondary>
@@ -78,4 +87,6 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
 AccountDetailsAuthenticate.propTypes = {
   address: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
+  setPrivateKey: PropTypes.func.isRequired,
+  setShowHoldToReveal: PropTypes.func.isRequired,
 };

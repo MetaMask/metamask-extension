@@ -7,6 +7,7 @@
     padding-bottom: 10px;
     font-weight: bold;
     display: flex;
+    cursor: pointer;
 
     &::-webkit-details-marker,
     &::marker {
@@ -21,6 +22,33 @@
 
     &.small {
       font-size: 12px;
+    }
+  }
+
+  // Arrow Summary
+
+  details[open] {
+    .disclosure__summary.is-arrow .disclosure__summary--icon {
+      transform: rotateX(0deg);
+    }
+  }
+
+  &__summary.is-arrow {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    + .disclosure__content {
+      margin-left: 0;
+    }
+
+    .disclosure__summary--icon {
+      transform: rotateX(180deg);
+      transition: 0.1s transform;
     }
   }
 }

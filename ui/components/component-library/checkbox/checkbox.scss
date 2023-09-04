@@ -1,0 +1,54 @@
+.mm-checkbox {
+  cursor: pointer;
+
+  &__input-wrapper {
+    position: relative;
+  }
+
+  &__input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-background-default-hover);
+    }
+
+    &:focus {
+      border-color: var(--color-primary-default);
+    }
+
+    &:disabled {
+      color: var(--color-icon-muted);
+      cursor: not-allowed;
+    }
+  }
+
+  &__input--checked:hover:not(:disabled),
+  &__input--indeterminate:hover:not(:disabled) {
+    border-color: var(--color-primary-alternative);
+    background-color: var(--color-primary-alternative);
+  }
+
+  &__input--checked#{&}__input--readonly,
+  &__input--checked#{&}__input--readonly:hover,
+  &__input--indeterminate#{&}__input--readonly,
+  &__input--indeterminate#{&}__input--readonly:hover {
+    border-color: var(--color-icon-alternative);
+    background-color: var(--color-icon-alternative);
+    cursor: not-allowed;
+  }
+
+  &--disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  &__icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+}

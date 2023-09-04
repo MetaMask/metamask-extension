@@ -38,18 +38,6 @@
     width: 348px;
   }
 
-  &__new-quote-countdown {
-    @include H7;
-
-    font-weight: bold;
-
-    &--danger {
-      span {
-        color: var(--color-error-default);
-      }
-    }
-  }
-
   &__price-difference-warning {
     &-wrapper {
       width: 100%;

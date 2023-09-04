@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
+import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
@@ -33,12 +34,20 @@ const mockBaseStore = {
     pendingApprovals: {
       [mockApprovalId]: mockApproval,
     },
+    approvalFlows: [],
     subjectMetadata: {},
     providerConfig: {
       type: 'rpc',
       rpcUrl: 'http://example-custom-rpc.metamask.io',
       chainId: '0x9999',
       nickname: 'Test initial state',
+    },
+    selectedNetworkClientId: 'test-network-client-id',
+    networksMetadata: {
+      'test-network-client-id': {
+        EIPS: {},
+        status: NetworkStatus.Available,
+      },
     },
   },
 };
@@ -54,6 +63,7 @@ describe('switch-ethereum-chain confirmation', () => {
             type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
           },
         },
+        transactions: [],
       },
     };
     const store = configureMockStore(middleware)(testStore);
@@ -74,11 +84,12 @@ describe('switch-ethereum-chain confirmation', () => {
             type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
           },
         },
-        unapprovedTxs: {
-          1: {
+        transactions: [
+          {
             id: 1,
+            status: 'unapproved',
           },
-        },
+        ],
       },
     };
 

@@ -5,14 +5,14 @@ const mmiPortfolio = {
   methodNames: [MESSAGE_TYPE.MMI_PORTFOLIO],
   implementation: mmiPortfolioHandler,
   hookNames: {
-    handleMmiPortfolio: true,
+    handleMmiDashboardData: true,
   },
 };
 export default mmiPortfolio;
 
 /**
  * @typedef {object} MmiPortfolioOptions
- * @property {Function} handleMmiportfolio - The metmaskinsititutional_portfolio method implementation.
+ * @property {Function} handleMmiDashboardData - The metmaskinsititutional_portfolio method implementation.
  */
 
 /**
@@ -33,7 +33,7 @@ async function mmiPortfolioHandler(
   res,
   _next,
   end,
-  { handleMmiPortfolio },
+  { handleMmiDashboardData },
 ) {
   try {
     let validUrl = false;
@@ -47,7 +47,7 @@ async function mmiPortfolioHandler(
     if (!validUrl) {
       throw new Error('Unauthorized');
     } else {
-      res.result = await handleMmiPortfolio(req);
+      res.result = await handleMmiDashboardData(req);
       return end();
     }
   } catch (error) {

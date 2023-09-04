@@ -151,7 +151,7 @@
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Ansluter till Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -168,9 +168,6 @@
   },
   "copyAddress": {
     "message": "Kopiera adress till urklipp"
-  },
-  "copyPrivateKey": {
-    "message": "Det här är din privata nyckel (klicka för att kopiera)"
   },
   "copyToClipboard": {
     "message": "Kopiera till Urklipp"
@@ -205,14 +202,8 @@
   "delete": {
     "message": "Radera"
   },
-  "deleteAccount": {
-    "message": "Radera konto"
-  },
   "deleteNetwork": {
     "message": "Radera nätverk?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Är du säker på att du vill ta bort detta nätverk?"
   },
   "details": {
     "message": "Info"
@@ -241,9 +232,6 @@
   "ensRegistrationError": {
     "message": "Fel i ENS-namnregistrering"
   },
-  "enterPassword": {
-    "message": "Ange lösenord"
-  },
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
   },
@@ -255,9 +243,6 @@
   },
   "expandView": {
     "message": "Expandera vy"
-  },
-  "exportPrivateKey": {
-    "message": "Exportera privat nyckel"
   },
   "failed": {
     "message": "Misslyckades"
@@ -396,7 +381,7 @@
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testnätverk"
   },
   "links": {
@@ -428,9 +413,6 @@
   },
   "mustSelectOne": {
     "message": "Minst 1 token måste väljas."
-  },
-  "myAccounts": {
-    "message": "Mina konton"
   },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
@@ -550,9 +532,6 @@
   "privateNetwork": {
     "message": "Privat nätverk"
   },
-  "queue": {
-    "message": "Utskriftskö"
-  },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
   },
@@ -620,9 +599,6 @@
   "searchResults": {
     "message": "Sökresultat"
   },
-  "searchTokens": {
-    "message": "Sök tokens"
-  },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
   },
@@ -661,9 +637,6 @@
   },
   "showHexDataDescription": {
     "message": "Välj detta för att visa hex-datafältet på sändarskärmen"
-  },
-  "showPrivateKeys": {
-    "message": "Visa privata nycklar"
   },
   "sigRequest": {
     "message": "Signaturförfrågan"
@@ -775,9 +748,6 @@
   },
   "tryAgain": {
     "message": "Försök igen"
-  },
-  "typePassword": {
-    "message": "Ange ditt MetaMask-lösenord"
   },
   "unapproved": {
     "message": "Inte godkänd"

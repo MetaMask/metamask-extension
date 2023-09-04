@@ -42,10 +42,6 @@
   "addContact": {
     "message": "Magdagdag ng contact"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Walang makitang token? Puwede kang manual na magdagdag ng anumang token sa pamamagitan ng pag-paste ng address nito. Makikita ang mga address ng kontrata ng token sa $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Bibigyang-daan nito na magamit ang network na ito sa MetaMask."
   },
@@ -74,6 +70,10 @@
   },
   "addToken": {
     "message": "Magdagdag ng Token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Walang makitang token? Puwede kang manual na magdagdag ng anumang token sa pamamagitan ng pag-paste ng address nito. Makikita ang mga address ng kontrata ng token sa $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "advanced": {
     "message": "Advanced"
@@ -305,7 +305,7 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Kumokonekta sa Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -337,9 +337,6 @@
   },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
-  },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong key (i-click para kopyahin)"
   },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
@@ -406,14 +403,8 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteAccount": {
-    "message": "I-delete ang Account"
-  },
   "deleteNetwork": {
     "message": "I-delete ang Network?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
   "details": {
     "message": "Mga Detalye"
@@ -495,9 +486,6 @@
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"
   },
-  "enterPassword": {
-    "message": "Ilagay ang password"
-  },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
   },
@@ -547,9 +535,6 @@
   },
   "expandView": {
     "message": "I-expand ang view"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Pribadong Key"
   },
   "externalExtension": {
     "message": "External Extension"
@@ -795,7 +780,7 @@
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli Test Network"
   },
   "links": {
@@ -815,9 +800,6 @@
   },
   "lock": {
     "message": "I-lock"
-  },
-  "lockTimeTooGreat": {
-    "message": "Masyadong matagal ang oras ng pag-lock"
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -855,9 +837,6 @@
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
-  },
-  "myAccounts": {
-    "message": "Mga Account Ko"
   },
   "name": {
     "message": "Pangalan"
@@ -1114,9 +1093,6 @@
   "publicAddress": {
     "message": "Pampublikong Address"
   },
-  "queue": {
-    "message": "Queue"
-  },
   "queued": {
     "message": "Naka-queue"
   },
@@ -1226,9 +1202,6 @@
   "searchResults": {
     "message": "Mga Resulta ng Paghahanap"
   },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -1326,9 +1299,6 @@
   },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
-  },
-  "showPrivateKeys": {
-    "message": "Ipakita ang Mga Private Key"
   },
   "sigRequest": {
     "message": "Request ng Signature"
@@ -1781,9 +1751,6 @@
   },
   "tryAgain": {
     "message": "Subukan ulit"
-  },
-  "typePassword": {
-    "message": "Uri ng password ng iyong MetaMask"
   },
   "unapproved": {
     "message": "Hindi inaprubahan"

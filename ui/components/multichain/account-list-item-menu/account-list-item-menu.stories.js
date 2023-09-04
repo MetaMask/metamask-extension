@@ -14,14 +14,14 @@ export default {
     closeMenu: {
       action: 'closeMenu',
     },
-    blockExplorerUrlSubTitle: {
-      control: 'text',
-    },
     isRemovable: {
       control: 'boolean',
     },
     identity: {
       control: 'object',
+    },
+    isOpen: {
+      control: 'boolean',
     },
   },
   args: {
@@ -33,7 +33,7 @@ export default {
       tokenBalance: '32.09 ETH',
     },
     isRemovable: true,
-    blockExplorerUrlSubTitle: 'etherscan.io',
+    isOpen: true,
   },
 };
 

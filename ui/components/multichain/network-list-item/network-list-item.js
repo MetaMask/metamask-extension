@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Box from '../../ui/box/box';
 import {
   AlignItems,
   IconColor,
@@ -10,42 +9,28 @@ import {
   Size,
   JustifyContent,
   TextColor,
-  BLOCK_SIZES,
   BackgroundColor,
+  BlockSize,
+  Display,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   ButtonIcon,
-  ButtonLink,
+  Text,
   IconName,
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
-import {
-  GOERLI_DISPLAY_NAME,
-  LINEA_TESTNET_DISPLAY_NAME,
-  SEPOLIA_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
 
-const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
-
-function getAvatarNetworkColor(name) {
-  switch (name) {
-    case GOERLI_DISPLAY_NAME:
-      return BackgroundColor.goerli;
-    case LINEA_TESTNET_DISPLAY_NAME:
-      return BackgroundColor.lineaTestnet;
-    case SEPOLIA_DISPLAY_NAME:
-      return BackgroundColor.sepolia;
-    default:
-      return undefined;
-  }
-}
+const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
 export const NetworkListItem = ({
   name,
   iconSrc,
   selected = false,
+  focus = true,
   onClick,
   onDeleteClick,
 }) => {
@@ -53,10 +38,10 @@ export const NetworkListItem = ({
   const networkRef = useRef();
 
   useEffect(() => {
-    if (networkRef.current && selected) {
-      networkRef.current.querySelector('.mm-button-link').focus();
+    if (networkRef.current && focus) {
+      networkRef.current.focus();
     }
-  }, [networkRef, selected]);
+  }, [networkRef, focus]);
 
   return (
     <Box
@@ -67,10 +52,10 @@ export const NetworkListItem = ({
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
       })}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      width={BLOCK_SIZES.FULL}
-      ref={networkRef}
+      width={BlockSize.Full}
     >
       {selected && (
         <Box
@@ -85,12 +70,15 @@ export const NetworkListItem = ({
         src={iconSrc}
       />
       <Box className="multichain-network-list-item__network-name">
-        <ButtonLink
+        <Text
+          ref={networkRef}
+          as="button"
           onClick={(e) => {
             e.stopPropagation();
             onClick();
           }}
           color={TextColor.textDefault}
+          backgroundColor={BackgroundColor.transparent}
           ellipsis
         >
           {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
@@ -104,7 +92,7 @@ export const NetworkListItem = ({
           ) : (
             name
           )}
-        </ButtonLink>
+        </Text>
       </Box>
       {onDeleteClick ? (
         <ButtonIcon
@@ -144,4 +132,8 @@ NetworkListItem.propTypes = {
    * Executes when the delete icon is clicked
    */
   onDeleteClick: PropTypes.func,
+  /**
+   * Represents if the network item should be keyboard selected
+   */
+  focus: PropTypes.bool,
 };

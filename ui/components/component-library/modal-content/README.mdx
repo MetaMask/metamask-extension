@@ -12,8 +12,6 @@ import { ModalContent } from './modal-content';
 
 ## Props
 
-The `ModalContent` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
-
 <ArgsTable of={ModalContent} />
 
 ### Children
@@ -26,21 +24,21 @@ Use the `children` prop to render the content of `ModalContent`. The `ModalConte
 
 ```jsx
 import React, { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, Text, Button, BUTTON_VARIANT } from '../../component-library';
+import { Modal, ModalContent, ModalHeader, Text, Button, ButtonVariant } from '../../component-library';
 
 const [show, setShow] = useState(false);
 const handleOnClick = () => {
   setShow(!show);
 };
 
-<Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+<Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
   Open
 </Button>
 <Modal isOpen={show} onClose={handleOnClick}>
   <ModalContent {...args}>
     <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
     <Text marginBottom={4}>Modal Content</Text>
-    <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+    <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
       Close
     </Button>
     <LoremIpsum />
@@ -67,7 +65,7 @@ import { DISPLAY } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
-import { Modal, ModalContent, Text, Button, BUTTON_VARIANT } from '../../component-library';
+import { Modal, ModalContent, Text, Button, ButtonVariant } from '../../component-library';
 
 enum ModalContentSizeStoryOption {
   Sm = 'sm',
@@ -84,13 +82,13 @@ const handleOnClick = (size: ModalContentSizeStoryOption) => {
 
 <Box display={DISPLAY.FLEX} gap={4}>
   <Button
-    variant={BUTTON_VARIANT.SECONDARY}
+    variant={ButtonVariant.Secondary}
     onClick={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
   >
     Show sm size
   </Button>
   <Button
-    variant={BUTTON_VARIANT.SECONDARY}
+    variant={ButtonVariant.Secondary}
     onClick={() => handleOnClick(ModalContentSizeStoryOption.ClassName)}
   >
     Show className

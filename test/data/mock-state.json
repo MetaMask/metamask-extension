@@ -23,6 +23,7 @@
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "metamask": {
+    "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
@@ -106,22 +107,29 @@
     "alertEnabledness": {
       "unconnectedAccount": true
     },
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
+    "featureFlags": {},
     "networkId": "5",
-    "networkStatus": "available",
     "providerConfig": {
       "type": "rpc",
+      "nickname": "goerli",
       "chainId": "0x5",
       "ticker": "ETH",
-      "id": "testNetworkConfigurationId"
+      "id": "chain5"
     },
     "networkConfigurations": {
       "testNetworkConfigurationId": {
         "rpcUrl": "https://testrpc.com",
         "chainId": "0x1",
-        "nickname": "Custom Mainnet RPC"
+        "nickname": "Custom Mainnet RPC",
+        "type": "rpc",
+        "id": "testNetworkConfigurationId"
+      },
+      "chain5": {
+        "type": "rpc",
+        "chainId": "0x5",
+        "ticker": "ETH",
+        "nickname": "Chain 5",
+        "id": "chain5"
       }
     },
     "keyrings": [
@@ -139,6 +147,10 @@
       {
         "type": "Simple Key Pair",
         "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+      },
+      {
+        "type": "Snap Keyring",
+        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
       }
     ],
     "identities": {
@@ -159,9 +171,11 @@
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
       }
     },
-    "networkDetails": {
-      "EIPS": {
-        "1559": true
+    "selectedNetworkClientId": "goerli",
+    "networksMetadata": {
+      "goerli": {
+        "EIPS": { "1559": true },
+        "status": "available"
       }
     },
     "frequentRpcListDetail": [],
@@ -170,6 +184,22 @@
         "name": "@metamask/test-snap-bip44",
         "version": "1.2.3",
         "subjectType": "snap"
+      }
+    },
+    "snapRegistryList": {
+      "a51ea3a8-f1b0-4613-9440-b80e2236713b": {
+        "id": "a51ea3a8-f1b0-4613-9440-b80e2236713b",
+        "snapId": "npm:@metamask/snap-simple-keyring",
+        "iconUrl": "",
+        "snapTitle": "Metamask Simple Keyring",
+        "snapSlug": "Secure your account with MetaMask Mobile",
+        "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
+        "tags": ["EOA"],
+        "developer": "Metamask",
+        "website": "https://www.consensys.net/",
+        "auditUrls": ["auditUrl1", "auditUrl2"],
+        "version": "1.0.0",
+        "lastUpdated": "April 20, 2023"
       }
     },
     "notifications": {
@@ -189,58 +219,13 @@
       }
     },
     "cachedBalances": {},
-    "incomingTransactions": {},
-    "unapprovedTxs": {
-      "8393540981007587": {
-        "chainId": "0x5",
-        "id": 8393540981007587,
-        "time": 1536268017676,
-        "status": "unapproved",
-        "metamaskNetworkId": "4",
-        "loadingDefaults": false,
-        "txParams": {
-          "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
-          "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-          "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-          "value": "0x0",
-          "gas": "0x5208",
-          "gasPrice": "0x3b9aca00"
-        },
-        "history": [
-          {
-            "id": 8393540981007587,
-            "time": 1536268017676,
-            "status": "unapproved",
-            "metamaskNetworkId": "4",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-              "value": "0x0",
-              "gas": "0x5208",
-              "gasPrice": "0x3b9aca00"
-            }
-          },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1536268017685
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/origin",
-              "value": "MetaMask",
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "timestamp": 1536268017686
-            }
-          ]
-        ],
-        "origin": "metamask"
-      }
+    "incomingTransactionsPreferences": {
+      "0x1": true,
+      "0xe708": false,
+      "0xfa": true,
+      "0x5": false,
+      "0xaa36a7": true,
+      "0xe704": true
     },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
@@ -309,9 +294,13 @@
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
     "useCurrencyRateCheck": true,
+    "useNftDetection": true,
+    "openSeaEnabled": true,
     "advancedGasFee": {
-      "maxBaseFee": "75",
-      "priorityFee": "2"
+      "0x5": {
+        "maxBaseFee": "75",
+        "priorityFee": "2"
+      }
     },
     "nftsDropdownState": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
@@ -601,7 +590,57 @@
         "occurrences": 12
       }
     },
-    "currentNetworkTxList": [
+    "transactions": [
+      {
+        "chainId": "0x5",
+        "id": 8393540981007587,
+        "time": 1536268017676,
+        "status": "unapproved",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
+          "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "value": "0x0",
+          "gas": "0x5208",
+          "gasPrice": "0x3b9aca00"
+        },
+        "history": [
+          {
+            "id": 8393540981007587,
+            "time": 1536268017676,
+            "status": "unapproved",
+            "metamaskNetworkId": "4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+              "value": "0x0",
+              "gas": "0x5208",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1536268017685
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1536268017686
+            }
+          ]
+        ],
+        "origin": "metamask"
+      },
       {
         "id": 3387511061307736,
         "time": 1528133130531,

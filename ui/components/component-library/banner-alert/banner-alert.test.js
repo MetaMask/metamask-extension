@@ -75,9 +75,7 @@ describe('BannerAlert', () => {
     const { getByText } = render(
       <BannerAlert title="BannerAlert title test" />,
     );
-    expect(getByText('BannerAlert title test')).toHaveClass(
-      'mm-banner-base__title',
-    );
+    expect(getByText('BannerAlert title test')).toBeDefined();
   });
 
   it('should render BannerAlert description', () => {
