@@ -169,7 +169,6 @@ export default function KeyringRemovalSnapWarning({
                   return;
                 }
                 if (confirmedRemoval) {
-                  console.log('removing snap');
                   onSubmit();
                 }
               }}
