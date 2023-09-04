@@ -201,7 +201,7 @@ export function useTransactionDisplayData(transactionGroup) {
     primaryTransaction?.txParams?.data,
     token,
     isTokenCategory,
-  );
+  ) ?? transactionDataTokenId;
   const tokenFiatAmount = useTokenFiatAmount(
     token?.address,
     tokenDisplayValue,
