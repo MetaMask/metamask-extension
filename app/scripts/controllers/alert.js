@@ -38,7 +38,11 @@ export default class AlertController {
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { initState = {}, accountsController, controllerMessenger } = opts;
+    const {
+      initState = {},
+      getCurrentSelectedAccount,
+      controllerMessenger,
+    } = opts;
     const state = {
       ...defaultState,
       alertEnabledness: {
@@ -49,7 +53,7 @@ export default class AlertController {
 
     this.store = new ObservableStore(state);
 
-    this.selectedAddress = accountsController.getSelectedAccount().address;
+    this.selectedAddress = getCurrentSelectedAccount().address;
 
     this.controllerMessenger = controllerMessenger;
 

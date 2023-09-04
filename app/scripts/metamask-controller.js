@@ -1198,7 +1198,10 @@ export default class MetamaskController extends EventEmitter {
     this.alertController = new AlertController({
       initState: initState.AlertController,
       controllerMessenger: this.controllerMessenger,
-      accountsController: this.accountsController,
+      getCurrentSelectedAccount:
+        this.accountsController.getSelectedAccount.bind(
+          this.accountsController,
+        ),
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
