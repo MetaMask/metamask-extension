@@ -1,18 +1,17 @@
 import React from 'react';
 import {
-  DISPLAY,
+  Display,
   AlignItems,
   Color,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, Box } from '../../../component-library';
 
 const SignatureRequestSIWEIcon = () => {
   return (
     <Box
       className="signature-request-siwe-icon"
-      display={DISPLAY.INLINE_FLEX}
+      display={Display.InlineFlex}
       alignItems={AlignItems.center}
       backgroundColor={Color.errorDefault}
       justifyContent={JustifyContent.center}

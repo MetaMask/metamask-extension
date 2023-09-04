@@ -79,7 +79,7 @@ describe('Import flow', function () {
         await driver.delay(largeDelayMs);
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement('.toggle-button');
-        await driver.clickElement({ text: 'Localhost', tag: 'span' });
+        await driver.clickElement({ text: 'Localhost', tag: 'button' });
 
         // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -124,13 +124,13 @@ describe('Import flow', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
@@ -374,7 +374,7 @@ describe('Import flow', function () {
           // choose Connect hardware wallet from the account menu
           await driver.clickElement('[data-testid="account-menu-icon"]');
           await driver.clickElement({
-            text: 'Hardware wallet',
+            text: 'Add hardware wallet',
             tag: 'button',
           });
           await driver.delay(regularDelayMs);

@@ -31,10 +31,21 @@ async function main() {
               'Set how many times the test should be retried upon failure.',
             type: 'number',
           })
+          .option('retry-until-failure', {
+            default: false,
+            description: 'Retries until the test fails',
+            type: 'boolean',
+          })
           .option('leave-running', {
             default: false,
             description:
               'Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.)',
+            type: 'boolean',
+          })
+          .option('update-snapshot', {
+            alias: 'u',
+            default: false,
+            description: 'Update E2E snapshots',
             type: 'boolean',
           })
           .positional('e2e-test-path', {
@@ -46,7 +57,15 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, debug, e2eTestPath, retries, leaveRunning } = argv;
+  const {
+    browser,
+    debug,
+    e2eTestPath,
+    retries,
+    retryUntilFailure,
+    leaveRunning,
+    updateSnapshot,
+  } = argv;
 
   if (!browser) {
     exitWithError(
@@ -91,13 +110,17 @@ async function main() {
     exit = '--no-exit';
   }
 
+  if (updateSnapshot) {
+    process.env.UPDATE_SNAPSHOTS = 'true';
+  }
+
   const configFile = path.join(__dirname, '.mocharc.js');
   const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
   const dir = 'test/test-results/e2e';
   fs.mkdir(dir, { recursive: true });
 
-  await retry({ retries }, async () => {
+  await retry({ retries, retryUntilFailure }, async () => {
     await runInShell(
       'yarn',
       [

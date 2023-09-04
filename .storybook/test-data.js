@@ -1,5 +1,8 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
+import { CHAIN_IDS } from '../shared/constants/network';
 
 const state = {
   invalidCustomNetwork: {
@@ -17,6 +20,15 @@ const state = {
     url: 'https://metamask.github.io/test-dapp/',
   },
   metamask: {
+    announcements: {
+      22: {
+        id: 22,
+        date: null,
+        image: {
+          src: 'images/global-menu-block-explorer.svg',
+        },
+      }
+    },
     tokenList: {
       '0x514910771af9ca656af840dff83e8264ecf986ca': {
         address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -162,6 +174,15 @@ const state = {
     networkDetails: {
       EIPS: {
         1559: true,
+      },
+    },
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {
+          1559: true,
+        },
+        status: NetworkStatus.Available,
       },
     },
     gasFeeEstimates: '0x5208',
@@ -508,6 +529,12 @@ const state = {
     currentLocale: 'en',
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
+    },
+    incomingTransactionsPreferences: {
+      [CHAIN_IDS.MAINNET]: true,
+      [CHAIN_IDS.GOERLI]: false,
+      [CHAIN_IDS.OPTIMISM_TESTNET]: false,
+      [CHAIN_IDS.AVALANCHE_TESTNET]: true,
     },
     firstTimeFlowType: 'create',
     completedOnboarding: true,
@@ -1599,7 +1626,7 @@ const state = {
   },
 };
 
-export const networkList =  [
+export const networkList = [
   {
     blockExplorerUrl: 'https://etherscan.io',
     chainId: '0x1',
@@ -1673,6 +1700,6 @@ export const networkList =  [
     rpcUrl: 'https://polygon-rpc.com',
     ticker: 'MATIC',
   },
-]
+];
 
 export default state;

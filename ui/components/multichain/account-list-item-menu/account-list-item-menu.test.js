@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { renderWithProvider, fireEvent } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { AccountListItemMenu } from '.';
@@ -31,23 +31,6 @@ const render = (props = {}) => {
 };
 
 describe('AccountListItem', () => {
-  it('renders the URL for explorer', () => {
-    const blockExplorerDomain = 'etherscan.io';
-    const { getByText, getByTestId } = render({
-      blockExplorerUrlSubTitle: blockExplorerDomain,
-    });
-    expect(getByText(blockExplorerDomain)).toBeInTheDocument();
-
-    Object.defineProperty(global, 'platform', {
-      value: {
-        openTab: jest.fn(),
-      },
-    });
-    const openExplorerTabSpy = jest.spyOn(global.platform, 'openTab');
-    fireEvent.click(getByTestId('account-list-menu-open-explorer'));
-    expect(openExplorerTabSpy).toHaveBeenCalled();
-  });
-
   it('renders remove icon with isRemovable', () => {
     const { getByTestId } = render({ isRemovable: true });
     expect(getByTestId('account-list-menu-remove')).toBeInTheDocument();

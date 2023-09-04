@@ -60,6 +60,7 @@ export const LATTICE_HD_PATHS = [
 const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
 export const TREZOR_HD_PATHS = [
   { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
+  { name: `Legacy (Ledger / MEW / MyCrypto)`, value: MEW_PATH },
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
 
@@ -371,6 +372,7 @@ class ConnectHardwareForm extends Component {
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
           ledgerTransportType={this.props.ledgerTransportType}
+          onCancel={this.onCancel}
         />
       );
     }

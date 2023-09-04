@@ -72,7 +72,7 @@ describe('Multiple transactions', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
 
         const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '.transaction-list__completed-transactions .activity-list-item',
         );
 
         assert.equal(confirmedTxes.length, 2);
@@ -137,7 +137,7 @@ describe('Multiple transactions', function () {
 
         // should not be present
         await driver.assertElementNotPresent(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '.transaction-list__completed-transactions .activity-list-item',
         );
       },
     );

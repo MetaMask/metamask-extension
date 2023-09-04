@@ -31,10 +31,10 @@ describe('Test Snap Dialog', function () {
         // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const dialogButton = await driver.findElement('#connectDialogSnap');
+        const dialogButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(dialogButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectDialogSnap');
+        await driver.clickElement('#connectdialogs');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -71,8 +71,8 @@ describe('Test Snap Dialog', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectDialogSnap',
-          text: 'Reconnect to Dialog Snap',
+          css: '#connectdialogs',
+          text: 'Reconnect to Dialogs Snap',
         });
 
         // click on alert dialog
@@ -91,7 +91,10 @@ describe('Test Snap Dialog', function () {
         let result = await driver.findElement('.snap-ui-renderer__panel');
         await driver.scrollToElement(result);
         await driver.delay(500);
-        assert.equal(await result.getText(), 'Alert Dialog\nText here');
+        assert.equal(
+          await result.getText(),
+          'Alert Dialog\nThis is an alert dialog. It has a single button: "OK".',
+        );
 
         // click ok button
         await driver.clickElement({
@@ -109,7 +112,7 @@ describe('Test Snap Dialog', function () {
         assert.equal(await result.getText(), 'null');
 
         // click conf button
-        await driver.clickElement('#sendConfButton');
+        await driver.clickElement('#sendConfirmationButton');
         await driver.delay(500);
 
         // switch to dialog popup
@@ -136,7 +139,7 @@ describe('Test Snap Dialog', function () {
         assert.equal(await result.getText(), 'false');
 
         // click conf button again
-        await driver.clickElement('#sendConfButton');
+        await driver.clickElement('#sendConfirmationButton');
         await driver.delay(500);
 
         // switch to dialog popup

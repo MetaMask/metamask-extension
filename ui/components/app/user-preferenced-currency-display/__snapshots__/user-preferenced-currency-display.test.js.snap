@@ -3,19 +3,16 @@
 exports[`UserPreferencedCurrencyDisplay Component rendering should match snapshot 1`] = `
 <div>
   <div
-    class="currency-display-component"
+    class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
     title="0 ETH"
   >
     <span
-      class="currency-display-component__prefix"
-    />
-    <span
-      class="currency-display-component__text"
+      class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
     >
       0
     </span>
     <span
-      class="currency-display-component__suffix"
+      class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
     >
       ETH
     </span>

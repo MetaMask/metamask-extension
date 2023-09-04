@@ -184,7 +184,7 @@ const generateClassNames = memoize(
     }
     return classesObject;
   },
-  (type, value) => [type, value],
+  (type, value) => `${type}${value}`,
 );
 
 /**

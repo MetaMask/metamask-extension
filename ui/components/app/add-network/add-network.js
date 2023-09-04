@@ -14,7 +14,6 @@ import {
   BackgroundColor,
   TextColor,
   IconColor,
-  Size,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
@@ -36,11 +35,12 @@ import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
-  Text,
   Icon,
   IconName,
   IconSize,
   AvatarNetwork,
+  AvatarNetworkSize,
+  Text,
 } from '../../component-library';
 import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 
@@ -199,7 +199,7 @@ const AddNetwork = () => {
               >
                 <Box display={Display.Flex} alignItems={AlignItems.center}>
                   <AvatarNetwork
-                    size={Size.SM}
+                    size={AvatarNetworkSize.Sm}
                     src={item.rpcPrefs?.imageUrl}
                     name={item.nickname}
                   />

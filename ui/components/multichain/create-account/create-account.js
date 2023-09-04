@@ -39,11 +39,12 @@ export const CreateAccount = ({ onActionComplete }) => {
   const defaultAccountName = t('newAccountNumberName', [newAccountNumber]);
 
   const [newAccountName, setNewAccountName] = useState('');
+  const trimmedAccountName = newAccountName.trim();
 
   const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
     accounts,
     { t },
-    newAccountName,
+    trimmedAccountName ?? defaultAccountName,
     defaultAccountName,
   );
 
@@ -58,7 +59,7 @@ export const CreateAccount = ({ onActionComplete }) => {
     event.preventDefault();
 
     try {
-      await onCreateAccount(newAccountName || defaultAccountName);
+      await onCreateAccount(trimmedAccountName || defaultAccountName);
       onActionComplete(true);
       trackEvent({
         category: MetaMetricsEventCategory.Accounts,
