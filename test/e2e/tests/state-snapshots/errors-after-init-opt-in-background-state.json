@@ -162,7 +162,6 @@
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "isLineaMainnetReleased": true,
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {

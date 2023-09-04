@@ -101,7 +101,6 @@
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "isLineaMainnetReleased": true,
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
