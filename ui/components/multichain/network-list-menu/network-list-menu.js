@@ -51,7 +51,6 @@ import {
 import {
   getCompletedOnboarding,
   getIsUnlocked,
-  isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
 
 export const NetworkListMenu = ({ onClose }) => {
@@ -73,8 +72,6 @@ export const NetworkListMenu = ({ onClose }) => {
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   const completedOnboarding = useSelector(getCompletedOnboarding);
-
-  const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
   const isUnlocked = useSelector(getIsUnlocked);
 
@@ -110,10 +107,6 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network) => {
-      if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
-        return null;
-      }
-
       const isCurrentNetwork = currentNetwork.id === network.id;
 
       const canDeleteNetwork =

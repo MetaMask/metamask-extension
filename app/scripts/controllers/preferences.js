@@ -6,7 +6,6 @@ import {
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
@@ -122,8 +121,6 @@ export default class PreferencesController {
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };
-
-    this._showShouldLineaMainnetNetwork();
   }
   // PUBLIC METHODS
 
