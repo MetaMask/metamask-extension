@@ -156,16 +156,12 @@ export function hasUnsignedQRHardwareTransaction(state) {
     return false;
   }
   const { from } = txParams;
-  const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
-  if (!qrKeyring) {
+  const internalAccount = getFirstInternalAccountByAddress(state, from);
+
+  if (!internalAccount) {
     return false;
   }
-  return Boolean(
-    qrKeyring.accounts.find(
-      (account) => account.toLowerCase() === from.toLowerCase(),
-    ),
-  );
+  return Boolean(internalAccount.metadata.keyring.type === KeyringType.qr);
 }
 
 export function hasUnsignedQRHardwareMessage(state) {
@@ -174,20 +170,17 @@ export function hasUnsignedQRHardwareMessage(state) {
     return false;
   }
   const { from } = msgParams;
-  const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
-  if (!qrKeyring) {
+  const internalAccount = getFirstInternalAccountByAddress(state, from);
+
+  if (!internalAccount) {
     return false;
   }
+
   switch (type) {
     case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
     case MESSAGE_TYPE.ETH_SIGN:
     case MESSAGE_TYPE.PERSONAL_SIGN:
-      return Boolean(
-        qrKeyring.accounts.find(
-          (account) => account.toLowerCase() === from.toLowerCase(),
-        ),
-      );
+      return Boolean(internalAccount.metadata.keyring.type === KeyringType.qr);
     default:
       return false;
   }
@@ -387,10 +380,6 @@ export function getInternalAccountsSortedByKeyring(state) {
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;
-}
-
-export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings;
 }
 
 /**

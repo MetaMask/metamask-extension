@@ -436,9 +436,11 @@ export function isAddressLedger(state, accountId) {
  * @returns {boolean} true if the user has a Ledger account and false otherwise
  */
 export function doesUserHaveALedgerAccount(state) {
-  return state.metamask.keyrings.some((kr) => {
-    return kr.type === KeyringType.ledger;
-  });
+  return Object.values(state.metamask.internalAccounts.accounts).some(
+    (account) => {
+      return account.metadata.keyring.type === KeyringType.ledger;
+    },
+  );
 }
 
 export function isLineaMainnetNetworkReleased(state) {
