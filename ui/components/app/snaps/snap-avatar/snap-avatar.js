@@ -50,7 +50,6 @@ const SnapAvatar = ({
           borderColor={BackgroundColor.backgroundDefault}
           borderWidth={borderWidth}
           iconProps={{
-            size: badgeSize,
             color: IconColor.infoInverse,
           }}
         />
