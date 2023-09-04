@@ -39,6 +39,7 @@ import {
   getEnsResolutionByAddress,
   getSelectedAccount,
   getSelectedAddress,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -80,7 +81,6 @@ import {
   getGasEstimateType,
   getProviderConfig,
   getTokens,
-  getUnapprovedTxs,
 } from '../metamask/metamask';
 
 import { resetDomainResolution } from '../domains';
@@ -499,7 +499,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const { send, metamask } = state;
     const draftTransaction =
       send.draftTransactions[send.currentTransactionUUID];
-    const unapprovedTxs = getUnapprovedTxs(state);
+    const unapprovedTxs = getUnapprovedTransactions(state);
     const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
@@ -1731,7 +1731,7 @@ export function editExistingTransaction(assetType, transactionId) {
   return async (dispatch, getState) => {
     await dispatch(actions.clearPreviousDrafts());
     const state = getState();
-    const unapprovedTransactions = getUnapprovedTxs(state);
+    const unapprovedTransactions = getUnapprovedTransactions(state);
     const transaction = unapprovedTransactions[transactionId];
     const account = getTargetAccount(state, transaction.txParams.from);
 
@@ -2033,7 +2033,7 @@ export function updateSendAsset(
       getSelectedAddress(state);
     const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
-      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTxs = getUnapprovedTransactions(state);
       const unapprovedTx = unapprovedTxs?.[draftTransaction.id];
 
       await dispatch(
@@ -2274,7 +2274,7 @@ export function signTransaction() {
       // We first must grab the previous transaction object from state and then
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
-      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTxs = getUnapprovedTransactions(state);
       const unapprovedTx = cloneDeep(unapprovedTxs[draftTransaction.id]);
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
