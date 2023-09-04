@@ -1398,19 +1398,6 @@ export function getAdvancedGasFeeValues(state) {
 }
 
 /**
- *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsAdvancedGasFeeDefault(state) {
-  const { advancedGasFee } = state.metamask;
-  return (
-    Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
-  );
-}
-
-/**
  * To get the name of the network that support token detection based in chainId.
  *
  * @param state
