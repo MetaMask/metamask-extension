@@ -16,7 +16,10 @@ import {
 } from '../../component-library';
 import { Text } from '../../component-library/text/deprecated';
 import { updateViewedNotifications } from '../../../store/actions';
-import { getTranslatedUINotifications } from '../../../../shared/notifications';
+import {
+  NOTIFICATION_OPEN_BETA_SNAPS,
+  getTranslatedUINotifications,
+} from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import {
   BUILD_QUOTE_ROUTE,
@@ -105,6 +108,12 @@ function getActionFunctionById(id, history) {
     },
     24: () => {
       updateViewedNotifications({ 24: true });
+    },
+    [NOTIFICATION_OPEN_BETA_SNAPS]: () => {
+      updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
+      global.platform.openTab({
+        url: 'https://metamask.io/snaps/',
+      });
     },
   };
 
@@ -368,6 +377,7 @@ export default function WhatsNewPopup({
     21: renderFirstNotification,
     22: renderFirstNotification,
     24: renderFirstNotification,
+    [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
   };
 
   return (
