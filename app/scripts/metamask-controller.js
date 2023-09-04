@@ -1176,7 +1176,10 @@ export default class MetamaskController extends EventEmitter {
       messenger: detectTokensControllerMessenger,
       preferences: this.preferencesController,
       tokensController: this.tokensController,
-      accountsController: this.accountsController,
+      getCurrentSelectedAccount:
+        this.accountsController.getSelectedAccount.bind(
+          this.accountsController,
+        ),
       controllerMessenger: this.controllerMessenger,
       assetsContractController: this.assetsContractController,
       network: this.networkController,

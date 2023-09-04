@@ -35,7 +35,7 @@ export default class DetectTokensController {
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
    * @param config.controllerMessenger
-   * @param config.accountsController
+   * @param config.getCurrentSelectedAccount
    */
   constructor({
     messenger,
@@ -48,7 +48,7 @@ export default class DetectTokensController {
     assetsContractController = null,
     trackMetaMetricsEvent,
     controllerMessenger,
-    accountsController,
+    getCurrentSelectedAccount,
   } = {}) {
     this.messenger = messenger;
     this.assetsContractController = assetsContractController;
@@ -60,8 +60,7 @@ export default class DetectTokensController {
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
-    this.accountsController = accountsController;
-    this.selectedAddress = this.accountsController.getSelectedAccount().address;
+    this.selectedAddress = getCurrentSelectedAccount().address;
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
     });

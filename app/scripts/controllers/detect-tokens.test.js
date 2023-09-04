@@ -341,7 +341,8 @@ describe('DetectTokensController', function () {
     new DetectTokensController({
       messenger: buildMessenger(),
       interval: 1337,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     assert.strictEqual(stub.getCall(0).args[1], 1337);
@@ -359,7 +360,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     controller.isOpen = true;
@@ -398,7 +400,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     controller.isOpen = true;
@@ -425,7 +428,8 @@ describe('DetectTokensController', function () {
       tokensController,
       assetsContractController,
       trackMetaMetricsEvent: noop,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     controller.isOpen = true;
@@ -479,7 +483,8 @@ describe('DetectTokensController', function () {
       tokensController,
       assetsContractController,
       trackMetaMetricsEvent: noop,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     controller.isOpen = true;
@@ -549,7 +554,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     controller.isOpen = true;
@@ -571,7 +577,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     controller.isOpen = true;
@@ -592,7 +599,8 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     controller.isOpen = true;
@@ -615,7 +623,8 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokensController,
       assetsContractController,
-      accountsController,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       controllerMessenger,
     });
     // trigger state update from preferences controller
