@@ -18,6 +18,7 @@ import {
 import { updateViewedNotifications } from '../../../store/actions';
 import {
   NOTIFICATION_DROP_LEDGER_FIREFOX,
+  NOTIFICATION_OPEN_BETA_SNAPS,
   getTranslatedUINotifications,
 } from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
@@ -114,6 +115,15 @@ function getActionFunctionById(id, history) {
     ///: END:ONLY_INCLUDE_IN
     24: () => {
       updateViewedNotifications({ 24: true });
+    },
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: () => {
+      updateViewedNotifications({ [NOTIFICATION_DROP_LEDGER_FIREFOX]: true });
+    },
+    [NOTIFICATION_OPEN_BETA_SNAPS]: () => {
+      updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
+      global.platform.openTab({
+        url: 'https://metamask.io/snaps/',
+      });
     },
   };
 
@@ -400,6 +410,7 @@ export default function WhatsNewPopup({
     24: renderFirstNotification,
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
+    [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
   };
 
   return (
