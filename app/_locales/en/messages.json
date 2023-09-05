@@ -2900,6 +2900,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Learn more"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 We're excited to announce the Open Beta of MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personalize your wallet with snaps built by the developer community!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps help you do more with MetaMask — like connect to more networks, see transaction insights, and get custom notifications."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Introducing MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
     "description": "$1 is the number of new tokens detected"
