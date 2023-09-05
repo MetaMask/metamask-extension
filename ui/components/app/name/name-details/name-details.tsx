@@ -51,10 +51,15 @@ export default function NameDetails({
   type,
   value,
 }: NameDetailsProps) {
-  const { name: savedName, proposedNames } = useName(value, type);
+  const {
+    name: savedName,
+    proposedNames,
+    sourceId: savedSourceId,
+  } = useName(value, type);
+
   const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
-  const [selectedSourceId, setSelectedSourceId] = useState(undefined);
+  const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
 
@@ -75,13 +80,20 @@ export default function NameDetails({
   const handleNameChange = useCallback(
     (newName: string) => {
       setName(newName);
+
+      const selectedProposedName =
+        proposedNames?.[selectedSourceId as string]?.[0];
+
+      if (newName !== selectedProposedName) {
+        setSelectedSourceId(undefined);
+      }
     },
-    [setName],
+    [setName, selectedSourceId],
   );
 
   const handleProposedNameClick = useCallback(
     (option: any) => {
-      setSelectedSourceId(option.providerId);
+      setSelectedSourceId(option.sourceId);
     },
     [setSelectedSourceId],
   );
@@ -100,6 +112,7 @@ export default function NameDetails({
         return sourceProposedNames.map((proposedName: any) => ({
           primaryLabel: proposedName,
           secondaryLabel: nameSources[sourceId]?.label ?? sourceId,
+          sourceId,
         }));
       })
       .flat();
@@ -111,7 +124,8 @@ export default function NameDetails({
 
   useEffect(() => {
     setName(savedName ?? '');
-  }, [savedName, setName]);
+    setSelectedSourceId(savedSourceId ?? undefined);
+  }, [savedName, savedSourceId, setName, setSelectedSourceId]);
 
   const hasSavedName = Boolean(savedName);
 

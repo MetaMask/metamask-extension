@@ -16,12 +16,10 @@ export function useName(
 
   const nameEntry = names[type]?.[value]?.[variationKey];
 
-  return (
-    nameEntry ?? {
-      name: null,
-      sourceId: null,
-      proposedNames: {},
-      proposedNamesLastUpdated: null,
-    }
-  );
+  return {
+    name: nameEntry?.name ?? null,
+    sourceId: nameEntry?.sourceId ?? null,
+    proposedNames: nameEntry?.proposedNames ?? {},
+    proposedNamesLastUpdated: nameEntry?.proposedNamesLastUpdated ?? null,
+  };
 }
