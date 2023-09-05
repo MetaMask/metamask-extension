@@ -1353,13 +1353,21 @@ export function getIsBase(state) {
   );
 }
 
+export function getIsOpbnb(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.OPBNB ||
+    getCurrentChainId(state) === CHAIN_IDS.OPBNB_TESTNET
+  );
+}
+
 export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state);
+  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
 }
 
 export function getIsMultiLayerFeeNetwork(state) {
   return getIsOpStack(state);
 }
+
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
