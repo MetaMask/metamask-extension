@@ -485,6 +485,25 @@ describe('DetectTokensController', function () {
     messenger.publish('KeyringController:unlock');
 
     sandbox.assert.called(stub);
+    assert.equal(controller.isUnlocked, true);
+  });
+
+  it('should not be active after lock event is emitted', async function () {
+    sandbox.useFakeTimers();
+    const controller = new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      preferences,
+      network,
+      tokenList: tokenListController,
+      tokensController,
+      assetsContractController,
+    });
+    controller.isOpen = true;
+
+    messenger.publish('KeyringController:lock');
+
+    assert.equal(controller.isUnlocked, false);
+    assert.equal(controller.isActive, false);
   });
 
   it('should not trigger detect new tokens when not unlocked', async function () {
