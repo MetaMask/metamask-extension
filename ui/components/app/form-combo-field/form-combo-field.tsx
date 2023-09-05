@@ -23,7 +23,6 @@ export interface FormComboFieldOption {
 }
 
 export interface FormComboFieldProps {
-  alwaysVisible?: boolean;
   maxDropdownHeight?: number;
   noOptionsText?: string;
   onChange?: (value: string) => void;
