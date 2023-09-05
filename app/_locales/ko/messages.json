@@ -4063,18 +4063,6 @@
   "snapsNoInsight": {
     "message": "스냅이 인사이트를 가져오지 못했습니다"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "귀하는 현재 설치하려고 하는 스냅이 Consensys $1에 정의된 바와 같은 타사 서비스임에 해당한다는 사실을 인정합니다. 타사 서비스 이용은 해당 타사 서비스 공급업체의 이용약관에 따라 별도로 관리됩니다. 타사 서비스에 대한 액세스나 의존 또는 사용에 대한 책임은 전적으로 귀하에게 부과됩니다. Consensys는 타사 서비스 이용으로 인해 귀하의 계정에 발생하는 그 어떤 손실에 대해 모든 책임과 법적 의무를 지지 않습니다.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "타사와 공유하는 모든 정보는 해당 타사의 개인정보 처리방침에 따라 직접 수집됩니다. 더 자세한 내용은 해당 회사의 개인정보 처리방침을 참고하시기 바랍니다.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys는 귀하가 타사와 공유한 정보에 대한 접근 권한이 없습니다.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettingsDescription": {
     "message": "스냅 관리"
   },
