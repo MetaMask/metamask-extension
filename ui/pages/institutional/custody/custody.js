@@ -177,23 +177,22 @@ const CustodyPage = () => {
                 setApiUrl(custodian.apiUrl);
                 setCurrentJwt(jwtListValue[0] || '');
                 setJwtList(jwtListValue);
-                
-               /**
-               * NOTE: USE THE CONFIGURATION API VALUES, WHEN AVAILABE
-               * We need to get the urls of the custodians that have UI
-               * and for those we do: setIsConfirmConnectCustodianModalVisible(true)
-               * For custodians that don't have a UI and need to manually add the token in our
-               * view, we do: setSelectedCustodianDisplayName(custodian.displayName)
-               */
-              // open confirm Connect Custodian modal
-              if (custodianByDisplayName) {
-                setMatchedCustodian(custodianByDisplayName);
-                setIsConfirmConnectCustodianModalVisible(true);
-              } else {
-                setSelectedCustodianType(custodian.type);
-              }
-                
-                
+
+                /**
+                 * NOTE: USE THE CONFIGURATION API VALUES, WHEN AVAILABE
+                 * We need to get the urls of the custodians that have UI
+                 * and for those we do: setIsConfirmConnectCustodianModalVisible(true)
+                 * For custodians that don't have a UI and need to manually add the token in our
+                 * view, we do: setSelectedCustodianDisplayName(custodian.displayName)
+                 */
+                // open confirm Connect Custodian modal
+                if (custodianByDisplayName) {
+                  setMatchedCustodian(custodianByDisplayName);
+                  setIsConfirmConnectCustodianModalVisible(true);
+                } else {
+                  setSelectedCustodianType(custodian.type);
+                }
+
                 trackEvent({
                   category: MetaMetricsEventCategory.MMI,
                   event: MetaMetricsEventName.CustodianSelected,
