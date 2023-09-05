@@ -1223,7 +1223,7 @@
     "message": "您的 MetaMask Extension 需要升级。"
   },
   "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask Extension 已过时"
+    "message": "MetaMask Extension 已过期"
   },
   "desktopPageDescription": {
     "message": "如果配对成功，扩展程序将重新启动，您必须重新输入密码。"
