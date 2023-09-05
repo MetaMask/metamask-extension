@@ -4084,18 +4084,6 @@
   "snapsNoInsight": {
     "message": "Το snap δεν επέστρεψε καμία πληροφορία"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Αναγνωρίζετε ότι το snap που πρόκειται να εγκαταστήσετε είναι μια Υπηρεσία Τρίτων όπως ορίζεται στο Consensys $1. Η χρήση των Υπηρεσιών Τρίτων διέπεται από ξεχωριστούς όρους και προϋποθέσεις που καθορίζονται από τον πάροχο των Υπηρεσιών Τρίτων. Η πρόσβαση, η στήριξη ή η χρήση της Υπηρεσίας Τρίτων γίνεται με δική σας ευθύνη. Η Consensys αποποιείται κάθε ευθύνη και υποχρέωση για οποιεσδήποτε απώλειες λόγω της χρήσης από εσάς των Υπηρεσιών Τρίτων.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Οποιεσδήποτε πληροφορίες μοιράζεστε με τις Υπηρεσίες Τρίτων θα συλλέγονται απευθείας από τις εν λόγω Υπηρεσίες Τρίτων σύμφωνα με τις πολιτικές απορρήτου τους. Ανατρέξτε στις πολιτικές απορρήτου τους για περισσότερες πληροφορίες.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Η Consensys δεν έχει πρόσβαση στις πληροφορίες που μοιράζεστε με αυτά τα τρίτα μέρη.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettingsDescription": {
     "message": "Διαχειριστείτε τα Snaps σας"
   },

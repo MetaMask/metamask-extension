@@ -4084,18 +4084,6 @@
   "snapsNoInsight": {
     "message": "Snap herhangi bir ayrıntıya ulaşamadı"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Yüklemek üzere olduğunuz snapin Consensys $1 içinde tanımlanan bir Üçüncü Taraf Hizmet olduğunu kabul edersiniz. Üçüncü Taraf Hizmetlerini kullanımınız Üçüncü Taraf Hizmet sağlayıcısı tarafından belirtilen ayrı şart ve koşullar tarafından yönetilir. Üçüncü Taraf Hizmetine erişiminizin, güvenmenizin veya kullanımınızın riski size aittir. Consensys, Üçüncü Taraf Hizmetlerini kullanımınızdan kaynaklanan zararlar konusunda tüm sorumluluk ve yükümlülüğü reddeder.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Üçüncü Taraf Hizmetleri ile paylaştığınız tüm bilgiler söz konusu Üçüncü Taraf Hizmetlerinin gizlilik politikalarına göre doğrudan üçüncü taraflar tarafından toplanacaktır. Daha fazla bilgi için lütfen üçüncü tarafların gizlilik politikalarına bakın.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys'un bu üçüncü taraflarla paylaştığınız bilgilere hiçbir erişimi bulunmamaktadır.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettingsDescription": {
     "message": "Snaplerini yönet"
   },
