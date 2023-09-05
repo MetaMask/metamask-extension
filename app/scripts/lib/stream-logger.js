@@ -1,21 +1,14 @@
 import { createProjectLogger, createModuleLogger } from '@metamask/utils';
 
-import {
-  METAMASK_BACKGROUND,
-  METAMASK_CONTENTSCRIPT,
-  METAMASK_EXTERNAL,
-  METAMASK_INPAGE,
-  METAMASK_PHISHING_WARNING_PAGE,
-  METAMASK_UI,
-} from '../context';
+import { METAMASK } from '../context';
 
 const colors = {
-  [METAMASK_UI]: 'green',
-  [METAMASK_INPAGE]: 'red',
-  [METAMASK_CONTENTSCRIPT]: 'cornflowerblue',
-  [METAMASK_BACKGROUND]: 'yellow',
-  [METAMASK_PHISHING_WARNING_PAGE]: 'purple',
-  [METAMASK_EXTERNAL]: 'grey',
+  [METAMASK.UI]: 'green',
+  [METAMASK.INPAGE]: 'red',
+  [METAMASK.CONTENTSCRIPT]: 'cornflowerblue',
+  [METAMASK.BACKGROUND]: 'yellow',
+  [METAMASK.PHISHING_WARNING_PAGE]: 'purple',
+  [METAMASK.EXTERNAL]: 'grey',
 };
 
 const enabled = Boolean(process.env.METAMASK_DEBUG);
