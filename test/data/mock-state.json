@@ -4,6 +4,7 @@
   },
   "appState": {
     "networkDropdownOpen": false,
+    "importNftsModal": { "open": false },
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {
