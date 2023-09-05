@@ -4537,16 +4537,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ppom-validator@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/ppom-validator@npm:0.3.0"
+"@metamask/ppom-validator@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/ppom-validator@npm:0.4.0"
   dependencies:
     "@metamask/base-controller": "npm:^3.0.0"
     "@metamask/controller-utils": "npm:^4.0.0"
     await-semaphore: "npm:^0.1.3"
     elliptic: "npm:^6.5.4"
     json-rpc-random-id: "npm:^1.0.1"
-  checksum: 669d92799d1f143e48a887e4a6213d25f1fd0cc64445a7445ac2c04ac9ef92f62f954e7323a0ebd5276e8752d10d83c174328f412edfe09e8b33cf21fb5325c9
+  checksum: f5999d6bd201ab4e290fb890e17c8f30830db2471eb530b939b6f371cab5b3be8675ce47535e341251cba90022a41ffce25b17d84f35d572738f6edbae5070e0
   languageName: node
   linkType: hard
 
@@ -24232,7 +24232,7 @@ __metadata:
     "@metamask/phishing-controller": "npm:^6.0.0"
     "@metamask/phishing-warning": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^6.2.0"
-    "@metamask/ppom-validator": "npm:^0.3.0"
+    "@metamask/ppom-validator": "npm:^0.4.0"
     "@metamask/providers": "npm:^11.1.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/rpc-methods": "npm:^1.0.2"
