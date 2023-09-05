@@ -3,20 +3,123 @@ import { KeyringController } from '@metamask/eth-keyring-controller';
 import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { SignatureController } from '@metamask/signature-controller';
+import { NetworkController } from '@metamask/network-controller';
 
 import MMIController from './mmi-controller';
 import TransactionController from './transactions';
 import PreferencesController from './preferences';
 import AppStateController from './app-state';
+import { AccountsController } from './accounts-controller';
+import { ControllerMessenger } from '@metamask/base-controller';
+
+jest.mock('./permissions', () => ({
+  getPermissionBackgroundApiMethods: () => ({
+    addPermittedAccount: jest.fn().mockReturnValue(),
+  }),
+}));
+
+const mockMetaMetrics = {
+  store: {
+    getState: jest.fn().mockReturnValue({ metaMetricsId: 'mock-metrics-id' }),
+  },
+};
+const mockExtension = {
+  runtime: {
+    id: 'mock-runtime-id',
+  },
+};
+
+const mockAccount = {
+  address: '0x1',
+  id: 'mock-id',
+  metadata: {
+    name: 'Test Account',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  options: {},
+  methods: [
+    'personal_sign',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
+const mockAccount2 = {
+  address: '0x2',
+  id: 'mock-id-2',
+  metadata: {
+    name: 'Test Account 2',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  options: {},
+  methods: [
+    'personal_sign',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
 
 describe('MMIController', function () {
   let mmiController;
+  let controllerMessenger;
+  let accountsController;
+  let networkController;
 
   beforeEach(function () {
+    controllerMessenger = new ControllerMessenger();
+    accountsController = new AccountsController({
+      state: {
+        internalAccounts: {
+          accounts: {
+            'mock-id': mockAccount,
+            'mock-id-2': mockAccount2,
+          },
+          selectedAccount: mockAccount.id,
+        },
+      },
+      messenger: controllerMessenger.getRestricted({
+        name: 'AccountsController',
+      }),
+      onKeyringStateChange: jest.fn(),
+      getKeyringForAccount: jest.fn(),
+      getKeyringByType: jest.fn(),
+      getAccounts: jest.fn(),
+      onSnapStateChange: jest.fn(),
+      onKeyringStateChange: jest.fn(),
+    });
+    networkController = new NetworkController({
+      messenger: controllerMessenger.getRestricted({
+        name: 'NetworkController',
+      }),
+      state: {},
+      infuraProjectId: 'mockInfuraProjectId',
+      trackMetaMetricsEvent: jest.fn(),
+    });
+
     mmiController = new MMIController({
       mmiConfigurationController: new MmiConfigurationController(),
       keyringController: new KeyringController({
-        initState: {},
+        initState: {
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: ['0x1', '0x2'],
+            },
+          ],
+        },
       }),
       transactionUpdateController: new TransactionUpdateController({
         getCustodyKeyring: jest.fn(),
@@ -33,6 +136,9 @@ describe('MMIController', function () {
         getCurrentChainId: jest.fn(),
         getNetworkId: jest.fn(),
         onNetworkStateChange: jest.fn(),
+        blockTracker: {
+          getLatestBlock: jest.fn().mockResolvedValue({}),
+        },
       }),
       signatureController: new SignatureController({
         messenger: {
@@ -80,6 +186,11 @@ describe('MMIController', function () {
         },
       }),
       custodianEventHandlerFactory: jest.fn(),
+      accountsController,
+      controllerMessenger,
+      networkController,
+      metaMetricsController: mockMetaMetrics,
+      extension: mockExtension,
     });
   });
 
@@ -91,8 +202,9 @@ describe('MMIController', function () {
     it('should have all required properties', function () {
       expect(mmiController.opts).toBeDefined();
       expect(mmiController.mmiConfigurationController).toBeDefined();
-      expect(mmiController.preferencesController).toBeDefined();
       expect(mmiController.transactionUpdateController).toBeDefined();
+      expect(mmiController.accountsController).toBeDefined();
+      expect(mmiController.controllerMessenger).toBeDefined();
     });
   });
 
@@ -141,6 +253,39 @@ describe('MMIController', function () {
       expect(mmiController.storeCustodianSupportedChains).toHaveBeenCalledWith(
         '0x1',
       );
+    });
+  });
+
+  describe('AccountsController:stateChange event', function () {
+    it('should call prepareMmiPortfolio', async () => {
+      mmiController.txController._trackTransactionMetricsEvent = jest.fn();
+      jest.spyOn(mmiController, 'prepareMmiPortfolio');
+      await controllerMessenger.publish('AccountsController:stateChange', []);
+
+      expect(mmiController.prepareMmiPortfolio).toHaveBeenCalled();
+    });
+  });
+
+  describe('setAccountAndNetwork', function () {
+    it('should set a new selected account if the selectedAddress and the address from the arguments is different', async () => {
+      mmiController.txController._trackTransactionMetricsEvent = jest.fn();
+      await mmiController.setAccountAndNetwork(
+        'mock-origin',
+        mockAccount2.address,
+        '0x1',
+      );
+      const selectedAccount = accountsController.getSelectedAccount();
+      expect(selectedAccount.id).toBe(mockAccount2.id);
+    });
+
+    it('should set a new selected account the accounts are the same', async () => {
+      await mmiController.setAccountAndNetwork(
+        'mock-origin',
+        mockAccount.address,
+        '0x1',
+      );
+      const selectedAccount = accountsController.getSelectedAccount();
+      expect(selectedAccount.id).toBe(mockAccount.id);
     });
   });
 });
