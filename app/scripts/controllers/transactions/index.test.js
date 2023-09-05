@@ -405,10 +405,7 @@ describe('Transaction Controller', function () {
       }));
       assert.ok('id' in txMeta, 'should have a id');
       assert.ok('time' in txMeta, 'should have a time stamp');
-      assert.ok(
-        'networkID' in txMeta,
-        'should have a networkID',
-      );
+      assert.ok('networkID' in txMeta, 'should have a networkID');
       assert.ok('txParams' in txMeta, 'should have a txParams');
       assert.ok('history' in txMeta, 'should have a history');
       assert.equal(
