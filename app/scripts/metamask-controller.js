@@ -4076,7 +4076,11 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     engine.push(
-      createPPOMMiddleware(this.ppomController, this.preferencesController),
+      createPPOMMiddleware(
+        this.ppomController,
+        this.preferencesController,
+        this.networkController,
+      ),
     );
     ///: END:ONLY_INCLUDE_IN
 
