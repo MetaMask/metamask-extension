@@ -12,7 +12,7 @@ export function useName(
   const chainId = useSelector(getCurrentChainId);
 
   const variationKey =
-    variation ?? type === NameType.ETHEREUM_ADDRESS ? chainId : '';
+    variation ?? (type === NameType.ETHEREUM_ADDRESS ? chainId : '');
 
   const nameEntry = names[type]?.[value]?.[variationKey];
 
