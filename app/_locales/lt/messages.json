@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Kopijuoti adresą į iškarpinę"
   },
-  "copyPrivateKey": {
-    "message": "Tai yra jūsų asmeninis raktas (spustelėkite, kad nukopijuotumėte)"
-  },
   "copyToClipboard": {
     "message": "Kopijuoti į iškarpinę"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Panaikinti tinklą?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ar tikrai norite panaikinti šį tinklą?"
-  },
   "details": {
     "message": "Išsami informacija"
   },
@@ -244,9 +238,6 @@
   "ensRegistrationError": {
     "message": "ENS pavadinimo registracijos klaida"
   },
-  "enterPassword": {
-    "message": "Įveskite slaptažodį"
-  },
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
   },
@@ -258,9 +249,6 @@
   },
   "expandView": {
     "message": "Išskleisti rodinį"
-  },
-  "exportPrivateKey": {
-    "message": "Eksportuoti asmeninį raktą"
   },
   "failed": {
     "message": "Nepavyko"
@@ -627,9 +615,6 @@
   "searchResults": {
     "message": "Paieškos rezultatai"
   },
-  "searchTokens": {
-    "message": "Ieškoti žetonų"
-  },
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
   },
@@ -668,9 +653,6 @@
   },
   "showHexDataDescription": {
     "message": "Pasirinkite tai, kad siuntimo ekrane būtų rodomas šešioliktainių duomenų laukas"
-  },
-  "showPrivateKeys": {
-    "message": "Rodyti asmeninius raktus"
   },
   "sigRequest": {
     "message": "Parašo užklausa"
@@ -791,9 +773,6 @@
   },
   "tryAgain": {
     "message": "Bandyti dar kartą"
-  },
-  "typePassword": {
-    "message": "Įveskite savo „MetaMask“ slaptažodį"
   },
   "unapproved": {
     "message": "Nepatvirtinta"

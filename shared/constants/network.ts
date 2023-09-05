@@ -140,6 +140,8 @@ export const CHAIN_IDS = {
   OPTIMISM_TESTNET: '0x1a4',
   BASE: '0x2105',
   BASE_TESTNET: '0x14a33',
+  OPBNB: '0xcc',
+  OPBNB_TESTNET: '0x15eb',
   POLYGON: '0x89',
   POLYGON_TESTNET: '0x13881',
   AVALANCHE: '0xa86a',
@@ -158,6 +160,7 @@ export const CHAIN_IDS = {
   MOONBEAM_TESTNET: '0x507',
   MOONRIVER: '0x505',
   CRONOS: '0x19',
+  GNOSIS: '0x64',
 } as const;
 
 /**
@@ -183,6 +186,7 @@ export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
+export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -220,6 +224,7 @@ export const CURRENCY_SYMBOLS = {
   BUSD: 'BUSD',
   CELO: 'CELO',
   DAI: 'DAI',
+  GNOSIS: 'XDAI',
   ETH: 'ETH',
   FANTOM: 'FTM',
   HARMONY: 'ONE',
@@ -250,6 +255,7 @@ export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
+export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -384,6 +390,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -412,6 +419,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -516,6 +524,11 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonriver`,
     networkId: parseInt(CHAIN_IDS.MOONRIVER, 16).toString(),
   },
+  [CHAIN_IDS.GNOSIS]: {
+    domain: 'gnosisscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
+    networkId: parseInt(CHAIN_IDS.GNOSIS, 16).toString(),
+  },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
@@ -546,6 +559,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
     | typeof CHAIN_IDS.BASE_TESTNET
     | typeof CHAIN_IDS.BASE
+    | typeof CHAIN_IDS.OPBNB_TESTNET
+    | typeof CHAIN_IDS.OPBNB
     | typeof CHAIN_IDS.BSC_TESTNET
     | typeof CHAIN_IDS.POLYGON_TESTNET
     | typeof CHAIN_IDS.AVALANCHE_TESTNET
@@ -553,14 +568,12 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
     | typeof CHAIN_IDS.LINEA_GOERLI
     | typeof CHAIN_IDS.GOERLI
+    | typeof CHAIN_IDS.SEPOLIA
+    | typeof CHAIN_IDS.GNOSIS
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
-  [CHAIN_IDS.SEPOLIA]: {
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [CHAIN_IDS.BSC]: {
@@ -720,6 +733,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://celoscan.io',
       imageUrl: CELO_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.GNOSIS,
+    nickname: GNOSIS_DISPLAY_NAME,
+    rpcUrl: `https://rpc.gnosischain.com`,
+    ticker: CURRENCY_SYMBOLS.GNOSIS,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://gnosisscan.io',
+      imageUrl: GNOSIS_TOKEN_IMAGE_URL,
     },
   },
 ];

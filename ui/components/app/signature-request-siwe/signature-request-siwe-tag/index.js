@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import {
   TextVariant,
   Size,
-  DISPLAY,
+  Display,
   AlignItems,
   BackgroundColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import { Text } from '../../../component-library/text/deprecated';
+import { Text } from '../../../component-library';
 
 const SignatureRequestSIWETag = ({ text }) => {
   return (
     <Box
       className="signature-request-siwe-tag"
       marginRight={1}
-      display={DISPLAY.INLINE_FLEX}
+      display={Display.InlineFlex}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.errorDefault}
       borderRadius={Size.XL}

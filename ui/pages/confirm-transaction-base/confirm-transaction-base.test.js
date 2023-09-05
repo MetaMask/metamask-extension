@@ -3,6 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
@@ -64,13 +66,14 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: '/' },
   metamask: {
-    unapprovedTxs: {
-      1: {
+    transactions: [
+      {
         id: 1,
         metamaskNetworkId: mockNetworkId,
         txParams: { ...mockTxParams },
+        status: 'unapproved',
       },
-    },
+    ],
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
@@ -85,8 +88,12 @@ const baseStore = {
       },
     ],
     networkId: mockNetworkId,
-    networkDetails: {
-      EIPS: {},
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {},
+        status: NetworkStatus.Available,
+      },
     },
     tokens: [],
     preferences: {
@@ -169,7 +176,7 @@ const baseStore = {
 const mockedStore = jest.mocked(baseStore);
 
 const mockedStoreWithConfirmTxParams = (_mockTxParams = mockTxParams) => {
-  mockedStore.metamask.unapprovedTxs[1].txParams = { ..._mockTxParams };
+  mockedStore.metamask.transactions[0].txParams = { ..._mockTxParams };
   mockedStore.confirmTransaction.txData.txParams = { ..._mockTxParams };
 };
 
@@ -253,10 +260,12 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        networkDetails: {
-          ...mockedStore.metamask.networkDetails,
-          EIPS: {
-            1559: true,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...mockedStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: { 1559: true },
+            status: NetworkStatus.Available,
           },
         },
         customGas: {
@@ -324,10 +333,14 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        networkDetails: {
-          ...mockedStore.metamask.networkDetails,
-          EIPS: {
-            1559: true,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...mockedStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: {
+              1559: true,
+            },
+            status: NetworkStatus.Available,
           },
         },
         customGas: {

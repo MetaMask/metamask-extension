@@ -16,14 +16,15 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
+  AvatarIconSize,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Icon,
+  Text,
   ///: END:ONLY_INCLUDE_IN
   IconName,
   IconSize,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { Text } from '../../components/component-library/text/deprecated';
 import { Color, FontWeight, IconColor } from '../constants/design-system';
 import {
   coinTypeToProtocolName,
@@ -44,7 +45,7 @@ function getLeftIcon(iconName) {
   return (
     <AvatarIcon
       iconName={iconName}
-      size={IconSize.Sm}
+      size={AvatarIconSize.Sm}
       iconProps={{
         size: IconSize.Xs,
       }}

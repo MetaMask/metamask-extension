@@ -54,7 +54,7 @@ import {
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
-  currentNetworkTxListSelector,
+  getCurrentNetworkTransactions,
 } from '../../selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -137,7 +137,7 @@ export default function Swap() {
   const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
   const quotes = useSelector(getQuotes, isEqual);
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
-  const txList = useSelector(currentNetworkTxListSelector, shallowEqual);
+  const txList = useSelector(getCurrentNetworkTransactions, shallowEqual);
   const tradeTxId = useSelector(getTradeTxId);
   const approveTxId = useSelector(getApproveTxId);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
@@ -380,9 +380,12 @@ export default function Swap() {
 
   const redirectToDefaultRoute = async () => {
     clearTemporaryTokenRef.current();
+    history.push({
+      pathname: DEFAULT_ROUTE,
+      state: { stayOnHomePage: true },
+    });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-    history.push(DEFAULT_ROUTE);
   };
 
   return (

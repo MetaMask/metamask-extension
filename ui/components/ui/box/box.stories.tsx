@@ -16,7 +16,7 @@ import {
   FlexWrap,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 
 import Box from './box';
 

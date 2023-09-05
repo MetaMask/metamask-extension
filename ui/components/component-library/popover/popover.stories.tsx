@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import Box from '../../ui/box/box';
+import { Box, Icon, IconName, IconSize, PopoverHeader, Text } from '..';
 import {
   AlignItems,
   BackgroundColor,
@@ -9,8 +9,9 @@ import {
   Display,
   JustifyContent,
   TextAlign,
+  TextColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, PopoverHeader, Text } from '..';
+
 import README from './README.mdx';
 import { Popover, PopoverPosition, PopoverRole } from '.';
 
@@ -78,7 +79,7 @@ const Template: StoryFn<typeof Popover> = (args) => {
         onClick={handleClick}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Click to toggle popover
@@ -751,7 +752,7 @@ export const OnPressEscKey: StoryFn<typeof Popover> = (args) => {
         onClick={handleClick}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Click to open
@@ -835,7 +836,7 @@ export const MouseEventDemo: StoryFn<typeof Popover> = (args) => {
         onMouseLeave={handleMouseLeave}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
       >
         Hover
       </Box>
@@ -872,7 +873,7 @@ export const OnFocusBlur: StoryFn<typeof Popover> = (args) => {
         onBlur={handleClose}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Focus to open

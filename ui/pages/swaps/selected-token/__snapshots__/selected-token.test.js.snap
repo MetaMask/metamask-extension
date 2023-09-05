@@ -34,7 +34,7 @@ exports[`SelectedToken renders the component with initial props 1`] = `
       </div>
     </div>
     <span
-      class="box mm-icon mm-icon--size-xs box--margin-right-3 box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+      class="mm-box mm-icon mm-icon--size-xs mm-box--margin-right-3 mm-box--display-inline-block mm-box--color-icon-alternative"
       style="mask-image: url('./images/icons/arrow-down.svg');"
     />
   </div>
@@ -66,7 +66,7 @@ exports[`SelectedToken renders the component with no token selected 1`] = `
       </div>
     </div>
     <span
-      class="box mm-icon mm-icon--size-xs box--margin-right-3 box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+      class="mm-box mm-icon mm-icon--size-xs mm-box--margin-right-3 mm-box--display-inline-block mm-box--color-icon-alternative"
       style="mask-image: url('./images/icons/arrow-down.svg');"
     />
   </div>

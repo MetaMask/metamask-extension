@@ -15,7 +15,7 @@ import {
 
 import type { PolymorphicRef } from '../box';
 import { Text } from '../text';
-
+import type { TextProps } from '../text';
 import {
   AvatarBaseComponent,
   AvatarBaseProps,
@@ -60,7 +60,7 @@ export const AvatarBase: AvatarBaseComponent = React.forwardRef(
         variant={fallbackTextVariant}
         textTransform={TextTransform.Uppercase}
         {...{ backgroundColor, borderColor, color }}
-        {...props} // TODO: There is a typing issue with spreading props to the Box component. It still works but TypeScript complains.
+        {...(props as TextProps<C>)}
       >
         {children}
       </Text>

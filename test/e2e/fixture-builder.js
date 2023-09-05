@@ -4,6 +4,7 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
+const { NetworkStatus } = require('@metamask/network-controller');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
@@ -146,6 +147,13 @@ function defaultFixture() {
             id: 22,
             isShown: true,
           },
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          23: {
+            date: null,
+            id: 23,
+            isShown: false,
+          },
+          ///: END:ONLY_INCLUDE_IN
         },
       },
       AppStateController: {
@@ -189,16 +197,6 @@ function defaultFixture() {
         gasEstimateType: 'none',
         gasFeeEstimates: {},
       },
-      IncomingTransactionsController: {
-        incomingTransactions: {},
-        incomingTxLastFetchedBlockByChainId: {
-          [CHAIN_IDS.MAINNET]: null,
-          [CHAIN_IDS.LINEA_MAINNET]: null,
-          [CHAIN_IDS.GOERLI]: null,
-          [CHAIN_IDS.SEPOLIA]: null,
-          [CHAIN_IDS.LINEA_GOERLI]: null,
-        },
-      },
       KeyringController: {
         vault:
           '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
@@ -212,7 +210,13 @@ function defaultFixture() {
       },
       NetworkController: {
         networkId: '1337',
-        networkStatus: 'available',
+        selectedNetworkClientId: 'networkConfigurationId',
+        networksMetadata: {
+          networkConfigurationId: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
         providerConfig: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -246,9 +250,7 @@ function defaultFixture() {
         advancedGasFee: null,
         currentLocale: 'en',
         dismissSeedBackUpReminder: true,
-        featureFlags: {
-          showIncomingTransactions: true,
-        },
+        featureFlags: {},
         forgottenPassword: false,
         identities: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
@@ -318,6 +320,7 @@ function defaultFixture() {
     },
   };
 }
+
 function onboardingFixture() {
   return {
     data: {
@@ -345,7 +348,13 @@ function onboardingFixture() {
       },
       NetworkController: {
         networkId: '1337',
-        networkStatus: 'available',
+        selectedNetworkClientId: 'networkConfigurationId',
+        networksMetadata: {
+          networkConfigurationId: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
         providerConfig: {
           ticker: 'ETH',
           type: 'rpc',
@@ -370,9 +379,7 @@ function onboardingFixture() {
         advancedGasFee: null,
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
-        featureFlags: {
-          showIncomingTransactions: true,
-        },
+        featureFlags: {},
         forgottenPassword: false,
         identities: {},
         infuraBlocked: false,
@@ -465,40 +472,6 @@ class FixtureBuilder {
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
-  }
-
-  withIncomingTransactionsController(data) {
-    merge(
-      this.fixture.data.IncomingTransactionsController
-        ? this.fixture.data.IncomingTransactionsController
-        : (this.fixture.data.IncomingTransactionsController = {}),
-      data,
-    );
-    return this;
-  }
-
-  withIncomingTransactionsControllerOneTransaction() {
-    return this.withIncomingTransactionsController({
-      incomingTransactions: {
-        '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab': {
-          blockNumber: '1',
-          chainId: CHAIN_IDS.LOCALHOST,
-          hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
-          id: 5748272735958807,
-          metamaskNetworkId: '1337',
-          status: 'confirmed',
-          time: 1671635520000,
-          txParams: {
-            from: '0xc87261ba337be737fa744f50e7aaf4a920bdfcd6',
-            gas: '0x5208',
-            gasPrice: '0x329af9707',
-            to: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-            value: '0xDE0B6B3A7640000',
-          },
-          type: 'incoming',
-        },
-      },
-    });
   }
 
   withKeyringController(data) {
@@ -1464,6 +1437,47 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
+      },
+    });
+  }
+
+  withTransactionControllerIncomingTransaction() {
+    return this.withTransactionController({
+      transactions: {
+        5748272735958807: {
+          blockNumber: '1',
+          chainId: CHAIN_IDS.LOCALHOST,
+          hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
+          id: 5748272735958807,
+          metamaskNetworkId: '1337',
+          status: 'confirmed',
+          time: 1671635520000,
+          txParams: {
+            from: '0xc87261ba337be737fa744f50e7aaf4a920bdfcd6',
+            gas: '0x5208',
+            gasPrice: '0x329af9707',
+            to: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            value: '0xDE0B6B3A7640000',
+          },
+          type: 'incoming',
+        },
+      },
+    });
+  }
+
+  withTransactionControllerCompletedAndIncomingTransaction() {
+    const completedTransaction =
+      this.withTransactionControllerCompletedTransaction().fixture.data
+        .TransactionController.transactions;
+
+    const incomingTransaction =
+      this.withTransactionControllerIncomingTransaction().fixture.data
+        .TransactionController.transactions;
+
+    return this.withTransactionController({
+      transactions: {
+        ...completedTransaction,
+        ...incomingTransaction,
       },
     });
   }

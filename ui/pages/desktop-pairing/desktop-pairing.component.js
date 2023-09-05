@@ -16,8 +16,7 @@ import {
 import Box from '../../components/ui/box/box';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Tooltip from '../../components/ui/tooltip';
-import { Button } from '../../components/component-library';
-import { Text } from '../../components/component-library/text/deprecated';
+import { Button, Text } from '../../components/component-library';
 
 export default function DesktopPairingPage({
   generateDesktopOtp,

@@ -27,6 +27,9 @@ interface AppState {
   } | null;
   networkDropdownOpen: boolean;
   importNftsModalOpen: boolean;
+  showIpfsModalOpen: boolean;
+  importTokensModalOpen: boolean;
+  showSelectActionModal: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -96,6 +99,9 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModalOpen: false,
+  showIpfsModalOpen: false,
+  importTokensModalOpen: false,
+  showSelectActionModal: false,
   accountDetail: {
     privateKey: '',
   },
@@ -176,6 +182,43 @@ export default function reduceApp(
         ...appState,
         importNftsModalOpen: false,
       };
+
+    case actionConstants.SHOW_IPFS_MODAL_OPEN:
+      return {
+        ...appState,
+        showIpfsModalOpen: true,
+      };
+
+    case actionConstants.SHOW_IPFS_MODAL_CLOSE:
+      return {
+        ...appState,
+        showIpfsModalOpen: false,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
+      return {
+        ...appState,
+        importTokensModalOpen: true,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
+      return {
+        ...appState,
+        importTokensModalOpen: false,
+      };
+
+    case actionConstants.SELECT_ACTION_MODAL_OPEN:
+      return {
+        ...appState,
+        showSelectActionModal: true,
+      };
+
+    case actionConstants.SELECT_ACTION_MODAL_CLOSE:
+      return {
+        ...appState,
+        showSelectActionModal: false,
+      };
+
     // alert methods
     case actionConstants.ALERT_OPEN:
       return {

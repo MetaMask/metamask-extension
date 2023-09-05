@@ -9,13 +9,14 @@ import {
   ButtonLink,
   ButtonPrimary,
   ButtonSecondary,
+  ButtonSecondarySize,
   FormTextField,
   Icon,
   IconName,
   IconSize,
   Label,
+  Text,
 } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
 import {
   AlignItems,
   Display,
@@ -152,7 +153,11 @@ const EthSignModal = ({ hideModal }) => {
         gap={4}
         marginTop={6}
       >
-        <ButtonSecondary onClick={() => hideModal()} size={Size.LG} block>
+        <ButtonSecondary
+          onClick={() => hideModal()}
+          size={ButtonSecondarySize.Lg}
+          block
+        >
           {t('cancel')}
         </ButtonSecondary>
         {showTextField ? (

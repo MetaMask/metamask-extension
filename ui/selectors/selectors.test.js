@@ -1,9 +1,10 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, NetworkType } from '@metamask/controller-utils';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
+  NETWORK_TYPES,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
 
@@ -314,6 +315,33 @@ describe('Selectors', () => {
       const lastItem = networks.pop();
       expect(lastItem.nickname.toLowerCase()).toContain('localhost');
     });
+
+    it('properly assigns a network as removable', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.LOCALHOST,
+              nickname: LOCALHOST_DISPLAY_NAME,
+              id: 'some-config-name',
+            },
+          },
+        },
+      });
+
+      const mainnet = networks.find(
+        (network) => network.id === NETWORK_TYPES.MAINNET,
+      );
+      expect(mainnet.removable).toBe(false);
+
+      const customNetwork = networks.find(
+        (network) => network.id === 'some-config-name',
+      );
+      expect(customNetwork.removable).toBe(true);
+    });
   });
 
   describe('#getCurrentNetwork', () => {
@@ -465,8 +493,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networkDetails: {
-            EIPS: { 1559: false },
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: { 1559: false },
+            },
           },
         },
       });
@@ -475,8 +505,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networkDetails: {
-            EIPS: { 1559: false },
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: { 1559: false },
+            },
           },
         },
       });

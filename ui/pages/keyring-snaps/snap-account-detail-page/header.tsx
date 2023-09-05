@@ -3,17 +3,16 @@ import ConfigureSnapPopup, {
   ConfigureSnapPopupType,
 } from '../../../components/app/configure-snap-popup/configure-snap-popup';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Button,
   Icon,
   IconName,
   Tag,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
-  BackgroundColor,
   BorderColor,
   Display,
   FlexDirection,
@@ -22,8 +21,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
 import { METAMASK_DEVELOPER } from '../constants';
+import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
+import SnapDetailTag from './snap-detail-tag';
 
 export const SnapDetailHeader = ({
   updateAvailable,
@@ -58,7 +58,7 @@ export const SnapDetailHeader = ({
           marginBottom={4}
         >
           <Button
-            variant={BUTTON_VARIANT.LINK}
+            variant={ButtonVariant.Link}
             marginRight={4}
             onClick={() => history.back()}
           >
@@ -85,15 +85,13 @@ export const SnapDetailHeader = ({
                 labelProps={{
                   color: TextColor.textAlternative,
                 }}
-                className=""
-                height={2}
               />
             )}
           </Box>
           <Box>
             {isInstalled && updateAvailable && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 marginRight={1}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
@@ -105,7 +103,7 @@ export const SnapDetailHeader = ({
             )}
             {isInstalled && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.CONFIGURE);
                   setShowConfigPopover(true);
@@ -116,7 +114,7 @@ export const SnapDetailHeader = ({
             )}
             {!isInstalled && (
               <Button
-                variant={BUTTON_VARIANT.PRIMARY}
+                variant={ButtonVariant.Primary}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
                   setShowConfigPopover(true);
@@ -149,57 +147,14 @@ export const SnapDetailHeader = ({
             <img src={iconUrl} className="snap-detail-icon" />
           </Box>
           {developer.toLowerCase() === METAMASK_DEVELOPER && (
-            <Tag
-              color={TextColor.infoDefault}
-              backgroundColor={BackgroundColor.infoMuted}
-              borderColor={BackgroundColor.infoMuted}
-              label={
-                <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                >
-                  <Icon name={IconName.Star} />{' '}
-                  <Text
-                    color={TextColor.infoDefault}
-                    variant={TextVariant.bodySm}
-                  >
-                    {t('snapCreatedByMetaMask')}
-                  </Text>
-                </Box>
-              }
-              labelProps={{
-                color: TextColor.infoDefault,
-              }}
-              className=""
-              marginRight={1}
-            />
+            <SnapDetailTag icon={IconName.Star}>
+              {t('snapCreatedByMetaMask')}
+            </SnapDetailTag>
           )}
           {auditUrls.length > 0 && (
-            <Tag
-              className=""
-              color={TextColor.infoDefault}
-              backgroundColor={BackgroundColor.infoMuted}
-              borderColor={BackgroundColor.infoMuted}
-              label={
-                <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                >
-                  <Icon name={IconName.Star} />{' '}
-                  <Text
-                    color={TextColor.infoDefault}
-                    variant={TextVariant.bodySm}
-                  >
-                    {t('snapIsAudited')}
-                  </Text>
-                </Box>
-              }
-              labelProps={{
-                color: TextColor.infoDefault,
-              }}
-            />
+            <SnapDetailTag icon={IconName.Star}>
+              {t('snapIsAudited')}
+            </SnapDetailTag>
           )}
         </Box>
       </Box>

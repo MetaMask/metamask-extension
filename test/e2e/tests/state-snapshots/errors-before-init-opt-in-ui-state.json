@@ -41,16 +41,6 @@
       "gasEstimateType": "none",
       "gasFeeEstimates": {}
     },
-    "IncomingTransactionsController": {
-      "incomingTransactions": "object",
-      "incomingTxLastFetchedBlockByChainId": {
-        "0x1": null,
-        "0xe708": null,
-        "0x5": null,
-        "0xaa36a7": null,
-        "0xe704": null
-      }
-    },
     "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
@@ -61,7 +51,10 @@
     },
     "NetworkController": {
       "networkId": "1337",
-      "networkStatus": "available",
+      "selectedNetworkClientId": "string",
+      "networksMetadata": {
+        "networkConfigurationId": { "EIPS": {}, "status": "available" }
+      },
       "providerConfig": {
         "chainId": "0x539",
         "nickname": "Localhost 8545",
@@ -84,7 +77,7 @@
       "advancedGasFee": null,
       "currentLocale": "en",
       "dismissSeedBackUpReminder": true,
-      "featureFlags": { "showIncomingTransactions": true },
+      "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
       "infuraBlocked": false,

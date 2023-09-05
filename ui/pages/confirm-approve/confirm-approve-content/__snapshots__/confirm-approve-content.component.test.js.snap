@@ -21,7 +21,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -73,7 +73,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -140,7 +140,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
                 Nonce
               </h6>
               <button
-                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
@@ -195,7 +195,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -258,7 +258,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -325,7 +325,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
                 Nonce
               </h6>
               <button
-                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
@@ -380,7 +380,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -443,7 +443,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -510,7 +510,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
                 Nonce
               </h6>
               <button
-                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
@@ -565,7 +565,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -628,7 +628,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -695,7 +695,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
                 Nonce
               </h6>
               <button
-                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>

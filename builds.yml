@@ -51,6 +51,7 @@ buildTypes:
       - desktop
       - build-flask
       - keyring-snaps
+      - blockaid
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -121,6 +122,9 @@ features:
       - SKIP_OTP_PAIRING_FLOW: false
       - WEB_SOCKET_PORT: null
   blockaid:
+    env:
+      - BLOCKAID_FILE_CDN: null
+      - BLOCKAID_PUBLIC_KEY: null
 
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
@@ -229,6 +233,12 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
+  # CDN for blockaid files
+  - BLOCKAID_FILE_CDN
+  # Blockaid public key for verifying signatures of data files downloaded from CDN
+  - BLOCKAID_PUBLIC_KEY
+  # Determines if feature flagged Multichain UI should be used
+  - MULTICHAIN: ''
 
   ###
   # Meta variables

@@ -70,11 +70,6 @@ const connectRequests = [
     labels,
     origin: 'origin',
     apiUrl: 'apiUrl',
-    token: {
-      projectName: 'projectName',
-      projectId: 'projectId',
-      clientId: 'clientId',
-    },
   },
 ];
 
@@ -109,7 +104,6 @@ const render = ({ newState } = {}) => {
         ],
       },
       institutionalFeatures: {
-        complianceProjectId: '',
         connectRequests,
       },
       ...newState,

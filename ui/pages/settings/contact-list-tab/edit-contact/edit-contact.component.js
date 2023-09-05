@@ -12,8 +12,9 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   Box,
+  Text,
 } from '../../../../components/component-library';
-import { Text } from '../../../../components/component-library/text/deprecated';
+
 import {
   AlignItems,
   Display,
