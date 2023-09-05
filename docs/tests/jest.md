@@ -26,7 +26,7 @@ Additional methods and information to debug in VS Code can be found [here](https
 1. Run Jest using Node with the V8 Inspector
 
     ```bash
-    > yarn jest:node <path>
+    > yarn test:unit:jest:watch <path>
     ```
 
     or
