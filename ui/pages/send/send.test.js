@@ -65,14 +65,14 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: 'activity' },
   metamask: {
-    unapprovedTxs: {
-      1: {
+    transactions: [
+      {
         id: 1,
         txParams: {
           value: 'oldTxValue',
         },
       },
-    },
+    ],
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
@@ -133,7 +133,6 @@ const baseStore = {
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },
-    currentNetworkTxList: [],
     cachedBalances: {
       [CHAIN_IDS.GOERLI]: {},
     },

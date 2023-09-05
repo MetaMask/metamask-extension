@@ -33,7 +33,6 @@ const SignatureRequestHeader = ({ txData }) => {
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const fromAccount = getAccountByAddress(allAccounts, from);
 
-  console.log(333, fromAccount);
   const nativeCurrency = useSelector(getNativeCurrency);
   const currentCurrency = useSelector(getCurrentCurrency);
   const currentChainId = useSelector(getCurrentChainId);

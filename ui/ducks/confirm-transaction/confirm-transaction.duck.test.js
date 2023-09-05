@@ -356,8 +356,8 @@ describe('Confirm Transaction Duck', () => {
           providerConfig: {
             chainId: '0x5',
           },
-          unapprovedTxs: {
-            2603411941761054: {
+          transactions: [
+            {
               history: [],
               id: 2603411941761054,
               loadingDefaults: false,
@@ -373,7 +373,7 @@ describe('Confirm Transaction Duck', () => {
                 value: '0xde0b6b3a7640000',
               },
             },
-          },
+          ],
         },
         confirmTransaction: {},
       };

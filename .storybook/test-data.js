@@ -403,8 +403,8 @@ const state = {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
       },
     },
-    unapprovedTxs: {
-      3111025347726181: {
+    transactions: [
+      {
         id: 3111025347726181,
         time: 1620710815484,
         status: 'unapproved',
@@ -454,7 +454,7 @@ const state = {
           ],
         ],
       },
-    },
+    ],
     addressBook: {
       undefined: {
         0: {
@@ -714,7 +714,7 @@ const state = {
       },
     },
     currentBlockGasLimit: '0x793af4',
-    currentNetworkTxList: [
+    transactions: [
       {
         chainId: '0x38',
         dappSuggestedGasFees: null,

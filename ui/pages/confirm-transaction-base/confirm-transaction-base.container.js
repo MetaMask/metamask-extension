@@ -42,6 +42,7 @@ import {
   getUseCurrencyRateCheck,
   getFirstInternalAccountByAddress,
   getInternalAccountWithBalanceByAddress,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -122,8 +123,8 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const { conversionRate, addressBook, networkId, unapprovedTxs, nextNonce } =
-    metamask;
+  const { conversionRate, addressBook, networkId, nextNonce } = metamask;
+  const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;

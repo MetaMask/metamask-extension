@@ -30,7 +30,7 @@ const initialState = {
     accounts: {},
     selectedAccount: '',
   },
-  unapprovedTxs: {},
+  transactions: [],
   networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},
@@ -123,8 +123,8 @@ export default function reduceMetamask(state = initialState, action) {
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
       const { id: txId, value } = action;
-      let { currentNetworkTxList } = metamaskState;
-      currentNetworkTxList = currentNetworkTxList.map((tx) => {
+      let { transactions } = metamaskState;
+      transactions = transactions.map((tx) => {
         if (tx.id === txId) {
           const newTx = { ...tx };
           newTx.txParams = value;
@@ -135,7 +135,7 @@ export default function reduceMetamask(state = initialState, action) {
 
       return {
         ...metamaskState,
-        currentNetworkTxList,
+        transactions,
       };
     }
 
@@ -312,10 +312,6 @@ export function getSendToAccounts(state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state);
   const addressBookAccounts = getAddressBook(state);
   return [...fromAccounts, ...addressBookAccounts];
-}
-
-export function getUnapprovedTxs(state) {
-  return state.metamask.unapprovedTxs;
 }
 
 /**

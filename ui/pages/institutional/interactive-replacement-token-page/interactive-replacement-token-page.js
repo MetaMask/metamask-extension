@@ -215,13 +215,9 @@ export default function InteractiveReplacementTokenPage({ history }) {
         setIsLoading(false);
       }
     } catch (e) {
-      console.log('in error', e);
       console.error(e);
     }
   };
-
-  console.log('custodian', custodian);
-  console.log('tokenAccounts', tokenAccounts);
 
   return (
     <Box className="page-container" data-testid="interactive-replacement-token">
