@@ -5,7 +5,7 @@
       "id": 4243712234858512,
       "time": 1589314601567,
       "status": "confirmed",
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -66,7 +66,7 @@
         "id": 4243712234858512,
         "time": 1589314601567,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -127,7 +127,7 @@
       "id": 4243712234858512,
       "time": 1589314601567,
       "status": "confirmed",
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -192,7 +192,7 @@
       "id": 4243712234858507,
       "time": 1589314355872,
       "status": "confirmed",
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -253,7 +253,7 @@
         "id": 4243712234858507,
         "time": 1589314355872,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -314,7 +314,7 @@
       "id": 4243712234858507,
       "time": 1589314355872,
       "status": "confirmed",
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -379,7 +379,7 @@
       "id": 4243712234858506,
       "time": 1589314345433,
       "status": "confirmed",
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -441,7 +441,7 @@
         "id": 4243712234858506,
         "time": 1589314345433,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -503,7 +503,7 @@
       "id": 4243712234858506,
       "time": 1589314345433,
       "status": "confirmed",
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
@@ -567,7 +567,7 @@
     "initialTransaction": {
       "blockNumber": "6477257",
       "id": 4243712234858505,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1589314295000,
       "txParams": {
@@ -585,7 +585,7 @@
       {
         "blockNumber": "6477257",
         "id": 4243712234858505,
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "status": "confirmed",
         "time": 1589314295000,
         "txParams": {
@@ -603,7 +603,7 @@
     "primaryTransaction": {
       "blockNumber": "6477257",
       "id": 4243712234858505,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1589314295000,
       "txParams": {
@@ -624,7 +624,7 @@
     "initialTransaction": {
       "blockNumber": "6454493",
       "id": 4243712234858475,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1588972833000,
       "txParams": {
@@ -642,7 +642,7 @@
       {
         "blockNumber": "6454493",
         "id": 4243712234858475,
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "status": "confirmed",
         "time": 1588972833000,
         "txParams": {
@@ -660,7 +660,7 @@
     "primaryTransaction": {
       "blockNumber": "6454493",
       "id": 4243712234858475,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1588972833000,
       "txParams": {
@@ -681,7 +681,7 @@
     "initialTransaction": {
       "blockNumber": "6195526",
       "id": 4243712234858466,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1585087013000,
       "txParams": {
@@ -699,7 +699,7 @@
       {
         "blockNumber": "6195526",
         "id": 4243712234858466,
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "status": "confirmed",
         "time": 1585087013000,
         "txParams": {
@@ -717,7 +717,7 @@
     "primaryTransaction": {
       "blockNumber": "6195526",
       "id": 4243712234858466,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1585087013000,
       "txParams": {
@@ -738,7 +738,7 @@
     "initialTransaction": {
       "blockNumber": "6195527",
       "id": 4243712234858467,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1585088013000,
       "txParams": {
@@ -758,7 +758,7 @@
       {
         "blockNumber": "6195527",
         "id": 4243712234858467,
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "status": "confirmed",
         "time": 1585088013000,
         "txParams": {
@@ -779,7 +779,7 @@
     "primaryTransaction": {
       "blockNumber": "6195527",
       "id": 4243712234858467,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1585088013000,
       "txParams": {
@@ -803,7 +803,7 @@
     "initialTransaction": {
       "blockNumber": "6195527",
       "id": 4243712234858468,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1585088013000,
       "txParams": {
@@ -822,7 +822,7 @@
       {
         "blockNumber": "6195527",
         "id": 4243712234858468,
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "status": "confirmed",
         "time": 1585088013000,
         "txParams": {
@@ -840,7 +840,7 @@
     "primaryTransaction": {
       "blockNumber": "6195527",
       "id": 4243712234858468,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1585088013000,
       "txParams": {
@@ -864,7 +864,7 @@
         "id": 1441203963845330,
         "time": 1652206763566,
         "status": "confirmed",
-        "metamaskNetworkId": "5",
+        "networkID": "5",
         "originalGasEstimate": "0x118e0",
         "userEditedGasLimit": false,
         "chainId": "0x5",
@@ -980,7 +980,7 @@
       "id": 1441203963845330,
       "time": 1652206763566,
       "status": "confirmed",
-      "metamaskNetworkId": "5",
+      "networkID": "5",
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
       "chainId": "0x5",
@@ -1095,7 +1095,7 @@
       "id": 1441203963845330,
       "time": 1652206763566,
       "status": "confirmed",
-      "metamaskNetworkId": "5",
+      "networkID": "5",
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
       "chainId": "0x5",
@@ -1213,7 +1213,7 @@
     "initialTransaction": {
       "blockNumber": "6195527",
       "id": 8401691827212777,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1585088013000,
       "txParams": {
@@ -1234,7 +1234,7 @@
       {
         "blockNumber": "6195527",
         "id": 8401691827212777,
-        "metamaskNetworkId": "4",
+        "networkID": "4",
         "status": "confirmed",
         "time": 1585088013000,
         "txParams": {
@@ -1254,7 +1254,7 @@
     "primaryTransaction": {
       "blockNumber": "6195527",
       "id": 8401691827212777,
-      "metamaskNetworkId": "4",
+      "networkID": "4",
       "status": "confirmed",
       "time": 1585088013000,
       "txParams": {

@@ -665,7 +665,7 @@ describe('Actions', () => {
     const txData = {
       id: '1',
       status: TransactionStatus.unapproved,
-      metamaskNetworkId: currentNetworkId,
+      networkID: currentNetworkId,
       txParams,
     };
 

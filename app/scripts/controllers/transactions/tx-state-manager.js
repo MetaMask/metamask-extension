@@ -133,7 +133,7 @@ export default class TransactionStateManager extends EventEmitter {
       id: createId(),
       time: new Date().getTime(),
       status: TransactionStatus.unapproved,
-      metamaskNetworkId: networkId,
+      networkID: networkId,
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
       chainId,
@@ -279,8 +279,8 @@ export default class TransactionStateManager extends EventEmitter {
       .reverse()
       .filter((tx) => {
         const { nonce, from } = tx.txParams;
-        const { chainId, metamaskNetworkId, status } = tx;
-        const key = `${nonce}-${chainId ?? metamaskNetworkId}-${from}`;
+        const { chainId, networkID, status } = tx;
+        const key = `${nonce}-${chainId ?? networkID}-${from}`;
         if (nonceNetworkSet.has(key)) {
           return false;
         } else if (

@@ -3,18 +3,18 @@ import txHelper from './tx-helper';
 
 describe('txHelper', () => {
   it('always shows the oldest tx first', () => {
-    const metamaskNetworkId = NETWORK_IDS.MAINNET;
+    const networkID = NETWORK_IDS.MAINNET;
     const chainId = CHAIN_IDS.MAINNET;
     const mockUnapprovedTxs = {
-      a: { metamaskNetworkId, time: 3 },
-      b: { metamaskNetworkId, time: 6 },
-      c: { metamaskNetworkId, time: 2 },
+      a: { networkID, time: 3 },
+      b: { networkID, time: 6 },
+      c: { networkID, time: 2 },
     };
 
     const mockUnapprovedMsgs = {
-      d: { metamaskNetworkId, time: 4 },
-      e: { metamaskNetworkId, time: 1 },
-      f: { metamaskNetworkId, time: 5 },
+      d: { networkID, time: 4 },
+      e: { networkID, time: 1 },
+      f: { networkID, time: 5 },
     };
 
     const sorted = txHelper(
@@ -24,7 +24,7 @@ describe('txHelper', () => {
       null,
       null,
       null,
-      metamaskNetworkId,
+      networkID,
       chainId,
     );
 

@@ -139,7 +139,7 @@ export class EtherscanRemoteTransactionSource
       chainId: currentChainId,
       hash: txMeta.hash,
       id: createId(),
-      metamaskNetworkId: currentNetworkId,
+      networkID: currentNetworkId,
       status: TransactionStatus.confirmed,
       time,
       txParams: {

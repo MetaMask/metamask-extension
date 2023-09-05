@@ -70,7 +70,7 @@ describe('TransactionStateManager', function () {
       const tx = {
         id: 1,
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -88,7 +88,7 @@ describe('TransactionStateManager', function () {
       const tx = {
         id: 1,
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -112,7 +112,7 @@ describe('TransactionStateManager', function () {
       const tx = {
         id: 1,
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -129,7 +129,7 @@ describe('TransactionStateManager', function () {
       const tx = {
         id: 1,
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -158,7 +158,7 @@ describe('TransactionStateManager', function () {
     it('should return a full list of transactions', function () {
       const submittedTx = {
         id: 0,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 0,
         txParams: {
           from: '0xAddress',
@@ -170,7 +170,7 @@ describe('TransactionStateManager', function () {
 
       const confirmedTx = {
         id: 3,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 3,
         txParams: {
           from: '0xAddress',
@@ -198,7 +198,7 @@ describe('TransactionStateManager', function () {
     it('should return a list of transactions, limited by N unique nonces when there are NO duplicates', function () {
       const submittedTx0 = {
         id: 0,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 0,
         txParams: {
           from: '0xAddress',
@@ -210,7 +210,7 @@ describe('TransactionStateManager', function () {
 
       const unapprovedTx1 = {
         id: 1,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 1,
         txParams: {
           from: '0xAddress',
@@ -222,7 +222,7 @@ describe('TransactionStateManager', function () {
 
       const approvedTx2 = {
         id: 2,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 2,
         txParams: {
           from: '0xAddress',
@@ -234,7 +234,7 @@ describe('TransactionStateManager', function () {
 
       const confirmedTx3 = {
         id: 3,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 3,
         txParams: {
           from: '0xAddress',
@@ -267,7 +267,7 @@ describe('TransactionStateManager', function () {
     it('should return a list of transactions, limited by N unique nonces when there ARE duplicates', function () {
       const submittedTx0 = {
         id: 0,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 0,
         txParams: {
           from: '0xAddress',
@@ -278,7 +278,7 @@ describe('TransactionStateManager', function () {
       };
       const submittedTx0Dupe = {
         id: 1,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 0,
         txParams: {
           from: '0xAddress',
@@ -290,7 +290,7 @@ describe('TransactionStateManager', function () {
 
       const unapprovedTx1 = {
         id: 2,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         chainId: currentChainId,
         time: 1,
         txParams: {
@@ -303,7 +303,7 @@ describe('TransactionStateManager', function () {
 
       const approvedTx2 = {
         id: 3,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 2,
         txParams: {
           from: '0xAddress',
@@ -314,7 +314,7 @@ describe('TransactionStateManager', function () {
       };
       const approvedTx2Dupe = {
         id: 4,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         chainId: currentChainId,
         time: 2,
         txParams: {
@@ -327,7 +327,7 @@ describe('TransactionStateManager', function () {
 
       const failedTx3 = {
         id: 5,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         time: 3,
         txParams: {
           from: '0xAddress',
@@ -338,7 +338,7 @@ describe('TransactionStateManager', function () {
       };
       const failedTx3Dupe = {
         id: 6,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         chainId: currentChainId,
         time: 3,
         txParams: {
@@ -382,61 +382,61 @@ describe('TransactionStateManager', function () {
           id: 0,
           status: TransactionStatus.unapproved,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 1,
           status: TransactionStatus.unapproved,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 2,
           status: TransactionStatus.unapproved,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 3,
           status: TransactionStatus.unapproved,
           txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 4,
           status: TransactionStatus.unapproved,
           txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 5,
           status: TransactionStatus.confirmed,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 6,
           status: TransactionStatus.confirmed,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 7,
           status: TransactionStatus.confirmed,
           txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 8,
           status: TransactionStatus.confirmed,
           txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 9,
           status: TransactionStatus.confirmed,
           txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
       ];
       txMetas.forEach((txMeta) => txStateManager.addTransaction(txMeta));
@@ -503,7 +503,7 @@ describe('TransactionStateManager', function () {
       const tx = {
         id: 1,
         status: TransactionStatus.confirmed,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -533,7 +533,7 @@ describe('TransactionStateManager', function () {
           const tx = {
             id: 1,
             status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
+            networkID: currentNetworkId,
             txParams: {
               ...validTxParams,
               [key]: value,
@@ -554,7 +554,7 @@ describe('TransactionStateManager', function () {
       const tx = {
         id: 1,
         status: TransactionStatus.confirmed,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -563,7 +563,7 @@ describe('TransactionStateManager', function () {
       const tx2 = {
         id: 2,
         status: TransactionStatus.confirmed,
-        metamaskNetworkId: otherNetworkId,
+        networkID: otherNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -762,7 +762,7 @@ describe('TransactionStateManager', function () {
       txStateManager.addTransaction({
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -771,7 +771,7 @@ describe('TransactionStateManager', function () {
       txStateManager.addTransaction({
         id: '2',
         status: TransactionStatus.confirmed,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -799,7 +799,7 @@ describe('TransactionStateManager', function () {
       txStateManager.addTransaction({
         id: 1,
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: validTxParams,
       });
 
@@ -830,7 +830,7 @@ describe('TransactionStateManager', function () {
       const txMeta = {
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           from: VALID_ADDRESS_TWO,
           to: VALID_ADDRESS,
@@ -906,7 +906,7 @@ describe('TransactionStateManager', function () {
       const txMeta = {
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           from: VALID_ADDRESS_TWO,
           to: VALID_ADDRESS,
@@ -925,7 +925,7 @@ describe('TransactionStateManager', function () {
       const txMeta = {
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           from: VALID_ADDRESS_TWO,
           to: VALID_ADDRESS,
@@ -987,7 +987,7 @@ describe('TransactionStateManager', function () {
       const txMeta = {
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           from: VALID_ADDRESS_TWO,
           to: VALID_ADDRESS,
@@ -1034,7 +1034,7 @@ describe('TransactionStateManager', function () {
       txStateManager.addTransaction({
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -1043,7 +1043,7 @@ describe('TransactionStateManager', function () {
       txStateManager.addTransaction({
         id: '2',
         status: TransactionStatus.confirmed,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -1061,7 +1061,7 @@ describe('TransactionStateManager', function () {
       txStateManager.addTransaction({
         id: '1',
         status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -1070,7 +1070,7 @@ describe('TransactionStateManager', function () {
       txStateManager.addTransaction({
         id: '2',
         status: TransactionStatus.confirmed,
-        metamaskNetworkId: currentNetworkId,
+        networkID: currentNetworkId,
         txParams: {
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
@@ -1097,19 +1097,19 @@ describe('TransactionStateManager', function () {
           id: 0,
           status: TransactionStatus.unapproved,
           txParams: { from: specificAddress, to: otherAddress },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 1,
           status: TransactionStatus.confirmed,
           txParams: { from: otherAddress, to: specificAddress },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 2,
           status: TransactionStatus.confirmed,
           txParams: { from: otherAddress, to: specificAddress },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
       ];
       txMetas.forEach((txMeta) => txStateManager.addTransaction(txMeta));
@@ -1133,19 +1133,19 @@ describe('TransactionStateManager', function () {
           id: 0,
           status: TransactionStatus.unapproved,
           txParams: { from: specificAddress, to: otherAddress },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 1,
           status: TransactionStatus.confirmed,
           txParams: { from: specificAddress, to: otherAddress },
-          metamaskNetworkId: otherNetworkId,
+          networkID: otherNetworkId,
         },
         {
           id: 2,
           status: TransactionStatus.confirmed,
           txParams: { from: specificAddress, to: otherAddress },
-          metamaskNetworkId: otherNetworkId,
+          networkID: otherNetworkId,
         },
       ];
 
@@ -1158,7 +1158,7 @@ describe('TransactionStateManager', function () {
         .filter((txMeta) => txMeta.txParams.from === specificAddress);
       const txFromOtherNetworks = txStateManager
         .getTransactions({ filterToCurrentNetwork: false })
-        .filter((txMeta) => txMeta.metamaskNetworkId === otherNetworkId);
+        .filter((txMeta) => txMeta.networkID === otherNetworkId);
 
       assert.equal(txsFromCurrentNetworkAndAddress.length, 0);
       assert.equal(txFromOtherNetworks.length, 2);
@@ -1328,25 +1328,25 @@ describe('TransactionStateManager', function () {
           id: 0,
           status: TransactionStatus.unapproved,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 1,
           status: TransactionStatus.unapproved,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: currentNetworkId,
+          networkID: currentNetworkId,
         },
         {
           id: 2,
           status: TransactionStatus.confirmed,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: otherNetworkId,
+          networkID: otherNetworkId,
         },
         {
           id: 3,
           status: TransactionStatus.confirmed,
           txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
-          metamaskNetworkId: otherNetworkId,
+          networkID: otherNetworkId,
         },
       ];
 

@@ -2303,7 +2303,7 @@ export default class TransactionController extends EventEmitter {
       defaultGasEstimates,
       originalType,
       replacedById,
-      metamaskNetworkId: network,
+      networkID: network,
       customTokenAmount,
       dappProposedTokenAmount,
       currentTokenBalance,

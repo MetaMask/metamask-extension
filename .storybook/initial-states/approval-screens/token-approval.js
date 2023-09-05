@@ -2,7 +2,7 @@ export const currentNetworkTxListSample = {
   "id": 7900715443136469,
   "time": 1621395091737,
   "status": "unapproved",
-  "metamaskNetworkId": "1337",
+  "networkID": "1337",
   "chainId": "0x539",
   "loadingDefaults": false,
   "txParams": {
@@ -20,7 +20,7 @@ export const currentNetworkTxListSample = {
       "id": 7900715443136469,
       "time": 1621395091737,
       "status": "unapproved",
-      "metamaskNetworkId": "1337",
+      "networkID": "1337",
       "chainId": "0x539",
       "loadingDefaults": true,
       "txParams": {

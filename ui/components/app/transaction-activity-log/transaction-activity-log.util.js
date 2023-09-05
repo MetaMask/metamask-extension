@@ -54,7 +54,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
   const {
     id,
     chainId,
-    metamaskNetworkId,
+    networkID,
     hash,
     history = [],
     txParams: {
@@ -98,7 +98,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
           id,
           hash,
           chainId,
-          metamaskNetworkId,
+          networkID,
           eventKey: TRANSACTION_CREATED_EVENT,
           timestamp,
           value,
@@ -152,7 +152,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
                   eventKey,
                   timestamp,
                   chainId,
-                  metamaskNetworkId,
+                  networkID,
                   value: gasFee,
                 });
               }
@@ -209,7 +209,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
                 id,
                 hash,
                 chainId,
-                metamaskNetworkId,
+                networkID,
                 eventKey: TRANSACTION_UPDATED_EVENT,
                 timestamp,
               });
@@ -231,7 +231,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
         id,
         hash,
         chainId,
-        metamaskNetworkId,
+        networkID,
         eventKey: TRANSACTION_ERRORED_EVENT,
       })
     : historyActivities;

@@ -19,7 +19,7 @@ const sendEther = {
   id: 9597986287241458,
   time: 1681203297082,
   status: 'unapproved',
-  metamaskNetworkId: '5',
+  networkID: '5',
   originalGasEstimate: '0x5208',
   userEditedGasLimit: false,
   chainId: '0x5',

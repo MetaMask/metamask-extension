@@ -69,7 +69,7 @@ const baseStore = {
     transactions: [
       {
         id: 1,
-        metamaskNetworkId: mockNetworkId,
+        networkID: mockNetworkId,
         txParams: { ...mockTxParams },
         status: 'unapproved',
       },
@@ -133,7 +133,7 @@ const baseStore = {
   confirmTransaction: {
     txData: {
       id: 1,
-      metamaskNetworkId: mockNetworkId,
+      networkID: mockNetworkId,
       txParams: { ...mockTxParams },
       time: 1675012496170,
       status: TransactionStatus.unapproved,

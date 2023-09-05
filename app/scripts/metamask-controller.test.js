@@ -904,24 +904,24 @@ describe('MetaMaskController', function () {
           createTxMeta({
             id: 1,
             status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
+            networkID: currentNetworkId,
             txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
           }),
           createTxMeta({
             id: 1,
             status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
+            networkID: currentNetworkId,
             txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
           }),
           createTxMeta({
             id: 2,
             status: TransactionStatus.rejected,
-            metamaskNetworkId: '32',
+            networkID: '32',
           }),
           createTxMeta({
             id: 3,
             status: TransactionStatus.submitted,
-            metamaskNetworkId: currentNetworkId,
+            networkID: currentNetworkId,
             txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
           }),
         ]);

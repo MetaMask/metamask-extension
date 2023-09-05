@@ -363,7 +363,7 @@ export interface TransactionMeta {
   /** The current status of the transaction. */
   status: TransactionStatus;
   /** The transaction's network ID, used for EIP-155 compliance. */
-  metamaskNetworkId: string;
+  networkID: string;
   /** TODO: Find out what this is and document it */
   loadingDefaults: boolean;
   /** The transaction params as passed to the network provider. */
