@@ -291,13 +291,7 @@ export const AccountListMenu = ({ onClose }) => {
                       startIconName={IconName.Snaps}
                       onClick={() => {
                         dispatch(toggleAccountMenu());
-                        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                          ? global.platform.openExtensionInBrowser(
-                              CREATE_SNAP_ACCOUNT_ROUTE,
-                              null,
-                              true,
-                            )
-                          : history.push(CREATE_SNAP_ACCOUNT_ROUTE);
+                        history.push(CREATE_SNAP_ACCOUNT_ROUTE);
                       }}
                     >
                       Create Snap Account TEST

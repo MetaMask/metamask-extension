@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import {
   Box,
   IconSize,
@@ -8,6 +8,9 @@ import {
 import {
   AlignItems,
   BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
   OverflowWrap,
   TextAlign,
   TextVariant,
@@ -28,27 +31,37 @@ const CreateSnapAccountContent = ({
   accountName,
 }: CreateSnapAccountContentProps) => {
   return (
-    <Box>
-      <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
-        Create Snap Account
-      </Text>
-      <Box alignItems={AlignItems.center} paddingBottom={2}>
-        <SnapAvatar
-          snapId={snapId}
-          badgeSize={IconSize.Md}
-          avatarSize={IconSize.Xl}
-          borderWidth={3}
-        />
-      </Box>
-      <Text
-        variant={TextVariant.bodyMd}
-        textAlign={TextAlign.Center}
-        padding={[0, 4]}
-        overflowWrap={OverflowWrap.Anywhere}
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+    >
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
       >
-        {`${snapName} wants to add a new snap account to your wallet`}
-      </Text>
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
+        <Box paddingBottom={2}>
+          <SnapAvatar
+            snapId={snapId}
+            badgeSize={IconSize.Md}
+            avatarSize={IconSize.Xl}
+            borderWidth={3}
+          />
+        </Box>
+        <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
+          Create Snap Account
+        </Text>
+        <Text
+          variant={TextVariant.bodyMd}
+          textAlign={TextAlign.Center}
+          padding={[0, 4]}
+          overflowWrap={OverflowWrap.Anywhere}
+        >
+          {`${snapName} wants to add a new snap account to your wallet`}
+        </Text>
+      </Box>
+      <Box paddingTop={4} paddingLeft={4} paddingRight={4} paddingBottom={2}>
         <Text
           variant={TextVariant.bodyMd}
           textAlign={TextAlign.Left}

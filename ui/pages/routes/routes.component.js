@@ -46,7 +46,7 @@ import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
-import CreateSnapAccount from '../permissions-connect/snaps/create-snap-account/create-snap-account';
+import { CreateSnapAccount } from '../permissions-connect/snaps/create-snap-account';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
