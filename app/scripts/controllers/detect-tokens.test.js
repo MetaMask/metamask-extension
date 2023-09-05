@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import nock from 'nock';
-import { ObservableStore } from '@metamask/obs-store';
 import BigNumber from 'bignumber.js';
 import { ControllerMessenger } from '@metamask/base-controller';
 import {
@@ -19,14 +18,17 @@ import PreferencesController from './preferences';
 function buildMessenger() {
   return new ControllerMessenger().getRestricted({
     name: 'DetectTokensController',
-    allowedEvents: ['NetworkController:stateChange'],
+    allowedEvents: [
+      'NetworkController:stateChange',
+      'KeyringController:lock',
+      'KeyringController:unlock',
+    ],
   });
 }
 
 describe('DetectTokensController', function () {
   let sandbox,
     assetsContractController,
-    keyringMemStore,
     network,
     preferences,
     provider,
@@ -198,7 +200,6 @@ describe('DetectTokensController', function () {
       .reply(200, { error: 'ChainId 3 is not supported' })
       .persist();
 
-    keyringMemStore = new ObservableStore({ isUnlocked: false });
     const networkControllerMessenger = new ControllerMessenger();
     network = new NetworkController({
       messenger: networkControllerMessenger,
@@ -275,7 +276,6 @@ describe('DetectTokensController', function () {
       messenger: buildMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -312,7 +312,6 @@ describe('DetectTokensController', function () {
       messenger: buildMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -336,7 +335,6 @@ describe('DetectTokensController', function () {
       messenger: buildMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -388,7 +386,6 @@ describe('DetectTokensController', function () {
       messenger: buildMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -447,7 +444,6 @@ describe('DetectTokensController', function () {
       messenger: buildMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -463,11 +459,11 @@ describe('DetectTokensController', function () {
 
   it('should trigger detect new tokens when submit password', async function () {
     sandbox.useFakeTimers();
+    const messenger = buildMessenger();
     const controller = new DetectTokensController({
       messenger: buildMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -475,7 +471,9 @@ describe('DetectTokensController', function () {
     controller.isOpen = true;
     controller.selectedAddress = '0x0';
     const stub = sandbox.stub(controller, 'detectNewTokens');
-    await controller._keyringMemStore.updateState({ isUnlocked: true });
+
+    messenger.publish('KeyringController:unlock');
+
     sandbox.assert.called(stub);
   });
 
@@ -486,7 +484,6 @@ describe('DetectTokensController', function () {
       messenger: buildMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -508,7 +505,6 @@ describe('DetectTokensController', function () {
       messenger: buildMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokensController,
       assetsContractController,
     });

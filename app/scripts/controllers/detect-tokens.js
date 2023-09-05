@@ -40,7 +40,6 @@ export default class DetectTokensController {
     interval = DEFAULT_INTERVAL,
     preferences,
     network,
-    keyringMemStore,
     tokenList,
     tokensController,
     assetsContractController = null,
@@ -52,7 +51,6 @@ export default class DetectTokensController {
     this.preferences = preferences;
     this.interval = interval;
     this.network = network;
-    this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
@@ -90,6 +88,13 @@ export default class DetectTokensController {
         this.chainId = chainId;
         this.restartTokenDetection({ chainId: this.chainId });
       }
+    });
+    messenger.subscribe('KeyringController:unlock', () => {
+      this.isUnlocked = true;
+      this.restartTokenDetection();
+    });
+    messenger.subscribe('KeyringController:lock', () => {
+      this.isUnlocked = false;
     });
   }
 
@@ -234,26 +239,6 @@ export default class DetectTokensController {
     this._handle = setInterval(() => {
       this.detectNewTokens();
     }, interval);
-  }
-
-  /**
-   * In setter when isUnlocked is updated to true, detectNewTokens and restart polling
-   *
-   * @type {object}
-   */
-  set keyringMemStore(keyringMemStore) {
-    if (!keyringMemStore) {
-      return;
-    }
-    this._keyringMemStore = keyringMemStore;
-    this._keyringMemStore.subscribe(({ isUnlocked }) => {
-      if (this.isUnlocked !== isUnlocked) {
-        this.isUnlocked = isUnlocked;
-        if (isUnlocked) {
-          this.restartTokenDetection();
-        }
-      }
-    });
   }
 
   /**
