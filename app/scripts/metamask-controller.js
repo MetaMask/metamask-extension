@@ -390,10 +390,7 @@ export default class MetamaskController extends EventEmitter {
     this.updateDeprecatedNetworkId();
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
-      async () => {
-        await this.updateDeprecatedNetworkId()
-        await this._notifyChainChange()
-      },
+      () => this.updateDeprecatedNetworkId(),
     )
 
 
@@ -2189,6 +2186,7 @@ export default class MetamaskController extends EventEmitter {
       console.error(error)
       this.deprecatedNetworkId = null
     }
+    this._notifyChainChange()
   }
 
   /**
@@ -4530,7 +4528,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
-    this._notifyChainChange()
   }
 
   // misc
@@ -4884,10 +4881,10 @@ export default class MetamaskController extends EventEmitter {
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
   }
 
-  async _notifyChainChange() {
+  _notifyChainChange() {
     this.notifyAllConnections({
       method: NOTIFICATION_NAMES.chainChanged,
-      params: await this.getProviderNetworkState(),
+      params: this.getProviderNetworkState(),
     });
   }
 }
