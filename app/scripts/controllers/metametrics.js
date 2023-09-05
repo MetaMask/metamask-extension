@@ -21,8 +21,25 @@ import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
 import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+import {
+  AnonymousTransactionMetaMetricsEvent,
+  TransactionMetaMetricsEvent,
+} from '../../../shared/constants/transaction';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
+
+export const overrideAnonymousEventNames = {
+  [TransactionMetaMetricsEvent.added]:
+    AnonymousTransactionMetaMetricsEvent.added,
+  [TransactionMetaMetricsEvent.approved]:
+    AnonymousTransactionMetaMetricsEvent.approved,
+  [TransactionMetaMetricsEvent.finalized]:
+    AnonymousTransactionMetaMetricsEvent.finalized,
+  [TransactionMetaMetricsEvent.rejected]:
+    AnonymousTransactionMetaMetricsEvent.rejected,
+  [TransactionMetaMetricsEvent.submitted]:
+    AnonymousTransactionMetaMetricsEvent.submitted,
+};
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -540,15 +557,23 @@ export default class MetaMetricsController {
         );
       }
 
+      // change anonymous event names
+      const anonymousEventName =
+        overrideAnonymousEventNames[`${payload.event}`];
+      const anonymousPayload = {
+        ...payload,
+        event: anonymousEventName,
+      };
+
       const combinedProperties = merge(
-        payload.sensitiveProperties,
-        payload.properties,
+        anonymousPayload.sensitiveProperties,
+        anonymousPayload.properties,
       );
 
       events.push(
         this._track(
           this._buildEventPayload({
-            ...payload,
+            ...anonymousPayload,
             properties: combinedProperties,
             isDuplicateAnonymizedEvent: true,
           }),
