@@ -701,6 +701,10 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "comboNoOptions": {
+    "message": "No options found",
+    "description": "Default text shown in the combo field dropdown if no options."
+  },
   "configureSnapPopupDescription": {
     "message": "You're now leaving MetaMask to configure this snap."
   },
@@ -2381,6 +2385,10 @@
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameNoProposedNames": {
+    "message": "No proposed names found",
+    "description": "Text shown in the proposed name dropdown if none found."
   },
   "nameSetPlaceholder": {
     "message": "Set a personal display name...",

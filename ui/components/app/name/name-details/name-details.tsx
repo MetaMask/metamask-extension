@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import React, {
   useCallback,
   useContext,
@@ -178,12 +179,12 @@ export default function NameDetails({
           >
             {t('nameLabel')}
             <FormComboField
+              value={name}
               options={proposedNameOptions}
               placeholder={t('nameSetPlaceholder')}
+              noOptionsText={t('nameNoProposedNames')}
               onChange={handleNameChange}
               onOptionClick={handleProposedNameClick}
-              value={name}
-              maxDropdownHeight={170}
             />
           </Label>
           <hr className="name-details__line" />

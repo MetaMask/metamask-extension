@@ -1,6 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import classnames from 'classnames';
 import { FormTextField } from '../../component-library';
+import { I18nContext } from '../../../contexts/i18n';
 
 export interface FormComboFieldOption {
   primaryLabel: string;
@@ -10,9 +19,10 @@ export interface FormComboFieldOption {
 export interface FormComboFieldProps {
   alwaysVisible?: boolean;
   maxDropdownHeight?: number;
-  options: FormComboFieldOption[];
+  noOptionsText?: string;
   onChange?: (value: string) => void;
   onOptionClick?: (option: FormComboFieldOption) => void;
+  options: FormComboFieldOption[];
   placeholder?: string;
   value: string;
 }
@@ -55,22 +65,33 @@ function Option({
 
 function Dropdown({
   maxDropdownHeight,
-  options,
+  noOptionsText,
   onOptionClick,
+  options,
   width,
 }: {
   maxDropdownHeight?: number;
+  noOptionsText?: string;
+  onOptionClick: (option?: FormComboFieldOption) => void;
   options: FormComboFieldOption[];
-  onOptionClick: (option: FormComboFieldOption) => void;
   width: number;
 }) {
+  const t = useContext(I18nContext);
+
   return (
     <div
       className="form-combo-field__dropdown"
       style={{ width, maxHeight: maxDropdownHeight }}
     >
-      {options.map((option) => (
+      {options.length === 0 && (
         <Option
+          option={{ primaryLabel: noOptionsText ?? t('comboNoOptions') }}
+          onClick={() => onOptionClick(undefined)}
+        />
+      )}
+      {options.map((option, index) => (
+        <Option
+          key={index}
           option={option}
           onClick={() => {
             onOptionClick(option);
@@ -82,15 +103,15 @@ function Dropdown({
 }
 
 export default function FormComboField({
-  alwaysVisible = false,
   maxDropdownHeight,
-  options,
+  noOptionsText,
   onChange,
   onOptionClick,
+  options,
   placeholder,
   value,
 }: FormComboFieldProps) {
-  const [dropdownVisible, setDropdownVisible] = useState(alwaysVisible);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   const valueRef = useRef<any>();
   const [valueWidth, setValueWidth] = useState(0);
   const inputRef = useRef<any>(null);
@@ -101,15 +122,11 @@ export default function FormComboField({
 
   const handleBlur = useCallback(
     (e?: any) => {
-      if (alwaysVisible) {
-        return;
-      }
-
       if (e?.relatedTarget?.className !== 'form-combo-field__option') {
         setDropdownVisible(false);
       }
     },
-    [alwaysVisible, setDropdownVisible],
+    [setDropdownVisible],
   );
 
   const handleChange = useCallback(
@@ -121,12 +138,16 @@ export default function FormComboField({
 
   const handleOptionClick = useCallback(
     (option) => {
-      handleChange({ target: { value: option.primaryLabel } });
-      setDropdownVisible(alwaysVisible);
-      onOptionClick?.(option);
+      setDropdownVisible(false);
+
+      if (option) {
+        handleChange({ target: { value: option.primaryLabel } });
+        onOptionClick?.(option);
+      }
+
       inputRef.current?.focus();
     },
-    [alwaysVisible, setDropdownVisible],
+    [setDropdownVisible],
   );
 
   return (
@@ -136,6 +157,7 @@ export default function FormComboField({
           setDropdownVisible(true);
         }}
       >
+        {/* @ts-ignore */}
         <FormTextField
           autoFocus
           inputRef={inputRef}
@@ -157,8 +179,9 @@ export default function FormComboField({
       {dropdownVisible && (
         <Dropdown
           maxDropdownHeight={maxDropdownHeight}
-          options={options}
+          noOptionsText={noOptionsText}
           onOptionClick={handleOptionClick}
+          options={options}
           width={valueWidth}
         />
       )}
