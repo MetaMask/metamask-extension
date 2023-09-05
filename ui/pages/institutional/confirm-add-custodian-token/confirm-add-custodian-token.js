@@ -101,7 +101,6 @@ const ConfirmAddCustodianToken = () => {
           padding={4}
           fontWeight={FontWeight.Bold}
           variant={TextVariant.headingSm}
-          as="h5"
         >
           {t('confirmConnectionTitle', [custodianLabel])}
         </Text>

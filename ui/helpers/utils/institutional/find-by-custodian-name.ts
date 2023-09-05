@@ -1,6 +1,10 @@
 import { CUSTODIAN_WEBSITES } from '../../../../shared/constants/institutional/custodian-websites';
 
-export function findCustodianByDisplayName(displayName: string) {
+export function findCustodianByDisplayName(displayName: string): {
+  displayName: string;
+  website: string;
+  icon: string;
+} | null {
   const formatedDisplayName = displayName.toLowerCase();
   const custodianKeys = Object.keys(
     CUSTODIAN_WEBSITES,
