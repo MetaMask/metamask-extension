@@ -260,7 +260,7 @@ describe('Phishing Detection', function () {
         });
         assert.equal(
           await driver.getCurrentUrl(),
-          `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%3A8080%2F`,
+          `https://github.com/phishfort/phishfort-lists/issues/new?title=[MetaMask][Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%3A8080%2F`,
         );
       },
     );
