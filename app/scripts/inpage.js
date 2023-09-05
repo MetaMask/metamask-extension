@@ -36,7 +36,7 @@ import log from 'loglevel';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { METAMASK } from './context';
+import { METAMASK_CTX } from './context';
 import { logPostMessages } from './lib/stream-logger';
 
 restoreContextAfterImports();
@@ -50,12 +50,12 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 if (shouldInjectProvider()) {
   // setup background connection
   const metamaskStream = new WindowPostMessageStream({
-    name: METAMASK.INPAGE,
-    target: METAMASK.CONTENTSCRIPT,
+    name: METAMASK_CTX.INPAGE,
+    target: METAMASK_CTX.CONTENTSCRIPT,
   });
 
   metamaskStream._setLogger(
-    logPostMessages(METAMASK.INPAGE, METAMASK.CONTENTSCRIPT),
+    logPostMessages(METAMASK_CTX.INPAGE, METAMASK_CTX.CONTENTSCRIPT),
   );
 
   initializeProvider({

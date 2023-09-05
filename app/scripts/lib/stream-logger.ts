@@ -1,14 +1,14 @@
 import { createProjectLogger, createModuleLogger } from '@metamask/utils';
 
-import { METAMASK } from '../context';
+import { METAMASK_CTX } from '../context';
 
 const colors: Record<string, string> = {
-  [METAMASK.UI]: 'green',
-  [METAMASK.INPAGE]: 'red',
-  [METAMASK.CONTENTSCRIPT]: 'cornflowerblue',
-  [METAMASK.BACKGROUND]: 'yellow',
-  [METAMASK.PHISHING_WARNING_PAGE]: 'purple',
-  [METAMASK.EXTERNAL]: 'grey',
+  [METAMASK_CTX.UI]: 'green',
+  [METAMASK_CTX.INPAGE]: 'red',
+  [METAMASK_CTX.CONTENTSCRIPT]: 'cornflowerblue',
+  [METAMASK_CTX.BACKGROUND]: 'yellow',
+  [METAMASK_CTX.PHISHING_WARNING_PAGE]: 'purple',
+  [METAMASK_CTX.EXTERNAL]: 'grey',
 };
 
 const enabled = Boolean(process.env.METAMASK_DEBUG);

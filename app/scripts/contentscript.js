@@ -11,7 +11,7 @@ import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import { logPortMessages, logPostMessages } from './lib/stream-logger';
-import { METAMASK } from './context';
+import { METAMASK_CTX } from './context';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -151,12 +151,15 @@ const runWorkerKeepAliveInterval = () => {
 function setupPhishingPageStreams() {
   // the transport-specific streams for communication between inpage and background
   const phishingPageStream = new WindowPostMessageStream({
-    name: METAMASK.CONTENTSCRIPT,
-    target: METAMASK.PHISHING_WARNING_PAGE,
+    name: METAMASK_CTX.CONTENTSCRIPT,
+    target: METAMASK_CTX.PHISHING_WARNING_PAGE,
   });
 
   phishingPageStream._setLogger(
-    logPostMessages(METAMASK.CONTENTSCRIPT, METAMASK.PHISHING_WARNING_PAGE),
+    logPostMessages(
+      METAMASK_CTX.CONTENTSCRIPT,
+      METAMASK_CTX.PHISHING_WARNING_PAGE,
+    ),
   );
 
   if (isManifestV3) {
@@ -177,11 +180,11 @@ function setupPhishingPageStreams() {
 
 const setupPhishingExtStreams = () => {
   phishingExtPort = browser.runtime.connect({
-    name: METAMASK.CONTENTSCRIPT,
+    name: METAMASK_CTX.CONTENTSCRIPT,
   });
   phishingExtStream = new PortStream(phishingExtPort);
   phishingExtStream._setLogger(
-    logPortMessages(METAMASK.CONTENTSCRIPT, METAMASK.BACKGROUND),
+    logPortMessages(METAMASK_CTX.CONTENTSCRIPT, METAMASK_CTX.BACKGROUND),
   );
 
   // create and connect channel muxers
@@ -193,7 +196,7 @@ const setupPhishingExtStreams = () => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     window.postMessage(
       {
-        target: METAMASK.PHISHING_WARNING_PAGE, // the post-message-stream "target"
+        target: METAMASK_CTX.PHISHING_WARNING_PAGE, // the post-message-stream "target"
         data: {
           // this object gets passed to obj-multiplex
           name: PHISHING_SAFELIST, // the obj-multiplex channel name
@@ -298,12 +301,12 @@ const initPhishingStreams = () => {
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
-    name: METAMASK.CONTENTSCRIPT,
-    target: METAMASK.INPAGE,
+    name: METAMASK_CTX.CONTENTSCRIPT,
+    target: METAMASK_CTX.INPAGE,
   });
 
   pageStream._setLogger(
-    logPostMessages(METAMASK.CONTENTSCRIPT, METAMASK.INPAGE),
+    logPostMessages(METAMASK_CTX.CONTENTSCRIPT, METAMASK_CTX.INPAGE),
   );
 
   if (isManifestV3) {
@@ -323,7 +326,7 @@ const setupPageStreams = () => {
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
-  pageChannel = pageMux.createStream(METAMASK.PROVIDER);
+  pageChannel = pageMux.createStream(METAMASK_CTX.PROVIDER);
 };
 
 // The field below is used to ensure that replay is done only once for each restart.
@@ -331,10 +334,10 @@ let METAMASK_EXTENSION_CONNECT_SENT = false;
 
 const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
-  extensionPort = browser.runtime.connect({ name: METAMASK.CONTENTSCRIPT });
+  extensionPort = browser.runtime.connect({ name: METAMASK_CTX.CONTENTSCRIPT });
   extensionStream = new PortStream(extensionPort);
   extensionStream._setLogger(
-    logPortMessages(METAMASK.CONTENTSCRIPT, METAMASK.BACKGROUND),
+    logPortMessages(METAMASK_CTX.CONTENTSCRIPT, METAMASK_CTX.BACKGROUND),
   );
   extensionStream.on('data', extensionStreamMessageListener);
 
@@ -350,10 +353,10 @@ const setupExtensionStreams = () => {
   });
 
   // forward communication across inpage-background for these channels only
-  extensionChannel = extensionMux.createStream(METAMASK.PROVIDER);
+  extensionChannel = extensionMux.createStream(METAMASK_CTX.PROVIDER);
   pump(pageChannel, extensionChannel, pageChannel, (error) =>
     console.debug(
-      `MetaMask: Muxed traffic for channel "${METAMASK.PROVIDER}" failed.`,
+      `MetaMask: Muxed traffic for channel "${METAMASK_CTX.PROVIDER}" failed.`,
       error,
     ),
   );
@@ -433,14 +436,14 @@ const setupLegacyExtensionStreams = () => {
     },
   );
 
-  legacyExtChannel = legacyExtMux.createStream(METAMASK.PROVIDER);
+  legacyExtChannel = legacyExtMux.createStream(METAMASK_CTX.PROVIDER);
   pump(
     legacyPageMuxLegacyProviderChannel,
     legacyExtChannel,
     legacyPageMuxLegacyProviderChannel,
     (error) =>
       console.debug(
-        `MetaMask: Muxed traffic between channels "${LEGACY_PROVIDER}" and "${METAMASK.PROVIDER}" failed.`,
+        `MetaMask: Muxed traffic between channels "${LEGACY_PROVIDER}" and "${METAMASK_CTX.PROVIDER}" failed.`,
         error,
       ),
   );
@@ -541,7 +544,7 @@ const initStreams = () => {
 // TODO:LegacyProvider: Delete
 function getNotificationTransformStream() {
   return createThoughStream((chunk, _, cb) => {
-    if (chunk?.name === METAMASK.PROVIDER) {
+    if (chunk?.name === METAMASK_CTX.PROVIDER) {
       if (chunk.data?.method === 'metamask_accountsChanged') {
         chunk.data.method = 'wallet_accountsChanged';
         chunk.data.result = chunk.data.params;
@@ -582,10 +585,10 @@ function extensionStreamMessageListener(msg) {
     METAMASK_EXTENSION_CONNECT_SENT = false;
     window.postMessage(
       {
-        target: METAMASK.INPAGE, // the post-message-stream "target"
+        target: METAMASK_CTX.INPAGE, // the post-message-stream "target"
         data: {
           // this object gets passed to obj-multiplex
-          name: METAMASK.PROVIDER, // the obj-multiplex channel name
+          name: METAMASK_CTX.PROVIDER, // the obj-multiplex channel name
           data: {
             jsonrpc: '2.0',
             method: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
@@ -605,10 +608,10 @@ function extensionStreamMessageListener(msg) {
 function notifyInpageOfStreamFailure() {
   window.postMessage(
     {
-      target: METAMASK.INPAGE, // the post-message-stream "target"
+      target: METAMASK_CTX.INPAGE, // the post-message-stream "target"
       data: {
         // this object gets passed to obj-multiplex
-        name: METAMASK.PROVIDER, // the obj-multiplex channel name
+        name: METAMASK_CTX.PROVIDER, // the obj-multiplex channel name
         data: {
           jsonrpc: '2.0',
           method: 'METAMASK_STREAM_FAILURE',

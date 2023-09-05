@@ -219,7 +219,7 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
-import { METAMASK } from './context';
+import { METAMASK_CTX } from './context';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
@@ -3817,7 +3817,7 @@ export default class MetamaskController extends EventEmitter {
 
     // messages between inpage and background
     this.setupProviderConnection(
-      mux.createStream(METAMASK.PROVIDER),
+      mux.createStream(METAMASK_CTX.PROVIDER),
       sender,
       _subjectType,
     );

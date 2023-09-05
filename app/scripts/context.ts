@@ -1,4 +1,4 @@
-export enum METAMASK {
+export enum METAMASK_CTX {
   CONTENTSCRIPT = 'metamask-contentscript',
   UI = 'metamask-ui',
   INPAGE = 'metamask-inpage',

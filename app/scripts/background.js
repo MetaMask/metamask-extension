@@ -40,7 +40,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { logPortMessages } from './lib/stream-logger';
-import { METAMASK } from './context';
+import { METAMASK_CTX } from './context';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -597,7 +597,9 @@ export function setupController(
     if (isMetaMaskInternalProcess) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      portStream._setLogger(logPortMessages(METAMASK.BACKGROUND, METAMASK.UI));
+      portStream._setLogger(
+        logPortMessages(METAMASK_CTX.BACKGROUND, METAMASK_CTX.UI),
+      );
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -661,7 +663,9 @@ export function setupController(
     ) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      portStream._setLogger(logPortMessages(METAMASK.BACKGROUND, METAMASK.UI));
+      portStream._setLogger(
+        logPortMessages(METAMASK_CTX.BACKGROUND, METAMASK_CTX.UI),
+      );
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -677,12 +681,12 @@ export function setupController(
           }
         });
       }
-      connectExternal(remotePort, METAMASK.CONTENTSCRIPT);
+      connectExternal(remotePort, METAMASK_CTX.CONTENTSCRIPT);
     }
   };
 
   // communication with page or other extension
-  connectExternal = (remotePort, to = METAMASK.EXTERNAL) => {
+  connectExternal = (remotePort, to = METAMASK_CTX.EXTERNAL) => {
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
@@ -695,7 +699,7 @@ export function setupController(
 
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    portStream._setLogger(logPortMessages(METAMASK.BACKGROUND, to));
+    portStream._setLogger(logPortMessages(METAMASK_CTX.BACKGROUND, to));
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
