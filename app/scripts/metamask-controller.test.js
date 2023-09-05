@@ -88,7 +88,7 @@ jest.mock(
         './controllers/preferences',
       ).default;
       const controller = new PreferencesController(...args);
-      jest.spyOn(controller.store, 'subscribe').mockImplementation();
+      controller.store.subscribe = jest.fn();
       return controller;
     },
 );
