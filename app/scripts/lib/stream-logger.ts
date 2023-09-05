@@ -2,7 +2,7 @@ import { createProjectLogger, createModuleLogger } from '@metamask/utils';
 
 import { METAMASK } from '../context';
 
-const colors = {
+const colors: Record<string, string> = {
   [METAMASK.UI]: 'green',
   [METAMASK.INPAGE]: 'red',
   [METAMASK.CONTENTSCRIPT]: 'cornflowerblue',
@@ -11,7 +11,7 @@ const colors = {
   [METAMASK.EXTERNAL]: 'grey',
 };
 
-const enabled = Boolean(process.env.METAMASK_DEBUG);
+const enabled: boolean = Boolean(process.env.METAMASK_DEBUG);
 
 const projectLogger = createProjectLogger('message-stream');
 const logPortMessage = createModuleLogger(projectLogger, 'port');
@@ -19,19 +19,25 @@ const logPostMessage = createModuleLogger(projectLogger, 'post');
 logPortMessage.enabled = enabled;
 logPostMessage.enabled = enabled;
 
-export function logPortMessages(from, to) {
-  return function (data, out) {
+export function logPortMessages(from: string, to: string) {
+  return function (data: any, out: boolean) {
     logMessage(logPortMessage, from, to, data, out);
   };
 }
 
-export function logPostMessages(from, to) {
-  return function (data, out) {
+export function logPostMessages(from: string, to: string) {
+  return function (data: any, out: boolean) {
     logMessage(logPostMessage, from, to, data, out);
   };
 }
 
-function logMessage(logger, from, to, data, out) {
+function logMessage(
+  logger: (...args: string[]) => void,
+  from: string,
+  to: string,
+  data: any,
+  out: boolean
+) {
   const id = data?.data?.id || 0;
   if (!id) {
     return;
