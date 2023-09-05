@@ -62,7 +62,7 @@ function SecurityProviderBannerAlert({
             size={IconSize.Sm}
             marginInlineEnd={1}
           />
-          {t('securityProviderAdviceBy', [
+          {t('securityProviderPoweredBy', [
             <ButtonLink
               key={`security-provider-button-link-${provider}`}
               size={Size.inherit}

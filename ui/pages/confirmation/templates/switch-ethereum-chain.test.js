@@ -63,6 +63,7 @@ describe('switch-ethereum-chain confirmation', () => {
             type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
           },
         },
+        transactions: [],
       },
     };
     const store = configureMockStore(middleware)(testStore);
@@ -83,11 +84,12 @@ describe('switch-ethereum-chain confirmation', () => {
             type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
           },
         },
-        unapprovedTxs: {
-          1: {
+        transactions: [
+          {
             id: 1,
+            status: 'unapproved',
           },
-        },
+        ],
       },
     };
 

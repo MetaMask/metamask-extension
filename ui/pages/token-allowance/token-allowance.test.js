@@ -73,7 +73,7 @@ const state = {
         isERC721: false,
       },
     ],
-    unapprovedTxs: {},
+    transactions: [],
     keyringTypes: [],
     keyrings: [
       {

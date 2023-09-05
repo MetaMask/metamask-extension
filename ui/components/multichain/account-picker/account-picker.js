@@ -24,6 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AccountPicker = ({
@@ -33,7 +34,7 @@ export const AccountPicker = ({
   disabled,
   showAddress = false,
 }) => {
-  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+  const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (

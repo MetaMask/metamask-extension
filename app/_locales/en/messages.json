@@ -1159,6 +1159,9 @@
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
   },
+  "desktopApp": {
+    "message": "Desktop App"
+  },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
   },
@@ -2352,9 +2355,6 @@
   "more": {
     "message": "more"
   },
-  "moreComingSoon": {
-    "message": "More providers coming soon"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2781,10 +2781,7 @@
     "message": "Enable security alerts"
   },
   "notifications23DescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid."
-  },
-  "notifications23DescriptionThree": {
-    "message": "If you enabled security alerts from OpenSea, we've moved you over to this feature."
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid on Ethereum Mainnet."
   },
   "notifications23DescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
@@ -2882,6 +2879,14 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
+  "notificationsDropLedgerFirefoxDescription": {
+    "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
+  },
+  "notificationsDropLedgerFirefoxTitle": {
+    "message": "Dropping Ledger Support for Firefox",
+    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
+  },
   "notificationsEmptyText": {
     "message": "This is where you can find notifications from your installed snaps."
   },
@@ -2894,6 +2899,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Learn more"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 We're excited to announce the Open Beta of MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personalize your wallet with snaps built by the developer community!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps help you do more with MetaMask — like connect to more networks, see transaction insights, and get custom notifications."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Introducing MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
@@ -3680,17 +3700,14 @@
   "securityAlerts": {
     "message": "Security alerts"
   },
-  "securityAlertsDescription1": {
-    "message": "This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
-  },
-  "securityAlertsDescription2": {
-    "message": "Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature."
+  "securityAlertsDescription": {
+    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityProviderAdviceBy": {
-    "message": "Security advice by $1",
+  "securityProviderPoweredBy": {
+    "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
   "seeDetails": {
@@ -3788,9 +3805,6 @@
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
-  },
-  "selectProvider": {
-    "message": "Select providers:"
   },
   "selectType": {
     "message": "Select Type"
@@ -4086,7 +4100,7 @@
     "message": "The snap didn't return any insight"
   },
   "snapsPrivacyWarningFirstMessage": {
-    "message": "You acknowledge that the snap that you are about to install is a Third Party Service as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "message": "You acknowledge that any Snap that you install is a Third Party Service, unless otherwise identified, as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
@@ -4094,7 +4108,7 @@
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys has no access to information you share with these third parties.",
+    "message": "Consensys has no access to information you share with Third Party Services.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {

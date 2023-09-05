@@ -17,6 +17,7 @@ import configureStore from './store/store';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getUnapprovedTransactions,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -152,9 +153,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   const store = configureStore(draftInitialState);
   reduxStore = store;
 
+  const unapprovedTxs = getUnapprovedTransactions(metamaskState);
+
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
-    metamaskState.unapprovedTxs,
+    unapprovedTxs,
     metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,

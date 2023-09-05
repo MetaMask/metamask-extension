@@ -52,6 +52,7 @@ describe('MMIController', function () {
         initState: {},
         onInfuraIsBlocked: jest.fn(),
         onInfuraIsUnblocked: jest.fn(),
+        onAccountRemoved: jest.fn(),
         provider: {},
         networkConfigurations: {},
       }),

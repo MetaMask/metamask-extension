@@ -154,14 +154,14 @@ export const createSwapsMockStore = () => {
         showFiatInTestnets: true,
       },
       currentCurrency: 'ETH',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 6571648590592143,
           time: 1667403993369,
           status: 'confirmed',
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
-          chainId: '0x5',
+          chainId: CHAIN_IDS.MAINNET,
           loadingDefaults: false,
           dappSuggestedGasFees: null,
           sendFlowHistory: null,
