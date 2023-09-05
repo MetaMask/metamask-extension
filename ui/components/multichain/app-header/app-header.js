@@ -44,6 +44,7 @@ import {
   getSelectedIdentity,
   getShowProductTour,
   getTestNetworkBackgroundColor,
+  getUnapprovedTransactions,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getTheme,
@@ -136,9 +137,10 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
   );
 
-  const hasUnapprovedTransactions = useSelector(
-    (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
-  );
+  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
+
+  const hasUnapprovedTransactions =
+    Object.keys(unapprovedTransactions).length > 0;
 
   const disableAccountPicker =
     isConfirmationPage || (isSwapsPage && !isSwapsBuildQuotePage);
