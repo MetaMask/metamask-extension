@@ -11,7 +11,7 @@ const colors: Record<string, string> = {
   [METAMASK.EXTERNAL]: 'grey',
 };
 
-const enabled: boolean = Boolean(process.env.METAMASK_DEBUG);
+const enabled = Boolean(process.env.METAMASK_DEBUG);
 
 const projectLogger = createProjectLogger('message-stream');
 const logPortMessage = createModuleLogger(projectLogger, 'port');
@@ -36,7 +36,7 @@ function logMessage(
   from: string,
   to: string,
   data: any,
-  out: boolean
+  out: boolean,
 ) {
   const id = data?.data?.id || 0;
   if (!id) {
