@@ -4084,18 +4084,6 @@
   "snapsNoInsight": {
     "message": "Snap 没有返回任何洞察"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "您确认您即将安装的 snap 是 Consensys $1中定义的第三方服务。您对第三方服务的使用，受第三方服务提供商规定的单独条款和条件约束。您访问、依赖或使用第三方服务的风险，由您自己承担。对于您因使用第三方服务而造成的任何损失，Consensys 概不承担任何责任。",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "您与第三方服务分享的任何信息，将由这些第三方服务根据其隐私政策直接收集。请参阅其隐私政策以了解更多信息。",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys 无法访问您与这些第三方分享的信息。",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettingsDescription": {
     "message": "管理您的 Snaps"
   },

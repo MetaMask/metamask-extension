@@ -4084,18 +4084,6 @@
   "snapsNoInsight": {
     "message": "O snap não retornou nenhum insight"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Você reconhece que o snap que está prestes a instalar é um Serviço de Terceiros, conforme definido nos $1 da Consensys. O uso de Serviços de Terceiros é regido por termos e condições separados, definidos pelo prestador de Serviços de Terceiros. Você acessa, confia ou usa o Serviço de Terceiros por sua conta e risco. A Consensys se isenta de todas as responsabilidades por perdas relacionadas ao seu uso de Serviços de Terceiros.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Informações compartilhadas com Serviços de Terceiros serão coletadas diretamente por eles, de acordo com políticas de privacidade próprias. Por favor, consulte-as para obter mais informações.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "A Consensys não tem acesso às informações que você compartilha com terceiros.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettingsDescription": {
     "message": "Gerencie seus snaps"
   },

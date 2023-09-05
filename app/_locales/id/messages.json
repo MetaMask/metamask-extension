@@ -4084,18 +4084,6 @@
   "snapsNoInsight": {
     "message": "Snap tidak mengembalikan wawasan apa pun"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Anda menyatakan bahwa snap yang akan diinstal adalah Layanan Pihak Ketiga sebagaimana dijelaskan dalam $1 Consensys. Penggunaan Layanan Pihak Ketiga diatur oleh syarat dan ketentuan terpisah yang ditetapkan oleh penyedia Layanan Pihak Ketiga. Anda mengakses, mengandalkan, atau menggunakan Layanan Pihak Ketiga dengan risiko Anda sendiri. Consensys menafikan semua tanggung jawab dan kewajiban atas kerugian yang timbul karena penggunaan Layanan Pihak Ketiga.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys tidak memiliki akses ke informasi yang Anda bagikan kepada pihak ketiga ini.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettingsDescription": {
     "message": "Kelola Snap Anda"
   },
