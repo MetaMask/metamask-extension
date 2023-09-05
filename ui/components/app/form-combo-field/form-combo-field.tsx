@@ -8,8 +8,14 @@ import React, {
   useState,
 } from 'react';
 import classnames from 'classnames';
-import { FormTextField } from '../../component-library';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  FormTextField,
+  IconName,
+} from '../../component-library';
 import { I18nContext } from '../../../contexts/i18n';
+import { Display, IconColor } from '../../../helpers/constants/design-system';
 
 export interface FormComboFieldOption {
   primaryLabel: string;
@@ -115,6 +121,7 @@ export default function FormComboField({
   const valueRef = useRef<any>();
   const [valueWidth, setValueWidth] = useState(0);
   const inputRef = useRef<any>(null);
+  const t = useContext(I18nContext);
 
   useEffect(() => {
     setValueWidth(valueRef.current?.offsetWidth);
@@ -147,8 +154,13 @@ export default function FormComboField({
 
       inputRef.current?.focus();
     },
-    [setDropdownVisible],
+    [setDropdownVisible, handleChange],
   );
+
+  const handleClearClick = useCallback(() => {
+    handleChange({ target: { value: '' } });
+    inputRef.current?.focus();
+  }, [handleChange]);
 
   return (
     <div className="form-combo-field" ref={valueRef}>
@@ -174,6 +186,16 @@ export default function FormComboField({
             'form-combo-field__value': true,
             'form-combo-field__value-dropdown-visible': dropdownVisible,
           })}
+          endAccessory={
+            <ButtonIcon
+              display={Display.Flex}
+              iconName={IconName.Close}
+              size={ButtonIconSize.Sm}
+              onClick={() => handleClearClick()}
+              color={IconColor.iconMuted}
+              ariaLabel={t('clear')}
+            />
+          }
         />
       </div>
       {dropdownVisible && (
