@@ -1,4 +1,4 @@
-export declare enum METAMASK {
+export enum METAMASK {
   CONTENTSCRIPT = 'metamask-contentscript',
   UI = 'metamask-ui',
   INPAGE = 'metamask-inpage',
