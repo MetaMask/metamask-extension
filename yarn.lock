@@ -3752,32 +3752,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/base-controller@npm:3.2.0-preview.3dbf14f":
-  version: 3.2.0-preview.3dbf14f
-  resolution: "@metamask-previews/base-controller@npm:3.2.0-preview.3dbf14f"
-  dependencies:
-    "@metamask/utils": "npm:^6.2.0"
-    immer: "npm:^9.0.6"
-  checksum: 845adb25a5385863a15c6bfcd32b4782e6d6a1bc9c088baad2e01a186e44de28eb761a8a5caa8d87a736d68eeb82e69a6195ebe9085010b53306a1cb46d98e90
-  languageName: node
-  linkType: hard
-
-"@metamask-previews/controller-utils@npm:4.3.1-preview.3dbf14f":
-  version: 4.3.1-preview.3dbf14f
-  resolution: "@metamask-previews/controller-utils@npm:4.3.1-preview.3dbf14f"
-  dependencies:
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/utils": "npm:^6.2.0"
-    "@spruceid/siwe-parser": "npm:1.1.3"
-    eth-ens-namehash: "npm:^2.0.8"
-    eth-rpc-errors: "npm:^4.0.2"
-    ethereumjs-util: "npm:^7.0.10"
-    ethjs-unit: "npm:^0.1.6"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 0f91250d595c9de2396e3e318fcda99eab63a2ba774dcf79479ed53249a237b7e20edb08cca0e276f7ee1f09ecbae7ec7a1f482172cbb99522532ebc810d3fb0
-  languageName: node
-  linkType: hard
-
 "@metamask/abi-utils@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/abi-utils@npm:1.2.0"
@@ -4384,12 +4358,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:@metamask-previews/network-controller@12.1.1-preview.3dbf14f":
-  version: 12.1.1-preview.3dbf14f
-  resolution: "@metamask-previews/network-controller@npm:12.1.1-preview.3dbf14f"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@12.1.2-preview.b963821":
+  version: 12.1.2-preview.b963821
+  resolution: "@metamask-previews/network-controller@npm:12.1.2-preview.b963821"
   dependencies:
-    "@metamask-previews/base-controller": "npm:3.2.0-preview.3dbf14f"
-    "@metamask-previews/controller-utils": "npm:4.3.1-preview.3dbf14f"
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^4.3.2"
     "@metamask/eth-json-rpc-infura": "npm:^8.1.1"
     "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
@@ -4402,7 +4376,7 @@ __metadata:
     immer: "npm:^9.0.6"
     json-rpc-engine: "npm:^6.1.0"
     uuid: "npm:^8.3.2"
-  checksum: 696ecef09e0d3c232dfd9c90c5456d519701fb8d08838ce8cd15a3590e453c97bc53504026fc5966f600ee377a79cc7c6cfa4793b9ac09b7ddc6ac9f1e240827
+  checksum: fda0a3864ce871150bdf4ccab2eaf53ff422c7f4e2af54d7fd7723bb2e0ba4a3c3698c0ef723d2018382c4474a6e644fd55db960b7fa65403a113cd87e90a7d1
   languageName: node
   linkType: hard
 
