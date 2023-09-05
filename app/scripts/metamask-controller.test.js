@@ -88,6 +88,9 @@ jest.mock(
         './controllers/preferences',
       ).default;
       const controller = new PreferencesController(...args);
+      // jest.spyOn gets hoisted to the top of this function before controller is initialized.
+      // This forces us to replace the funtion directly with a jest stub instead.
+      // eslint-disable-next-line jest/prefer-spy-on
       controller.store.subscribe = jest.fn();
       return controller;
     },
