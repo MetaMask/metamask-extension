@@ -1479,7 +1479,10 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[4].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
         );
       });
 
@@ -1531,7 +1534,10 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[4].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
         );
       });
 
@@ -1568,14 +1574,17 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(5);
         expect(actionResult[0].type).toStrictEqual('send/addHistoryEntry');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[4].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
         );
       });
     });
@@ -1636,7 +1645,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(5);
 
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
@@ -1657,7 +1666,10 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[4].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
         );
       });
 
@@ -1692,7 +1704,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(6);
+        expect(actionResult).toHaveLength(7);
         expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
         expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
         expect(actionResult[2]).toMatchObject({
@@ -1719,7 +1731,10 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[5].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[6].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
         );
       });
 
@@ -2092,7 +2107,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(11);
+        expect(actionResult).toHaveLength(12);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
@@ -2118,10 +2133,15 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[8].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[9].type).toStrictEqual('DNS/resetDomainResolution');
+        expect(actionResult[9].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
         expect(actionResult[10].type).toStrictEqual(
+          'DNS/resetDomainResolution',
+        );
+        expect(actionResult[11].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
@@ -2238,7 +2258,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(6);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[2]).toMatchObject({
@@ -2249,7 +2269,10 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[4].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[5].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
         );
       });
     });
@@ -2287,14 +2310,19 @@ describe('Send Slice', () => {
         it('should pass the correct transaction parameters to addTransactionAndRouteToConfirmationPage', async () => {
           const tokenTransferTxState = {
             metamask: {
-              unapprovedTxs: {
-                1: {
+              providerConfig: {
+                chainId: CHAIN_IDS.GOERLI,
+              },
+              transactions: [
+                {
                   id: 1,
+                  chainId: CHAIN_IDS.GOERLI,
+                  status: 'unapproved',
                   txParams: {
                     value: 'oldTxValue',
                   },
                 },
-              },
+              ],
             },
             send: {
               ...getInitialSendStateWithExistingTxState({
@@ -2339,14 +2367,19 @@ describe('Send Slice', () => {
       it('should create actions for updateTransaction rejecting', async () => {
         const editStageSignTxState = {
           metamask: {
-            unapprovedTxs: {
-              1: {
+            providerConfig: {
+              chainId: '0x1',
+            },
+            transactions: [
+              {
                 id: 1,
+                chainId: '0x1',
+                status: 'unapproved',
                 txParams: {
                   value: 'oldTxValue',
                 },
               },
-            },
+            ],
           },
           send: {
             ...signTransactionState.send,
@@ -2405,19 +2438,21 @@ describe('Send Slice', () => {
               },
             },
             tokenList: {},
-            unapprovedTxs: {
-              1: {
+            transactions: [
+              {
                 id: 1,
+                chainId: CHAIN_IDS.GOERLI,
+                status: 'unapproved',
                 txParams: {
                   data: '',
                   from: mockAddress1,
                   to: '0xRecipientAddress',
                   gas: GAS_LIMITS.SIMPLE,
                   gasPrice: '0x3b9aca00', // 1000000000
-                  value: '0xde0b6b3a7640000', // 1000000000000000000
+                  value: '0xde0b6b3a7640000', // 1000000000000000000,
                 },
               },
-            },
+            ],
           },
           send: {
             // We are going to remove this transaction as a part of the flow,
@@ -2542,9 +2577,11 @@ describe('Send Slice', () => {
               },
             },
             tokenList: {},
-            unapprovedTxs: {
-              1: {
+            transactions: [
+              {
                 id: 1,
+                chainId: CHAIN_IDS.GOERLI,
+                status: 'unapproved',
                 txParams: {
                   data: generateERC721TransferData({
                     toAddress: BURN_ADDRESS,
@@ -2558,7 +2595,7 @@ describe('Send Slice', () => {
                   value: '0x0',
                 },
               },
-            },
+            ],
           },
           send: {
             ...getInitialSendStateWithExistingTxState({
@@ -2626,7 +2663,7 @@ describe('Send Slice', () => {
             status: SEND_STATUSES.VALID,
             transactionType: '0x0',
             userInputHexData:
-              editTransactionState.metamask.unapprovedTxs[1].txParams.data,
+              editTransactionState.metamask.transactions[0].txParams.data,
           },
         });
         expect(actionResult[2].type).toStrictEqual('SHOW_LOADING_INDICATION');
@@ -2726,9 +2763,11 @@ describe('Send Slice', () => {
               [mockAddress1]: '0x0',
             },
           },
-          unapprovedTxs: {
-            1: {
+          transactions: [
+            {
               id: 1,
+              chainId: CHAIN_IDS.GOERLI,
+              status: 'unapproved',
               txParams: {
                 data: generateERC20TransferData({
                   toAddress: BURN_ADDRESS,
@@ -2746,7 +2785,7 @@ describe('Send Slice', () => {
                 value: '0x0',
               },
             },
-          },
+          ],
         },
         send: {
           ...getInitialSendStateWithExistingTxState({
@@ -2819,7 +2858,7 @@ describe('Send Slice', () => {
           status: SEND_STATUSES.VALID,
           transactionType: '0x0',
           userInputHexData:
-            editTransactionState.metamask.unapprovedTxs[1].txParams.data,
+            editTransactionState.metamask.transactions[0].txParams.data,
         },
       });
       expect(actionResult[2].type).toStrictEqual('SHOW_LOADING_INDICATION');

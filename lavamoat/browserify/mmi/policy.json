@@ -2439,7 +2439,6 @@
         "@truffle/codec>@truffle/compile-common": true,
         "@truffle/codec>big.js": true,
         "@truffle/codec>cbor": true,
-        "@truffle/codec>semver": true,
         "@truffle/codec>utf8": true,
         "@truffle/codec>web3-utils": true,
         "bn.js": true,
@@ -2447,7 +2446,8 @@
         "browserify>os-browserify": true,
         "browserify>util": true,
         "lodash": true,
-        "nock>debug": true
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@truffle/codec>@truffle/abi-utils": {
@@ -2624,15 +2624,6 @@
         "browserify>buffer": true,
         "browserify>stream-browserify": true,
         "browserify>util": true
-      }
-    },
-    "@truffle/codec>semver": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "semver>lru-cache": true
       }
     },
     "@truffle/codec>web3-utils": {

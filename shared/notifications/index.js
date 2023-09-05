@@ -5,7 +5,8 @@
  * into numbers in only one place. This should make merge conflicts easier.
  */
 export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
-export const NOTIFICATION_U2F_LEDGER_LIVE = 26;
+export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
+export const NOTIFICATION_U2F_LEDGER_LIVE = 27;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -147,6 +148,14 @@ export const UI_NOTIFICATIONS = {
   [NOTIFICATION_DROP_LEDGER_FIREFOX]: {
     id: Number(NOTIFICATION_DROP_LEDGER_FIREFOX),
     date: null,
+  },
+  [NOTIFICATION_OPEN_BETA_SNAPS]: {
+    id: Number(NOTIFICATION_OPEN_BETA_SNAPS),
+    date: null,
+    image: {
+      src: 'images/introducing-snaps.svg',
+      width: '100%',
+    },
   },
   [NOTIFICATION_U2F_LEDGER_LIVE]: {
     id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
@@ -397,6 +406,21 @@ export const getTranslatedUINotifications = (t, locale) => {
       date: UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_OPEN_BETA_SNAPS]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS],
+      title: t('notificationsOpenBetaSnapsTitle'),
+      description: [
+        t('notificationsOpenBetaSnapsDescriptionOne'),
+        t('notificationsOpenBetaSnapsDescriptionTwo'),
+        t('notificationsOpenBetaSnapsDescriptionThree'),
+      ],
+      actionText: t('notificationsOpenBetaSnapsActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date),
           )
         : '',
     },

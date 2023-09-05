@@ -2883,6 +2883,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Learn more"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 We're excited to announce the Open Beta of MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personalize your wallet with snaps built by the developer community!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps help you do more with MetaMask — like connect to more networks, see transaction insights, and get custom notifications."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Introducing MetaMask Snaps"
+  },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
