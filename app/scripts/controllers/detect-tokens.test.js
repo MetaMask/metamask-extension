@@ -15,17 +15,6 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import PreferencesController from './preferences';
 
-function buildMessenger() {
-  return new ControllerMessenger().getRestricted({
-    name: 'DetectTokensController',
-    allowedEvents: [
-      'NetworkController:stateChange',
-      'KeyringController:lock',
-      'KeyringController:unlock',
-    ],
-  });
-}
-
 describe('DetectTokensController', function () {
   let sandbox,
     assetsContractController,
@@ -33,9 +22,22 @@ describe('DetectTokensController', function () {
     preferences,
     provider,
     tokensController,
-    tokenListController;
+    tokenListController,
+    messenger;
 
   const noop = () => undefined;
+
+  const getRestrictedMessenger = () => {
+    return messenger.getRestricted({
+      name: 'DetectTokensController',
+      allowedActions: ['KeyringController:getState'],
+      allowedEvents: [
+        'NetworkController:stateChange',
+        'KeyringController:lock',
+        'KeyringController:unlock',
+      ],
+    });
+  };
 
   const networkControllerProviderConfig = {
     getAccounts: noop,
@@ -200,6 +202,11 @@ describe('DetectTokensController', function () {
       .reply(200, { error: 'ChainId 3 is not supported' })
       .persist();
 
+    messenger = new ControllerMessenger();
+    messenger.registerActionHandler('KeyringController:getState', () => ({
+      isUnlocked: true,
+    }));
+
     const networkControllerMessenger = new ControllerMessenger();
     network = new NetworkController({
       messenger: networkControllerMessenger,
@@ -264,7 +271,11 @@ describe('DetectTokensController', function () {
 
   it('should poll on correct interval', async function () {
     const stub = sinon.stub(global, 'setInterval');
-    new DetectTokensController({ messenger: buildMessenger(), interval: 1337 }); // eslint-disable-line no-new
+    // eslint-disable-next-line no-new
+    new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      interval: 1337,
+    });
     assert.strictEqual(stub.getCall(0).args[1], 1337);
     stub.restore();
   });
@@ -273,7 +284,7 @@ describe('DetectTokensController', function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokenList: tokenListController,
@@ -309,7 +320,7 @@ describe('DetectTokensController', function () {
     });
     await tokenListController.start();
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokenList: tokenListController,
@@ -332,7 +343,7 @@ describe('DetectTokensController', function () {
     sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokenList: tokenListController,
@@ -383,7 +394,7 @@ describe('DetectTokensController', function () {
     sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokenList: tokenListController,
@@ -441,7 +452,7 @@ describe('DetectTokensController', function () {
   it('should trigger detect new tokens when change address', async function () {
     sandbox.useFakeTimers();
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokenList: tokenListController,
@@ -459,9 +470,8 @@ describe('DetectTokensController', function () {
 
   it('should trigger detect new tokens when submit password', async function () {
     sandbox.useFakeTimers();
-    const messenger = buildMessenger();
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokenList: tokenListController,
@@ -481,7 +491,7 @@ describe('DetectTokensController', function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokenList: tokenListController,
@@ -502,7 +512,7 @@ describe('DetectTokensController', function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokensController,

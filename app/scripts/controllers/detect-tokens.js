@@ -28,7 +28,6 @@ export default class DetectTokensController {
    * @param config.interval
    * @param config.preferences
    * @param config.network
-   * @param config.keyringMemStore
    * @param config.tokenList
    * @param config.tokensController
    * @param config.assetsContractController
@@ -89,13 +88,8 @@ export default class DetectTokensController {
         this.restartTokenDetection({ chainId: this.chainId });
       }
     });
-    messenger.subscribe('KeyringController:unlock', () => {
-      this.isUnlocked = true;
-      this.restartTokenDetection();
-    });
-    messenger.subscribe('KeyringController:lock', () => {
-      this.isUnlocked = false;
-    });
+
+    this.#registerKeyringHandlers();
   }
 
   /**
@@ -260,4 +254,22 @@ export default class DetectTokensController {
     return this.isOpen && this.isUnlocked;
   }
   /* eslint-enable accessor-pairs */
+
+  /**
+   * Constructor helper to register listeners on the keyring
+   * locked state changes
+   */
+  #registerKeyringHandlers() {
+    const { isUnlocked } = this.messenger.call('KeyringController:getState');
+    this.isUnlocked = isUnlocked;
+
+    this.messenger.subscribe('KeyringController:unlock', () => {
+      this.isUnlocked = true;
+      this.restartTokenDetection();
+    });
+
+    this.messenger.subscribe('KeyringController:lock', () => {
+      this.isUnlocked = false;
+    });
+  }
 }

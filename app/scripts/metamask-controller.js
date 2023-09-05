@@ -1142,6 +1142,7 @@ export default class MetamaskController extends EventEmitter {
     const detectTokensControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'DetectTokensController',
+        allowedActions: ['KeyringController:getState'],
         allowedEvents: [
           'NetworkController:stateChange',
           'KeyringController:lock',
