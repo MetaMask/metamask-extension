@@ -1527,29 +1527,6 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/key-tree": {
-      "packages": {
-        "@metamask/key-tree>@metamask/utils": true,
-        "@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/scure-bip39": true
-      }
-    },
-    "@metamask/key-tree>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
     "@metamask/key-tree>@noble/ed25519": {
       "globals": {
         "crypto": true
@@ -1683,6 +1660,13 @@
         "browserify>events": true
       }
     },
+    "@metamask/notification-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/notification-controller>nanoid": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/notification-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1739,12 +1723,77 @@
         "eslint>optionator>fast-levenshtein": true
       }
     },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "MessageEvent.prototype": true,
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "browser": true,
+        "chrome": true,
+        "location.origin": true,
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/post-message-stream>readable-stream": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>process-nextick-args": true,
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true,
+        "@metamask/post-message-stream>readable-stream>string_decoder": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>process-nextick-args": {
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "@metamask/providers>@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "end-of-stream": true,
+        "pump>once": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/rate-limit-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "eth-rpc-errors": true
+      }
+    },
     "@metamask/rpc-methods": {
       "packages": {
         "@metamask/browser-passworder": true,
-        "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/permission-controller": true,
+        "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/rpc-methods>nanoid": true,
         "@metamask/snaps-ui": true,
@@ -1756,6 +1805,16 @@
     "@metamask/rpc-methods-flask>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree": {
+      "packages": {
+        "@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/scure-bip39": true
       }
     },
     "@metamask/rpc-methods>@metamask/utils": {
@@ -1885,14 +1944,201 @@
         "setTimeout": true
       }
     },
+    "@metamask/snaps-controllers": {
+      "globals": {
+        "URL": true,
+        "chrome.offscreen.createDocument": true,
+        "chrome.offscreen.hasDocument": true,
+        "clearTimeout": true,
+        "document.getElementById": true,
+        "fetch.bind": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/permission-controller": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/utils": true,
+        "@metamask/snaps-controllers>@xstate/fsm": true,
+        "@metamask/snaps-controllers>concat-stream": true,
+        "@metamask/snaps-controllers>gunzip-maybe": true,
+        "@metamask/snaps-controllers>nanoid": true,
+        "@metamask/snaps-controllers>readable-web-to-node-stream": true,
+        "@metamask/snaps-controllers>tar-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "pump": true
+      }
+    },
     "@metamask/snaps-controllers-flask>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/snaps-controllers>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers>concat-stream": {
+      "packages": {
+        "@metamask/snaps-controllers>concat-stream>readable-stream": true,
+        "browserify>buffer": true,
+        "browserify>concat-stream>typedarray": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "@metamask/snaps-controllers>concat-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe": {
+      "packages": {
+        "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib": true,
+        "@metamask/snaps-controllers>gunzip-maybe>is-deflate": true,
+        "@metamask/snaps-controllers>gunzip-maybe>is-gzip": true,
+        "@metamask/snaps-controllers>gunzip-maybe>peek-stream": true,
+        "@metamask/snaps-controllers>gunzip-maybe>pumpify": true,
+        "@metamask/snaps-controllers>gunzip-maybe>through2": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib": {
+      "packages": {
+        "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib>pako": true,
+        "browserify>assert": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe>peek-stream": {
+      "packages": {
+        "@metamask/snaps-controllers>gunzip-maybe>peek-stream>duplexify": true,
+        "@metamask/snaps-controllers>gunzip-maybe>peek-stream>through2": true,
+        "browserify>buffer": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe>peek-stream>duplexify": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "duplexify>stream-shift": true,
+        "end-of-stream": true,
+        "pumpify>inherits": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe>peek-stream>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe>pumpify": {
+      "packages": {
+        "@metamask/snaps-controllers>gunzip-maybe>pumpify>duplexify": true,
+        "@metamask/snaps-controllers>gunzip-maybe>pumpify>pump": true,
+        "pumpify>inherits": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe>pumpify>duplexify": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "duplexify>stream-shift": true,
+        "end-of-stream": true,
+        "pumpify>inherits": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe>pumpify>pump": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "end-of-stream": true,
+        "pump>once": true
+      }
+    },
+    "@metamask/snaps-controllers>gunzip-maybe>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-web-to-node-stream": {
+      "packages": {
+        "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream": {
+      "packages": {
+        "@metamask/snaps-controllers>tar-stream>fs-constants": true,
+        "@metamask/snaps-controllers>tar-stream>readable-stream": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "browserify>util": true,
+        "end-of-stream": true,
+        "madge>ora>bl": true,
+        "pumpify>inherits": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>fs-constants": {
+      "packages": {
+        "browserify>constants-browserify": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "@metamask/snaps-ui": {
@@ -1925,14 +2171,44 @@
         "document.createElement": true
       },
       "packages": {
-        "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-utils>@metamask/key-tree": true,
         "@metamask/snaps-utils>@metamask/utils": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/key-tree": {
+      "packages": {
+        "@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/scure-bip39": true,
+        "@metamask/snaps-utils>@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry": {
+      "packages": {
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
         "semver": true,
         "superstruct": true
       }
@@ -4062,6 +4338,24 @@
         "Intl": true
       }
     },
+    "madge>ora>bl": {
+      "packages": {
+        "browserify>buffer": true,
+        "madge>ora>bl>readable-stream": true,
+        "pumpify>inherits": true
+      }
+    },
+    "madge>ora>bl>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
     "nanoid": {
       "globals": {
         "crypto": true,
@@ -4328,6 +4622,115 @@
         "proxyquire>fill-keys>is-object": true
       }
     },
+    "react-markdown": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "prop-types": true,
+        "react": true,
+        "react-markdown>comma-separated-tokens": true,
+        "react-markdown>property-information": true,
+        "react-markdown>react-is": true,
+        "react-markdown>remark-parse": true,
+        "react-markdown>remark-rehype": true,
+        "react-markdown>space-separated-tokens": true,
+        "react-markdown>style-to-object": true,
+        "react-markdown>unified": true,
+        "react-markdown>unist-util-visit": true,
+        "react-markdown>vfile": true
+      }
+    },
+    "react-markdown>property-information": {
+      "packages": {
+        "watchify>xtend": true
+      }
+    },
+    "react-markdown>react-is": {
+      "globals": {
+        "console": true
+      }
+    },
+    "react-markdown>remark-parse": {
+      "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown": true
+      }
+    },
+    "react-markdown>remark-parse>mdast-util-from-markdown": {
+      "packages": {
+        "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>unist-util-stringify-position": true,
+        "react-syntax-highlighter>refractor>parse-entities": true
+      }
+    },
+    "react-markdown>remark-parse>mdast-util-from-markdown>micromark": {
+      "packages": {
+        "react-syntax-highlighter>refractor>parse-entities": true
+      }
+    },
+    "react-markdown>remark-rehype": {
+      "packages": {
+        "react-markdown>remark-rehype>mdast-util-to-hast": true
+      }
+    },
+    "react-markdown>remark-rehype>mdast-util-to-hast": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-position": true,
+        "react-markdown>unist-util-visit": true
+      }
+    },
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
+      "packages": {
+        "react-markdown>unist-util-visit": true
+      }
+    },
+    "react-markdown>style-to-object": {
+      "packages": {
+        "react-markdown>style-to-object>inline-style-parser": true
+      }
+    },
+    "react-markdown>unified": {
+      "packages": {
+        "mocha>yargs-unparser>is-plain-obj": true,
+        "react-markdown>unified>bail": true,
+        "react-markdown>unified>extend": true,
+        "react-markdown>unified>is-buffer": true,
+        "react-markdown>unified>trough": true,
+        "react-markdown>vfile": true
+      }
+    },
+    "react-markdown>unist-util-visit": {
+      "packages": {
+        "react-markdown>unist-util-visit>unist-util-visit-parents": true
+      }
+    },
+    "react-markdown>unist-util-visit>unist-util-visit-parents": {
+      "packages": {
+        "react-markdown>unist-util-visit>unist-util-is": true
+      }
+    },
+    "react-markdown>vfile": {
+      "packages": {
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "react-markdown>vfile>is-buffer": true,
+        "react-markdown>vfile>vfile-message": true,
+        "vinyl>replace-ext": true
+      }
+    },
+    "react-markdown>vfile>vfile-message": {
+      "packages": {
+        "react-markdown>vfile>unist-util-stringify-position": true
+      }
+    },
     "react-popper": {
       "globals": {
         "document": true
@@ -4482,6 +4885,11 @@
         "react": true
       }
     },
+    "react-syntax-highlighter>refractor>parse-entities": {
+      "globals": {
+        "document.createElement": true
+      }
+    },
     "react-tippy": {
       "globals": {
         "Element": true,
@@ -4594,7 +5002,6 @@
       },
       "packages": {
         "browserify>process": true,
-        "browserify>util": true,
         "semver>lru-cache": true
       }
     },
@@ -4646,6 +5053,11 @@
         "define": true
       }
     },
+    "terser>source-map-support>buffer-from": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "uuid": {
       "globals": {
         "crypto": true,
@@ -4655,6 +5067,11 @@
     "vinyl>clone": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "vinyl>replace-ext": {
+      "packages": {
+        "browserify>path-browserify": true
       }
     },
     "wait-on>rxjs>tslib": {

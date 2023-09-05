@@ -1,9 +1,10 @@
+const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap networkAccess', function () {
-  it('test the network-access endowment', async function () {
+describe('Test Snap Lifecycle Hooks', function () {
+  it('can run lifecycle hook on connect', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -27,17 +28,17 @@ describe('Test Snap networkAccess', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // navigate to test snaps page and connect to dialog snap
+        // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const dialogButton = await driver.findElement('#connectnetwork-access');
-        await driver.scrollToElement(dialogButton);
+        const snapButton = await driver.findElement('#connectlifecycle-hooks');
+        await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectnetwork-access');
+        await driver.clickElement('#connectlifecycle-hooks');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
+        let windowHandles = await driver.waitUntilXWindowHandles(
           3,
           1000,
           10000,
@@ -65,24 +66,31 @@ describe('Test Snap networkAccess', function () {
           tag: 'button',
         });
 
-        // switch to test snaps tab
+        // click send inputs on test snap page
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectnetwork-access',
-          text: 'Reconnect to Network Access Snap',
+          css: '#connectlifecycle-hooks',
+          text: 'Reconnect to Lifecycle Hooks Snap',
         });
 
-        // click on alert dialog
-        await driver.clickElement('#sendNetworkAccessTest');
+        // switch to dialog popup
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
         await driver.delay(500);
 
-        // check for result correctness
-        await driver.waitForSelector({
-          css: '#networkAccessResult',
-          text: '"hello": "world"',
-        });
+        // check dialog contents
+        const result = await driver.findElement('.snap-ui-renderer__panel');
+        await driver.scrollToElement(result);
+        await driver.delay(500);
+        assert.equal(
+          await result.getText(),
+          'Installation successful\nThe snap was installed successfully, and the "onInstall" handler was called.',
+        );
       },
     );
   });

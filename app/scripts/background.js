@@ -821,6 +821,13 @@ export function setupController(
     });
   }
   ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed.
+  if (Object.keys(controller.snapController.state.snaps).length > 0) {
+    controller.snapController.updateBlockedSnaps();
+  }
+  ///: END:ONLY_INCLUDE_IN
 }
 
 //

@@ -1978,6 +1978,9 @@
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
         "semver": true,
         "superstruct": true
       }
@@ -2150,10 +2153,44 @@
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/permission-controller": true,
-        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
-        "@metamask/snaps-controllers-flask>@metamask/snaps-utils>@metamask/snaps-ui": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-utils": true,
         "@metamask/snaps-controllers-flask>@metamask/utils": true,
         "eth-rpc-errors": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-utils": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "@metamask/snaps-utils-flask>is-svg": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
+        "semver": true,
         "superstruct": true
       }
     },
@@ -2178,13 +2215,10 @@
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
         "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-controllers-flask>@metamask/snaps-utils>@metamask/snaps-ui": {
-      "packages": {
-        "@metamask/snaps-controllers-flask>@metamask/utils": true,
         "superstruct": true
       }
     },
@@ -2394,6 +2428,9 @@
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
         "semver": true,
         "superstruct": true
       }
@@ -3562,6 +3599,22 @@
         "document.body.appendChild": true,
         "document.body.removeChild": true,
         "document.createElement": true
+      }
+    },
+    "chalk": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "chalk>supports-color": true
+      }
+    },
+    "chalk>ansi-styles": {
+      "packages": {
+        "chalk>ansi-styles>color-convert": true
+      }
+    },
+    "chalk>ansi-styles>color-convert": {
+      "packages": {
+        "jest-canvas-mock>moo-color>color-name": true
       }
     },
     "classnames": {
@@ -5221,7 +5274,6 @@
       },
       "packages": {
         "browserify>process": true,
-        "browserify>util": true,
         "semver>lru-cache": true
       }
     },

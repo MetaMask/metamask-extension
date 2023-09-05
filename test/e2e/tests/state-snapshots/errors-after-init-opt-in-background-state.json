@@ -43,6 +43,7 @@
   },
   "BackupController": "undefined",
   "CachedBalancesController": { "cachedBalances": "object" },
+  "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "conversionDate": "number",
     "conversionRate": 1700,
@@ -111,6 +112,7 @@
     "allNfts": "object",
     "ignoredNfts": "object"
   },
+  "NotificationController": { "notifications": "object" },
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -170,6 +172,12 @@
       "smartTransactions": "object"
     }
   },
+  "SnapController": {
+    "snapErrors": "object",
+    "snaps": "object",
+    "snapStates": "object"
+  },
+  "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
     "swapsState": {

@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IN
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
@@ -39,6 +42,9 @@ import { Text } from '../../component-library/text/deprecated';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 import SignatureRequestHeader from '../signature-request-header';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
+///: END:ONLY_INCLUDE_IN
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -172,16 +178,31 @@ export default class SignatureRequestOriginal extends Component {
         }
 
         <div className="request-signature__origin">
-          <SiteOrigin
-            title={txData.msgParams.origin}
-            siteOrigin={txData.msgParams.origin}
-            iconSrc={targetSubjectMetadata?.iconUrl}
-            iconName={
-              getURLHostName(targetSubjectMetadata?.origin) ||
-              targetSubjectMetadata?.origin
-            }
-            chip
-          />
+          {
+            // Use legacy authorship header for snaps
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            targetSubjectMetadata?.subjectType === SubjectType.Snap ? (
+              <SnapLegacyAuthorshipHeader
+                snapId={targetSubjectMetadata.origin}
+                marginLeft={4}
+                marginRight={4}
+              />
+            ) : (
+              ///: END:ONLY_INCLUDE_IN
+              <SiteOrigin
+                title={txData.msgParams.origin}
+                siteOrigin={txData.msgParams.origin}
+                iconSrc={targetSubjectMetadata?.iconUrl}
+                iconName={
+                  getURLHostName(targetSubjectMetadata?.origin) ||
+                  targetSubjectMetadata?.origin
+                }
+                chip
+              />
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
         </div>
 
         <Typography

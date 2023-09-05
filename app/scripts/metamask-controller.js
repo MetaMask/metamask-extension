@@ -5,11 +5,16 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce } from 'lodash';
 import {
   KeyringController,
   keyringBuilderFactory,
 } from '@metamask/eth-keyring-controller';
+import {
+  debounce,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  throttle,
+  ///: END:ONLY_INCLUDE_IN
+} from 'lodash';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
@@ -923,10 +928,10 @@ export default class MetamaskController extends EventEmitter {
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
-    this.snapExecutionService =
-      this.opts.overrides?.createSnapExecutionService?.(
-        snapExecutionServiceArgs,
-      ) || new IframeExecutionService(snapExecutionServiceArgs);
+
+    this.snapExecutionService = new IframeExecutionService(
+      snapExecutionServiceArgs,
+    );
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
@@ -934,6 +939,8 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:unhandledError',
         'ExecutionService:outboundRequest',
         'ExecutionService:outboundResponse',
+        'SnapController:snapInstalled',
+        'SnapController:snapUpdated',
       ],
       allowedActions: [
         `${this.permissionController.name}:getEndowments`,
@@ -957,6 +964,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:handleRpcRequest',
         'SnapsRegistry:get',
         'SnapsRegistry:getMetadata',
+        'SnapsRegistry:update',
       ],
     });
 
@@ -1057,8 +1065,8 @@ export default class MetamaskController extends EventEmitter {
       refetchOnAllowlistMiss: requireAllowlist,
       failOnUnavailableRegistry: requireAllowlist,
       url: {
-        registry: 'https://acl.execution.metamask.io/latest/registry.json',
-        signature: 'https://acl.execution.metamask.io/latest/signature.json',
+        registry: 'https://acl.execution.consensys.io/latest/registry.json',
+        signature: 'https://acl.execution.consensys.io/latest/signature.json',
       },
       publicKey:
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
@@ -1781,6 +1789,41 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
   /**
+   * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
+   *
+   * @param {string} snapId - The ID of the snap the handler is being triggered on.
+   * @param {string} handler - The handler to trigger on the snap for the request.
+   */
+  _trackSnapExportUsage = throttle(
+    (snapId, handler) =>
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.SnapExportUsed,
+        category: MetaMetricsEventCategory.Snaps,
+        properties: {
+          snap_id: snapId,
+          export: handler,
+        },
+      }),
+    SECOND * 60,
+  );
+
+  /**
+   * Passes a JSON-RPC request object to the SnapController for execution.
+   *
+   * @param {object} args - A bag of options.
+   * @param {string} args.snapId - The ID of the recipient snap.
+   * @param {string} args.origin - The origin of the RPC request.
+   * @param {string} args.handler - The handler to trigger on the snap for the request.
+   * @param {object} args.request - The JSON-RPC request object.
+   * @returns The result of the JSON-RPC request.
+   */
+  handleSnapRequest(args) {
+    this._trackSnapExportUsage(args.snapId, args.handler);
+
+    return this.controllerMessenger.call('SnapController:handleRequest', args);
+  }
+
+  /**
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
@@ -1801,10 +1844,7 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
-        handleSnapRpcRequest: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:handleRequest',
-        ),
+        handleSnapRpcRequest: this.handleSnapRequest.bind(this),
         getSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getSnapState',
@@ -1956,7 +1996,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapInstalled`,
       (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
-          event: 'Snap Installed',
+          event: MetaMetricsEventName.SnapInstalled,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: truncatedSnap.id,
@@ -1970,7 +2010,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapUpdated`,
       (newSnap, oldVersion) => {
         this.metaMetricsController.trackEvent({
-          event: 'Snap Updated',
+          event: MetaMetricsEventName.SnapUpdated,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: newSnap.id,
@@ -2013,6 +2053,15 @@ export default class MetamaskController extends EventEmitter {
         }, []);
 
         this.dismissNotifications(notificationIds);
+
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.SnapUninstalled,
+          category: MetaMetricsEventCategory.Snaps,
+          properties: {
+            snap_id: truncatedSnap.id,
+            version: truncatedSnap.version,
+          },
+        });
       },
     );
 
@@ -2093,9 +2142,21 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.store.getState();
     const isInitialized = Boolean(vault);
 
+    const flatState = this.memStore.getFlatState();
+
     return {
       isInitialized,
-      ...this.memStore.getFlatState(),
+      ...flatState,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      // Snap state and source code is stripped out to prevent piping to the MetaMask UI.
+      snapStates: {},
+      snaps: Object.values(flatState.snaps ?? {}).reduce((acc, snap) => {
+        // eslint-disable-next-line no-unused-vars
+        const { sourceCode, ...rest } = snap;
+        acc[snap.id] = rest;
+        return acc;
+      }, {}),
+      ///: END:ONLY_INCLUDE_IN
     };
   }
 
@@ -2535,10 +2596,7 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:remove',
       ),
-      handleSnapRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:handleRequest',
-      ),
+      handleSnapRequest: this.handleSnapRequest.bind(this),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:revokeDynamicPermissions',

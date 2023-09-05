@@ -9,10 +9,12 @@ import {
 
 describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {
-    // Since long-running is fenced out this causes problems with the test, we re-add it here.
+    // Since some permissions are fenced out, this causes problems with the
+    // test, so we re-add them here.
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
       [
         'endowment:long-running',
+        'endowment:lifecycle-hooks',
         ...Object.keys(endowmentPermissionBuilders).filter(
           (targetName) =>
             !Object.keys(ExcludedSnapEndowments).includes(targetName),

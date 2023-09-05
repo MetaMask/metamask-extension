@@ -4,6 +4,7 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
+const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.readdir(testDir, { withFileTypes: true });
@@ -60,6 +61,11 @@ async function main() {
             description: `run mv3 specific e2e tests`,
             type: 'boolean',
           })
+          .option('build-type', {
+            description: `Sets the build-type to test for. This may filter out tests.`,
+            type: 'string',
+            choices: Object.keys(loadBuildTypesConfig().buildTypes),
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -69,13 +75,25 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3 } = argv;
+  const { browser, debug, retries, snaps, mv3, buildType } = argv;
 
   let testPaths;
 
   if (snaps) {
     const testDir = path.join(__dirname, 'snaps');
     testPaths = await getTestPathsForTestDir(testDir);
+
+    if (buildType && buildType !== 'flask') {
+      // These tests should only be ran on Flask for now
+      const filteredTests = [
+        'test-snap-manageAccount.spec.js',
+        'test-snap-rpc.spec.js',
+        'test-snap-lifecycle.spec.js',
+      ];
+      testPaths = testPaths.filter((p) =>
+        filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
+      );
+    }
   } else {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
