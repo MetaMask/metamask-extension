@@ -573,6 +573,9 @@ jobs:
       - run:
           name: Move test zips to 'builds-test' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask
+      - store_artifacts:
+          path: builds-test-flask
+          destination: builds-test-flask
       - persist_to_workspace:
           root: .
           paths:
@@ -615,6 +618,9 @@ jobs:
       - run:
           name: Move test zips to 'builds-test' to avoid conflict with production build
           command: mv ./builds ./builds-test
+      - store_artifacts:
+          path: builds-test
+          destination: builds-test
       - persist_to_workspace:
           root: .
           paths:
