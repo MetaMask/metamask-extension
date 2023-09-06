@@ -4,20 +4,22 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { AppFooter } from '.';
 
-const render = (stateChanges = {}, location = {}) => {
-  const store = configureStore({
-    ...mockState,
-    activeTab: {
-      origin: 'https://remix.ethereum.org',
-    },
-    ...stateChanges,
-  });
-  return renderWithProvider(<AppFooter location={location} />, store);
-};
+const store = configureStore({
+  ...mockState,
+  activeTab: {
+    origin: 'https://remix.ethereum.org',
+  },
+});
 
 describe('App Footer', () => {
   it('should match snapshot', () => {
-    const { container } = render();
+    const { container } = renderWithProvider(<AppFooter />, store);
     expect(container).toMatchSnapshot();
+  });
+
+  it('should render correctly', () => {
+    const { queryByTestId } = renderWithProvider(<AppFooter />, store);
+
+    expect(queryByTestId('app-footer')).toBeDefined();
   });
 });
