@@ -115,13 +115,17 @@ const EditGasItem = ({ priorityLevel }) => {
       data-testid={`edit-gas-fee-item-${priorityLevel}`}
     >
       <span className="edit-gas-item__name">
-        {icon && (
-          <span
-            className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
-          >
-            {PRIORITY_LEVEL_ICON_MAP[icon]}
-          </span>
-        )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          icon && (
+            <span
+              className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
+            >
+              {PRIORITY_LEVEL_ICON_MAP[icon]}
+            </span>
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
         {t(title)}
       </span>
       <span
