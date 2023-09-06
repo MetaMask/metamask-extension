@@ -7,7 +7,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
+///: END:ONLY_INCLUDE_IN
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';

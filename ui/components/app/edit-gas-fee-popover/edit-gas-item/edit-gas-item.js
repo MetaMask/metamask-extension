@@ -6,7 +6,9 @@ import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
+///: END:ONLY_INCLUDE_IN
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
