@@ -5498,5 +5498,23 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "createSnapAccountTitle": {
+    "message": "Create Snap account"
+  },
+  "createSnapAccountDescription": {
+    "message": "$1 wants to add a new Snap account to your wallet"
+  },
+  "accountNotCreated": {
+    "message": "Account not created"
+  },
+  "accountNotCreatedDescription": {
+    "message": "Something went wrong, so your Snap account wasn’t created yet. Try again later."
+  },
+  "snapAccountCreated": {
+    "message": "Your account is ready!"
+  },
+  "snapAccountCreatedDescription": {
+    "message": "You can find your Snap account in your wallet"
   }
 }
