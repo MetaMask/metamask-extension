@@ -16,6 +16,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import SnapAvatar from '../../../../../components/app/snaps/snap-avatar';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 interface CreateSnapAccountContentProps {
   snapName: string;
@@ -30,6 +31,8 @@ const CreateSnapAccountContent = ({
   onAccountNameChange,
   accountName,
 }: CreateSnapAccountContentProps) => {
+  const t = useI18nContext();
+
   return (
     <Box
       display={Display.Flex}
@@ -50,7 +53,7 @@ const CreateSnapAccountContent = ({
           />
         </Box>
         <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
-          Create Snap Account
+          {t('createSnapAccount')}
         </Text>
         <Text
           variant={TextVariant.bodyMd}
@@ -58,7 +61,7 @@ const CreateSnapAccountContent = ({
           padding={[0, 4]}
           overflowWrap={OverflowWrap.Anywhere}
         >
-          {`${snapName} wants to add a new snap account to your wallet`}
+          {t('createSnapAccountDescription', [snapName])}
         </Text>
       </Box>
       <Box paddingTop={4} paddingLeft={4} paddingRight={4} paddingBottom={2}>
@@ -67,7 +70,7 @@ const CreateSnapAccountContent = ({
           textAlign={TextAlign.Left}
           overflowWrap={OverflowWrap.Anywhere}
         >
-          Account Name
+          {t('accountName')}
         </Text>
         <TextField
           id={snapId}

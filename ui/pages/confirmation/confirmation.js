@@ -44,6 +44,7 @@ import {
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
+import { CreateSnapAccount } from './templates/create-snap-account';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -177,6 +178,11 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
+
+  console.log(
+    'SNAPS/ ConfirmationPage called with pendingConfirmations: ',
+    pendingConfirmations,
+  );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
@@ -202,6 +208,11 @@ export default function ConfirmationPage({
   const [loadingText, setLoadingText] = useState();
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
+
+  const [isSnapAccountConform, setIsSNapAccountConform] = useState(
+    pendingConfirmation &&
+      pendingConfirmation.type === 'snap_manageAccounts:confirmation',
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const targetSubjectMetadata = useSelector((state) =>
@@ -328,6 +339,17 @@ export default function ConfirmationPage({
       handleSubmitResult(submitResult);
     }
   };
+
+  if (isSnapAccountConform) {
+    return (
+      <CreateSnapAccount
+        onCancel={templatedValues.onCancel}
+        onSubmit={templatedValues.onSubmit}
+        snapId={pendingConfirmation.origin}
+        snapName={snapName}
+      />
+    );
+  }
 
   return (
     <div className="confirmation-page">

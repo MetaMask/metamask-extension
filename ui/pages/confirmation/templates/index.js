@@ -6,6 +6,7 @@ import {
   setNewNetworkAdded,
   upsertNetworkConfiguration,
 } from '../../../store/actions';
+import createSnapAccountTemplate from './create-snap-account/create-snap-account-template';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
@@ -26,6 +27,7 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
+  'snap_manageAccounts:confirmation': createSnapAccountTemplate,
   ///: END:ONLY_INCLUDE_IN
 };
 
@@ -61,6 +63,12 @@ const ALLOWED_TEMPLATE_KEYS = [
  * @param {object} state - The state object consist of required info to determine alerts.
  */
 export async function getTemplateAlerts(pendingApproval, state) {
+  console.log(
+    'SNAPS/ getTemplateAlerts called with pendingApproval: ',
+    pendingApproval,
+    ' and state: ',
+    state,
+  );
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getAlerts;
 
   const results = fn ? await fn(pendingApproval, state) : [];
@@ -142,6 +150,18 @@ export function getTemplateValues(
   history,
   setInputState,
 ) {
+  console.log(
+    'SNAPS/ getTemplateValues called with pendingApproval: ',
+    pendingApproval,
+    ' and t: ',
+    t,
+    ' and dispatch: ',
+    dispatch,
+    ' and history: ',
+    history,
+    ' and setInputState: ',
+    setInputState,
+  );
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(
