@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/eth-snap-keyring';
+import { InternalAccount } from '@metamask/keyring-api';
 import { sha256FromString } from 'ethereumjs-util';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep } from 'lodash';

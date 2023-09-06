@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
-import { InternalAccount } from '@metamask/eth-snap-keyring';
+import { InternalAccount } from '@metamask/keyring-api';
 import { migrate } from './097';
 
 const MOCK_ADDRESS = '0x0';

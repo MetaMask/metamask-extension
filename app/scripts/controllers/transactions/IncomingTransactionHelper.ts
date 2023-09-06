@@ -3,7 +3,7 @@ import type { BlockTracker, NetworkState } from '@metamask/network-controller';
 import type { Hex } from '@metamask/utils';
 
 import log from 'loglevel';
-import { InternalAccount } from '@metamask/eth-snap-keyring';
+import { InternalAccount } from '@metamask/keyring-api';
 import { TransactionMeta } from '../../../../shared/constants/transaction';
 import { RemoteTransactionSource } from './types';
 
