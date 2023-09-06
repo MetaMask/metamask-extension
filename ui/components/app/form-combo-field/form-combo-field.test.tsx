@@ -54,4 +54,56 @@ describe('FormComboField', () => {
 
     expect(baseElement).toMatchSnapshot();
   });
+
+  it('calls onChange with primary label on option click', async () => {
+    const onChangeMock = jest.fn();
+
+    const { getByPlaceholderText, getByText } = renderWithProvider(
+      <FormComboField
+        value={VALUE_MOCK}
+        options={OPTIONS_MOCK}
+        placeholder={PLACEHOLDER_MOCK}
+        noOptionsText={NO_OPTIONS_TEXT_MOCK}
+        onChange={onChangeMock}
+      />,
+    );
+
+    const input = getByPlaceholderText(PLACEHOLDER_MOCK);
+
+    await act(async () => {
+      fireEvent.click(input);
+    });
+
+    const option = getByText(OPTIONS_MOCK[0].primaryLabel);
+
+    await act(async () => {
+      fireEvent.click(option);
+    });
+
+    expect(onChangeMock).toHaveBeenCalledTimes(1);
+    expect(onChangeMock).toHaveBeenCalledWith(OPTIONS_MOCK[0].primaryLabel);
+  });
+
+  it('calls onChange with empty string on clear button click', async () => {
+    const onChangeMock = jest.fn();
+
+    const { getByLabelText } = renderWithProvider(
+      <FormComboField
+        value={VALUE_MOCK}
+        options={OPTIONS_MOCK}
+        placeholder={PLACEHOLDER_MOCK}
+        noOptionsText={NO_OPTIONS_TEXT_MOCK}
+        onChange={onChangeMock}
+      />,
+    );
+
+    const clearButton = getByLabelText('[clear]');
+
+    await act(async () => {
+      fireEvent.click(clearButton);
+    });
+
+    expect(onChangeMock).toHaveBeenCalledTimes(1);
+    expect(onChangeMock).toHaveBeenCalledWith('');
+  });
 });
