@@ -181,6 +181,10 @@
   "createPassword": {
     "message": "Vytvoriť heslo"
   },
+  "crypto": {
+    "message": "Kryptomeny",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "Prepočet meny"
   },

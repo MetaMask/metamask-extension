@@ -187,6 +187,10 @@
   "createPassword": {
     "message": "Luo salasana"
   },
+  "crypto": {
+    "message": "Krypto",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "Valuuttamuunnin"
   },

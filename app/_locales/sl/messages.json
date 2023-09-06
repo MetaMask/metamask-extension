@@ -187,6 +187,10 @@
   "createPassword": {
     "message": "Ustvari geslo"
   },
+  "crypto": {
+    "message": "Kripto",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "Pretvorba valute"
   },

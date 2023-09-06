@@ -350,6 +350,10 @@
   "createPassword": {
     "message": "Gumawa ng Password"
   },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "Conversion ng Currency"
   },

@@ -910,6 +910,10 @@
   "createPassword": {
     "message": "Δημιουργία Κωδικού Πρόσβασης"
   },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Exchange type"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },

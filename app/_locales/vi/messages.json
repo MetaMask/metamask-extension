@@ -910,6 +910,10 @@
   "createPassword": {
     "message": "Tạo mật khẩu"
   },
+  "crypto": {
+    "message": "tiền điện tử",
+    "description": "Exchange type"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },

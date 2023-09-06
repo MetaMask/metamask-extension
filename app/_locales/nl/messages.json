@@ -66,6 +66,10 @@
   "create": {
     "message": "creëren"
   },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Exchange type"
+  },
   "decimal": {
     "message": "Decimalen van precisie"
   },

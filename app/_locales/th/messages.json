@@ -84,6 +84,10 @@
   "create": {
     "message": "สร้าง"
   },
+  "crypto": {
+    "message": "สกุลเงินดิจิทัล",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
   },

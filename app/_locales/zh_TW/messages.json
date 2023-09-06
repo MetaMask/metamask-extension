@@ -346,6 +346,10 @@
   "createPassword": {
     "message": "建立密碼"
   },
+  "crypto": {
+    "message": "加密貨幣",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "轉換匯率"
   },

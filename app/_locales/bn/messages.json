@@ -184,6 +184,10 @@
   "createPassword": {
     "message": "পাসওয়ার্ড তৈরি করুন"
   },
+  "crypto": {
+    "message": "ক্রিপ্টো",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "মুদ্রা বিনিময়"
   },

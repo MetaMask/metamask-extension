@@ -187,6 +187,10 @@
   "createPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ"
   },
+  "crypto": {
+    "message": "ಕ್ರಿಪ್ಟೋ",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "ಕರೆನ್ಸಿ ಪರಿವರ್ತನೆ"
   },

@@ -66,6 +66,10 @@
   "create": {
     "message": "बनाएं"
   },
+  "crypto": {
+    "message": "Crypto क्रिप्टो",
+    "description": "Exchange type"
+  },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },

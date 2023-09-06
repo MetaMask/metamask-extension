@@ -78,6 +78,10 @@
   "create": {
     "message": "Vytvořit"
   },
+  "crypto": {
+    "message": "Krypto",
+    "description": "Exchange type"
+  },
   "customToken": {
     "message": "Vlastní token"
   },

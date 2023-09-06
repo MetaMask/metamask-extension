@@ -910,6 +910,10 @@
   "createPassword": {
     "message": "Buat kata sandi"
   },
+  "crypto": {
+    "message": "Kripto",
+    "description": "Exchange type"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -1577,6 +1581,7 @@
     "message": "Fiat",
     "description": "Exchange type"
   },
+
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"

@@ -334,7 +334,7 @@ export default class SettingsTab extends PureComponent {
                   htmlFor="native-primary-currency"
                   className="settings-tab__radio-label"
                 >
-                  {nativeCurrency}
+                  {t('crypto')}
                 </label>
               </div>
               <div className="settings-tab__radio-button">

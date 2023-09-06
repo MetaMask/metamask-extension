@@ -910,6 +910,10 @@
   "createPassword": {
     "message": "创建密码"
   },
+  "crypto": {
+    "message": "加密货币",
+    "description": "Exchange type"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },

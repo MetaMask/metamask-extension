@@ -910,6 +910,10 @@
   "createPassword": {
     "message": "पासवर्ड बनाएं"
   },
+  "crypto": {
+    "message": "क्रिप्टो",
+    "description": "Exchange type"
+  },
   "cryptoCompare": {
     "message": "क्रिप्टोतुलना"
   },

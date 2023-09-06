@@ -18,7 +18,7 @@ export default class UserPreferencedTokenInput extends PureComponent {
     return (
       <TokenInput
         {...restProps}
-        showFiat={!useNativeCurrencyAsPrimaryCurrency}
+        showFiat={useNativeCurrencyAsPrimaryCurrency}
       />
     );
   }

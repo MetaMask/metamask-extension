@@ -93,6 +93,10 @@
   "create": {
     "message": "உருவாக்கு"
   },
+  "crypto": {
+    "message": "கிரிப்டோ",
+    "description": "Exchange type"
+  },
   "custom": {
     "message": "மேம்பட்டவை"
   },

@@ -187,6 +187,10 @@
   "createPassword": {
     "message": "Utwórz hasło"
   },
+  "crypto": {
+    "message": "Krypto",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "Przeliczanie walut"
   },

@@ -184,6 +184,11 @@
   "createPassword": {
     "message": "Kreirajte lozinku"
   },
+  "crypto": {
+    "message": "Kripto",
+    "description": "Exchange type"
+  },
+
   "currencyConversion": {
     "message": "Konverzija valuta"
   },

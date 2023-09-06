@@ -932,6 +932,10 @@
   "createPassword": {
     "message": "Create password"
   },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Exchange type"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },

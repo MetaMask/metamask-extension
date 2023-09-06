@@ -910,6 +910,10 @@
   "createPassword": {
     "message": "Gumawa ng password"
   },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Exchange type"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },

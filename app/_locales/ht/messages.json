@@ -114,6 +114,10 @@
   "create": {
     "message": "Kreye"
   },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Exchange type"
+  },
   "currentLanguage": {
     "message": "Lang Aktyèl"
   },

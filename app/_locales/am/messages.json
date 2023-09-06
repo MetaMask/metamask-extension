@@ -181,6 +181,10 @@
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"
   },
+  "crypto": {
+    "message": "ክሪፕቶ",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "የገንዘብ ልወጣ"
   },

@@ -910,6 +910,10 @@
   "createPassword": {
     "message": "Parola Oluştur"
   },
+  "crypto": {
+    "message": "Cripto",
+    "description": "Exchange type"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },

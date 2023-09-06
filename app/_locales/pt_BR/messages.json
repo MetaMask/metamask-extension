@@ -487,6 +487,10 @@
   "createPassword": {
     "message": "Criar senha"
   },
+  "crypto": {
+    "message": "criptomoeda",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "Conversão de moeda"
   },

@@ -187,6 +187,11 @@
   "createPassword": {
     "message": "Sukurti slaptažodį"
   },
+  "crypto": {
+    "message": "kriptovaliuta",
+    "description": "Exchange type"
+  },
+
   "currencyConversion": {
     "message": "Valiutos keitimas"
   },

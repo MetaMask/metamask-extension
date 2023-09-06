@@ -187,6 +187,10 @@
   "createPassword": {
     "message": "יצירת ססמה"
   },
+  "crypto": {
+    "message": "קריפטו",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "המרת מטבע"
   },

@@ -187,6 +187,10 @@
   "createPassword": {
     "message": "Створити пароль"
   },
+  "crypto": {
+    "message": "Крипто",
+    "description": "Exchange type"
+  },
   "currencyConversion": {
     "message": "Обмін валют"
   },
