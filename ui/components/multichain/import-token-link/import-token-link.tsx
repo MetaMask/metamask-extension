@@ -19,6 +19,7 @@ import {
   getIsTokenDetectionSupported,
   getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
+import type { BoxProps } from '../../component-library/box';
 import type { ImportTokenLinkProps } from './import-token-link.types';
 
 export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
@@ -41,7 +42,7 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
   return (
     <Box
       className={classnames('multichain-import-token-link', className)}
-      {...props}
+      {...(props as BoxProps<'div'>)}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center}>
         <ButtonLink
