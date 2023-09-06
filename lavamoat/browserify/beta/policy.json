@@ -730,6 +730,17 @@
         "@babel/runtime": true
       }
     },
+    "@metamask-previews/accounts-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/eth-snap-keyring": true,
+        "ethereumjs-util": true,
+        "uuid": true
+      }
+    },
     "@metamask/address-book-controller": {
       "packages": {
         "@metamask/base-controller": true,

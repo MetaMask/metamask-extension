@@ -96,6 +96,7 @@ import {
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
+import { AccountsController } from '@metamask-previews/accounts-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -156,7 +157,6 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
-import { AccountsController } from './controllers/accounts-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
