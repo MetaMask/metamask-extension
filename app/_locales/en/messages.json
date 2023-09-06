@@ -4268,7 +4268,7 @@
     "message": "Stake"
   },
   "stakeDescription": {
-    "message": "Hold up your crypto and earn potential profits"
+    "message": "Stake your Crypto to earn rewards"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
