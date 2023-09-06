@@ -154,6 +154,7 @@ describe('Transaction Selectors', () => {
       const tx1 = {
         id: 0,
         time: 0,
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -164,6 +165,7 @@ describe('Transaction Selectors', () => {
       const tx2 = {
         id: 1,
         time: 1,
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -212,6 +214,7 @@ describe('Transaction Selectors', () => {
     const submittedTx = {
       id: 0,
       time: 0,
+      chainId: CHAIN_IDS.MAINNET,
       txParams: {
         from: '0xAddress',
         to: '0xRecipient',
@@ -223,6 +226,7 @@ describe('Transaction Selectors', () => {
     const unapprovedTx = {
       id: 1,
       time: 1,
+      chainId: CHAIN_IDS.MAINNET,
       txParams: {
         from: '0xAddress',
         to: '0xRecipient',
@@ -234,6 +238,7 @@ describe('Transaction Selectors', () => {
     const approvedTx = {
       id: 2,
       time: 2,
+      chainId: CHAIN_IDS.MAINNET,
       txParams: {
         from: '0xAddress',
         to: '0xRecipient',
@@ -245,6 +250,7 @@ describe('Transaction Selectors', () => {
     const confirmedTx = {
       id: 3,
       time: 3,
+      chainId: CHAIN_IDS.MAINNET,
       txParams: {
         from: '0xAddress',
         to: '0xRecipient',

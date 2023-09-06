@@ -88,6 +88,7 @@ describe('switch-ethereum-chain confirmation', () => {
           {
             id: 1,
             status: 'unapproved',
+            chainId: '0x9999',
           },
         ],
       },
