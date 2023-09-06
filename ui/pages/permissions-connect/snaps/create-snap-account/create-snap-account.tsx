@@ -59,7 +59,11 @@ const CreateSnapAccount = () => {
       >
         <SnapAuthorshipHeader snapId={snapId} />
         <Box>
-          {isLoading && <PulseLoader />}
+          {isLoading && (
+            <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+              <PulseLoader />
+            </Box>
+          )}
           {error && (
             <InstallError
               iconName={IconName.Warning}
