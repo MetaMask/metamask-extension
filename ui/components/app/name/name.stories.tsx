@@ -66,7 +66,11 @@ export default {
       control: 'object',
       description: `The order of priority to use when choosing which proposed name to display.<br/><br/>
          The available source IDs are defined by the \`NameProvider\` instances passed to the \`NameController\`.<br/><br/>
-         Current options include: <ul><li>- ens</li><li>- etherscan</li><li>- lens</li><li>- token</li></ul>`,
+         Current options include:<br/><br/>
+         \`ens\`<br/>
+         \`etherscan\`<br/>
+         \`lens\`<br/>
+         \`token\``,
     },
     disableEdit: {
       control: 'boolean',
