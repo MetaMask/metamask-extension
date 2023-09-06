@@ -155,6 +155,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { convertNetworkId } from '../../shared/modules/network.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -390,7 +391,8 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       () => this.updateDeprecatedNetworkId(),
-    );
+    )
+
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
@@ -2189,13 +2191,39 @@ export default class MetamaskController extends EventEmitter {
    */
   async updateDeprecatedNetworkId() {
     try {
-      this.deprecatedNetworkId =
-        await this.networkController.deprecatedGetNetworkId();
+      this.deprecatedNetworkId = await this.getNetworkId()
     } catch (error) {
-      console.error(error);
-      this.deprecatedNetworkId = null;
+      console.error(error)
+      this.deprecatedNetworkId = null
     }
-    this._notifyChainChange();
+    this._notifyChainChange()
+  }
+
+  /**
+   * TODO: Delete when ready to remove `networkVersion` from provider object
+   * Gets current networkId as returned by `net_version`
+   *
+   * @returns {string} The networkId for the current network or null on failure
+   * @throws Will throw if there is a problem getting the network version
+   */
+  async getNetworkId() {
+    const ethQuery = this.controllerMessenger.call(
+      'NetworkController:getEthQuery',
+    );
+
+    if (!ethQuery) {
+      throw new Error('Provider has not been initialized');
+    }
+
+    return new Promise((resolve, reject) => {
+      ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(convertNetworkId(result));
+        }
+      });
+    });
   }
 
   //=============================================================================
