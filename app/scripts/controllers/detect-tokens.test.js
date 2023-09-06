@@ -11,11 +11,11 @@ import {
 } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
 import { NetworkController } from '@metamask/network-controller';
+import { AccountsController } from '@metamask-previews/accounts-controller';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import PreferencesController from './preferences';
-import { AccountsController } from './accounts-controller';
 
 function buildMessenger() {
   return new ControllerMessenger().getRestricted({

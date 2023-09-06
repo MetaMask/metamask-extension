@@ -4,12 +4,12 @@ import { MmiConfigurationController } from '@metamask-institutional/custody-keyr
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { SignatureController } from '@metamask/signature-controller';
 import { NetworkController } from '@metamask/network-controller';
+import { AccountsController } from '@metamask-previews/accounts-controller';
 
 import MMIController from './mmi-controller';
 import TransactionController from './transactions';
 import PreferencesController from './preferences';
 import AppStateController from './app-state';
-import { AccountsController } from './accounts-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 
 jest.mock('./permissions', () => ({
