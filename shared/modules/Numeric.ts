@@ -16,9 +16,8 @@ export type NumericBase = 10 | 16;
  *
  * For example:
  *
- *  new Numeric(some_value)
- *    .applyConversionRate(27, true)
- *
+ * new Numeric(some_value).applyConversionRate(27, true)
+ *    
  * This operation gives us 0, because bignumber.js doesn't allow for enough decimal places to
  * store the calculated value in the applyConversionRate function (due to the division math operation).
  */
