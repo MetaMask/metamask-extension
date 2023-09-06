@@ -23,23 +23,34 @@ import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
 
 const getTitleAndIcon = (priorityLevel, editGasMode) => {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   let icon = priorityLevel;
+  ///: END:ONLY_INCLUDE_IN
   let title = priorityLevel;
   if (priorityLevel === PriorityLevels.dAppSuggested) {
     title = 'dappSuggestedShortLabel';
   } else if (priorityLevel === PriorityLevels.dappSuggestedHigh) {
     title = 'dappSuggestedHighShortLabel';
   } else if (priorityLevel === PriorityLevels.tenPercentIncreased) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     icon = null;
+    ///: END:ONLY_INCLUDE_IN
     title = 'tenPercentIncreased';
   } else if (
     priorityLevel === PriorityLevels.high &&
     editGasMode === EditGasModes.swaps
   ) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     icon = 'swapSuggested';
+    ///: END:ONLY_INCLUDE_IN
     title = 'swapSuggested';
   }
-  return { title, icon };
+  return {
+    title,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    icon,
+    ///: END:ONLY_INCLUDE_IN
+  };
 };
 
 const EditGasItem = ({ priorityLevel }) => {
@@ -102,7 +113,12 @@ const EditGasItem = ({ priorityLevel }) => {
     }
   };
 
-  const { title, icon } = getTitleAndIcon(priorityLevel, editGasMode);
+  const {
+    title,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    icon,
+    ///: END:ONLY_INCLUDE_IN
+  } = getTitleAndIcon(priorityLevel, editGasMode);
 
   return (
     <button

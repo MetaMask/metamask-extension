@@ -37,17 +37,22 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   if (!supportsEIP1559 || !estimateUsed || !editEnabled) {
     return null;
   }
-
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   let icon = estimateUsed;
+  ///: END:ONLY_INCLUDE_IN
   let title = estimateUsed;
   if (
     estimateUsed === PriorityLevels.high &&
     editGasMode === EditGasModes.swaps
   ) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     icon = 'swapSuggested';
+    ///: END:ONLY_INCLUDE_IN
     title = 'swapSuggested';
   } else if (estimateUsed === PriorityLevels.tenPercentIncreased) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     icon = undefined;
+    ///: END:ONLY_INCLUDE_IN
     title = 'tenPercentIncreased';
   }
 
