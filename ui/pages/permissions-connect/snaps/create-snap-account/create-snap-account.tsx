@@ -87,6 +87,7 @@ const CreateSnapAccount = () => {
 
   return (
     <Box
+      className="create-snap-account-page"
       height={BlockSize.Full}
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.backgroundDefault}
