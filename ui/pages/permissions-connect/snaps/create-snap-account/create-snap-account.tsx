@@ -16,22 +16,33 @@ import PulseLoader from '../../../../components/ui/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { CreateSnapAccountContent } from './components';
 
+interface Loading {
+  type: 'Loading';
+}
+interface Success {
+  type: 'Success';
+}
+interface Error {
+  type: 'Error';
+  message: string;
+}
+
+type ViewState = Loading | Error | Success;
+
 const CreateSnapAccount = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<undefined | Error>(undefined);
+  const [viewState, setViewState] = useState<ViewState | undefined>(undefined);
   const [accountName, setAccountName] = useState('');
   const t = useI18nContext();
 
   const onConfirm = useCallback(() => {
     console.log('SNAPS/ onConfirm');
-    setIsLoading(true);
+    setViewState({ type: 'Loading' });
   }, []);
 
   const onCancel = useCallback(() => {
     console.log('SNAPS/ onCancel');
     const err = new Error('User cancelled');
-    setError(err);
-    setIsLoading(false);
+    setViewState({ type: 'Error', message: err.message });
   }, []);
 
   const onAccountNameChange = useCallback((value) => {
@@ -40,6 +51,39 @@ const CreateSnapAccount = () => {
 
   const snapId = 'npm:@metamask/snap-simple-keyring-snap';
   const snapName = 'Simple Keyring Snap';
+
+  const renderContent = () => {
+    switch (viewState?.type) {
+      case 'Loading':
+        return (
+          <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+            <PulseLoader />
+          </Box>
+        );
+      case 'Error':
+        return (
+          <InstallError
+            iconName={IconName.Warning}
+            title="Account not created"
+            description={
+              'Something went wrong, so your Snap account wasn’t created yet. Try again later.'
+            }
+            error={viewState.message}
+          />
+        );
+      case 'Success':
+        return null;
+      default:
+        return (
+          <CreateSnapAccountContent
+            snapName={snapName}
+            snapId={snapId}
+            accountName={accountName}
+            onAccountNameChange={onAccountNameChange}
+          />
+        );
+    }
+  };
 
   return (
     <Box
@@ -58,31 +102,7 @@ const CreateSnapAccount = () => {
         height={BlockSize.Full}
       >
         <SnapAuthorshipHeader snapId={snapId} />
-        <Box>
-          {isLoading && (
-            <Box display={Display.Flex} justifyContent={JustifyContent.center}>
-              <PulseLoader />
-            </Box>
-          )}
-          {error && (
-            <InstallError
-              iconName={IconName.Warning}
-              title="Account not created"
-              description={
-                'Something went wrong, so your Snap account wasn’t created yet. Try again later.'
-              }
-              error={error.message}
-            />
-          )}
-          {!error && !isLoading && (
-            <CreateSnapAccountContent
-              snapName={snapName}
-              snapId={snapId}
-              accountName={accountName}
-              onAccountNameChange={onAccountNameChange}
-            />
-          )}
-        </Box>
+        <Box>{renderContent()}</Box>
         <PageContainerFooter
           cancelButtonType="default"
           hideCancel={false}
