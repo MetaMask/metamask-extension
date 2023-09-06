@@ -21,7 +21,7 @@ describe('Snap Privacy Warning Popover', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Consensys has no access to information you share with these third parties.',
+        'Consensys has no access to information you share with Third Party Services.',
       ),
     ).toBeInTheDocument();
     expect(

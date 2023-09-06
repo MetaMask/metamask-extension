@@ -315,19 +315,9 @@ export default function TokenAllowance({
 
   return (
     <Box className="token-allowance-container page-container">
-      <ConfirmPageContainerNavigation />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-        <BlockaidBannerAlert
-          securityAlertResponse={txData?.securityAlertResponse}
-        />
-        ///: END:ONLY_INCLUDE_IN
-      }
-      {isSuspiciousResponse(txData?.securityProviderResponse) && (
-        <SecurityProviderBannerMessage
-          securityProviderResponse={txData.securityProviderResponse}
-        />
-      )}
+      <Box>
+        <ConfirmPageContainerNavigation />
+      </Box>
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -362,6 +352,26 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
+
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+          margin={4}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
+      {isSuspiciousResponse(txData?.securityProviderResponse) && (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
+      )}
+      {warning && (
+        <Box className="token-allowance-container__custom-nonce-warning">
+          <ConfirmPageContainerWarning warning={warning} />
+        </Box>
+      )}
+
       <Box
         padding={4}
         display={Display.Flex}
