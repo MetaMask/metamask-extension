@@ -81,6 +81,18 @@ async function start() {
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
+  const testBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-test/metamask-${platform}-${VERSION}.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
+  const testFlaskBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
 
   // links to bundle browser builds
   const bundles = {};
@@ -147,6 +159,8 @@ async function start() {
     `builds (beta): ${betaBuildLinks}`,
     `builds (flask): ${flaskBuildLinks}`,
     `builds (MMI): ${mmiBuildLinks}`,
+    `builds (test): ${testBuildLinks}`,
+    `builds (test-flask): ${testFlaskBuildLinks}`,
     `build viz: ${depVizLink}`,
     `mv3: ${moduleInitStatsBackgroundLink}`,
     `mv3: ${moduleInitStatsUILink}`,

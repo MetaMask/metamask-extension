@@ -1163,6 +1163,10 @@ jobs:
           path: builds-mmi
           destination: builds-mmi
       - store_artifacts:
+          path: builds-test
+      - store_artifacts:
+          path: builds-test-flask
+      - store_artifacts:
           path: coverage
           destination: coverage
       - store_artifacts:
