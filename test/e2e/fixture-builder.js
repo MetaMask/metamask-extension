@@ -166,6 +166,7 @@ function defaultFixture() {
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
+        qrHardwarePopoverState: {},
         recoveryPhraseReminderHasBeenShown: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
@@ -330,6 +331,7 @@ function onboardingFixture() {
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
+        qrHardwarePopoverState: {},
         recoveryPhraseReminderHasBeenShown: false,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',

@@ -15,6 +15,7 @@
       "fullScreenGasPollTokens": [],
       "notificationGasPollTokens": [],
       "popupGasPollTokens": [],
+      "qrHardwarePopoverState": {},
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,

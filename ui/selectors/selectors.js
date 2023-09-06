@@ -148,9 +148,9 @@ export function isCurrentProviderCustom(state) {
   );
 }
 
-export function getCurrentQRHardwareState(state) {
-  const { qrHardware } = state.metamask;
-  return qrHardware || {};
+export function getCurrentQRHardwarePopoverState(state) {
+  const { qrHardwarePopoverState } = state.metamask;
+  return qrHardwarePopoverState || {};
 }
 
 export function hasUnsignedQRHardwareTransaction(state) {

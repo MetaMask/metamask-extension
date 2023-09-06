@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { getCurrentQRHardwareState } from '../../../selectors';
+import { getCurrentQRHardwarePopoverState } from '../../../selectors';
 import Popover from '../../ui/popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -16,8 +16,7 @@ import QRHardwareSignRequest from './qr-hardware-sign-request';
 const QRHardwarePopover = () => {
   const t = useI18nContext();
 
-  const qrHardware = useSelector(getCurrentQRHardwareState);
-  const { sync, sign } = qrHardware;
+  const { sync, sign } = useSelector(getCurrentQRHardwarePopoverState);
   const showWalletImporter = sync?.reading;
   const showSignRequest = sign?.request;
   const showPopover = showWalletImporter || showSignRequest;
