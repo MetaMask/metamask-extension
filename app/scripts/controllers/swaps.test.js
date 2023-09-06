@@ -138,7 +138,7 @@ const EMPTY_INIT_STATE = {
     swapsQuotePrefetchingRefreshTime: 60000,
     swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxGetTransactionsRefreshTime:
-    FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsUserFeeLevel: '',
     saveFetchedQuotes: false,
@@ -946,9 +946,9 @@ describe('SwapsController', function () {
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime:
-          old.swapsQuotePrefetchingRefreshTime,
+            old.swapsQuotePrefetchingRefreshTime,
           swapsStxGetTransactionsRefreshTime:
-          old.swapsStxGetTransactionsRefreshTime,
+            old.swapsStxGetTransactionsRefreshTime,
           swapsStxBatchStatusRefreshTime: old.swapsStxBatchStatusRefreshTime,
         });
       });
