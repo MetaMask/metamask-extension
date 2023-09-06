@@ -35,6 +35,7 @@ import {
   ImportNftsModal,
   ImportTokensModal,
   SelectActionModal,
+  AppFooter,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -122,6 +123,7 @@ import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-i
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IN
+import { Display, FlexDirection } from '../../helpers/constants/design-system';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -619,6 +621,7 @@ export default class Routes extends Component {
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>
+        {!this.hideAppHeader() && <AppFooter location={location} />}
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );
