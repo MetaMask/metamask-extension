@@ -371,9 +371,6 @@
   "amount": {
     "message": "Tutar"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Tarayıcında bir Ethereum Cüzdanı",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Saklayıcı Kurum"
-  },
-  "custodianAccount": {
-    "message": "Saklayıcı kurum hesabı"
   },
   "custodianAccountAddedDesc": {
     "message": "Artık saklayıcı kurum hesaplarınızı MetaMask Institutional'da kullanabilirsiniz."
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "Buradan talep et"
-  },
-  "mmiAddToken": {
-    "message": "$1 alanındaki sayfa MetaMask Institutional'daki aşağıdaki saklayıcı kurum tokenine yetki vermek istiyor"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dünya çapında tasarlanmış ve yapılmıştır."
