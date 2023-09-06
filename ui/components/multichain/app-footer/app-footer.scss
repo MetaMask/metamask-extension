@@ -7,7 +7,6 @@
   bottom: 0;
   position: sticky;
   z-index: 55; // we are applying same z-index for header as well
-  margin-bottom: 10vh; // this is to keep the margin as what we have currently for main-container
   min-height: 64px;
   flex-flow: column nowrap;
 
@@ -21,6 +20,7 @@
 
     @include screen-sm-min {
       width: $width-screen-sm-min;
+      margin-bottom: 10vh; // same as main container
     }
 
     @include screen-md-min {
