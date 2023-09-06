@@ -11,7 +11,12 @@ import {
   Display,
   Severity,
 } from '../../../../../helpers/constants/design-system';
-import { Text, AvatarIcon, BannerAlert, Box } from '../../../../../components/component-library';
+import {
+  Text,
+  AvatarIcon,
+  BannerAlert,
+  Box,
+} from '../../../../../components/component-library';
 
 const InstallError = ({ title, error, description, iconName }) => {
   return (

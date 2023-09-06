@@ -178,6 +178,11 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
+
+  console.log(
+    'SNAPS/ ConfirmationPage called with pendingConfirmations: ',
+    pendingConfirmations,
+  );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);

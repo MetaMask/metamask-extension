@@ -803,6 +803,12 @@ export function setupController(
           case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
+          case 'snap_manageAccounts:confirmation':
+            console.log(
+              'SNAPS/ background.js: snap_manageAccounts:confirmation',
+            );
+            controller.approvalController.accept(id, false);
+            break;
           ///: END:ONLY_INCLUDE_IN
           default:
             controller.approvalController.reject(
