@@ -98,39 +98,6 @@ const TokenOverview = ({ className, token }) => {
       event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
-
-  const renderInstitutionalButtons = () => {
-    return (
-      <>
-        <IconButton
-          className="eth-overview__button"
-          Icon={<Icon name={IconName.Stake} color={IconColor.primaryInverse} />}
-          label={t('stake')}
-          data-testid="token-overview-mmi-stake"
-          onClick={() => {
-            stakingEvent();
-            global.platform.openTab({
-              url: 'https://metamask-institutional.io/stake',
-            });
-          }}
-        />
-        {mmiPortfolioEnabled && (
-          <IconButton
-            className="eth-overview__button"
-            Icon={
-              <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
-            }
-            label={t('portfolio')}
-            data-testid="token-overview-mmi-portfolio"
-            onClick={() => {
-              portfolioEvent();
-              window.open(mmiPortfolioUrl, '_blank');
-            }}
-          />
-        )}
-      </>
-    );
-  };
   ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
@@ -197,7 +164,42 @@ const TokenOverview = ({ className, token }) => {
 
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            renderInstitutionalButtons()
+            <>
+              <IconButton
+                className="eth-overview__button"
+                Icon={
+                  <Icon
+                    name={IconName.Stake}
+                    color={IconColor.primaryInverse}
+                  />
+                }
+                label={t('stake')}
+                data-testid="token-overview-mmi-stake"
+                onClick={() => {
+                  stakingEvent();
+                  global.platform.openTab({
+                    url: 'https://metamask-institutional.io/stake',
+                  });
+                }}
+              />
+              {mmiPortfolioEnabled && (
+                <IconButton
+                  className="eth-overview__button"
+                  Icon={
+                    <Icon
+                      name={IconName.Diagram}
+                      color={IconColor.primaryInverse}
+                    />
+                  }
+                  label={t('portfolio')}
+                  data-testid="token-overview-mmi-portfolio"
+                  onClick={() => {
+                    portfolioEvent();
+                    window.open(mmiPortfolioUrl, '_blank');
+                  }}
+                />
+              )}
+            </>
             ///: END:ONLY_INCLUDE_IN
           }
 
