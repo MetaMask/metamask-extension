@@ -43,9 +43,15 @@ export default function TokenList({ onTokenClick }) {
     );
   }
 
+  const sortedTokens = tokensWithBalances.sort((a, b) => {
+    const aBalance = a.balance || 0;
+    const bBalance = b.balance || 0;
+    return bBalance - aBalance;
+  });
+
   return (
     <div>
-      {tokensWithBalances.map((tokenData, index) => {
+      {sortedTokens.map((tokenData, index) => {
         return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />;
       })}
     </div>
