@@ -44,6 +44,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getUseBlockie } from '../../../selectors';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -82,7 +83,7 @@ export const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+  const useBlockie = useSelector(getUseBlockie);
 
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);

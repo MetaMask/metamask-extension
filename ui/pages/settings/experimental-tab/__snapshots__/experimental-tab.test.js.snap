@@ -25,23 +25,13 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
-            This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          >
-            Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature.
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--margin-bottom-1 mm-box--color-text-alternative"
-          >
-            Select providers:
+            This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
           </p>
           <div
-            class="settings-page__content-item-col settings-page__content-item-col-open-sea"
+            class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-0 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
               Blockaid
             </p>
@@ -87,11 +77,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               </div>
             </label>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-muted"
-          >
-            More providers coming soon
-          </p>
         </div>
       </div>
     </div>
@@ -117,13 +102,8 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           >
             We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language.
           </h6>
-          <h6
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--margin-bottom-1 mm-box--color-text-alternative"
-          >
-            Select providers:
-          </h6>
           <div
-            class="settings-page__content-item-col settings-page__content-item-col-open-sea"
+            class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
           >
             <h5
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-0 mm-box--color-text-default"
@@ -189,27 +169,25 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
                
             </span>
           </h6>
-          <h5
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--color-text-muted"
-          >
-            More providers coming soon
-          </h5>
         </div>
       </div>
     </div>
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-box--margin-bottom-2 mm-box--color-text-alternative"
+    >
+      Desktop App
+    </h4>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center"
       data-testid="advanced-setting-desktop-pairing"
     >
-      <div
-        class="settings-page__content-item"
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-right-2 mm-box--color-text-default"
       >
-        <span>
-          Click to run all background processes in the desktop app.
-        </span>
-      </div>
+        Click to run all background processes in the desktop app.
+      </p>
       <div
-        class="settings-page__content-item-col"
+        class="mm-box settings-page__content-item-col mm-box--padding-top-3"
       >
         <button
           class="button btn--rounded btn-primary btn--large"
