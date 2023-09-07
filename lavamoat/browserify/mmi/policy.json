@@ -873,11 +873,13 @@
     },
     "@metamask-previews/accounts-controller": {
       "globals": {
+        "console.log": true,
         "console.warn": true
       },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
+        "@metamask/keyring-api": true,
         "ethereumjs-util": true,
         "uuid": true
       }

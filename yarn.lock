@@ -3752,9 +3752,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/accounts-controller@npm:1.0.0-preview.c338244":
-  version: 1.0.0-preview.c338244
-  resolution: "@metamask-previews/accounts-controller@npm:1.0.0-preview.c338244"
+"@metamask-previews/accounts-controller@npm:1.0.0-preview.dd5d578":
+  version: 1.0.0-preview.dd5d578
+  resolution: "@metamask-previews/accounts-controller@npm:1.0.0-preview.dd5d578"
   dependencies:
     "@metamask/base-controller": "npm:^3.2.1"
     "@metamask/eth-snap-keyring": "npm:^0.2.0"
@@ -3770,7 +3770,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^7.3.0
-  checksum: b579187b83a1db18bce2fde0054a063d8bbacd96a1c2d7d56c0430dd6ea2b5713c64d383ae57a77d8192e55a08f711e9959f5acef03d63986fa995dd70db63b8
+  checksum: 60fc010c280d7298e23088a8914f6ba1ff09d5fadc39968c294ee166a5200dea1f8fcbc2ec13fa9d49deb6179576db84445a0ea19a6e223ecd1b8a42c40a551f
   languageName: node
   linkType: hard
 
@@ -24247,7 +24247,7 @@ __metadata:
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
     "@metamask-institutional/sdk": "npm:^0.1.18"
     "@metamask-institutional/transaction-update": "npm:^0.1.25"
-    "@metamask-previews/accounts-controller": "npm:1.0.0-preview.c338244"
+    "@metamask-previews/accounts-controller": "npm:1.0.0-preview.dd5d578"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^3.4.0"

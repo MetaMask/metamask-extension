@@ -863,17 +863,7 @@ export default class MetamaskController extends EventEmitter {
       getAccounts: this.coreKeyringController.getAccounts.bind(
         this.coreKeyringController,
       ),
-      onKeyringStateChange: keyringControllerMessenger.subscribe.bind(
-        keyringControllerMessenger,
-        'KeyringController:stateChange',
-      ),
       keyringApiEnabled,
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-      onSnapStateChange: this.controllerMessenger.subscribe.bind(
-        this.controllerMessenger,
-        'SnapController:stateChange',
-      ),
-      ///: END:ONLY_INCLUDE_IN
     });
 
     this.permissionController = new PermissionController({
