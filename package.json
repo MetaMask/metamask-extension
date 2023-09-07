@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.35.1",
+  "version": "11.0.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -202,7 +202,9 @@
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "lavamoat-core@^14.2.0": "patch:lavamoat-core@npm%3A14.2.0#./.yarn/patches/lavamoat-core-npm-14.2.0-c453f4f755.patch",
     "@metamask/keyring-controller@^7.2.0": "patch:@metamask/keyring-controller@npm%3A7.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-7.2.0-fcc0c7893b.patch",
-    "@metamask/signature-controller@^5.3.0": "patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch"
+    "@metamask/signature-controller@^5.3.0": "patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch",
+    "semver@7.3.7": "^7.5.4",
+    "semver@7.3.8": "^7.5.4"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -259,7 +261,7 @@
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/phishing-controller": "^6.0.0",
     "@metamask/post-message-stream": "^6.2.0",
-    "@metamask/ppom-validator": "^0.3.0",
+    "@metamask/ppom-validator": "^0.5.0",
     "@metamask/providers": "^11.1.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/rpc-methods": "^1.0.2",

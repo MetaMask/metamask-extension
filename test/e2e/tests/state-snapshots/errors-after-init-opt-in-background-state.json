@@ -218,8 +218,6 @@
     "allDetectedTokens": {}
   },
   "TxController": {
-    "unapprovedTxs": "object",
-    "currentNetworkTxList": "object",
     "transactions": "object"
   }
 }
