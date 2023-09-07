@@ -261,7 +261,7 @@
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/phishing-controller": "^6.0.0",
     "@metamask/post-message-stream": "^6.2.0",
-    "@metamask/ppom-validator": "^0.4.0",
+    "@metamask/ppom-validator": "^0.5.0",
     "@metamask/providers": "^11.1.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/rpc-methods": "^1.0.2",
