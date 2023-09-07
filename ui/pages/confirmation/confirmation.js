@@ -337,7 +337,14 @@ export default function ConfirmationPage({
   };
 
   if (isSnapAccountConform) {
-    return <CreateSnapAccount />;
+    return (
+      <CreateSnapAccount
+        onCancel={templatedValues.onCancel}
+        onSubmit={templatedValues.onSubmit}
+        snapId={pendingConfirmation.origin}
+        snapName={snapName}
+      />
+    );
   }
 
   return (

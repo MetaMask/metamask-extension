@@ -1,3 +1,4 @@
+import { on } from 'events';
 import React, { useCallback, useState } from 'react';
 import { Box, IconName } from '../../../../components/component-library';
 import {
@@ -15,6 +16,7 @@ import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorsh
 import PulseLoader from '../../../../components/ui/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { CreateSnapAccountContent } from './components';
+import { set } from 'lodash';
 
 interface Loading {
   type: 'Loading';
@@ -29,28 +31,46 @@ interface Error {
 
 type ViewState = Loading | Error | Success;
 
-const CreateSnapAccount = () => {
+interface CreateSnapAccountProps {
+  onCancel: () => Promise<void>;
+  onSubmit: () => Promise<void>;
+  snapId: string;
+  snapName: string;
+}
+
+const CreateSnapAccount = ({
+  onCancel,
+  onSubmit,
+  snapId,
+  snapName,
+}: CreateSnapAccountProps) => {
   const [viewState, setViewState] = useState<ViewState | undefined>(undefined);
   const [accountName, setAccountName] = useState('');
   const t = useI18nContext();
 
-  const onConfirm = useCallback(() => {
-    console.log('SNAPS/ onConfirm');
+  const handleOnConfirm = useCallback(async () => {
     setViewState({ type: 'Loading' });
-  }, []);
+    try {
+      await onSubmit();
+      setViewState({ type: 'Success' });
+    } catch (err) {
+      setViewState({ type: 'Error', message: (err as Error).message });
+    }
+  }, [onSubmit]);
 
-  const onCancel = useCallback(() => {
-    console.log('SNAPS/ onCancel');
-    const err = new Error('User cancelled');
-    setViewState({ type: 'Error', message: err.message });
-  }, []);
+  const handleOnCancel = useCallback(async () => {
+    setViewState({ type: 'Loading' });
+    try {
+      await onCancel();
+      setViewState({ type: 'Success' });
+    } catch (err) {
+      setViewState({ type: 'Error', message: (err as Error).message });
+    }
+  }, [onCancel]);
 
   const onAccountNameChange = useCallback((value) => {
     setAccountName(value);
   }, []);
-
-  const snapId = 'npm:@metamask/snap-simple-keyring-snap';
-  const snapName = 'Simple Keyring Snap';
 
   const renderContent = () => {
     switch (viewState?.type) {
@@ -108,9 +128,9 @@ const CreateSnapAccount = () => {
           cancelButtonType="default"
           hideCancel={false}
           disabled={false}
-          onCancel={onCancel}
+          onCancel={handleOnCancel}
           cancelText={t('cancel')}
-          onSubmit={onConfirm}
+          onSubmit={handleOnConfirm}
           submitText={t('create')}
         />
       </Box>
