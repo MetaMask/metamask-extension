@@ -1,4 +1,5 @@
 import { AccessList } from '@ethereumjs/tx';
+import { Hex } from '@metamask/utils';
 
 export enum TransactionType {
   /**
@@ -329,7 +330,7 @@ export interface TransactionMeta {
    * on incoming transactions!
    */
   blockNumber?: string;
-  chainId: string;
+  chainId: Hex;
   /** An internally unique tx identifier. */
   id: number;
   /** Time the transaction was first suggested, in unix epoch time (ms). */
@@ -362,6 +363,12 @@ export interface TransactionMeta {
   originalType: TransactionType;
   /** The current status of the transaction. */
   status: TransactionStatus;
+  /**
+  * The transaction's network ID, used for EIP-155 compliance.
+  *
+  * @deprecated Use `chainId` instead.
+  */
+  readonly metamaskNetworkId?: string;
   /** TODO: Find out what this is and document it */
   loadingDefaults: boolean;
   /** The transaction params as passed to the network provider. */
