@@ -11,6 +11,7 @@ import TransactionController from './transactions';
 import PreferencesController from './preferences';
 import AppStateController from './app-state';
 import { ControllerMessenger } from '@metamask/base-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 jest.mock('./permissions', () => ({
   getPermissionBackgroundApiMethods: () => ({
@@ -39,16 +40,8 @@ const mockAccount = {
     },
   },
   options: {},
-  methods: [
-    'personal_sign',
-    'eth_sign',
-    'eth_signTransaction',
-    'eth_signTypedData',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-  ],
-  type: 'eip155:eoa',
+  methods: [...Object.values(EthMethod)],
+  type: EthAccountType.Eoa,
 };
 const mockAccount2 = {
   address: '0x2',
@@ -60,16 +53,8 @@ const mockAccount2 = {
     },
   },
   options: {},
-  methods: [
-    'personal_sign',
-    'eth_sign',
-    'eth_signTransaction',
-    'eth_signTypedData',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-  ],
-  type: 'eip155:eoa',
+  methods: [...Object.values(EthMethod)],
+  type: EthAccountType.Eoa,
 };
 
 describe('MMIController', function () {
@@ -92,6 +77,12 @@ describe('MMIController', function () {
       },
       messenger: controllerMessenger.getRestricted({
         name: 'AccountsController',
+        allowedEvents: [
+          'SnapController:stateChange',
+          'KeyringController:accountRemoved',
+          'KeyringController:stateChange',
+          'AccountsController:selectedAccountChange',
+        ],
       }),
       onKeyringStateChange: jest.fn(),
       getKeyringForAccount: jest.fn(),
