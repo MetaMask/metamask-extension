@@ -26,7 +26,7 @@ export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
   (state) => {
-    const { transactions, networkId } = state.metamask ?? {};
+    const { transactions} = state.metamask ?? {};
 
     if (!transactions?.length) {
       return [];
@@ -35,7 +35,7 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
     const { chainId } = getProviderConfig(state);
 
     return transactions.filter((transaction) =>
-      transactionMatchesNetwork(transaction, chainId, networkId),
+      transactionMatchesNetwork(transaction, chainId),
     );
   },
   (transactions) => transactions,
