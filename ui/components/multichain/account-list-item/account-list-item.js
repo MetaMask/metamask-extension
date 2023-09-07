@@ -224,7 +224,7 @@ export const AccountListItem = ({
           {showSecondaryBalance ? (
             <Text
               variant={TextVariant.bodySm}
-              color={Color.textAlternative}
+              color={TextColor.textAlternative}
               textAlign={TextAlign.End}
               as="div"
               data-testid="account-list-item-secondary-balance"
