@@ -364,10 +364,10 @@ export interface TransactionMeta {
   /** The current status of the transaction. */
   status: TransactionStatus;
   /**
-  * The transaction's network ID, used for EIP-155 compliance.
-  *
-  * @deprecated Use `chainId` instead.
-  */
+   * The transaction's network ID, used for EIP-155 compliance.
+   *
+   * @deprecated Use `chainId` instead.
+   */
   readonly metamaskNetworkId?: string;
   /** TODO: Find out what this is and document it */
   loadingDefaults: boolean;
