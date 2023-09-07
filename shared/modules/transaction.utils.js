@@ -9,6 +9,7 @@ import {
 } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
+import { deprecatedNetworkIdMatchesChainId } from '@metamask/controller-utils';
 
 /**
  * @typedef { 'transfer' | 'approve' | 'setapprovalforall' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
@@ -39,18 +40,22 @@ const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
 
-export function transactionMatchesNetwork(transaction, chainId) {
+/**
+ * Checks whether a given transaction matches the specified chain ID.
+ * This function is used to determine if a transaction is relevant to the current chain.
+ *
+ * @param transaction - The transaction metadata to check.
+ * @param chainId - The chain ID of the current network.
+ * @returns A boolean value indicating whether the transaction matches the current chain ID.
+ */
+export function transactionMatchesChainId(transaction, chainId) {
   if (transaction.chainId !== undefined) {
     return transaction.chainId === chainId;
   }
-  // TODO: Get rid of this. Write migration
   if (transaction.metamaskNetworkId !== undefined) {
-    // Handle ETC/ETH fork
-    const networkId =
-      chainId === '0x61' ? '1' : parseInt(chainId, 16).toString();
-    return transaction.metamaskNetworkId === networkId;
+    return deprecatedNetworkIdMatchesChainId(transaction.metamaskNetworkId, chainId)
   }
-  return !chainId;
+  return false;
 }
 
 /**

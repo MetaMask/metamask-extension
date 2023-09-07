@@ -5,7 +5,7 @@ import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
 import createId from '../../../../shared/modules/random-id';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
+import { transactionMatchesChainId } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
 import {
@@ -153,7 +153,7 @@ export default class TransactionStateManager extends EventEmitter {
       this.store.getState().transactions,
       (transaction) =>
         transaction.status === TransactionStatus.unapproved &&
-        transactionMatchesNetwork(transaction, chainId),
+        transactionMatchesChainId(transaction, chainId),
     );
   }
 
@@ -436,11 +436,11 @@ export default class TransactionStateManager extends EventEmitter {
     // matching transactions that are sorted by time.
     const filteredTransactions = sortBy(
       pickBy(transactionsToFilter, (transaction) => {
-        // default matchesCriteria to the value of transactionMatchesNetwork
+        // default matchesCriteria to the value of transactionMatchesChainId
         // when filterToCurrentNetwork is true.
         if (
           filterToCurrentNetwork &&
-          transactionMatchesNetwork(transaction, chainId) === false
+          transactionMatchesChainId(transaction, chainId) === false
         ) {
           return false;
         }
@@ -610,7 +610,7 @@ export default class TransactionStateManager extends EventEmitter {
         transactions,
         (transaction) =>
           transaction.txParams.from === address &&
-          transactionMatchesNetwork(transaction, chainId),
+          transactionMatchesChainId(transaction, chainId),
       ),
     });
   }

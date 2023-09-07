@@ -10,7 +10,7 @@ import {
   TransactionType,
   SmartTransactionStatus,
 } from '../../shared/constants/transaction';
-import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
+import { transactionMatchesChainId } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedAddress } from './selectors';
@@ -35,7 +35,7 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
     const { chainId } = getProviderConfig(state);
 
     return transactions.filter((transaction) =>
-      transactionMatchesNetwork(transaction, chainId),
+      transactionMatchesChainId(transaction, chainId),
     );
   },
   (transactions) => transactions,
@@ -579,7 +579,7 @@ const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
   const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
     ({ id }) =>
       unapprovedTxs[id] &&
-      transactionMatchesNetwork(unapprovedTxs[id], chainId),
+      transactionMatchesChainId(unapprovedTxs[id], chainId),
   );
 
   return filteredUnapprovedTxInCurrentNetwork.length > 0;

@@ -6,7 +6,7 @@ import {
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
-import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
+import { transactionMatchesChainId } from '../../shared/modules/transaction.utils';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
@@ -95,7 +95,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
       (acc, address) => {
         const transactions = { ...acc };
 
-        if (transactionMatchesNetwork(unapprovedTxs[address], chainId)) {
+        if (transactionMatchesChainId(unapprovedTxs[address], chainId)) {
           transactions[address] = unapprovedTxs[address];
         }
 

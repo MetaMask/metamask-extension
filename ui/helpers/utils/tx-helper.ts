@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
+import { transactionMatchesChainId } from '../../../shared/modules/transaction.utils';
 import { valuesFor } from './util';
 
 export default function txHelper(
@@ -24,7 +24,7 @@ export default function txHelper(
 
   const txValues = chainId
     ? valuesFor(unapprovedTxs).filter((txMeta) =>
-        transactionMatchesNetwork(txMeta, chainId),
+        transactionMatchesChainId(txMeta, chainId),
       )
     : valuesFor(unapprovedTxs);
 
