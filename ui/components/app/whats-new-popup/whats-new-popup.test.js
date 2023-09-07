@@ -131,8 +131,5 @@ describe('WhatsNewPopup', () => {
     expect(
       screen.getByTestId('whats-new-description-item-1'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('whats-new-description-item-2'),
-    ).toBeInTheDocument();
   });
 });

@@ -56,10 +56,10 @@ const TRANSACTION_META_MOCK = {
   hash: '0x1',
   id: 1,
   status: TransactionStatus.confirmed,
-  transaction: {
+  time: 123456789,
+  txParams: {
     from: VALID_ADDRESS,
   },
-  time: 123456789,
 };
 
 async function flushPromises() {
@@ -186,21 +186,10 @@ describe('Transaction Controller', function () {
     it('should return a state object with the right keys and data types', function () {
       const exposedState = txController.getState();
       assert.ok(
-        'unapprovedTxs' in exposedState,
-        'state should have the key unapprovedTxs',
+        'transactions' in exposedState,
+        'state should have the key transactions',
       );
-      assert.ok(
-        'currentNetworkTxList' in exposedState,
-        'state should have the key currentNetworkTxList',
-      );
-      assert.ok(
-        typeof exposedState?.unapprovedTxs === 'object',
-        'should be an object',
-      );
-      assert.ok(
-        Array.isArray(exposedState.currentNetworkTxList),
-        'should be an array',
-      );
+      assert.ok(Array.isArray(exposedState.transactions), 'should be an array');
     });
   });
 

@@ -412,6 +412,10 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:infuraIsUnblocked',
       ),
+      onAccountRemoved: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'KeyringController:accountRemoved',
+      ),
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
@@ -757,6 +761,10 @@ export default class MetamaskController extends EventEmitter {
         initState.AccountTracker?.accounts
           ? { accounts: initState.AccountTracker.accounts }
           : { accounts: {} },
+      onAccountRemoved: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'KeyringController:accountRemoved',
+      ),
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -1847,14 +1855,16 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
    *
+   * @param {string} snapId - The ID of the snap the handler is being triggered on.
    * @param {string} handler - The handler to trigger on the snap for the request.
    */
   _trackSnapExportUsage = throttle(
-    (handler) =>
+    (snapId, handler) =>
       this.metaMetricsController.trackEvent({
         event: MetaMetricsEventName.SnapExportUsed,
         category: MetaMetricsEventCategory.Snaps,
         properties: {
+          snap_id: snapId,
           export: handler,
         },
       }),
@@ -1872,7 +1882,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   handleSnapRequest(args) {
-    this._trackSnapExportUsage(args.handler);
+    this._trackSnapExportUsage(args.snapId, args.handler);
 
     return this.controllerMessenger.call('SnapController:handleRequest', args);
   }
@@ -3551,10 +3561,6 @@ export default class MetamaskController extends EventEmitter {
   async removeAccount(address) {
     // Remove all associated permissions
     this.removeAllAccountPermissions(address);
-    // Remove account from the preferences controller
-    this.preferencesController.removeAddress(address);
-    // Remove account from the account tracker controller
-    this.accountTracker.removeAccount([address]);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.custodyController.removeAccount(address);
@@ -4070,7 +4076,11 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     engine.push(
-      createPPOMMiddleware(this.ppomController, this.preferencesController),
+      createPPOMMiddleware(
+        this.ppomController,
+        this.preferencesController,
+        this.networkController,
+      ),
     );
     ///: END:ONLY_INCLUDE_IN
 
