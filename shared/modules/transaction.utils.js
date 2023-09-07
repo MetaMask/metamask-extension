@@ -2,6 +2,7 @@ import { isHexString } from 'ethereumjs-util';
 import { Interface } from '@ethersproject/abi';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
+import { deprecatedNetworkIdMatchesChainId } from '@metamask/controller-utils';
 import {
   AssetType,
   TokenStandard,
@@ -9,7 +10,6 @@ import {
 } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
-import { deprecatedNetworkIdMatchesChainId } from '@metamask/controller-utils';
 
 /**
  * @typedef { 'transfer' | 'approve' | 'setapprovalforall' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
@@ -53,7 +53,10 @@ export function transactionMatchesChainId(transaction, chainId) {
     return transaction.chainId === chainId;
   }
   if (transaction.metamaskNetworkId !== undefined) {
-    return deprecatedNetworkIdMatchesChainId(transaction.metamaskNetworkId, chainId)
+    return deprecatedNetworkIdMatchesChainId(
+      transaction.metamaskNetworkId,
+      chainId,
+    );
   }
   return false;
 }

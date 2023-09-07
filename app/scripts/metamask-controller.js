@@ -389,9 +389,8 @@ export default class MetamaskController extends EventEmitter {
     // TODO: Delete when ready to remove `networkVersion` from provider object
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
-      () => this._notifyChainChange()
-    )
-
+      () => this._notifyChainChange(),
+    );
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
@@ -2178,10 +2177,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {object} An object with relevant network state properties.
    */
   getProviderNetworkState() {
-    const chainId = this.networkController.state.providerConfig.chainId
+    const { chainId } = this.networkController.state.providerConfig;
     return {
       chainId,
-      networkVersion: deprecatedConvertChainIdToNetworkId(chainId)
+      networkVersion: deprecatedConvertChainIdToNetworkId(chainId),
     };
   }
 
