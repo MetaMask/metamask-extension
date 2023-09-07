@@ -12,7 +12,6 @@ import {
   getCurrentChainId,
   getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
-  getUnapprovedTransactions,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -63,7 +62,6 @@ function mapStateToProps(state) {
     isNetworkUsed: getIsNetworkUsed(state),
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
-    unapprovedTransactions: getUnapprovedTransactions(state),
     currentChainId: getCurrentChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     forgottenPassword: state.metamask.forgottenPassword,
