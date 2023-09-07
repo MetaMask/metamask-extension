@@ -19,6 +19,8 @@ import {
   BlockSize,
   Size,
   TextColor,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -85,24 +87,22 @@ export const AccountListMenu = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent
         className="multichain-account-menu-popover"
-        modalDialogProps={{ padding: 0, marginBottom: 0 }}
+        modalDialogProps={{
+          className: 'multichain-account-menu-popover__dialog',
+          padding: 0,
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+        }}
       >
         <ModalHeader
-          paddingTop={4}
-          paddingRight={4}
-          paddingBottom={6}
+          padding={4}
           onClose={onClose}
           onBack={actionMode === '' ? null : () => setActionMode('')}
         >
           {title}
         </ModalHeader>
         {actionMode === 'add' ? (
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-          >
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <CreateAccount
               onActionComplete={(confirmed) => {
                 if (confirmed) {
@@ -133,7 +133,7 @@ export const AccountListMenu = ({ onClose }) => {
           </Box>
         ) : null}
         {actionMode === '' ? (
-          <Box>
+          <>
             {/* Search box */}
             {accounts.length > 1 ? (
               <Box
@@ -315,7 +315,7 @@ export const AccountListMenu = ({ onClose }) => {
                 ///: END:ONLY_INCLUDE_IN
               }
             </Box>
-          </Box>
+          </>
         ) : null}
       </ModalContent>
     </Modal>

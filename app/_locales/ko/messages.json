@@ -1159,6 +1159,9 @@
     "message": "$1 설명",
     "description": "$1 represents the name of the snap"
   },
+  "desktopApp": {
+    "message": "데스크톱 앱"
+  },
   "desktopConnectionCriticalErrorDescription": {
     "message": "이는 간헐적인 오류일 수 있습니다. 확장 프로그램을 다시 시작하거나 MetaMask 데스크톱을 비활성화해 보세요."
   },
@@ -2777,6 +2780,9 @@
   "notifications23ActionText": {
     "message": "보안 경고 활성화"
   },
+  "notifications23DescriptionOne": {
+    "message": "이더리움 메인넷에서 Blockaid가 제공하는 보안 경고를 통해 개인정보를 보호하면서 사기를 피하세요."
+  },
   "notifications23DescriptionTwo": {
     "message": "요청을 승인하기 전에 항상 직접 확인하세요."
   },
@@ -2873,6 +2879,14 @@
   "notifications9Title": {
     "message": "👓 사용자가 트랜잭션을 이해하기 쉽게 도와드립니다."
   },
+  "notificationsDropLedgerFirefoxDescription": {
+    "message": "Firefox에서 더 이상 U2F를 지원하지 않아 Firefox를 이용한 MetaMask에서 Ledger를 이용할 수 없습니다. 대신 Google Chrome에서 MetaMask를 이용해 보세요.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
+  },
+  "notificationsDropLedgerFirefoxTitle": {
+    "message": "Firefox의 Ledger 지원 중단",
+    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
+  },
   "notificationsEmptyText": {
     "message": "설치한 스냅에서 알림을 찾을 수 있는 곳입니다."
   },
@@ -2885,6 +2899,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "모두 읽음으로 표시"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "자세히 알아보기"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 MetaMask Snaps의 오픈 베타가 시작되었습니다!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "개발자 커뮤니티가 구축한 스냅으로 지갑을 개별 맞춤하세요!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "스냅은 추가 네트워크 연결, 트랜잭션 인사이트 확인, 커스텀 알림 받기 등 사용자가 MetaMask에서 더욱 다양한 기능을 사용할 수 있도록 합니다."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "MetaMask Snaps 소개"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
@@ -3671,8 +3700,15 @@
   "securityAlerts": {
     "message": "보안 경고"
   },
+  "securityAlertsDescription": {
+    "message": "이 기능은 개인정보를 보호하면서 트랜잭션 및 서명 요청을 적극적으로 검토하여 이더리움 메인넷에서 악의적인 활동이 있는 경우 경고합니다. 사용자 데이터는 이 서비스를 제공하는 제삼자와 공유되지 않습니다. 요청을 승인하기 전에 항상 직접 확인하세요. 이 기능이 모든 악의적인 활동 탐지를 보장하는 것은 아닙니다."
+  },
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
+  },
+  "securityProviderPoweredBy": {
+    "message": "$1 제공",
+    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "세부 정보 보기"
@@ -4062,6 +4098,10 @@
   },
   "snapsNoInsight": {
     "message": "스냅이 인사이트를 가져오지 못했습니다"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "타사와 공유하는 모든 정보는 해당 타사의 개인정보 처리방침에 따라 직접 수집됩니다. 더 자세한 내용은 해당 회사의 개인정보 처리방침을 참고하시기 바랍니다.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "스냅 관리"
