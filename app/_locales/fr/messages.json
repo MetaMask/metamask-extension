@@ -2900,6 +2900,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Marquer tout comme lu"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "En savoir plus"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Nous sommes ravis d’annoncer le lancement de la version bêta publique de MetaMask Snaps !"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personnalisez votre portefeuille avec des snaps conçus par la communauté de développeurs !"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Les snaps vous aident à profiter pleinement de MetaMask, par exemple vous connecter à plus de réseaux, voir un aperçu des transactions et recevoir des notifications personnalisées."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Présentation de MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
     "description": "$1 is the number of new tokens detected"
@@ -4083,6 +4098,10 @@
   },
   "snapsNoInsight": {
     "message": "Le snap n’a renvoyé aucun aperçu"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Toute information que vous partagez avec des services tiers sera collectée directement par ces services tiers conformément à leur politique de confidentialité. Pour plus d’informations, veuillez consulter leur politique de confidentialité.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Gérez vos Snaps"
