@@ -194,7 +194,6 @@ import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
-import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
@@ -413,8 +412,13 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:infuraIsUnblocked',
       ),
+      onAccountRemoved: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'KeyringController:accountRemoved',
+      ),
       tokenListController: this.tokenListController,
       provider: this.provider,
+      networkConfigurations: this.networkController.state.networkConfigurations,
     });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
@@ -757,6 +761,10 @@ export default class MetamaskController extends EventEmitter {
         initState.AccountTracker?.accounts
           ? { accounts: initState.AccountTracker.accounts }
           : { accounts: {} },
+      onAccountRemoved: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'KeyringController:accountRemoved',
+      ),
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -1090,8 +1098,8 @@ export default class MetamaskController extends EventEmitter {
       refetchOnAllowlistMiss: requireAllowlist,
       failOnUnavailableRegistry: requireAllowlist,
       url: {
-        registry: 'https://acl.execution.metamask.io/latest/registry.json',
-        signature: 'https://acl.execution.metamask.io/latest/signature.json',
+        registry: 'https://acl.execution.consensys.io/latest/registry.json',
+        signature: 'https://acl.execution.consensys.io/latest/signature.json',
       },
       publicKey:
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
@@ -1359,8 +1367,8 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       getEncryptionPublicKey:
-        this.keyringController.getEncryptionPublicKey.bind(
-          this.keyringController,
+        this.coreKeyringController.getEncryptionPublicKey.bind(
+          this.coreKeyringController,
         ),
       getAccountKeyringType:
         this.coreKeyringController.getAccountKeyringType.bind(
@@ -1444,6 +1452,9 @@ export default class MetamaskController extends EventEmitter {
           this.gasFeeController.fetchGasFeeEstimates.bind(
             this.gasFeeController,
           ),
+        trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
       },
       initState.SwapsController,
     );
@@ -1844,14 +1855,16 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
    *
+   * @param {string} snapId - The ID of the snap the handler is being triggered on.
    * @param {string} handler - The handler to trigger on the snap for the request.
    */
   _trackSnapExportUsage = throttle(
-    (handler) =>
+    (snapId, handler) =>
       this.metaMetricsController.trackEvent({
         event: MetaMetricsEventName.SnapExportUsed,
         category: MetaMetricsEventCategory.Snaps,
         properties: {
+          snap_id: snapId,
           export: handler,
         },
       }),
@@ -1869,7 +1882,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   handleSnapRequest(args) {
-    this._trackSnapExportUsage(args.handler);
+    this._trackSnapExportUsage(args.snapId, args.handler);
 
     return this.controllerMessenger.call('SnapController:handleRequest', args);
   }
@@ -1975,10 +1988,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.preferencesController.store.subscribe(async (state) => {
       const { selectedAddress, currentLocale } = state;
-
+      const { chainId } = this.networkController.state.providerConfig;
       await updateCurrentLocale(currentLocale);
 
-      if (state?.featureFlags?.showIncomingTransactions) {
+      if (state.incomingTransactionsPreferences?.[chainId]) {
         this.txController.startIncomingTransactionPolling();
       } else {
         this.txController.stopIncomingTransactionPolling();
@@ -2091,6 +2104,15 @@ export default class MetamaskController extends EventEmitter {
         }, []);
 
         this.dismissNotifications(notificationIds);
+
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.SnapUninstalled,
+          category: MetaMetricsEventCategory.Snaps,
+          properties: {
+            snap_id: truncatedSnap.id,
+            version: truncatedSnap.version,
+          },
+        });
       },
     );
 
@@ -2280,6 +2302,10 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
+      setIncomingTransactionsPreferences:
+        preferencesController.setIncomingTransactionsPreferences.bind(
+          preferencesController,
+        ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,
@@ -3005,6 +3031,20 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
+   *
+   * @param {Uint8Array} wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
+   * @returns {Buffer} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
+   */
+  _convertEnglishWordlistIndicesToCodepoints(wordlistIndices) {
+    return Buffer.from(
+      Array.from(new Uint16Array(wordlistIndices.buffer))
+        .map((i) => wordlist[i])
+        .join(' '),
+    );
+  }
+
+  /**
    * Get an account balance from the AccountTracker or request it directly from the network.
    *
    * @param {string} address - The account address
@@ -3444,28 +3484,9 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
+    return this._convertEnglishWordlistIndicesToCodepoints(
+      await this.coreKeyringController.verifySeedPhrase(),
     );
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found');
-    }
-
-    const serialized = await primaryKeyring.serialize();
-    const seedPhraseAsBuffer = Buffer.from(serialized.mnemonic);
-
-    const accounts = await primaryKeyring.getAccounts();
-    if (accounts.length < 1) {
-      throw new Error('MetamaskController - No accounts found');
-    }
-
-    try {
-      await seedPhraseVerifier.verifyAccounts(accounts, seedPhraseAsBuffer);
-      return Array.from(seedPhraseAsBuffer.values());
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
   }
 
   /**
@@ -3540,10 +3561,6 @@ export default class MetamaskController extends EventEmitter {
   async removeAccount(address) {
     // Remove all associated permissions
     this.removeAllAccountPermissions(address);
-    // Remove account from the preferences controller
-    this.preferencesController.removeAddress(address);
-    // Remove account from the account tracker controller
-    this.accountTracker.removeAccount([address]);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.custodyController.removeAccount(address);
@@ -4059,7 +4076,11 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     engine.push(
-      createPPOMMiddleware(this.ppomController, this.preferencesController),
+      createPPOMMiddleware(
+        this.ppomController,
+        this.preferencesController,
+        this.networkController,
+      ),
     );
     ///: END:ONLY_INCLUDE_IN
 
@@ -4181,14 +4202,21 @@ export default class MetamaskController extends EventEmitter {
             this.institutionalFeaturesController,
           ),
         handleMmiCheckIfTokenIsPresent:
-          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiDashboardData:
-          this.mmiController.handleMmiDashboardData.bind(this),
-        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
+          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(
+            this.mmiController,
+          ),
+        handleMmiDashboardData: this.mmiController.handleMmiDashboardData.bind(
+          this.mmiController,
+        ),
+        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(
+          this.mmiController,
+        ),
         handleMmiSetAccountAndNetwork:
-          this.mmiController.setAccountAndNetwork.bind(this),
+          this.mmiController.setAccountAndNetwork.bind(this.mmiController),
         handleMmiOpenAddHardwareWallet:
-          this.mmiController.handleMmiOpenAddHardwareWallet.bind(this),
+          this.mmiController.handleMmiOpenAddHardwareWallet.bind(
+            this.mmiController,
+          ),
         ///: END:ONLY_INCLUDE_IN
       }),
     );

@@ -871,10 +871,7 @@ describe('MetaMaskController', function () {
         try {
           await metamaskController.verifySeedPhrase();
         } catch (error) {
-          assert.equal(
-            error.message,
-            'MetamaskController - No HD Key Tree found',
-          );
+          assert.equal(error.message, 'No HD keyring found.');
         }
       });
 
@@ -947,8 +944,6 @@ describe('MetaMaskController', function () {
           getAccounts: sinon.stub().returns(Promise.resolve([])),
           destroy: sinon.stub(),
         };
-        sinon.stub(metamaskController.preferencesController, 'removeAddress');
-        sinon.stub(metamaskController.accountTracker, 'removeAccount');
         sinon.stub(metamaskController.keyringController, 'removeAccount');
         sinon.stub(metamaskController, 'removeAllAccountPermissions');
         sinon
@@ -963,28 +958,12 @@ describe('MetaMaskController', function () {
 
       afterEach(function () {
         metamaskController.keyringController.removeAccount.restore();
-        metamaskController.accountTracker.removeAccount.restore();
-        metamaskController.preferencesController.removeAddress.restore();
         metamaskController.removeAllAccountPermissions.restore();
 
         mockKeyring.getAccounts.resetHistory();
         mockKeyring.destroy.resetHistory();
       });
 
-      it('should call preferencesController.removeAddress', async function () {
-        assert(
-          metamaskController.preferencesController.removeAddress.calledWith(
-            addressToRemove,
-          ),
-        );
-      });
-      it('should call accountTracker.removeAccount', async function () {
-        assert(
-          metamaskController.accountTracker.removeAccount.calledWith([
-            addressToRemove,
-          ]),
-        );
-      });
       it('should call keyringController.removeAccount', async function () {
         assert(
           metamaskController.keyringController.removeAccount.calledWith(
@@ -1686,24 +1665,24 @@ describe('MetaMaskController', function () {
         controllerMessengerSpy = ControllerMessenger.prototype;
       });
 
-      it('starts incoming transaction polling if show incoming transactions enabled', async function () {
+      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async function () {
         assert(txControllerStub.startIncomingTransactionPolling.notCalled);
 
         await preferencesControllerSpy.store.subscribe.lastCall.args[0]({
-          featureFlags: {
-            showIncomingTransactions: true,
+          incomingTransactionsPreferences: {
+            [MAINNET_CHAIN_ID]: true,
           },
         });
 
         assert(txControllerStub.startIncomingTransactionPolling.calledOnce);
       });
 
-      it('stops incoming transaction polling if show incoming transactions disabled', async function () {
+      it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainIdd', async function () {
         assert(txControllerStub.stopIncomingTransactionPolling.notCalled);
 
         await preferencesControllerSpy.store.subscribe.lastCall.args[0]({
-          featureFlags: {
-            showIncomingTransactions: false,
+          incomingTransactionsPreferences: {
+            [MAINNET_CHAIN_ID]: false,
           },
         });
 

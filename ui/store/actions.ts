@@ -41,6 +41,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
+  getCurrentNetworkTransactions,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -2066,7 +2067,8 @@ export function createCancelTransaction(
             return;
           }
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
@@ -2103,7 +2105,8 @@ export function createSpeedUpTransaction(
           }
 
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
             resolve(newState);
           }
@@ -2135,7 +2138,8 @@ export function createRetryTransaction(
             return;
           }
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
             resolve(newState);
           }
@@ -2564,6 +2568,8 @@ export function hideWarning() {
 export function exportAccount(
   password: string,
   address: string,
+  setPrivateKey: (key: string) => void,
+  setShowHoldToReveal: (show: boolean) => void,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return function (dispatch) {
     dispatch(showLoadingIndication());
@@ -2592,7 +2598,8 @@ export function exportAccount(
               return;
             }
 
-            dispatch(showPrivateKey(result as string));
+            setPrivateKey(result as string);
+            setShowHoldToReveal(true);
             resolve(result as string);
           },
         );
@@ -2693,7 +2700,7 @@ interface TemporaryFeatureFlagDef {
   [feature: string]: boolean;
 }
 interface TemporaryPreferenceFlagDef {
-  [preference: string]: boolean;
+  [preference: string]: boolean | object;
 }
 
 export function setFeatureFlag(
@@ -2729,7 +2736,7 @@ export function setFeatureFlag(
 
 export function setPreference(
   preference: string,
-  value: boolean | string,
+  value: boolean | string | object,
 ): ThunkAction<
   Promise<TemporaryPreferenceFlagDef>,
   MetaMaskReduxState,
@@ -2744,13 +2751,11 @@ export function setPreference(
         [preference, value],
         (err, updatedPreferences) => {
           dispatch(hideLoadingIndication());
-
           if (err) {
             dispatch(displayWarning(err));
             reject(err);
             return;
           }
-
           resolve(updatedPreferences as TemporaryPreferenceFlagDef);
         },
       );
@@ -2787,6 +2792,21 @@ export function setShowTestNetworks(value: boolean) {
 
 export function setAutoLockTimeLimit(value: boolean) {
   return setPreference('autoLockTimeLimit', value);
+}
+
+export function setIncomingTransactionsPreferences(
+  chainId: string,
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setIncomingTransactionsPreferences`);
+    await submitRequestToBackground('setIncomingTransactionsPreferences', [
+      chainId,
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
 }
 
 export function setCompletedOnboarding(): ThunkAction<
@@ -3068,7 +3088,7 @@ export function detectNfts(): ThunkAction<
 }
 
 export function setAdvancedGasFee(
-  val: { maxBaseFee?: Hex; priorityFee?: Hex } | null,
+  val: { chainId: Hex; maxBaseFee?: Hex; priorityFee?: Hex } | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());

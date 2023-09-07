@@ -11,9 +11,16 @@ import SimulationErrorMessage from '../../ui/simulation-error-message';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
+  txData,
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
@@ -22,6 +29,19 @@ const TransactionAlerts = ({
 
   return (
     <div className="transaction-alerts">
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
+      {isSuspiciousResponse(txData?.securityProviderResponse) && (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
+      )}
+
       {supportsEIP1559 && hasSimulationError && (
         <SimulationErrorMessage
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -72,6 +92,7 @@ const TransactionAlerts = ({
 TransactionAlerts.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
   setUserAcknowledgedGasMissing: PropTypes.func,
+  txData: PropTypes.object,
 };
 
 export default TransactionAlerts;

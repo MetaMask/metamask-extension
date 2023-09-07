@@ -228,8 +228,9 @@ export default class TransactionController extends EventEmitter {
       getNetworkState: () => this._getNetworkState(),
       isEnabled: () =>
         Boolean(
-          this.preferencesStore.getState().featureFlags
-            ?.showIncomingTransactions && this._hasCompletedOnboarding(),
+          this.preferencesStore.getState().incomingTransactionsPreferences?.[
+            this._getCurrentChainId()
+          ] && this._hasCompletedOnboarding(),
         ),
       lastFetchedBlockNumbers: opts.initState?.lastFetchedBlockNumbers || {},
       remoteTransactionSource: new EtherscanRemoteTransactionSource({
@@ -1937,9 +1938,13 @@ export default class TransactionController extends EventEmitter {
      */
     this.getTransactions = (opts) => this.txStateManager.getTransactions(opts);
 
-    /** @returns {object} the saved default values for advancedGasFee */
+    /**
+     * @returns {object} the saved default values for advancedGasFee
+     */
     this.getAdvancedGasFee = () =>
-      this.preferencesStore.getState().advancedGasFee;
+      this.preferencesStore.getState().advancedGasFee[
+        this._getCurrentChainId()
+      ];
   }
 
   // called once on startup
@@ -2130,16 +2135,12 @@ export default class TransactionController extends EventEmitter {
    * Updates the memStore in transaction controller
    */
   _updateMemstore() {
-    const { transactions } = this.store.getState();
-    const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
-
-    const currentNetworkTxList = this.txStateManager.getTransactions({
+    const transactions = this.getTransactions({
+      filterToCurrentNetwork: false,
       limit: MAX_MEMSTORE_TX_LIST_SIZE,
     });
 
     this.memStore.updateState({
-      unapprovedTxs,
-      currentNetworkTxList,
       transactions,
     });
   }

@@ -8,6 +8,7 @@ module.exports = {
     './app/scripts/controllers/app-state.test.js',
     './app/scripts/controllers/permissions/**/*.test.js',
     './app/scripts/controllers/mmi-controller.test.js',
+    './app/scripts/controllers/preferences.test.js',
     './app/scripts/constants/error-utils.test.js',
     './development/fitness-functions/**/*.test.ts',
     './test/e2e/helpers.test.js',
