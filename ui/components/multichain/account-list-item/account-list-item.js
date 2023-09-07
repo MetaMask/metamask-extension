@@ -32,6 +32,7 @@ import {
   Display,
   BackgroundColor,
   BlockSize,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -78,6 +79,9 @@ export const AccountListItem = ({
   closeMenu,
   connectedAvatar,
   connectedAvatarName,
+  showSecondaryBalance = true,
+  showDisconnectIcon = false,
+  connectionStatus = null,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -217,18 +221,21 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          <Text
-            variant={TextVariant.bodySm}
-            color={Color.textAlternative}
-            textAlign={TextAlign.End}
-            as="div"
-          >
-            <UserPreferencedCurrencyDisplay
-              ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-              value={identity.balance}
-              type={SECONDARY}
-            />
-          </Text>
+          {showSecondaryBalance ? (
+            <Text
+              variant={TextVariant.bodySm}
+              color={Color.textAlternative}
+              textAlign={TextAlign.End}
+              as="div"
+              data-testid="account-list-item-secondary-balance"
+            >
+              <UserPreferencedCurrencyDisplay
+                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                value={identity.balance}
+                type={SECONDARY}
+              />
+            </Text>
+          ) : null}
         </Box>
         {label ? (
           <Tag
@@ -239,35 +246,56 @@ export const AccountListItem = ({
             }}
           />
         ) : null}
+        {connectionStatus ? (
+          <Text
+            variant={TextVariant.bodyXs}
+            color={TextColor.successDefault}
+            data-testid="account-list-item-connected-status"
+          >
+            {connectionStatus}
+          </Text>
+        ) : null}
       </Box>
-      <ButtonIcon
-        ariaLabel={`${identity.name} ${t('options')}`}
-        iconName={IconName.MoreVertical}
-        size={IconSize.Sm}
-        ref={setAccountListItemMenuRef}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (!accountOptionsMenuOpen) {
-            trackEvent({
-              event: MetaMetricsEventName.AccountDetailMenuOpened,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: 'Account Options',
-              },
-            });
-          }
-          setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
-        }}
-        data-testid="account-list-item-menu-button"
-      />
-      <AccountListItemMenu
-        anchorElement={accountListItemMenuElement}
-        identity={identity}
-        onClose={() => setAccountOptionsMenuOpen(false)}
-        isOpen={accountOptionsMenuOpen}
-        isRemovable={keyring?.type !== KeyringType.hdKeyTree}
-        closeMenu={closeMenu}
-      />
+      {showDisconnectIcon ? (
+        <>
+          <ButtonIcon
+            iconName={IconName.Slash}
+            size={IconSize.Sm}
+            data-testid="account-list-item-disconnect-buttonicon"
+          />
+        </>
+      ) : (
+        <>
+          <ButtonIcon
+            ariaLabel={`${identity.name} ${t('options')}`}
+            iconName={IconName.MoreVertical}
+            size={IconSize.Sm}
+            ref={setAccountListItemMenuRef}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!accountOptionsMenuOpen) {
+                trackEvent({
+                  event: MetaMetricsEventName.AccountDetailMenuOpened,
+                  category: MetaMetricsEventCategory.Navigation,
+                  properties: {
+                    location: 'Account Options',
+                  },
+                });
+              }
+              setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
+            }}
+            data-testid="account-list-item-menu-button"
+          />
+          <AccountListItemMenu
+            anchorElement={accountListItemMenuElement}
+            identity={identity}
+            onClose={() => setAccountOptionsMenuOpen(false)}
+            isOpen={accountOptionsMenuOpen}
+            isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+            closeMenu={closeMenu}
+          />
+        </>
+      )}
     </Box>
   );
 };
@@ -285,6 +313,18 @@ AccountListItem.propTypes = {
    * Represents if this account is currently selected
    */
   selected: PropTypes.bool,
+  /**
+   * Represents if the disconnect icon should be shown
+   */
+  showDisconnectIcon: PropTypes.bool,
+  /**
+   * Represents the connection status of the account
+   */
+  connectionStatus: PropTypes.string,
+  /**
+   *  Represents if the secondary balance should be shown
+   */
+  showSecondaryBalance: PropTypes.bool,
   /**
    * Function to execute when the item is clicked
    */

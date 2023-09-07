@@ -101,6 +101,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         </div>
         <div
           class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+          data-testid="account-list-item-secondary-balance"
         >
           <div
             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"

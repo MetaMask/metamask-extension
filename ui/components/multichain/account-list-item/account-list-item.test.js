@@ -104,6 +104,52 @@ describe('AccountListItem', () => {
     expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
   });
 
+  it('does not render secondary balance when showSecondaryBalance prop is false', () => {
+    render({ showSecondaryBalance: false });
+    expect(
+      document.querySelector(
+        '[data-testid="account-list-item-secondary-balance"]',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders secondary balance when showSecondaryBalance prop is true', () => {
+    render({ showSecondaryBalance: true });
+    expect(
+      document.querySelector(
+        '[data-testid="account-list-item-secondary-balance"]',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the disconnect icon when showDisconnectIcon prop is true', () => {
+    render({ showDisconnectIcon: true });
+    expect(
+      document.querySelector(
+        '[data-testid="account-list-item-disconnect-buttonicon"]',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render the disconnect icon when showDisconnectIcon prop is false', () => {
+    render({ showDisconnectIcon: false });
+    expect(
+      document.querySelector(
+        '[data-testid="account-list-item-disconnect-buttonicon"]',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the connected status when connectionStatus prop is provided', () => {
+    const connectionStatus = 'Active';
+    render({ connectionStatus });
+    expect(
+      document.querySelector(
+        '[data-testid="account-list-item-connected-status"]',
+      ),
+    ).toBeInTheDocument();
+  });
+
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   it('renders the snap label for snap accounts', () => {
     const { getByText } = render({

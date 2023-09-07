@@ -125,5 +125,58 @@ ConnectedSiteChaosItem.args = {
   connectedAvatar: 'https://uniswap.org/favicon.ico',
   connectedAvatarName: 'Uniswap',
 };
+export const DisconnectSiteAccountCell = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+DisconnectSiteAccountCell.args = {
+  ...DefaultStory.args,
+  showSecondaryBalance: false,
+  showDisconnectIcon: true,
+  connectionStatus: 'Active',
+};
+
+export const WithoutSecondaryBalance = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+WithoutSecondaryBalance.args = {
+  ...DefaultStory.args,
+  showSecondaryBalance: false,
+};
+
+export const WithDisconnectIcon = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+WithDisconnectIcon.args = {
+  ...DefaultStory.args,
+  showDisconnectIcon: true,
+};
+
+export const WithConnectionStatus = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+WithConnectionStatus.args = {
+  ...DefaultStory.args,
+  connectionStatus: 'Active',
+};
+
+export const AllProps = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+AllProps.args = {
+  ...DefaultStory.args,
+  showSecondaryBalance: true,
+  showDisconnectIcon: true,
+  connectionStatus: 'Active',
+};
 
 DefaultStory.storyName = 'Default';
