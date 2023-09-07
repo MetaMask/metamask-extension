@@ -1,4 +1,3 @@
-import { on } from 'events';
 import React, { useCallback, useState } from 'react';
 import { Box, IconName } from '../../../../components/component-library';
 import {
@@ -15,8 +14,10 @@ import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import PulseLoader from '../../../../components/ui/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
-import { CreateSnapAccountContent } from './components';
-import { set } from 'lodash';
+import {
+  CreateSnapAccountContent,
+  CreateSnapAccountSuccess,
+} from './components';
 
 interface Loading {
   type: 'Loading';
@@ -92,7 +93,7 @@ const CreateSnapAccount = ({
           />
         );
       case 'Success':
-        return null;
+        return <CreateSnapAccountSuccess />;
       default:
         return (
           <CreateSnapAccountContent

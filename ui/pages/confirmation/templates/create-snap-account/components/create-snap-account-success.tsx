@@ -9,16 +9,16 @@ import {
   TextVariant,
   FlexDirection,
   Display,
-  Severity,
 } from '../../../../../helpers/constants/design-system';
 import {
   Text,
   AvatarIcon,
-  BannerAlert,
   Box,
+  IconName,
+  AvatarIconSize,
 } from '../../../../../components/component-library';
 
-const InstallError = ({ title, error, description, iconName }) => {
+const CreateSnapAccountSuccess = () => {
   return (
     <Box
       display={Display.Flex}
@@ -28,38 +28,19 @@ const InstallError = ({ title, error, description, iconName }) => {
       height={BlockSize.Full}
       padding={2}
     >
-      {iconName && (
-        <AvatarIcon
-          iconName={iconName}
-          size={IconSize.Xl}
-          iconProps={{
-            size: IconSize.Xl,
-          }}
-          color={IconColor}
-          backgroundColor={BackgroundColor.errorMuted}
-          marginBottom={4}
-        />
-      )}
-      <Text variant={TextVariant.headingLg}>{title}</Text>
-      {description && <Text textAlign={TextAlign.Center}>{description}</Text>}
-      {error && (
-        <BannerAlert
-          marginTop={4}
-          startAccessory={null}
-          severity={Severity.Danger}
-        >
-          <Text variant={TextVariant.bodySm}>{error}</Text>
-        </BannerAlert>
-      )}
+      <AvatarIcon
+        iconName={IconName.Check}
+        backgroundColor={BackgroundColor.successMuted}
+        size={AvatarIconSize.Xl}
+        marginBottom={4}
+        iconProps={{ name: IconName.Check, color: IconColor.successDefault }}
+      />
+      <Text variant={TextVariant.headingLg}>Your account is ready!</Text>
+      <Text textAlign={TextAlign.Center}>
+        You can find your Snap account in your wallet
+      </Text>
     </Box>
   );
 };
 
-InstallError.propTypes = {
-  title: PropTypes.node.isRequired,
-  error: PropTypes.string,
-  description: PropTypes.string,
-  iconName: PropTypes.string,
-};
-
-export default InstallError;
+export default CreateSnapAccountSuccess;
