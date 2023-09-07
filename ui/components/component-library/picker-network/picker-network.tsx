@@ -1,10 +1,5 @@
 import React from 'react';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { getTestNetworkBackgroundColor } from '../../../selectors';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
 import { BoxProps, PolymorphicRef } from '../box';
 import {
   AvatarNetwork,
@@ -25,7 +20,6 @@ import {
   BorderColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   PickerNetworkComponent,
   PickerNetworkProps,
@@ -45,18 +39,6 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
     }: PickerNetworkProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const t = useI18nContext();
-    const { nickname, type: networkType } = useSelector(getProviderConfig);
-    const testNetworkBackgroundColor = useSelector(
-      getTestNetworkBackgroundColor,
-    );
-
-    const displayLabel =
-      label ||
-      (networkType === NETWORK_TYPES.RPC
-        ? nickname ?? t('privateNetwork')
-        : t(getNetworkLabelKey(networkType)));
-
     return (
       <Box
         className={classnames(
@@ -85,11 +67,8 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
         <AvatarNetwork
           className="mm-picker-network__avatar-network"
           src={src}
-          name={displayLabel}
+          name={label}
           size={avatarNetworkProps?.size ?? AvatarNetworkSize.Xs}
-          backgroundColor={
-            avatarNetworkProps?.backgroundColor ?? testNetworkBackgroundColor
-          }
           {...avatarNetworkProps}
         />
         <Text
@@ -97,7 +76,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
           variant={TextVariant.bodySm}
           color={labelColor ?? TextColor.textAlternative}
         >
-          {displayLabel}
+          {label}
         </Text>
         {props.onClick ? (
           <Icon

@@ -3,8 +3,14 @@
 
   max-width: fit-content;
   height: var(--picker-network-height);
+}
 
+.mm-picker-network-button {
   &:active {
     background-color: var(--color-background-default-hover);
   }
+}
+
+.mm-picker-network-div {
+  cursor: default;
 }

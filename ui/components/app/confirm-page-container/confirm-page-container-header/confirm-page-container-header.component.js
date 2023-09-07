@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -11,6 +12,10 @@ import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Icon, IconName, PickerNetwork } from '../../../component-library';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
+import { getTestNetworkBackgroundColor } from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { NETWORK_TYPES } from '../../../../../shared/constants/network';
+import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 
 export default function ConfirmPageContainerHeader({
   onEdit,
@@ -21,6 +26,8 @@ export default function ConfirmPageContainerHeader({
 }) {
   const t = useI18nContext();
   const windowType = getEnvironmentType();
+  const { nickname, type: networkType } = useSelector(getProviderConfig);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -66,7 +73,17 @@ export default function ConfirmPageContainerHeader({
           </div>
         )}
         {isFullScreen ? null : (
-          <PickerNetwork backgroundColor={BackgroundColor.transparent} />
+          <PickerNetwork
+            label={
+              networkType === NETWORK_TYPES.RPC
+                ? nickname ?? t('privateNetwork')
+                : t(getNetworkLabelKey(networkType))
+            }
+            backgroundColor={BackgroundColor.transparent}
+            avatarNetworkProps={{
+              backgroundColor: testNetworkBackgroundColor,
+            }}
+          />
         )}
       </div>
       {children}
