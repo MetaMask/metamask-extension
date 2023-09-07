@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
-import { InternalAccount } from '@metamask/keyring-api';
+import { EthMethod, InternalAccount } from '@metamask/keyring-api';
 import { migrate } from './097';
 
 const MOCK_ADDRESS = '0x0';
@@ -56,24 +56,14 @@ function expectedInternalAccount(
     address,
     id: addressToUUID(address),
     metadata: {
+      name: nickname,
       keyring: {
         type: 'HD Key Tree',
       },
       lastSelected: lastSelected ? expect.any(Number) : null,
     },
-    name: nickname,
     options: {},
-    supportedMethods: [
-      'personal_sign',
-      'eth_sendTransaction',
-      'eth_sign',
-      'eth_signTransaction',
-      'eth_signTypedData',
-      'eth_signTypedData_v1',
-      'eth_signTypedData_v2',
-      'eth_signTypedData_v3',
-      'eth_signTypedData_v4',
-    ],
+    methods: [...Object.values(EthMethod)],
     type: 'eip155:eoa',
   };
 }
