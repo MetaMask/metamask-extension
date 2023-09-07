@@ -4292,7 +4292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^0.2.1, @metamask/keyring-api@npm:^0.2.2":
+"@metamask/keyring-api@npm:^0.2.2":
   version: 0.2.2
   resolution: "@metamask/keyring-api@npm:0.2.2"
   dependencies:
@@ -24275,7 +24275,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^6.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/keyring-api": "npm:^0.2.1"
+    "@metamask/keyring-api": "npm:^0.2.2"
     "@metamask/keyring-controller": "npm:^7.2.0"
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"

@@ -1,4 +1,8 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  InternalAccount,
+  EthMethod,
+} from '@metamask/keyring-api';
 import { sha256FromString } from 'ethereumjs-util';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep } from 'lodash';
@@ -71,26 +75,16 @@ function moveIdentitiesToAccountsController(state: Record<string, any>) {
     accounts[expectedId] = {
       address: identity.address,
       id: expectedId,
-      name: identity.name,
       options: {},
       metadata: {
+        name: identity.name,
         lastSelected: identity.lastSelected ?? null,
         keyring: {
           type: 'HD Key Tree',
         },
       },
-      supportedMethods: [
-        'personal_sign',
-        'eth_sendTransaction',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v2',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
     };
   });
 
