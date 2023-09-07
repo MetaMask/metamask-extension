@@ -86,25 +86,27 @@ export const ModalContent = forwardRef(
           height={BlockSize.Screen}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.flexStart}
-          padding={4}
+          paddingRight={4}
+          paddingLeft={4}
+          paddingTop={[4, 8, 12]}
+          paddingBottom={[4, 8, 12]}
           {...props}
         >
           <Box
-            className={classnames(
-              'mm-modal-content__dialog',
-              `mm-modal-content__dialog--size-${size}`,
-            )}
             as="section"
             role="dialog"
             aria-modal="true"
             backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
-            marginTop={[null, 8, 12]}
-            marginBottom={[null, 8, 12]}
             padding={4}
             ref={modalDialogRef}
             {...modalDialogProps}
+            className={classnames(
+              'mm-modal-content__dialog',
+              `mm-modal-content__dialog--size-${size}`,
+              modalDialogProps?.className,
+            )}
           >
             {children}
           </Box>

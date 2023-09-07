@@ -2900,6 +2900,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Markahan ang lahat bilang nabasa na"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Matuto pa"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Nasasabik kaming ianunsiyo ang Open Beta ng MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Ipersonalisa ang iyong wallet gamit ang mga snap na binuo ng developer community!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Ang Snaps ay makakatulong sa iyo na maraming magawa sa MetaMask -- tulad ng kumonekta sa maraming network, tingnan ang mga insight sa transaksyon, at makakuha ng custom na notipikasyon."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Ipinakikilala ang MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 (na) bagong token ang nakita sa account na ito",
     "description": "$1 is the number of new tokens detected"
@@ -4083,6 +4098,10 @@
   },
   "snapsNoInsight": {
     "message": "Ang snap ay hindi nagbalik ng anumang insight"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng Third Party ay direktang kokolektahin ng mga Serbisyo ng Third Party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Pamahalaan ang iyong mga Snap"
