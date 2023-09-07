@@ -4,6 +4,7 @@ import type {
 } from '../box';
 import { IconProps } from '../icon/icon.types';
 import { AvatarNetworkProps } from '../avatar-network/avatar-network.types';
+import { BackgroundColor, TextColor } from 'ui/helpers/constants/design-system';
 
 export interface PickerNetworkStyleUtilityProps extends StyleUtilityProps {
   /**
@@ -26,6 +27,14 @@ export interface PickerNetworkStyleUtilityProps extends StyleUtilityProps {
    * The text content of the PickerNetwork component
    */
   label: string;
+  /**
+   * The text color of the label in PickerNetwork component
+   */
+  labelColor?: TextColor;
+  /**
+   * The background color of the whole container
+   */
+  backgroundColor?: BackgroundColor;
 }
 
 export type PickerNetworkProps<C extends React.ElementType> =
