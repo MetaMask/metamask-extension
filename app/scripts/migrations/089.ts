@@ -1,5 +1,6 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+import log from 'loglevel';
 
 export const version = 89;
 
@@ -73,12 +74,7 @@ function transformState(state: Record<string, unknown>) {
       ),
     );
   } else if (!isObject(state.NetworkController.providerConfig)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `typeof state.NetworkController.providerConfig is ${typeof state
-          .NetworkController.providerConfig}`,
-      ),
-    );
+    log.warn('typeof state.NetworkController.providerConfig is undefined');
   }
   return state;
 }

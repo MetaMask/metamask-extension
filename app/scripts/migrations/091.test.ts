@@ -1,5 +1,8 @@
 import { cloneDeep } from 'lodash';
+import log from 'loglevel';
 import { migrate, version } from './091';
+
+jest.mock('loglevel');
 
 const sentryCaptureExceptionMock = jest.fn();
 
@@ -92,7 +95,8 @@ describe('migration #91', () => {
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  it('should capture an exception if there is no network controller networkConfigurations state', async () => {
+  it('should throw a log warning if there is no network controller networkConfigurations state', async () => {
+    const mockWarnFn = jest.spyOn(log, 'warn');
     const oldData = {
       other: 'data',
       NetworkController: {
@@ -110,11 +114,9 @@ describe('migration #91', () => {
 
     await migrate(oldStorage);
 
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(
-        `typeof state.NetworkController.networkConfigurations is undefined`,
-      ),
+    expect(mockWarnFn).toHaveBeenCalledTimes(1);
+    expect(mockWarnFn).toHaveBeenCalledWith(
+      'typeof state.NetworkController.networkConfigurations is undefined',
     );
   });
 
