@@ -3,16 +3,11 @@ import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
 import {
-  createSelector,
-  createSelectorCreator,
-  defaultMemoize,
-} from 'reselect';
-import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   memoize,
   ///: END:ONLY_INCLUDE_IN
-  isEqual,
 } from 'lodash';
+import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -93,11 +88,20 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
+import {
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
+  NOTIFICATION_OPEN_BETA_SNAPS,
+} from '../../shared/notifications';
+import {
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
+} from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+// eslint-disable-next-line import/order
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
+import { createDeepEqualSelector } from './util';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -575,7 +579,7 @@ export function getTotalUnapprovedSignatureRequestCount(state) {
 }
 
 export function getUnapprovedTxCount(state) {
-  const { unapprovedTxs = {} } = state.metamask;
+  const unapprovedTxs = getUnapprovedTransactions(state);
   return Object.keys(unapprovedTxs).length;
 }
 
@@ -849,8 +853,6 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
-const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
-
 export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
   getMetaMaskIdentities,
   (identities) => identities,
@@ -872,16 +874,10 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   },
 );
 
-export const getUnapprovedTransactions = (state) =>
-  state.metamask.unapprovedTxs;
-
-export const getCurrentNetworkTransactionList = (state) =>
-  state.metamask.currentNetworkTxList;
-
 export const getTxData = (state) => state.confirmTransaction.txData;
 
 export const getUnapprovedTransaction = createDeepEqualSelector(
-  getUnapprovedTransactions,
+  (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => {
     return (
@@ -891,7 +887,7 @@ export const getUnapprovedTransaction = createDeepEqualSelector(
 );
 
 export const getTransaction = createDeepEqualSelector(
-  getCurrentNetworkTransactionList,
+  (state) => getCurrentNetworkTransactions(state),
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => {
     return (
@@ -1052,6 +1048,7 @@ function getAllowedAnnouncementIds(state) {
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
+    [NOTIFICATION_OPEN_BETA_SNAPS]: true,
   };
 }
 
@@ -1356,13 +1353,21 @@ export function getIsBase(state) {
   );
 }
 
+export function getIsOpbnb(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.OPBNB ||
+    getCurrentChainId(state) === CHAIN_IDS.OPBNB_TESTNET
+  );
+}
+
 export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state);
+  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
 }
 
 export function getIsMultiLayerFeeNetwork(state) {
   return getIsOpStack(state);
 }
+
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *

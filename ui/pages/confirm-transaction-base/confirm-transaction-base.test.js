@@ -66,13 +66,14 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: '/' },
   metamask: {
-    unapprovedTxs: {
-      1: {
+    transactions: [
+      {
         id: 1,
         metamaskNetworkId: mockNetworkId,
         txParams: { ...mockTxParams },
+        status: 'unapproved',
       },
-    },
+    ],
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
@@ -175,7 +176,7 @@ const baseStore = {
 const mockedStore = jest.mocked(baseStore);
 
 const mockedStoreWithConfirmTxParams = (_mockTxParams = mockTxParams) => {
-  mockedStore.metamask.unapprovedTxs[1].txParams = { ..._mockTxParams };
+  mockedStore.metamask.transactions[0].txParams = { ..._mockTxParams };
   mockedStore.confirmTransaction.txData.txParams = { ..._mockTxParams };
 };
 

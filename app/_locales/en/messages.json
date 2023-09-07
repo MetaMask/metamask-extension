@@ -2900,6 +2900,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Learn more"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 We're excited to announce the Open Beta of MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personalize your wallet with snaps built by the developer community!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps help you do more with MetaMask — like connect to more networks, see transaction insights, and get custom notifications."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Introducing MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
     "description": "$1 is the number of new tokens detected"
@@ -4085,7 +4100,7 @@
     "message": "The snap didn't return any insight"
   },
   "snapsPrivacyWarningFirstMessage": {
-    "message": "You acknowledge that the snap that you are about to install is a Third Party Service as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "message": "You acknowledge that any Snap that you install is a Third Party Service, unless otherwise identified, as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
@@ -4093,7 +4108,7 @@
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys has no access to information you share with these third parties.",
+    "message": "Consensys has no access to information you share with Third Party Services.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
