@@ -6,6 +6,7 @@ import {
   setNewNetworkAdded,
   upsertNetworkConfiguration,
 } from '../../../store/actions';
+import createSnapAccountTemplate from './create-snap-account/create-snap-account-template';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
@@ -26,6 +27,7 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
+  'snap_manageAccounts:confirmation': createSnapAccountTemplate,
   ///: END:ONLY_INCLUDE_IN
 };
 

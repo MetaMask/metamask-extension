@@ -50,6 +50,7 @@ import {
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
+import { CreateSnapAccount } from './templates/create-snap-account';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -206,6 +207,10 @@ export default function ConfirmationPage({
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
+  const [isSnapAccountConform, setIsSNapAccountConform] = useState(
+    pendingConfirmation.type === 'snap_manageAccounts:confirmation',
+  );
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
@@ -330,6 +335,10 @@ export default function ConfirmationPage({
       handleSubmitResult(submitResult);
     }
   };
+
+  if (isSnapAccountConform) {
+    return <CreateSnapAccount />;
+  }
 
   return (
     <div className="confirmation-page">
