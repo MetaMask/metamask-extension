@@ -15,6 +15,7 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
+import { EthMethod, EthAccountType } from '@metamask/keyring-api';
 import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
 import { NetworkType } from '@metamask/controller-utils';
@@ -131,18 +132,8 @@ const TEST_INTERNAL_ACCOUNT = {
     },
   },
   options: {},
-  methods: [
-    'personal_sign',
-    'eth_sendTransaction',
-    'eth_sign',
-    'eth_signTransaction',
-    'eth_signTypedData',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v2',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-  ],
-  type: 'eip155:eoa',
+  methods: [...Object.values(EthMethod)],
+  type: EthAccountType.Eoa,
 };
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
@@ -540,16 +531,8 @@ describe('MetaMaskController', function () {
           id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
           metadata: {
             name: DEFAULT_LABEL,
             keyring: { type: 'HD Key Tree' },
@@ -573,16 +556,8 @@ describe('MetaMaskController', function () {
           id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
           address: TEST_ADDRESS,
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
           metadata: {
             name: 'Account Foo',
             keyring: { type: 'HD Key Tree' },
@@ -617,16 +592,8 @@ describe('MetaMaskController', function () {
           id: 'f73954ab-4605-459c-b0ff-23978b190709',
           address: TEST_ADDRESS_ALT,
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
           metadata: {
             name: DEFAULT_LABEL,
             keyring: { type: 'HD Key Tree' },
@@ -672,16 +639,8 @@ describe('MetaMaskController', function () {
           id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
           address: TEST_ADDRESS,
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
           metadata: {
             name: DEFAULT_LABEL,
             keyring: { type: 'HD Key Tree' },

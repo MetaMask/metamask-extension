@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { screen, fireEvent } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { act } from 'react-dom/test-utils';
 import { sha256 } from '../../../../shared/modules/hash.utils';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -57,16 +58,8 @@ describe('Interactive Replacement Token Notification', () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
         },
         selectedAccount,

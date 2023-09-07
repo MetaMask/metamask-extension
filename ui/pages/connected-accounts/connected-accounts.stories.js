@@ -1,5 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import ConnectedAccounts from './connected-accounts.component';
 
 export default {
@@ -17,16 +18,8 @@ const accounts = [
       },
     },
     options: {},
-    methods: [
-      'personal_sign',
-      'eth_sign',
-      'eth_signTransaction',
-      'eth_signTypedData',
-      'eth_signTypedData_v1',
-      'eth_signTypedData_v3',
-      'eth_signTypedData_v4',
-    ],
-    type: 'eip155:eoa',
+    methods: [...Object.values(EthMethod)],
+    type: EthAccountType.Eoa,
   },
   {
     address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
@@ -38,16 +31,8 @@ const accounts = [
       },
     },
     options: {},
-    methods: [
-      'personal_sign',
-      'eth_sign',
-      'eth_signTransaction',
-      'eth_signTypedData',
-      'eth_signTypedData_v1',
-      'eth_signTypedData_v3',
-      'eth_signTypedData_v4',
-    ],
-    type: 'eip155:eoa',
+    methods: [...Object.values(EthMethod)],
+    type: EthAccountType.Eoa,
   },
 ];
 

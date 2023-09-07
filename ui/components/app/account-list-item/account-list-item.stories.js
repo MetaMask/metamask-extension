@@ -1,4 +1,5 @@
 import React from 'react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import README from './README.mdx';
 import AccountListItem from './account-list-item';
 
@@ -31,16 +32,8 @@ const account = {
     },
   },
   options: {},
-  methods: [
-    'personal_sign',
-    'eth_sign',
-    'eth_signTransaction',
-    'eth_signTypedData',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-  ],
-  type: 'eip155:eoa',
+  methods: [...Object.values(EthMethod)],
+  type: EthAccountType.Eoa,
 };
 
 export const DefaultStory = (args) => {

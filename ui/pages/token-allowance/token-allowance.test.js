@@ -4,6 +4,7 @@ import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
@@ -34,16 +35,8 @@ const state = {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
@@ -55,16 +48,8 @@ const state = {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',

@@ -1,5 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
@@ -242,16 +243,8 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
             address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -263,16 +256,8 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
           '15e69915-2a1a-4019-93b3-916e11fd432f': {
             address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
@@ -284,16 +269,8 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
           '784225f4-d30b-4e77-a900-c8bbce735b88': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -305,16 +282,8 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',

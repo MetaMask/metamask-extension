@@ -1,6 +1,7 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import AccountListItem from './account-list-item';
@@ -21,16 +22,8 @@ describe('AccountListItem Component', () => {
           },
         },
         options: {},
-        methods: [
-          'personal_sign',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
       },
       className: 'mockClassName',
       displayAddress: false,
@@ -84,16 +77,8 @@ describe('AccountListItem Component', () => {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
       };
 

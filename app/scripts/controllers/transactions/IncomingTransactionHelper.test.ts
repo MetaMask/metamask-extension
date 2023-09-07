@@ -1,7 +1,11 @@
 import { NetworkType } from '@metamask/controller-utils';
 import type { BlockTracker, NetworkState } from '@metamask/network-controller';
 
-import { InternalAccount } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  EthMethod,
+  InternalAccount,
+} from '@metamask/keyring-api';
 import {
   TransactionMeta,
   TransactionStatus,
@@ -33,16 +37,8 @@ const INTERNAL_ACCOUNT_MOCK: InternalAccount = {
     },
   },
   options: {},
-  methods: [
-    'personal_sign',
-    'eth_sign',
-    'eth_signTransaction',
-    'eth_signTypedData',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-  ],
-  type: 'eip155:eoa',
+  methods: [...Object.values(EthMethod)],
+  type: EthAccountType.Eoa,
 };
 const FROM_BLOCK_HEX_MOCK = '0x20';
 const FROM_BLOCK_DECIMAL_MOCK = 32;

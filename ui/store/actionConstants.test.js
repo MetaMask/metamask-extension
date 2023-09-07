@@ -1,4 +1,5 @@
 import freeze from 'deep-freeze-strict';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import reducers from '../ducks';
 import * as actionConstants from './actionConstants';
 
@@ -21,16 +22,8 @@ describe('Redux actionConstants', () => {
                     },
                   },
                   options: {},
-                  methods: [
-                    'personal_sign',
-                    'eth_sign',
-                    'eth_signTransaction',
-                    'eth_signTypedData',
-                    'eth_signTypedData_v1',
-                    'eth_signTypedData_v3',
-                    'eth_signTypedData_v4',
-                  ],
-                  type: 'eip155:eoa',
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
                 },
               },
             },

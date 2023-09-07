@@ -3,6 +3,7 @@ import { KeyringType } from '../shared/constants/keyring';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../shared/constants/network';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 const state = {
   invalidCustomNetwork: {
@@ -312,16 +313,8 @@ const state = {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
           address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
@@ -333,16 +326,8 @@ const state = {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
         '15e69915-2a1a-4019-93b3-916e11fd432f': {
           address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
@@ -354,16 +339,8 @@ const state = {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
         '784225f4-d30b-4e77-a900-c8bbce735b88': {
           address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
@@ -375,16 +352,8 @@ const state = {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',

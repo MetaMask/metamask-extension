@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TransactionStatus } from '../../shared/constants/transaction';
@@ -33,16 +34,8 @@ const defaultState = {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -272,16 +265,8 @@ describe('Actions', () => {
                   },
                 },
                 options: {},
-                methods: [
-                  'personal_sign',
-                  'eth_sign',
-                  'eth_signTransaction',
-                  'eth_signTypedData',
-                  'eth_signTypedData_v1',
-                  'eth_signTypedData_v3',
-                  'eth_signTypedData_v4',
-                ],
-                type: 'eip155:eoa',
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
               },
             },
             selectedAccount: '22497cc9-e791-42b8-adef-2f13ef216b86',
@@ -504,16 +489,8 @@ describe('Actions', () => {
                 },
               },
               options: {},
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
             },
           ],
         }),
@@ -1997,16 +1974,8 @@ describe('Actions', () => {
                     },
                   },
                   options: {},
-                  methods: [
-                    'personal_sign',
-                    'eth_sign',
-                    'eth_signTransaction',
-                    'eth_signTypedData',
-                    'eth_signTypedData_v1',
-                    'eth_signTypedData_v3',
-                    'eth_signTypedData_v4',
-                  ],
-                  type: 'eip155:eoa',
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
                 },
               },
               selectedAccount: '8e110453-2231-4e62-82de-29b913dfef4b',

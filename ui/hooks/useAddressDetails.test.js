@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 import configureStore from '../store/store';
 import useAddressDetails from './useAddressDetails';
@@ -25,16 +26,8 @@ const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -96,16 +89,8 @@ describe('useAddressDetails', () => {
                 },
               },
               options: {},
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
             },
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',

@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import sinon from 'sinon';
 import Backup from './backup';
 
@@ -176,16 +177,8 @@ const jsonData = JSON.stringify({
           lastSelected: 1693289751176,
         },
         options: {},
-        methods: [
-          'personal_sign',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
       },
     },
     selectedAccount: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',

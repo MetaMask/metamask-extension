@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -60,16 +61,8 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
           'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
             address: '0x2',
@@ -81,16 +74,8 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',

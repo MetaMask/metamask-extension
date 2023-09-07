@@ -10,6 +10,7 @@ import {
   AssetsContractController,
 } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
+import { EthMethod, EthAccountType } from '@metamask/keyring-api';
 import { NetworkController } from '@metamask/network-controller';
 import { AccountsController } from '@metamask-previews/accounts-controller';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
@@ -259,18 +260,8 @@ describe('DetectTokensController', function () {
                 },
               },
               options: {},
-              methods: [
-                'personal_sign',
-                'eth_sendTransaction',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v2',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
             },
             '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
               address: '0xbc86727e770de68b1060c91f6bb6945c73e10388',
@@ -282,16 +273,8 @@ describe('DetectTokensController', function () {
                 },
               },
               options: {},
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
-              ],
-              type: 'eip155:eoa',
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
             },
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',

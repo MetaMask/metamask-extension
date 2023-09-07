@@ -1,6 +1,7 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
@@ -37,16 +38,8 @@ describe('Confirm Page Container Content', () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
             address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
@@ -58,16 +51,8 @@ describe('Confirm Page Container Content', () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
           '15e69915-2a1a-4019-93b3-916e11fd432f': {
             address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
@@ -79,16 +64,8 @@ describe('Confirm Page Container Content', () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
           '784225f4-d30b-4e77-a900-c8bbce735b88': {
             address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
@@ -100,16 +77,8 @@ describe('Confirm Page Container Content', () => {
               },
             },
             options: {},
-            methods: [
-              'personal_sign',
-              'eth_sign',
-              'eth_signTransaction',
-              'eth_signTypedData',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',

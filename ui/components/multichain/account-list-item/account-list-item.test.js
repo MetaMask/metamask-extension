@@ -2,6 +2,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -119,16 +120,8 @@ describe('AccountListItem', () => {
           },
         },
         options: {},
-        methods: [
-          'personal_sign',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
       },
     });
 

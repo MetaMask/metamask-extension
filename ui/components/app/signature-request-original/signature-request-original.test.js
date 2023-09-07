@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import mockState from '../../../../test/data/mock-state.json';
@@ -73,16 +74,8 @@ const props = {
       },
     },
     options: {},
-    methods: [
-      'personal_sign',
-      'eth_sign',
-      'eth_signTransaction',
-      'eth_signTypedData',
-      'eth_signTypedData_v1',
-      'eth_signTypedData_v3',
-      'eth_signTypedData_v4',
-    ],
-    type: 'eip155:eoa',
+    methods: [...Object.values(EthMethod)],
+    type: EthAccountType.Eoa,
   },
 };
 

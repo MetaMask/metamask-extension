@@ -6,6 +6,7 @@ import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
 import { ApprovalType } from '@metamask/controller-utils';
 import sinon from 'sinon';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import {
@@ -72,16 +73,8 @@ const MOCK_INTERNAL_ACCOUNT = {
     },
   },
   options: {},
-  methods: [
-    'personal_sign',
-    'eth_sign',
-    'eth_signTransaction',
-    'eth_signTypedData',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-  ],
-  type: 'eip155:eoa',
+  methods: [...Object.values(EthMethod)],
+  type: EthAccountType.Eoa,
 };
 
 async function flushPromises() {
@@ -388,16 +381,8 @@ describe('Transaction Controller', function () {
         },
       },
       options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
     };
     const recipientAddress = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
 
@@ -1187,16 +1172,8 @@ describe('Transaction Controller', function () {
         },
       },
       options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
     };
     const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
@@ -1674,16 +1651,8 @@ describe('Transaction Controller', function () {
         },
       },
       options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
     };
     const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 

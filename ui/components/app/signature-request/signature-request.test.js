@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
@@ -62,16 +63,8 @@ const mockStore = {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -494,16 +487,8 @@ describe('Signature Request Component', () => {
                     },
                   },
                   options: {},
-                  methods: [
-                    'personal_sign',
-                    'eth_sign',
-                    'eth_signTransaction',
-                    'eth_signTypedData',
-                    'eth_signTypedData_v1',
-                    'eth_signTypedData_v3',
-                    'eth_signTypedData_v4',
-                  ],
-                  type: 'eip155:eoa',
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
                 },
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
                   address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
@@ -515,16 +500,8 @@ describe('Signature Request Component', () => {
                     },
                   },
                   options: {},
-                  methods: [
-                    'personal_sign',
-                    'eth_sign',
-                    'eth_signTransaction',
-                    'eth_signTypedData',
-                    'eth_signTypedData_v1',
-                    'eth_signTypedData_v3',
-                    'eth_signTypedData_v4',
-                  ],
-                  type: 'eip155:eoa',
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
                 },
               },
               selectedAccount: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
