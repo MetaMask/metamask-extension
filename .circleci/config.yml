@@ -1158,6 +1158,9 @@ jobs:
           path: builds-flask
           destination: builds-flask
       - store_artifacts:
+          path: builds-mmi
+          destination: builds-mmi
+      - store_artifacts:
           path: coverage
           destination: coverage
       - store_artifacts:
