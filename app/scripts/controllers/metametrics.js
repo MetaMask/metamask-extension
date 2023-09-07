@@ -562,7 +562,7 @@ export default class MetaMetricsController {
         overrideAnonymousEventNames[`${payload.event}`];
       const anonymousPayload = {
         ...payload,
-        event: anonymousEventName,
+        event: anonymousEventName ?? payload.event,
       };
 
       const combinedProperties = merge(
