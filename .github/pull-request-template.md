@@ -21,6 +21,10 @@ _[screenshot]_
 
 _[screenshot]_
 
+## **Related issues**
+
+_Fixes #???_
+
 ## **Pre-merge author checklist**
 
 - [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/coding_guidelines/CODING_GUIDELINES.md).
