@@ -1,9 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  Box,
-  ButtonPrimary,
-  IconName,
-} from '../../../../components/component-library';
+import { Box, IconName } from '../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -56,8 +52,8 @@ const CreateSnapAccount = ({
   const handleOnConfirm = useCallback(async () => {
     setViewState({ type: 'Loading' });
     try {
-      // await onSubmit(accountName);
-      // setViewState({ type: 'Success' });
+      await onSubmit(accountName);
+      setViewState({ type: 'Success' });
     } catch (err) {
       setViewState({ type: 'Error', message: (err as Error).message });
     }
@@ -72,10 +68,6 @@ const CreateSnapAccount = ({
       setViewState({ type: 'Error', message: (err as Error).message });
     }
   }, [onCancel]);
-
-  const handleOnFinish = useCallback(async () => {
-    console.log('SNAPS/ handleOnFinish called');
-  }, []);
 
   const onAccountNameChange = useCallback((value) => {
     setAccountName(value);
