@@ -495,7 +495,7 @@ describe('MetaMaskController', function () {
         );
       });
 
-      it.only('should clear previous accounts after vault restoration', async function () {
+      it('should clear previous accounts after vault restoration', async function () {
         sandbox.stub(metamaskController, 'getBalance');
         metamaskController.getBalance.callsFake(() => {
           return Promise.resolve('0x0');
