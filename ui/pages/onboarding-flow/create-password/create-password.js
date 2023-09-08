@@ -5,13 +5,12 @@ import zxcvbn from 'zxcvbn';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
 import {
-  TEXT_ALIGN,
-  TypographyVariant,
   JustifyContent,
-  FONT_WEIGHT,
   AlignItems,
+  TextVariant,
+  TextAlign,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -39,7 +38,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Icon, IconName } from '../../../components/component-library';
+import { Icon, IconName, Text } from '../../../components/component-library';
 
 export default function CreatePassword({
   createNewAccount,
@@ -209,12 +208,16 @@ export default function CreatePassword({
           marginBottom={4}
         />
       )}
-      <Typography variant={TypographyVariant.H2} fontWeight={FONT_WEIGHT.BOLD}>
+      <Text variant={TextVariant.headingLg} fontWeight={FontWeight.Bold}>
         {t('createPassword')}
-      </Typography>
-      <Typography variant={TypographyVariant.H4} align={TEXT_ALIGN.CENTER}>
+      </Text>
+      <Text
+        variant={TextVariant.headingSm}
+        align={TextAlign.Center}
+        fontWeight={FontWeight.Normal}
+      >
         {t('passwordSetupDetails')}
-      </Typography>
+      </Text>
       <Box justifyContent={JustifyContent.center} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
           <FormField
@@ -227,7 +230,7 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <Typography variant={TypographyVariant.H7}>
+              <Text variant={TextVariant.bodySm}>
                 <a
                   href=""
                   data-testid="show-password"
@@ -239,7 +242,7 @@ export default function CreatePassword({
                 >
                   {showPassword ? t('hide') : t('show')}
                 </a>
-              </Typography>
+              </Text>
             }
           />
           <FormField
@@ -268,10 +271,7 @@ export default function CreatePassword({
                 onClick={() => setTermsChecked(!termsChecked)}
                 checked={termsChecked}
               />
-              <Typography
-                variant={TypographyVariant.H5}
-                boxProps={{ marginLeft: 3 }}
-              >
+              <Text variant={TextVariant.bodyMd} marginLeft={3}>
                 {t('passwordTermsWarning', [
                   <a
                     onClick={(e) => e.stopPropagation()}
@@ -285,7 +285,7 @@ export default function CreatePassword({
                     </span>
                   </a>,
                 ])}
-              </Typography>
+              </Text>
             </label>
           </Box>
           <Button
