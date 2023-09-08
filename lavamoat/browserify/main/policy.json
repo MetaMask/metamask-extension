@@ -1276,11 +1276,24 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-trezor-keyring>@metamask/utils": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "browserify>buffer": true,
         "browserify>events": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": {
@@ -2564,7 +2577,6 @@
         "@truffle/codec>@truffle/compile-common": true,
         "@truffle/codec>big.js": true,
         "@truffle/codec>cbor": true,
-        "@truffle/codec>semver": true,
         "@truffle/codec>utf8": true,
         "@truffle/codec>web3-utils": true,
         "bn.js": true,
@@ -2572,7 +2584,8 @@
         "browserify>os-browserify": true,
         "browserify>util": true,
         "lodash": true,
-        "nock>debug": true
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@truffle/codec>@truffle/abi-utils": {
@@ -2749,15 +2762,6 @@
         "browserify>buffer": true,
         "browserify>stream-browserify": true,
         "browserify>util": true
-      }
-    },
-    "@truffle/codec>semver": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "semver>lru-cache": true
       }
     },
     "@truffle/codec>web3-utils": {

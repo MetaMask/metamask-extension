@@ -16,6 +16,7 @@ import {
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
 import { NetworkType } from '@metamask/controller-utils';
+import { ControllerMessenger } from '@metamask/base-controller';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -23,6 +24,8 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
+import TransactionController from './controllers/transactions';
+import PreferencesController from './controllers/preferences';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -83,6 +86,14 @@ function MockEthContract() {
   };
 }
 
+function MockPreferencesController(...args) {
+  const controller = new PreferencesController(...args);
+
+  sinon.stub(controller.store, 'subscribe');
+
+  return controller;
+}
+
 // TODO, Feb 24, 2023:
 // ethjs-contract is being added to proxyquire, but we might want to discontinue proxyquire
 // this is for expediency as we resolve a bug for v10.26.0. The proper solution here would have
@@ -91,6 +102,7 @@ function MockEthContract() {
 const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
   'ethjs-contract': MockEthContract,
+  './controllers/preferences': { default: MockPreferencesController },
 }).default;
 
 const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
@@ -278,6 +290,23 @@ describe('MetaMaskController', function () {
 
     beforeEach(function () {
       sandbox.spy(MetaMaskController.prototype, 'resetStates');
+
+      sandbox.stub(
+        TransactionController.prototype,
+        'updateIncomingTransactions',
+      );
+
+      sandbox.stub(
+        TransactionController.prototype,
+        'startIncomingTransactionPolling',
+      );
+
+      sandbox.stub(
+        TransactionController.prototype,
+        'stopIncomingTransactionPolling',
+      );
+
+      sandbox.spy(ControllerMessenger.prototype, 'subscribe');
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
@@ -842,10 +871,7 @@ describe('MetaMaskController', function () {
         try {
           await metamaskController.verifySeedPhrase();
         } catch (error) {
-          assert.equal(
-            error.message,
-            'MetamaskController - No HD Key Tree found',
-          );
+          assert.equal(error.message, 'No HD keyring found.');
         }
       });
 
@@ -918,8 +944,6 @@ describe('MetaMaskController', function () {
           getAccounts: sinon.stub().returns(Promise.resolve([])),
           destroy: sinon.stub(),
         };
-        sinon.stub(metamaskController.preferencesController, 'removeAddress');
-        sinon.stub(metamaskController.accountTracker, 'removeAccount');
         sinon.stub(metamaskController.keyringController, 'removeAccount');
         sinon.stub(metamaskController, 'removeAllAccountPermissions');
         sinon
@@ -934,28 +958,12 @@ describe('MetaMaskController', function () {
 
       afterEach(function () {
         metamaskController.keyringController.removeAccount.restore();
-        metamaskController.accountTracker.removeAccount.restore();
-        metamaskController.preferencesController.removeAddress.restore();
         metamaskController.removeAllAccountPermissions.restore();
 
         mockKeyring.getAccounts.resetHistory();
         mockKeyring.destroy.resetHistory();
       });
 
-      it('should call preferencesController.removeAddress', async function () {
-        assert(
-          metamaskController.preferencesController.removeAddress.calledWith(
-            addressToRemove,
-          ),
-        );
-      });
-      it('should call accountTracker.removeAccount', async function () {
-        assert(
-          metamaskController.accountTracker.removeAccount.calledWith([
-            addressToRemove,
-          ]),
-        );
-      });
       it('should call keyringController.removeAccount', async function () {
         assert(
           metamaskController.keyringController.removeAccount.calledWith(
@@ -1645,6 +1653,60 @@ describe('MetaMaskController', function () {
             },
           );
         });
+      });
+    });
+
+    describe('incoming transactions', function () {
+      let txControllerStub, preferencesControllerSpy, controllerMessengerSpy;
+
+      beforeEach(function () {
+        txControllerStub = TransactionController.prototype;
+        preferencesControllerSpy = metamaskController.preferencesController;
+        controllerMessengerSpy = ControllerMessenger.prototype;
+      });
+
+      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async function () {
+        assert(txControllerStub.startIncomingTransactionPolling.notCalled);
+
+        await preferencesControllerSpy.store.subscribe.lastCall.args[0]({
+          incomingTransactionsPreferences: {
+            [MAINNET_CHAIN_ID]: true,
+          },
+        });
+
+        assert(txControllerStub.startIncomingTransactionPolling.calledOnce);
+      });
+
+      it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainIdd', async function () {
+        assert(txControllerStub.stopIncomingTransactionPolling.notCalled);
+
+        await preferencesControllerSpy.store.subscribe.lastCall.args[0]({
+          incomingTransactionsPreferences: {
+            [MAINNET_CHAIN_ID]: false,
+          },
+        });
+
+        assert(txControllerStub.stopIncomingTransactionPolling.calledOnce);
+      });
+
+      it('updates incoming transactions when changing account', async function () {
+        assert(txControllerStub.updateIncomingTransactions.notCalled);
+
+        await preferencesControllerSpy.store.subscribe.lastCall.args[0]({
+          selectedAddress: 'foo',
+        });
+
+        assert(txControllerStub.updateIncomingTransactions.calledOnce);
+      });
+
+      it('updates incoming transactions when changing network', async function () {
+        assert(txControllerStub.updateIncomingTransactions.notCalled);
+
+        await controllerMessengerSpy.subscribe.args
+          .filter((args) => args[0] === 'NetworkController:networkDidChange')
+          .slice(-1)[0][1]();
+
+        assert(txControllerStub.updateIncomingTransactions.calledOnce);
       });
     });
   });

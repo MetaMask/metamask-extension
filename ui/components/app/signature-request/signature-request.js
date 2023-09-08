@@ -13,10 +13,8 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 ///: END:ONLY_INCLUDE_IN
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   resolvePendingApproval,
   completedTx,
-  ///: END:ONLY_INCLUDE_IN
   rejectPendingApproval,
 } from '../../../store/actions';
 import {
@@ -161,14 +159,11 @@ const SignatureRequest = ({ txData }) => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (accountType === 'custody') {
       await custodySignFn(txData);
-      return;
     }
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     await dispatch(resolvePendingApproval(id));
     completedTx(id);
-    ///: END:ONLY_INCLUDE_IN
 
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -252,6 +247,9 @@ const SignatureRequest = ({ txData }) => {
           ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
           <BlockaidBannerAlert
             securityAlertResponse={txData?.securityAlertResponse}
+            marginLeft={4}
+            marginRight={4}
+            marginBottom={4}
           />
           ///: END:ONLY_INCLUDE_IN
         }
