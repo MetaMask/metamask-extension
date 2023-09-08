@@ -93,7 +93,6 @@
     "openSeaEnabled": false,
     "advancedGasFee": {},
     "incomingTransactionsPreferences": {},
-    "identities": "object",
     "lostIdentities": "object",
     "forgottenPassword": false,
     "ipfsGateway": "string",

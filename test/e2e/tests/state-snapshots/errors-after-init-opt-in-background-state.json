@@ -137,7 +137,6 @@
     "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
-    "identities": "object",
     "lostIdentities": "object",
     "forgottenPassword": false,
     "preferences": {
@@ -219,7 +218,5 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
-  "TxController": {
-    "transactions": "object"
-  }
+  "TxController": { "transactions": "object" }
 }
