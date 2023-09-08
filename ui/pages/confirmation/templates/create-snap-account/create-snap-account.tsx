@@ -34,7 +34,7 @@ type ViewState = Loading | Error | Success;
 
 interface CreateSnapAccountProps {
   onCancel: () => Promise<void>;
-  onSubmit: () => Promise<void>;
+  onSubmit: (accountName: string) => Promise<void>;
   snapId: string;
   snapName: string;
 }
@@ -52,12 +52,12 @@ const CreateSnapAccount = ({
   const handleOnConfirm = useCallback(async () => {
     setViewState({ type: 'Loading' });
     try {
-      await onSubmit();
+      await onSubmit(accountName);
       setViewState({ type: 'Success' });
     } catch (err) {
       setViewState({ type: 'Error', message: (err as Error).message });
     }
-  }, [onSubmit]);
+  }, [onSubmit, accountName]);
 
   const handleOnCancel = useCallback(async () => {
     setViewState({ type: 'Loading' });

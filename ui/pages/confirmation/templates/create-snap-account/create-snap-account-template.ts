@@ -17,8 +17,18 @@ function getValues(pendingApproval: any, t: any, actions: any) {
     ],
     cancelText: t('cancel'),
     submitText: t('create'),
-    onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, true),
-    onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
+    onSubmit: (accountName: string) => {
+      console.log(
+        'SNAPS/ create-snap-account-template.ts: onSubmit called with:',
+        accountName,
+      );
+      actions.resolvePendingApproval(pendingApproval.id, {
+        confirmed: true,
+        accountName,
+      });
+    },
+    onCancel: () =>
+      actions.resolvePendingApproval(pendingApproval.id, { confirmed: false }),
   };
 }
 
