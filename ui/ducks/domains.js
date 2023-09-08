@@ -100,7 +100,6 @@ const slice = createSlice({
           state.resolution = address;
         }
       }
-      // in the future we can have snaps register their domains and have error handlers that they supply
     },
     enableDomainLookup: (state, action) => {
       state.stage = 'INITIALIZED';
@@ -205,7 +204,7 @@ export function lookupDomainName(domainName) {
       const chainId = getCurrentChainId(state);
       let network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
       const nameLookupSnaps = getNameLookupSnapsIds(state);
-      if (nameLookupSnaps.length) {
+      if (nameLookupSnaps.length > 0) {
         const results = await Promise.all(
           nameLookupSnaps.map((snapId) => {
             return new Promise((resolve) => {
@@ -227,14 +226,13 @@ export function lookupDomainName(domainName) {
             });
           }),
         );
-        console.log(results);
         const successfulResolutions = results.filter(
-          (result) => result.resolvedAccount !== null,
+          (result) => result !== null,
         );
         network = parseInt(chainId, 10);
         await dispatch(
           domainLookup({
-            address: successfulResolutions[0].resolvedAccount,
+            address: successfulResolutions[0].resolvedAddress,
             error,
             chainId,
             network,
@@ -257,49 +255,6 @@ export function lookupDomainName(domainName) {
     }
   };
 }
-
-// export function lookupEnsName(domainName) {
-//   return async (dispatch, getState) => {
-//     const trimmedDomainName = domainName.trim();
-//     let state = getState();
-//     if (state[name].stage === 'UNINITIALIZED') {
-//       await dispatch(initializeDomainSlice());
-//     }
-//     state = getState();
-//     if (
-//       state[name].stage === 'NO_NETWORK_SUPPORT' &&
-//       !(
-//         isBurnAddress(trimmedDomainName) === false &&
-//         isValidHexAddress(trimmedDomainName, { mixedCaseUseChecksum: true })
-//       ) &&
-//       !isHexString(trimmedDomainName)
-//     ) {
-//       await dispatch(ensNotSupported());
-//     } else {
-//       log.info(`ENS attempting to resolve name: ${trimmedDomainName}`);
-//       let address;
-//       let error;
-//       try {
-//         address = await web3Provider.resolveName(trimmedDomainName);
-//       } catch (err) {
-//         error = err;
-//       }
-//       const chainId = getCurrentChainId(state);
-//       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-
-//       await dispatch(
-//         domainLookup({
-//           address,
-//           error,
-//           chainId,
-//           network,
-//           domainType: ENS,
-//           domainName: trimmedDomainName,
-//         }),
-//       );
-//     }
-//   };
-// }
 
 export function getDomainResolution(state) {
   return state[name].resolution;

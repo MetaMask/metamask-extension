@@ -401,7 +401,7 @@ export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [NETWORK_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
 } as const;
 
-// maybe add in the other networks here
+// TODO: add in the other built-in networks here
 export const CHAIN_ID_TO_NETWORK_ID_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_IDS.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,

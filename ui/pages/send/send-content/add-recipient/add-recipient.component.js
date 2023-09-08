@@ -124,10 +124,7 @@ export default class AddRecipient extends Component {
         addressBookEntryName || userInput,
         'Domain resolution',
       );
-      // In the future, we will want to add a type for domain resolution
-      // that we can point to as a defacto name for the type
-      // maybe we have some casa profiles for domain types?
-      // the snap would have to pair its reply with some error message/handler
+      // TODO: Domain lookup fails silently, maybe we allow for a generic error message from snaps in the future?
     }
 
     return (
