@@ -17,8 +17,10 @@ import {
   IconName,
   AvatarIconSize,
 } from '../../../../../components/component-library';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 const CreateSnapAccountSuccess = () => {
+  const t = useI18nContext();
   return (
     <Box
       display={Display.Flex}
@@ -36,9 +38,9 @@ const CreateSnapAccountSuccess = () => {
         marginBottom={4}
         iconProps={{ name: IconName.Check, color: IconColor.successDefault }}
       />
-      <Text variant={TextVariant.headingLg}>Your account is ready!</Text>
+      <Text variant={TextVariant.headingLg}>{t('snapAccountCreated')}</Text>
       <Text textAlign={TextAlign.Center}>
-        You can find your Snap account in your wallet
+        {t('snapAccountCreatedDescription')}
       </Text>
     </Box>
   );

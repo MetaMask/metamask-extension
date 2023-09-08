@@ -85,10 +85,8 @@ const CreateSnapAccount = ({
         return (
           <InstallError
             iconName={IconName.Warning}
-            title="Account not created"
-            description={
-              'Something went wrong, so your Snap account wasn’t created yet. Try again later.'
-            }
+            title={t('accountNotCreated')}
+            description={t('accountNotCreatedDescription')}
             error={viewState.message}
           />
         );
