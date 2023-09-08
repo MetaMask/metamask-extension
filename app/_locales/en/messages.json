@@ -5470,5 +5470,11 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "createSnapAccountTitle": {
+    "message": "Create Snap account"
+  },
+  "createSnapAccountDescription": {
+    "message": "$1 wants to add a new Snap account to your wallet"
   }
 }
