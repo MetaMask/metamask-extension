@@ -22,6 +22,11 @@ import { NonEmptyArray } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
+import {
+  GetProposedNamesRequest,
+  GetProposedNamesResult,
+  SetNameRequest,
+} from '@metamask/name-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -4507,6 +4512,27 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
     console.error(error);
   }
   return networkEIP1559Compatibility;
+}
+
+export function getProposedNames(
+  request: GetProposedNamesRequest,
+): ThunkAction<GetProposedNamesResult, MetaMaskReduxState, unknown, AnyAction> {
+  return (async () => {
+    const data = await submitRequestToBackground<GetProposedNamesResult>(
+      'updateProposedNames',
+      [request],
+    );
+
+    return data;
+  }) as any;
+}
+
+export function setName(
+  request: SetNameRequest,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (async () => {
+    await submitRequestToBackground<void>('setName', [request]);
+  }) as any;
 }
 
 /**
