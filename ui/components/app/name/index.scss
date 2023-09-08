@@ -22,7 +22,8 @@
     color: var(--color-info-default);
   }
 
-  &__value, &__proposed {
+  &__value,
+  &__proposed {
     color: var(--color-warning-default);
   }
 

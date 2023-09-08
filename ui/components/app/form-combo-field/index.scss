@@ -1,5 +1,4 @@
 .form-combo-field {
-
   width: 100%;
 
   ::-webkit-scrollbar-thumb {
@@ -9,7 +8,7 @@
   }
 
   ::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
   }
 
   &__value > div {

@@ -11,11 +11,11 @@ import { NameType } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import {
-  BUTTON_VARIANT,
   Box,
   Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonVariant,
   FormTextField,
   IconName,
   Label,
@@ -189,7 +189,7 @@ export default function NameDetails({
           </Label>
           <hr className="name-details__line" />
           <Button
-            variant={BUTTON_VARIANT.PRIMARY}
+            variant={ButtonVariant.Primary}
             startIconName={hasSavedName ? undefined : IconName.Save}
             width={BlockSize.Full}
             onClick={handleSaveClick}

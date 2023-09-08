@@ -23,9 +23,9 @@ import { NonEmptyArray } from '@metamask/controller-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
 import {
-  GetProposedNamesRequest,
-  GetProposedNamesResult,
   SetNameRequest,
+  UpdateProposedNamesRequest,
+  UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -4515,10 +4515,15 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
 }
 
 export function getProposedNames(
-  request: GetProposedNamesRequest,
-): ThunkAction<GetProposedNamesResult, MetaMaskReduxState, unknown, AnyAction> {
+  request: UpdateProposedNamesRequest,
+): ThunkAction<
+  UpdateProposedNamesResult,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return (async () => {
-    const data = await submitRequestToBackground<GetProposedNamesResult>(
+    const data = await submitRequestToBackground<UpdateProposedNamesResult>(
       'updateProposedNames',
       [request],
     );
