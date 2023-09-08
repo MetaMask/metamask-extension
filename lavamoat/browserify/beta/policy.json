@@ -3608,28 +3608,6 @@
         "eth-rpc-errors>fast-safe-stringify": true
       }
     },
-    "eth-sig-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true,
-        "ethereumjs-abi": true
-      }
-    },
-    "eth-sig-util>ethereumjs-util": {
-      "packages": {
-        "@metamask/ppom-validator>elliptic": true,
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true,
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
     "eth-sig-util>ethereumjs-util>ethjs-util": {
       "packages": {
         "browserify>buffer": true,

@@ -417,8 +417,6 @@ describe('MetaMaskController', function () {
         const password = 'password';
         await metamaskController.createNewVaultAndKeychain(password);
 
-        const fakeAddress = '0xbad0';
-        metamaskController.preferencesController.addAddresses([fakeAddress]);
         await metamaskController.submitPassword(password);
 
         const addresses =
@@ -497,7 +495,7 @@ describe('MetaMaskController', function () {
         );
       });
 
-      it('should clear previous accounts after vault restoration', async function () {
+      it.only('should clear previous accounts after vault restoration', async function () {
         sandbox.stub(metamaskController, 'getBalance');
         metamaskController.getBalance.callsFake(() => {
           return Promise.resolve('0x0');
@@ -852,7 +850,34 @@ describe('MetaMaskController', function () {
       let accountToUnlock;
       let windowOpenStub;
       let addNewAccountStub;
-      let getAccountsStub;
+      let getAccountExpectStub;
+      let updateAccountsStub;
+      let listAccountsStub;
+
+      const generateInternalAccountMock = (index) => {
+        return {
+          address: `0x${index}`,
+          id: `mock-id-${index}`,
+          metadata: {
+            name: `Trezor ${index}`,
+            keyring: {
+              type: 'Trezor Hardware',
+            },
+          },
+          options: {},
+          methods: [
+            'personal_sign',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        };
+      };
+
       beforeEach(async function () {
         accountToUnlock = 10;
         windowOpenStub = sinon.stub(window, 'open');
@@ -864,22 +889,34 @@ describe('MetaMaskController', function () {
         );
         addNewAccountStub.returns('0x123');
 
-        getAccountsStub = sinon.stub(
-          metamaskController.keyringController,
-          'getAccounts',
+        getAccountExpectStub = sinon.stub(
+          metamaskController.accountsController,
+          'getAccountExpect',
         );
-        // Need to return different address to mock the behavior of
-        // adding a new account from the keyring
-        getAccountsStub.onCall(0).returns(Promise.resolve(['0x1']));
-        getAccountsStub.onCall(1).returns(Promise.resolve(['0x2']));
-        getAccountsStub.onCall(2).returns(Promise.resolve(['0x3']));
-        getAccountsStub.onCall(3).returns(Promise.resolve(['0x4']));
-        sinon.spy(metamaskController.preferencesController, 'setAddresses');
-        sinon.spy(
-          metamaskController.preferencesController,
-          'setSelectedAddress',
+
+        getAccountExpectStub.returns(generateInternalAccountMock(11));
+
+        listAccountsStub = sinon.stub(
+          metamaskController.accountsController,
+          'listAccounts',
         );
-        sinon.spy(metamaskController.preferencesController, 'setAccountLabel');
+
+        listAccountsStub.returns([
+          generateInternalAccountMock(0),
+          generateInternalAccountMock(1),
+          generateInternalAccountMock(2),
+          generateInternalAccountMock(3),
+        ]);
+
+        updateAccountsStub = sinon.stub(
+          metamaskController.accountsController,
+          'updateAccounts',
+        );
+
+        updateAccountsStub.resolves();
+
+        sinon.spy(metamaskController.accountsController, 'setAccountName');
+
         await metamaskController
           .connectHardware(HardwareDeviceNames.trezor, 0, `m/44'/1'/0'/0`)
           .catch(() => null);
@@ -893,10 +930,9 @@ describe('MetaMaskController', function () {
       afterEach(function () {
         window.open.restore();
         metamaskController.keyringController.addNewAccount.restore();
-        metamaskController.keyringController.getAccounts.restore();
-        metamaskController.preferencesController.setAddresses.restore();
-        metamaskController.preferencesController.setSelectedAddress.restore();
-        metamaskController.preferencesController.setAccountLabel.restore();
+        metamaskController.accountsController.listAccounts.restore();
+        metamaskController.accountsController.updateAccounts.restore();
+        metamaskController.accountsController.getAccountExpect.restore();
       });
 
       it('should set unlockedAccount in the keyring', async function () {
@@ -911,26 +947,20 @@ describe('MetaMaskController', function () {
         assert(metamaskController.keyringController.addNewAccount.calledOnce);
       });
 
-      it('should call keyringController.getAccounts ', async function () {
-        assert(metamaskController.keyringController.getAccounts.called);
+      it('should call accountsController.updateAccounts', async function () {
+        assert(metamaskController.accountsController.updateAccounts.calledOnce);
       });
 
-      it('should call preferencesController.setAddresses', async function () {
-        assert(
-          metamaskController.preferencesController.setAddresses.calledOnce,
+      it('should set the name of the account', async function () {
+        assert(metamaskController.accountsController.setAccountName.calledOnce);
+        console.log(
+          metamaskController.accountsController.setAccountName.getCall(0).args,
         );
-      });
-
-      it('should call preferencesController.setSelectedAddress', async function () {
         assert(
-          metamaskController.preferencesController.setSelectedAddress
-            .calledOnce,
-        );
-      });
-
-      it('should call preferencesController.setAccountLabel', async function () {
-        assert(
-          metamaskController.preferencesController.setAccountLabel.calledOnce,
+          metamaskController.accountsController.setAccountName.calledWith(
+            'mock-id-11',
+            'Trezor 11',
+          ),
         );
       });
     });

@@ -1,5 +1,4 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { normalize as normalizeAddress } from 'eth-sig-util';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
@@ -36,7 +35,6 @@ export default class PreferencesController {
    * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
    * @property {object} store.knownMethodData Contains all data methods known by the user
    * @property {string} store.currentLocale The preferred language locale key
-   * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    */
   constructor(opts = {}) {
     const addedNonMainNetwork = Object.values(
@@ -80,7 +78,6 @@ export default class PreferencesController {
       },
       knownMethodData: {},
       currentLocale: opts.initLangCode,
-      identities: {},
       lostIdentities: {},
       forgottenPassword: false,
       preferences: {
@@ -303,161 +300,6 @@ export default class PreferencesController {
       textDirection,
     });
     return textDirection;
-  }
-
-  /**
-   * Updates identities to only include specified addresses. Removes identities
-   * not included in addresses array
-   *
-   * @param {string[]} addresses - An array of hex addresses
-   */
-  setAddresses(addresses) {
-    const oldIdentities = this.store.getState().identities;
-
-    const identities = addresses.reduce((ids, address, index) => {
-      const oldId = oldIdentities[address] || {};
-      ids[address] = { name: `Account ${index + 1}`, address, ...oldId };
-      return ids;
-    }, {});
-
-    this.store.updateState({ identities });
-  }
-
-  /**
-   * Removes an address from state
-   *
-   * @param {string} address - A hex address
-   * @returns {string} the address that was removed
-   */
-  removeAddress(address) {
-    const { identities } = this.store.getState();
-
-    if (!identities[address]) {
-      throw new Error(`${address} can't be deleted cause it was not found`);
-    }
-    delete identities[address];
-    this.store.updateState({ identities });
-
-    // If the selected account is no longer valid,
-    // select an arbitrary other account:
-    if (address === this.getSelectedAddress()) {
-      const [selected] = Object.keys(identities);
-      this.setSelectedAddress(selected);
-    }
-
-    return address;
-  }
-
-  /**
-   * Adds addresses to the identities object without removing identities
-   *
-   * @param {string[]} addresses - An array of hex addresses
-   */
-  addAddresses(addresses) {
-    const { identities } = this.store.getState();
-    addresses.forEach((address) => {
-      // skip if already exists
-      if (identities[address]) {
-        return;
-      }
-      // add missing identity
-      const identityCount = Object.keys(identities).length;
-
-      identities[address] = { name: `Account ${identityCount + 1}`, address };
-    });
-    this.store.updateState({ identities });
-  }
-
-  /**
-   * Synchronizes identity entries with known accounts.
-   * Removes any unknown identities, and returns the resulting selected address.
-   *
-   * @param {Array<string>} addresses - known to the vault.
-   * @returns {Promise<string>} selectedAddress the selected address.
-   */
-  syncAddresses(addresses) {
-    if (!Array.isArray(addresses) || addresses.length === 0) {
-      throw new Error('Expected non-empty array of addresses. Error #11201');
-    }
-
-    const { identities, lostIdentities } = this.store.getState();
-
-    const newlyLost = {};
-    Object.keys(identities).forEach((identity) => {
-      if (!addresses.includes(identity)) {
-        newlyLost[identity] = identities[identity];
-        delete identities[identity];
-      }
-    });
-
-    // Identities are no longer present.
-    if (Object.keys(newlyLost).length > 0) {
-      // store lost accounts
-      Object.keys(newlyLost).forEach((key) => {
-        lostIdentities[key] = newlyLost[key];
-      });
-    }
-
-    this.store.updateState({ identities, lostIdentities });
-    this.addAddresses(addresses);
-
-    // If the selected account is no longer valid,
-    // select an arbitrary other account:
-    let selected = this.getSelectedAddress();
-    if (!addresses.includes(selected)) {
-      [selected] = addresses;
-      this.setSelectedAddress(selected);
-    }
-
-    return selected;
-  }
-
-  /**
-   * Setter for the `selectedAddress` property
-   *
-   * @param {string} _address - A new hex address for an account
-   */
-  setSelectedAddress(_address) {
-    const address = normalizeAddress(_address);
-
-    const { identities } = this.store.getState();
-    const selectedIdentity = identities[address];
-    if (!selectedIdentity) {
-      throw new Error(`Identity for '${address} not found`);
-    }
-
-    selectedIdentity.lastSelected = Date.now();
-    this.store.updateState({ identities, selectedAddress: address });
-  }
-
-  /**
-   * Getter for the `selectedAddress` property
-   *
-   * @returns {string} The hex address for the currently selected account
-   */
-  getSelectedAddress() {
-    return this.store.getState().selectedAddress;
-  }
-
-  /**
-   * Sets a custom label for an account
-   *
-   * @param {string} account - the account to set a label for
-   * @param {string} label - the custom label for the account
-   * @returns {Promise<string>}
-   */
-  async setAccountLabel(account, label) {
-    if (!account) {
-      throw new Error(
-        `setAccountLabel requires a valid address, got ${String(account)}`,
-      );
-    }
-    const address = normalizeAddress(account);
-    const { identities } = this.store.getState();
-    identities[address] = identities[address] || {};
-    identities[address].name = label;
-    this.store.updateState({ identities });
-    return label;
   }
 
   /**

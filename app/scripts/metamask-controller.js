@@ -805,21 +805,36 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
       messenger: keyringControllerMessenger,
-      removeIdentity: this.preferencesController.removeAddress.bind(
-        this.preferencesController,
-      ),
-      setAccountLabel: this.preferencesController.setAccountLabel.bind(
-        this.preferencesController,
-      ),
-      setSelectedAddress: this.preferencesController.setSelectedAddress.bind(
-        this.preferencesController,
-      ),
-      syncIdentities: this.preferencesController.syncAddresses.bind(
-        this.preferencesController,
-      ),
-      updateIdentities: this.preferencesController.setAddresses.bind(
-        this.preferencesController,
-      ),
+      removeIdentity: async () =>
+        await this.accountsController.updateAccounts(),
+      setAccountLabel: (address, label) => {
+        const accountToBeNamed = this.accountsController
+          .listAccounts()
+          .find(
+            (account) =>
+              account.address.toLowerCase() === address.toLowerCase(),
+          );
+        if (accountToBeNamed) {
+          this.accountsController.setAccountName(accountToBeNamed.id, label);
+        }
+      },
+      setSelectedAddress: (address) => {
+        const accountToBeSet = this.accountsController
+          .listAccounts()
+          .find(
+            (account) =>
+              account.address.toLowerCase() === address.toLowerCase(),
+          );
+        if (accountToBeSet) {
+          this.accountsController.setSelectedAccount(accountToBeSet);
+        }
+      },
+      syncIdentities: async () => {
+        await this.accountsController.updateAccounts();
+      },
+      // TODO: This will be removed, the accounts controller listens to the keyring controller state changes.
+      // eslint-disable-next-line no-empty-function
+      updateIdentities: () => {},
     });
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
@@ -2436,9 +2451,6 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      setSelectedAddress: preferencesController.setSelectedAddress.bind(
-        preferencesController,
-      ),
       addToken: tokensController.addToken.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setAccountLabel:
@@ -3519,25 +3531,26 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
 
     keyring.setAccountToUnlock(index);
-    const oldAccounts = await this.keyringController.getAccounts();
     const keyState = await this.keyringController.addNewAccount(keyring);
-    const newAccounts = await this.keyringController.getAccounts();
-    this.preferencesController.setAddresses(newAccounts);
-    newAccounts.forEach((address) => {
-      if (!oldAccounts.includes(address)) {
-        const label = this.getAccountLabel(
-          deviceName === HardwareDeviceNames.qr
-            ? keyring.getName()
-            : deviceName,
-          index,
-          hdPathDescription,
-        );
-        // Set the account label to Trezor 1 /  Ledger 1 / QR Hardware 1, etc
-        this.preferencesController.setAccountLabel(address, label);
-        // Select the account
-        this.preferencesController.setSelectedAddress(address);
-      }
-    });
+    await this.accountsController.updateAccounts();
+    const newlyAddedAccount = this.accountsController.getSelectedAccount();
+    console.log(
+      this.getAccountLabel(
+        deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName,
+        index,
+        hdPathDescription,
+      ),
+      index,
+      hdPathDescription,
+    );
+    await this.accountsController.setAccountName(
+      newlyAddedAccount.id,
+      this.getAccountLabel(
+        deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName,
+        index,
+        hdPathDescription,
+      ),
+    );
 
     const { identities } = this.preferencesController.store.getState();
     return { ...keyState, identities };
