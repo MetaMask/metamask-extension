@@ -1,7 +1,6 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Box, Text } from '../../../../ui/components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import {
   TextVariant,
@@ -12,7 +11,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setCompletedOnboarding } from '../../../store/actions';
 
 export default function OnboardingSuccessful() {
-  const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
 

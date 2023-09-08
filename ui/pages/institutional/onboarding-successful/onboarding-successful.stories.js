@@ -1,14 +1,14 @@
 import React from 'react';
-import CreationSuccessful from './creation-successful';
+import OnboardingSuccessful from './onboarding-successful';
 
 export default {
-  title: 'Pages/OnboardingFlow/CreationSuccessful',
+  title: 'Pages/OnboardingFlow/OnboardingSuccessful',
 };
 
 export const DefaultStory = () => {
   return (
     <div style={{ maxHeight: '2000px' }}>
-      <CreationSuccessful />
+      <OnboardingSuccessful />
     </div>
   );
 };

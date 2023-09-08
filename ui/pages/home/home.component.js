@@ -931,7 +931,7 @@ export default class Home extends PureComponent {
                   name={this.context.t('nfts')}
                   tabKey="nfts"
                 >
-                    <NftsTab />
+                  <NftsTab />
                   {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-main)
                     <ButtonLink

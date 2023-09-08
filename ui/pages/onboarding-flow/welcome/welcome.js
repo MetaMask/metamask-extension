@@ -33,10 +33,8 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
-import {
-  getFirstTimeFlowType,
-  getCurrentKeyring,
-} from '../../../selectors';
+import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
+
 export default function OnboardingWelcome() {
   const t = useI18nContext();
   const dispatch = useDispatch();
