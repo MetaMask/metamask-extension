@@ -14,6 +14,7 @@ import {
 } from '../../../../../shared/constants/transaction';
 import { Text } from '../../../../components/component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { groupbyKey } from '../../../../helpers/utils/util';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -69,9 +70,22 @@ export default class SendAssetRow extends Component {
 
   async componentDidMount() {
     const sendableTokens = this.props.tokens.filter((token) => !token.isERC721);
-    const sendableNfts = this.props.nfts.filter(
+    const sendableNftsNotSorted = this.props.nfts.filter(
       (nft) => nft.isCurrentlyOwned && nft.standard === TokenStandard.ERC721,
     );
+    // Group and sort the sendableNfts Array
+    const groupedNfts = groupbyKey('address', sendableNftsNotSorted);
+    for (const key in groupedNfts) {
+      if (Object.prototype.hasOwnProperty.call(groupedNfts, key)) {
+        groupedNfts[key].sort((a, b) => a.tokenId - b.tokenId);
+      }
+    }
+    const sendableNfts = [];
+    for (const key in groupedNfts) {
+      if (Object.prototype.hasOwnProperty.call(groupedNfts, key)) {
+        sendableNfts.push(...groupedNfts[key]);
+      }
+    }
     this.setState({ sendableTokens, sendableNfts });
   }
 

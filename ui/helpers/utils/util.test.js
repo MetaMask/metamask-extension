@@ -929,4 +929,53 @@ describe('util', () => {
       expect(util.getNetworkNameFromProviderType('rpc')).toStrictEqual('');
     });
   });
+
+  describe('groupByKey()', () => {
+    it('should group by key an array of objects', () => {
+      const testArray = [
+        {
+          address: '0x1a3b0DF133F4E06C2B2D37653254B5d487bD87e0',
+          description: 'test1',
+          favorite: false,
+          tokenId: '1',
+        },
+        {
+          address: '0x1a3b0DF133F4E06C2B2D37653254B5d487bD87e0',
+          description: 'test2',
+          favorite: false,
+          tokenId: '2',
+        },
+        {
+          address: '0x6D6e0D34eE34FfaaEFbb963e85e7B9Ef76B7A34c',
+          description: 'test1',
+          favorite: false,
+          tokenId: '1',
+        },
+      ];
+      expect(util.groupbyKey('address', testArray)).toStrictEqual({
+        '0x1a3b0DF133F4E06C2B2D37653254B5d487bD87e0': [
+          {
+            address: '0x1a3b0DF133F4E06C2B2D37653254B5d487bD87e0',
+            description: 'test1',
+            favorite: false,
+            tokenId: '1',
+          },
+          {
+            address: '0x1a3b0DF133F4E06C2B2D37653254B5d487bD87e0',
+            description: 'test2',
+            favorite: false,
+            tokenId: '2',
+          },
+        ],
+        '0x6D6e0D34eE34FfaaEFbb963e85e7B9Ef76B7A34c': [
+          {
+            address: '0x6D6e0D34eE34FfaaEFbb963e85e7B9Ef76B7A34c',
+            description: 'test1',
+            favorite: false,
+            tokenId: '1',
+          },
+        ],
+      });
+    });
+  });
 });
