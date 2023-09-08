@@ -4358,13 +4358,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@file:.yalc/@metamask/name-controller::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "@metamask/name-controller@file:.yalc/@metamask/name-controller#.yalc/@metamask/name-controller::hash=7b4e9a&locator=metamask-crx%40workspace%3A."
+"@metamask/name-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/name-controller@npm:1.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^3.2.1"
     immer: "npm:^9.0.6"
-  checksum: 15c35267a2df310190f2bd1cb199e239eb4af6725399db1718a62bb69ade05b2656f8c1b0da6348e8b426e7e2049ab9cec06fc3ead2cdb9649c76c4b57f9d839
+  checksum: 2366672299a6cf4f7ad78dd023e110fb175606911018a8b2efd1243898d2e74f9eb4fd59b1579c386441b21f000f74e700dd47b955aa99b6f0ba08686dcf2104
   languageName: node
   linkType: hard
 
@@ -24235,7 +24235,7 @@ __metadata:
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/name-controller": "file:.yalc/@metamask/name-controller"
+    "@metamask/name-controller": "npm:^1.0.0"
     "@metamask/network-controller": "npm:^12.0.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
