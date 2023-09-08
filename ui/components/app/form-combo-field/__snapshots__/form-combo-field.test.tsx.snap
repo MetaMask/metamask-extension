@@ -38,7 +38,7 @@ exports[`FormComboField renders with no options 1`] = `
       </div>
       <div
         class="form-combo-field__dropdown"
-        style="width: 0px;"
+        style="width: 0px; max-height: 179px;"
       >
         <div
           class="form-combo-field__option"
@@ -94,7 +94,7 @@ exports[`FormComboField renders with options 1`] = `
       </div>
       <div
         class="form-combo-field__dropdown"
-        style="width: 0px;"
+        style="width: 0px; max-height: 179px;"
       >
         <div
           class="form-combo-field__option"

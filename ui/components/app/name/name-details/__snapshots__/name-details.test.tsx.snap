@@ -26,11 +26,11 @@ exports[`NameDetails renders with no saved name 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--sm:margin-top-8 mm-box--md:margin-top-12 mm-box--sm:margin-bottom-8 mm-box--md:margin-bottom-12 mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
           role="dialog"
         >
           <div
@@ -145,16 +145,25 @@ exports[`NameDetails renders with no saved name 1`] = `
                   class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
                 >
                   <div
-                    class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+                    class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
                   >
                     <input
                       autocomplete="off"
-                      class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                      class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="true"
                       placeholder="Set a personal display name..."
                       type="text"
                       value=""
                     />
+                    <button
+                      aria-label="Clear"
+                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/close.svg');"
+                      />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -210,11 +219,11 @@ exports[`NameDetails renders with saved name 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--sm:margin-top-8 mm-box--md:margin-top-12 mm-box--sm:margin-bottom-8 mm-box--md:margin-bottom-12 mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
           role="dialog"
         >
           <div
@@ -329,16 +338,25 @@ exports[`NameDetails renders with saved name 1`] = `
                   class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
                 >
                   <div
-                    class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+                    class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
                   >
                     <input
                       autocomplete="off"
-                      class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                      class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="true"
                       placeholder="Set a personal display name..."
                       type="text"
                       value="TestName"
                     />
+                    <button
+                      aria-label="Clear"
+                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/close.svg');"
+                      />
+                    </button>
                   </div>
                 </div>
               </div>
