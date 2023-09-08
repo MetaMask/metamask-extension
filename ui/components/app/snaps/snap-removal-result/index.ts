@@ -1,1 +1,1 @@
-export { defatul } from './snap-removal-result';
+export { default } from './snap-removal-result';
