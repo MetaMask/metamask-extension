@@ -1,5 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { Box, IconName } from '../../../../components/component-library';
+import {
+  Box,
+  ButtonPrimary,
+  IconName,
+} from '../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -53,7 +57,7 @@ const CreateSnapAccount = ({
     setViewState({ type: 'Loading' });
     try {
       // await onSubmit(accountName);
-      setViewState({ type: 'Success' });
+      // setViewState({ type: 'Success' });
     } catch (err) {
       setViewState({ type: 'Error', message: (err as Error).message });
     }
@@ -68,6 +72,10 @@ const CreateSnapAccount = ({
       setViewState({ type: 'Error', message: (err as Error).message });
     }
   }, [onCancel]);
+
+  const handleOnFinish = useCallback(async () => {
+    console.log('SNAPS/ handleOnFinish called');
+  }, []);
 
   const onAccountNameChange = useCallback((value) => {
     setAccountName(value);
@@ -125,12 +133,12 @@ const CreateSnapAccount = ({
         <Box>{renderContent()}</Box>
         <PageContainerFooter
           cancelButtonType="default"
-          hideCancel={false}
+          hideCancel={viewState !== undefined}
           disabled={false}
           onCancel={handleOnCancel}
           cancelText={t('cancel')}
           onSubmit={handleOnConfirm}
-          submitText={t('create')}
+          submitText={viewState === undefined ? t('create') : t('gotIt')}
         />
       </Box>
     </Box>
