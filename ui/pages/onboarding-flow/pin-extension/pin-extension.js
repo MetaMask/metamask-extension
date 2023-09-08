@@ -9,7 +9,7 @@ import {
   FontWeight,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
@@ -33,19 +33,22 @@ export default function OnboardingPinExtension() {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
     } else {
-      await dispatch(setCompletedOnboarding());
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingWalletSetupComplete,
-        properties: {
-          wallet_setup_type:
-            firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
-              ? 'import'
-              : 'new',
-          new_wallet: firstTimeFlowType === FIRST_TIME_FLOW_TYPES.CREATE,
-        },
-      });
-      history.push(DEFAULT_ROUTE);
+      // await dispatch(setCompletedOnboarding());
+      // trackEvent({
+      //   category: MetaMetricsEventCategory.Onboarding,
+      //   event: MetaMetricsEventName.OnboardingWalletSetupComplete,
+      //   properties: {
+      //     wallet_setup_type:
+      //       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+      //         ? 'import'
+      //         : 'new',
+      //     new_wallet: firstTimeFlowType === FIRST_TIME_FLOW_TYPES.CREATE,
+      //   },
+      // });
+
+      // MMI_ONBOARDING_COMPLETION_ROUTE
+
+      history.push(MMI_ONBOARDING_COMPLETION_ROUTE);
     }
   };
 
@@ -60,7 +63,16 @@ export default function OnboardingPinExtension() {
         align={TextAlign.Center}
         fontWeight={FontWeight.Bold}
       >
-        {t('onboardingPinExtensionTitle')}
+        {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        t('onboardingPinExtensionTitle')
+        ///: END:ONLY_INCLUDE_IN
+        }
+        {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        t('pinExtensionTitle')
+        ///: END:ONLY_INCLUDE_IN
+        }
       </Text>
       <Carousel
         selectedItem={selectedIndex}
@@ -71,12 +83,23 @@ export default function OnboardingPinExtension() {
       >
         <div>
           <Text align={TextAlign.Center}>
-            {t('onboardingPinExtensionDescription')}
+            {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        t('onboardingPinExtensionDescription')
+        ///: END:ONLY_INCLUDE_IN
+        }
+        {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        t('pinExtensionDescription')
+        ///: END:ONLY_INCLUDE_IN
+        }
           </Text>
           <div className="onboarding-pin-extension__diagram">
             <OnboardingPinBillboard />
           </div>
         </div>
+        {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         <div>
           <Text align={TextAlign.Center}>
             {t('onboardingPinExtensionDescription2')}
@@ -91,6 +114,8 @@ export default function OnboardingPinExtension() {
             alt=""
           />
         </div>
+                ///: END:ONLY_INCLUDE_IN
+              }
       </Carousel>
       <div className="onboarding-pin-extension__buttons">
         <Button

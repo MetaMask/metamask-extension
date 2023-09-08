@@ -313,7 +313,7 @@
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "agreeTermsOfUse": {
-    "message": "I agree to MetaMask's $1",
+    "message": "I agree to the $1",
     "description": "$1 is the `terms` link"
   },
   "airgapVault": {
@@ -3046,6 +3046,12 @@
   "onboardingPinExtensionStep1": {
     "message": "1"
   },
+  "pinExtensionTitle": {
+    "message": "Pin extension"
+  },
+  "pinExtensionDescription": {
+    "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
+  },
   "onboardingPinExtensionStep2": {
     "message": "2"
   },
@@ -3124,6 +3130,9 @@
   "passwordSetupDetails": {
     "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
   },
+  "mmiPasswordSetupDetails": {
+    "message": "This password will unlock your MetaMask Institutional extension only."
+  },
   "passwordStrength": {
     "message": "Password strength: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -3132,7 +3141,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "I understand that MetaMask cannot recover this password for me. $1"
+    "message": "I understand that MetaMask $2 cannot recover this password for me. $1"
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
@@ -5393,6 +5402,15 @@
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
   },
+  "extensionInsallCompleteTitle": {
+    "message": "Extension install complete"
+  },
+  "extensionInsallCompleteDescription": {
+    "message": "Return to the MetaMask Institutional product onboarding to connect your custodial or self-custodial accounts."
+  },
+  "continueMmiOnboarding": {
+    "message": "Continue MetaMask Institutional onboarding"
+  },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
   },
@@ -5435,6 +5453,12 @@
   },
   "welcomeLoginTitle": {
     "message": "Say hello to your wallet"
+  },
+  "installExtension": {
+    "message": "Install extension"
+  },
+  "installExtensionDescription": {
+    "message": "The institution-compliant version of the world's leading web3 wallet, MetaMask."
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"

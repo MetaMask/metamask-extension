@@ -1,0 +1,44 @@
+.creation-successful {
+  @include screen-sm-min {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  img {
+    align-self: center;
+  }
+
+  max-width: 600px;
+
+  ul {
+    list-style-type: disc;
+    max-width: 500px;
+  }
+
+  li {
+    margin-left: 25px;
+
+    a {
+      justify-content: flex-start;
+      padding: 0;
+    }
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    button {
+      margin-top: 14px;
+      max-width: 280px;
+      padding: 16px 0;
+    }
+  }
+}

@@ -16,6 +16,7 @@ import {
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';
@@ -169,7 +170,14 @@ export default function CreatePassword({
         if (createNewAccount) {
           await createNewAccount(password);
         }
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
+
       } catch (error) {
         setPasswordError(error.message);
       }
@@ -178,7 +186,10 @@ export default function CreatePassword({
 
   return (
     <div className="create-password__wrapper" data-testid="create-password">
-      {secretRecoveryPhrase &&
+
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        secretRecoveryPhrase &&
       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
         <TwoStepProgressBar
           stage={twoStepStages.PASSWORD_CREATE}
@@ -189,12 +200,28 @@ export default function CreatePassword({
           stage={threeStepStages.PASSWORD_CREATE}
           marginBottom={4}
         />
-      )}
+      )
+    ///: END:ONLY_INCLUDE_IN
+    }
+
+
       <Typography variant={TypographyVariant.H2} fontWeight={FONT_WEIGHT.BOLD}>
         {t('createPassword')}
       </Typography>
+
       <Typography variant={TypographyVariant.H4} align={TEXT_ALIGN.CENTER}>
-        {t('passwordSetupDetails')}
+
+        {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        t('passwordSetupDetails')
+        ///: END:ONLY_INCLUDE_IN
+        }
+        {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        t('mmiPasswordSetupDetails')
+        ///: END:ONLY_INCLUDE_IN
+        }
+
       </Typography>
       <Box justifyContent={JustifyContent.center} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
@@ -225,6 +252,7 @@ export default function CreatePassword({
           />
           <FormField
             dataTestId="create-password-confirm"
+            marginTop={3}
             onChange={handleConfirmPasswordChange}
             password={!showPassword}
             error={confirmPasswordError}
@@ -241,6 +269,7 @@ export default function CreatePassword({
           <Box
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
             marginBottom={4}
           >
             <label className="create-password__form__terms-label">
@@ -265,6 +294,10 @@ export default function CreatePassword({
                       {t('learnMoreUpperCase')}
                     </span>
                   </a>,
+                          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                          'Institutional',
+        ///: END:ONLY_INCLUDE_IN
+
                 ])}
               </Typography>
             </label>

@@ -15,6 +15,7 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  MMI_ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
@@ -44,6 +45,7 @@ import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
+import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful'
 import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
@@ -156,6 +158,10 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_COMPLETION_ROUTE}
             component={CreationSuccessful}
+          />
+          <Route
+            path={MMI_ONBOARDING_COMPLETION_ROUTE}
+            component={OnboardingSuccessful}
           />
           <Route
             path={ONBOARDING_WELCOME_ROUTE}

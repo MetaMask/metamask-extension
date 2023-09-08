@@ -13,6 +13,8 @@ import {
   TEXT_ALIGN,
   TextVariant,
   AlignItems,
+  TextAlign,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -23,15 +25,17 @@ import {
 import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
-import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
-
+import { getFirstTimeFlowType, getFirstTimeFlowTypeRoute, getCurrentKeyring } from '../../../selectors';
 export default function OnboardingWelcome() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -54,7 +58,7 @@ export default function OnboardingWelcome() {
   }, [currentKeyring, history, firstTimeFlowType]);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const onCreateClick = () => {
+  const onCreateClick = async () => {
     dispatch(setFirstTimeFlowType('create'));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -64,7 +68,16 @@ export default function OnboardingWelcome() {
       },
     });
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     history.push(ONBOARDING_METAMETRICS);
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    await dispatch(setParticipateInMetaMetrics(false));
+    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    ///: END:ONLY_INCLUDE_IN
+
   };
   const toggleTermsCheck = () => {
     setTermsChecked((currentTermsChecked) => !currentTermsChecked);
@@ -81,7 +94,7 @@ export default function OnboardingWelcome() {
     </a>,
   ]);
 
-  const onImportClick = () => {
+  const onImportClick = async () => {
     dispatch(setFirstTimeFlowType('import'));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -91,7 +104,16 @@ export default function OnboardingWelcome() {
       },
     });
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     history.push(ONBOARDING_METAMETRICS);
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    await dispatch(setParticipateInMetaMetrics(false));
+    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+    ///: END:ONLY_INCLUDE_IN
+
   };
 
   trackEvent({
@@ -106,17 +128,19 @@ export default function OnboardingWelcome() {
 
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
+{
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       <Carousel showThumbs={false} showStatus={false} showArrows>
         <div>
           <Text
             variant={TextVariant.headingLg}
             as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
-            fontWeight={FONT_WEIGHT.BOLD}
+            textAlign={TextAlign.Center}
+            fontWeight={FontWeight.Bold}
           >
             {t('welcomeToMetaMask')}
           </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER} marginLeft={6} marginRight={6}>
+          <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
             {t('welcomeToMetaMaskIntro')}
           </Text>
           <div className="onboarding-welcome__mascot">
@@ -131,12 +155,12 @@ export default function OnboardingWelcome() {
           <Text
             variant={TextVariant.headingLg}
             as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
-            fontWeight={FONT_WEIGHT.BOLD}
+            textAlign={TextAlign.Center}
+            fontWeight={FontWeight.Bold}
           >
             {t('welcomeExploreTitle')}
           </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER}>
+          <Text textAlign={TextAlign.Center}>
             {t('welcomeExploreDescription')}
           </Text>
           <div className="onboarding-welcome__image">
@@ -152,12 +176,12 @@ export default function OnboardingWelcome() {
           <Text
             variant={TextVariant.headingLg}
             as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
-            fontWeight={FONT_WEIGHT.BOLD}
+            textAlign={TextAlign.Center}
+            fontWeight={FontWeight.Bold}
           >
             {t('welcomeLoginTitle')}
           </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER}>
+          <Text textAlign={TextAlign.Center}>
             {t('welcomeLoginDescription')}
           </Text>
           <div className="onboarding-welcome__image">
@@ -170,6 +194,33 @@ export default function OnboardingWelcome() {
           </div>
         </div>
       </Carousel>
+      ///: END:ONLY_INCLUDE_IN
+      }
+
+{
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          <div>
+          <Text
+            variant={TextVariant.headingLg}
+            textAlign={TextAlign.Center}
+            fontWeight={FontWeight.Bold}
+          >
+            {t('installExtension')}
+          </Text>
+          <Text textAlign={TextAlign.Center} marginTop={2} marginLeft={6} marginRight={6}>
+            {t('installExtensionDescription')}
+          </Text>
+          <div className="onboarding-welcome__mascot">
+            <Mascot
+              animationEventEmitter={eventEmitter}
+              width="250"
+              height="250"
+            />
+          </div>
+        </div>
+              ///: END:ONLY_INCLUDE_IN
+}
+
       <ul className="onboarding-welcome__buttons">
         <li>
           <Box
