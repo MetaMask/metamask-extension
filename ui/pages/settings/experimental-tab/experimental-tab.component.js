@@ -13,8 +13,10 @@ import {
   TextVariant,
   FontWeight,
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  AlignItems,
   Display,
   FlexDirection,
+  FlexWrap,
   JustifyContent,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
@@ -84,28 +86,12 @@ export default class ExperimentalTab extends PureComponent {
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {t('securityAlertsDescription1')}
+                {t('securityAlertsDescription')}
               </Text>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('securityAlertsDescription2')}
-              </Text>
-
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                marginTop={3}
-                marginBottom={1}
-              >
-                {t('selectProvider')}
-              </Text>
-              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
                 <Text
                   variant={TextVariant.bodyMd}
                   color={TextColor.textDefault}
-                  marginBottom={0}
                 >
                   {t('blockaid')}
                 </Text>
@@ -124,13 +110,6 @@ export default class ExperimentalTab extends PureComponent {
                   }}
                 />
               </div>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textMuted}
-                marginTop={2}
-              >
-                {t('moreComingSoon')}
-              </Text>
             </div>
           </div>
         </div>
@@ -173,16 +152,7 @@ export default class ExperimentalTab extends PureComponent {
               >
                 {t('transactionSecurityCheckDescription')}
               </Text>
-              <Text
-                marginTop={3}
-                marginBottom={1}
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={TextColor.textAlternative}
-              >
-                {t('selectProvider')}
-              </Text>
-              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
                 <Text
                   variant={TextVariant.bodyMd}
                   as="h5"
@@ -224,15 +194,6 @@ export default class ExperimentalTab extends PureComponent {
                   </a>,
                 ])}
               </Text>
-              <Text
-                variant={TextVariant.bodyMd}
-                as="h5"
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textMuted}
-                marginTop={2}
-              >
-                {t('moreComingSoon')}
-              </Text>
             </div>
           </div>
         </Box>
@@ -245,22 +206,31 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     return (
-      <Box
-        ref={this.settingsRefs[6]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-desktop-pairing"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('desktopEnableButtonDescription')}</span>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <DesktopEnableButton />
-        </div>
-      </Box>
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          color={TextColor.textAlternative}
+          marginBottom={2}
+        >
+          {t('desktopApp')}
+        </Text>
+        <Box
+          ref={this.settingsRefs[6]}
+          data-testid="advanced-setting-desktop-pairing"
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          flexDirection={FlexDirection.Row}
+          flexWrap={FlexWrap.Wrap}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Text marginTop={3} paddingRight={2}>
+            {t('desktopEnableButtonDescription')}
+          </Text>
+          <Box className="settings-page__content-item-col" paddingTop={3}>
+            <DesktopEnableButton />
+          </Box>
+        </Box>
+      </>
     );
   }
   ///: END:ONLY_INCLUDE_IN

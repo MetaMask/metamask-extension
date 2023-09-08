@@ -66,7 +66,7 @@ export default class PreferencesController {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertsEnabled: false,
       ///: END:ONLY_INCLUDE_IN
-      advancedGasFee: null,
+      advancedGasFee: {},
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -116,6 +116,9 @@ export default class PreferencesController {
     this.tokenListController = opts.tokenListController;
 
     this._subscribeToInfuraAvailability();
+
+    // subscribe to account removal
+    opts.onAccountRemoved((address) => this.removeAddress(address));
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
@@ -240,10 +243,18 @@ export default class PreferencesController {
   /**
    * Setter for the `advancedGasFee` property
    *
-   * @param {object} val - holds the maxBaseFee and PriorityFee that the user set as default advanced settings.
+   * @param {object} options
+   * @param {string} options.chainId - The chainId the advancedGasFees should be set on
+   * @param {object} options.gasFeePreferences - The advancedGasFee options to set
    */
-  setAdvancedGasFee(val) {
-    this.store.updateState({ advancedGasFee: val });
+  setAdvancedGasFee({ chainId, gasFeePreferences }) {
+    const { advancedGasFee } = this.store.getState();
+    this.store.updateState({
+      advancedGasFee: {
+        ...advancedGasFee,
+        [chainId]: gasFeePreferences,
+      },
+    });
   }
 
   /**
