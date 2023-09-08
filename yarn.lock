@@ -16139,18 +16139,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-sig-util@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "eth-sig-util@npm:3.0.1"
-  dependencies:
-    ethereumjs-abi: "npm:^0.6.8"
-    ethereumjs-util: "npm:^5.1.1"
-    tweetnacl: "npm:^1.0.3"
-    tweetnacl-util: "npm:^0.15.0"
-  checksum: 2f6a68b72569528c310f429136284596e28aac9de4874ef62af6ae76340193991c02cc88b50388ac8c5d3dc120c635d62e59eb7d6e49df51e75d20d9e45c70dc
-  languageName: node
-  linkType: hard
-
 "ethereum-bloom-filters@npm:^1.0.6":
   version: 1.0.7
   resolution: "ethereum-bloom-filters@npm:1.0.7"
@@ -16214,7 +16202,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-abi@npm:0.6.8, ethereumjs-abi@npm:^0.6.4, ethereumjs-abi@npm:^0.6.8":
+"ethereumjs-abi@npm:0.6.8, ethereumjs-abi@npm:^0.6.4":
   version: 0.6.8
   resolution: "ethereumjs-abi@npm:0.6.8"
   dependencies:
@@ -24417,7 +24405,6 @@ __metadata:
     eth-method-registry: "npm:^2.0.0"
     eth-query: "npm:^2.1.2"
     eth-rpc-errors: "npm:^4.0.2"
-    eth-sig-util: "npm:^3.0.0"
     ethereum-ens-network-map: "npm:^1.0.2"
     ethereumjs-abi: "npm:^0.6.4"
     ethereumjs-util: "npm:^7.0.10"

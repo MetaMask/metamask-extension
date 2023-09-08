@@ -1165,11 +1165,11 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true
+        "ethereumjs-abi>ethereumjs-util>ethjs-util": true
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": {
@@ -1239,9 +1239,9 @@
     "@metamask/eth-ledger-bridge-keyring>eth-sig-util": {
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
         "browserify>buffer": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true,
         "ethereumjs-abi": true
       }
     },
@@ -1251,7 +1251,7 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "ethereumjs-abi>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
@@ -1294,11 +1294,11 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>ethereum-cryptography": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true
+        "ethereumjs-abi>ethereumjs-util>ethjs-util": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util>ethereum-cryptography": {
@@ -1770,11 +1770,11 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true
+        "ethereumjs-abi>ethereumjs-util>ethjs-util": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": {
@@ -1860,11 +1860,11 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true
+        "ethereumjs-abi>ethereumjs-util>ethjs-util": true
       }
     },
     "@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography": {
@@ -1880,6 +1880,25 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true,
+        "nacl": "write"
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -3749,32 +3768,6 @@
         "eth-rpc-errors>fast-safe-stringify": true
       }
     },
-    "eth-sig-util>ethereumjs-util>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
-      }
-    },
-    "eth-sig-util>tweetnacl": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true,
-        "nacl": "write"
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "eth-sig-util>tweetnacl-util": {
-      "globals": {
-        "atob": true,
-        "btoa": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "ethereumjs-abi": {
       "packages": {
         "bn.js": true,
@@ -3788,10 +3781,17 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "ethereumjs-abi>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true
+      }
+    },
+    "ethereumjs-abi>ethereumjs-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "ethereumjs-util": {
