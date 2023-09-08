@@ -18,7 +18,12 @@ export default function NftsDetectionNotice() {
         history.push(`${SECURITY_ROUTE}#autodetect-nfts`);
       }}
     >
-      {t('newNFTDetectedMessage')}
+      {t(
+        'newNFTDetectedMessage',
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ['Institutional'],
+        ///: END:ONLY_INCLUDE_IN
+      )}
     </BannerAlert>
   );
 }

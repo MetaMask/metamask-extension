@@ -1,28 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-
-import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+import { useDispatch } from 'react-redux';
+import { Box, Text } from '../../../../ui/components/component-library';
 import Button from '../../../components/ui/button';
 import {
-  FONT_WEIGHT,
-  TEXT_ALIGN,
-  TypographyVariant,
-  AlignItems,
+  TextVariant,
+  TextAlign,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  ONBOARDING_PIN_EXTENSION_ROUTE,
-  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-} from '../../../helpers/constants/routes';
-import { isBeta } from '../../../helpers/utils/build-types';
-import { getFirstTimeFlowType } from '../../../selectors';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setCompletedOnboarding } from '../../../store/actions';
 
 export default function OnboardingSuccessful() {
@@ -32,17 +18,17 @@ export default function OnboardingSuccessful() {
 
   return (
     <div className="creation-successful" data-testid="creation-successful">
-      <Box textAlign={TEXT_ALIGN.CENTER}>
-        <Typography
-          variant={TypographyVariant.H2}
-          fontWeight={FONT_WEIGHT.BOLD}
+      <Box textAlign={TextAlign.Center}>
+        <Text
+          variant={TextVariant.headingLg}
+          fontWeight={FontWeight.Bold}
           margin={6}
         >
           {t('extensionInsallCompleteTitle')}
-        </Typography>
-        <Typography variant={TypographyVariant.H4}>
+        </Text>
+        <Text marginTop={6} marginBottom={6}>
           {t('extensionInsallCompleteDescription')}
-        </Typography>
+        </Text>
       </Box>
 
       <Box marginTop={6}>
@@ -53,7 +39,7 @@ export default function OnboardingSuccessful() {
           rounded
           onClick={async () => {
             await dispatch(setCompletedOnboarding());
-            window.open('https://metamask-institutional.io/onboarding')
+            window.open('https://metamask-institutional.io/onboarding');
           }}
         >
           {t('continueMmiOnboarding')}

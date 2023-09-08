@@ -196,51 +196,55 @@ export default function CreatePassword({
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
         ///: END:ONLY_INCLUDE_IN
-
       } catch (error) {
         setPasswordError(error.message);
       }
     }
   };
 
+  const walletButton =
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    t('createNewWallet');
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  t('continue');
+  ///: END:ONLY_INCLUDE_IN
+
   return (
     <div className="create-password__wrapper" data-testid="create-password">
-
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         secretRecoveryPhrase &&
-      firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
-        <TwoStepProgressBar
-          stage={twoStepStages.PASSWORD_CREATE}
-          marginBottom={4}
-        />
-      ) : (
-        <ThreeStepProgressBar
-          stage={threeStepStages.PASSWORD_CREATE}
-          marginBottom={4}
-        />
-      )
-    ///: END:ONLY_INCLUDE_IN
-    }
-
+        firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
+          <TwoStepProgressBar
+            stage={twoStepStages.PASSWORD_CREATE}
+            marginBottom={4}
+          />
+        ) : (
+          <ThreeStepProgressBar
+            stage={threeStepStages.PASSWORD_CREATE}
+            marginBottom={4}
+          />
+        )
+        ///: END:ONLY_INCLUDE_IN
+      }
 
       <Typography variant={TypographyVariant.H2} fontWeight={FONT_WEIGHT.BOLD}>
         {t('createPassword')}
       </Typography>
 
       <Typography variant={TypographyVariant.H4} align={TEXT_ALIGN.CENTER}>
-
         {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-        t('passwordSetupDetails')
-        ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          t('passwordSetupDetails')
+          ///: END:ONLY_INCLUDE_IN
         }
         {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        t('mmiPasswordSetupDetails')
-        ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          t('mmiPasswordSetupDetails')
+          ///: END:ONLY_INCLUDE_IN
         }
-
       </Typography>
       <Box justifyContent={JustifyContent.center} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
@@ -313,10 +317,9 @@ export default function CreatePassword({
                       {t('learnMoreUpperCase')}
                     </span>
                   </a>,
-                          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                          'Institutional',
-        ///: END:ONLY_INCLUDE_IN
-
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                  'Institutional',
+                  ///: END:ONLY_INCLUDE_IN
                 ])}
               </Typography>
             </label>
@@ -337,7 +340,7 @@ export default function CreatePassword({
             {secretRecoveryPhrase &&
             firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
               ? t('importMyWallet')
-              : t('createNewWallet')}
+              : walletButton}
           </Button>
         </form>
       </Box>

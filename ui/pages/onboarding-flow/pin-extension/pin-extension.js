@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
@@ -9,7 +9,8 @@ import {
   FontWeight,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE, MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import Box from '../../../components/ui/box';
+import { MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
@@ -29,24 +30,28 @@ export default function OnboardingPinExtension() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  useEffect(() => setSelectedIndex(1), []);
+  ///: END:ONLY_INCLUDE_IN
+
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
     } else {
-      // await dispatch(setCompletedOnboarding());
-      // trackEvent({
-      //   category: MetaMetricsEventCategory.Onboarding,
-      //   event: MetaMetricsEventName.OnboardingWalletSetupComplete,
-      //   properties: {
-      //     wallet_setup_type:
-      //       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
-      //         ? 'import'
-      //         : 'new',
-      //     new_wallet: firstTimeFlowType === FIRST_TIME_FLOW_TYPES.CREATE,
-      //   },
-      // });
-
-      // MMI_ONBOARDING_COMPLETION_ROUTE
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+      await dispatch(setCompletedOnboarding());
+      ///: END:ONLY_INCLUDE_IN
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingWalletSetupComplete,
+        properties: {
+          wallet_setup_type:
+            firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+              ? 'import'
+              : 'new',
+          new_wallet: firstTimeFlowType === FIRST_TIME_FLOW_TYPES.CREATE,
+        },
+      });
 
       history.push(MMI_ONBOARDING_COMPLETION_ROUTE);
     }
@@ -57,66 +62,75 @@ export default function OnboardingPinExtension() {
       className="onboarding-pin-extension"
       data-testid="onboarding-pin-extension"
     >
-      <Text
-        variant={TextVariant.headingLg}
-        as="h2"
-        align={TextAlign.Center}
-        fontWeight={FontWeight.Bold}
-      >
-        {
+      {
         ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-        t('onboardingPinExtensionTitle')
+        <>
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            align={TextAlign.Center}
+            fontWeight={FontWeight.Bold}
+          >
+            {t('onboardingPinExtensionTitle')}
+          </Text>
+          <Carousel
+            selectedItem={selectedIndex}
+            showThumbs={false}
+            showStatus={false}
+            showArrows={false}
+            onChange={(index) => setSelectedIndex(index)}
+          >
+            <div>
+              <Text align={TextAlign.Center}>
+                {t('onboardingPinExtensionDescription')}
+              </Text>
+              <div className="onboarding-pin-extension__diagram">
+                <OnboardingPinBillboard />
+              </div>
+            </div>
+            <div>
+              <Text align={TextAlign.Center}>
+                {t('onboardingPinExtensionDescription2')}
+              </Text>
+              <Text align={TextAlign.Center}>
+                {t('onboardingPinExtensionDescription3')}
+              </Text>
+              <img
+                src="/images/onboarding-pin-browser.svg"
+                width="799"
+                height="320"
+                alt=""
+              />
+            </div>
+          </Carousel>
+        </>
         ///: END:ONLY_INCLUDE_IN
-        }
-        {
+      }
+
+      {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        t('pinExtensionTitle')
-        ///: END:ONLY_INCLUDE_IN
-        }
-      </Text>
-      <Carousel
-        selectedItem={selectedIndex}
-        showThumbs={false}
-        showStatus={false}
-        showArrows={false}
-        onChange={(index) => setSelectedIndex(index)}
-      >
         <div>
-          <Text align={TextAlign.Center}>
-            {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-        t('onboardingPinExtensionDescription')
-        ///: END:ONLY_INCLUDE_IN
-        }
-        {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        t('pinExtensionDescription')
-        ///: END:ONLY_INCLUDE_IN
-        }
-          </Text>
-          <div className="onboarding-pin-extension__diagram">
-            <OnboardingPinBillboard />
-          </div>
+          <Box textAlign={TextAlign.Center}>
+            <Text
+              variant={TextVariant.headingLg}
+              align={TextAlign.Center}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('pinExtensionTitle')}
+            </Text>
+            <Text marginTop={3} marginBottom={3}>
+              {t('pinExtensionDescription')}
+            </Text>
+            <img
+              src="/images/onboarding-mmi-pin-browser.svg"
+              width="100%"
+              alt=""
+            />
+          </Box>
         </div>
-        {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-        <div>
-          <Text align={TextAlign.Center}>
-            {t('onboardingPinExtensionDescription2')}
-          </Text>
-          <Text align={TextAlign.Center}>
-            {t('onboardingPinExtensionDescription3')}
-          </Text>
-          <img
-            src="/images/onboarding-pin-browser.svg"
-            width="799"
-            height="320"
-            alt=""
-          />
-        </div>
-                ///: END:ONLY_INCLUDE_IN
-              }
-      </Carousel>
+        ///: END:ONLY_INCLUDE_IN
+      }
+
       <div className="onboarding-pin-extension__buttons">
         <Button
           data-testid={
@@ -125,7 +139,16 @@ export default function OnboardingPinExtension() {
           type="primary"
           onClick={handleClick}
         >
-          {selectedIndex === 0 ? t('next') : t('done')}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            selectedIndex === 0 ? t('next') : t('done')
+            ///: END:ONLY_INCLUDE_IN
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            t('continue')
+            ///: END:ONLY_INCLUDE_IN
+          }
         </Button>
       </div>
     </div>

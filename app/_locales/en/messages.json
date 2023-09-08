@@ -863,6 +863,9 @@
   "continue": {
     "message": "Continue"
   },
+  "continueMmiOnboarding": {
+    "message": "Continue MetaMask Institutional onboarding"
+  },
   "contract": {
     "message": "Contract"
   },
@@ -1577,6 +1580,12 @@
   "extendWalletWithSnaps": {
     "message": "Customize your wallet experience."
   },
+  "extensionInsallCompleteDescription": {
+    "message": "Return to the MetaMask Institutional product onboarding to connect your custodial or self-custodial accounts."
+  },
+  "extensionInsallCompleteTitle": {
+    "message": "Extension install complete"
+  },
   "externalExtension": {
     "message": "External extension"
   },
@@ -1988,6 +1997,12 @@
   "install": {
     "message": "Install"
   },
+  "installExtension": {
+    "message": "Install extension"
+  },
+  "installExtensionDescription": {
+    "message": "The institution-compliant version of the world's leading web3 wallet, MetaMask."
+  },
   "installOrigin": {
     "message": "Install origin"
   },
@@ -2352,6 +2367,9 @@
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."
   },
+  "mmiPasswordSetupDetails": {
+    "message": "This password will unlock your MetaMask Institutional extension only."
+  },
   "more": {
     "message": "more"
   },
@@ -2490,7 +2508,7 @@
     "message": "New contract"
   },
   "newNFTDetectedMessage": {
-    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your wallet."
+    "message": "Allow MetaMask $1 to automatically detect NFTs from Opensea and display in your wallet."
   },
   "newNFTsDetected": {
     "message": "New! NFT detection"
@@ -3046,12 +3064,6 @@
   "onboardingPinExtensionStep1": {
     "message": "1"
   },
-  "pinExtensionTitle": {
-    "message": "Pin extension"
-  },
-  "pinExtensionDescription": {
-    "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
-  },
   "onboardingPinExtensionStep2": {
     "message": "2"
   },
@@ -3129,9 +3141,6 @@
   },
   "passwordSetupDetails": {
     "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "This password will unlock your MetaMask Institutional extension only."
   },
   "passwordStrength": {
     "message": "Password strength: $1",
@@ -3349,6 +3358,12 @@
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
+  },
+  "pinExtensionDescription": {
+    "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
+  },
+  "pinExtensionTitle": {
+    "message": "Pin extension"
   },
   "pleaseConfirm": {
     "message": "Please confirm"
@@ -5402,15 +5417,6 @@
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
   },
-  "extensionInsallCompleteTitle": {
-    "message": "Extension install complete"
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "Return to the MetaMask Institutional product onboarding to connect your custodial or self-custodial accounts."
-  },
-  "continueMmiOnboarding": {
-    "message": "Continue MetaMask Institutional onboarding"
-  },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
   },
@@ -5453,12 +5459,6 @@
   },
   "welcomeLoginTitle": {
     "message": "Say hello to your wallet"
-  },
-  "installExtension": {
-    "message": "Install extension"
-  },
-  "installExtensionDescription": {
-    "message": "The institution-compliant version of the world's leading web3 wallet, MetaMask."
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"
