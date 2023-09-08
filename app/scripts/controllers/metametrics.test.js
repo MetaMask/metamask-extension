@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { toHex } from '@metamask/controller-utils';
+import { EthAccountType } from '@metamask/keyring-api';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -12,7 +13,6 @@ import waitUntilCalled from '../../../test/lib/wait-until-called';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
-import { EthAccountType } from '@metamask/keyring-api';
 
 const segment = createSegmentMock(2, 10000);
 
