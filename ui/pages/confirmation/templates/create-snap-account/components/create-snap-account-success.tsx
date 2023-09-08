@@ -30,6 +30,7 @@ const CreateSnapAccountSuccess = () => {
     >
       <AvatarIcon
         iconName={IconName.Check}
+        color={IconColor.successDefault}
         backgroundColor={BackgroundColor.successMuted}
         size={AvatarIconSize.Xl}
         marginBottom={4}

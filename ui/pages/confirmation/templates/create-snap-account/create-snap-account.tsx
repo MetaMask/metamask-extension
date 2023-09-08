@@ -52,7 +52,7 @@ const CreateSnapAccount = ({
   const handleOnConfirm = useCallback(async () => {
     setViewState({ type: 'Loading' });
     try {
-      await onSubmit(accountName);
+      // await onSubmit(accountName);
       setViewState({ type: 'Success' });
     } catch (err) {
       setViewState({ type: 'Error', message: (err as Error).message });
