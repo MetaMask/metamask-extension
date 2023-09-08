@@ -17,7 +17,6 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
-import Box from '../../../components/ui/box';
 import CheckBox from '../../../components/ui/check-box';
 import {
   ThreeStepProgressBar,
@@ -38,7 +37,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Icon, IconName, Text } from '../../../components/component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  Text,
+} from '../../../components/component-library';
 
 export default function CreatePassword({
   createNewAccount,
@@ -208,7 +212,11 @@ export default function CreatePassword({
           marginBottom={4}
         />
       )}
-      <Text variant={TextVariant.headingLg} fontWeight={FontWeight.Bold}>
+      <Text
+        variant={TextVariant.headingLg}
+        fontWeight={FontWeight.Bold}
+        marginBottom={3}
+      >
         {t('createPassword')}
       </Text>
       <Text
@@ -230,7 +238,7 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <Text variant={TextVariant.bodySm}>
+              <Text variant={TextVariant.bodyXs}>
                 <a
                   href=""
                   data-testid="show-password"
