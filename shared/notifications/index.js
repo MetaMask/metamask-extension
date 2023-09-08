@@ -1,4 +1,12 @@
 // Messages and descriptions for these locale keys are in app/_locales/en/messages.json
+
+/**
+ * I'm trying something new here, where notifications get names that are translated
+ * into numbers in only one place. This should make merge conflicts easier.
+ */
+export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
+export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
+
 export const UI_NOTIFICATIONS = {
   1: {
     id: 1,
@@ -131,6 +139,23 @@ export const UI_NOTIFICATIONS = {
     },
   },
   ///: END:ONLY_INCLUDE_IN
+  24: {
+    id: 24,
+    date: null,
+  },
+  // This syntax is unusual, but very helpful here.  It's equivalent to `UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+  [NOTIFICATION_DROP_LEDGER_FIREFOX]: {
+    id: Number(NOTIFICATION_DROP_LEDGER_FIREFOX),
+    date: null,
+  },
+  [NOTIFICATION_OPEN_BETA_SNAPS]: {
+    id: Number(NOTIFICATION_OPEN_BETA_SNAPS),
+    date: null,
+    image: {
+      src: 'images/introducing-snaps.svg',
+      width: '100%',
+    },
+  },
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -348,7 +373,6 @@ export const getTranslatedUINotifications = (t, locale) => {
       description: [
         t('notifications23DescriptionOne'),
         t('notifications23DescriptionTwo'),
-        t('notifications23DescriptionThree'),
       ],
       actionText: t('notifications23ActionText'),
       date: UI_NOTIFICATIONS[23].date
@@ -358,5 +382,42 @@ export const getTranslatedUINotifications = (t, locale) => {
         : '',
     },
     ///: END:ONLY_INCLUDE_IN
+    24: {
+      ...UI_NOTIFICATIONS[24],
+      title: t('notifications24Title'),
+      description: t('notifications24Description'),
+      actionText: t('notifications24ActionText'),
+      date: UI_NOTIFICATIONS[24].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[24].date),
+          )
+        : '',
+    },
+    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX],
+      title: t('notificationsDropLedgerFirefoxTitle'),
+      description: [t('notificationsDropLedgerFirefoxDescription')],
+      date: UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_OPEN_BETA_SNAPS]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS],
+      title: t('notificationsOpenBetaSnapsTitle'),
+      description: [
+        t('notificationsOpenBetaSnapsDescriptionOne'),
+        t('notificationsOpenBetaSnapsDescriptionTwo'),
+        t('notificationsOpenBetaSnapsDescriptionThree'),
+      ],
+      actionText: t('notificationsOpenBetaSnapsActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date),
+          )
+        : '',
+    },
   };
 };

@@ -50,10 +50,12 @@ const sendEther = {
   },
 };
 
-mockState.metamask.unapprovedTxs[sendEther.id] = sendEther;
+mockState.metamask.transactions.push(sendEther);
+
 mockState.confirmTransaction = {
   txData: sendEther,
 };
+
 const store = configureStore(mockState);
 
 describe('ConfirmSendEther', () => {
