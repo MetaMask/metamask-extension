@@ -225,12 +225,11 @@ describe('TokenAllowancePage', () => {
       const input = getByTestId('custom-spending-cap-input');
       expect(input.value).toBe('7');
 
-      // FIXME: This test is flaky
-      // waitFor(() => {
-      //   expect(
-      //     container.querySelector('.mm-help-text .mm-text').innerText,
-      //   ).toContain('7 TST');
-      // });
+      waitFor(() => {
+        expect(
+          container.querySelector('.mm-help-text .mm-text')?.innerText,
+        ).toContain('7 TST');
+      });
     });
   });
 
