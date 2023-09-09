@@ -137,6 +137,10 @@ export default function TokenAllowance({
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
 
+  /**
+   * We set the customSpendingCap to the dappProposedTokenAmount, if provided, rather than setting customTokenAmount
+   * because customTokenAmount is reserved for custom user input. This is only set once when the component is mounted.
+   */
   const initializeCustomSpendingCap = () => {
     if (
       (!customSpendingCap || customSpendingCap === '') &&
