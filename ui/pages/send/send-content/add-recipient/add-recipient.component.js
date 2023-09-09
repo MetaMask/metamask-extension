@@ -21,6 +21,7 @@ export default class AddRecipient extends Component {
     addressBook: PropTypes.array,
     updateRecipient: PropTypes.func,
     domainResolution: PropTypes.string,
+    domainType: PropTypes.string,
     domainError: PropTypes.string,
     domainWarning: PropTypes.string,
     addressBookEntryName: PropTypes.string,
@@ -108,6 +109,7 @@ export default class AddRecipient extends Component {
       userInput,
       addressBookEntryName,
       ownedAccounts = [],
+      domainType,
     } = this.props;
 
     let content;
@@ -123,6 +125,7 @@ export default class AddRecipient extends Component {
         domainResolution,
         addressBookEntryName || userInput,
         'Domain resolution',
+        domainType,
       );
       // TODO: Domain lookup fails silently, maybe we allow for a generic error message from snaps in the future?
     }
@@ -139,7 +142,15 @@ export default class AddRecipient extends Component {
     );
   }
 
-  renderExplicitAddress(address, name, type) {
+  renderExplicitAddress(address, name, type, domainType = '') {
+    if (domainType === 'Other') {
+      // snap provided resolution
+      return (
+        <div>
+
+        </div>
+      )
+    }
     return (
       <div
         key={address}

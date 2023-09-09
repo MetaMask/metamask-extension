@@ -267,3 +267,7 @@ export function getDomainError(state) {
 export function getDomainWarning(state) {
   return state[name].warning;
 }
+
+export function getDomainType(state) {
+  return state[name].domainType;
+}
