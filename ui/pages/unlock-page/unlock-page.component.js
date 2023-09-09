@@ -12,6 +12,8 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isBeta } from '../../helpers/utils/build-types';
+import { Text } from '../../components/component-library/text';
+import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
@@ -176,7 +178,14 @@ export default class UnlockPage extends Component {
               </div>
             ) : null}
           </div>
-          <h1 className="unlock-page__title">{t('welcomeBack')}</h1>
+          <Text
+            as="h1"
+            variant={TextVariant.headingMd}
+            color={TextColor.textAlternative}
+            marginTop={1}
+          >
+            {t('welcomeBack')}
+          </Text>
           <div>{t('unlockMessage')}</div>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
