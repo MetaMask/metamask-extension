@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, Label } from '../../component-library';
+import { Label, Text } from '../../component-library';
+
 import {
   TextTransform,
   BackgroundColor,
   TextColor,
   FontWeight,
   BorderRadius,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 const CustodyLabels = (props) => {
@@ -25,7 +26,7 @@ const CustodyLabels = (props) => {
       {filteredLabels.map((item) => (
         <Text
           key={item.key}
-          textTransform={TextTransform.Uppercase}
+          textTransform={TextTransform.Capitalize}
           className="custody-label"
           style={background ? { background } : {}}
           marginTop={1}
@@ -36,10 +37,10 @@ const CustodyLabels = (props) => {
           paddingLeft={2}
           paddingRight={2}
           backgroundColor={BackgroundColor.backgroundAlternative}
-          color={TextColor.textMuted}
+          color={TextColor.textDefault}
           fontWeight={FontWeight.Normal}
           borderRadius={BorderRadius.SM}
-          variant={TypographyVariant.H9}
+          variant={TextVariant.bodyXs}
         >
           {item.value}
         </Text>

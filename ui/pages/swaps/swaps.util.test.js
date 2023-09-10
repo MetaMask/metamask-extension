@@ -48,7 +48,7 @@ describe('Swaps Util', () => {
     beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
-        .get('/networks/1/tokens')
+        .get('/networks/1/tokens?includeBlockedTokens=true')
         .reply(200, TOKENS);
     });
 
@@ -399,6 +399,12 @@ describe('Swaps Util', () => {
     it('gets swaps value for display', () => {
       expect(formatSwapsValueForDisplay('39.6493201125465000000')).toBe(
         '39.6493201125',
+      );
+    });
+
+    it('gets swaps value for display when the value contains three dots', () => {
+      expect(formatSwapsValueForDisplay('33680099000000000000...')).toBe(
+        '33680099000000000000...',
       );
     });
   });

@@ -12,6 +12,8 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
+import { AvatarIcon } from '../../component-library';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
@@ -21,19 +23,21 @@ import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 
 export const safeComponentList = {
   a: 'a',
+  ActionableMessage,
+  AvatarIcon,
   b: 'b',
-  i: 'i',
-  p: 'p',
-  div: 'div',
-  span: 'span',
   Box,
   Button,
   Chip,
   ConfirmationNetworkSwitch,
   DefinitionList,
+  div: 'div',
+  i: 'i',
   MetaMaskTranslation,
   NetworkDisplay,
+  p: 'p',
   Popover,
+  span: 'span',
   TextArea,
   TextField,
   Tooltip,
@@ -41,9 +45,9 @@ export const safeComponentList = {
   Typography,
   UrlIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  SnapDelineator,
   Copyable,
-  Spinner,
+  SnapDelineator,
   SnapUIMarkdown,
+  Spinner,
   ///: END:ONLY_INCLUDE_IN
 };

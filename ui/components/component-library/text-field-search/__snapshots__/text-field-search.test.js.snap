@@ -6,12 +6,12 @@ exports[`TextFieldSearch should render correctly 1`] = `
     class="box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-text-field-search box--padding-left-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
   >
     <span
-      class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
       style="mask-image: url('./images/icons/search.svg');"
     />
     <input
       autocomplete="off"
-      class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--margin-right-6 box--padding-right-4 box--padding-left-2 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+      class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
       focused="false"
       type="search"
       value=""

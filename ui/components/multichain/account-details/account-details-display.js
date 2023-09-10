@@ -13,7 +13,7 @@ import {
 } from '../../../selectors';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
-  BUTTON_SECONDARY_SIZES,
+  ButtonSecondarySize,
   ButtonSecondary,
   Box,
 } from '../../component-library';
@@ -74,7 +74,7 @@ export const AccountDetailsDisplay = ({
       {exportPrivateKeyFeatureEnabled ? (
         <ButtonSecondary
           block
-          size={BUTTON_SECONDARY_SIZES.LG}
+          size={ButtonSecondarySize.Lg}
           variant={TextVariant.bodyMd}
           onClick={() => {
             trackEvent({

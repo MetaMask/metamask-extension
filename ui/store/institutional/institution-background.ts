@@ -20,12 +20,14 @@ export function showInteractiveReplacementTokenBanner({
 }: {
   url: string;
   oldRefreshToken: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+}) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
-        url,
-        oldRefreshToken,
+        {
+          url,
+          oldRefreshToken,
+        },
       ]);
     } catch (err: any) {
       if (err) {
@@ -106,17 +108,14 @@ export function mmiActionsFactory() {
     };
   }
 
-  function createAction(name: string, payload: any): Promise<void> {
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod(name, [payload], (error) => {
-        if (error) {
-          reject(error);
-          return;
+  function createAction(name: string, payload: any) {
+    return () => {
+      callBackgroundMethod(name, [payload], (err) => {
+        if (isErrorWithMessage(err)) {
+          throw new Error(err.message);
         }
-
-        resolve();
       });
-    });
+    };
   }
 
   return {
@@ -190,24 +189,6 @@ export function mmiActionsFactory() {
         'setWaitForConfirmDeepLinkDialog',
         waitForConfirmDeepLinkDialog,
       ),
-    setComplianceAuthData: (clientId: string, projectId: string) =>
-      createAsyncAction('setComplianceAuthData', [{ clientId, projectId }]),
-    deleteComplianceAuthData: () =>
-      createAsyncAction('deleteComplianceAuthData', []),
-    generateComplianceReport: (address: string) =>
-      createAction('generateComplianceReport', address),
-    getComplianceHistoricalReportsByAddress: (
-      address: string,
-      projectId: string,
-    ) =>
-      createAsyncAction('getComplianceHistoricalReportsByAddress', [
-        address,
-        projectId,
-      ]),
-    syncReportsInProgress: (address: string, historicalReports: []) =>
-      createAction('syncReportsInProgress', { address, historicalReports }),
-    removeConnectInstitutionalFeature: (origin: string, projectId: string) =>
-      createAction('removeConnectInstitutionalFeature', { origin, projectId }),
     removeAddTokenConnectRequest: ({
       origin,
       apiUrl,
@@ -240,19 +221,21 @@ export function mmiActionsFactory() {
         custodyType,
         token,
       ]),
-    setCustodianNewRefreshToken: (
-      address: string,
-      oldAuthDetails: string,
-      oldApiUrl: string,
-      newAuthDetails: string,
-      newApiUrl: string,
-    ) =>
+    setCustodianNewRefreshToken: ({
+      address,
+      oldAuthDetails,
+      oldApiUrl,
+      newAuthDetails,
+      newApiUrl,
+    }: {
+      address: string;
+      oldAuthDetails: string;
+      oldApiUrl: string;
+      newAuthDetails: string;
+      newApiUrl: string;
+    }) =>
       createAsyncAction('setCustodianNewRefreshToken', [
-        address,
-        oldAuthDetails,
-        oldApiUrl,
-        newAuthDetails,
-        newApiUrl,
+        { address, oldAuthDetails, oldApiUrl, newAuthDetails, newApiUrl },
       ]),
   };
 }

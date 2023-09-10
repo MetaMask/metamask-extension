@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -34,7 +35,7 @@ describe('AccountListItem', () => {
     const { container } = render();
     expect(screen.getByText(identity.name)).toBeInTheDocument();
     expect(
-      screen.getByText(shortenAddress(identity.address)),
+      screen.getByText(shortenAddress(toChecksumHexAddress(identity.address))),
     ).toBeInTheDocument();
     expect(document.querySelector('[title="0.006 ETH"]')).toBeInTheDocument();
 

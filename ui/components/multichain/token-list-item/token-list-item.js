@@ -9,19 +9,24 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
-  Text,
   Box,
+  Text,
 } from '../../component-library';
-import { getCurrentChainId, getNativeCurrencyImage } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getCurrentNetwork,
+  getNativeCurrencyImage,
+  getTestNetworkBackgroundColor,
+} from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -29,7 +34,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { LINEA_GOERLI_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
 
 export const TokenListItem = ({
   className,
@@ -44,10 +48,11 @@ export const TokenListItem = ({
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
-  const badgeWrapperImage =
-    title === 'LineaETH' ? LINEA_GOERLI_TOKEN_IMAGE_URL : primaryTokenImage;
-  const badgeTokenImage =
-    title === 'LineaETH' ? LINEA_GOERLI_TOKEN_IMAGE_URL : tokenImage;
+  const tokenTitle = title === 'ETH' ? t('networkNameEthereum') : title;
+
+  // Used for badge icon
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (
     <Box
@@ -82,11 +87,12 @@ export const TokenListItem = ({
         <BadgeWrapper
           badge={
             <AvatarNetwork
-              size={Size.XS}
-              name={tokenSymbol}
-              src={badgeWrapperImage}
+              size={AvatarNetworkSize.Xs}
+              name={currentNetwork?.nickname}
+              src={currentNetwork?.rpcPrefs?.imageUrl}
+              backgroundColor={testNetworkBackgroundColor}
               borderColor={
-                badgeWrapperImage
+                primaryTokenImage
                   ? BorderColor.borderMuted
                   : BorderColor.borderDefault
               }
@@ -96,12 +102,10 @@ export const TokenListItem = ({
         >
           <AvatarToken
             name={tokenSymbol}
-            src={badgeTokenImage}
+            src={tokenImage}
             showHalo
             borderColor={
-              badgeTokenImage
-                ? BorderColor.transparent
-                : BorderColor.borderDefault
+              tokenImage ? BorderColor.transparent : BorderColor.borderDefault
             }
           />
         </BadgeWrapper>
@@ -118,21 +122,30 @@ export const TokenListItem = ({
             gap={1}
           >
             <Box width={BlockSize.OneThird}>
-              <Tooltip
-                position="bottom"
-                interactive
-                html={title}
-                disabled={title?.length < 12}
-                tooltipInnerClassName="multichain-token-list-item__tooltip"
-              >
+              {title?.length > 12 ? (
+                <Tooltip
+                  position="bottom"
+                  interactive
+                  html={title}
+                  tooltipInnerClassName="multichain-token-list-item__tooltip"
+                >
+                  <Text
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.bodyMd}
+                    ellipsis
+                  >
+                    {tokenTitle}
+                  </Text>
+                </Tooltip>
+              ) : (
                 <Text
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
-                  {title === 'ETH' ? t('networkNameEthereum') : title}
+                  {tokenTitle}
                 </Text>
-              </Tooltip>
+              )}
             </Box>
             <Text
               fontWeight={FontWeight.Medium}

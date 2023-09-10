@@ -22,8 +22,8 @@ import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorsh
 import {
   AvatarIcon,
   IconName,
-  Text,
   ValidTag,
+  Text,
 } from '../../../../components/component-library';
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';

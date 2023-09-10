@@ -15,12 +15,16 @@ import {
 } from '../../selectors';
 import {
   lockMetamask,
+  hideImportNftsModal,
+  hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
   toggleAccountMenu,
   toggleNetworkMenu,
+  hideImportTokensModal,
 } from '../../store/actions';
+import { hideSelectActionModal } from '../../components/multichain/app-footer/app-footer-actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
@@ -62,7 +66,11 @@ function mapStateToProps(state) {
     completedOnboarding,
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
+    isImportTokensModalOpen: state.appState.importTokensModalOpen,
     accountDetailsAddress: state.appState.accountDetailsAddress,
+    isImportNftsModalOpen: state.appState.importNftsModalOpen,
+    isIpfsModalOpen: state.appState.showIpfsModalOpen,
+    isSelectActionModalOpen: state.appState.showSelectActionModal,
   };
 }
 
@@ -77,6 +85,10 @@ function mapDispatchToProps(dispatch) {
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
+    hideImportNftsModal: () => dispatch(hideImportNftsModal()),
+    hideIpfsModal: () => dispatch(hideIpfsModal()),
+    hideImportTokensModal: () => dispatch(hideImportTokensModal()),
+    hideSelectActionModal: () => dispatch(hideSelectActionModal()),
   };
 }
 

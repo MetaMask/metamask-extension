@@ -58,7 +58,7 @@ class Driver {
    * @param extensionUrl
    * @param {number} timeout
    */
-  constructor(driver, browser, extensionUrl, timeout = 10000) {
+  constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
     this.driver = driver;
     this.browser = browser;
     this.extensionUrl = extensionUrl;
@@ -249,6 +249,18 @@ class Driver {
     await element.click();
   }
 
+  async clickElementSafe(rawLocator) {
+    // for instances where an element such as a scroll button does not
+    // show up because of render differences, proceed to the next step
+    // without causing a test failure, but provide a console log of why.
+    try {
+      const element = await this.findClickableElement(rawLocator);
+      await element.click();
+    } catch (e) {
+      console.log(`Element ${rawLocator} not found (${e})`);
+    }
+  }
+
   async clickPoint(rawLocator, x, y) {
     const element = await this.findElement(rawLocator);
     await this.driver
@@ -376,6 +388,7 @@ class Driver {
     let windowHandles = [];
     while (timeElapsed <= timeout) {
       windowHandles = await this.driver.getAllWindowHandles();
+
       if (windowHandles.length === x) {
         return windowHandles;
       }
@@ -389,7 +402,7 @@ class Driver {
     title,
     initialWindowHandles,
     delayStep = 1000,
-    timeout = 5000,
+    timeout = this.timeout,
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
@@ -397,6 +410,7 @@ class Driver {
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
+
         const handleTitle = await this.driver.getTitle();
         if (handleTitle === title) {
           return handle;

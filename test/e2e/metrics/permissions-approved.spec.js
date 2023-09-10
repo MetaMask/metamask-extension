@@ -5,6 +5,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  getEventPayloads,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -41,28 +42,6 @@ async function mockSegment(mockServer) {
         };
       }),
   ];
-}
-
-/**
- * This method handles getting the mocked requests to the segment server
- *
- * @param {WebDriver} driver
- * @param {import('mockttp').Mockttp} mockedEndpoints
- * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
- */
-async function getEventPayloads(driver, mockedEndpoints) {
-  await driver.wait(async () => {
-    let isPending = true;
-    for (const mockedEndpoint of mockedEndpoints) {
-      isPending = await mockedEndpoint.isPending();
-    }
-    return isPending === false;
-  }, 10000);
-  const mockedRequests = [];
-  for (const mockedEndpoint of mockedEndpoints) {
-    mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
-  }
-  return mockedRequests.map((req) => req.body.json.batch).flat();
 }
 
 describe('Permissions Approved Event', function () {

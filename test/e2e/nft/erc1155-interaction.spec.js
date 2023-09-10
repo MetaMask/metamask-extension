@@ -66,7 +66,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const transactionItem = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
         assert.equal(
@@ -120,7 +120,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const transactionItem = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
         assert.equal(

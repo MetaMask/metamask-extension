@@ -3,6 +3,7 @@ const path = require('path');
 const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
+const detectPort = require('detect-port');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
@@ -108,6 +109,11 @@ async function withFixtures(options, testSuite) {
     const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
       chainId: ganacheOptions?.chainId || 1337,
     });
+    if ((await detectPort(8000)) !== 8000) {
+      throw new Error(
+        'Failed to set up mock server, something else may be running on port 8000.',
+      );
+    }
     await mockServer.start(8000);
 
     driver = (await buildWebDriver(driverOptions)).driver;
@@ -190,7 +196,14 @@ async function withFixtures(options, testSuite) {
       if (phishingPageServer.isRunning()) {
         await phishingPageServer.quit();
       }
-      await mockServer.stop();
+
+      // Since mockServer could be stop'd at another location,
+      // use a try/catch to avoid an error
+      try {
+        await mockServer.stop();
+      } catch (e) {
+        console.log('mockServer already stopped');
+      }
     }
   }
 }
@@ -313,10 +326,10 @@ const onboardingBeginCreateNewWallet = async (driver) => {
  * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
  *
  * @param {WebDriver} driver
- * @param {boolean} optin - true to opt into metrics, default is false
+ * @param {boolean} option - true to opt into metrics, default is false
  */
-const onboardingChooseMetametricsOption = async (driver, optin = false) => {
-  const optionIdentifier = optin ? 'i-agree' : 'no-thanks';
+const onboardingChooseMetametricsOption = async (driver, option = false) => {
+  const optionIdentifier = option ? 'i-agree' : 'no-thanks';
   // metrics
   await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
 };
@@ -419,7 +432,7 @@ const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   );
 
   const warningText = 'Invalid Secret Recovery Phrase';
-  const warnings = await driver.findElements('.actionable-message__message');
+  const warnings = await driver.findElements('.import-srp__banner-alert-text');
   const warning = warnings[1];
 
   assert.equal(await warning.getText(), warningText);
@@ -499,92 +512,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
 };
-const STALELIST_URL =
-  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
-
-const emptyHtmlPage = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>title</title>
-  </head>
-  <body>
-    Empty page
-  </body>
-</html>`;
-
-/**
- * Setup fetch mocks for the phishing detection feature.
- *
- * The mock configuration will show that "127.0.0.1" is blocked. The dynamic lookup on the warning
- * page can be customized, so that we can test both the MetaMask and PhishFort block cases.
- *
- * @param {import('mockttp').Mockttp} mockServer - The mock server.
- * @param {object} metamaskPhishingConfigResponse - The response for the dynamic phishing
- * configuration lookup performed by the warning page.
- */
-async function setupPhishingDetectionMocks(
-  mockServer,
-  metamaskPhishingConfigResponse,
-) {
-  await mockServer.forGet(STALELIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        version: 2,
-        tolerance: 2,
-        fuzzylist: [],
-        allowlist: [],
-        blocklist: ['127.0.0.1'],
-        lastUpdated: 0,
-      },
-    };
-  });
-
-  await mockServer
-    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: emptyHtmlPage,
-      };
-    });
-  await mockServer
-    .forGet('https://github.com/phishfort/phishfort-lists/issues/new')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: emptyHtmlPage,
-      };
-    });
-
-  await mockServer
-    .forGet(
-      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
-    )
-    .thenCallback(() => metamaskPhishingConfigResponse);
-}
-
-function mockPhishingDetection(mockServer) {
-  setupPhishingDetectionMocks(mockServer, {
-    statusCode: 200,
-    json: {
-      version: 2,
-      tolerance: 2,
-      fuzzylist: [],
-      whitelist: [],
-      blacklist: ['127.0.0.1'],
-      lastUpdated: 0,
-    },
-  });
-}
 
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
-const generateETHBalance = (eth) => convertToHexValue(eth * 10 ** 18);
+const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
+
 const defaultGanacheOptions = {
-  accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
+  accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
@@ -647,7 +582,7 @@ const DEFAULT_GANACHE_OPTIONS = {
   accounts: [
     {
       secretKey: DEFAULT_PRIVATE_KEY,
-      balance: generateETHBalance(25),
+      balance: convertETHToHexGwei(25),
     },
   ],
 };
@@ -680,6 +615,10 @@ const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await assertAccountBalanceForDOM(driver, ganacheServer);
 };
 
+async function sleepSeconds(sec) {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
 }
@@ -692,14 +631,15 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-async function switchToWindow(driver, windowTitle) {
-  const windowHandles = await driver.getAllWindowHandles();
+function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
+  const initialBalance = roundToXDecimalPlaces(
+    generateRandNumBetween(minETHBal, maxETHBal),
+    decimalPlaces,
+  );
 
-  return await driver.switchToWindowWithTitle(windowTitle, windowHandles);
-}
+  const initialBalanceInHex = convertETHToHexGwei(initialBalance);
 
-async function sleepSeconds(sec) {
-  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+  return { initialBalance, initialBalanceInHex };
 }
 
 async function terminateServiceWorker(driver) {
@@ -714,7 +654,8 @@ async function terminateServiceWorker(driver) {
     tag: 'button',
   });
 
-  const serviceWorkerElements = await driver.findElements({
+  await driver.delay(tinyDelayMs);
+  const serviceWorkerElements = await driver.findClickableElements({
     text: 'terminate',
     tag: 'span',
   });
@@ -722,8 +663,7 @@ async function terminateServiceWorker(driver) {
   // 1st one is app-init.js; while 2nd one is service-worker.js
   await serviceWorkerElements[serviceWorkerElements.length - 1].click();
 
-  const serviceWorkerTab = await switchToWindow(
-    driver,
+  const serviceWorkerTab = await driver.switchToWindowWithTitle(
     WINDOW_TITLES.ServiceWorkerSettings,
   );
 
@@ -750,21 +690,55 @@ async function switchToNotificationWindow(driver) {
  *
  * @param {WebDriver} driver
  * @param {import('mockttp').Mockttp} mockedEndpoints
+ * @param {boolean} hasRequest
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
-async function getEventPayloads(driver, mockedEndpoints) {
+async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(async () => {
     let isPending = true;
     for (const mockedEndpoint of mockedEndpoints) {
       isPending = await mockedEndpoint.isPending();
     }
-    return isPending === false;
-  }, 10000);
+
+    return isPending === !hasRequest;
+  }, driver.timeout);
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
-  return mockedRequests.map((req) => req.body.json.batch).flat();
+
+  return mockedRequests.map((req) => req.body.json?.batch).flat();
+}
+
+// Asserts that  each request passes all assertions in one group of assertions, and the order does not matter.
+function assertInAnyOrder(requests, assertions) {
+  // Clone the array to avoid mutating the original
+  const assertionsClone = [...assertions];
+
+  return (
+    requests.every((request) => {
+      for (let a = 0; a < assertionsClone.length; a++) {
+        const assertionArray = assertionsClone[a];
+
+        const passed = assertionArray.reduce(
+          (acc, currAssertionFn) => currAssertionFn(request) && acc,
+          true,
+        );
+
+        if (passed) {
+          // Remove the used assertion array
+          assertionsClone.splice(a, 1);
+          // Exit the loop early since we found a matching assertion
+          return true;
+        }
+      }
+
+      // No matching assertion found for this request
+      return false;
+    }) &&
+    // Ensure all assertions were used
+    assertionsClone.length === 0
+  );
 }
 
 module.exports = {
@@ -793,8 +767,6 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
-  mockPhishingDetection,
-  setupPhishingDetectionMocks,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
@@ -807,10 +779,9 @@ module.exports = {
   WALLET_PASSWORD,
   WINDOW_TITLES,
   DEFAULT_GANACHE_OPTIONS,
-  generateETHBalance,
+  convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  switchToWindow,
   sleepSeconds,
   terminateServiceWorker,
   switchToNotificationWindow,
@@ -821,4 +792,6 @@ module.exports = {
   onboardingRevealAndConfirmSRP,
   onboardingCompleteWalletCreation,
   onboardingPinExtension,
+  assertInAnyOrder,
+  genRandInitBal,
 };

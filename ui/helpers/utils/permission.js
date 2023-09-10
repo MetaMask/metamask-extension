@@ -16,9 +16,10 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
+  AvatarIconSize,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  Text,
   Icon,
+  Text,
   ///: END:ONLY_INCLUDE_IN
   IconName,
   IconSize,
@@ -44,7 +45,7 @@ function getLeftIcon(iconName) {
   return (
     <AvatarIcon
       iconName={iconName}
-      size={IconSize.Sm}
+      size={AvatarIconSize.Sm}
       iconProps={{
         size: IconSize.Xs,
       }}
@@ -389,6 +390,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return results;
   },
+  [EndowmentPermissions['endowment:lifecycle-hooks']]: ({ t }) => ({
+    label: t('permission_lifecycleHooks'),
+    description: t('permission_lifecycleHooksDescription'),
+    leftIcon: IconName.Hierarchy,
+    weight: 3,
+  }),
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({

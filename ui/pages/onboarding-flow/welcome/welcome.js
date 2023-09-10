@@ -101,6 +101,7 @@ export default function OnboardingWelcome() {
       message_title: t('welcomeToMetaMask'),
       app_version: global?.platform?.getVersion(),
     },
+    addEventBeforeMetricsOptIn: true,
   });
 
   return (

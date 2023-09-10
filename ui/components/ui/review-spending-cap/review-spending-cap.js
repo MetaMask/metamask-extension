@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../box';
 import Tooltip from '../tooltip';
 import {
   ButtonLink,
@@ -9,11 +8,13 @@ import {
   IconName,
   IconSize,
   Text,
+  Box,
 } from '../../component-library';
+
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextVariant,
   TextAlign,
   Size,
@@ -42,30 +43,30 @@ export default function ReviewSpendingCap({
       paddingTop={4}
       paddingRight={4}
       paddingLeft={4}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.flexStart}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
       gap={1}
     >
       <Box
-        flexDirection={FLEX_DIRECTION.ROW}
-        display={DISPLAY.FLEX}
+        flexDirection={FlexDirection.Row}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         className="review-spending-cap__heading"
       >
         <Box
-          flexDirection={FLEX_DIRECTION.ROW}
+          flexDirection={FlexDirection.Row}
           className="review-spending-cap__heading-title"
         >
           <Text
             variant={TextVariant.bodySmBold}
             as="h6"
-            display={DISPLAY.INLINE_BLOCK}
+            display={Display.InlineBlock}
           >
             {t('dappRequestedSpendingCap')}
           </Text>
-          <Box marginLeft={2} display={DISPLAY.INLINE_BLOCK}>
+          <Box marginLeft={2} display={Display.InlineBlock}>
             <Tooltip
               interactive
               position="top"

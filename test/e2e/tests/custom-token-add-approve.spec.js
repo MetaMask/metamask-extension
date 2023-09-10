@@ -51,20 +51,24 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'Custom token',
           tag: 'button',
         });
-        await driver.fill('#custom-address', contractAddress);
-        await driver.waitForSelector('#custom-decimals');
+        await driver.fill(
+          '[data-testid="import-tokens-modal-custom-address"]',
+          contractAddress,
+        );
+        await driver.waitForSelector(
+          '[data-testid="import-tokens-modal-custom-decimals"]',
+        );
         await driver.delay(2000);
 
         await driver.clickElement({
-          text: 'Add custom token',
+          text: 'Next',
           tag: 'button',
         });
 
         await driver.delay(2000);
-        await driver.clickElement({
-          text: 'Import tokens',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          '[data-testid="import-tokens-modal-import-button"]',
+        );
 
         // renders balance for newly created token
         await driver.clickElement('.app-header__logo-container');
@@ -159,7 +163,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         const defaultSpendingCap = await driver.findElement({
           text: '7 TST',
-          css: '.box--flex-direction-row > h6',
+          css: '.mm-box > h6',
         });
 
         assert.equal(
@@ -178,15 +182,13 @@ describe('Create token, approve token and approve token without gas', function (
 
         // check list of pending transactions in extension
         await driver.wait(async () => {
-          const pendingTxes = await driver.findElements(
-            '.transaction-list-item',
-          );
+          const pendingTxes = await driver.findElements('.activity-list-item');
           return pendingTxes.length === 1;
         }, 10000);
 
         const approveTokenTask = await driver.waitForSelector({
           // Selects only the very first transaction list item immediately following the 'Pending' header
-          css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+          css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
           text: 'Approve TST spending cap',
         });
         assert.equal(
@@ -251,7 +253,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         let spendingCap = await driver.findElement({
           text: '5 TST',
-          css: '.box--flex-direction-row > h6',
+          css: '.mm-box > h6',
         });
 
         assert.equal(
@@ -307,7 +309,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         spendingCap = await driver.findElement({
           text: '9 TST',
-          css: '.box--flex-direction-row > h6',
+          css: '.mm-box > h6',
         });
         assert.equal(
           await spendingCap.getText(),
@@ -323,14 +325,12 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.clickElement({ tag: 'button', text: 'Activity' });
 
         await driver.wait(async () => {
-          const pendingTxes = await driver.findElements(
-            '.transaction-list-item',
-          );
+          const pendingTxes = await driver.findElements('.activity-list-item');
           return pendingTxes.length === 1;
         }, 10000);
         const approveTokenTask = await driver.waitForSelector({
           // Select only the heading of the first entry in the transaction list.
-          css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+          css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
           text: 'Approve TST spending cap',
         });
         assert.equal(
@@ -374,13 +374,13 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.clickElement({ tag: 'button', text: 'Activity' });
 
         const pendingTxes = await driver.findElements(
-          '.transaction-list__pending-transactions .transaction-list-item',
+          '.transaction-list__pending-transactions .activity-list-item',
         );
         pendingTxes[0].click();
 
         // set max spending cap
         await driver.clickElement({
-          css: '.custom-spending-cap__max',
+          css: '[data-testid="custom-spending-cap-max-button"]',
           text: 'Max',
         });
 
@@ -397,7 +397,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         const maxSpendingCap = await driver.findElement({
           text: '10 TST',
-          css: '.box--flex-direction-row > h6',
+          css: '.mm-box > h6',
         });
 
         assert.equal(
@@ -414,7 +414,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         const approveTokenTask = await driver.waitForSelector({
           // Select only the heading of the first entry in the transaction list.
-          css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+          css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
           text: 'Approve TST spending cap',
         });
         assert.equal(
@@ -459,7 +459,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.switchToWindow(extension);
         await driver.clickElement({ tag: 'button', text: 'Activity' });
 
-        const pendingTxes = await driver.findElements('.transaction-list-item');
+        const pendingTxes = await driver.findElements('.activity-list-item');
         pendingTxes[0].click();
 
         // set custom spending cap
@@ -483,7 +483,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         // check transaction in Activity tab
         const approveTokenTask = await driver.waitForSelector({
-          css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+          css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
           text: 'Approve TST spending cap',
         });
         assert.equal(

@@ -152,14 +152,14 @@ describe('App State', () => {
 
   it('shows confirm tx page', () => {
     const txs = {
-      unapprovedTxs: {
-        1: {
+      transactions: [
+        {
           id: 1,
         },
-        2: {
+        {
           id: 2,
         },
-      },
+      ],
     };
     const oldState = { ...metamaskState, ...txs };
     const state = reduceApp(oldState, {
@@ -174,14 +174,14 @@ describe('App State', () => {
 
   it('completes tx continues to show pending txs current view context', () => {
     const txs = {
-      unapprovedTxs: {
-        1: {
+      transactions: [
+        {
           id: 1,
         },
-        2: {
+        {
           id: 2,
         },
-      },
+      ],
     };
 
     const oldState = { ...metamaskState, ...txs };

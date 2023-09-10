@@ -18,8 +18,8 @@ import {
   ButtonBase,
   ButtonIcon,
   IconName,
-  Text,
   Box,
+  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';

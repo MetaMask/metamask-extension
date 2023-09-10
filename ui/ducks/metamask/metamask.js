@@ -9,6 +9,7 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  getSelectedNetworkClientId,
   getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -26,7 +27,7 @@ const initialState = {
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   identities: {},
-  unapprovedTxs: {},
+  transactions: [],
   networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},
@@ -46,6 +47,7 @@ const initialState = {
   firstTimeFlowType: null,
   completedOnboarding: false,
   knownMethodData: {},
+  use4ByteResolution: true,
   participateInMetaMetrics: null,
   nextNonce: null,
   conversionRate: null,
@@ -109,8 +111,8 @@ export default function reduceMetamask(state = initialState, action) {
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
       const { id: txId, value } = action;
-      let { currentNetworkTxList } = metamaskState;
-      currentNetworkTxList = currentNetworkTxList.map((tx) => {
+      let { transactions } = metamaskState;
+      transactions = transactions.map((tx) => {
         if (tx.id === txId) {
           const newTx = { ...tx };
           newTx.txParams = value;
@@ -121,7 +123,7 @@ export default function reduceMetamask(state = initialState, action) {
 
       return {
         ...metamaskState,
-        currentNetworkTxList,
+        transactions,
       };
     }
 
@@ -298,17 +300,17 @@ export function getSendToAccounts(state) {
   return [...fromAccounts, ...addressBookAccounts];
 }
 
-export function getUnapprovedTxs(state) {
-  return state.metamask.unapprovedTxs;
-}
-
 /**
  * Function returns true if network details are fetched and it is found to not support EIP-1559
  *
  * @param state
  */
 export function isNotEIP1559Network(state) {
-  return state.metamask.networkDetails?.EIPS[1559] === false;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata[selectedNetworkClientId].EIPS[1559] ===
+    false
+  );
 }
 
 /**
@@ -317,7 +319,11 @@ export function isNotEIP1559Network(state) {
  * @param state
  */
 export function isEIP1559Network(state) {
-  return state.metamask.networkDetails?.EIPS[1559] === true;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata?.[selectedNetworkClientId].EIPS[1559] ===
+    true
+  );
 }
 
 export function getGasEstimateType(state) {

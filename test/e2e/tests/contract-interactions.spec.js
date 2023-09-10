@@ -65,10 +65,10 @@ describe('Deploy contract and call contract methods', function () {
         );
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-4 ETH',
         });
 
@@ -84,10 +84,10 @@ describe('Deploy contract and call contract methods', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
         );
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-0 ETH',
         });
 

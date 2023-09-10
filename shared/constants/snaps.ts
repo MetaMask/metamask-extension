@@ -58,7 +58,7 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
   {
     path: ['m', `44'`, `1'`],
     curve: 'secp256k1',
-    name: 'Test BIP-32 Path (secp256k1)',
+    name: 'Testnet',
   },
   {
     path: ['m', `44'`, `0'`],
@@ -116,9 +116,19 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     name: 'Bitcoin Cash',
   },
   {
+    path: ['m', `44'`, `637'`],
+    curve: 'ed25519',
+    name: 'Aptos',
+  },
+  {
     path: ['m', `44'`, `714'`],
     curve: 'secp256k1',
     name: 'Binance (BNB)',
+  },
+  {
+    path: ['m', `44'`, `784'`],
+    curve: 'ed25519',
+    name: 'Sui',
   },
   {
     path: ['m', `44'`, `931'`],
@@ -148,7 +158,27 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
   {
     path: ['m', `44'`, `1'`, `0'`],
     curve: 'ed25519',
-    name: 'NEAR Protocol Testnet',
+    name: 'Testnet',
+  },
+  {
+    path: ['m', `44'`, `472'`],
+    curve: 'ed25519',
+    name: 'Arweave',
+  },
+  {
+    path: ['m', `44'`, `12586'`],
+    curve: 'secp256k1',
+    name: 'Mina',
+  },
+  {
+    path: ['m', `44'`, `1729'`, `0'`, `0'`],
+    curve: 'ed25519',
+    name: 'Tezos',
+  },
+  {
+    path: ['m', `1789'`, `0'`],
+    curve: 'ed25519',
+    name: 'Vega',
   },
 ];
 ///: END:ONLY_INCLUDE_IN

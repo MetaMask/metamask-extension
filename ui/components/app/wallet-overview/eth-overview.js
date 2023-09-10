@@ -2,19 +2,26 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { useHistory, useLocation } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react-router-dom';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
+import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 ///: END:ONLY_INCLUDE_IN
-
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -22,31 +29,39 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   isBalanceCached,
   getShouldShowFiat,
-  getCurrentKeyring,
-  getSwapsDefaultToken,
   getIsSwapsChain,
-  getIsBridgeChain,
-  getIsBuyableChain,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  getSwapsDefaultToken,
+  getCurrentKeyring,
+  getIsBridgeChain,
+  getIsBuyableChain,
   getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
-import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+///: END:ONLY_INCLUDE_IN
+import IconButton from '../../ui/icon-button';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: END:ONLY_INCLUDE_IN
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -54,18 +69,20 @@ const EthOverview = ({ className, showAddress }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const location = useLocation();
+  const isBridgeChain = useSelector(getIsBridgeChain);
+  const isBuyableChain = useSelector(getIsBuyableChain);
+  const metaMetricsId = useSelector(getMetaMetricsId);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
-  const metaMetricsId = useSelector(getMetaMetricsId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -73,15 +90,15 @@ const EthOverview = ({ className, showAddress }) => {
 
   const portfolioEvent = () => {
     trackEvent({
-      category: 'Navigation',
-      event: 'Clicked Portfolio Button',
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
 
   const stakingEvent = () => {
     trackEvent({
-      category: 'Navigation',
-      event: 'Clicked Stake Button',
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
 
@@ -95,7 +112,7 @@ const EthOverview = ({ className, showAddress }) => {
           onClick={() => {
             stakingEvent();
             global.platform.openTab({
-              url: 'https://metamask-institutional.io/staking',
+              url: 'https://metamask-institutional.io/stake',
             });
           }}
         />
@@ -117,7 +134,9 @@ const EthOverview = ({ className, showAddress }) => {
   };
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <WalletOverview
@@ -241,6 +260,13 @@ const EthOverview = ({ className, showAddress }) => {
               />
             }
             onClick={() => {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              global.platform.openTab({
+                url: MMI_SWAPS_URL,
+              });
+              ///: END:ONLY_INCLUDE_IN
+
+              ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
               if (isSwapsChain) {
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
@@ -259,6 +285,7 @@ const EthOverview = ({ className, showAddress }) => {
                   history.push(BUILD_QUOTE_ROUTE);
                 }
               }
+              ///: END:ONLY_INCLUDE_IN
             }}
             label={t('swap')}
             data-testid="token-overview-button-swap"

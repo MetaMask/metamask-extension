@@ -39,7 +39,7 @@ const defaultState = {
         },
       },
     },
-    currentNetworkTxList: [
+    transactions: [
       {
         id: 0,
         time: 0,
@@ -146,7 +146,12 @@ describe('#InstitutionActions', () => {
     ];
 
     await store.dispatch(
-      showCustodyConfirmLink('link', '0x1', false, 'custodyId'),
+      showCustodyConfirmLink({
+        link: 'link',
+        address: '0x1',
+        closeNotification: false,
+        custodyId: 'custodyId',
+      }),
     );
 
     expect(store.getActions()).toStrictEqual(expectedActions);
@@ -201,9 +206,7 @@ describe('#updateCustodyState', () => {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
     };
 
@@ -227,11 +230,9 @@ describe('#updateCustodyState', () => {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 0,
           time: 0,
@@ -282,11 +283,9 @@ describe('#updateCustodyState', () => {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 0,
           time: 0,

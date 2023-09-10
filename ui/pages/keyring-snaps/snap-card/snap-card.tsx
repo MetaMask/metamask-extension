@@ -4,7 +4,7 @@ import ConfigureSnapPopup, {
   ConfigureSnapPopupType,
 } from '../../../components/app/configure-snap-popup';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Button,
   Icon,
@@ -16,7 +16,7 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  Color,
+  TextColor,
   Display,
   FlexDirection,
   IconColor,
@@ -91,7 +91,7 @@ export default function SnapCard({
         {isInstalled ? (
           <Button
             data-testid="configure-snap-button"
-            variant={BUTTON_VARIANT.SECONDARY}
+            variant={ButtonVariant.Secondary}
             onClick={() => setShowConfigPopover(true)}
           >
             {t('snapConfigure')}
@@ -99,7 +99,7 @@ export default function SnapCard({
         ) : (
           <Button
             data-testid="install-snap-button"
-            variant={BUTTON_VARIANT.SECONDARY}
+            variant={ButtonVariant.Secondary}
             onClick={() => {
               history.push(`/add-snap-account/${id}`);
             }}
@@ -110,7 +110,7 @@ export default function SnapCard({
       </Box>
       <Text
         variant={TextVariant.bodySm}
-        color={Color.textAlternative}
+        color={TextColor.textAlternative}
         marginBottom={2}
       >
         {snapTitle}
