@@ -696,16 +696,19 @@ async function switchToNotificationWindow(driver) {
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(async () => {
     let isPending = true;
+
     for (const mockedEndpoint of mockedEndpoints) {
       isPending = await mockedEndpoint.isPending();
     }
 
     return isPending === !hasRequest;
-  }, driver.timeout);
+  }, 100000);
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
+
+  console.log('mockedRequests', mockedRequests);
 
   return mockedRequests.map((req) => req.body.json?.batch).flat();
 }

@@ -47,7 +47,7 @@ async function mockSegment(mockServer) {
         batch: [
           {
             type: 'track',
-            event: 'Transaction Submitted',
+            event: 'Transaction Submitted Anon',
           },
         ],
       })
@@ -78,7 +78,7 @@ async function mockSegment(mockServer) {
         batch: [
           {
             type: 'track',
-            event: 'Transaction Finalized',
+            event: 'Transaction Finalized Anon',
           },
         ],
       })
@@ -151,9 +151,19 @@ describe('Transaction Finalized Event', function () {
         await driver.navigate();
         await unlockWallet(driver);
 
+        console.log('sending transaction');
+        await driver.delay(1000);
+
         await sendTransaction(driver, RECIPIENT, '2.0');
 
+        console.log('sent transaction');
+        await driver.delay(1000);
+
+        console.log('getting event payloads: ', mockedEndpoints);
         const events = await getEventPayloads(driver, mockedEndpoints);
+
+        console.log("events: ", events);
+        await driver.delay(10000);
 
         const transactionSubmittedWithSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
@@ -188,6 +198,8 @@ describe('Transaction Finalized Event', function () {
             }),
         ];
 
+        console.log("transactionSubmittedWithSensitivePropertiesAssertions: ", transactionSubmittedWithSensitivePropertiesAssertions);
+
         const transactionSubmittedWithoutSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
           eventHasUserIdWithoutAnonymousId,
@@ -213,6 +225,10 @@ describe('Transaction Finalized Event', function () {
               status: 'submitted',
             }),
         ];
+
+        console.log("transactionSubmittedWithoutSensitivePropertiesAssertions: ", transactionSubmittedWithoutSensitivePropertiesAssertions);
+
+        await driver.delay(10000);
 
         const transactionFinalizedWithSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
