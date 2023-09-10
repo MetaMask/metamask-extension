@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { ButtonIcon, ButtonIconSize, Icon, IconName, IconSize } from '..';
-import { TextField, TEXT_FIELD_TYPES } from '../text-field';
+import { TextField, TEXT_FIELD_TYPES } from '../text-field/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const TextFieldSearch = ({

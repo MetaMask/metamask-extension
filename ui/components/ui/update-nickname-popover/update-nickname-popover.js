@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 
 import Popover from '../popover';
 import Button from '../button';
-import TextField from '../text-field';
-
+import { TextField } from '../../component-library/text-field/deprecated';
 import { I18nContext } from '../../../contexts/i18n';
 
 import Identicon from '../identicon';
