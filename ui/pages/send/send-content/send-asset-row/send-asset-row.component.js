@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { chain } from 'lodash';
 import SendRowWrapper from '../send-row-wrapper';
 import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
@@ -74,7 +74,7 @@ export default class SendAssetRow extends Component {
       (nft) => nft.isCurrentlyOwned && nft.standard === TokenStandard.ERC721,
     );
     // Group and sort the sendableNfts Array
-    const sendableNfts = _(sendableNftsNotSorted)
+    const sendableNfts = chain(sendableNftsNotSorted)
       .groupBy('address')
       .mapValues((group) => {
         return group.sort((a, b) => a.tokenId - b.tokenId);
