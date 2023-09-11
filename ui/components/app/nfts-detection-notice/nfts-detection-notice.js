@@ -19,14 +19,14 @@ export default function NftsDetectionNotice() {
       }}
     >
       {
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-      t('newNFTDetectedMessage')
-      ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        t('newNFTDetectedMessage')
+        ///: END:ONLY_INCLUDE_IN
       }
       {
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      t('mmiNewNFTDetectedMessage')
-      ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        t('mmiNewNFTDetectedMessage')
+        ///: END:ONLY_INCLUDE_IN
       }
     </BannerAlert>
   );
