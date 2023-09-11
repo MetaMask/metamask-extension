@@ -404,14 +404,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      onInfuraIsBlocked: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:infuraIsBlocked',
-      ),
-      onInfuraIsUnblocked: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:infuraIsUnblocked',
-      ),
       onAccountRemoved: this.controllerMessenger.subscribe.bind(
         this.controllerMessenger,
         'KeyringController:accountRemoved',

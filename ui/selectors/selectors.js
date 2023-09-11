@@ -750,7 +750,10 @@ export function getIpfsGateway(state) {
 }
 
 export function getInfuraBlocked(state) {
-  return Boolean(state.metamask.infuraBlocked);
+  return (
+    state.metamask.networksMetadata[getSelectedNetworkClientId(state)].status ===
+    NetworkStatus.Blocked
+  );
 }
 
 export function getUSDConversionRate(state) {
