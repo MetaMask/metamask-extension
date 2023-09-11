@@ -82,16 +82,18 @@ const CreateSnapAccount = ({
           </Box>
         );
       case 'Error':
-        return (
-          <InstallError
-            iconName={IconName.Warning}
-            title={t('accountNotCreated')}
-            description={t('accountNotCreatedDescription')}
-            error={viewState.message}
-          />
-        );
+        return null;
+      // return (
+      //   <InstallError
+      //     iconName={IconName.Warning}
+      //     title={t('accountNotCreated')}
+      //     description={t('accountNotCreatedDescription')}
+      //     error={viewState.message}
+      //   />
+      // );
       case 'Success':
-        return <CreateSnapAccountSuccess />;
+        return null;
+      // return <CreateSnapAccountSuccess />;
       default:
         return (
           <CreateSnapAccountContent

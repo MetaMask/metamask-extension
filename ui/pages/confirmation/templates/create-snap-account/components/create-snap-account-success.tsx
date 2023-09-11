@@ -20,6 +20,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 const CreateSnapAccountSuccess = () => {
+  console.log('CreateSnapAccountSuccess rendered');
   const t = useI18nContext();
   return (
     <Box
