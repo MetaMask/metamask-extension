@@ -176,20 +176,23 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      chrome.alarms.getAll((alarms) => {
+      this.extension.alarms.getAll((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
         );
 
         if (!hasAlarm) {
-          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
-            delayInMinutes: 1,
-            periodInMinutes: 1,
-          });
+          this.extension.alarms.create(
+            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+            {
+              delayInMinutes: 1,
+              periodInMinutes: 1,
+            },
+          );
         }
       });
-      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+      this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
           this.finalizeAbandonedFragments();
         }

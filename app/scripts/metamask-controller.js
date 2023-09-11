@@ -630,6 +630,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:acceptRequest`,
         ],
       }),
+      extension: this.extension,
     });
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
