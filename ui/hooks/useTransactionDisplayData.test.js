@@ -9,6 +9,7 @@ import {
   getShouldShowFiat,
   getCurrentCurrency,
   getCurrentChainId,
+  getTokenList,
 } from '../selectors';
 import {
   getTokens,
@@ -159,6 +160,20 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
     isPending: false,
   },
+  {
+    title: 'Send MTK',
+    category: TransactionGroupCategory.send,
+    subtitle: 'To: 0xa05...8d6d',
+    date: formatDateWithYearContext(1589314601567),
+    subtitleContainsOrigin: false,
+    primaryCurrency: '-1 MTK',
+    senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+    recipientAddress: '0xa0514060ce8f2646f7a41d4b01cddd9c8ca38d6d',
+    secondaryCurrency: undefined,
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+    isSubmitted: false,
+  },
 ];
 
 let useSelector, useI18nContext, useTokenFiatAmount;
@@ -196,6 +211,14 @@ describe('useTransactionDisplayData', () => {
             decimals: 18,
           },
         ];
+      } else if (selector === getTokenList) {
+        return {
+          '0xc584c97543d991587376816afc7e81c6d8903951': {
+            address: '0xc584c97543d991587376816afc7e81c6d8903951',
+            symbol: 'MTK',
+            decimals: 0,
+          },
+        };
       } else if (selector === getPreferences) {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,

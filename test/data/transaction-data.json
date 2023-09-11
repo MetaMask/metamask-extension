@@ -1272,5 +1272,205 @@
     },
     "hasRetried": false,
     "hasCancelled": false
+  },
+  {
+    "nonce": "0xc",
+    "initialTransaction": {
+      "id": 42437122348585121,
+      "time": 1589314601567,
+      "status": "confirmed",
+      "metamaskNetworkId": "4",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
+        "to": "0xc584c97543d991587376816afc7e81c6d8903951",
+        "data": "0xa9059cbb000000000000000000000000a0514060ce8f2646f7a41d4b01cddd9c8ca38d6d0000000000000000000000000000000000000000000000000000000000000001",
+        "nonce": "0xc",
+        "value": "0x0",
+        "gas": "0x5208",
+        "gasPrice": "0x2540be400"
+      },
+      "origin": "metamask",
+      "type": "transfer",
+      "nonceDetails": {
+        "params": {
+          "highestLocallyConfirmed": 12,
+          "highestSuggested": 12,
+          "nextNetworkNonce": 12
+        },
+        "local": {
+          "name": "local",
+          "nonce": 12,
+          "details": {
+            "startPoint": 12,
+            "highest": 12
+          }
+        },
+        "network": {
+          "name": "network",
+          "nonce": 12,
+          "details": {
+            "blockNumber": "0x62d5dc",
+            "baseCount": 12
+          }
+        }
+      },
+      "r": "0xe0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595",
+      "s": "0x1c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
+      "v": "0x2c",
+      "rawTx": "0xf86c0c8502540be40082520894ffe5bc4e8f1f969934d773fa67da095d2e491a97880de0b6b3a7640000802ca0e0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595a01c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
+      "hash": "0x31e629acead8d0d1d77d72c1f0656ae4001d0926179c138fbb57cdd30b616ca5",
+      "destinationTokenSymbol": "MTK",
+      "destinationTokenAddress": "0xc584c97543d991587376816afc7e81c6d8903951",
+      "sourceTokenSymbol": "MTK",
+      "submittedTime": 1589314602908,
+      "txReceipt": {
+        "blockHash": "0xb9d2d71153b66146fde74b14b1c1ffc0588eb4a02ff464e32a4db9ae4bbfad8a",
+        "blockNumber": "62d5de",
+        "contractAddress": null,
+        "cumulativeGasUsed": "5208",
+        "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
+        "gasUsed": "5208",
+        "logs": [],
+        "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "status": "0x1",
+        "to": "0xc584c97543d991587376816afc7e81c6d8903951",
+        "transactionHash": "0x31e629acead8d0d1d77d72c1f0656ae4001d0926179c138fbb57cdd30b616ca5",
+        "transactionIndex": "0"
+      }
+    },
+    "transactions": [
+      {
+        "id": 42437122348585121,
+        "time": 1589314601567,
+        "status": "confirmed",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
+          "to": "0xc584c97543d991587376816afc7e81c6d8903951",
+          "data": "0xa9059cbb000000000000000000000000a0514060ce8f2646f7a41d4b01cddd9c8ca38d6d0000000000000000000000000000000000000000000000000000000000000001",
+          "nonce": "0xc",
+          "value": "0x0",
+          "gas": "0x5208",
+          "gasPrice": "0x2540be400"
+        },
+        "origin": "metamask",
+        "type": "sentEther",
+        "nonceDetails": {
+          "params": {
+            "highestLocallyConfirmed": 12,
+            "highestSuggested": 12,
+            "nextNetworkNonce": 12
+          },
+          "local": {
+            "name": "local",
+            "nonce": 12,
+            "details": {
+              "startPoint": 12,
+              "highest": 12
+            }
+          },
+          "network": {
+            "name": "network",
+            "nonce": 12,
+            "details": {
+              "blockNumber": "0x62d5dc",
+              "baseCount": 12
+            }
+          }
+        },
+        "r": "0xe0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595",
+        "s": "0x1c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
+        "v": "0x2c",
+        "rawTx": "0xf86c0c8502540be40082520894ffe5bc4e8f1f969934d773fa67da095d2e491a97880de0b6b3a7640000802ca0e0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595a01c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
+        "hash": "0x31e629acead8d0d1d77d72c1f0656ae4001d0926179c138fbb57cdd30b616ca5",
+        "destinationTokenSymbol": "MTK",
+        "destinationTokenAddress": "0xc584c97543d991587376816afc7e81c6d8903951",
+        "sourceTokenSymbol": "MTK",
+        "submittedTime": 1589314602908,
+        "txReceipt": {
+          "blockHash": "0xb9d2d71153b66146fde74b14b1c1ffc0588eb4a02ff464e32a4db9ae4bbfad8a",
+          "blockNumber": "62d5de",
+          "contractAddress": null,
+          "cumulativeGasUsed": "5208",
+          "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
+          "gasUsed": "5208",
+          "logs": [],
+          "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "status": "0x1",
+          "to": "0xc584c97543d991587376816afc7e81c6d8903951",
+          "transactionHash": "0x06bb79b856f5eb67025e4c4ffff44bca26ae135d1c3e6bd9a4193f422dcecca2",
+          "transactionIndex": "0"
+        }
+      }
+    ],
+    "primaryTransaction": {
+      "id": 42437122348585121,
+      "time": 1589314601567,
+      "status": "confirmed",
+      "metamaskNetworkId": "4",
+      "loadingDefaults": false,
+      "txParams": {
+        "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
+        "to": "0xc584c97543d991587376816afc7e81c6d8903951",
+        "data": "0xa9059cbb000000000000000000000000a0514060ce8f2646f7a41d4b01cddd9c8ca38d6d0000000000000000000000000000000000000000000000000000000000000001",
+        "nonce": "0xc",
+        "value": "0x0",
+        "gas": "0x5208",
+        "gasPrice": "0x2540be400"
+      },
+      "origin": "metamask",
+      "type": "simpleSend",
+      "nonceDetails": {
+        "params": {
+          "highestLocallyConfirmed": 12,
+          "highestSuggested": 12,
+          "nextNetworkNonce": 12
+        },
+        "local": {
+          "name": "local",
+          "nonce": 12,
+          "details": {
+            "startPoint": 12,
+            "highest": 12
+          }
+        },
+        "network": {
+          "name": "network",
+          "nonce": 12,
+          "details": {
+            "blockNumber": "0x62d5dc",
+            "baseCount": 12
+          }
+        }
+      },
+      "r": "0xe0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595",
+      "s": "0x1c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
+      "v": "0x2c",
+      "rawTx": "0xf86c0c8502540be40082520894ffe5bc4e8f1f969934d773fa67da095d2e491a97880de0b6b3a7640000802ca0e0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595a01c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
+      "hash": "0x31e629acead8d0d1d77d72c1f0656ae4001d0926179c138fbb57cdd30b616ca5",
+      "destinationTokenSymbol": "MTK",
+      "destinationTokenAddress": "0xc584c97543d991587376816afc7e81c6d8903951",
+      "sourceTokenSymbol": "MTK",
+      "submittedTime": 1589314602908,
+      "txReceipt": {
+        "blockHash": "0xb9d2d71153b66146fde74b14b1c1ffc0588eb4a02ff464e32a4db9ae4bbfad8a",
+        "blockNumber": "62d5de",
+        "contractAddress": null,
+        "cumulativeGasUsed": "5208",
+        "from": "0x9eca64466f257793eaa52fcfff5066894b76a149",
+        "gasUsed": "5208",
+        "logs": [],
+        "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "status": "0x1",
+        "to": "0xc584c97543d991587376816afc7e81c6d8903951",
+        "transactionHash": "0x31e629acead8d0d1d77d72c1f0656ae4001d0926179c138fbb57cdd30b616ca5",
+        "transactionIndex": "0"
+      }
+    },
+
+    "hasRetried": false,
+    "hasCancelled": false
   }
 ]

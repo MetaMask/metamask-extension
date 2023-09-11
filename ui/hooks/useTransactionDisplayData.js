@@ -197,11 +197,12 @@ export function useTransactionDisplayData(transactionGroup) {
         tokenId === transactionDataTokenId,
     );
 
-  const tokenDisplayValue = useTokenDisplayValue(
-    primaryTransaction?.txParams?.data,
-    token,
-    isTokenCategory,
-  ) ?? transactionDataTokenId;
+  const tokenDisplayValue =
+    useTokenDisplayValue(
+      primaryTransaction?.txParams?.data,
+      token,
+      isTokenCategory,
+    ) ?? transactionDataTokenId;
   const tokenFiatAmount = useTokenFiatAmount(
     token?.address,
     tokenDisplayValue,
@@ -332,6 +333,8 @@ export function useTransactionDisplayData(transactionGroup) {
     suffix: primarySuffix,
     ...primaryCurrencyPreferences,
   });
+
+  console.log('primaryCurrency', primaryCurrency);
 
   const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
     prefix,
