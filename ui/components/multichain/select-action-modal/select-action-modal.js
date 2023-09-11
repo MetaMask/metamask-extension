@@ -56,6 +56,7 @@ import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 ///: END:ONLY_INCLUDE_IN
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 export const SelectActionModal = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -161,7 +162,7 @@ export const SelectActionModal = ({ onClose }) => {
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
                   properties: {
-                    token_symbol: 'ETH',
+                    token_symbol: CURRENCY_SYMBOLS.ETH,
                     location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
                     chain_id: chainId,
@@ -187,7 +188,7 @@ export const SelectActionModal = ({ onClose }) => {
                 event: MetaMetricsEventName.NavSendButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
-                  token_symbol: 'ETH',
+                  token_symbol: CURRENCY_SYMBOLS.ETH,
                   location: 'Home',
                   text: 'Send',
                   chain_id: chainId,
@@ -228,7 +229,7 @@ export const SelectActionModal = ({ onClose }) => {
                       location: 'Home',
                       text: 'Bridge',
                       chain_id: chainId,
-                      token_symbol: 'ETH',
+                      token_symbol: CURRENCY_SYMBOLS.ETH,
                     },
                   });
                 }
