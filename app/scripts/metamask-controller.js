@@ -3372,7 +3372,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Fetch account list from an hardware device.
+   * Fetch account list from a hardware device.
    *
    * @param deviceName
    * @param page
