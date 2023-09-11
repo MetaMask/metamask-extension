@@ -1154,33 +1154,6 @@ class FixtureBuilder {
                 note: 'transactions#approveTransaction',
                 timestamp: 1617228031069,
               },
-              {
-                op: 'add',
-                path: '/nonceDetails',
-                value: {
-                  params: {
-                    highestLocallyConfirmed: 0,
-                    highestSuggested: 0,
-                    nextNetworkNonce: 0,
-                  },
-                  local: {
-                    name: 'local',
-                    nonce: 0,
-                    details: {
-                      startPoint: 0,
-                      highest: 0,
-                    },
-                  },
-                  network: {
-                    name: 'network',
-                    nonce: 0,
-                    details: {
-                      blockNumber: '0x0',
-                      baseCount: 0,
-                    },
-                  },
-                },
-              },
             ],
           ],
           id: 4046084157914634,
@@ -1280,33 +1253,6 @@ class FixtureBuilder {
                 timestamp: 1671635510592,
                 value: '0x2',
               },
-              {
-                op: 'add',
-                path: '/nonceDetails',
-                value: {
-                  local: {
-                    details: {
-                      highest: 2,
-                      startPoint: 2,
-                    },
-                    name: 'local',
-                    nonce: 2,
-                  },
-                  network: {
-                    details: {
-                      baseCount: 2,
-                      blockNumber: '0x7cbf93',
-                    },
-                    name: 'network',
-                    nonce: 2,
-                  },
-                  params: {
-                    highestLocallyConfirmed: 0,
-                    highestSuggested: 2,
-                    nextNetworkNonce: 2,
-                  },
-                },
-              },
             ],
             [
               {
@@ -1369,29 +1315,6 @@ class FixtureBuilder {
           ],
           id: 5748272735958801,
           loadingDefaults: false,
-          nonceDetails: {
-            local: {
-              details: {
-                highest: 2,
-                startPoint: 2,
-              },
-              name: 'local',
-              nonce: 2,
-            },
-            network: {
-              details: {
-                baseCount: 2,
-                blockNumber: '0x7cbf93',
-              },
-              name: 'network',
-              nonce: 2,
-            },
-            params: {
-              highestLocallyConfirmed: 0,
-              highestSuggested: 2,
-              nextNetworkNonce: 2,
-            },
-          },
           origin: 'metamask',
           status: 'confirmed',
           submittedTime: 1671635510753,

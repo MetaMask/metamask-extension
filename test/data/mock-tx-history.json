@@ -78,12 +78,6 @@
               "gasPrice": "3b9aca00",
               "gas": "0x7b0d",
               "nonce": 0
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             }
           },
           {
@@ -98,12 +92,6 @@
               "gasPrice": "3b9aca00",
               "gas": "0x7b0d",
               "nonce": 0
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             }
           },
           {
@@ -118,12 +106,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             }
           },
           {
@@ -138,12 +120,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             }
           },
           {
@@ -158,12 +134,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264"
           },
@@ -180,12 +150,6 @@
               "gas": "0x7b0d",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
-            },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264"
           },
           {
@@ -200,12 +164,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012"
@@ -222,12 +180,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012"
@@ -245,12 +197,6 @@
               "gas": "0x7b0d",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
-            },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012"
           },
@@ -266,12 +212,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012"
@@ -288,12 +228,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012",
@@ -311,24 +245,12 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012",
             "retryCount": 1
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16643c",
-          "baseCount": 0,
-          "baseCountHex": "0x0",
-          "pendingCount": 0
-        },
         "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
         "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012",
         "retryCount": 1
@@ -453,12 +375,6 @@
               "gasPrice": "28fa6ae00",
               "gas": "0x7b0d",
               "nonce": 1
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             }
           },
           {
@@ -473,12 +389,6 @@
               "gasPrice": "28fa6ae00",
               "gas": "0x7b0d",
               "nonce": 1
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             }
           },
           {
@@ -494,12 +404,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             }
           },
           {
@@ -515,12 +419,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             }
           },
           {
@@ -536,12 +434,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0"
           },
@@ -559,12 +451,6 @@
               "nonce": "0x01",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
-            },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0"
           },
           {
@@ -580,12 +466,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150"
@@ -603,12 +483,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150"
@@ -627,12 +501,6 @@
               "nonce": "0x01",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
-            },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150"
           },
@@ -649,12 +517,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150"
@@ -672,12 +534,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150",
@@ -696,24 +552,12 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150",
             "retryCount": 1
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x168739",
-          "baseCount": 1,
-          "baseCountHex": "0x1",
-          "pendingCount": 0
-        },
         "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
         "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150",
         "retryCount": 1
@@ -797,12 +641,6 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 2
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             }
           },
           {
@@ -817,12 +655,6 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 2
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             }
           },
           {
@@ -838,12 +670,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             }
           },
           {
@@ -859,12 +685,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             }
           },
           {
@@ -880,12 +700,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc"
           },
@@ -903,12 +717,6 @@
               "nonce": "0x02",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
-            },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc"
           },
           {
@@ -924,12 +732,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270"
@@ -947,12 +749,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270"
@@ -971,12 +767,6 @@
               "nonce": "0x02",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
-            },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270"
           },
@@ -993,12 +783,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270"
@@ -1016,12 +800,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270",
@@ -1040,24 +818,12 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270",
             "retryCount": 1
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16b066",
-          "baseCount": 2,
-          "baseCountHex": "0x2",
-          "pendingCount": 0
-        },
         "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
         "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270",
         "retryCount": 1
@@ -1141,12 +907,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "nonce": 3
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             }
           },
           {
@@ -1161,12 +921,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "nonce": 3
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             }
           },
           {
@@ -1182,12 +936,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             }
           },
           {
@@ -1203,12 +951,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             }
           },
           {
@@ -1224,12 +966,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897"
           },
@@ -1247,12 +983,6 @@
               "nonce": "0x03",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
-            },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897"
           },
           {
@@ -1268,12 +998,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7"
@@ -1291,12 +1015,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7"
@@ -1315,12 +1033,6 @@
               "nonce": "0x03",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
-            },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7"
           },
@@ -1337,12 +1049,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7"
@@ -1360,12 +1066,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7",
@@ -1384,24 +1084,12 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7",
             "retryCount": 2
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16b067",
-          "baseCount": 2,
-          "baseCountHex": "0x2",
-          "pendingCount": 1
-        },
         "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
         "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7",
         "retryCount": 2
@@ -1485,12 +1173,6 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 4
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             }
           },
           {
@@ -1505,12 +1187,6 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 4
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             }
           },
           {
@@ -1526,12 +1202,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             }
           },
           {
@@ -1547,12 +1217,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             }
           },
           {
@@ -1568,12 +1232,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3"
           },
@@ -1591,12 +1249,6 @@
               "nonce": "0x04",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
-            },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3"
           },
           {
@@ -1612,12 +1264,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635"
@@ -1635,12 +1281,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635"
@@ -1659,12 +1299,6 @@
               "nonce": "0x04",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
-            },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635"
           },
@@ -1681,12 +1315,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635"
@@ -1704,12 +1332,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635",
@@ -1728,24 +1350,12 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635",
             "retryCount": 4
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16b067",
-          "baseCount": 2,
-          "baseCountHex": "0x2",
-          "pendingCount": 2
-        },
         "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
         "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635",
         "retryCount": 4
@@ -1829,12 +1439,6 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             }
           },
           {
@@ -1849,12 +1453,6 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             }
           },
           {
@@ -1870,12 +1468,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             }
           },
           {
@@ -1891,12 +1483,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             }
           },
           {
@@ -1912,12 +1498,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5"
           },
@@ -1935,12 +1515,6 @@
               "nonce": "0x05",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
-            },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5"
           },
           {
@@ -1956,12 +1530,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e"
@@ -1979,12 +1547,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e"
@@ -2003,12 +1565,6 @@
               "nonce": "0x05",
               "chainId": 5
             },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
-            },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e"
           },
@@ -2025,12 +1581,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e"
@@ -2048,12 +1598,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e",
@@ -2072,24 +1616,12 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e",
             "retryCount": 3
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16b068",
-          "baseCount": 3,
-          "baseCountHex": "0x3",
-          "pendingCount": 2
-        },
         "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
         "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e",
         "retryCount": 3
