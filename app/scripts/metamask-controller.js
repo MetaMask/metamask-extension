@@ -1835,14 +1835,14 @@ export default class MetamaskController extends EventEmitter {
    * Initialize the snap keyring if it is not present.
    */
   async getSnapKeyring() {
-      let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
+    let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
+      KeyringType.snap,
+    );
+    if (!snapKeyring) {
+      snapKeyring = await this.coreKeyringController.addNewKeyring(
         KeyringType.snap,
       );
-      if (!snapKeyring) {
-      snapKeyring = await this.coreKeyringController.addNewKeyring(
-          KeyringType.snap,
-        );
-      }
+    }
     return snapKeyring;
   }
   ///: END:ONLY_INCLUDE_IN
