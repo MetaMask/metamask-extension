@@ -2900,6 +2900,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Marcar todo como leído"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Conozca más"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 ¡Nos complace anunciar la versión Beta abierta de MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "¡Personalice su monedero con snaps creados por la comunidad de desarrolladores!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Los snaps lo ayudan a hacer más con MetaMask, como conectarlo a más redes, ver información sobre transacciones y recibir notificaciones personalizadas."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Presentamos MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nuevos tokens encontrados en esta cuenta",
     "description": "$1 is the number of new tokens detected"
@@ -4084,17 +4099,9 @@
   "snapsNoInsight": {
     "message": "El snap no devolvió ninguna información"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Usted reconoce que el snap que está a punto de instalar es un Servicio de terceros según se define en Consensys $1. Su uso de los Servicios de terceros se rige por términos y condiciones separados establecidos por el proveedor de Servicios de terceros. Usted accede, confía o utiliza el Servicio de terceros bajo su propio riesgo. Consensys se exime de toda responsabilidad por cualquier pérdida a causa de su uso de los Servicios de terceros.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
   "snapsPrivacyWarningSecondMessage": {
     "message": "Cualquier información que comparta con Servicios de terceros será recopilada directamente por dichos Servicios de terceros de acuerdo con sus políticas de privacidad. Consulte sus políticas de privacidad para obtener más información.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys no tiene acceso a la información que comparta con estos terceros.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Administre sus snaps"

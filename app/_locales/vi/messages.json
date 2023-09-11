@@ -2900,6 +2900,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Đánh dấu đã đọc tất cả"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Tìm hiểu thêm"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "Chúng tôi vui mừng thông báo về phiên bản Open Beta của MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Cá nhân hóa ví của bạn bằng các snap do cộng đồng nhà lập trình xây dựng!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snap giúp bạn làm được nhiều việc hơn với MetaMask — chẳng hạn như kết nối với nhiều mạng hơn, xem thông tin chuyên sâu về giao dịch và nhận thông báo tùy chỉnh."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Giới thiệu MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Tìm thấy $1 token mới trong tài khoản này",
     "description": "$1 is the number of new tokens detected"
@@ -4084,17 +4099,9 @@
   "snapsNoInsight": {
     "message": "Snap không trả về bất kỳ thông tin chi tiết nào"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Bạn thừa nhận rằng Snap mà bạn sắp cài đặt là Dịch vụ bên thứ ba như được định nghĩa trong $1 của Consensys. Việc bạn sử dụng Dịch vụ bên thứ ba sẽ phải tuân theo các điều khoản và điều kiện riêng do nhà cung cấp Dịch vụ bên thứ ba quy định. Bạn tự chịu rủi ro khi truy cập, tin tưởng hoặc sử dụng Dịch vụ bên thứ ba. Consensys từ chối mọi trách nhiệm và trách nhiệm pháp lý đối với bất kỳ tổn thất nào khi bạn sử dụng Dịch vụ bên thứ ba.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
   "snapsPrivacyWarningSecondMessage": {
     "message": "Mọi thông tin mà bạn chia sẻ với Dịch vụ bên thứ ba sẽ được Dịch vụ bên thứ ba đó thu thập trực tiếp theo chính sách quyền riêng tư của họ. Vui lòng tham khảo chính sách quyền riêng tư của họ để biết thêm thông tin.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys không có quyền truy cập vào thông tin mà bạn chia sẻ với các bên thứ ba này.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Quản lý Snap"
