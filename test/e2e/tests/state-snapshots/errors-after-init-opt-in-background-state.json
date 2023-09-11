@@ -153,6 +153,7 @@
     "isLineaMainnetReleased": true,
     "selectedAddress": "string"
   },
+  "SelectedNetworkController": "object",
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
