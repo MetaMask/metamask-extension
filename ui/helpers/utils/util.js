@@ -631,19 +631,3 @@ export const getNetworkNameFromProviderType = (providerName) => {
 export const isAbleToExportAccount = (keyringType = '') => {
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
 };
-
-/**
- * Groups by key an array of objects
- *
- * @param {*} key
- * @param {*} array
- * @returns array grouped by a key
- */
-export const groupbyKey = (key, array) => {
-  return array.reduce((acc, obj) => {
-    const property = obj[key];
-    acc[property] = acc[property] || [];
-    acc[property].push(obj);
-    return acc;
-  }, {});
-};

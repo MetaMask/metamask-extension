@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import SendRowWrapper from '../send-row-wrapper';
 import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
@@ -14,7 +15,6 @@ import {
 } from '../../../../../shared/constants/transaction';
 import { Text } from '../../../../components/component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
-import { groupbyKey } from '../../../../helpers/utils/util';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -74,18 +74,15 @@ export default class SendAssetRow extends Component {
       (nft) => nft.isCurrentlyOwned && nft.standard === TokenStandard.ERC721,
     );
     // Group and sort the sendableNfts Array
-    const groupedNfts = groupbyKey('address', sendableNftsNotSorted);
-    for (const key in groupedNfts) {
-      if (Object.prototype.hasOwnProperty.call(groupedNfts, key)) {
-        groupedNfts[key].sort((a, b) => a.tokenId - b.tokenId);
-      }
-    }
-    const sendableNfts = [];
-    for (const key in groupedNfts) {
-      if (Object.prototype.hasOwnProperty.call(groupedNfts, key)) {
-        sendableNfts.push(...groupedNfts[key]);
-      }
-    }
+    const sendableNfts = _(sendableNftsNotSorted)
+      .groupBy('address')
+      .mapValues((group) => {
+        return group.sort((a, b) => a.tokenId - b.tokenId);
+      })
+      .values()
+      .flatten()
+      .value();
+
     this.setState({ sendableTokens, sendableNfts });
   }
 
