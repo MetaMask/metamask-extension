@@ -3,8 +3,8 @@ import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
 import SignatureRequestSIWE from './signature-request-siwe';
 
-const { identities, selectedAddress } = testData.metamask;
-const otherIdentity = Object.values(identities)[0];
+const { internalAccounts, selectedAddress } = testData.metamask;
+const otherIdentity = Object.values(internalAccounts)[0];
 
 export default {
   title: 'Components/App/SignatureRequestSIWE',

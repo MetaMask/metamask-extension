@@ -55,7 +55,6 @@ const ConfirmTxScreen = ({ match }) => {
   );
   const sendTo = useSelector(getSendTo);
   const {
-    identities,
     currentCurrency,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
@@ -187,7 +186,6 @@ const ConfirmTxScreen = ({ match }) => {
       history={history}
       txData={txData}
       key={txData.id}
-      identities={identities}
       currentCurrency={currentCurrency}
       blockGasLimit={blockGasLimit}
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
