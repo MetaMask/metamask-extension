@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act, fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
@@ -214,7 +214,7 @@ describe('TokenAllowancePage', () => {
     it('should load the page with dappProposedAmount prefilled and "Use site suggestion" should not be displayed', () => {
       mockedState.appState.customTokenAmount = '';
 
-      const { container, queryByText, getByTestId } = renderWithProvider(
+      const { queryByText, getByTestId } = renderWithProvider(
         <TokenAllowance {...props} />,
         configureMockStore([thunk])(mockedState),
       );
@@ -224,12 +224,6 @@ describe('TokenAllowancePage', () => {
 
       const input = getByTestId('custom-spending-cap-input');
       expect(input.value).toBe('7');
-
-      waitFor(() => {
-        expect(
-          container.querySelector('.mm-help-text .mm-text')?.innerText,
-        ).toContain('7 TST');
-      });
     });
   });
 
