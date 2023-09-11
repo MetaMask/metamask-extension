@@ -1223,7 +1223,7 @@
     "message": "您的 MetaMask Extension 需要升级。"
   },
   "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask Extension 已过期"
+    "message": "MetaMask Extension 已过时"
   },
   "desktopPageDescription": {
     "message": "如果配对成功，扩展程序将重新启动，您必须重新输入密码。"
@@ -2900,6 +2900,21 @@
   "notificationsMarkAllAsRead": {
     "message": "将所有标记为已读"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "了解详情"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 我们很高兴宣布推出 MetaMask Snaps 公开测试版！"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "使用开发者社群构建的 snap，个性化您的钱包！"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps 可以帮助您利用 MetaMask 做更多事情，例如连接到更多网络、查看交易见解，以及获取自定义通知。"
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "介绍 MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "在此账户中找到$1枚新代币",
     "description": "$1 is the number of new tokens detected"
@@ -4083,6 +4098,10 @@
   },
   "snapsNoInsight": {
     "message": "Snap 没有返回任何洞察"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "您与第三方服务分享的任何信息，将由这些第三方服务根据其隐私政策直接收集。请参阅其隐私政策以了解更多信息。",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "管理您的 Snaps"

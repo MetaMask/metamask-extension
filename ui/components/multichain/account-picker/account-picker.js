@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   Box,
-  Button,
   AvatarAccount,
   AvatarAccountVariant,
   Icon,
   IconName,
   Text,
+  ButtonBase,
 } from '../../component-library';
 import {
   AlignItems,
@@ -38,7 +38,7 @@ export const AccountPicker = ({
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
-    <Button
+    <ButtonBase
       className="multichain-account-picker"
       data-testid="account-menu-icon"
       onClick={onClick}
@@ -87,7 +87,7 @@ export const AccountPicker = ({
           </Text>
         ) : null}
       </Box>
-    </Button>
+    </ButtonBase>
   );
 };
 
