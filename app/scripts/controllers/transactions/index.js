@@ -1857,11 +1857,6 @@ export default class TransactionController extends EventEmitter {
         customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
 
       txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
-      // add nonce debugging information to txMeta
-      txMeta.nonceDetails = nonceLock.nonceDetails;
-      if (customNonceValue) {
-        txMeta.nonceDetails.customNonceValue = customNonceValue;
-      }
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions#approveTransaction',
