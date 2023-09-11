@@ -1,8 +1,16 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { screen } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import TokenInput from '../../ui/token-input/token-input.component';
 import UserPreferencedTokenInput from '.';
+
+jest.mock('../../ui/token-input/token-input.component', () =>
+  jest.fn(() => {
+    return <div> test </div>;
+  }),
+);
 
 describe('UserPreferencedCurrencyInput Component', () => {
   describe('rendering', () => {
@@ -15,12 +23,10 @@ describe('UserPreferencedCurrencyInput Component', () => {
     };
 
     it('should match snapshot', () => {
-      const { container } = renderWithProvider(
-        <UserPreferencedTokenInput {...props} />,
-        mockStore,
-      );
+      renderWithProvider(<UserPreferencedTokenInput {...props} />, mockStore);
 
-      expect(container).toMatchSnapshot();
+      expect(screen.getByText('test')).toBeInTheDocument();
+      expect(TokenInput.mock.calls[0][0].showFiat).toBe(true);
     });
   });
 });
