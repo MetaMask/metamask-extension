@@ -457,6 +457,7 @@
     "del": "^6.1.1",
     "depcheck": "^1.4.3",
     "dependency-tree": "^10.0.9",
+    "detect-port": "^1.5.1",
     "duplexify": "^4.1.1",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.5.0",
