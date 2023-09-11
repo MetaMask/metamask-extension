@@ -2492,6 +2492,9 @@
   "newNFTDetectedMessage": {
     "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your wallet."
   },
+  "mmiNewNFTDetectedMessage": {
+    "message": "Allow MetaMask Institutional to automatically detect NFTs from Opensea and display in your wallet."
+  },
   "newNFTsDetected": {
     "message": "New! NFT detection"
   },
