@@ -94,8 +94,10 @@ export const SelectActionModal = ({ onClose }) => {
       data-testid="select-action-modal"
     >
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader onClose={onClose}>{t('selectAnAction')}</ModalHeader>
+      <ModalContent modalDialogProps={{ paddingLeft: 0, paddingRight: 0 }}>
+        <ModalHeader onClose={onClose} paddingRight={4}>
+          {t('selectAnAction')}
+        </ModalHeader>
         <Box className="select-action-modal__container" marginTop={6}>
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
