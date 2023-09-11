@@ -104,7 +104,7 @@ describe('migration #97', () => {
                 nextNetworkNonce: 347,
               },
             },
-            otherProp: 'value'
+            otherProp: 'value',
           },
         },
       },
