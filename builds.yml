@@ -52,6 +52,7 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - blockaid
+      - petnames
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -125,6 +126,7 @@ features:
     env:
       - BLOCKAID_FILE_CDN: null
       - BLOCKAID_PUBLIC_KEY: null
+  petnames:
 
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
