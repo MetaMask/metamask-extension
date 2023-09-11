@@ -1647,7 +1647,6 @@ export function getOnboardedInThisUISession(state) {
 }
 
 export const useSafeChainsListValidationSelector = (state) => {
-  console.log({ state });
   return state.metamask.useSafeChainsListValidation;
 };
 

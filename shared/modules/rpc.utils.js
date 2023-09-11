@@ -38,8 +38,6 @@ export async function jsonRpcRequest(rpcUrl, rpcMethod, rpcParams = []) {
     cache: 'default',
   }).then((httpResponse) => httpResponse.json());
 
-  console.log('jsonRpcResponse', jsonRpcResponse);
-
   if (
     !jsonRpcResponse ||
     Array.isArray(jsonRpcResponse) ||

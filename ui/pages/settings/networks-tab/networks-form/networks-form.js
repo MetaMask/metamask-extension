@@ -111,10 +111,6 @@ const NetworksForm = ({
     useSafeChainsListValidationSelector,
   );
 
-  console.log('ui/pages/settings/networks-tab/networks-form/networks-form.js', {
-    useSafeChainsListValidation,
-  });
-
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
     setRpcUrl(selectedNetwork.rpcUrl);

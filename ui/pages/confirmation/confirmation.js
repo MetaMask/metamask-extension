@@ -195,10 +195,6 @@ export default function ConfirmationPage({
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
-  // TODO PEDRO: pass down the selector variable here
-  console.log('ui/pages/confirmation/confirmation.js', {
-    useSafeChainsListValidation,
-  });
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
     unapprovedTxsCount,
     useSafeChainsListValidation,
@@ -336,10 +332,6 @@ export default function ConfirmationPage({
         : null;
       // submit result is an array of errors or empty on success
       const submitResult = await templatedValues.onSubmit(inputState);
-      const templatedValuess = await templatedValues;
-
-      console.log({ submitResult, templatedValuess, inputState });
-
       handleSubmitResult(submitResult);
     }
   };
