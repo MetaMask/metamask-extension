@@ -208,7 +208,8 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   const [isSnapAccountConform, setIsSNapAccountConform] = useState(
-    pendingConfirmation.type === 'snap_manageAccounts:confirmation',
+    pendingConfirmation &&
+      pendingConfirmation.type === 'snap_manageAccounts:confirmation',
   );
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)

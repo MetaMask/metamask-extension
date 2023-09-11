@@ -1948,6 +1948,26 @@ export default class MetamaskController extends EventEmitter {
             requestData: { content, placeholder },
           });
         },
+        requestUserApproval:
+          this.approvalController.addAndShowApprovalRequest.bind(
+            this.approvalController,
+          ),
+        startApprovalFlow: this.approvalController.startFlow.bind(
+          this.approvalController,
+        ),
+        endApprovalFlow: this.approvalController.endFlow.bind(
+          this.approvalController,
+        ),
+        setApprovalFlowLoadingText:
+          this.approvalController.setFlowLoadingText.bind(
+            this.approvalController,
+          ),
+        showApprovalSuccess: this.approvalController.success.bind(
+          this.approvalController,
+        ),
+        showApprovalError: this.approvalController.error.bind(
+          this.approvalController,
+        ),
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
