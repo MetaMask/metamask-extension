@@ -22,17 +22,17 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, any>) {
-  const TransactionController = state?.TransactionController || {};
-  const transactions = state?.TransactionController?.transactions || {};
+  const transactionControllerState = state?.TransactionController || {};
+  const transactions = transactionControllerState?.transactions || {};
 
-  if (isEmpty(TransactionController) || isEmpty(transactions)) {
+  if (isEmpty(transactions)) {
     return;
   }
 
   const newTxs = Object.keys(transactions).reduce((txs, txId) => {
     const transaction = transactions[txId];
-    if (transaction?.nonceDetail) {
-      delete transaction.nonceDetail;
+    if (transaction?.nonceDetails) {
+      delete transaction.nonceDetails;
     }
     return {
       ...txs,
@@ -41,9 +41,7 @@ function transformState(state: Record<string, any>) {
   }, {});
 
   state.TransactionController = {
-    ...TransactionController,
-    transactions: {
-      ...newTxs,
-    },
+    ...transactionControllerState,
+    transactions: newTxs,
   };
 }

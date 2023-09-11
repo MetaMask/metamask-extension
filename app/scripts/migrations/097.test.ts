@@ -80,7 +80,32 @@ describe('migration #97', () => {
             },
             otherProp: 'value',
           },
-          tx2: { otherProp: 'value' },
+          tx2: {
+            nonceDetails: {
+              local: {
+                details: {
+                  highest: 347,
+                  startPoint: 347,
+                },
+                name: 'local',
+                nonce: 347,
+              },
+              network: {
+                details: {
+                  baseCount: 347,
+                  blockNumber: '0x9c2682',
+                },
+                name: 'network',
+                nonce: 347,
+              },
+              params: {
+                highestLocallyConfirmed: 327,
+                highestSuggested: 347,
+                nextNetworkNonce: 347,
+              },
+            },
+            otherProp: 'value'
+          },
         },
       },
     };
