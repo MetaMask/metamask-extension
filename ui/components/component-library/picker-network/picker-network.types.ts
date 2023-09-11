@@ -4,7 +4,8 @@ import type {
 } from '../box';
 import { IconProps } from '../icon/icon.types';
 import { AvatarNetworkProps } from '../avatar-network/avatar-network.types';
-import { BackgroundColor, TextColor } from 'ui/helpers/constants/design-system';
+import { BackgroundColor, TextColor } from '../../../../ui/helpers/constants/design-system';
+
 
 export interface PickerNetworkStyleUtilityProps extends StyleUtilityProps {
   /**
