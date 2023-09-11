@@ -27,7 +27,7 @@ const state = {
         image: {
           src: 'images/global-menu-block-explorer.svg',
         },
-      }
+      },
     },
     tokenList: {
       '0x514910771af9ca656af840dff83e8264ecf986ca': {
@@ -314,8 +314,8 @@ const state = {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
       },
     },
-    unapprovedTxs: {
-      3111025347726181: {
+    transactions: [
+      {
         id: 3111025347726181,
         time: 1620710815484,
         status: 'unapproved',
@@ -365,7 +365,7 @@ const state = {
           ],
         ],
       },
-    },
+    ],
     addressBook: {
       undefined: {
         0: {
@@ -574,7 +574,7 @@ const state = {
       },
     },
     currentBlockGasLimit: '0x793af4',
-    currentNetworkTxList: [
+    transactions: [
       {
         chainId: '0x38',
         dappSuggestedGasFees: null,
@@ -626,34 +626,7 @@ const state = {
               path: '/txParams/nonce',
               timestamp: 1629582711220,
               value: '0x15b',
-            },
-            {
-              op: 'add',
-              path: '/nonceDetails',
-              value: {
-                local: {
-                  details: {
-                    highest: 347,
-                    startPoint: 347,
-                  },
-                  name: 'local',
-                  nonce: 347,
-                },
-                network: {
-                  details: {
-                    baseCount: 347,
-                    blockNumber: '0x9c2682',
-                  },
-                  name: 'network',
-                  nonce: 347,
-                },
-                params: {
-                  highestLocallyConfirmed: 327,
-                  highestSuggested: 347,
-                  nextNetworkNonce: 347,
-                },
-              },
-            },
+            }
           ],
           [
             {
@@ -901,29 +874,6 @@ const state = {
         id: 7900715443136469,
         loadingDefaults: false,
         metamaskNetworkId: '56',
-        nonceDetails: {
-          local: {
-            details: {
-              highest: 347,
-              startPoint: 347,
-            },
-            name: 'local',
-            nonce: 347,
-          },
-          network: {
-            details: {
-              baseCount: 347,
-              blockNumber: '0x9c2682',
-            },
-            name: 'network',
-            nonce: 347,
-          },
-          params: {
-            highestLocallyConfirmed: 327,
-            highestSuggested: 347,
-            nextNetworkNonce: 347,
-          },
-        },
         origin: 'metamask',
         r: '0x90a4dfb0646eef9815454d0ab543b5844acb8772101084565155c93ecce8ed69',
         rawTx:
