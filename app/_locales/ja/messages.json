@@ -2900,6 +2900,21 @@
   "notificationsMarkAllAsRead": {
     "message": "すべて既読にする"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "詳細"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 MetaMask Snapsのオープンベータについてお知らせします！"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "開発者コミュニティによって開発されたsnapで、ウォレットをカスタマイズできます！"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snapsを使えば、他のネットワークへの接続やトランザクションインサイトの表示、カスタム通知の取得など、MetaMaskでより多くのことができるようになります。"
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "MetaMask Snapsのご紹介"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1種類の新しいトークンがこのアカウントで見つかりました",
     "description": "$1 is the number of new tokens detected"
@@ -4083,6 +4098,10 @@
   },
   "snapsNoInsight": {
     "message": "snapがインサイトを返しませんでした"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "サードパーティサービスと共有する情報は、当該サードパーティサービスにより、それぞれのプライバシーポリシーに従い直接収集されます。詳細は、各サードパーティサービスのプライバシーポリシーをご覧ください。",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Snapsの管理"
