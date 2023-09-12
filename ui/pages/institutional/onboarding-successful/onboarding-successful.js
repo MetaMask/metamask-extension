@@ -38,6 +38,7 @@ export default function OnboardingSuccessful() {
           onClick={async () => {
             await dispatch(setCompletedOnboarding());
             window.open('https://metamask-institutional.io/onboarding');
+            // window.location.href = 'https://metamask-institutional.io/onboarding';
           }}
         >
           {t('continueMmiOnboarding')}

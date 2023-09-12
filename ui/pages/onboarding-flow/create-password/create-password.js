@@ -79,7 +79,13 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring) {
       if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_COMPLETION_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -182,7 +188,13 @@ export default function CreatePassword({
       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       history.push(ONBOARDING_COMPLETION_ROUTE);
+      ///: END:ONLY_INCLUDE_IN
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+      ///: END:ONLY_INCLUDE_IN
     } else {
       // Otherwise we are in create new wallet flow
       try {
@@ -203,12 +215,14 @@ export default function CreatePassword({
   };
 
   const walletButton =
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-    t('createNewWallet');
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    t('continue');
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  t('continue');
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  secretRecoveryPhrase && firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+    ? t('importMyWallet')
+    : t('createNewWallet');
   ///: END:ONLY_INCLUDE_IN
 
   return (
@@ -337,10 +351,7 @@ export default function CreatePassword({
             disabled={!isValid || !termsChecked}
             onClick={handleCreate}
           >
-            {secretRecoveryPhrase &&
-            firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
-              ? t('importMyWallet')
-              : walletButton}
+            {walletButton}
           </Button>
         </form>
       </Box>
