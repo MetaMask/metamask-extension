@@ -1,4 +1,4 @@
-import { migrate, version } from './097';
+import { migrate, version } from './098';
 
 describe(`migration #${version}`, () => {
   it('should update the version metadata', async () => {
