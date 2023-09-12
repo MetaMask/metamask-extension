@@ -13,7 +13,6 @@ import {
 } from '@metamask-institutional/sdk';
 import {
   handleMmiPortfolio,
-  setDashboardCookie,
 } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -62,17 +61,6 @@ export default class MMIController extends EventEmitter {
         this.transactionUpdateController.subscribeToEvents();
       });
     }
-
-    this.preferencesController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { identities: prevIdentities } = prevState;
-        const { identities: currIdentities } = currState;
-        if (isEqual(prevIdentities, currIdentities)) {
-          return;
-        }
-        await this.prepareMmiPortfolio();
-      }, this.preferencesController.store.getState()),
-    );
 
     this.signatureController.hub.on(
       'personal_sign:signed',
@@ -582,20 +570,6 @@ export default class MMIController extends EventEmitter {
       getAccountDetails,
       extensionId,
     });
-  }
-
-  async prepareMmiPortfolio() {
-    if (!process.env.IN_TEST) {
-      try {
-        const mmiDashboardData = await this.handleMmiDashboardData();
-        const cookieSetUrls =
-          this.mmiConfigurationController.store.mmiConfiguration?.portfolio
-            ?.cookieSetUrls || [];
-        setDashboardCookie(mmiDashboardData, cookieSetUrls);
-      } catch (error) {
-        console.error(error);
-      }
-    }
   }
 
   async newUnsignedMessage(msgParams, req, version) {
