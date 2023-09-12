@@ -92,8 +92,7 @@ describe('Custom network', function () {
         },
         async ({ driver }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
           await driver.executeScript(`
@@ -171,8 +170,7 @@ describe('Custom network', function () {
         },
         async ({ driver }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
           await driver.executeScript(`
@@ -243,8 +241,7 @@ describe('Custom network', function () {
         },
         async ({ driver }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
           await driver.executeScript(`
@@ -393,8 +390,7 @@ describe('Custom network', function () {
         },
         async ({ driver }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           // Avoid a stale element error
           await driver.delay(regularDelayMs);
@@ -481,8 +477,7 @@ describe('Custom network', function () {
         },
         async ({ driver }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           // Avoid a stale element error
           await driver.delay(regularDelayMs);
@@ -539,8 +534,7 @@ describe('Custom network', function () {
         },
         async ({ driver }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await driver.clickElement(
             '[data-testid="account-options-menu-button"]',

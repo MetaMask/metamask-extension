@@ -347,17 +347,35 @@ export default class SecurityTab extends PureComponent {
     const { useSafeChainsListValidation, setUseSafeChainsListValidation } =
       this.props;
 
+    const useSafeChainsListValidationWebsite = t(
+      'useSafeChainsListValidationWebsite',
+    );
+
     return (
-      <div ref={this.settingsRefs[2]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('useSafeChainsListValidation')}</span>
-          <div className="settings-page__content-description">
-            {t('useSafeChainsListValidationDescription1') + ' '}
-            <b>chainid.network</b>
-            {' ' + t('useSafeChainsListValidationDescription2')}
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="setting-safe-chains-validation"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <Box
+          className="settings-page__content-row"
+          gap={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('useSafeChainsListValidation')}</span>
+            <div className="settings-page__content-description">
+              {t('useSafeChainsListValidationDescription', [
+                <b>{useSafeChainsListValidationWebsite}</b>,
+              ])}
+            </div>
           </div>
-        </div>
-        <div className="settings-page__content-item">
+
           <div
             className="settings-page__content-item-col"
             data-testid="useSafeChainsListValidation"
@@ -369,8 +387,8 @@ export default class SecurityTab extends PureComponent {
               onLabel={t('on')}
             />
           </div>
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   }
 
