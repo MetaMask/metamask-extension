@@ -260,8 +260,10 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
-export const ZKSYNC_ERA_MAINNET_TOKEN_IMAGE_URL = './images/zksync-era-mainnet.svg';
-export const ZKSYNC_ERA_TESTNET_TOKEN_IMAGE_URL = './images/zksync-era-testnet.svg';
+export const ZKSYNC_ERA_MAINNET_TOKEN_IMAGE_URL =
+  './images/zksync-era-mainnet.svg';
+export const ZKSYNC_ERA_TESTNET_TOKEN_IMAGE_URL =
+  './images/zksync-era-testnet.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
