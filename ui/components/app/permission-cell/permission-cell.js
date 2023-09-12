@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarIcon,
+  AvatarIconSize,
   Icon,
   IconName,
   IconSize,
@@ -77,7 +78,7 @@ const PermissionCell = ({
         {typeof permissionIcon === 'string' ? (
           <AvatarIcon
             iconName={permissionIcon}
-            size={IconSize.Md}
+            size={AvatarIconSize.Md}
             iconProps={{
               size: IconSize.Sm,
             }}

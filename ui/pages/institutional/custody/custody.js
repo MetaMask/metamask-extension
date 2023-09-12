@@ -249,7 +249,7 @@ const CustodyPage = () => {
 
           setCurrentJwt(custodianToken);
           setSelectedCustodianType(custodianType);
-          setSelectedCustodianName(custodianName);
+          setSelectedCustodianName(custodianName || custodianType);
           setApiUrl(custodianApiUrl);
           setConnectError('');
 

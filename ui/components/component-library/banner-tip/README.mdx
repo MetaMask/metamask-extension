@@ -12,13 +12,7 @@ import { BannerBase } from '..';
 
 ## Props
 
-The `BannerTip` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
-
 <ArgsTable of={BannerTip} />
-
-The `BannerTip` accepts all `BannerBase` component props below
-
-<ArgsTable of={BannerBase} />
 
 ### Logo Type
 
@@ -87,12 +81,15 @@ The `children` prop is an alternative to `description` for `BannerTip` when more
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { BannerTip } from '../../component-library';
+import { BannerTip, ButtonLinkSize } from '../../component-library';
 
 <BannerTip>
   Description shouldn't repeat title. 1-3 lines. Can contain a
-  <ButtonLink size={Size.auto} href="https://metamask.io/" target="_blank">
+  <ButtonLink
+    size={ButtonLinkSize.Auto}
+    href="https://metamask.io/"
+    externalLink
+  >
     hyperlink.
   </ButtonLink>
 </BannerTip>;
@@ -113,8 +110,7 @@ import { BannerTip, IconName } from '../../component-library';
   title="Action prop demo"
   actionButtonLabel="Action"
   actionButtonProps={{
-    icon: IconName.Arrow2Right, // TODO: change to iconName
-    iconPositionRight: true,
+    endIconName: IconName.Arrow2Right,
   }}
   actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
 >
