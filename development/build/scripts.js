@@ -1228,15 +1228,47 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
+
+  const appLoadFilePath = './app/scripts/load-app.js';
+  const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
+
+  const securityScripts = applyLavaMoat
+    ? ['./runtime-lavamoat.js', './lockdown-more.js', './policy-load.js']
+    : [
+        './lockdown-install.js',
+        './lockdown-run.js',
+        './lockdown-more.js',
+        './runtime-cjs.js',
+      ];
+
+  const requiredScripts = [
+    './snow.js',
+    './use-snow.js',
+    './globalthis.js',
+    './sentry-install.js',
+    ...securityScripts,
+    ...jsBundles,
+  ];
+
   const htmlOutput = Sqrl.render(htmlTemplate, {
-    jsBundles,
-    applyLavaMoat,
     isMMI,
+    jsBundles,
   });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
     writeFileSync(dest, htmlOutput);
+
+    if (htmlName === 'home') {
+      const scriptDest = `./dist/${platform}/load-app.js`;
+      const scriptOutput = appLoadContents.replace(
+        '[/*SCRIPTS*/]',
+        JSON.stringify(requiredScripts),
+      );
+
+      console.log(`WRITING ${scriptDest}`);
+      writeFileSync(scriptDest, scriptOutput);
+    }
   });
 }
 
