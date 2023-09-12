@@ -64,7 +64,7 @@ describe('Wrong Network Notification', function () {
         ...mockStore.metamask,
         providerConfig: {
           type: 'test',
-          chainId: '3',
+          chainId: '0x5',
         },
         cachedBalances: {
           '0x1': {
@@ -90,7 +90,7 @@ describe('Wrong Network Notification', function () {
         ...mockStore.metamask,
         providerConfig: {
           type: 'test',
-          chainId: '3',
+          chainId: '0x5',
         },
         cachedBalances: {
           3: {
