@@ -375,7 +375,7 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Function: Approve')).toBeInTheDocument();
   });
 
-  it('should click Use site suggestion and set input value to default', () => {
+  it('should click "Use site suggestion" and set input value to dappProposedTokenAmount', () => {
     mockedState.appState.customTokenAmount = '';
 
     const { getByText, getByTestId } = renderWithProvider(
