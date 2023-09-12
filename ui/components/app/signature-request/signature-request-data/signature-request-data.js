@@ -70,7 +70,11 @@ function SignatureRequestData({ data }) {
                   className="signature-request-data__node__value__address"
                 >
                   {petnamesEnabled ? (
-                    <Name value={value} type={NameType.ETHEREUM_ADDRESS} />
+                    <Name
+                      value={value}
+                      type={NameType.ETHEREUM_ADDRESS}
+                      sourcePriority={['ens', 'lens', 'token', 'etherscan']}
+                    />
                   ) : (
                     <Address
                       addressOnly

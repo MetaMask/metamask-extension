@@ -116,6 +116,9 @@ async function main() {
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
+  } else if (buildType === 'flask') {
+    const testDir = path.join(__dirname, 'flask');
+    testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
