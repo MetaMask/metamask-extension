@@ -568,14 +568,17 @@ jobs:
           name: Build extension for testing
           command: yarn build:test:flask
       - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
+          name: Move test build to 'dist-test-flask' to avoid conflict with production build
           command: mv ./dist ./dist-test-flask
       - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
+          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask
+      - save_cache:
+          key: builds-test-flask-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+          paths:
+            - builds-test-flask
       - store_artifacts:
           path: builds-test-flask
-          destination: builds-test-flask
       - persist_to_workspace:
           root: .
           paths:
@@ -595,7 +598,7 @@ jobs:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-mv3
       - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
+          name: Move test zips to 'builds-test-mv3' to avoid conflict with production build
           command: mv ./builds ./builds-test-mv3
       - persist_to_workspace:
           root: .
@@ -620,7 +623,6 @@ jobs:
           command: mv ./builds ./builds-test
       - store_artifacts:
           path: builds-test
-          destination: builds-test
       - persist_to_workspace:
           root: .
           paths:
@@ -1144,6 +1146,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - restore_cache:
+          keys:
+            - builds-test-flask-{{ .Environment.CIRCLE_WORKFLOW_ID }}
       - run:
           name: build:source-map-explorer
           command: ./development/source-map-explorer.sh
