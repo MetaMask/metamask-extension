@@ -161,6 +161,8 @@ export const CHAIN_IDS = {
   MOONRIVER: '0x505',
   CRONOS: '0x19',
   GNOSIS: '0x64',
+  ZKSYNC_ERA: '0x144',
+  ZKSYNC_ERA_TESTNET: '0x118',
 } as const;
 
 /**
@@ -187,6 +189,8 @@ export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
+export const ZKSYNC_ERA_MAINNET_DISPLAY_NAME = 'zkSync Era Mainnet';
+export const ZKSYNC_ERA_TESTNET_DISPLAY_NAME = 'zkSync Era Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -256,6 +260,8 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
+export const ZKSYNC_ERA_MAINNET_TOKEN_IMAGE_URL = './images/zksync-era-mainnet.svg';
+export const ZKSYNC_ERA_TESTNET_TOKEN_IMAGE_URL = './images/zksync-era-testnet.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -391,6 +397,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_ERA_MAINNET_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ZKSYNC_ERA_TESTNET]: ZKSYNC_ERA_TESTNET_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -570,6 +578,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.ZKSYNC_ERA
+    | typeof CHAIN_IDS.ZKSYNC_ERA_TESTNET
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -743,6 +753,26 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://gnosisscan.io',
       imageUrl: GNOSIS_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.ZKSYNC_ERA,
+    nickname: ZKSYNC_ERA_MAINNET_DISPLAY_NAME,
+    rpcUrl: `https://mainnet.era.zksync.io`,
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.zksync.io/',
+      imageUrl: ZKSYNC_ERA_MAINNET_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.ZKSYNC_ERA_TESTNET,
+    nickname: ZKSYNC_ERA_TESTNET_DISPLAY_NAME,
+    rpcUrl: `https://testnet.era.zksync.dev`,
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://goerli.explorer.zksync.io/',
+      imageUrl: ZKSYNC_ERA_TESTNET_TOKEN_IMAGE_URL,
     },
   },
 ];
