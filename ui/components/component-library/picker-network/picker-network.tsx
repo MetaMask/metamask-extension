@@ -35,6 +35,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
     }: PickerNetworkProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    console.log('Test test');
     return (
       <Box
         className={classnames('mm-picker-network', className)}
