@@ -208,10 +208,6 @@ function defaultFixture() {
         participateInMetaMetrics: false,
         traits: {},
       },
-      SelectedNetworkController: {
-        perDomainNetwork: false,
-        domains: {},
-      },
       NetworkController: {
         networkId: '1337',
         selectedNetworkClientId: 'networkConfigurationId',
