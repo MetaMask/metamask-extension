@@ -2352,6 +2352,9 @@
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."
   },
+  "mmiNewNFTDetectedMessage": {
+    "message": "Allow MetaMask Institutional to automatically detect NFTs from OpenSea and display in your wallet."
+  },
   "more": {
     "message": "more"
   },
