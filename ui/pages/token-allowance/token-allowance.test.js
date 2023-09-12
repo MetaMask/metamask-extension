@@ -375,8 +375,7 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Function: Approve')).toBeInTheDocument();
   });
 
-  /** FIXME: Running this test by itself will pass, but running it with the rest of the tests will fail. */
-  it.skip('should click Use site suggestion and set input value to default', () => {
+  it('should click Use site suggestion and set input value to default', () => {
     mockedState.appState.customTokenAmount = '';
 
     const { getByText, getByTestId } = renderWithProvider(
