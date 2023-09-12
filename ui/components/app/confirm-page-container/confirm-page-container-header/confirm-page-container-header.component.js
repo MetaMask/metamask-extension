@@ -1,16 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
 } from '../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
-import NetworkDisplay from '../../network-display';
 import Identicon from '../../../ui/identicon';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, PickerNetwork } from '../../../component-library';
+import { BackgroundColor } from '../../../../helpers/constants/design-system';
+import { getTestNetworkBackgroundColor } from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { NETWORK_TYPES } from '../../../../../shared/constants/network';
+import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 
 export default function ConfirmPageContainerHeader({
   onEdit,
@@ -21,6 +26,9 @@ export default function ConfirmPageContainerHeader({
 }) {
   const t = useI18nContext();
   const windowType = getEnvironmentType();
+  const { nickname, type: networkType } = useSelector(getProviderConfig);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP;
@@ -64,7 +72,19 @@ export default function ConfirmPageContainerHeader({
             </span>
           </div>
         )}
-        {isFullScreen ? null : <NetworkDisplay />}
+        {isFullScreen ? null : (
+          <PickerNetwork
+            label={
+              networkType === NETWORK_TYPES.RPC
+                ? nickname ?? t('privateNetwork')
+                : t(getNetworkLabelKey(networkType))
+            }
+            backgroundColor={BackgroundColor.transparent}
+            avatarNetworkProps={{
+              backgroundColor: testNetworkBackgroundColor,
+            }}
+          />
+        )}
       </div>
       {children}
     </div>
