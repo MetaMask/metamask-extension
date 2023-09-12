@@ -61,7 +61,7 @@
     "message": "不安全"
   },
   "SIWELabelChainID": {
-    "message": "链ID："
+    "message": "链 ID："
   },
   "SIWELabelExpirationTime": {
     "message": "到期时间："
@@ -118,10 +118,10 @@
     "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessYourWalletWithSRP": {
-    "message": "使用账户助记词访问钱包"
+    "message": "使用账户私钥助记词访问钱包"
   },
   "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask无法恢复您的密码。我们将使用您的助记词来验证您的所有权、恢复您的钱包并设置新密码。首先，请输入创建钱包时获得的助记词。$1",
+    "message": "MetaMask无法恢复您的密码。我们将使用您的私钥助记词来验证您的所有权、恢复您的钱包并设置新密码。首先，请输入创建钱包时获得的私钥助记词。$1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
   },
   "accessingYourCamera": {
@@ -134,7 +134,7 @@
     "message": "账户详情"
   },
   "accountIdenticon": {
-    "message": "账户哈希头像"
+    "message": "账户 Identicon"
   },
   "accountName": {
     "message": "账户名称"
@@ -203,7 +203,7 @@
     "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
   },
   "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "诈骗和网络安全风险",
+    "message": "欺诈和网络安全风险",
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
   },
   "addEthereumChainConfirmationTitle": {
@@ -266,7 +266,7 @@
     "message": "添加 NFT"
   },
   "addSnapAccountModalDescription": {
-    "message": "了解使用MetaMask Snap来保护账户安全的选项"
+    "message": "了解使用 MetaMask Snaps 来保护账户安全的选项"
   },
   "addSuggestedNFTs": {
     "message": "添加推荐的 NFT"
@@ -287,14 +287,21 @@
   "address": {
     "message": "地址"
   },
+  "addressCopied": {
+    "message": "地址已复制！"
+  },
   "advanced": {
     "message": "高级"
   },
   "advancedBaseGasFeeToolTip": {
-    "message": "当您的交易被包含在区块中时，您的最大基本费用与实际基本费用之间的任何差额将被退还。总金额按最大基本费用（以GWEI为单位）*燃料上限计算。"
+    "message": "当您的交易被包含在区块中时，您的最大基础费用与实际基础费用之间的任何差额将被退还。总金额按最大基础费用（以GWEI为单位）*燃料限制计算。"
   },
   "advancedConfiguration": {
     "message": "高级配置"
+  },
+  "advancedGasFeeDefaultOptIn": {
+    "message": "将这些值保存为 $1 网络的默认值。",
+    "description": "$1 is the current network name."
   },
   "advancedGasFeeModalTitle": {
     "message": "高级燃料费"
@@ -303,7 +310,7 @@
     "message": "燃料价格"
   },
   "advancedPriorityFeeToolTip": {
-    "message": "优先费（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
+    "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
   "agreeTermsOfUse": {
     "message": "我同意MetaMask的$1",
@@ -391,11 +398,11 @@
     "message": "批准消费限额"
   },
   "approveAllTokensTitle": {
-    "message": "是否允许访问和转移您所有的$1？",
+    "message": "是否允许访问并转账您所有的$1？",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAllTokensTitleWithoutSymbol": {
-    "message": "是否允许访问和转移您所有在$1的NFT？",
+    "message": "是否允许访问并转账您所有在$1的NFT？",
     "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveButtonText": {
@@ -406,14 +413,14 @@
     "description": "The token symbol that is being approved"
   },
   "approveTokenDescription": {
-    "message": "这允许第三方访问和转移以下 NFT，而无需另行通知，直到您撤销其访问权限。"
+    "message": "这允许第三方访问并转账以下 NFT，而无需另行通知，直到您撤销其访问权限。"
   },
   "approveTokenDescriptionWithoutSymbol": {
-    "message": "这会允许第三方访问和转移您所有在$1的NFT，而无需另行通知，直到您撤销其访问权限。",
+    "message": "这会允许第三方访问并转账您所有在$1的NFT，而无需另行通知，直到您撤销其访问权限。",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveTokenTitle": {
-    "message": "是否允许访问和转移您的 $1 ？",
+    "message": "是否允许访问并转账您的 $1 ？",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approved": {
@@ -480,7 +487,7 @@
     "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
   "backupApprovalNotice": {
-    "message": "请备份您的账户助记词，保证您的钱包和资金安全。"
+    "message": "请备份您的账户私钥助记词，保证您的钱包和资金安全。"
   },
   "backupNow": {
     "message": "立即备份"
@@ -489,7 +496,7 @@
     "message": "将您的数据备份"
   },
   "backupUserDataDescription": {
-    "message": "您可以将包含首选项和账户地址的用户设置备份到JSON文件中。"
+    "message": "您可以将包含首选项和账户地址的用户设置备份到 JSON 文件中。"
   },
   "balance": {
     "message": "余额"
@@ -498,7 +505,7 @@
     "message": "余额可能已过期"
   },
   "baseFee": {
-    "message": "基本费用"
+    "message": "基础费用"
   },
   "basic": {
     "message": "基本"
@@ -514,7 +521,7 @@
     "description": "$1 represents the word 'here' in a hyperlink"
   },
   "betaMetamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional测试版本"
+    "message": "MetaMask Institutional 测试版本"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask 测试版本"
@@ -523,10 +530,10 @@
     "message": "测试版使用条款"
   },
   "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask 测试版无法恢复您的账户助记词。"
+    "message": "MetaMask 测试版无法恢复您的账户私钥助记词。"
   },
   "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask 测试版绝对不会向您索要账户助记词。"
+    "message": "MetaMask 测试版绝对不会向您索要账户私钥助记词。"
   },
   "blockExplorerAccountAction": {
     "message": "账户",
@@ -554,7 +561,7 @@
     "message": "Blockaid"
   },
   "blockaidDescriptionApproveFarming": {
-    "message": "如果您批准此请求，以诈骗闻名的第三方可能会拿走您的所有资产。"
+    "message": "如果您批准此请求，以欺诈闻名的第三方可能会拿走您的所有资产。"
   },
   "blockaidDescriptionBlurFarming": {
     "message": "如果您批准此请求，则有人可以窃取您列于Blur上的资产。"
@@ -572,7 +579,7 @@
     "message": "如果您批准此请求，则有人可以窃取您列于OpenSea上的资产。"
   },
   "blockaidDescriptionTransferFarming": {
-    "message": "如果您批准此请求，以诈骗闻名的第三方将会拿走您的所有资产。"
+    "message": "如果您批准此请求，以欺诈闻名的第三方将会拿走您的所有资产。"
   },
   "blockaidTitleDeceptive": {
     "message": "此请求属欺骗性质"
@@ -587,7 +594,13 @@
     "message": "Blockies"
   },
   "bridge": {
-    "message": "桥"
+    "message": "跨链桥"
+  },
+  "bridgeDescription": {
+    "message": "从不同网络传送代币"
+  },
+  "bridgeDisabled": {
+    "message": "在此网络中无法使用跨链桥"
   },
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
@@ -607,6 +620,12 @@
   "buyAsset": {
     "message": "购买$1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyDescription": {
+    "message": "继续持有加密货币，赚取潜在利润"
+  },
+  "buyDisabled": {
+    "message": "在此网络中无法购买"
   },
   "buyMoreAsset": {
     "message": "购买更多$1",
@@ -654,14 +673,14 @@
     "message": "此链 ID 目前已被 $1 网络使用。"
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "链ID为$1的网络使用的货币代码（$2）可能与您输入的不同。请在继续之前进行验证。",
+    "message": "链 ID为$1的网络使用的货币代码（$2）可能与您输入的不同。请在继续之前进行验证。",
     "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
   "chooseYourNetwork": {
     "message": "选择您的网络"
   },
   "chooseYourNetworkDescription": {
-    "message": "我们使用 Infura 作为我们的远程程序调用（RPC）提供商，以提供最可靠和最私密的以太坊数据访问。您可以选择自己的 RPC，但请谨记，任何 RPC 都可以接收您的 IP 地址和以太坊钱包以进行交易。请阅读我们的 $1，进一步了解 Infura 如何处理数据。",
+    "message": "我们使用 Infura 作为我们的远程过程调用（RPC）提供商，以提供最可靠和最私密的以太坊数据访问。您可以选择自己的 RPC，但请谨记，任何 RPC 都可以接收您的 IP 地址和以太坊钱包以进行交易。请阅读我们的 $1，进一步了解 Infura 如何处理数据。",
     "description": "$1 is a link to the privacy policy"
   },
   "chromeRequiredForHardwareWallets": {
@@ -671,13 +690,13 @@
     "message": "清除"
   },
   "clearActivity": {
-    "message": "清除活动和nonce数据"
+    "message": "清除活动和 nonce 数据"
   },
   "clearActivityButton": {
     "message": "清除活动选项卡数据"
   },
   "clearActivityDescription": {
-    "message": "这将会重置账户的nonce，并删除钱包中的活动选项卡数据。只有当前账户和网络会受到影响。您的余额和传入的交易不会改变。"
+    "message": "这将会重置账户的 nonce，并删除钱包中的活动选项卡数据。只有当前账户和网络会受到影响。您的余额和传入的交易不会改变。"
   },
   "click": {
     "message": "点击"
@@ -717,7 +736,7 @@
     "message": "确认密码"
   },
   "confirmRecoveryPhrase": {
-    "message": "确认助记词"
+    "message": "确认私钥助记词"
   },
   "confirmed": {
     "message": "已确认"
@@ -729,7 +748,7 @@
     "message": "找到零宽字符。"
   },
   "confusingEnsDomain": {
-    "message": "我们在 ENS 名称中检测到一个可令人混淆的字符。检查 ENS 名称以避免潜在的骗局。"
+    "message": "我们在 ENS 名称中检测到一个可令人混淆的字符。检查 ENS 名称以避免潜在的欺诈。"
   },
   "connect": {
     "message": "连接"
@@ -828,11 +847,14 @@
   "connectionRequest": {
     "message": "连接请求"
   },
+  "connections": {
+    "message": "连接"
+  },
   "contactUs": {
     "message": "联系我们"
   },
   "contacts": {
-    "message": "联系信息"
+    "message": "联系方式"
   },
   "contentFromSnap": {
     "message": "来自$1的内容",
@@ -948,7 +970,7 @@
     "message": "在此网络上不可用"
   },
   "curveHighGasEstimate": {
-    "message": "高价燃料估算图"
+    "message": "激进型燃料估算图"
   },
   "curveLowGasEstimate": {
     "message": "低价燃料估算图"
@@ -963,7 +985,7 @@
     "message": "托管账户"
   },
   "custodianAccountAddedDesc": {
-    "message": "您现在可以在MetaMask Institutional使用您的托管账户。"
+    "message": "您现在可以在 MetaMask Institutional 使用您的托管账户。 "
   },
   "custodianAccountAddedTitle": {
     "message": "已添加所选托管账户。"
@@ -993,7 +1015,7 @@
     "message": "请转到$1，然后点击用户界面中的“连接到MMI”按钮，将您的账户再次连接到MMI。"
   },
   "custodyRefreshTokenModalDescription1": {
-    "message": "您的托管人会发出一个令牌来验证MetaMask Institutional扩展，使您可以连接您的账户。"
+    "message": "您的托管人会发出一个令牌来验证 MetaMask Institutional 扩展，使您可以连接您的账户。"
   },
   "custodyRefreshTokenModalDescription2": {
     "message": "由于安全原因，此令牌会在一段时间后过期。这使您需要重新连接到MMI。"
@@ -1039,7 +1061,7 @@
     "message": "在导入代币之前，请确保该代币是您所信任的。了解如何避免$1。您还可以启用代币检测$2。"
   },
   "customerSupport": {
-    "message": "客户支持"
+    "message": "客户支持团队"
   },
   "dappRequestedSpendingCap": {
     "message": "网站请求的支出上限"
@@ -1122,13 +1144,13 @@
     "description": "$1 represents the name of the network"
   },
   "deposit": {
-    "message": "存入"
+    "message": "保证金"
   },
   "deprecatedTestNetworksLink": {
     "message": "了解详情"
   },
   "deprecatedTestNetworksMsg": {
-    "message": "由于以太坊的协议有变化：Rinkeby、Ropsten和Kovan测试网络可能无法可靠地工作，很快就会被弃用。"
+    "message": "由于以太坊的协议有变化：Rinkeby、Ropsten 和 Kovan 测试网络可能无法可靠地工作，很快就会被弃用。"
   },
   "description": {
     "message": "描述"
@@ -1137,8 +1159,11 @@
     "message": "来自 $1 的描述",
     "description": "$1 represents the name of the snap"
   },
+  "desktopApp": {
+    "message": "桌面应用程序"
+  },
   "desktopConnectionCriticalErrorDescription": {
-    "message": "此错误可能是间歇性的，因此，请尝试重新启动此扩展程序或禁用MetaMask桌面应用程序。"
+    "message": "此错误可能是间歇性的，因此，请尝试重新启动此扩展程序或禁用 MetaMask 桌面应用程序。"
   },
   "desktopConnectionCriticalErrorTitle": {
     "message": "MetaMask启动时出现问题"
@@ -1192,13 +1217,13 @@
     "message": "MetaMask桌面应用程序已过时"
   },
   "desktopOutdatedExtensionErrorCTA": {
-    "message": "更新MetaMask扩展程序"
+    "message": "更新 MetaMask Extension"
   },
   "desktopOutdatedExtensionErrorDescription": {
-    "message": "您的MetaMask扩展程序需要升级。"
+    "message": "您的 MetaMask Extension 需要升级。"
   },
   "desktopOutdatedExtensionErrorTitle": {
-    "message": "MetaMask扩展程序已过时"
+    "message": "MetaMask Extension 已过时"
   },
   "desktopPageDescription": {
     "message": "如果配对成功，扩展程序将重新启动，您必须重新输入密码。"
@@ -1262,10 +1287,10 @@
     "message": "关闭"
   },
   "dismissReminderDescriptionField": {
-    "message": "开启此选项以关闭账户助记词备份提醒消息。我们强烈建议您备份您的账户助记词，以避免资金损失"
+    "message": "开启此选项以关闭账户私钥助记词备份提醒消息。我们强烈建议您备份您的账户私钥助记词，以避免资金损失"
   },
   "dismissReminderField": {
-    "message": "关闭账户助记词备份提醒"
+    "message": "关闭账户私钥助记词备份提醒"
   },
   "displayNftMedia": {
     "message": "显示NFT媒体"
@@ -1295,7 +1320,7 @@
     "message": "下载状态日志"
   },
   "dropped": {
-    "message": "已放弃"
+    "message": "失败"
   },
   "edit": {
     "message": "编辑"
@@ -1313,26 +1338,26 @@
     "message": "编辑联系信息"
   },
   "editGasFeeModalTitle": {
-    "message": "编辑网络费"
+    "message": "编辑燃料费"
   },
   "editGasLimitOutOfBounds": {
     "message": "燃料上限至少为 $1"
   },
   "editGasLimitOutOfBoundsV2": {
-    "message": "燃料上限必须大于 $1 且小于 $2",
+    "message": "燃料限制必须大于 $1 且小于 $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
   "editGasLimitTooltip": {
-    "message": "燃料上限是您愿意使用的最大燃料单位。燃料单位是“最大优先费”和“最大费用”的乘数。"
+    "message": "燃料限制是您愿意使用的最大燃料单位。燃料单位是“最大优先交易费用”和“最大费用”的乘数。"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "最大基本费用不能低于优先费用"
+    "message": "最大基础费用不能低于优先费用"
   },
   "editGasMaxBaseFeeHigh": {
-    "message": "最大基本费用高于必要水平"
+    "message": "最大基础费用高于必要水平"
   },
   "editGasMaxBaseFeeLow": {
-    "message": "对于当前网络条件而言，最大基本费用较低"
+    "message": "对于当前网络条件而言，最大基础费用较低"
   },
   "editGasMaxFeeHigh": {
     "message": "最大费用高于必要水平"
@@ -1381,7 +1406,7 @@
     "message": "处理时间未知"
   },
   "editNonceField": {
-    "message": "编辑 Nonce"
+    "message": "编辑 nonce"
   },
   "editNonceMessage": {
     "message": "这是高级功能，请谨慎使用。"
@@ -1499,11 +1524,11 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageMessage": {
-    "message": "通过重新加载页面再试一次，或联系支持部门 $1。",
+    "message": "通过重新加载页面再试一次，或联系支持团队 $1。",
     "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPagePopupMessage": {
-    "message": "通过关闭并重新打开弹出窗口再试一次，或联系支持部门 $1。",
+    "message": "通过关闭并重新打开弹出窗口再试一次，或联系支持团队 $1。",
     "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
@@ -1529,7 +1554,7 @@
     "description": "The parameter is the name of the requesting origin"
   },
   "ethereumPublicAddress": {
-    "message": "以太坊公共地址"
+    "message": "以太坊公钥"
   },
   "etherscan": {
     "message": "Etherscan"
@@ -1544,10 +1569,10 @@
     "message": "展开视图"
   },
   "experimental": {
-    "message": "试验"
+    "message": "实验性"
   },
   "exploreMetaMaskSnaps": {
-    "message": "探索MetaMask Snap"
+    "message": "探索 MetaMask Snaps"
   },
   "extendWalletWithSnaps": {
     "message": "扩展钱包体验。"
@@ -1589,19 +1614,19 @@
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
   },
   "flaskWelcomeWarning1": {
-    "message": "Flask供开发人员试验不稳定的新API。除非您是开发人员或Beta测试人员，否则请$1。",
+    "message": "Flask 供开发人员试验不稳定的新 API。除非您是开发者或 Beta 测试人员，否则请 $1。",
     "description": "This is a warning shown on the Flask Welcome screen, intended to encourage non-developers not to proceed any further. $1 is the bolded message 'flaskWelcomeUninstall'"
   },
   "flaskWelcomeWarning2": {
-    "message": "我们不保证此扩展程序的安全性或稳定性。Flask提供的新API并未针对网络钓鱼攻击进行强化，这意味着任何需要Flask的站点或快取都可能是窃取您资产的恶意企图。",
+    "message": "我们不保证此扩展程序的安全性或稳定性。Flask 提供的新API并未针对网络钓鱼攻击进行强化，这意味着任何需要 Flask 的站点或快取都可能是窃取您资产的恶意企图。",
     "description": "This explains the risks of using MetaMask Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "所有Flask API都是实验性的。它们可能会在未事先通知的情况下被更改或删除，它们也可能会无限期地留在Flask上而不会迁移到稳定的MetaMask。您需要自行承担使用它们的风险。",
+    "message": "所有Flask API都是实验性的。它们可能会在未事先通知的情况下被更改或删除，它们也可能会无限期地留在 Flask 上而不会迁移到稳定的 MetaMask。您需要自行承担使用它们的风险。",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
-    "message": "确保在使用Flask时禁用常规MetaMask扩展程序。",
+    "message": "确保在使用Flask时禁用常规 MetaMask 扩展程序。",
     "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
@@ -1650,19 +1675,19 @@
     "description": "$1 represents the Dapp's origin"
   },
   "gasLimit": {
-    "message": "燃料上限"
+    "message": "燃料限制"
   },
   "gasLimitInfoTooltipContent": {
-    "message": "燃料上限是指您愿意花费的最大燃料单位量。"
+    "message": "燃料限制是指您愿意花费的最大燃料单位量。"
   },
   "gasLimitRecommended": {
-    "message": "建议的燃料上限是$1。如果燃料上限低于此值，则可能会失败。"
+    "message": "建议的燃料限制是$1。如果燃料限制低于此值，则可能会失败。"
   },
   "gasLimitTooLow": {
-    "message": "燃料上限至少为21000"
+    "message": "燃料限制至少为21000"
   },
   "gasLimitTooLowWithDynamicFee": {
-    "message": "燃料上限至少为 $1",
+    "message": "燃料限制至少为 $1",
     "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
@@ -1725,7 +1750,7 @@
     "message": "使用的燃料"
   },
   "general": {
-    "message": "常规"
+    "message": "通用"
   },
   "getStarted": {
     "message": "开始进行"
@@ -1803,7 +1828,7 @@
     "message": "隐藏没有余额的代币"
   },
   "high": {
-    "message": "过高"
+    "message": "激进型"
   },
   "highGasSettingToolTipMessage": {
     "message": "使用$1来覆盖网络流量因像流行的 NFT 丢弃而出现的剧增。",
@@ -1816,7 +1841,7 @@
     "message": "历史记录"
   },
   "holdToRevealContent1": {
-    "message": "您的助记词提供 $1",
+    "message": "您的私钥助记词提供 $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
   },
   "holdToRevealContent2": {
@@ -1881,7 +1906,7 @@
     "message": "导入账户时出错。"
   },
   "importAccountErrorIsSRP": {
-    "message": "您输入了助记词（或助记符）。要在此处导入账户，必须输入私钥，它是长度为 64 个字符的十六进制字符串。"
+    "message": "您输入了私钥助记词（或助记符）。要在此处导入账户，必须输入私钥，它是长度为 64 个字符的十六进制字符串。"
   },
   "importAccountErrorNotAValidPrivateKey": {
     "message": "这不是有效的私钥。您已输入十六进制字符串，但长度必须为 64 个字符。"
@@ -1896,7 +1921,7 @@
     "message": "很抱歉，在未来我们将会加快此流程。"
   },
   "importAccountMsg": {
-    "message": "导入的账户将不会与最初创建的 MetaMask 账户助记词相关联。了解更多有关导入账户的信息"
+    "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
   },
   "importMyWallet": {
     "message": "导入我的钱包"
@@ -1974,7 +1999,7 @@
     "message": "余额不足。"
   },
   "insufficientCurrencyBuyOrDeposit": {
-    "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。$3或从另一个账户存入。",
+    "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。$3或从另一个账户存入保证金。",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
   },
   "insufficientCurrencyBuyOrReceive": {
@@ -1982,7 +2007,7 @@
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
-    "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。请从另一个账户存入$1。",
+    "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。请从另一个账户存入保证金 $1。",
     "description": "$1 is the native currency of the network, $2 is the name of the current network"
   },
   "insufficientFunds": {
@@ -2045,10 +2070,10 @@
     "message": "RPC URL 无效"
   },
   "invalidSeedPhrase": {
-    "message": "助记词无效"
+    "message": "私钥助记词无效"
   },
   "invalidSeedPhraseCaseSensitive": {
-    "message": "输入无效！助记词须区分大小写。"
+    "message": "输入无效！私钥助记词须区分大小写。"
   },
   "ipfsGateway": {
     "message": "IPFS网关"
@@ -2098,7 +2123,7 @@
     "message": "最后售出"
   },
   "layer1Fees": {
-    "message": "1 层费用"
+    "message": "一层公链费用"
   },
   "learnCancelSpeeedup": {
     "message": "学习如何 $1",
@@ -2118,7 +2143,7 @@
     "message": "了解更多"
   },
   "learnScamRisk": {
-    "message": "诈骗和安全风险的信息。"
+    "message": "欺诈和安全风险信息。"
   },
   "ledgerAccountRestriction": {
     "message": "您需要先使用最后一个账户，然后才能添加新账户。"
@@ -2136,7 +2161,7 @@
     "message": "在“设置 > 高级”下启用使用 Ledger Live"
   },
   "ledgerConnectionInstructionStepThree": {
-    "message": "请确保您的 Ledger 设备已插入并选择 Ethereum 应用程序。"
+    "message": "请确保您的 Ledger 设备已插入并选择以太坊应用程序。"
   },
   "ledgerConnectionInstructionStepTwo": {
     "message": "打开并解锁 Ledger Live 应用程序。"
@@ -2218,7 +2243,7 @@
     "description": "$1 is the name of the ticker"
   },
   "low": {
-    "message": "低"
+    "message": "低级型"
   },
   "lowGasSettingToolTipMessage": {
     "message": "使用$1等待较便宜的价格。时间估计远不准确，因为价格有些难以预测。",
@@ -2250,7 +2275,7 @@
     "message": "最大"
   },
   "maxBaseFee": {
-    "message": "最大基本费用"
+    "message": "最大基础费用"
   },
   "maxFee": {
     "message": "最大费用"
@@ -2281,7 +2306,7 @@
     "message": "连接状态按钮显示所访问的网站是否与您当前选择的账户连接。"
   },
   "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional版本"
+    "message": "MetaMask Institutional 版本"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps 正在进行维护。请稍后再查看。"
@@ -2304,16 +2329,16 @@
     "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
   },
   "mismatchedNetworkName": {
-    "message": "根据我们的记录，该网络名称可能与此链ID不匹配。"
+    "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
   },
   "mismatchedNetworkSymbol": {
-    "message": "所提交的货币符号与我们对此链ID的预期不匹配。"
+    "message": "所提交的货币符号与我们对此链 ID 的预期不匹配。"
   },
   "mismatchedRpcChainId": {
-    "message": "自定义网络返回的链ID与提交的链ID不匹配。"
+    "message": "自定义网络返回的链 ID 与提交的链 ID 不匹配。"
   },
   "mismatchedRpcUrl": {
-    "message": "根据我们的记录，所提交的RPC URL值与此链ID的已知提供者不匹配。"
+    "message": "根据我们的记录，所提交的RPC URL值与此链 ID 的已知提供者不匹配。"
   },
   "missingSetting": {
     "message": "找不到设置吗？"
@@ -2322,16 +2347,16 @@
     "message": "在这里请求"
   },
   "mmiAddToken": {
-    "message": "$1的页面想在MetaMask Institutional中授权以下托管代币"
+    "message": "$1的页面想在 MetaMask Institutional 中授权以下托管代币"
   },
   "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional面向全球各地设计并建立。"
+    "message": "MetaMask Institutional 面向全球各地设计并建立。"
   },
   "more": {
     "message": "更多"
   },
   "multipleSnapConnectionWarning": {
-    "message": "$1想连接$2个snap。只有在您信任此网站的情况下才能继续。",
+    "message": "$1 想连接 $2 个 snap。只有在您信任此网站的情况下才能继续。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "mustSelectOne": {
@@ -2422,7 +2447,7 @@
     "message": "网络状态"
   },
   "networkStatusBaseFeeTooltip": {
-    "message": "基本费用由网络设定，每13-14秒更改一次。我们的 $1 和 $2 选项用于剧增。",
+    "message": "基础费用由网络设定，每13-14秒更改一次。我们的 $1 和 $2 选项用于剧增。",
     "description": "$1 and $2 are bold text for Medium and Aggressive respectively."
   },
   "networkStatusPriorityFeeTooltip": {
@@ -2490,7 +2515,7 @@
     "message": "下一步"
   },
   "nextNonceWarning": {
-    "message": "Nonce 高于建议的 nouce 值 $1",
+    "message": "Nonce 高于所指出的 Nonce: $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
   "nftAddFailedMessage": {
@@ -2501,7 +2526,7 @@
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftDisclaimer": {
-    "message": "免责声明：MetaMask从源网址中提取媒体文件。这个网址有时会因铸造NFT的市场而改变。"
+    "message": "免责声明：MetaMask 从源网址中提取媒体文件。该网址有时会因铸造 NFT 的市场而改变。"
   },
   "nftOptions": {
     "message": "NFT 期权"
@@ -2510,7 +2535,7 @@
     "message": "输入代币ID"
   },
   "nftWarningContent": {
-    "message": "您正在授予对 $1 的访问权限，包括您将来可能拥有的任何 NFT。另一端的一方可以随时从您的钱包中转移这些NFT，而无需询问您，直到您撤销此授权。$2",
+    "message": "您正在授予对 $1 的访问权限，包括您将来可能拥有的任何 NFT。另一端的一方可以随时从您的钱包中转账这些NFT，而无需询问您，直到您撤销此授权。$2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
   },
   "nftWarningContentBold": {
@@ -2548,7 +2573,7 @@
     "message": "未找到符合搜索查询条件的网络"
   },
   "noSnaps": {
-    "message": "您没有安装Snap。"
+    "message": "您没有安装 snap。"
   },
   "noThanksVariant2": {
     "message": "不，谢谢."
@@ -2563,7 +2588,7 @@
     "message": "未找到网络摄像头"
   },
   "nonce": {
-    "message": "nonce"
+    "message": "Nonce"
   },
   "nonceField": {
     "message": "自定义交易 nonce"
@@ -2572,7 +2597,7 @@
     "message": "打开这个功能可以改变确认屏幕上的 nonce（交易号码）。这是一个高级功能，请谨慎使用。"
   },
   "nonceFieldHeading": {
-    "message": "自定义 Nonce"
+    "message": "自定义 nonce"
   },
   "notBusy": {
     "message": "非忙碌中"
@@ -2624,7 +2649,7 @@
     "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
-    "message": "Ethereum Mainnet、Polygon、BSC 和 Avalanche 网络目前提供经改进的代币检测。 即将推出更多！"
+    "message": "以太坊主网、Polygon、BSC 和 Avalanche 网络目前提供经改进的代币检测。 即将推出更多！"
   },
   "notifications10DescriptionThree": {
     "message": "代币检测功能目前默认关闭。您可从设置中启用它。"
@@ -2671,17 +2696,17 @@
     "message": "弃用3Box"
   },
   "notifications15Description": {
-    "message": "您无需采取任何行动，请如常地使用您的钱包。请提防可能藉由合并进行的诈骗。",
+    "message": "您无需采取任何行动，请如常地使用您的钱包。请提防可能藉由合并进行欺诈。",
     "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
   },
   "notifications15Title": {
     "message": "以太坊合并来了！"
   },
   "notifications18ActionText": {
-    "message": "启用安全警报"
+    "message": "启用安全提醒"
   },
   "notifications18DescriptionOne": {
-    "message": "当您收到可能是恶意的请求时，第三方会向您发出警报。",
+    "message": "当您收到可能是恶意的请求时，第三方会向您发出提醒。",
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications18DescriptionThree": {
@@ -2693,7 +2718,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
   },
   "notifications18Title": {
-    "message": "使用安全警报以确保安全"
+    "message": "使用安全提醒以确保安全"
   },
   "notifications19ActionText": {
     "message": "启用NFT自动检测"
@@ -2726,7 +2751,7 @@
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
   },
   "notifications20Description": {
-    "message": "如果您使用的是最新版本的 Firefox，您可能会遇到 Firefox 放弃 U2F 支持的相关问题。",
+    "message": "如果您使用的是最新版本的 Firefox，您可能会遇到 Firefox 放弃 U2F（通用第二因素）支持的相关问题。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
   },
   "notifications20Title": {
@@ -2737,7 +2762,7 @@
     "message": "试试看"
   },
   "notifications21Description": {
-    "message": "我们已更新 MetaMask 扩展中的 Swaps，使其使用起来更加轻松快捷。",
+    "message": "我们已更新 MetaMask 扩展程序中的 Swaps，使其使用起来更加轻松快捷。",
     "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
   },
   "notifications21Title": {
@@ -2753,13 +2778,25 @@
     "message": "正在查找您的账户详细信息或区块资源管理器URL吗？"
   },
   "notifications23ActionText": {
-    "message": "启用安全警报"
+    "message": "启用安全提醒"
+  },
+  "notifications23DescriptionOne": {
+    "message": "以太坊主网上 Blockaid 提供的安全提醒可以帮助您避开已知的欺诈，同时仍能保护自己的隐私。"
   },
   "notifications23DescriptionTwo": {
     "message": "在批准请求之前，请务必自行作出审慎调查。"
   },
   "notifications23Title": {
-    "message": "使用安全警报以确保安全"
+    "message": "使用安全提醒以确保安全"
+  },
+  "notifications24ActionText": {
+    "message": "知道了"
+  },
+  "notifications24Description": {
+    "message": "现在，会根据您使用的网络记住高级燃料费设置。这意味着您可以为每个网络设置特定的高级燃料费，以避免多付燃料费或交易被卡住。"
+  },
+  "notifications24Title": {
+    "message": "各网络的高级燃料费"
   },
   "notifications3ActionText": {
     "message": "了解更多",
@@ -2778,19 +2815,19 @@
     "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
   },
   "notifications4Description": {
-    "message": "在您的钱包内获取最优惠的代币交换价格。MetaMask 现在将您连接到币安智能链上的多个去中心化交易所聚合器和专业做市商。",
+    "message": "在您的钱包内获取最优惠的代币交换价格。MetaMask 现在将您连接到 Binance 智能链上的多个去中心化交易所聚合器和专业做市商。",
     "description": "Description of a notification in the 'See What's New' popup."
   },
   "notifications4Title": {
-    "message": "在币安智能链上交换",
+    "message": "在 Binance 智能链上交换",
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "您的“Seed Phrase”现在被称为“账户助记词”(Secret Recovery Phrase)。",
+    "message": "您的“Seed Phrase”现在被称为“账户私钥助记词”(Secret Recovery Phrase)。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "notifications6DescriptionOne": {
-    "message": "从 Chrome 版本91开始，启用我们的 Ledger 支持 (U2F) 的 API 不再支持硬件钱包。MetaMask 实施了新的 Ledger Live 支持，允许您继续通过 Ledger Live 桌面应用程序连接到您的 Ledger 设备。",
+    "message": "从 Chrome 版本91开始，启用我们的 Ledger 支持 (U2F 通用第二因素) 的 API 不再支持硬件钱包。MetaMask 实施了新的 Ledger Live 支持，允许您继续通过 Ledger Live 桌面应用程序连接到您的 Ledger 设备。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionThree": {
@@ -2842,8 +2879,16 @@
   "notifications9Title": {
     "message": "👓 我们正在使交易更容易阅读。"
   },
+  "notificationsDropLedgerFirefoxDescription": {
+    "message": "Firefox 不再支持 U2F，因此在 Firefox 上，MetaMask 无法使用 Ledger。请尝试在 Google Chrome 上使用 MetaMask。",
+    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
+  },
+  "notificationsDropLedgerFirefoxTitle": {
+    "message": "放弃在 Firefox 上支持 Ledger",
+    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
+  },
   "notificationsEmptyText": {
-    "message": "此处无内容。"
+    "message": "此处您可以从已安装的 snap 中查找通知。"
   },
   "notificationsHeader": {
     "message": "通知"
@@ -2854,6 +2899,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "将所有标记为已读"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "了解详情"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 我们很高兴宣布推出 MetaMask Snaps 公开测试版！"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "使用开发者社群构建的 snap，个性化您的钱包！"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps 可以帮助您利用 MetaMask 做更多事情，例如连接到更多网络、查看交易见解，以及获取自定义通知。"
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "介绍 MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "在此账户中找到$1枚新代币",
@@ -2893,7 +2953,7 @@
     "message": "添加自定义网络"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "我们使用 Infura 作为我们的远程程序调用（RPC）提供商，以提供最可靠和最私密的以太坊数据访问。您可以选择自己的 RPC，但请谨记，任何 RPC 都可以接收您的 IP 地址和以太坊钱包以进行交易。请阅读我们的 $1，进一步了解 Infura 如何处理数据。"
+    "message": "我们使用 Infura 作为我们的远程过程调用（RPC）提供商，以提供最可靠和最私密的以太坊数据访问。您可以选择自己的 RPC，但请谨记，任何 RPC 都可以接收您的 IP 地址和以太坊钱包以进行交易。请阅读我们的 $1，进一步了解 Infura 如何处理数据。"
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "选择您的网络"
@@ -2936,7 +2996,7 @@
     "message": "添加自定义网络"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 收集我们不需要提供服务的信息（如密钥、地址、交易散列或余额）",
+    "message": "$1 收集我们不需要提供服务的信息（如私钥、地址、交易散列或余额）",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
   "onboardingMetametricsNeverCollectIP": {
@@ -2993,7 +3053,7 @@
     "message": "您的 MetaMask 安装完成！"
   },
   "onboardingUsePhishingDetectionDescription": {
-    "message": "网络钓鱼检测警报依赖于与 $1 的通信。jsDeliver 将有权访问您的 IP 地址。查看 $2。",
+    "message": "网络钓鱼检测提醒依赖于与 $1 的通信。jsDeliver 将有权访问您的 IP 地址。查看 $2。",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onlyAddTrustedNetworks": {
@@ -3037,7 +3097,7 @@
     "message": "系统"
   },
   "otherSnaps": {
-    "message": "其他 Snap",
+    "message": "其他 snap",
     "description": "Used in the 'permission_rpc' message."
   },
   "outdatedBrowserNotification": {
@@ -3142,7 +3202,7 @@
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
-    "message": "允许snap显示带有以下内容的MetaMask弹出窗口：自定义文本、输入字段以及用于批准或拒绝操作的按钮。\n这可用于创建snap的警报、确认和流程加入选择等。",
+    "message": "允许snap显示带有以下内容的MetaMask弹出窗口：自定义文本、输入字段以及用于批准或拒绝操作的按钮。\n这可用于创建snap的提醒、确认和流程加入选择等。",
     "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
@@ -3158,11 +3218,11 @@
     "description": "An extended description for the `endowment:ethereum-provider` permission"
   },
   "permission_getEntropy": {
-    "message": "生成特定于此snap的随机密钥。",
+    "message": "衍生特定于此snap的随机私钥。",
     "description": "The description for the `snap_getEntropy` permission"
   },
   "permission_getEntropyDescription": {
-    "message": "允许snap派生其独有的任意密钥，而不公开密钥。这些密钥与您的MetaMask账户是分开的，与您的私钥或助记词无关。其他snap无法访问此信息。",
+    "message": "允许 snap 衍生其独有的任意私钥，而不公开私钥。这些私钥与您的 MetaMask 账户是分开的，与您的私钥或私钥助记词无关。其他 snap 无法访问此信息。",
     "description": "An extended description for the `snap_getEntropy` permission"
   },
   "permission_lifecycleHooks": {
@@ -3190,7 +3250,7 @@
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permission_manageBip32KeysDescription": {
-    "message": "允许snap根据您的助记词派生BIP-32密钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理密钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
+    "message": "允许snap根据您的私钥助记词衍生BIP-32私钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理私钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
     "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
   },
   "permission_manageBip44Keys": {
@@ -3198,7 +3258,7 @@
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageBip44KeysDescription": {
-    "message": "允许snap根据您的助记词派生BIP-44密钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理密钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
+    "message": "允许snap根据您的私钥助记词衍生BIP-44私钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理私钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
     "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
   },
   "permission_manageNamedBip32Keys": {
@@ -3210,7 +3270,7 @@
     "description": "The description for the `snap_manageState` permission"
   },
   "permission_manageStateDescription": {
-    "message": "允许snap使用加密安全地存储、更新和检索数据。其他snap无法访问此信息。",
+    "message": "允许 snap 使用加密安全地存储、更新和检索数据。其他 snap 无法访问此信息。",
     "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
@@ -3222,11 +3282,11 @@
     "description": "An extended description for the `snap_notify` permission"
   },
   "permission_rpc": {
-    "message": "允许 $1 直接与此 Snap 通信。",
+    "message": "允许 $1 直接与此 snap 通信。",
     "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
   "permission_rpcDescription": {
-    "message": "允许$1向snap发送消息以及接收来自snap的响应。",
+    "message": "允许$1向 snap 发送消息以及接收来自 snap 的响应。",
     "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
   "permission_transactionInsight": {
@@ -3292,10 +3352,10 @@
     "message": "流行自定义网络"
   },
   "portfolio": {
-    "message": "投资组合"
+    "message": "Portfolio"
   },
   "portfolioDashboard": {
-    "message": "投资组合控制面板"
+    "message": "Portfolio 控制面板"
   },
   "preferredLedgerConnectionType": {
     "message": "首选 Ledger 连接类型",
@@ -3311,7 +3371,7 @@
     "message": "主要货币"
   },
   "primaryCurrencySettingDescription": {
-    "message": "选择原生以优先显示链的原生货币（例如 ETH）的值。选择法定货币以优先显示以您所选法定货币显示的值。"
+    "message": "选择原生以优先显示链的原生货币（例如 ETH）的值。选择法币以优先显示以您所选法币显示的值。"
   },
   "priorityFee": {
     "message": "优先费用"
@@ -3334,7 +3394,7 @@
     "description": "$1 represents the account name"
   },
   "privateKeyWarning": {
-    "message": "警告：切勿泄露此密钥。任何拥有您私钥的人都可以窃取您账户中持有的任何资产。"
+    "message": "警告：切勿泄露此私钥。任何拥有您私钥的人都可以窃取您账户中持有的任何资产。"
   },
   "privateNetwork": {
     "message": "私有网络"
@@ -3349,7 +3409,7 @@
     "message": "提供"
   },
   "publicAddress": {
-    "message": "公共地址"
+    "message": "公钥"
   },
   "queued": {
     "message": "队列中"
@@ -3367,10 +3427,10 @@
     "message": "将来您还可以通过账户选项菜单中的“导入代币”来添加此代币。"
   },
   "receive": {
-    "message": "接收"
+    "message": "收款"
   },
   "recipientAddressPlaceholder": {
-    "message": "输入公共地址 (0x) 或 ENS 名称"
+    "message": "输入公钥 (0x) 或 ENS 名称"
   },
   "recommendedGasLabel": {
     "message": "建议"
@@ -3382,19 +3442,19 @@
     "message": "明白了"
   },
   "recoveryPhraseReminderHasBackedUp": {
-    "message": "始终将您的账户助记词保存在安全和秘密的地方"
+    "message": "始终将您的账户私钥助记词保存在安全和秘密的地方"
   },
   "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "需要再次备份您的账户助记词？"
+    "message": "需要再次备份您的账户私钥助记词？"
   },
   "recoveryPhraseReminderItemOne": {
-    "message": "切勿与任何人分享您的账户助记词"
+    "message": "切勿与任何人分享您的账户私钥助记词"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 团队绝对不会索要您的账户助记词"
+    "message": "MetaMask 团队绝对不会索要您的账户私钥助记词"
   },
   "recoveryPhraseReminderSubText": {
-    "message": "您的账户助记词控制您的所有账户。"
+    "message": "您的账户私钥助记词控制您的所有账户。"
   },
   "recoveryPhraseReminderTitle": {
     "message": "保护您的资金"
@@ -3433,7 +3493,7 @@
     "message": "删除账户"
   },
   "removeAccountDescription": {
-    "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。"
+    "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户私钥助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。 "
   },
   "removeJWT": {
     "message": "删除托管代币"
@@ -3491,13 +3551,13 @@
     "message": "重置钱包"
   },
   "resetWalletSubHeader": {
-    "message": "MetaMask不会保留密码的副本。如果您在解锁账户时遇到问题，需要重置您的钱包。您可以提供设置钱包时使用的助记词，以进行重置。"
+    "message": "MetaMask不会保留密码的副本。如果您在解锁账户时遇到问题，需要重置您的钱包。您可以提供设置钱包时使用的私钥助记词，以进行重置。"
   },
   "resetWalletUsingSRP": {
-    "message": "此操作将从此设备中删除您当前的钱包和助记词，以及您编制的账户列表。使用助记词进行重置后，您将会看到一个账户列表（基于用于重置的助记词）。这个新列表将自动包括有余额的账户。您还可以使用之前创建的$1。您导入的自定义账户需要是$2，添加到账户中的任何自定义代币也需要是$3。"
+    "message": "此操作将从此设备中删除您当前的钱包和私钥助记词，以及您编制的账户列表。使用助记词进行重置后，您将会看到一个账户列表（基于用于重置的助记词）。这个新列表将自动包括有余额的账户。您还可以使用之前创建的$1。您导入的自定义账户需要是$2，添加到账户中的任何自定义代币也需要是$3。"
   },
   "resetWalletWarning": {
-    "message": "在继续之前，请确保您所使用的助记词正确无误。您将无法撤消此操作。"
+    "message": "在继续之前，请确保您所使用的私钥助记词正确无误。您将无法撤消此操作。"
   },
   "restartMetamask": {
     "message": "重新启动MetaMask"
@@ -3515,7 +3575,7 @@
     "message": "恢复用户数据"
   },
   "restoreUserDataDescription": {
-    "message": "您可以使用以前备份的JSON文件来恢复包含首选项和账户地址的用户设置。"
+    "message": "您可以使用以前备份的 JSON 文件来恢复包含首选项和账户地址的用户设置。"
   },
   "resultPageError": {
     "message": "错误"
@@ -3536,7 +3596,7 @@
     "message": "此处的代币使用了与您关注的另一种代币相同的符号，这可能会让人感到困惑或具有欺骗性。"
   },
   "revealSeedWords": {
-    "message": "显示助记词"
+    "message": "显示私钥助记词"
   },
   "revealSeedWordsDescription1": {
     "message": "$1 提供 $2",
@@ -3556,7 +3616,7 @@
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "助记词（SRP）"
+    "message": "私钥助记词（SRP）"
   },
   "revealSeedWordsText": {
     "message": "文本"
@@ -3577,15 +3637,15 @@
     "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
   "revokeAllTokensTitleWithoutSymbol": {
-    "message": "要撤销访问和转移您所有在$1的NFT的权限吗？",
+    "message": "要撤销访问并转账您所有在$1的NFT的权限吗？",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "revokeApproveForAllDescription": {
-    "message": "这将撤销第三方访问和转移您的所有 $1 的权限，而无需另行通知。",
+    "message": "这将撤销第三方访问并转账您的所有 $1 的权限，而无需另行通知。",
     "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "这会撤销第三方在无需另行通知的情况下访问和转移您所有在$1的NFT的权限。",
+    "message": "这会撤销第三方在无需另行通知的情况下访问并转账您所有在$1的NFT的权限。",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "revokePermission": {
@@ -3626,7 +3686,7 @@
     "message": "搜索结果"
   },
   "secretRecoveryPhrase": {
-    "message": "助记词"
+    "message": "私钥助记词"
   },
   "secureWallet": {
     "message": "安全钱包"
@@ -3638,19 +3698,26 @@
     "message": "来自 $1 和 $2 的安全警报"
   },
   "securityAlerts": {
-    "message": "安全警告"
+    "message": "安全提醒"
+  },
+  "securityAlertsDescription": {
+    "message": "此功能会主动审查交易和签名请求，如发现以太坊主网上有恶意活动，就会向您发出警报，与此同时也会保护您的隐私。您的数据不会与提供此服务的第三方共享。在批准任何请求之前，均务必自行作出审慎调查。不保证此功能可检测到所有恶意活动。"
   },
   "securityAndPrivacy": {
     "message": "安全和隐私"
+  },
+  "securityProviderPoweredBy": {
+    "message": "由 $1 提供支持",
+    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "查看详情"
   },
   "seedPhraseConfirm": {
-    "message": "确认助记词"
+    "message": "确认私钥助记词"
   },
   "seedPhraseEnterMissingWords": {
-    "message": "确认助记词"
+    "message": "确认私钥助记词"
   },
   "seedPhraseIntroNotRecommendedButtonCopy": {
     "message": "稍后提醒我（不推荐）"
@@ -3662,28 +3729,28 @@
     "message": "写下并存储在多个秘密位置。"
   },
   "seedPhraseIntroSidebarBulletOne": {
-    "message": "保存到密码管理器"
+    "message": "保存到密码管理工具"
   },
   "seedPhraseIntroSidebarBulletThree": {
-    "message": "存放在保险箱内。"
+    "message": "安全存放在保险箱内。"
   },
   "seedPhraseIntroSidebarCopyOne": {
-    "message": "您的账户助记词是由12个单词组成的短语，它是您的钱包和资金的“主密钥”"
+    "message": "您的账户私钥助记词是由12个单词组成的短语，它是您的钱包和资金的“主私钥”"
   },
   "seedPhraseIntroSidebarCopyThree": {
-    "message": "如果有人要求您的恢复短语，他们可能会试图欺骗您并偷窃您的钱包资金"
+    "message": "如果有人要求您的恢复短语，他们可能会试图欺诈您并偷窃您的钱包资金"
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "切勿分享您的账户助记词，包括也不能与 MetaMask 分享！"
+    "message": "切勿分享您的账户私钥助记词，包括也不能与 MetaMask 分享！"
   },
   "seedPhraseIntroSidebarTitleOne": {
-    "message": "什么是账户助记词？"
+    "message": "什么是账户私钥助记词？"
   },
   "seedPhraseIntroSidebarTitleThree": {
-    "message": "我是否应该分享我的账户助记词？"
+    "message": "我是否应该分享我的账户私钥助记词？"
   },
   "seedPhraseIntroSidebarTitleTwo": {
-    "message": "如何保存我的账户助记词？"
+    "message": "如何保存我的账户私钥助记词？"
   },
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
@@ -3692,13 +3759,13 @@
     "message": "在开始之前，观看这个简短的视频来了解您的账户助记词以及如何保护您的钱包安全。"
   },
   "seedPhraseReq": {
-    "message": "助记词包含 12、15、18、21 或 24 个字词"
+    "message": "私钥助记词包含 12、15、18、21 或 24 个字词"
   },
   "seedPhraseWriteDownDetails": {
-    "message": "请写下这个由12个单词组成的账户助记词，然后将其保存到您信任并且只有您可以访问的地方。"
+    "message": "请写下这个由12个单词组成的账户私钥助记词，然后将其保存到您信任并且只有您可以访问的地方。"
   },
   "seedPhraseWriteDownHeader": {
-    "message": "写下您的助记词"
+    "message": "写下您的私钥助记词"
   },
   "select": {
     "message": "选择"
@@ -3724,6 +3791,9 @@
   "selectAnAccountHelp": {
     "message": "选择要在 MetaMask Institutional 使用的托管账户。"
   },
+  "selectAnAction": {
+    "message": "选择操作"
+  },
   "selectHdPath": {
     "message": "选择 HD 路径"
   },
@@ -3747,6 +3817,9 @@
   },
   "sendBugReport": {
     "message": "向我们发送错误报告。"
+  },
+  "sendDescription": {
+    "message": "将加密货币发送到任何账户"
   },
   "sendSpecifiedTokens": {
     "message": "发送 $1",
@@ -3798,7 +3871,7 @@
     "message": "在测试网络上显示转换"
   },
   "showFiatConversionInTestnetsDescription": {
-    "message": "选择此项以在测试网络上显示法定货币转换"
+    "message": "选择此项以在测试网络上显示法币转换"
   },
   "showHexData": {
     "message": "显示十六进制数据"
@@ -3810,11 +3883,11 @@
     "message": "显示传入的交易"
   },
   "showIncomingTransactionsDescription": {
-    "message": "选择此项以使用 Etherscan 在交易列表中显示传入的交易",
+    "message": "这取决于$1，即可以访问您的以太坊地址和 IP 地址的网络。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showIncomingTransactionsInformation": {
-    "message": "这依赖于每个可以访问您的以太坊地址和IP地址的网络。"
+    "message": "这取决于每个可以访问您的以太坊地址和 IP 地址的网络。"
   },
   "showMore": {
     "message": "展开"
@@ -3865,7 +3938,7 @@
     "message": "跳过账户安全？"
   },
   "skipAccountSecurityDetails": {
-    "message": "我明白，在我备份我的账户助记词之前，我可能会丢失我的账户及其所有资产。"
+    "message": "我明白，在我备份我的账户私钥助记词之前，我可能会丢失我的账户及其所有资产。"
   },
   "smartContracts": {
     "message": "智能合约"
@@ -3900,7 +3973,7 @@
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapCreateAccountSubtitle": {
-    "message": "选择如何使用MetaMask Snap来保护您的新账户。"
+    "message": "选择如何使用 MetaMask Snaps 来保护您的新账户。"
   },
   "snapCreateAccountTitle": {
     "message": "创建 $1 账户",
@@ -3917,7 +3990,7 @@
     "message": "审核"
   },
   "snapDetailDeveloper": {
-    "message": "开发人员"
+    "message": "开发者"
   },
   "snapDetailLastUpdated": {
     "message": "已更新"
@@ -3966,7 +4039,7 @@
     "message": "请谨慎行事"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
+    "message": "将对 $2 的账户控制权授予 $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
@@ -4015,37 +4088,29 @@
     "message": "更新完成"
   },
   "snaps": {
-    "message": "Snap"
+    "message": "Snaps"
   },
   "snapsInsightLoading": {
     "message": "正在加载交易洞察……"
   },
   "snapsInvalidUIError": {
-    "message": "Snap指定的用户界面无效。"
+    "message": "Snap 指定的用户界面无效。"
   },
   "snapsNoInsight": {
-    "message": "Snap没有返回任何洞察"
-  },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "您确认您即将安装的snap是Consensys $1中定义的第三方服务。您对第三方服务的使用，受第三方服务提供商规定的单独条款和条件约束。您访问、依赖或使用第三方服务的风险，由您自己承担。对于您因使用第三方服务而造成的任何损失，Consensys概不承担任何责任。",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
+    "message": "Snap 没有返回任何洞察"
   },
   "snapsPrivacyWarningSecondMessage": {
     "message": "您与第三方服务分享的任何信息，将由这些第三方服务根据其隐私政策直接收集。请参阅其隐私政策以了解更多信息。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys无法访问您与这些第三方分享的信息。",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettingsDescription": {
-    "message": "管理您的Snap"
+    "message": "管理您的 Snaps"
   },
   "snapsTermsOfUse": {
     "message": "使用条款"
   },
   "snapsToggle": {
-    "message": "Snap仅在启用后才会运行"
+    "message": "Snap 仅在启用后才会运行"
   },
   "snapsUIError": {
     "message": "联系 $1 的创建者以获得进一步支持。",
@@ -4108,15 +4173,15 @@
     "message": "$1的支出上限请求"
   },
   "srpInputNumberOfWords": {
-    "message": "我有一个包含$1个单词的助记词",
+    "message": "我有一个包含$1个单词的私钥助记词",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
   },
   "srpPasteFailedTooManyWords": {
-    "message": "粘贴失败，因为它包含超过24个单词。一个助记词最多可包含24个单词。",
+    "message": "粘贴失败，因为它包含超过24个单词。一个私钥助记词最多可包含24个单词。",
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "您可以将整个助记词粘贴到任何字段中",
+    "message": "您可以将整个私钥助记词粘贴到任何字段中",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -4126,10 +4191,10 @@
     "message": "一只眼睛，中央有一个钥匙孔，还有三个浮动密码字段"
   },
   "srpSecurityQuizIntroduction": {
-    "message": "要查看助记词，您需要答对两个问题"
+    "message": "要查看私钥助记词，您需要答对两个问题"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "如果您丢失了助记词，MetaMask..."
+    "message": "如果您丢失了私钥助记词，MetaMask..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "无法帮助您"
@@ -4138,43 +4203,43 @@
     "message": "将它写下来、刻在金属上，或保存在多个秘密位置，这样您就不会丢失。如果丢失了，它就会永远消失。"
   },
   "srpSecurityQuizQuestionOneRightAnswerTitle": {
-    "message": "答对了！没有人能够帮您找回您的助记词"
+    "message": "答对了！没有人能够帮您找回您的私钥助记词"
   },
   "srpSecurityQuizQuestionOneWrongAnswer": {
     "message": "可以为您找回来"
   },
   "srpSecurityQuizQuestionOneWrongAnswerDescription": {
-    "message": "一旦遗失助记词，它将永远消失。无论他人如何保证，无人能够帮您找回。"
+    "message": "一旦遗失私钥助记词，它将永远消失。无论他人如何保证，无人能够帮您找回。"
   },
   "srpSecurityQuizQuestionOneWrongAnswerTitle": {
-    "message": "答错了！没有人能够帮您找回您的助记词"
+    "message": "答错了！没有人能够帮您找回您的私钥助记词"
   },
   "srpSecurityQuizQuestionTwoQuestion": {
-    "message": "如果有人（即使是技术支持人员）查问您的助记词..."
+    "message": "如果有人（即使是技术支持人员）查问您的私钥助记词..."
   },
   "srpSecurityQuizQuestionTwoRightAnswer": {
-    "message": "就是在对您进行诈骗"
+    "message": "就是在对您进行欺诈"
   },
   "srpSecurityQuizQuestionTwoRightAnswerDescription": {
-    "message": "任何声称需要您的助记词的人都在对您进行欺诈。如果您与他们分享助记词，他们就会偷窃您的资产。"
+    "message": "任何声称需要您的私钥助记词的人都在对您进行欺诈。如果您与他们分享私钥助记词，他们就会偷窃您的资产。"
   },
   "srpSecurityQuizQuestionTwoRightAnswerTitle": {
-    "message": "答对了！分享您的助记词绝对不是个好主意"
+    "message": "答对了！分享您的私钥助记词绝对不是个好主意"
   },
   "srpSecurityQuizQuestionTwoWrongAnswer": {
     "message": "您应该交给他们"
   },
   "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
-    "message": "任何声称需要您的助记词的人都在对您进行欺诈。如果您与他们分享助记词，他们就会偷窃您的资产。"
+    "message": "任何声称需要您的私钥助记词的人都在对您进行欺诈。如果您与他们分享助记词，他们就会偷窃您的资产。"
   },
   "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
-    "message": "不！永远不要与任何人分享您的助记词"
+    "message": "不！永远不要与任何人分享您的私钥助记词"
   },
   "srpSecurityQuizTitle": {
     "message": "安全问答"
   },
   "srpToggleShow": {
-    "message": "显示/隐藏助记词中的这个单词",
+    "message": "显示/隐藏私钥助记词中的这个单词",
     "description": "Describes a toggle that is used to show or hide a single word of the secret recovery phrase"
   },
   "srpWordHidden": {
@@ -4193,6 +4258,9 @@
   },
   "stake": {
     "message": "质押"
+  },
+  "stakeDescription": {
+    "message": "继续持有加密货币，赚取潜在利润"
   },
   "stateLogError": {
     "message": "检索状态日志时出错。"
@@ -4233,14 +4301,14 @@
     "message": "关联您的 Trezor"
   },
   "step1TrezorWalletMsg": {
-    "message": "将您的 Trezor 直接插入电脑并解锁。确保使用正确的密码短语。",
+    "message": "将您的 Trezor 直接插入电脑并解锁。确保使用正确的密语。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step2LedgerWallet": {
     "message": "关联您的 Ledger"
   },
   "step2LedgerWalletMsg": {
-    "message": "将您的 Ledger 直接插入电脑，然后解锁并打开 Ethereum 应用程序。",
+    "message": "将您的 Ledger 直接插入电脑，然后解锁并打开以太坊应用程序。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillGettingMessage": {
@@ -4328,7 +4396,10 @@
     "message": "访问我们的支持中心"
   },
   "swap": {
-    "message": "交换"
+    "message": "兑换"
+  },
+  "swapAdjustSlippage": {
+    "message": "调整滑点"
   },
   "swapAggregator": {
     "message": "聚合器"
@@ -4382,8 +4453,14 @@
   "swapDecentralizedExchange": {
     "message": "去中心化交易所"
   },
+  "swapDescription": {
+    "message": "兑换和交易您的代币"
+  },
   "swapDirectContract": {
     "message": "直接合约"
+  },
+  "swapDisabled": {
+    "message": "在此网络无法兑换代币"
   },
   "swapEditLimit": {
     "message": "编辑限制"
@@ -4448,6 +4525,9 @@
     "message": "燃料费用支付给在 $1 网络上处理交易的加密矿工。MetaMask 不会从燃料费用中获利。",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
+  "swapHighSlippage": {
+    "message": "高滑点"
+  },
   "swapHighSlippageWarning": {
     "message": "滑点金额非常高。"
   },
@@ -4461,6 +4541,9 @@
   },
   "swapLearnMore": {
     "message": "了解有关 Swaps 的更多信息"
+  },
+  "swapLowSlippage": {
+    "message": "低滑点"
   },
   "swapLowSlippageError": {
     "message": "交易可能会失败，最大滑点过低。"
@@ -4500,7 +4583,7 @@
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
   "swapPriceImpactTooltip": {
-    "message": "价格影响是当前市场价格与交易执行期间收到的金额之间的差异。价格影响是您的交易规模相对于流动资金池规模的一个函数。"
+    "message": "价格影响是当前市场价格与交易执行期间收到的金额之间的差异。价格影响是您的交易规模相对于流动性池规模的一个函数。"
   },
   "swapPriceUnavailableDescription": {
     "message": "由于缺乏市场价格数据，无法确定价格影响。在交换之前，请确认您对即将收到的代币数量感到满意。"
@@ -4572,6 +4655,20 @@
   "swapShowLatestQuotes": {
     "message": "显示最新报价"
   },
+  "swapSlippageHighDescription": {
+    "message": "输入的滑点（$1%）被认为是很高的，可能会因而得到较差的汇率",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageHighTitle": {
+    "message": "高滑点"
+  },
+  "swapSlippageLowDescription": {
+    "message": "此值过低（$1%），可能会导致兑换失败",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageLowTitle": {
+    "message": "低滑点"
+  },
   "swapSlippageNegative": {
     "message": "滑点必须大于或等于0"
   },
@@ -4585,7 +4682,7 @@
     "message": "滑点容差必须小于等于 15%。任何更高的比例将导致不良费率。"
   },
   "swapSlippageOverLimitTitle": {
-    "message": "降低滑点以继续"
+    "message": "很高的滑点"
   },
   "swapSlippagePercent": {
     "message": "$1%",
@@ -4638,6 +4735,9 @@
   "swapTokenBalanceUnavailable": {
     "message": "我们无法检索您的 $1 余额",
     "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
+  "swapTokenNotAvailable": {
+    "message": "在此地区无法兑换代币"
   },
   "swapTokenToToken": {
     "message": "用 $1 交换 $2",
@@ -4789,14 +4889,14 @@
     "message": "这个收藏品"
   },
   "thisServiceIsExperimental": {
-    "message": "此服务是实验性质的。启用此功能，即表示您同意OpenSea的$1。",
+    "message": "此服务是实验性的。启用此功能，即表示您同意OpenSea的$1。",
     "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "时间"
   },
   "tips": {
-    "message": "小贴士"
+    "message": "提示"
   },
   "to": {
     "message": "至"
@@ -4815,7 +4915,7 @@
     "message": "Eth_sign 请求"
   },
   "toggleEthSignModalBannerBoldText": {
-    "message": " 您可能遭受了诈骗"
+    "message": " 您可能遭受了欺诈"
   },
   "toggleEthSignModalBannerText": {
     "message": "如果要求您打开此设置，"
@@ -4957,13 +5057,13 @@
     "message": "金额 + 燃料费"
   },
   "transactionDetailLayer2GasHeading": {
-    "message": "2层燃料费用"
+    "message": "二层公链燃料费"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "金额 + 费用"
   },
   "transactionDropped": {
-    "message": "交易已在 $2 放弃。"
+    "message": "交易已在 $2 失败。"
   },
   "transactionError": {
     "message": "交易出错。合约代码中抛出异常。"
@@ -4978,16 +5078,16 @@
     "message": "交易失败"
   },
   "transactionFee": {
-    "message": "交易费"
+    "message": "交易费用"
   },
   "transactionHistoryBaseFee": {
-    "message": "基本费用（GWEI）"
+    "message": "基础费用（GWEI）"
   },
   "transactionHistoryL1GasLabel": {
     "message": "1层燃料费总计"
   },
   "transactionHistoryL2GasLimitLabel": {
-    "message": "2层燃料上限"
+    "message": "L2 燃料限制"
   },
   "transactionHistoryL2GasPriceLabel": {
     "message": "2层燃料价格"
@@ -5008,7 +5108,7 @@
     "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
   },
   "transactionSecurityCheck": {
-    "message": "启用安全警报"
+    "message": "启用安全提醒"
   },
   "transactionSecurityCheckDescription": {
     "message": "我们使用第三方 API 来检测和显示未签名交易和签名请求中涉及的风险，然后您再进行签名。这些服务将访问您的未签名交易和签名请求、您的账户地址以及首选语言。"
@@ -5026,10 +5126,10 @@
     "message": "交易"
   },
   "transfer": {
-    "message": "转移"
+    "message": "转账"
   },
   "transferFrom": {
-    "message": "转移自"
+    "message": "转账自"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "我们在连接您的 Ledger 时遇到问题。$1",
@@ -5040,7 +5140,7 @@
     "description": "$1 of the ledger wallet connection guide"
   },
   "troubleConnectingToLedgerU2FOnFirefoxLedgerSolution": {
-    "message": "如果您使用的是最新版本的 Firefox，您可能会遇到 Firefox 放弃 U2F 支持的相关问题。了解如何修复此问题 $1。",
+    "message": "如果您使用的是最新版本的 Firefox，您可能会遇到 Firefox 放弃 U2F（通用第二因素）支持的相关问题。了解如何修复此问题 $1。",
     "description": "It is a link to the ledger website for the workaround."
   },
   "troubleConnectingToLedgerU2FOnFirefoxLedgerSolution2": {
@@ -5073,7 +5173,7 @@
     "message": "此合约目前不支持交易见解。"
   },
   "typeYourSRP": {
-    "message": "输入助记词"
+    "message": "输入私钥助记词"
   },
   "u2f": {
     "message": "U2F",
@@ -5164,7 +5264,7 @@
     "message": "您的账户地址将对第三方API可见。"
   },
   "useNftDetectionDescriptionLine3": {
-    "message": "NFT元数据可能包含欺诈或网络钓鱼网站的链接。"
+    "message": "NFT 元数据可能包含欺诈或网络钓鱼网站的链接。"
   },
   "useNftDetectionDescriptionLine4": {
     "message": "任何人都可以将NFT空投到您的账户。这可能包括或会自动显示在钱包中的冒犯性内容。"
@@ -5176,7 +5276,7 @@
     "message": "使用网络钓鱼检测"
   },
   "usePhishingDetectionDescription": {
-    "message": "显示针对 Ethereum 用户的网络钓鱼域名警告"
+    "message": "显示针对以太坊用户的网络钓鱼域名警告"
   },
   "useSiteSuggestion": {
     "message": "使用网站建议"
@@ -5185,7 +5285,7 @@
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将拥有您的IP地址的访问权限。"
   },
   "usedByClients": {
-    "message": "被各种不同的客户使用"
+    "message": "可用于各种不同的客户端"
   },
   "userName": {
     "message": "用户名"
@@ -5247,7 +5347,7 @@
     "message": "在 Opensea 上查看"
   },
   "viewPortfolioDashboard": {
-    "message": "查看投资组合控制面板"
+    "message": "查看 Portfolio 控制面板"
   },
   "viewinCustodianApp": {
     "message": "在托管应用程序中查看"
@@ -5259,24 +5359,27 @@
   "visitWebSite": {
     "message": "访问我们的网站"
   },
+  "wallet": {
+    "message": "钱包"
+  },
   "walletConnectionGuide": {
     "message": "我们的硬件钱包连接指南"
   },
   "walletCreationSuccessDetail": {
-    "message": "您已经成功地保护了您的钱包。请确保您的账户助记词安全和秘密——这是您的责任！"
+    "message": "您已经成功地保护了您的钱包。请确保您的账户私钥助记词安全和秘密——这是您的责任！"
   },
   "walletCreationSuccessReminder1": {
-    "message": "MetaMask 无法恢复您的账户助记词。"
+    "message": "MetaMask 无法恢复您的账户私钥助记词。"
   },
   "walletCreationSuccessReminder2": {
-    "message": "MetaMask 绝对不会索要您的账户助记词。"
+    "message": "MetaMask 绝对不会索要您的账户私钥助记词。"
   },
   "walletCreationSuccessReminder3": {
     "message": "对任何人 $1，否则您的资金有被盗风险",
     "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
   },
   "walletCreationSuccessReminder3BoldSection": {
-    "message": "切勿分享您的账户助记词",
+    "message": "切勿分享您的账户私钥助记词",
     "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
   },
   "walletCreationSuccessTitle": {
@@ -5286,8 +5389,7 @@
     "message": "想要添加此网络吗？"
   },
   "wantsToAddThisAsset": {
-    "message": "$1 想将此资产添加到您的钱包",
-    "description": "$1 is the name of the website that wants to add an asset to your wallet"
+    "message": "$1 想将此资产添加到您的钱包"
   },
   "warning": {
     "message": "警告"
@@ -5370,7 +5472,7 @@
     "message": "您的 NFT 可能面临风险"
   },
   "yourPrivateSeedPhrase": {
-    "message": "您的个人账户助记词"
+    "message": "您的个人账户私钥助记词"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "加速时零燃料价格"

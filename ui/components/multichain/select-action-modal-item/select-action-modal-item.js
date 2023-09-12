@@ -33,8 +33,7 @@ export const SelectActionModalItem = ({
   }
   return (
     <Box
-      paddingTop={4}
-      paddingBottom={4}
+      padding={4}
       gap={4}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
