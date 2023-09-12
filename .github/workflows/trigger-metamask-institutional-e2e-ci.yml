@@ -1,0 +1,25 @@
+name: Trigger MetaMask Institutional E2E CI
+
+on:
+  push:
+    branches: [ Version-v*, master ]
+  pull_request:
+    branches: [ Version-v*, master ]
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+jobs:
+  trigger-mmi-e2e-ci:
+    runs-on: ubuntu-latest
+    if: ${{ (!github.event.pull_request.draft && (startsWith(github.head_ref, 'Version-v') || github.head_ref == 'master')) || (!github.event.pull_request) }}
+    steps:
+      - name: Trigger MetaMask Institutional E2E CI
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.MMI_E2E_CI_TOKEN }}
+          repository: consensys-vertical-apps/mmi-extension-e2e
+          event-type: mm-triggered
+          client-payload: '{"ref_name": "${{ github.ref_name }}", "sha": "${{ github.sha }}"}'
