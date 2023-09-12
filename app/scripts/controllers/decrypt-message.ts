@@ -5,7 +5,6 @@ import {
   DecryptMessageParams,
   DecryptMessageParamsMetamask,
 } from '@metamask/message-manager';
-import { KeyringController } from '@metamask/eth-keyring-controller';
 import {
   AbstractMessage,
   AbstractMessageManager,
@@ -25,6 +24,8 @@ import {
 } from '@metamask/approval-controller';
 import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { Patch } from 'immer';
+import type { KeyringControllerDecryptMessageAction } from '@metamask/keyring-controller';
+import { Eip1024EncryptedData, hasProperty } from '@metamask/utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
@@ -33,6 +34,27 @@ const controllerName = 'DecryptMessageController';
 const stateMetadata = {
   unapprovedDecryptMsgs: { persist: false, anonymous: false },
   unapprovedDecryptMsgCount: { persist: false, anonymous: false },
+};
+
+export const isEIP1024EncryptedMessage = (message: {
+  from: string;
+  data: unknown;
+}): message is {
+  from: string;
+  data: Eip1024EncryptedData;
+} => {
+  if (
+    message.data &&
+    typeof message.data === 'object' &&
+    hasProperty(message.data, 'version') &&
+    hasProperty(message.data, 'nonce') &&
+    hasProperty(message.data, 'ephemPublicKey') &&
+    hasProperty(message.data, 'ciphertext')
+  ) {
+    return true;
+  }
+
+  return false;
 };
 
 export const getDefaultState = () => ({
@@ -70,7 +92,11 @@ export type DecryptMessageControllerActions = GetDecryptMessageState;
 
 export type DecryptMessageControllerEvents = DecryptMessageStateChange;
 
-type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
+type AllowedActions =
+  | AddApprovalRequest
+  | AcceptRequest
+  | RejectRequest
+  | KeyringControllerDecryptMessageAction;
 
 export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -82,7 +108,6 @@ export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
 
 export type DecryptMessageControllerOptions = {
   getState: () => any;
-  keyringController: KeyringController;
   messenger: DecryptMessageControllerMessenger;
   metricsEvent: (payload: any, options?: any) => void;
 };
@@ -99,8 +124,6 @@ export default class DecryptMessageController extends BaseControllerV2<
 
   private _getState: () => any;
 
-  private _keyringController: KeyringController;
-
   private _metricsEvent: (payload: any, options?: any) => void;
 
   private _decryptMessageManager: DecryptMessageManager;
@@ -110,13 +133,11 @@ export default class DecryptMessageController extends BaseControllerV2<
    *
    * @param options - The controller options.
    * @param options.getState - Callback to retrieve all user state.
-   * @param options.keyringController - An instance of a keyring controller used to decrypt message
    * @param options.messenger - A reference to the messaging system.
    * @param options.metricsEvent - A function for emitting a metric event.
    */
   constructor({
     getState,
-    keyringController,
     metricsEvent,
     messenger,
   }: DecryptMessageControllerOptions) {
@@ -127,7 +148,6 @@ export default class DecryptMessageController extends BaseControllerV2<
       state: getDefaultState(),
     });
     this._getState = getState;
-    this._keyringController = keyringController;
     this._metricsEvent = metricsEvent;
 
     this.hub = new EventEmitter();
@@ -216,7 +236,12 @@ export default class DecryptMessageController extends BaseControllerV2<
         await this._decryptMessageManager.approveMessage(messageParams);
 
       cleanMessageParams.data = this._parseMessageData(cleanMessageParams.data);
-      const rawMessage = await this._keyringController.decryptMessage(
+      if (!isEIP1024EncryptedMessage(cleanMessageParams)) {
+        throw new Error('Invalid encrypted data.');
+      }
+
+      const rawMessage = await this.messagingSystem.call(
+        'KeyringController:decryptMessage',
         cleanMessageParams,
       );
 
@@ -243,7 +268,11 @@ export default class DecryptMessageController extends BaseControllerV2<
   async decryptMessageInline(messageParams: DecryptMessageParamsMetamask) {
     const messageId = messageParams.metamaskId as string;
     messageParams.data = this._parseMessageData(messageParams.data);
-    const rawMessage = await this._keyringController.decryptMessage(
+    if (!isEIP1024EncryptedMessage(messageParams)) {
+      throw new Error('Invalid encrypted data.');
+    }
+    const rawMessage = await this.messagingSystem.call(
+      'KeyringController:decryptMessage',
       messageParams,
     );
 
