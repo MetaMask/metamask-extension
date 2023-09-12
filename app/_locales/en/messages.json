@@ -3229,6 +3229,10 @@
     "message": "View your preferred language.",
     "description": "The description for the `snap_getLocale` permission"
   },
+  "permission_getLocaleDescription": {
+    "message": "Let this Snap access your preferred language from your MetaMask settings. This can be used to localize and display the Snap's content using your language.",
+    "description": "An extended description for the `snap_getLocale` permission"
+  },
   "permission_lifecycleHooks": {
     "message": "Use lifecycle hooks.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"

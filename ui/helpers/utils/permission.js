@@ -265,6 +265,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   }),
   [RestrictedMethods.snap_getLocale]: ({ t }) => ({
     label: t('permission_getLocale'),
+    description: t('permission_getLocaleDescription'),
     leftIcon: IconName.Home,
     weight: 3,
   }),
