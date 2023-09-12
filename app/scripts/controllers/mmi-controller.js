@@ -647,12 +647,6 @@ export default class MMIController extends EventEmitter {
     return true;
   }
 
-  async handleMmiOpenSwaps(origin, address, chainId) {
-    await this.setAccountAndNetwork(origin, address, chainId);
-    this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
-    return true;
-  }
-
   async handleMmiOpenAddHardwareWallet() {
     await this.appStateController.getUnlockPromise(true);
     this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
