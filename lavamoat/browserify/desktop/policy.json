@@ -2212,6 +2212,11 @@
         "crypto": true
       }
     },
+    "@metamask/selected-network-controller": {
+      "packages": {
+        "@metamask/base-controller": true
+      }
+    },
     "@metamask/signature-controller": {
       "globals": {
         "console.info": true

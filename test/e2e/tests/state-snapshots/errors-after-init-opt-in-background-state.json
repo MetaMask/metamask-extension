@@ -154,6 +154,10 @@
     "theme": "light",
     "isLineaMainnetReleased": true
   },
+  "SelectedNetworkController": {
+    "domains": {},
+    "perDomainNetwork": "boolean"
+  },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",

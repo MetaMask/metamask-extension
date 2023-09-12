@@ -1074,7 +1074,7 @@ describe('MetaMaskController', () => {
         streamTest.end();
       });
 
-      it('adds a tabId and origin to requests', async () => {
+      it('adds a tabId, origin and networkClient to requests', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
@@ -1098,7 +1098,6 @@ describe('MetaMaskController', () => {
           params: [{ ...mockTxParams }],
           method: 'eth_sendTransaction',
         };
-
         await new Promise((resolve) => {
           streamTest.write(
             {
@@ -1115,6 +1114,10 @@ describe('MetaMaskController', () => {
                 expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
                   'tabId',
                   456,
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'networkClientId',
+                  'networkConfigurationId1',
                 );
                 resolve();
               });
