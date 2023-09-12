@@ -391,7 +391,7 @@ export const AppHeader = ({ location }) => {
                       ariaLabel={t('accountOptions')}
                       onClick={() => {
                         trackEvent({
-                          event: MetaMetricsEventName.NavAccountMenuOpened,
+                          event: MetaMetricsEventName.NavMainMenuOpened,
                           category: MetaMetricsEventCategory.Navigation,
                           properties: {
                             location: 'Home',
