@@ -714,26 +714,27 @@ function createFactoredBuild({
           case 'ui': {
             renderHtmlFile({
               htmlName: 'popup',
-              groupSet,
-              commonSet,
               browserPlatforms,
               applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'notification',
-              groupSet,
-              commonSet,
               browserPlatforms,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
             });
             renderHtmlFile({
               htmlName: 'home',
+              browserPlatforms,
+              applyLavaMoat,
+              isMMI: buildType === 'mmi',
+            });
+            renderJavaScriptLoader({
               groupSet,
               commonSet,
               browserPlatforms,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
+              destinationFileName: 'load-app.js',
             });
             break;
           }
@@ -744,6 +745,13 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+            });
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-background.js',
             });
             if (process.env.ENABLE_MV3) {
               const jsBundles = [
@@ -1210,27 +1218,22 @@ async function setEnvironmentVariables({
   });
 }
 
-function renderHtmlFile({
-  htmlName,
+function renderJavaScriptLoader({
   groupSet,
   commonSet,
   browserPlatforms,
   applyLavaMoat,
-  isMMI,
+  destinationFileName,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
       'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
     );
   }
-  const htmlFilePath = `./app/${htmlName}.html`;
-  const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
+
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-
-  const appLoadFilePath = './app/scripts/load-app.js';
-  const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
 
   const securityScripts = applyLavaMoat
     ? ['./runtime-lavamoat.js', './lockdown-more.js', './policy-load.js']
@@ -1250,25 +1253,40 @@ function renderHtmlFile({
     ...jsBundles,
   ];
 
-  const htmlOutput = Sqrl.render(htmlTemplate, {
-    isMMI,
-    jsBundles,
+  console.log(
+    `Asked to create ${destinationFileName} with scripts: `,
+    requiredScripts,
+  );
+
+  browserPlatforms.forEach((platform) => {
+    const appLoadFilePath = './app/scripts/load-app.js';
+    const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
+
+    const scriptDest = `./dist/${platform}/${destinationFileName}`;
+    const scriptOutput = appLoadContents.replace(
+      '/* SCRIPTS */',
+      `...${JSON.stringify(requiredScripts)}`,
+    );
+
+    console.log(`WRITING ${scriptDest}`);
+    writeFileSync(scriptDest, scriptOutput);
   });
+}
+
+function renderHtmlFile({ htmlName, browserPlatforms, applyLavaMoat, isMMI }) {
+  if (applyLavaMoat === undefined) {
+    throw new Error(
+      'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
+    );
+  }
+  const htmlFilePath = `./app/${htmlName}.html`;
+  const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
+
+  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
     writeFileSync(dest, htmlOutput);
-
-    if (htmlName === 'home') {
-      const scriptDest = `./dist/${platform}/load-app.js`;
-      const scriptOutput = appLoadContents.replace(
-        '[/*SCRIPTS*/]',
-        JSON.stringify(requiredScripts),
-      );
-
-      console.log(`WRITING ${scriptDest}`);
-      writeFileSync(scriptDest, scriptOutput);
-    }
   });
 }
 

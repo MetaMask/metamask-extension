@@ -2,20 +2,25 @@
 'use strict';
 
 setTimeout(() => {
-  const scriptsToLoad = [/*SCRIPTS*/];
+  // eslint-disable-next-line spaced-comment
+  const scriptsToLoad = [
+    /* SCRIPTS */
+  ];
 
   const loadScript = (src) => {
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
-    script.onload = () => {
-      if (scriptsToLoad.length) {
-        loadScript(scriptsToLoad.shift());
-      }
-    };
+    script.onload = loadNext;
     script.src = src;
     document.body.appendChild(script);
   };
 
-  loadScript(scriptsToLoad.shift());
+  loadNext();
+
+  function loadNext() {
+    if (scriptsToLoad.length) {
+      loadScript(scriptsToLoad.shift());
+    }
+  }
 }, 13);
