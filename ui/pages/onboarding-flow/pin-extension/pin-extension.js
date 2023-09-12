@@ -1,7 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  useDispatch,
+  ///: END:ONLY_INCLUDE_IN
+  useSelector
+} from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
+import { setCompletedOnboarding } from '../../../store/actions';
+import OnboardingPinBillboard from './pin-billboard';
+///: END:ONLY_INCLUDE_IN
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import {
@@ -11,7 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
 import { MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
-import { setCompletedOnboarding } from '../../../store/actions';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -20,13 +29,14 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { Text } from '../../../components/component-library';
-import OnboardingPinBillboard from './pin-billboard';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const dispatch = useDispatch();
+  ///: END:ONLY_INCLUDE_IN
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 

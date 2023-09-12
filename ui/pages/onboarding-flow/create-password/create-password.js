@@ -14,19 +14,23 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';
 import CheckBox from '../../../components/ui/check-box';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import {
   ThreeStepProgressBar,
   threeStepStages,
   TwoStepProgressBar,
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
+///: END:ONLY_INCLUDE_IN
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
