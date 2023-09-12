@@ -13,7 +13,7 @@ describe('Wrong Network Notification', function () {
       ...testData.metamask,
       providerConfig: {
         type: 'test',
-        chainId: '3',
+        chainId: '0x5',
       },
       selectedAddress: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
       cachedBalances: {

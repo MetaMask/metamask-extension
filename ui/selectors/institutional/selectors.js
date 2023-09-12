@@ -67,7 +67,6 @@ export function getIsCustodianSupportedChain(state) {
 
     // eslint-disable-next-line require-unicode-regexp
     if (!/^0x[0-9a-f]+$/i.test(providerConfig.chainId)) {
-      console.log('chainId', providerConfig.chainId);
       throw new Error('Chain ID must be a hexadecimal number');
     }
 
