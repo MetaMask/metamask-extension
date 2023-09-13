@@ -6,7 +6,7 @@ import FormComboField from './form-combo-field';
  */
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  title: 'Components/App/FormComboField',
+  title: 'Components/UI/FormComboField',
   component: FormComboField,
   argTypes: {
     value: {
