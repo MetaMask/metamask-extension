@@ -272,9 +272,9 @@ export default class TransactionStateManager extends EventEmitter {
     const txsToDelete = transactions
       .reverse()
       .filter((tx) => {
-        const { nonce, from } = tx.txParams;
-        const { chainId, status } = tx;
-        const key = `${nonce}-${chainId}-${from}`;
+        const { chainId, status, txParams } = tx;
+        const txChainId = chainId ?? txParams.chainId;
+        const key = `${txParams.nonce}-${txChainId}-${txParams.from}`;
         if (nonceNetworkSet.has(key)) {
           return false;
         } else if (

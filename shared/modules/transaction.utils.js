@@ -2,7 +2,6 @@ import { isHexString } from 'ethereumjs-util';
 import { Interface } from '@ethersproject/abi';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
-import { deprecatedNetworkIdMatchesChainId } from '@metamask/controller-utils';
 import {
   AssetType,
   TokenStandard,
@@ -49,16 +48,9 @@ const erc1155Interface = new Interface(abiERC1155);
  * @returns A boolean value indicating whether the transaction matches the current chain ID.
  */
 export function transactionMatchesChainId(transaction, chainId) {
-  if (transaction.chainId !== undefined) {
-    return transaction.chainId === chainId;
-  }
-  if (transaction.metamaskNetworkId !== undefined) {
-    return deprecatedNetworkIdMatchesChainId(
-      transaction.metamaskNetworkId,
-      chainId,
-    );
-  }
-  return false;
+  // Legacy: in earlier versions of extension, chain ID was only persisted to `txParams.chainId`
+  const txChainId = transaction.chainId ?? transaction.txParams.chainId;
+  return txChainId === chainId;
 }
 
 /**
