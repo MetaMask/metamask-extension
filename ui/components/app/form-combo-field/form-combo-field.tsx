@@ -23,12 +23,28 @@ export interface FormComboFieldOption {
 }
 
 export interface FormComboFieldProps {
+  /** The maximum height of the dropdown in pixels. */
   maxDropdownHeight?: number;
+
+  /** The text to display in the dropdown when there are no options to display. */
   noOptionsText?: string;
+
+  /** Callback function to invoke when the value changes. */
   onChange?: (value: string) => void;
+
+  /** Callback function to invoke when a dropdown option is clicked. */
   onOptionClick?: (option: FormComboFieldOption) => void;
+
+  /**
+   * The options to display in the dropdown.
+   * An array of objects with a 'primaryLabel' and optionally a 'secondaryLabel' property.`
+   */
   options: FormComboFieldOption[];
+
+  /** The placeholder text to display in the field when the value is empty. */
   placeholder?: string;
+
+  /** The value to display in the field. */
   value: string;
 }
 

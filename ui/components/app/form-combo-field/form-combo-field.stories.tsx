@@ -101,3 +101,5 @@ export const NoOptionsStory = () => {
     </div>
   );
 };
+
+NoOptionsStory.storyName = 'No Options';

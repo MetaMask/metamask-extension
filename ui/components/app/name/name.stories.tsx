@@ -83,6 +83,23 @@ export default {
     disableEdit: {
       control: 'boolean',
       description: `Whether to prevent the modal from opening when the component is clicked.`,
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+    disableUpdate: {
+      control: 'boolean',
+      description: `Whether to disable updating the proposed names on render.`,
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+    updateDelay: {
+      control: 'number',
+      description: `The minimum number of seconds to wait between updates of the proposed names on render.`,
+      table: {
+        defaultValue: { summary: 300 },
+      },
     },
   },
   args: {
@@ -90,6 +107,8 @@ export default {
     type: NameType.ETHEREUM_ADDRESS,
     sourcePriority: ['ens'],
     disableEdit: false,
+    disableUpdate: false,
+    updateDelay: 300,
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 };
