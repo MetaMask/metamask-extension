@@ -37,7 +37,12 @@ const SnapAvatar = ({
 
   const iconUrl = subjectMetadata?.iconUrl;
 
-  const fallbackIcon = friendlyName && friendlyName[0] ? friendlyName[0] : '?';
+  const firstCharacterIndex = friendlyName?.[0] === '@' ? 1 : 0;
+
+  const fallbackIcon =
+    friendlyName && friendlyName[firstCharacterIndex]
+      ? friendlyName[firstCharacterIndex]
+      : '?';
 
   return (
     <BadgeWrapper
