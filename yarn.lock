@@ -4319,22 +4319,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@github:MetaMask/keyring-api#19025afe6bceec66d927f7352753c2c8b3c54013":
-  version: 0.2.3
-  resolution: "@metamask/keyring-api@https://github.com/MetaMask/keyring-api.git#commit=19025afe6bceec66d927f7352753c2c8b3c54013"
-  dependencies:
-    "@metamask/providers": "npm:^12.0.0"
-    "@metamask/rpc-methods": "npm:^0.38.1-flask.1"
-    "@metamask/snaps-controllers": "npm:^0.38.2-flask.1"
-    "@metamask/snaps-utils": "npm:^0.38.2-flask.1"
-    "@metamask/utils": "npm:^8.1.0"
-    "@types/uuid": "npm:^9.0.1"
-    superstruct: "npm:^1.0.3"
-    uuid: "npm:^9.0.0"
-  checksum: 02ded223bbea479de2bcb0c6fa4f879bfe1f72bb41e3bb02fececa97467aa131e0744fa39c6901333739c12e50343e051cbfadcb4988df5ab081b7e5ab4bc26d
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-api@github:MetaMask/keyring-api#8b51af7ac82c5d8654ba9c07aed96e3aa2526d97":
   version: 0.2.3
   resolution: "@metamask/keyring-api@https://github.com/MetaMask/keyring-api.git#commit=8b51af7ac82c5d8654ba9c07aed96e3aa2526d97"
@@ -4364,6 +4348,22 @@ __metadata:
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
   checksum: c98d5228e89c710e31b792b94569316ab4afc94e472e485b7da7d3ef3b75b441e49784d9ac35dd8891242db5c21d2173f2c8ec58d1182d418563ff403b45fcc3
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-api@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@metamask/keyring-api@npm:0.2.4"
+  dependencies:
+    "@metamask/providers": "npm:^12.0.0"
+    "@metamask/rpc-methods": "npm:^0.38.1-flask.1"
+    "@metamask/snaps-controllers": "npm:^0.38.2-flask.1"
+    "@metamask/snaps-utils": "npm:^0.38.2-flask.1"
+    "@metamask/utils": "npm:^8.1.0"
+    "@types/uuid": "npm:^9.0.1"
+    superstruct: "npm:^1.0.3"
+    uuid: "npm:^9.0.0"
+  checksum: d61e2bf7252135e5bb099bb10886fcbd4c25392e3bfe9beb267b57f97e653b687e727fd67726492723837b66c40cd226e2539c5a80ebfbe1e56ebf9e93f93728
   languageName: node
   linkType: hard
 
@@ -24412,7 +24412,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^6.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/keyring-api": "github:MetaMask/keyring-api#19025afe6bceec66d927f7352753c2c8b3c54013"
+    "@metamask/keyring-api": "npm:^0.2.4"
     "@metamask/keyring-controller": "npm:^7.2.0"
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
