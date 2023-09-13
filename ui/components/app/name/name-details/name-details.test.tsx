@@ -9,6 +9,7 @@ import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
   setName: jest.fn(),
+  updateProposedNames: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
