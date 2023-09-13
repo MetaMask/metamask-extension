@@ -93,7 +93,6 @@ import {
   ERC1155,
   ERC20,
   ERC721,
-  deprecatedConvertChainIdToNetworkId,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -387,9 +386,11 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getProviderAndBlockTracker().blockTracker;
 
     // TODO: Delete when ready to remove `networkVersion` from provider object
+    this.deprecatedNetworkId = null;
+    this.updateDeprecatedNetworkId();
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
-      () => this._notifyChainChange(),
+      () => this.updateDeprecatedNetworkId(),
     );
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
@@ -2138,7 +2139,7 @@ export default class MetamaskController extends EventEmitter {
       return {
         isUnlocked,
         chainId,
-        networkVersion: deprecatedConvertChainIdToNetworkId(chainId),
+        networkVersion: this.deprecatedNetworkId ?? 'loading',
       };
     };
 
@@ -2178,11 +2179,24 @@ export default class MetamaskController extends EventEmitter {
    * @returns {object} An object with relevant network state properties.
    */
   getProviderNetworkState() {
-    const { chainId } = this.networkController.state.providerConfig;
     return {
-      chainId,
-      networkVersion: deprecatedConvertChainIdToNetworkId(chainId),
+      chainId: this.networkController.state.providerConfig.chainId,
+      networkVersion: this.deprecatedNetworkId ?? 'loading',
     };
+  }
+
+  /**
+   * TODO: Delete when ready to remove `networkVersion` from provider object
+   * Updates the `deprecatedNetworkId` value
+   */
+  async updateDeprecatedNetworkId() {
+    try {
+      this.deprecatedNetworkId = await this.getNetworkId();
+    } catch (error) {
+      console.error(error);
+      this.deprecatedNetworkId = null;
+    }
+    this._notifyChainChange();
   }
 
   /**
