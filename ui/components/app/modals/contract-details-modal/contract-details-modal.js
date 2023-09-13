@@ -220,7 +220,7 @@ export default function ContractDetailsModal({
                 <Name
                   value={toAddress}
                   type={NameType.ETHEREUM_ADDRESS}
-                  sourcePriority={['ens']}
+                  sourcePriority={['ens', 'lens', 'token', 'etherscan']}
                 />
               </Text>
             ) : (

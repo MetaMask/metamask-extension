@@ -1483,63 +1483,6 @@ class FixtureBuilder {
     });
   }
 
-  withNameController(data) {
-    merge(
-      this.fixture.data.NameController
-        ? this.fixture.data.NameController
-        : (this.fixture.data.NameController = {}),
-      data,
-    );
-    return this;
-  }
-
-  withPetnamesProposedNames() {
-    return this.withNameController({
-      names: {
-        [NameType.ETHEREUM_ADDRESS]: {
-          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF': {
-            [CHAIN_IDS.LOCALHOST]: {
-              proposedNames: {
-                ens: ['test.eth'],
-              },
-            },
-          },
-          '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB': {
-            [CHAIN_IDS.LOCALHOST]: {
-              proposedNames: {
-                etherscan: ['TestContract'],
-              },
-            },
-          },
-          '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57': {
-            [CHAIN_IDS.LOCALHOST]: {
-              proposedNames: {
-                token: ['TestToken'],
-              },
-            },
-          },
-          '0xB0B0b0b0b0b0B000000000000000000000000000': {
-            [CHAIN_IDS.LOCALHOST]: {
-              proposedNames: {
-                lens: ['test.lens'],
-              },
-            },
-          },
-          '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC': {
-            [CHAIN_IDS.LOCALHOST]: {
-              proposedNames: {
-                ens: ['test2.eth'],
-                etherscan: ['TestContract2'],
-                token: ['TestToken2'],
-                lens: ['test2.lens'],
-              },
-            },
-          },
-        },
-      },
-    });
-  }
-
   build() {
     this.fixture.meta = {
       version: 74,

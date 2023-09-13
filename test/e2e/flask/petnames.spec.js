@@ -32,6 +32,7 @@ async function rejectSignatureRequest(driver) {
 async function focusNotification(driver) {
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+  await driver.delay(3000);
 }
 
 async function focusTestDapp(driver) {
@@ -45,6 +46,8 @@ async function showThirdPartyDetails(driver) {
   );
 
   verifyContractDetailsButton.click();
+
+  await driver.delay(3000);
 
   return await driver.findElement('.contract-details-modal');
 }
@@ -134,7 +137,7 @@ describe('Petnames', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPetnamesProposedNames()
+
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -146,21 +149,21 @@ describe('Petnames', function () {
 
         let addresses = await getAddressesInMessage(driver);
 
-        await expectName(addresses[0], '0xCD2...D826', undefined, false);
-        await expectName(addresses[1], '0xDea...beeF', 'test.eth', false);
-        await expectName(addresses[2], '0xbBb...BBbB', 'TestContract', false);
-        await expectName(addresses[3], '0xB0B...Ea57', 'TestToken', false);
-        await expectName(addresses[4], '0xB0B...0000', 'test.lens', false);
+        await expectName(addresses[0], '0xCD2...D826', 'test.lens', false);
+        await expectName(addresses[1], '0xDea...beeF', 'Test Token', false);
+        await expectName(addresses[2], '0xbBb...BBbB', 'test2.lens', false);
+        await expectName(addresses[3], '0xB0B...Ea57', 'Test Token 2', false);
+        await expectName(addresses[4], '0xB0B...0000', undefined, false);
 
-        await saveName(driver, addresses[1], undefined, 'test.eth');
-        await saveName(driver, addresses[3], undefined, 'TestToken');
+        await saveName(driver, addresses[0], undefined, 'test.lens');
+        await saveName(driver, addresses[3], undefined, 'Test Token 2');
 
         let contractDetailsModal = await showThirdPartyDetails(driver);
 
         await expectName(
           contractDetailsModal,
           '0xCcC...cccC',
-          'test2.eth',
+          'test3.lens',
           false,
         );
 
@@ -173,8 +176,8 @@ describe('Petnames', function () {
 
         addresses = await getAddressesInMessage(driver);
 
-        await expectName(addresses[1], 'test.eth', undefined, true);
-        await expectName(addresses[3], 'TestToken', undefined, true);
+        await expectName(addresses[0], 'test.lens', undefined, true);
+        await expectName(addresses[3], 'Test Token 2', undefined, true);
 
         contractDetailsModal = await showThirdPartyDetails(driver);
 
