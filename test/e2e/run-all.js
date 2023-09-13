@@ -108,6 +108,7 @@ async function main() {
         'test-snap-manageAccount.spec.js',
         'test-snap-rpc.spec.js',
         'test-snap-lifecycle.spec.js',
+        'test-snap-get-locale.spec.js',
       ];
       testPaths = testPaths.filter((p) =>
         filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
