@@ -141,6 +141,7 @@ export default function CustomSpendingCap({
         setError(spendingCapError);
       }
     }
+
     setCustomSpendingCap(String(valueInput));
     dispatch(setCustomTokenAmount(String(valueInput)));
 
