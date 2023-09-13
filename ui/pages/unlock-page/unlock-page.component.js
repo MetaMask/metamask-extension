@@ -183,6 +183,7 @@ export default class UnlockPage extends Component {
             variant={TextVariant.displayMd}
             color={TextColor.textAlternative}
             marginTop={1}
+            data-testid='unlock-page__title'
           >
             {t('welcomeBack')}
           </Text>
