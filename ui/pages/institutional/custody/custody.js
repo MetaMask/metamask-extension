@@ -351,6 +351,8 @@ const CustodyPage = () => {
     setCurrentJwt('');
     setConnectError('');
     setSelectError('');
+
+    history.push(DEFAULT_ROUTE);
   };
 
   const setSelectAllAccounts = (e) => {

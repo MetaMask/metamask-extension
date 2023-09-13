@@ -1,22 +1,26 @@
-import { CUSTODIAN_WEBSITES } from '../../../../shared/constants/institutional/custodian-websites';
-
-export function findCustodianByDisplayName(displayName: string): {
-  displayName: string;
+type Custodian = {
+  type: string;
+  iconUrl: string;
+  name: string;
   website: string;
-  icon: string;
-} | null {
-  const formatedDisplayName = displayName.toLowerCase();
-  const custodianKeys = Object.keys(
-    CUSTODIAN_WEBSITES,
-  ) as (keyof typeof CUSTODIAN_WEBSITES)[];
+  envName: string;
+  apiUrl: string;
+  displayName: string;
+  production: boolean;
+  refreshTokenUrl: string;
+  websocketApiUrl: string;
+  isNoteToTraderSupported: boolean;
+  version: number;
+}
 
-  for (const custodianKey of custodianKeys) {
-    const custodian = CUSTODIAN_WEBSITES[custodianKey];
-    const custodianDisplayName = custodian.displayName.toLowerCase();
+export function findCustodianByDisplayName(displayName: string, custodians: Custodian[]): Custodian | null {
+  const formatedDisplayName = displayName.toLowerCase();
+
+  for (const custodian of custodians) {
+    const custodianName = custodian.name.toLowerCase();
 
     if (
-      formatedDisplayName.includes(custodianKey.toLowerCase()) ||
-      formatedDisplayName.includes(custodianDisplayName)
+      formatedDisplayName.includes(custodianName)
     ) {
       return custodian;
     }

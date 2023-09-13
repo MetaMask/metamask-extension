@@ -19,6 +19,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { setProviderType } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import {
   Button,
   BUTTON_SIZES,
@@ -40,6 +41,7 @@ const ConfirmAddCustodianToken = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const mmiActions = mmiActionsFactory();
 
+  const { custodians } = useSelector(getMMIConfiguration);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,22 +81,20 @@ const ConfirmAddCustodianToken = () => {
     ).value;
   }
 
-  const custodian = findCustodianByDisplayName(custodianLabel);
+  const custodian = findCustodianByDisplayName(custodianLabel, custodians);
 
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
-        <Text>
           <Chip
             borderColor={BorderColor.borderMuted}
             label={connectRequest.origin}
             maxContent={false}
-            leftIconUrl={custodian?.icon}
+            leftIconUrl={custodian?.iconUrl}
             labelProps={{
               textAlign: TextAlign.Center,
             }}
           />
-        </Text>
       </Box>
       <Box padding={4} className="page-container__content">
         <Text
