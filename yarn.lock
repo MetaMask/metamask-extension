@@ -3784,6 +3784,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/abi-utils@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@metamask/abi-utils@npm:2.0.2"
+  dependencies:
+    "@metamask/utils": "npm:^8.0.0"
+    superstruct: "npm:^1.0.3"
+  checksum: 150218e81d4e494196ce967f203a4fa6c03c07dc4e319cf72429cb37586e851adf9b0b89e341faeab38c5f03f6f8dff175486653e9a6da6c7fa9e4c9f96430e9
+  languageName: node
+  linkType: hard
+
 "@metamask/address-book-controller@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/address-book-controller@npm:3.0.0"
@@ -4133,7 +4143,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^5.0.0, @metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2, @metamask/eth-sig-util@npm:^5.1.0":
+"@metamask/eth-sig-util@npm:^5.0.0, @metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2":
   version: 5.1.0
   resolution: "@metamask/eth-sig-util@npm:5.1.0"
   dependencies:
@@ -4161,6 +4171,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-sig-util@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/eth-sig-util@npm:7.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/abi-utils": "npm:^2.0.2"
+    "@metamask/utils": "npm:^8.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    ethjs-util: "npm:^0.1.6"
+    tweetnacl: "npm:^1.0.3"
+    tweetnacl-util: "npm:^0.15.1"
+  checksum: c399e615749ac78224d5e68883eff9bfb856eb26225d218937ac5ccb84e529157c0b1244dce449eb3dcb408a7830f2b4c0c1b2a6b1653049d93b3d76aae17860
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-simple-keyring@npm:^5.0.0":
   version: 5.0.0
   resolution: "@metamask/eth-simple-keyring@npm:5.0.0"
@@ -4173,35 +4198,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@github:MetaMask/eth-snap-keyring#52a82c96546fa5dad22c73d4045a07e1b6d1b722":
-  version: 0.2.0
-  resolution: "@metamask/eth-snap-keyring@https://github.com/MetaMask/eth-snap-keyring.git#commit=52a82c96546fa5dad22c73d4045a07e1b6d1b722"
+"@metamask/eth-snap-keyring@npm:^0.2.0, @metamask/eth-snap-keyring@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@metamask/eth-snap-keyring@npm:0.2.1"
   dependencies:
-    "@ethereumjs/tx": "npm:^4.1.2"
-    "@metamask/eth-sig-util": "npm:^5.1.0"
-    "@metamask/keyring-api": "github:MetaMask/keyring-api#8b51af7ac82c5d8654ba9c07aed96e3aa2526d97"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/eth-sig-util": "npm:^7.0.0"
+    "@metamask/keyring-api": "npm:^0.2.3"
     "@metamask/snaps-controllers": "npm:^0.38.2-flask.1"
     "@metamask/utils": "npm:^8.1.0"
     "@types/uuid": "npm:^9.0.1"
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
-  checksum: 80ae5fec21aa50e707b64d35cb3bbbfe916c69f7c6819a24b004e14ddedeb2925a0fa46e908864b6a234b774009706e87e3676652a3a5bdff2fd5a50d6894bb6
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-snap-keyring@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/eth-snap-keyring@npm:0.2.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.1.2"
-    "@metamask/eth-sig-util": "npm:^5.1.0"
-    "@metamask/keyring-api": "npm:^0.2.2"
-    "@metamask/snaps-controllers": "npm:^0.38.2-flask.1"
-    "@metamask/utils": "npm:^8.1.0"
-    "@types/uuid": "npm:^9.0.1"
-    superstruct: "npm:^1.0.3"
-    uuid: "npm:^9.0.0"
-  checksum: 986c607b72f3b1648613d71af959c9b94ffe5c27fb6a80f202015a76771331de971223eafc8c77567c148dbad2818a23c0f1a6541644ad5ebc8cc4e35b044553
+  checksum: f6bf86d31a8ef3af7dc617d8bb29dd0c78f249571ea142b141d90936e50c145d857d9cc4da6ab0e460a5636d554ef59594bb377356b3d544fa6cff7ca386954f
   languageName: node
   linkType: hard
 
@@ -4319,23 +4328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@github:MetaMask/keyring-api#8b51af7ac82c5d8654ba9c07aed96e3aa2526d97":
-  version: 0.2.3
-  resolution: "@metamask/keyring-api@https://github.com/MetaMask/keyring-api.git#commit=8b51af7ac82c5d8654ba9c07aed96e3aa2526d97"
-  dependencies:
-    "@metamask/providers": "npm:^12.0.0"
-    "@metamask/rpc-methods": "npm:^0.38.1-flask.1"
-    "@metamask/snaps-controllers": "npm:^0.38.2-flask.1"
-    "@metamask/snaps-utils": "npm:^0.38.2-flask.1"
-    "@metamask/utils": "npm:^8.1.0"
-    "@types/uuid": "npm:^9.0.1"
-    superstruct: "npm:^1.0.3"
-    uuid: "npm:^9.0.0"
-  checksum: a9720bb1788e109ee6ba3f0f7191c34a38f4185117f3891ffd5f97365b0b3c06b5942ecaf895c775dfa3c6173c4ae711b0c26870ea8315f2f2440ea415895fb6
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^0.2.2, @metamask/keyring-api@npm:^0.2.4":
+"@metamask/keyring-api@npm:^0.2.2, @metamask/keyring-api@npm:^0.2.3, @metamask/keyring-api@npm:^0.2.4":
   version: 0.2.4
   resolution: "@metamask/keyring-api@npm:0.2.4"
   dependencies:
@@ -5383,12 +5376,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.0.0, @noble/curves@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "@noble/curves@npm:1.0.0"
+"@noble/curves@npm:1.1.0, @noble/curves@npm:~1.1.0":
+  version: 1.1.0
+  resolution: "@noble/curves@npm:1.1.0"
   dependencies:
-    "@noble/hashes": "npm:1.3.0"
-  checksum: 6db884e03b3f6c773317bcf4611bf1d9adb8084eab0bf6158407cc998c9c5dcb0560741bdd0aaca9c4393c9e8a3dcd7592b4148a6cfd561d0a00addb77a6129f
+    "@noble/hashes": "npm:1.3.1"
+  checksum: 7028e3f19a4a2a601f9159e5423f51ae86ab231bed79a6e40649b063e1ed7f55f5da0475f1377bd2c5a8e5fc485af9ce0549ad89da6b983d6af48e5d0a2041ca
   languageName: node
   linkType: hard
 
@@ -5406,17 +5399,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@noble/hashes@npm:1.3.0"
-  checksum: 4680a71941c06ac897cc9eab9d229717d5af1147cea5e8cd4942190c817426ad3173ded750d897f58d764b869f9347d4fc3f6b3c16574541ac81906efa9ddc36
-  languageName: node
-  linkType: hard
-
-"@noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.1.3, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:~1.3.0":
+"@noble/hashes@npm:1.3.1":
   version: 1.3.1
   resolution: "@noble/hashes@npm:1.3.1"
   checksum: 39474bab7e7813dbbfd8750476f48046d3004984e161fcd4333e40ca823f07b069010b35a20246e5b4ac20858e29913172a4d69720fd1e93620f7bedb70f9b72
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.1.3, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:~1.3.0, @noble/hashes@npm:~1.3.1":
+  version: 1.3.2
+  resolution: "@noble/hashes@npm:1.3.2"
+  checksum: 685f59d2d44d88e738114b71011d343a9f7dce9dfb0a121f1489132f9247baa60bc985e5ec6f3213d114fbd1e1168e7294644e46cbd0ce2eba37994f28eeb51b
   languageName: node
   linkType: hard
 
@@ -5876,14 +5869,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip32@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@scure/bip32@npm:1.3.0"
+"@scure/bip32@npm:1.3.1":
+  version: 1.3.1
+  resolution: "@scure/bip32@npm:1.3.1"
   dependencies:
-    "@noble/curves": "npm:~1.0.0"
-    "@noble/hashes": "npm:~1.3.0"
+    "@noble/curves": "npm:~1.1.0"
+    "@noble/hashes": "npm:~1.3.1"
     "@scure/base": "npm:~1.1.0"
-  checksum: 1fabcc7f2215910b35980bfc455c03fc4ae7f848efed066fe3867960a8dfceb6141c932496434fc2cfbf385d270ff9efdfce2571992e4584103f82e45ac2103f
+  checksum: 0595955374dfa54a60adfa33d4793fd8b27230e962aaceb5bb5fcf8ccbb935184aa2c45154ec9bdfb26a1877b2ae0a8e4808c9a5464d4ffd971120740b816def
   languageName: node
   linkType: hard
 
@@ -5897,13 +5890,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@scure/bip39@npm:1.2.0"
+"@scure/bip39@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@scure/bip39@npm:1.2.1"
   dependencies:
     "@noble/hashes": "npm:~1.3.0"
     "@scure/base": "npm:~1.1.0"
-  checksum: 2a260eefea0b2658c5d3b2cb982479ef650552c3007e57f667b445943c79717eb923c1a104a664b4873bc210aeb59859bf890c3e7b47fb51ed5b94dc96f75105
+  checksum: 2ea368bbed34d6b1701c20683bf465e147f231a9e37e639b8c82f585d6f978bb0f3855fca7ceff04954ae248b3e313f5d322d0210614fb7acb402739415aaf31
   languageName: node
   linkType: hard
 
@@ -16316,15 +16309,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereum-cryptography@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "ethereum-cryptography@npm:2.0.0"
+"ethereum-cryptography@npm:^2.0.0, ethereum-cryptography@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "ethereum-cryptography@npm:2.1.2"
   dependencies:
-    "@noble/curves": "npm:1.0.0"
-    "@noble/hashes": "npm:1.3.0"
-    "@scure/bip32": "npm:1.3.0"
-    "@scure/bip39": "npm:1.2.0"
-  checksum: 1f87b4d322fce0801d38741955df1dec20861939ea0c0a89dddf182906f21453f7134662e09fe268e35be9a3848f61667349836b5eb5f4efd6b9a02c1e3bcc85
+    "@noble/curves": "npm:1.1.0"
+    "@noble/hashes": "npm:1.3.1"
+    "@scure/bip32": "npm:1.3.1"
+    "@scure/bip39": "npm:1.2.1"
+  checksum: 78983d01ac95047158ec03237ba318152b2c707ccc6a44225da11c72ed6ca575ca0c1630eaf9878fc82fe26272d6624939ef6f020cc89ddddfb941a7393ab909
   languageName: node
   linkType: hard
 
@@ -24388,7 +24381,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
     "@metamask/eth-keyring-controller": "npm:^10.0.1"
     "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
-    "@metamask/eth-snap-keyring": "github:MetaMask/eth-snap-keyring#52a82c96546fa5dad22c73d4045a07e1b6d1b722"
+    "@metamask/eth-snap-keyring": "npm:^0.2.1"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^1.1.0"
     "@metamask/etherscan-link": "npm:^2.2.0"
