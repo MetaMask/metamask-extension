@@ -53,6 +53,11 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import {
+  SelectedNetworkController,
+  createSelectedNetworkMiddleware,
+} from '@metamask/selected-network-controller';
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
@@ -300,6 +305,21 @@ export default class MetamaskController extends EventEmitter {
 
     // next, we will initialize the controllers
     // controller initialization order matters
+
+    this.selectedNetworkController = new SelectedNetworkController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SelectedNetworkController',
+        allowedActions: [
+          'SelectedNetworkController:getState',
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+          'SelectedNetworkController:setNetworkClientIdForDomain',
+        ],
+        allowedEvents: [
+          'SelectedNetworkController:stateChange',
+          'NetworkController:stateChange',
+        ],
+      }),
+    });
 
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
@@ -1667,6 +1687,7 @@ export default class MetamaskController extends EventEmitter {
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
+      SelectedNetworkController: this.selectedNetworkController,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -1711,6 +1732,7 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
+        SelectedNetworkController: this.selectedNetworkController,
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -4045,7 +4067,14 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
+
     const { blockTracker, provider } = this;
+
+    // append origin to each request
+    engine.push(createOriginMiddleware({ origin }));
+
+    // append selectedNetworkClientId to each request
+    engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
@@ -4062,9 +4091,6 @@ export default class MetamaskController extends EventEmitter {
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
     }
-
-    // append origin to each request
-    engine.push(createOriginMiddleware({ origin }));
 
     // append tabId to each request if it exists
     if (tabId) {
@@ -4183,7 +4209,15 @@ export default class MetamaskController extends EventEmitter {
         setActiveNetwork: this.networkController.setActiveNetwork.bind(
           this.networkController,
         ),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        setNetworkClientIdForDomain:
+          this.selectedNetworkController.setNetworkClientIdForDomain.bind(
+            this.selectedNetworkController,
+          ),
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
@@ -4268,6 +4302,7 @@ export default class MetamaskController extends EventEmitter {
 
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider));
+
     return engine;
   }
 
