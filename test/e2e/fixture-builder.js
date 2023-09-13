@@ -5,7 +5,6 @@ const {
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
-const { NameType } = require('@metamask/name-controller');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
