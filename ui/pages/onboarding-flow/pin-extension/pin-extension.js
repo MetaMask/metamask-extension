@@ -4,12 +4,15 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   useDispatch,
   ///: END:ONLY_INCLUDE_IN
-  useSelector
+  useSelector,
 } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 import { setCompletedOnboarding } from '../../../store/actions';
 import OnboardingPinBillboard from './pin-billboard';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin-mmi-billboard';
 ///: END:ONLY_INCLUDE_IN
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
@@ -131,11 +134,7 @@ export default function OnboardingPinExtension() {
             <Text marginTop={3} marginBottom={3}>
               {t('pinExtensionDescription')}
             </Text>
-            <img
-              src="/images/onboarding-mmi-pin-browser.svg"
-              width="100%"
-              alt=""
-            />
+            <OnboardingPinMmiBillboard />
           </Box>
         </div>
         ///: END:ONLY_INCLUDE_IN
