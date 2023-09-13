@@ -781,7 +781,12 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     additionalKeyrings.push(
       (() => {
-        const builder = () => new SnapKeyring(this.snapController);
+        const builder = () =>
+          new SnapKeyring(this.snapController, {
+            saveState: async () => {
+              await this.keyringController.persistAllKeyrings();
+            },
+          });
         builder.type = SnapKeyring.type;
         return builder;
       })(),
@@ -2016,9 +2021,6 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
-        saveSnapKeyring: async () => {
-          await this.keyringController.persistAllKeyrings();
-        },
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
