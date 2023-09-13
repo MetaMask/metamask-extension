@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { findKey } from 'lodash';
-import { useHistory, useLocation } from 'react-router-dom';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -17,39 +17,23 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAddressConnectedSubjectMap,
   getOriginOfCurrentTab,
+  getPermissionsForActiveTab,
   getSelectedAddress,
-  getSnaps,
-  getSnapsList,
-  getSubjectsWithSnapPermission,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 export default function ConnectedStatusIndicator({ onClick }) {
   const t = useI18nContext();
-  const history = useHistory();
 
   const selectedAddress = useSelector(getSelectedAddress);
-  const location = useLocation();
 
-  const { pathname } = location;
-  const snaps = useSelector(getSnaps);
-  const snapsList = useSelector((state) => getSnapsList(state));
-  // The snap ID is in URI-encoded form in the last path segment of the URL.
-  const decodedSnapId = snapsList.map((snap) => snap.key)[0];
-  console.log(decodedSnapId, 'ni');
-  const snap = Object.entries(snaps)
-    .map(([_, snapState]) => snapState)
-    .find((snapState) => snapState.id === decodedSnapId);
-  useEffect(() => {
-    if (!snap) {
-      history.push(DEFAULT_ROUTE);
-    }
-  }, [history, snap]);
-  const connectedSnaps = useSelector((state) =>
-    getSubjectsWithSnapPermission(state, snap?.id),
-  );
-  console.log(connectedSnaps);
+  const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
+
+  const activeWalletSnap = permissionsForActiveTab
+    .map((permission) => permission.key)
+    .includes(WALLET_SNAP_PERMISSION_KEY);
+
+  console.log(activeWalletSnap);
 
   const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
@@ -63,7 +47,7 @@ export default function ConnectedStatusIndicator({ onClick }) {
     status = STATUS_CONNECTED;
   } else if (findKey(addressConnectedSubjectMap, originOfCurrentTab)) {
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
-  } else if (connectedSnaps.length > 0) {
+  } else if (activeWalletSnap) {
     status = STATUS_CONNECTED_TO_SNAP;
   } else {
     status = STATUS_NOT_CONNECTED;
