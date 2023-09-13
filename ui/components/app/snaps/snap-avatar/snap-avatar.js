@@ -37,12 +37,8 @@ const SnapAvatar = ({
 
   const iconUrl = subjectMetadata?.iconUrl;
 
-  const firstCharacterIndex = friendlyName?.[0] === '@' ? 1 : 0;
-
-  const fallbackIcon =
-    friendlyName && friendlyName[firstCharacterIndex]
-      ? friendlyName[firstCharacterIndex]
-      : '?';
+  // We choose the first non-symbol char as the fallback icon.
+  const fallbackIcon = friendlyName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
 
   return (
     <BadgeWrapper
