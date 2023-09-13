@@ -19,7 +19,7 @@ export default {
     },
   },
   args: {
-    snapName: 'Snap Name',
+    snapName: 'ABC Snap',
     isOpen: true,
   },
 };

@@ -9,8 +9,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
+  ButtonSize,
+  ButtonVariant,
 } from '../../../component-library';
 
 import {
@@ -26,39 +26,45 @@ export default function SnapRemoveWarning({
   snapName,
 }) {
   const t = useI18nContext();
+
   return (
-    <Modal isOpen={isOpen} onClose={onCancel}>
-      <ModalOverlay />
-      <ModalContent
-        modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
-          gap: 4,
-        }}
-      >
-        <ModalHeader onClose={onCancel}>{t('pleaseConfirm')}</ModalHeader>
-        <Text>{t('removeSnapConfirmation', [snapName])}</Text>
-        <Box width={BlockSize.Full} display={Display.Flex} gap={4}>
-          <Button
-            block
-            variant={BUTTON_VARIANT.SECONDARY}
-            size={BUTTON_SIZES.LG}
-            onClick={onCancel}
-          >
-            {t('nevermind')}
-          </Button>
-          <Button
-            block
-            size={BUTTON_SIZES.LG}
-            id="popoverRemoveSnapButton"
-            danger
-            onClick={onSubmit}
-          >
-            {t('removeSnap')}
-          </Button>
-        </Box>
-      </ModalContent>
-    </Modal>
+    <>
+      <Modal isOpen={isOpen} onClose={onCancel}>
+        <ModalOverlay />
+        <ModalContent
+          modalDialogProps={{
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            gap: 4,
+          }}
+        >
+          <ModalHeader onClose={onCancel}>{t('pleaseConfirm')}</ModalHeader>
+          <Text>{t('removeSnapConfirmation', [snapName])}</Text>
+
+          <Box width={BlockSize.Full} display={Display.Flex} gap={4}>
+            <Button
+              block
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              onClick={onCancel}
+            >
+              {t('nevermind')}
+            </Button>
+            <Button
+              block
+              size={ButtonSize.Lg}
+              id="popoverRemoveSnapButton"
+              danger
+              onClick={async () => {
+                await onSubmit();
+              }}
+            >
+              {t('removeSnap')}
+            </Button>
+          </Box>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
 
