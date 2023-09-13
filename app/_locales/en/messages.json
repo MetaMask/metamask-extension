@@ -3228,6 +3228,14 @@
     "message": "Allow the snap to derive arbitrary keys unique to this snap, without exposing them. These keys are separate from your MetaMask account(s) and not related to your private keys or Secret Recovery Phrase. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_getEntropy` permission"
   },
+  "permission_getLocale": {
+    "message": "View your preferred language.",
+    "description": "The description for the `snap_getLocale` permission"
+  },
+  "permission_getLocaleDescription": {
+    "message": "Let this Snap access your preferred language from your MetaMask settings. This can be used to localize and display the Snap's content using your language.",
+    "description": "An extended description for the `snap_getLocale` permission"
+  },
   "permission_lifecycleHooks": {
     "message": "Use lifecycle hooks.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"

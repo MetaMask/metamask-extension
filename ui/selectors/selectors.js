@@ -936,8 +936,17 @@ export const getSnap = createDeepEqualSelector(
   },
 );
 
+export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).reduce((acc, cur) => {
+    if (cur.enabled) {
+      acc[cur.id] = cur;
+    }
+    return acc;
+  }, {});
+});
+
 export const getInsightSnaps = createDeepEqualSelector(
-  getSnaps,
+  getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
     return Object.values(snaps).filter(
