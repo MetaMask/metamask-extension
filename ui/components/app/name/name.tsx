@@ -1,16 +1,33 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
+import { useDispatch } from 'react-redux';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useName } from '../../../hooks/useName';
+import { updateProposedNames } from '../../../store/actions';
 import NameDetails from './name-details/name-details';
 
+const DEFAULT_UPDATE_DELAY = 60 * 5; // 5 Minutes
+
 export interface NameProps {
-  value: string;
-  type: NameType;
-  sourcePriority: string[];
+  /** Whether to prevent the modal from opening when the component is clicked. */
   disableEdit?: boolean;
+
+  /** Whether to disable updating the proposed names on render. */
+  disableUpdate?: boolean;
+
+  /** The order of source IDs to prioritise when choosing which proposed name to display. */
+  sourcePriority?: string[];
+
+  /** The type of value, e.g. NameType.ETHEREUM_ADDRESS */
+  type: NameType;
+
+  /** The minimum number of seconds to wait between updates of the proposed names on render. */
+  updateDelay?: number;
+
+  /** The raw value to display the name of. */
+  value: string;
 }
 
 export default function Name({
@@ -18,9 +35,33 @@ export default function Name({
   type,
   sourcePriority,
   disableEdit,
+  updateDelay,
+  disableUpdate,
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const { name, proposedNames } = useName(value, type);
+  const dispatch = useDispatch();
+
+  const { name, proposedNames, proposedNamesLastUpdated } = useName(
+    value,
+    type,
+  );
+
+  useEffect(() => {
+    if (disableUpdate) {
+      return;
+    }
+
+    const nowMilliseconds = Date.now();
+    const nowSeconds = Math.floor(nowMilliseconds / 1000);
+    const secondsSinceLastUpdate = nowSeconds - (proposedNamesLastUpdated ?? 0);
+    const delay = updateDelay ?? DEFAULT_UPDATE_DELAY;
+
+    if (secondsSinceLastUpdate < delay) {
+      return;
+    }
+
+    dispatch(updateProposedNames({ value, type }));
+  });
 
   const handleClick = useCallback(() => {
     setModalOpen(true);

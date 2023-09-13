@@ -4514,7 +4514,7 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
   return networkEIP1559Compatibility;
 }
 
-export function getProposedNames(
+export function updateProposedNames(
   request: UpdateProposedNamesRequest,
 ): ThunkAction<
   UpdateProposedNamesResult,
