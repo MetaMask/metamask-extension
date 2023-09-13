@@ -702,7 +702,7 @@ async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
     }
 
     return isPending === !hasRequest;
-  }, 100000);
+  }, driver.timeout);
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));

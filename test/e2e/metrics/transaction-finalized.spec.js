@@ -151,14 +151,9 @@ describe('Transaction Finalized Event', function () {
         await driver.navigate();
         await unlockWallet(driver);
 
-        await driver.delay(1000);
-
         await sendTransaction(driver, RECIPIENT, '2.0');
 
-        await driver.delay(1000);
-
         const events = await getEventPayloads(driver, mockedEndpoints);
-        await driver.delay(10000);
 
         const transactionSubmittedWithSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
