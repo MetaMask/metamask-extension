@@ -1913,6 +1913,16 @@
         "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
+    "@metamask/providers>@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "end-of-stream": true,
+        "pump>once": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/rate-limit-controller": {
       "globals": {
         "setTimeout": true
@@ -2057,8 +2067,8 @@
         "@metamask/base-controller": true,
         "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
+        "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
-        "@metamask/snaps-controllers>@metamask/object-multiplex": true,
         "@metamask/snaps-controllers>@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
@@ -2077,16 +2087,6 @@
     "@metamask/snaps-controllers-flask>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/object-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "end-of-stream": true,
-        "pump>once": true,
-        "readable-stream": true
       }
     },
     "@metamask/snaps-controllers>@metamask/utils": {
