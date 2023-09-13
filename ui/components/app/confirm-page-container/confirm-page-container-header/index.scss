@@ -48,4 +48,17 @@
 
     margin-left: 6px;
   }
+
+  .mm-picker-network-div {
+    cursor: default;
+
+      &:active {
+        background-color: initial;
+        color: initial;
+    }
+  }
+}
+
+.confirm-page-container-header-avatar-network-base {
+  padding-right: 1.5px;
 }
