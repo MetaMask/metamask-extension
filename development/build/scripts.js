@@ -1253,11 +1253,6 @@ function renderJavaScriptLoader({
     ...jsBundles,
   ];
 
-  console.log(
-    `Asked to create ${destinationFileName} with scripts: `,
-    requiredScripts,
-  );
-
   browserPlatforms.forEach((platform) => {
     const appLoadFilePath = './app/scripts/load-app.js';
     const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
@@ -1268,7 +1263,6 @@ function renderJavaScriptLoader({
       `...${JSON.stringify(requiredScripts)}`,
     );
 
-    console.log(`WRITING ${scriptDest}`);
     writeFileSync(scriptDest, scriptOutput);
   });
 }

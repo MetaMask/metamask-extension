@@ -352,7 +352,10 @@ class Driver {
   async navigate(page = Driver.PAGES.HOME) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asyncronous JavaScript to load
-    await this.driver.waitForSelector('.metamask-loaded');
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.metamask-loaded')),
+      10 * 1000,
+    );
     return response;
   }
 
