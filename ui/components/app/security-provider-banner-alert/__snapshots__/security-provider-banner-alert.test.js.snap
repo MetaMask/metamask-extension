@@ -64,7 +64,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
           class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
           style="mask-image: url('./images/icons/security-tick.svg');"
         />
-        [securityProviderAdviceBy]
+        [securityProviderPoweredBy]
       </p>
     </div>
   </div>
