@@ -55,9 +55,9 @@ jest.mock('@metamask/rpc-methods', () =>
 
 describe('Flask Restricted Methods', () => {
   it('has the expected flask permission keys', () => {
-    const flaskMethods = [
-      ...new Set([...Object.keys(RestrictedMethods), ...FlaskOnlyPermissions]),
-    ].sort();
+    const flaskExcludedSnapPermissions = Object.keys(
+      ExcludedSnapPermissions,
+    ).filter((key) => !FlaskOnlyPermissions.includes(key));
 
     expect(flaskMethods).toStrictEqual(
       [

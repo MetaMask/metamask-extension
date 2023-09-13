@@ -1990,6 +1990,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Gets the currently selected locale from the PreferencesController.
+   *
+   * @returns The currently selected locale.
+   */
+  getLocale() {
+    const { currentLocale } = this.preferencesController.store.getState();
+
+    return currentLocale;
+  }
+
+  /**
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
@@ -1998,6 +2009,7 @@ export default class MetamaskController extends EventEmitter {
       ...buildSnapRestrictedMethodSpecifications({
         encrypt,
         decrypt,
+        getLocale: this.getLocale.bind(this),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',
