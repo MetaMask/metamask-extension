@@ -39,7 +39,8 @@ describe('RestrictedMethods', () => {
         'eth_accounts',
         ...Object.keys(restrictedMethodPermissionBuilders).filter(
           (targetName) =>
-            !Object.keys(ExcludedSnapPermissions).includes(targetName),
+            !Object.keys(ExcludedSnapPermissions).includes(targetName) &&
+            !FlaskOnlyPermissions.includes(targetName),
         ),
       ].sort(),
     );
@@ -54,16 +55,14 @@ jest.mock('@metamask/rpc-methods', () =>
 
 describe('Flask Restricted Methods', () => {
   it('has the expected flask permission keys', () => {
-    const flaskExcludedSnapPermissions = Object.keys(
-      ExcludedSnapPermissions,
-    ).filter((key) => !FlaskOnlyPermissions.includes(key));
+    const flaskMethods = [
+      ...new Set([...Object.keys(RestrictedMethods), ...FlaskOnlyPermissions]),
+    ].sort();
 
-    expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
+    expect(flaskMethods).toStrictEqual(
       [
         'eth_accounts',
-        ...Object.keys(restrictedMethodPermissionBuilders).filter(
-          (targetName) => !flaskExcludedSnapPermissions.includes(targetName),
-        ),
+        ...Object.keys(restrictedMethodPermissionBuilders),
       ].sort(),
     );
   });

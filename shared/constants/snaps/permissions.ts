@@ -17,8 +17,6 @@ export const ExcludedSnapPermissions = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   snap_manageAccounts:
     'This permission is still in development and therefore not available.',
-  snap_getLocale:
-    'This permission is still in development and therefore not available.',
   ///: END:ONLY_INCLUDE_IN
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps/issues/990.',
