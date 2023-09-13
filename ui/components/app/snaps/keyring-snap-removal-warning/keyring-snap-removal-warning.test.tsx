@@ -35,7 +35,7 @@ const defaultArgs = {
         },
       },
       options: {},
-      supportedMethods: [
+      methods: [
         'personal_sign',
         'eth_sign',
         'eth_signTransaction',
@@ -56,7 +56,7 @@ const defaultArgs = {
         },
       },
       options: {},
-      supportedMethods: [
+      methods: [
         'personal_sign',
         'eth_sign',
         'eth_signTransaction',

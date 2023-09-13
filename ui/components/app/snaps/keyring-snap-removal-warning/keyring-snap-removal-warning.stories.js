@@ -39,7 +39,7 @@ export default {
           },
         },
         options: {},
-        supportedMethods: [
+        methods: [
           'personal_sign',
           'eth_sign',
           'eth_signTransaction',

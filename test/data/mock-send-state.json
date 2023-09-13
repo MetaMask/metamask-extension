@@ -129,7 +129,7 @@
           },
           "name": "Test Account",
           "options": {},
-          "supportedMethods": [
+          "methods": [
             "personal_sign",
             "eth_sendTransaction",
             "eth_sign",
@@ -152,7 +152,7 @@
           },
           "name": "Test Account 2",
           "options": {},
-          "supportedMethods": [
+          "methods": [
             "personal_sign",
             "eth_sendTransaction",
             "eth_sign",
@@ -175,7 +175,7 @@
           },
           "name": "Ledger Hardware 2",
           "options": {},
-          "supportedMethods": [
+          "methods": [
             "personal_sign",
             "eth_sendTransaction",
             "eth_sign",
@@ -198,7 +198,7 @@
           },
           "name": "Test Account 3",
           "options": {},
-          "supportedMethods": [
+          "methods": [
             "personal_sign",
             "eth_sendTransaction",
             "eth_sign",
