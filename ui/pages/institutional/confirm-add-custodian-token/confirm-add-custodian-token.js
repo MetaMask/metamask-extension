@@ -68,7 +68,7 @@ const ConfirmAddCustodianToken = () => {
     },
   });
 
-  let custodianLabel = '';
+  let custodianLabel = t('custodian');
 
   if (
     connectRequest.labels &&

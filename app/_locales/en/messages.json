@@ -358,7 +358,7 @@
     "message": "Allow this external extension to:"
   },
   "allowMmiToConnectToCustodian": {
-    "message": "This will allow MMI to connecto to $1 to import your accounts."
+    "message": "This will allow MMI to connect to $1 to import your accounts."
   },
   "allowSpendToken": {
     "message": "Give permission to access your $1?",
