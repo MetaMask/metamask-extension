@@ -25,6 +25,7 @@ import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-sp
 import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
+  getCustomTokenAmount,
   getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
@@ -109,9 +110,9 @@ export default function TokenAllowance({
   const { hostname } = new URL(origin);
   const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
 
-  const [customSpendingCap, setCustomSpendingCap] = useState(
-    dappProposedTokenAmount,
-  );
+  const customTokenAmount = useSelector(getCustomTokenAmount);
+  const [customSpendingCap, setCustomSpendingCap] = useState(customTokenAmount);
+
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
@@ -135,6 +136,24 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+
+  /**
+   * We set the customSpendingCap to the dappProposedTokenAmount, if provided, rather than setting customTokenAmount
+   * because customTokenAmount is reserved for custom user input. This is only set once when the component is mounted.
+   */
+  const initializeCustomSpendingCap = () => {
+    if (
+      (!customSpendingCap || customSpendingCap === '') &&
+      dappProposedTokenAmount
+    ) {
+      setCustomSpendingCap(dappProposedTokenAmount);
+    }
+  };
+
+  useEffect(() => {
+    initializeCustomSpendingCap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
