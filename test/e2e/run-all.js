@@ -108,6 +108,7 @@ async function main() {
         'test-snap-manageAccount.spec.js',
         'test-snap-rpc.spec.js',
         'test-snap-lifecycle.spec.js',
+        'petnames.spec.js',
       ];
       testPaths = testPaths.filter((p) =>
         filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
@@ -115,9 +116,6 @@ async function main() {
     }
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
-    testPaths = await getTestPathsForTestDir(testDir);
-  } else if (buildType === 'flask') {
-    const testDir = path.join(__dirname, 'flask');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');

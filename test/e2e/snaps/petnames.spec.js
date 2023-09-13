@@ -2,6 +2,11 @@ const { strict: assert } = require('assert');
 const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
+const SIGNATURE_TYPE = {
+  TYPED_V3: 'v3',
+  TYPED_V4: 'v4',
+};
+
 const ganacheOptions = {
   accounts: [
     {
@@ -19,8 +24,11 @@ async function loginAndOpenTestDapp(driver) {
   await openDapp(driver);
 }
 
-async function createType4SignatureRequest(driver) {
-  await driver.clickElement('#signTypedDataV4');
+async function createSignatureRequest(driver, type) {
+  const buttonId =
+    type === SIGNATURE_TYPE.TYPED_V3 ? '#signTypedDataV3' : '#signTypedDataV4';
+
+  await driver.clickElement(buttonId);
   await driver.waitUntilXWindowHandles(3);
 }
 
@@ -131,20 +139,72 @@ async function saveName(driver, parent, name, proposedName) {
 }
 
 describe('Petnames', function () {
-  it('can save names for addresses in type 4 signatures', async function () {
+  it('can save names for addresses in type 3 signatures', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-
+          .withNoNames()
           .build(),
         ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
         await loginAndOpenTestDapp(driver);
-        await createType4SignatureRequest(driver);
+        await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
+        await focusNotification(driver);
+
+        let addresses = await getAddressesInMessage(driver);
+
+        await expectName(addresses[0], '0xCD2...D826', 'test.lens', false);
+        await expectName(addresses[1], '0xbBb...BBbB', 'test2.lens', false);
+
+        await saveName(driver, addresses[0], undefined, 'test.lens');
+        await saveName(driver, addresses[1], undefined, 'test2.lens');
+
+        let contractDetailsModal = await showThirdPartyDetails(driver);
+
+        await expectName(
+          contractDetailsModal,
+          '0xCcC...cccC',
+          'test3.lens',
+          false,
+        );
+
+        await saveName(driver, contractDetailsModal, 'Custom Name');
+        await closeThirdPartyDetails(driver);
+        await rejectSignatureRequest(driver);
+        await focusTestDapp(driver);
+        await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
+        await focusNotification(driver);
+
+        addresses = await getAddressesInMessage(driver);
+
+        await expectName(addresses[0], 'test.lens', undefined, true);
+        await expectName(addresses[1], 'test2.lens', undefined, true);
+
+        contractDetailsModal = await showThirdPartyDetails(driver);
+
+        await expectName(contractDetailsModal, 'Custom Name', undefined, true);
+      },
+    );
+  });
+
+  it('can save names for addresses in type 4 signatures', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withNoNames()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await loginAndOpenTestDapp(driver);
+        await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await focusNotification(driver);
 
         let addresses = await getAddressesInMessage(driver);
@@ -171,7 +231,7 @@ describe('Petnames', function () {
         await closeThirdPartyDetails(driver);
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
-        await createType4SignatureRequest(driver);
+        await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await focusNotification(driver);
 
         addresses = await getAddressesInMessage(driver);
