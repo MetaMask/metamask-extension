@@ -11,7 +11,10 @@ import { shortenAddress } from '../../../../helpers/utils/util';
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Icon, IconName, PickerNetwork } from '../../../component-library';
-import { BackgroundColor, BorderColor } from '../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderColor,
+} from '../../../../helpers/constants/design-system';
 import { getTestNetworkBackgroundColor } from '../../../../selectors';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import { NETWORK_TYPES } from '../../../../../shared/constants/network';
@@ -81,12 +84,12 @@ export default function ConfirmPageContainerHeader({
             }
             backgroundColor={BackgroundColor.transparent}
             borderColor={BorderColor.borderMuted}
-            iconProps={{display: 'none'}}
+            iconProps={{ display: 'none' }}
             avatarNetworkProps={{
               backgroundColor: testNetworkBackgroundColor,
-              className: "confirm-page-container-header-avatar-network-base"
+              className: 'confirm-page-container-header-avatar-network-base',
             }}
-            className='mm-picker-network-div'
+            className="mm-picker-network-div"
           />
         )}
       </div>
