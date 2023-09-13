@@ -53,31 +53,52 @@ function SecurityProviderBannerAlert({
       )}
 
       {provider && (
-        <Text
-          marginTop={3}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          color={Color.textAlternative}
-          variant={TextVariant.bodySm}
-        >
-          <Icon
-            className="disclosure__summary--icon"
-            color={IconColor.primaryDefault}
-            name={IconName.SecurityTick}
-            size={IconSize.Sm}
-            marginInlineEnd={1}
-          />
-          {t('securityProviderPoweredBy', [
-            <ButtonLink
-              key={`security-provider-button-link-${provider}`}
-              size={Size.inherit}
-              href={SECURITY_PROVIDER_CONFIG[provider].url}
-              externalLink
-            >
-              {t(SECURITY_PROVIDER_CONFIG[provider].tKeyName)}
-            </ButtonLink>,
-          ])}
-        </Text>
+        <>
+          <Text
+            marginTop={3}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            color={Color.textAlternative}
+            variant={TextVariant.bodySm}
+          >
+            {t('somethingDoesntLookRight', [
+              <ButtonLink
+                key={`security-provider-button-supporturl-${provider}`}
+                size={Size.inherit}
+                href={SECURITY_PROVIDER_CONFIG[provider].supportUrl}
+                externalLink
+              >
+                {t('contactUs')}
+              </ButtonLink>,
+            ])}
+          </Text>
+
+          <Text
+            marginTop={3}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            color={Color.textAlternative}
+            variant={TextVariant.bodySm}
+          >
+            <Icon
+              className="disclosure__summary--icon"
+              color={IconColor.primaryDefault}
+              name={IconName.SecurityTick}
+              size={IconSize.Sm}
+              marginInlineEnd={1}
+            />
+            {t('securityProviderPoweredBy', [
+              <ButtonLink
+                key={`security-provider-button-link-${provider}`}
+                size={Size.inherit}
+                href={SECURITY_PROVIDER_CONFIG[provider].url}
+                externalLink
+              >
+                {t(SECURITY_PROVIDER_CONFIG[provider].tKeyName)}
+              </ButtonLink>,
+            ])}
+          </Text>
+        </>
       )}
     </BannerAlert>
   );

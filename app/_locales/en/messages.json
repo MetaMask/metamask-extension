@@ -4266,6 +4266,9 @@
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
   },
+  "somethingDoesntLookRight": {
+    "message": "Something doesn't look right? $1"
+  },
   "somethingIsWrong": {
     "message": "Something's gone wrong. Try reloading the page."
   },
