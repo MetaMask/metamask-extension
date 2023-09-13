@@ -9,15 +9,15 @@ import {
   TextVariant,
   FlexDirection,
   Display,
-} from '../../../../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 import {
   Text,
   AvatarIcon,
   Box,
   IconName,
   AvatarIconSize,
-} from '../../../../../components/component-library';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+} from '../../../components/component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const CreateSnapAccountSuccess = () => {
   console.log('CreateSnapAccountSuccess rendered');
