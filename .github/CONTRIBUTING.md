@@ -13,6 +13,7 @@ If you're picking up a bounty or an existing issue, feel free to ask clarifying 
 ### Submitting a pull request
 When you're done with your project / bugfix / feature and ready to submit a PR, there are a couple guidelines we ask you to follow:
 
+- [ ] **Make sure you followed our [`coding guidelines`](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md)**: These guidelines aim to maintain consistency and readability across the codebase. They help ensure that the code is easy to understand, maintain, and modify, which is particularly important when working with multiple contributors.
 - [ ] **Test it**: For any new programmatic functionality, we like unit tests when possible, so if you can keep your code cleanly isolated, please do add a test file to the `tests` folder.
 - [ ] **Add to the CHANGELOG**: Help us keep track of all the moving pieces by adding an entry to the [`CHANGELOG.md`](https://github.com/MetaMask/metamask-extension/blob/develop/CHANGELOG.md) with a link to your PR.
 - [ ] **Meet the spec**: Make sure the PR adds functionality that matches the issue you're closing. This is especially important for bounties: sometimes design or implementation details are included in the conversation, so read carefully!
