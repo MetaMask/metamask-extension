@@ -644,9 +644,7 @@ const CustodyPage = () => {
               setApiUrl('');
               setAddNewTokenClicked(false);
 
-              if (Object.keys(connectRequest).length) {
-                history.push(DEFAULT_ROUTE);
-              }
+              history.push(DEFAULT_ROUTE);
 
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,
