@@ -4,7 +4,7 @@ import {
   IconSize,
   Text,
   TextField,
-} from '../../../../../components/component-library';
+} from '../../../components/component-library';
 import {
   AlignItems,
   BlockSize,
@@ -14,9 +14,9 @@ import {
   OverflowWrap,
   TextAlign,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import SnapAvatar from '../../../../../components/app/snaps/snap-avatar';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+} from '../../../helpers/constants/design-system';
+import SnapAvatar from '../../../components/app/snaps/snap-avatar';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 interface CreateSnapAccountContentProps {
   snapName: string;

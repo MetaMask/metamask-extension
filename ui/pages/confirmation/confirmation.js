@@ -50,7 +50,6 @@ import {
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
-import { CreateSnapAccount } from './templates/create-snap-account';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -207,11 +206,6 @@ export default function ConfirmationPage({
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
-  const [isSnapAccountConform, setIsSNapAccountConform] = useState(
-    pendingConfirmation &&
-      pendingConfirmation.type === 'snap_manageAccounts:confirmation',
-  );
-
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
@@ -234,6 +228,7 @@ export default function ConfirmationPage({
   const INPUT_STATE_CONFIRMATIONS = [
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     ApprovalType.SnapDialogPrompt,
+    'snap_manageAccounts:confirmation',
     ///: END:ONLY_INCLUDE_IN
   ];
 
@@ -336,17 +331,6 @@ export default function ConfirmationPage({
       handleSubmitResult(submitResult);
     }
   };
-
-  if (isSnapAccountConform) {
-    return (
-      <CreateSnapAccount
-        onCancel={templatedValues.onCancel}
-        onSubmit={templatedValues.onSubmit}
-        snapId={pendingConfirmation.origin}
-        snapName={snapName}
-      />
-    );
-  }
 
   return (
     <div className="confirmation-page">
