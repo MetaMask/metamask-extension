@@ -1,70 +1,86 @@
-import React, { Component } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../ui/button';
-import { AvatarFavicon } from '../../component-library';
+import { AvatarFavicon, ButtonIcon, IconName } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
-import { Size } from '../../../helpers/constants/design-system';
+import { BorderColor, Size } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Menu, MenuItem } from '../../ui/menu';
 
-export default class ConnectedSitesList extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+export default function ConnectedSitesList({
+  connectedSubjects,
+  onDisconnect,
+}) {
+  const [showOptions, setShowOptions] = useState(false);
+  const ref = useRef(false);
+  const t = useI18nContext();
 
-  static propTypes = {
-    connectedSubjects: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        iconUrl: PropTypes.string,
-        origin: PropTypes.string,
-      }),
-    ).isRequired,
-    onDisconnect: PropTypes.func.isRequired,
-  };
-
-  render() {
-    const { connectedSubjects, onDisconnect } = this.props;
-    const { t } = this.context;
-
-    return (
-      <main className="connected-sites-list__content-rows">
-        {connectedSubjects.map((subject) => (
-          <div
-            key={subject.origin}
-            className="connected-sites-list__content-row"
-          >
-            <div className="connected-sites-list__subject-info">
-              <AvatarFavicon
-                className="connected-sites-list__subject-icon"
-                name={subject.name}
-                size={Size.MD}
-                src={subject.iconUrl}
-              />
-              <SiteOrigin
-                className="connected-sites-list__subject-name"
-                title={subject.extensionId || subject.origin}
-                siteOrigin={this.getSubjectDisplayName(subject)}
-              />
-            </div>
-            <Button
-              className="connected-sites-list__content-row-link-button"
-              onClick={() => onDisconnect(subject.origin)}
-              type="link"
-            >
-              {t('disconnect')}
-            </Button>
-          </div>
-        ))}
-      </main>
-    );
-  }
-
-  getSubjectDisplayName(subject) {
+  const getSubjectDisplayName = (subject) => {
     if (subject.extensionId) {
-      return this.context.t('externalExtension');
+      return t('externalExtension');
     }
 
     // We strip https schemes only, and only if the URL has no port.
     return stripHttpsSchemeWithoutPort(subject.origin);
-  }
+  };
+
+  return (
+    <main className="connected-sites-list__content-rows">
+      {connectedSubjects.map((subject) => (
+        <div key={subject.origin} className="connected-sites-list__content-row">
+          <div className="connected-sites-list__subject-info">
+            <AvatarFavicon
+              borderColor={BorderColor.borderMuted}
+              className="connected-sites-list__subject-icon"
+              name={subject.name}
+              size={Size.MD}
+              src={subject.iconUrl}
+            />
+            <SiteOrigin
+              className="connected-sites-list__subject-name"
+              title={subject.extensionId || subject.origin}
+              siteOrigin={getSubjectDisplayName(subject)}
+            />
+          </div>
+          <div ref={ref}>
+            <ButtonIcon
+              iconName={IconName.MoreVertical}
+              className="connected-accounts-options__button"
+              onClick={() => setShowOptions(true)}
+              ariaLabel={t('options')}
+            />
+            {showOptions ? (
+              <Menu
+                anchorElement={ref.current}
+                onHide={() => setShowOptions(false)}
+                popperOptions={{
+                  modifiers: [
+                    { name: 'preventOverflow', options: { altBoundary: true } },
+                  ],
+                }}
+              >
+                <MenuItem
+                  iconName={IconName.Logout}
+                  onClick={() => onDisconnect(subject.origin)}
+                >
+                  {t('disconnect')}
+                </MenuItem>
+              </Menu>
+            ) : null}
+          </div>
+        </div>
+      ))}
+    </main>
+  );
 }
+
+ConnectedSitesList.propTypes = {
+  connectedSubjects: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      iconUrl: PropTypes.string,
+      origin: PropTypes.string,
+    }),
+  ).isRequired,
+  onDisconnect: PropTypes.func.isRequired,
+};

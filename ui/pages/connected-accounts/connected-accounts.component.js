@@ -32,12 +32,21 @@ export default function ConnectedAccounts({
   const connectedSubjectsMetadata = subjectMetadata[originOfActiveTab];
   const isPermissionSubject =
     permissionSubjects[originOfActiveTab]?.origin ===
-    connectedSubjectsMetadata?.origin;
+      connectedSubjectsMetadata?.origin &&
+    permissionSubjects[originOfActiveTab]?.permissions[
+      WALLET_SNAP_PERMISSION_KEY
+    ];
+
+  // To get the metaData of the snap connected
   const connectedSubjects = [connectedSubjectsMetadata];
-  const permissionSubjectsLength = Object.keys(
-    permissionSubjects[originOfActiveTab]?.permissions?.wallet_snap.caveats[0]
-      .value,
-  ).length;
+
+  // To evaluate the length of connected snaps
+  const connectedPermissionSubjectsLength =
+    isPermissionSubject &&
+    Object.keys(
+      permissionSubjects[originOfActiveTab]?.permissions?.wallet_snap
+        ?.caveats[0]?.value,
+    )?.length;
 
   const connectedAccountsDescription =
     connectedAccounts.length > 0
@@ -52,7 +61,7 @@ export default function ConnectedAccounts({
   } else if (connectedAccounts.length && isPermissionSubject) {
     subtitle = t('connectedAccountsAndSnapDescription', [
       connectedAccounts.length,
-      permissionSubjectsLength,
+      connectedPermissionSubjectsLength,
     ]);
   } else {
     subtitle = t('connectedAccountsEmptyDescription');
