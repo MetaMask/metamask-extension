@@ -13,16 +13,6 @@ import {
 import { processHeader, processString } from '../util';
 
 function getValues(pendingApproval, t, actions, _history) {
-  console.log(
-    'SNAPS/ success getValue called with pendingApproval: ',
-    pendingApproval,
-    ' and t: ',
-    t,
-    ' and actions: ',
-    actions,
-    ' and _history: ',
-    _history,
-  );
   return {
     content: [
       ...processHeader(pendingApproval.requestData.header),

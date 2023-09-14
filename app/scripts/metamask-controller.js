@@ -153,6 +153,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import {
@@ -859,8 +862,37 @@ export default class MetamaskController extends EventEmitter {
       (() => {
         const builder = () =>
           new SnapKeyring(this.snapController, {
-            saveState: async () => {
-              await this.keyringController.persistAllKeyrings();
+            saveState: async (origin) => {
+              const { id: addAccountApprovalId } =
+                this.approvalController.startFlow();
+
+              const confirmationResult =
+                await this.approvalController.addAndShowApprovalRequest({
+                  origin,
+                  type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+                });
+
+              if (confirmationResult) {
+                try {
+                  await this.keyringController.persistAllKeyrings();
+                  await this.approvalController.success({
+                    flowToEnd: addAccountApprovalId,
+                    message: 'Your account is ready!',
+                  });
+                } catch (error) {
+                  await this.approvalController.error({
+                    error: error.message,
+                  });
+                  await this.approvalController.endFlow({
+                    id: addAccountApprovalId,
+                  });
+                }
+              } else {
+                await this.approvalController.endFlow({
+                  id: addAccountApprovalId,
+                });
+                throw new Error('User denied account addition');
+              }
             },
             removeAccount: async (address) => {
               await this.removeAccount(address);
@@ -2048,19 +2080,6 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
-        showSnapAccountConfirmation: (origin, type, content, placeholder) => {
-          console.log('SNAPS/ showSnapAccountConfirmation called with:', {
-            origin,
-            type,
-            content,
-            placeholder,
-          });
-          return this.approvalController.addAndShowApprovalRequest({
-            origin,
-            type: SNAP_DIALOG_TYPES[type],
-            requestData: { content, placeholder },
-          });
-        },
         requestUserApproval:
           this.approvalController.addAndShowApprovalRequest.bind(
             this.approvalController,
@@ -2071,10 +2090,6 @@ export default class MetamaskController extends EventEmitter {
         endApprovalFlow: this.approvalController.endFlow.bind(
           this.approvalController,
         ),
-        setApprovalFlowLoadingText:
-          this.approvalController.setFlowLoadingText.bind(
-            this.approvalController,
-          ),
         showApprovalSuccess: this.approvalController.success.bind(
           this.approvalController,
         ),

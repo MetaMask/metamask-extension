@@ -38,13 +38,13 @@ import Loading from '../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
-import { CreateSnapAccount } from './templates/create-snap-account';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -178,11 +178,8 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
-
-  console.log(
-    'SNAPS/ ConfirmationPage called with pendingConfirmations: ',
-    pendingConfirmations,
-  );
+  // State variable to hold the previous snapName
+  const [prevSnapInfo, setPrevSnapInfo] = useState(null);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
@@ -209,11 +206,6 @@ export default function ConfirmationPage({
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
-  const [isSnapAccountConform, setIsSNapAccountConform] = useState(
-    pendingConfirmation &&
-      pendingConfirmation.type === 'snap_manageAccounts:confirmation',
-  );
-
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
@@ -223,6 +215,7 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogAlert,
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
   ];
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
@@ -268,6 +261,15 @@ export default function ConfirmationPage({
     snapName,
     ///: END:ONLY_INCLUDE_IN
   ]);
+
+  useEffect(() => {
+    // Check if the current pendingConfirmation.type is 'snap_manageAccounts:confirmation' to store the snap info for the success/error screen
+    if (pendingConfirmation?.type === 'snap_manageAccounts:confirmation') {
+      setPrevSnapInfo({
+        origin: pendingConfirmation.origin,
+      });
+    }
+  }, [pendingConfirmation]);
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
@@ -340,17 +342,6 @@ export default function ConfirmationPage({
     }
   };
 
-  if (isSnapAccountConform) {
-    return (
-      <CreateSnapAccount
-        onCancel={templatedValues.onCancel}
-        onSubmit={templatedValues.onSubmit}
-        snapId={pendingConfirmation.origin}
-        snapName={snapName}
-      />
-    );
-  }
-
   return (
     <div className="confirmation-page">
       {pendingConfirmations.length > 1 && (
@@ -400,6 +391,11 @@ export default function ConfirmationPage({
           )
           ///: END:ONLY_INCLUDE_IN
         }
+        {prevSnapInfo && pendingConfirmation?.origin === 'metamask' && (
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          <SnapAuthorshipHeader snapId={prevSnapInfo.origin} />
+          ///: END:ONLY_INCLUDE_IN
+        )}
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
         {showWarningModal && (
           <ConfirmationWarningModal

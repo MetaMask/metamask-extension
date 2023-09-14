@@ -129,10 +129,6 @@ export default class PermissionConnect extends Component {
     } = this.props;
     getRequestAccountTabIds();
 
-    console.log('SNAPS/', 'PermissionConnect componentDidMount', {
-      requestType,
-    });
-
     if (!permissionsRequest) {
       history.replace(DEFAULT_ROUTE);
       return;
@@ -368,7 +364,7 @@ export default class PermissionConnect extends Component {
       snapsInstallPrivacyWarningShown,
       ///: END:ONLY_INCLUDE_IN
     } = this.state;
-    console.log('SNAPS/', 'PermissionConnect render', this.props, this.state);
+
     return (
       <div className="permissions-connect">
         {!hideTopBar && this.renderTopBar()}
