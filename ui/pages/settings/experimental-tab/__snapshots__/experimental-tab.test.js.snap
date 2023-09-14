@@ -39,7 +39,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           </p>
           <div
             class="settings-page__content-item-col settings-page__content-item-col-open-sea"
-            data-testid="transaction-security-check-blockaid"
+            data-testid="advanced-setting-security-alerts-toggle-option"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-0 mm-box--color-text-default"

@@ -88,23 +88,8 @@ export default class ExperimentalTab extends PureComponent {
               >
                 {t('securityAlertsDescription')}
               </Text>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('securityAlertsDescription2')}
-              </Text>
-
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                marginTop={3}
-                marginBottom={1}
-              >
-                {t('selectProvider')}
-              </Text>
               <div
-                data-testid="transaction-security-check-blockaid"
+                data-testid="advanced-setting-security-alerts-toggle-option"
                 className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
               >
                 <Text
@@ -169,15 +154,6 @@ export default class ExperimentalTab extends PureComponent {
                 color={TextColor.textAlternative}
               >
                 {t('transactionSecurityCheckDescription')}
-              </Text>
-              <Text
-                marginTop={3}
-                marginBottom={1}
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={TextColor.textAlternative}
-              >
-                {t('selectProvider')}
               </Text>
               <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
                 <Text

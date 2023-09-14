@@ -31,7 +31,7 @@ describe('Blockaid Settings', function () {
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
         await openDapp(driver);
-        await driver.clickElement('#signPermit');
+        await driver.clickElement('#maliciousPermit');
       },
     );
   });
@@ -58,11 +58,11 @@ describe('Blockaid Settings', function () {
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
         await driver.clickElement(
-          '[data-testid="transaction-security-check-blockaid"] .toggle-button > div',
+          '[data-testid="advanced-setting-security-alerts-toggle-option"] .toggle-button > div',
         );
 
         await openDapp(driver);
-        await driver.clickElement('#signPermit');
+        await driver.clickElement('#maliciousPermit');
         const windowHandles = await getWindowHandles(driver, 3);
         await driver.switchToWindow(windowHandles.popup);
 
