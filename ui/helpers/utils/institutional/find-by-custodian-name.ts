@@ -4,10 +4,10 @@ type Custodian = {
   name: string;
   website: string;
   envName: string;
-  apiUrl: string;
-  displayName: string;
+  apiUrl: string | null;
+  displayName: string | null;
   production: boolean;
-  refreshTokenUrl: string;
+  refreshTokenUrl: string | null;
   websocketApiUrl: string;
   isNoteToTraderSupported: boolean;
   version: number;
