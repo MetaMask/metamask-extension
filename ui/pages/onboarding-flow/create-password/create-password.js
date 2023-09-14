@@ -15,10 +15,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Text } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import {
@@ -9,10 +9,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setCompletedOnboarding } from '../../../store/actions';
+import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 
 export default function OnboardingSuccessful() {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { portfolio } = useSelector(getMMIConfiguration);
 
   return (
     <div className="creation-successful" data-testid="creation-successful">
@@ -37,8 +39,7 @@ export default function OnboardingSuccessful() {
           rounded
           onClick={async () => {
             await dispatch(setCompletedOnboarding());
-            window.open('https://metamask-institutional.io/onboarding');
-            // window.location.href = 'https://metamask-institutional.io/onboarding';
+            window.open(portfolio.url);
           }}
         >
           {t('continueMmiOnboarding')}

@@ -2,7 +2,7 @@ import React from 'react';
 import OnboardingSuccessful from './onboarding-successful';
 
 export default {
-  title: 'Pages/OnboardingFlow/OnboardingSuccessful',
+  title: 'Pages/Institutional/OnboardingSuccessful',
 };
 
 export const DefaultStory = () => {

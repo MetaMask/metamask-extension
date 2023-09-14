@@ -27,7 +27,7 @@ import {
   setTermsOfUseLastAgreed,
   setParticipateInMetaMetrics,
 } from '../../../store/actions';
-  import {
+import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_METAMETRICS,
   ///: END:ONLY_INCLUDE_IN

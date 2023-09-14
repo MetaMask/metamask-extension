@@ -9,7 +9,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 import { setCompletedOnboarding } from '../../../store/actions';
-import OnboardingPinBillboard from './pin-billboard';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin-mmi-billboard';
@@ -32,6 +31,9 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { Text } from '../../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+import OnboardingPinBillboard from './pin-billboard';
+///: END:ONLY_INCLUDE_IN
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
