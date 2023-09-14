@@ -34,6 +34,29 @@ export default function ConnectedAccounts({
     permissionSubjects[originOfActiveTab]?.origin ===
     connectedSubjectsMetadata?.origin;
   const connectedSubjects = [connectedSubjectsMetadata];
+  const permissionSubjectsLength = Object.keys(
+    permissionSubjects[originOfActiveTab]?.permissions?.wallet_snap.caveats[0]
+      .value,
+  ).length;
+
+  const connectedAccountsDescription =
+    connectedAccounts.length > 0
+      ? t('connectedAccountsDescriptionPlural', [connectedAccounts.length])
+      : t('connectedAccountsDescriptionSingular');
+
+  let subtitle;
+  if (connectedAccounts.length && !isPermissionSubject) {
+    subtitle = connectedAccountsDescription;
+  } else if (isPermissionSubject && !connectedAccounts.length) {
+    subtitle = t('connectedSnapAndNoAccountDescription');
+  } else if (connectedAccounts.length && isPermissionSubject) {
+    subtitle = t('connectedAccountsAndSnapDescription', [
+      connectedAccounts.length,
+      permissionSubjectsLength,
+    ]);
+  } else {
+    subtitle = t('connectedAccountsEmptyDescription');
+  }
 
   const onDisconnect = (connectedOrigin) => {
     const caveatValue =
@@ -59,11 +82,6 @@ export default function ConnectedAccounts({
     }
   };
 
-  const connectedAccountsDescription =
-    connectedAccounts.length > 0
-      ? t('connectedAccountsDescriptionPlural', [connectedAccounts.length])
-      : t('connectedAccountsDescriptionSingular');
-
   return (
     <Popover
       title={
@@ -71,11 +89,7 @@ export default function ConnectedAccounts({
           ? t('currentExtension')
           : getURLHost(activeTabOrigin)
       }
-      subtitle={
-        connectedAccounts.length
-          ? connectedAccountsDescription
-          : t('connectedAccountsEmptyDescription')
-      }
+      subtitle={subtitle}
       onClose={() => history.push(mostRecentOverviewPage)}
       footerClassName="connected-accounts__footer"
       footer={
