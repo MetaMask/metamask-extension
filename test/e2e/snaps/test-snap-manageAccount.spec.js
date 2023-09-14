@@ -85,9 +85,6 @@ describe('Test Snap Account', function () {
           tag: 'div',
         });
 
-        // create name for account
-        await driver.fill("[placeholder='Name']", 'snap account');
-
         await driver.clickElement({
           text: 'Execute',
           tag: 'button',
