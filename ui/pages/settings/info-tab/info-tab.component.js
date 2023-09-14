@@ -55,7 +55,7 @@ export default class InfoTab extends PureComponent {
     let privacyUrl, siteUrl;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    privacyUrl = 'https://consensys.net/codefi/about/privacy-policy/';
+    privacyUrl = 'https://consensys.net/privacy-policy/';
     siteUrl = MMI_WEB_SITE;
     ///: END:ONLY_INCLUDE_IN
 
