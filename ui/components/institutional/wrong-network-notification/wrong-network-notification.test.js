@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { toHex } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import WrongNetworkNotification from '.';
@@ -14,11 +15,11 @@ describe('Wrong Network Notification', function () {
       ...testData.metamask,
       providerConfig: {
         type: 'test',
-        chainId: '3',
+        chainId: toHex(3),
       },
       selectedAddress: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
       cachedBalances: {
-        '0x1': {
+        [toHex(1)]: {
           '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
         },
       },
@@ -77,10 +78,10 @@ describe('Wrong Network Notification', function () {
         ...mockStore.metamask,
         providerConfig: {
           type: 'test',
-          chainId: '3',
+          chainId: toHex(3),
         },
         cachedBalances: {
-          '0x1': {
+          [toHex(1)]: {
             '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
           },
         },
@@ -103,10 +104,10 @@ describe('Wrong Network Notification', function () {
         ...mockStore.metamask,
         providerConfig: {
           type: 'test',
-          chainId: '3',
+          chainId: toHex(3),
         },
         cachedBalances: {
-          3: {
+          [toHex(3)]: {
             '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
           },
         },
