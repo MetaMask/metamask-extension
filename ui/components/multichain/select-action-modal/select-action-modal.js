@@ -56,6 +56,7 @@ import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 ///: END:ONLY_INCLUDE_IN
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 export const SelectActionModal = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -94,8 +95,10 @@ export const SelectActionModal = ({ onClose }) => {
       data-testid="select-action-modal"
     >
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader onClose={onClose}>{t('selectAnAction')}</ModalHeader>
+      <ModalContent modalDialogProps={{ paddingLeft: 0, paddingRight: 0 }}>
+        <ModalHeader onClose={onClose} paddingRight={4}>
+          {t('selectAnAction')}
+        </ModalHeader>
         <Box className="select-action-modal__container" marginTop={6}>
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -159,7 +162,7 @@ export const SelectActionModal = ({ onClose }) => {
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
                   properties: {
-                    token_symbol: 'ETH',
+                    token_symbol: CURRENCY_SYMBOLS.ETH,
                     location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
                     chain_id: chainId,
@@ -185,7 +188,7 @@ export const SelectActionModal = ({ onClose }) => {
                 event: MetaMetricsEventName.NavSendButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
-                  token_symbol: 'ETH',
+                  token_symbol: CURRENCY_SYMBOLS.ETH,
                   location: 'Home',
                   text: 'Send',
                   chain_id: chainId,
@@ -226,7 +229,7 @@ export const SelectActionModal = ({ onClose }) => {
                       location: 'Home',
                       text: 'Bridge',
                       chain_id: chainId,
-                      token_symbol: 'ETH',
+                      token_symbol: CURRENCY_SYMBOLS.ETH,
                     },
                   });
                 }

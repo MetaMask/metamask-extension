@@ -287,6 +287,9 @@
   "address": {
     "message": "Adresse"
   },
+  "addressCopied": {
+    "message": "Adresse copiée !"
+  },
   "advanced": {
     "message": "Paramètres avancés"
   },
@@ -295,6 +298,10 @@
   },
   "advancedConfiguration": {
     "message": "Configuration avancée"
+  },
+  "advancedGasFeeDefaultOptIn": {
+    "message": "Enregistrer ces valeurs comme valeurs par défaut pour le réseau $1.",
+    "description": "$1 is the current network name."
   },
   "advancedGasFeeModalTitle": {
     "message": "Frais de carburant avancés"
@@ -589,6 +596,12 @@
   "bridge": {
     "message": "Pont"
   },
+  "bridgeDescription": {
+    "message": "Transférez des jetons provenant de différents réseaux"
+  },
+  "bridgeDisabled": {
+    "message": "La passerelle n’est pas disponible sur ce réseau"
+  },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
   },
@@ -607,6 +620,12 @@
   "buyAsset": {
     "message": "Acheter $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyDescription": {
+    "message": "Conservez vos crypto-actifs et dégagez des bénéfices potentiels"
+  },
+  "buyDisabled": {
+    "message": "Impossible d’effectuer un achat sur ce réseau"
   },
   "buyMoreAsset": {
     "message": "Acheter plus de $1",
@@ -827,6 +846,9 @@
   },
   "connectionRequest": {
     "message": "Demande de connexion"
+  },
+  "connections": {
+    "message": "Connexions"
   },
   "contactUs": {
     "message": "Nous contacter"
@@ -1136,6 +1158,9 @@
   "descriptionFromSnap": {
     "message": "Description provenant de $1",
     "description": "$1 represents the name of the snap"
+  },
+  "desktopApp": {
+    "message": "Application de bureau"
   },
   "desktopConnectionCriticalErrorDescription": {
     "message": "Cette erreur peut être passagère – essayez de redémarrer l’extension ou de désactiver MetaMask Desktop."
@@ -1550,7 +1575,7 @@
     "message": "Explorer les Snaps MetaMask"
   },
   "extendWalletWithSnaps": {
-    "message": "Prolongez l’expérience avec ce portefeuille."
+    "message": "Personnalisez votre expérience de portefeuille."
   },
   "externalExtension": {
     "message": "Extension externe"
@@ -2755,11 +2780,23 @@
   "notifications23ActionText": {
     "message": "Activer les alertes de sécurité"
   },
+  "notifications23DescriptionOne": {
+    "message": "Évitez de vous faire arnaquer et protégez vos données personnelles grâce aux alertes de sécurité fournies par Blockaid sur le réseau principal Ethereum."
+  },
   "notifications23DescriptionTwo": {
     "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande."
   },
   "notifications23Title": {
     "message": "Restez en sécurité grâce aux alertes de sécurité"
+  },
+  "notifications24ActionText": {
+    "message": "J’ai compris"
+  },
+  "notifications24Description": {
+    "message": "Les paramètres des frais de gaz avancés sont désormais ajustés en fonction du réseau que vous utilisez. Cela signifie que vous pouvez définir des frais de gaz avancés pour chaque réseau et éviter de payer trop cher pour le gaz ou le blocage des transactions."
+  },
+  "notifications24Title": {
+    "message": "Frais de gaz avancés pour chaque réseau"
   },
   "notifications3ActionText": {
     "message": "En savoir plus",
@@ -2842,8 +2879,16 @@
   "notifications9Title": {
     "message": "👓 Nous simplifions la lisibilité des transactions."
   },
+  "notificationsDropLedgerFirefoxDescription": {
+    "message": "Firefox ne prend plus en charge la norme d’authentification U2F, donc Ledger ne fonctionnera pas avec MetaMask sur Firefox. Essayez plutôt d’utiliser MetaMask sur Google Chrome.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
+  },
+  "notificationsDropLedgerFirefoxTitle": {
+    "message": "La prise en charge de Ledger ne sera plus assurée sur Firefox",
+    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
+  },
   "notificationsEmptyText": {
-    "message": "Rien à voir ici."
+    "message": "Ici, vous pouvez trouver des notifications de vos snaps installés."
   },
   "notificationsHeader": {
     "message": "Notifications"
@@ -2854,6 +2899,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Marquer tout comme lu"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "En savoir plus"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Nous sommes ravis d’annoncer le lancement de la version bêta publique de MetaMask Snaps !"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personnalisez votre portefeuille avec des snaps conçus par la communauté de développeurs !"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Les snaps vous aident à profiter pleinement de MetaMask, par exemple vous connecter à plus de réseaux, voir un aperçu des transactions et recevoir des notifications personnalisées."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Présentation de MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
@@ -3640,8 +3700,15 @@
   "securityAlerts": {
     "message": "Alertes de sécurité"
   },
+  "securityAlertsDescription": {
+    "message": "Cette fonctionnalité vous avertit de toute activité malveillante sur le réseau principal Ethereum en examinant activement les transactions et les demandes de signature tout en protégeant vos données personnelles. Vos données ne sont pas partagées avec la tierce partie qui fournit ce service. Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande. Rien ne garantit que toutes les activités malveillantes seront détectées par cette fonctionnalité."
+  },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"
+  },
+  "securityProviderPoweredBy": {
+    "message": "Service fourni par $1",
+    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Voir les détails"
@@ -3724,6 +3791,9 @@
   "selectAnAccountHelp": {
     "message": "Sélectionnez les comptes de dépôt que vous voulez utiliser dans MetaMask Institutional."
   },
+  "selectAnAction": {
+    "message": "Sélectionner une action"
+  },
   "selectHdPath": {
     "message": "Sélectionner le chemin HD"
   },
@@ -3747,6 +3817,9 @@
   },
   "sendBugReport": {
     "message": "Envoyez-nous un rapport de bogue."
+  },
+  "sendDescription": {
+    "message": "Transférez des crypto-actifs vers n’importe quel compte"
   },
   "sendSpecifiedTokens": {
     "message": "Envoyer $1",
@@ -4026,17 +4099,9 @@
   "snapsNoInsight": {
     "message": "Le snap n’a renvoyé aucun aperçu"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Vous reconnaissez que le snap que vous êtes sur le point d’installer est un « Service tiers » tel que défini dans les $1 de Consensys. L’utilisation des services tiers est régie par des conditions distinctes définies par le fournisseur du service tiers. Si vous décidez d’utiliser ce service tiers, vous le faites à vos propres risques. Consensys décline toute responsabilité pour toute perte liée à l’utilisation des services tiers.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
   "snapsPrivacyWarningSecondMessage": {
     "message": "Toute information que vous partagez avec des services tiers sera collectée directement par ces services tiers conformément à leur politique de confidentialité. Pour plus d’informations, veuillez consulter leur politique de confidentialité.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys n’a pas accès aux informations que vous partagez avec ces tiers.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Gérez vos Snaps"
@@ -4194,6 +4259,9 @@
   "stake": {
     "message": "Staker"
   },
+  "stakeDescription": {
+    "message": "Conservez vos crypto-actifs et dégagez des bénéfices potentiels"
+  },
   "stateLogError": {
     "message": "Erreur lors du chargement des journaux d’état."
   },
@@ -4330,6 +4398,9 @@
   "swap": {
     "message": "Swap"
   },
+  "swapAdjustSlippage": {
+    "message": "Ajuster l’effet de glissement"
+  },
   "swapAggregator": {
     "message": "Agrégateur"
   },
@@ -4382,8 +4453,14 @@
   "swapDecentralizedExchange": {
     "message": "Échange décentralisé"
   },
+  "swapDescription": {
+    "message": "Échangez vos jetons"
+  },
   "swapDirectContract": {
     "message": "Contrat direct"
+  },
+  "swapDisabled": {
+    "message": "Impossible d’effectuer un échange sur ce réseau"
   },
   "swapEditLimit": {
     "message": "Modifier la limite"
@@ -4448,6 +4525,9 @@
     "message": "Les frais de carburant sont payés aux mineurs de cryptomonnaies qui traitent les transactions sur le réseau $1. MetaMask ne tire aucun profit des frais de carburant.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
+  "swapHighSlippage": {
+    "message": "Important effet de glissement"
+  },
   "swapHighSlippageWarning": {
     "message": "Le montant du glissement est très élevé."
   },
@@ -4461,6 +4541,9 @@
   },
   "swapLearnMore": {
     "message": "En savoir plus sur les swaps"
+  },
+  "swapLowSlippage": {
+    "message": "Faible effet de glissement"
   },
   "swapLowSlippageError": {
     "message": "La transaction peut échouer, car le glissement maximal est trop faible."
@@ -4572,6 +4655,20 @@
   "swapShowLatestQuotes": {
     "message": "Afficher les dernières cotations"
   },
+  "swapSlippageHighDescription": {
+    "message": "L’effet de glissement saisi ($1 %) est considéré comme très élevé et peut donner lieu à un taux de change désavantageux",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageHighTitle": {
+    "message": "Important effet de glissement"
+  },
+  "swapSlippageLowDescription": {
+    "message": "Une valeur aussi faible ($1 %) peut entraîner l’échec de l’accord de swap",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageLowTitle": {
+    "message": "Faible effet de glissement"
+  },
   "swapSlippageNegative": {
     "message": "Le glissement doit être supérieur ou égal à zéro"
   },
@@ -4638,6 +4735,9 @@
   "swapTokenBalanceUnavailable": {
     "message": "Nous n’avons pas pu récupérer votre solde de $1",
     "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
+  "swapTokenNotAvailable": {
+    "message": "Impossible d’échanger ce jeton dans cette région"
   },
   "swapTokenToToken": {
     "message": "Swap de $1 vers $2",
@@ -5259,6 +5359,9 @@
   "visitWebSite": {
     "message": "Visitez notre site web"
   },
+  "wallet": {
+    "message": "Portefeuille"
+  },
   "walletConnectionGuide": {
     "message": "notre guide de connexion des portefeuilles matériels"
   },
@@ -5286,8 +5389,7 @@
     "message": "Voulez-vous ajouter ce réseau ?"
   },
   "wantsToAddThisAsset": {
-    "message": "$1 veut ajouter cet actif à votre portefeuille",
-    "description": "$1 is the name of the website that wants to add an asset to your wallet"
+    "message": "$1 veut ajouter cet actif à votre portefeuille."
   },
   "warning": {
     "message": "Avertissement"
