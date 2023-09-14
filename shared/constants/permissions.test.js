@@ -24,12 +24,14 @@ describe('EndowmentPermissions', () => {
   });
 });
 
+const FlaskOnlyPermissions = ['snap_manageAccounts', 'snap_getLocale'];
+
 describe('RestrictedMethods', () => {
   it('has the expected permission keys', () => {
     // this is done because we there is a difference between flask and stable permissions
     // the code fence in `shared/constants/snaps/permissions.ts` is not supported in jest
     const mainBuildRestrictedMethodPermissions = Object.keys(RestrictedMethods)
-      .filter((key) => key !== 'snap_manageAccounts')
+      .filter((key) => !FlaskOnlyPermissions.includes(key))
       .sort();
 
     expect(mainBuildRestrictedMethodPermissions).toStrictEqual(
@@ -54,7 +56,7 @@ describe('Flask Restricted Methods', () => {
   it('has the expected flask permission keys', () => {
     const flaskExcludedSnapPermissions = Object.keys(
       ExcludedSnapPermissions,
-    ).filter((key) => key !== 'snap_manageAccounts');
+    ).filter((key) => !FlaskOnlyPermissions.includes(key));
 
     expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
       [
