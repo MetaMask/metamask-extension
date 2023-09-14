@@ -86,15 +86,15 @@ const ConfirmAddCustodianToken = () => {
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
-          <Chip
-            borderColor={BorderColor.borderMuted}
-            label={connectRequest.origin}
-            maxContent={false}
-            leftIconUrl={custodian?.iconUrl}
-            labelProps={{
-              textAlign: TextAlign.Center,
-            }}
-          />
+        <Chip
+          borderColor={BorderColor.borderMuted}
+          label={connectRequest.origin}
+          maxContent={false}
+          leftIconUrl={custodian?.iconUrl}
+          labelProps={{
+            textAlign: TextAlign.Center,
+          }}
+        />
       </Box>
       <Box padding={4} className="page-container__content">
         <Text

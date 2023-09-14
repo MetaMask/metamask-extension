@@ -11,17 +11,18 @@ type Custodian = {
   websocketApiUrl: string;
   isNoteToTraderSupported: boolean;
   version: number;
-}
+};
 
-export function findCustodianByDisplayName(displayName: string, custodians: Custodian[]): Custodian | null {
+export function findCustodianByDisplayName(
+  displayName: string,
+  custodians: Custodian[],
+): Custodian | null {
   const formatedDisplayName = displayName.toLowerCase();
 
   for (const custodian of custodians) {
     const custodianName = custodian.name.toLowerCase();
 
-    if (
-      formatedDisplayName.includes(custodianName)
-    ) {
+    if (formatedDisplayName.includes(custodianName)) {
       return custodian;
     }
   }
