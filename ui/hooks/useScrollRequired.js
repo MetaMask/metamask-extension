@@ -25,6 +25,8 @@ export const useScrollRequired = (dependencies = []) => {
 
     const isScrolledToBottom =
       isScrollable &&
+      // Add 16px to the actual scroll position to trigger setIsScrolledToBottom sooner.
+      // This avoids the problem where a user has scrolled down to the bottom and it's not detected.
       Math.round(ref.current.scrollTop) + ref.current.offsetHeight + 16 >=
         ref.current.scrollHeight;
 
