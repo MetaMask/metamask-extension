@@ -63,12 +63,6 @@ const ALLOWED_TEMPLATE_KEYS = [
  * @param {object} state - The state object consist of required info to determine alerts.
  */
 export async function getTemplateAlerts(pendingApproval, state) {
-  console.log(
-    'SNAPS/ getTemplateAlerts called with pendingApproval: ',
-    pendingApproval,
-    ' and state: ',
-    state,
-  );
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getAlerts;
   const results = fn ? await fn(pendingApproval, state) : [];
   if (!Array.isArray(results)) {
@@ -149,18 +143,6 @@ export function getTemplateValues(
   history,
   setInputState,
 ) {
-  console.log(
-    'SNAPS/ getTemplateValues called with pendingApproval: ',
-    pendingApproval,
-    ' and t: ',
-    t,
-    ' and dispatch: ',
-    dispatch,
-    ' and history: ',
-    history,
-    ' and setInputState: ',
-    setInputState,
-  );
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(

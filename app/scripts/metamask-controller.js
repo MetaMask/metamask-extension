@@ -1982,19 +1982,6 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
-        showSnapAccountConfirmation: (origin, type, content, placeholder) => {
-          console.log('SNAPS/ showSnapAccountConfirmation called with:', {
-            origin,
-            type,
-            content,
-            placeholder,
-          });
-          return this.approvalController.addAndShowApprovalRequest({
-            origin,
-            type: SNAP_DIALOG_TYPES[type],
-            requestData: { content, placeholder },
-          });
-        },
         requestUserApproval:
           this.approvalController.addAndShowApprovalRequest.bind(
             this.approvalController,

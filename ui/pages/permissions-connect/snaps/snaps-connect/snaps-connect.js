@@ -40,7 +40,6 @@ export default function SnapsConnect({
   snapsInstallPrivacyWarningShown,
   setSnapsInstallPrivacyWarningShownStatus,
 }) {
-  console.log('SNAPS/', 'SnapsConnect render', request, targetSubjectMetadata);
   const t = useI18nContext();
   const { origin, iconUrl, name } = targetSubjectMetadata;
   const [isLoading, setIsLoading] = useState(false);

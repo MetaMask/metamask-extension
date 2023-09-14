@@ -178,11 +178,8 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
-
-  console.log(
-    'SNAPS/ ConfirmationPage called with pendingConfirmations: ',
-    pendingConfirmations,
-  );
+  // State variable to hold the previous snapName
+  const [prevSnapInfo, setPrevSnapInfo] = useState(null);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
@@ -220,6 +217,7 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogAlert,
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
+    'snap_manageAccounts:confirmation',
   ];
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
@@ -228,7 +226,6 @@ export default function ConfirmationPage({
   const INPUT_STATE_CONFIRMATIONS = [
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     ApprovalType.SnapDialogPrompt,
-    'snap_manageAccounts:confirmation',
     ///: END:ONLY_INCLUDE_IN
   ];
 
@@ -260,6 +257,15 @@ export default function ConfirmationPage({
     snapName,
     ///: END:ONLY_INCLUDE_IN
   ]);
+
+  useEffect(() => {
+    // Check if the current pendingConfirmation.type is 'snap_manageAccounts:confirmation' to store the snap info for the success/error screen
+    if (pendingConfirmation?.type === 'snap_manageAccounts:confirmation') {
+      setPrevSnapInfo({
+        origin: pendingConfirmation.origin,
+      });
+    }
+  }, [pendingConfirmation]);
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
@@ -378,7 +384,8 @@ export default function ConfirmationPage({
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           !isSnapDialog &&
             ///: END:ONLY_INCLUDE_IN
-            pendingConfirmation.origin === 'metamask' && (
+            pendingConfirmation.origin === 'metamask' &&
+            !prevSnapInfo && (
               <Box
                 alignItems={AlignItems.center}
                 paddingTop={2}
@@ -404,6 +411,11 @@ export default function ConfirmationPage({
           )
           ///: END:ONLY_INCLUDE_IN
         }
+        {prevSnapInfo && pendingConfirmation?.origin === 'metamask' && (
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          <SnapAuthorshipHeader snapId={prevSnapInfo.origin} />
+          ///: END:ONLY_INCLUDE_IN
+        )}
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
         {showWarningModal && (
           <ConfirmationWarningModal

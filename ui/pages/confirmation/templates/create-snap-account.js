@@ -1,13 +1,4 @@
-// Import whatever you need to support your logic
-
-function getValues(pendingApproval, t, actions, _history, setInputState) {
-  console.log(
-    'SNAPS/ create-snap-account-template.ts: getValues called with:',
-    pendingApproval,
-    t,
-    actions,
-  );
-
+function getValues(pendingApproval, t, actions, _history) {
   const { origin: snapId, snapName } = pendingApproval;
 
   return {
@@ -18,22 +9,13 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
         props: {
           snapId,
           snapName,
-          onAccountNameChange: (accountName) => {
-            setInputState('snap_manageAccounts:confirmation', accountName);
-          },
         },
       },
     ],
     cancelText: t('cancel'),
     submitText: t('create'),
-    onSubmit: (accountName) => {
-      actions.resolvePendingApproval(pendingApproval.id, {
-        confirmed: true,
-        accountName,
-      });
-    },
-    onCancel: () =>
-      actions.resolvePendingApproval(pendingApproval.id, { confirmed: false }),
+    onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, true),
+    onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
   };
 }
 
