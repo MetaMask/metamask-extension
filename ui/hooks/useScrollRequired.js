@@ -30,11 +30,7 @@ export const useScrollRequired = (dependencies = []) => {
 
     setIsScrollable(isScrollable);
 
-    if (!isScrollable) {
-      setIsScrolledToBottom(true);
-    }
-
-    if (isScrolledToBottom) {
+    if (!isScrollable || isScrolledToBottom) {
       setIsScrolledToBottom(true);
     }
   };
