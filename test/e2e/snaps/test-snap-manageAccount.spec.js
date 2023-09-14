@@ -81,7 +81,7 @@ describe('Test Snap Account', function () {
 
         // create new account on dapp
         await driver.clickElement({
-          text: 'Create Account',
+          text: 'Create account',
           tag: 'div',
         });
 
