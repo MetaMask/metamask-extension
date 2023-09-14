@@ -86,7 +86,7 @@ describe('Test Snap Account', function () {
         });
 
         await driver.clickElement({
-          text: 'Execute',
+          text: 'Create Account',
           tag: 'button',
         });
 
