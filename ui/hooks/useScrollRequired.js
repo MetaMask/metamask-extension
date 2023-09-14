@@ -31,7 +31,6 @@ export const useScrollRequired = (dependencies = []) => {
     setIsScrollable(isScrollable);
 
     if (!isScrollable) {
-      console.log(ref.current);
       setIsScrolledToBottom(true);
     }
 
