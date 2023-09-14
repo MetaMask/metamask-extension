@@ -33,8 +33,6 @@ export default function ConnectedStatusIndicator({ onClick }) {
     .map((permission) => permission.key)
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
-  console.log(activeWalletSnap);
-
   const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
