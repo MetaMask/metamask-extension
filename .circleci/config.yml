@@ -574,7 +574,7 @@ jobs:
           name: Move test zips to 'builds-test-flask' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask
       - save_cache:
-          key: builds-test-flask-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+          key: builds-test-flask-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - builds-test-flask
       - store_artifacts:
@@ -1148,7 +1148,7 @@ jobs:
           at: .
       - restore_cache:
           keys:
-            - builds-test-flask-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+            - builds-test-flask-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: build:source-map-explorer
           command: ./development/source-map-explorer.sh
