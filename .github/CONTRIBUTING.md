@@ -6,7 +6,7 @@ If you're submitting code to MetaMask, there are some simple things we'd appreci
 
 Before taking the time to code and implement something, feel free to open an issue and discuss it! There may even be an issue already open, and together we may come up with a specific strategy before you take your precious time to write code.
 
-There are also plenty of open issues we'd love help with. Search the [`good first issue`](https://github.com/MetaMask/metamask-extension/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) label, or head to Gitcoin and earn ETH for completing projects we've posted bounties on.
+There are also plenty of open issues we'd love help with. Search the [`good first issue`](https://github.com/MetaMask/metamask-extension/contribute) label, or head to Gitcoin and earn ETH for completing projects we've posted bounties on.
 
 If you're picking up a bounty or an existing issue, feel free to ask clarifying questions on the issue as you go about your work.
 
