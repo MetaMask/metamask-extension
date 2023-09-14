@@ -1,11 +1,13 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import { AvatarFavicon, ButtonIcon, IconName } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
 import { BorderColor, Size } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu, MenuItem } from '../../ui/menu';
+import { SNAPS_LIST_ROUTE } from '../../../helpers/constants/routes';
 
 export default function ConnectedSitesList({
   connectedSubjects,
@@ -14,6 +16,7 @@ export default function ConnectedSitesList({
   const [showOptions, setShowOptions] = useState(false);
   const ref = useRef(false);
   const t = useI18nContext();
+  const history = useHistory();
 
   const getSubjectDisplayName = (subject) => {
     if (subject.extensionId) {
@@ -64,6 +67,12 @@ export default function ConnectedSitesList({
                   onClick={() => onDisconnect(subject.origin)}
                 >
                   {t('disconnect')}
+                </MenuItem>
+                <MenuItem
+                  iconName={IconName.Setting}
+                  onClick={() => history.push(SNAPS_LIST_ROUTE)}
+                >
+                  {t('snapsSettings')}
                 </MenuItem>
               </Menu>
             ) : null}

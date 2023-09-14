@@ -795,18 +795,15 @@
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
+  "connectedAccountsAndSnapDescription": {
+    "message": "$1 account and $2 snap connected to this site:"
+  },
   "connectedAccountsDescriptionPlural": {
     "message": "You have $1 accounts connected to this site.",
     "description": "$1 is the number of accounts"
   },
   "connectedAccountsDescriptionSingular": {
     "message": "You have 1 account connected to this site."
-  },
-    "connectedAccountsAndSnapDescription": {
-    "message": "$1 account and $2 snap connected to this site:"
-  },
-  "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask is connected to this site, but no accounts are connected yet"
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button."
@@ -821,6 +818,9 @@
   "connectedSitesEmptyDescription": {
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
+  },
+  "connectedSnapAndNoAccountDescription": {
+    "message": "MetaMask is connected to this site, but no accounts are connected yet"
   },
   "connecting": {
     "message": "Connecting..."
@@ -1066,7 +1066,6 @@
   "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
     "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
   },
-
   "customerSupport": {
     "message": "customer support"
   },
@@ -4131,6 +4130,9 @@
   "snapsPrivacyWarningThirdMessage": {
     "message": "Consensys has no access to information you share with Third Party Services.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsSettings": {
+    "message": "Snaps settings"
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
