@@ -35,6 +35,7 @@ AvatarAccount
 ### 6. Component Optimization
 - For functional components, instead of having large return statements, breaking the component down into smaller sub-components.
 - Use memoizing techniques where possible. Utilize the `useMemo` hook for values and `useCallback` for functions. Follow recommended React Native guidance.
+- Use the useEffect hook for performing side effects like data fetching or DOM manipulation after the component has rendered. However, use it judiciously as unnecessary effects can complicate code and affect performance. For a deeper understanding, we recommend reading [this article](https://react.dev/learn/you-might-not-need-an-effect).
 
 ### 7. Use Object Destructuring For Props
 - Instead of passing the props object, use object destructuring to pass the prop name. This discards the need to refer to the props object each time you need to use it.
