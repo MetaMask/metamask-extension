@@ -1,5 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {
+  useState,
+  useContext,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   useDispatch,
@@ -11,6 +16,7 @@ import { Carousel } from 'react-responsive-carousel';
 import { setCompletedOnboarding } from '../../../store/actions';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { useHistory } from 'react-router-dom';
 import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin-mmi-billboard';
 ///: END:ONLY_INCLUDE_IN
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -20,9 +26,10 @@ import {
   FontWeight,
   TextAlign,
 } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import Box from '../../../components/ui/box';
 import { MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
-
+///: END:ONLY_INCLUDE_IN
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -38,7 +45,6 @@ import OnboardingPinBillboard from './pin-billboard';
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const dispatch = useDispatch();
   ///: END:ONLY_INCLUDE_IN
@@ -46,6 +52,7 @@ export default function OnboardingPinExtension() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const history = useHistory();
   useEffect(() => setSelectedIndex(1), []);
   ///: END:ONLY_INCLUDE_IN
 
@@ -67,8 +74,9 @@ export default function OnboardingPinExtension() {
           new_wallet: firstTimeFlowType === FIRST_TIME_FLOW_TYPES.CREATE,
         },
       });
-
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       history.push(MMI_ONBOARDING_COMPLETION_ROUTE);
+      ///: END:ONLY_INCLUDE_IN
     }
   };
 

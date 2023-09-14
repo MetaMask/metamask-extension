@@ -25,7 +25,9 @@ import {
 import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   setParticipateInMetaMetrics,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -33,8 +35,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';

@@ -14,8 +14,10 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   ONBOARDING_PIN_EXTENSION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
