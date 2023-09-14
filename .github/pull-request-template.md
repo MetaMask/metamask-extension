@@ -27,7 +27,7 @@ _Fixes #???_
 
 ## **Pre-merge author checklist**
 
-- [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/coding_guidelines/CODING_GUIDELINES.md).
+- [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md).
 - [ ] I've clearly explained:
   - [ ] What problem this PR is solving.
   - [ ] How this problem was solved.
@@ -35,7 +35,7 @@ _Fixes #???_
 - [ ] I’ve indicated what issue this PR is linked to: Fixes #???
 - [ ] I’ve included tests if applicable.
 - [ ] I’ve documented any added code.
-- [ ] I’ve applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/develop/.github/coding_guidelines/LABELING_GUIDELINES.md)).
+- [ ] I’ve applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/LABELING_GUIDELINES.md)).
 - [ ] I’ve properly set the pull request status:
   - [ ] In case it's not yet "ready for review", I've set it to "draft".
   - [ ] In case it's "ready for review", I've changed it from "draft" to "non-draft".
