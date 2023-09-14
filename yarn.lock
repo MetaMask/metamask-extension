@@ -4037,6 +4037,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-middleware@npm:^11.0.2":
+  version: 11.0.2
+  resolution: "@metamask/eth-json-rpc-middleware@npm:11.0.2"
+  dependencies:
+    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
+    "@metamask/eth-sig-util": "npm:^6.0.0"
+    "@metamask/utils": "npm:^5.0.1"
+    clone: "npm:^2.1.1"
+    eth-block-tracker: "npm:^7.0.1"
+    eth-rpc-errors: "npm:^4.0.3"
+    json-rpc-engine: "npm:^6.1.0"
+    pify: "npm:^3.0.0"
+    safe-stable-stringify: "npm:^2.3.2"
+  checksum: 188d98dce78f85fc6364ea78b6f7e14a95cdcf0791a187177a1da8e79b8588d1b08141110b570239d92afeb021c08432d5f10948f4bba983acd1665a013b8a2c
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-provider@npm:^1.0.0":
   version: 1.0.0
   resolution: "@metamask/eth-json-rpc-provider@npm:1.0.0"
@@ -4358,6 +4375,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/network-controller@npm:@metamask-previews/network-controller@12.1.2-preview.9c9148f":
+  version: 12.1.2-preview.9c9148f
+  resolution: "@metamask-previews/network-controller@npm:12.1.2-preview.9c9148f"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^4.3.2"
+    "@metamask/eth-json-rpc-infura": "npm:^8.1.1"
+    "@metamask/eth-json-rpc-middleware": "npm:^11.0.2"
+    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
+    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
+    "@metamask/utils": "npm:^6.2.0"
+    async-mutex: "npm:^0.2.6"
+    eth-block-tracker: "npm:^7.0.1"
+    eth-rpc-errors: "npm:^4.0.2"
+    immer: "npm:^9.0.6"
+    json-rpc-engine: "npm:^6.1.0"
+    uuid: "npm:^8.3.2"
+  checksum: b26ebe7a690b1238b91c26ace3f0ecabab49a07a1c1172a69db712550328217cbbb411eec4fb3f0b85796e740686f7d2865aafef9aa3eee9d7dbce9645656bca
+  languageName: node
+  linkType: hard
+
 "@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0":
   version: 10.3.1
   resolution: "@metamask/network-controller@npm:10.3.1"
@@ -4381,7 +4420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^12.1.1, @metamask/network-controller@npm:^12.1.2":
+"@metamask/network-controller@npm:^12.1.2":
   version: 12.1.2
   resolution: "@metamask/network-controller@npm:12.1.2"
   dependencies:
