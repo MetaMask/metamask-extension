@@ -264,7 +264,7 @@ export default function OnboardingWelcome() {
           >
             {
               ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-              t('createNewWallet')
+              t('onboardingCreateWallet')
               ///: END:ONLY_INCLUDE_IN
             }
             {
