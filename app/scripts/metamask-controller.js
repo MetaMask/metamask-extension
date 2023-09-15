@@ -98,6 +98,8 @@ import {
   ERC1155,
   ERC20,
   ERC721,
+  BUILT_IN_NETWORKS,
+  ChainId,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -321,6 +323,11 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:stateChange',
         ],
       }),
+    });
+
+    // turn on perDappSelectedNetwork feature flag
+    this.selectedNetworkController.update((state) => {
+      state.perDomainNetwork = true;
     });
 
     this.queuedRequestController = new QueuedRequestController({
@@ -2398,15 +2405,13 @@ export default class MetamaskController extends EventEmitter {
 
       // network management
       setProviderType: (type) => {
-        // shouldnt be required now that we are using the latest sel net ctrl.
-        // this.selectedNetworkController.setChainForDomain('metamask', ChainId[type]);
+        // when using this format, type happens to be the same as the networkClientId...
+        this.selectedNetworkController.setNetworkClientIdForMetamask(type);
         return this.networkController.setProviderType(type);
       },
       setActiveNetwork: (networkConfigurationId) => {
         // shouldnt be required now that we are using the latest sel net ctrl.
-        // this.selectedNetworkController.setChainForDomain('metamask', ChainId[type]);
-        // const chainId = this.networkController.state.networkConfigurations[networkConfigurationId];
-        // this.selectedNetworkController.setChainForDomain('metamask', chainId);
+        this.selectedNetworkController.setNetworkClientIdForMetamask(networkConfigurationId);
         return this.networkController.setActiveNetwork(networkConfigurationId);
       },
       rollbackToPreviousProvider:
@@ -4105,15 +4110,14 @@ export default class MetamaskController extends EventEmitter {
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    console.log('before adding queuedRequestMiddleware:check');
     const switchChain = (networkClientId) => {
-      console.log('SWITCHING CHAIN INSIDE MM CONTROLLER!');
-      const { chainId } =
-        this.networkController.state.networkConfigurations[networkClientId];
-      const type = CHAIN_ID_TO_TYPE_MAP[chainId];
-      if (type) {
-        this.networkController.setProviderType(type);
+      const isBuiltIn = BUILT_IN_NETWORKS[networkClientId] !== undefined && BUILT_IN_NETWORKS[networkClientId].chainId;
+      if (isBuiltIn) {
+        const type = this.networkController.setProviderType(networkClientId);
       } else {
+        debugger;
+        const { chainId } =
+            this.networkController.state.networkConfigurations[networkClientId];
         this.networkController.setActiveNetwork(networkClientId);
       }
     };
@@ -4129,32 +4133,43 @@ export default class MetamaskController extends EventEmitter {
         origin,
         selectedNetworkClientId,
       );
+    } else {
+      // handles switching chain when the provider is set up... not really the right spot to be doing this. We are using setupProvider as a 'proxy' for what we really want which is everytime the wallet 'pops up' - via api call or manually opening the wallet.
+      // also worth noting that this calls methods which do async stuff, but we are not waiting for it to complete or handling any potential errors.
+      if (selectedNetworkClientIdForDomain !== selectedNetworkClientId) {
+        switchChain(selectedNetworkClientIdForDomain);
+      }
     }
-
-    // handles switching chain when the provider is set up... not really the right spot to be doing this. We are using setupProvider as a 'proxy' for what we really want which is everytime the wallet 'pops up' - via api call or manually opening the wallet.
-    // also worth noting that this calls methods which do async stuff, but we are not waiting for it to complete or handling any potential errors.
-    if (selectedNetworkClientIdForDomain !== selectedNetworkClientId) {
-      switchChain(selectedNetworkClientIdForDomain);
-    }
-
-    console.log('before adding queuedRequestMiddleware:checkComplete');
 
     // add some middleware that will switch chain on each request (as needed)
     engine.push(
-      createAsyncMiddleware(async (req, _, next) => {
-        console.log('got inside req queue middleware');
+      createAsyncMiddleware(async (req, res, next) => {
+        const networkClientIdForRequest = req.networkClientId;
+        const sameNetworkClientIdAsCurrent = () =>
+          networkClientIdForRequest ===
+          this.networkController.state.selectedNetworkClientId;
+
         if (req.method === 'wallet_switchEthereumChain') {
+          // decide if we want to show a confirmation
+          // we can check the chainId in the request against the chainId for the domain-specific network configuration. If they are the same, then we dont show a confirmation. We dont need to switch because subsequent requests will cause the switching automatically. Later we can make this check for a permission instead.
+          if (req.params[0].chainId === this.networkController.getNetworkClientById(networkClientIdForRequest)?.configuration?.chainId) {
+            console.log('EARLY RETURNING BECAUSE SELECTED NETWORK IS ALREADY CORRECTLY SET TO THE RIGHT NETWORKID');
+            // possible adjustments that could be made to this:
+            //   - if the selectedNetworkClientIdForDomain is not the same
+            //  - maybe we want to broadcast a notification that the chain is changed for the domain
+            res.result = null;
+            return;
+          }
+
+
+          // otherwise, put up the confirmation dialog
+
           // eslint-disable-next-line node/callback-return
           await next();
           return;
         }
 
-        const networkClientIdForRequest = req.networkClientId;
-        console.log('NetworkClientId for request: ', networkClientIdForRequest);
         // check against a fresh copy every time
-        const sameNetworkClientIdAsCurrent = () =>
-          networkClientIdForRequest ===
-          this.networkController.state.selectedNetworkClientId;
         if (
           this.queuedRequestController.hasQueuedRequests() &&
           !sameNetworkClientIdAsCurrent()
@@ -4166,11 +4181,13 @@ export default class MetamaskController extends EventEmitter {
           switchChain(networkClientIdForRequest);
         }
 
+        const reqPromise = next();
         this.queuedRequestController.enqueueRequest(
           networkClientIdForRequest,
           // eslint-disable-next-line node/callback-return
-          next(),
+           reqPromise
         );
+        return reqPromise;
       }),
     );
 
@@ -4312,13 +4329,17 @@ export default class MetamaskController extends EventEmitter {
             this.networkController,
           ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        getNetworkClientIdForDomain: this.selectedNetworkController.getNetworkClientIdForDomain.bind(this.selectedNetworkController),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
-        setProviderType: this.networkController.setProviderType.bind(
-          this.networkController,
-        ),
+
+        setProviderType: (type) => {
+          // when using this format, type happens to be the same as the networkClientId...
+          // this.selectedNetworkController.setNetworkClientIdForMetamask(type);
+          return this.networkController.setProviderType(type);
+        },
 
         // Web3 shim-related
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
@@ -4903,6 +4924,7 @@ export default class MetamaskController extends EventEmitter {
 
   resolvePendingApproval = async (id, value, options) => {
     try {
+      debugger;
       await this.approvalController.accept(id, value, options);
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {

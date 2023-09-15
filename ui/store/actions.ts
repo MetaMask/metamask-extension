@@ -2160,7 +2160,7 @@ export function setProviderType(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setProviderType`, type);
-
+    console.log('SETTING PROVIDER TYPE');
     try {
       await submitRequestToBackground('setProviderType', [type]);
     } catch (error) {
