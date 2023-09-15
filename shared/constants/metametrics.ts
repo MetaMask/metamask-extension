@@ -313,7 +313,7 @@ export type MetaMetricsUserTraits = {
    */
   nft_autodetection_enabled?: number;
   /**
-   * A number representing the number of identities (accounts) added to the
+   * A number representing the number of InternalAccounts (accounts) added to the
    * user's wallet.
    */
   number_of_accounts?: number;
@@ -400,7 +400,7 @@ export enum MetaMetricsUserTrait {
    */
   NftAutodetectionEnabled = 'nft_autodetection_enabled',
   /**
-   * Identified when identities change.
+   * Identified when InternalAccounts change.
    */
   NumberOfAccounts = 'number_of_accounts',
   /**
