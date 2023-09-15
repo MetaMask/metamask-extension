@@ -4,7 +4,7 @@ import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { BannerAlert, BANNER_ALERT_SEVERITIES } from '.';
+import { BannerAlert, BannerAlertSeverity } from '.';
 
 describe('BannerAlert', () => {
   it('should render BannerAlert element correctly', () => {
@@ -38,21 +38,21 @@ describe('BannerAlert', () => {
         </BannerAlert>
         <BannerAlert
           data-testid="warning"
-          severity={BANNER_ALERT_SEVERITIES.WARNING}
+          severity={BannerAlertSeverity.Warning}
           title="Warning"
         >
           This is a demo of severity Warning.
         </BannerAlert>
         <BannerAlert
           data-testid="danger"
-          severity={BANNER_ALERT_SEVERITIES.DANGER}
+          severity={BannerAlertSeverity.Danger}
           title="Danger"
         >
           This is a demo of severity Danger.
         </BannerAlert>
         <BannerAlert
           data-testid="success"
-          severity={BANNER_ALERT_SEVERITIES.SUCCESS}
+          severity={BannerAlertSeverity.Success}
           title="Success"
         >
           This is a demo of severity Success.
