@@ -17,7 +17,7 @@ export default function OnboardingSuccessful() {
   const { portfolio } = useSelector(getMMIConfiguration);
 
   return (
-    <div className="creation-successful" data-testid="creation-successful">
+    <div className="onboarding-successful" data-testid="onboarding-successful">
       <Box textAlign={TextAlign.Center}>
         <Text
           variant={TextVariant.headingLg}
@@ -33,7 +33,7 @@ export default function OnboardingSuccessful() {
 
       <Box marginTop={6}>
         <Button
-          data-testid="onboarding-complete-done"
+          data-testid="onboarding-continue-button"
           type="primary"
           large
           rounded
