@@ -773,16 +773,16 @@
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
         "@metamask/assets-controllers>@metamask/rpc-errors": true,
+        "@metamask/assets-controllers>@metamask/utils": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/utils": true,
         "browserify>events": true,
         "eth-json-rpc-filters>async-mutex": true,
-        "eth-query": true,
         "ethereumjs-util": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
@@ -800,6 +800,7 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -810,6 +811,19 @@
       "packages": {
         "@metamask/utils": true,
         "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
