@@ -1,31 +1,19 @@
 import React, { useState } from 'react';
+import { Meta, StoryFn } from '@storybook/react';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  Size,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
-import { ButtonLink, ButtonPrimary, Icon, IconName } from '..';
+import {
+  ButtonLink,
+  ButtonLinkSize,
+  ButtonPrimary,
+  Box,
+  Icon,
+  IconName,
+} from '..';
 import README from './README.mdx';
 import { BannerTip, BannerTipLogoType } from '.';
-
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
 
 export default {
   title: 'Components/ComponentLibrary/BannerTip',
@@ -44,30 +32,12 @@ export default {
     className: {
       control: 'text',
     },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
   },
-};
+} as Meta<typeof BannerTip>;
 
-export const DefaultStory = (args) => {
+const Template: StoryFn<typeof BannerTip> = (args) => <BannerTip {...args} />;
+
+export const DefaultStory: StoryFn<typeof BannerTip> = (args) => {
   const onClose = () => console.log('BannerTip onClose trigger');
   return <BannerTip {...args} onClose={onClose} />;
 };
@@ -80,9 +50,9 @@ DefaultStory.args = {
 
 DefaultStory.storyName = 'Default';
 
-export const LogoType = (args) => {
+export const LogoType: StoryFn<typeof BannerTip> = (args) => {
   return (
-    <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={3}>
+    <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
       <BannerTip
         {...args}
         logoType={BannerTipLogoType.Greeting}
@@ -97,18 +67,14 @@ export const LogoType = (args) => {
   );
 };
 
-export const Title = (args) => {
-  return <BannerTip {...args} />;
-};
+export const Title = Template.bind({});
 
 Title.args = {
   title: 'Title is sentence case no period',
   children: 'Pass only a string through the title prop',
 };
 
-export const Description = (args) => {
-  return <BannerTip {...args} />;
-};
+export const Description = Template.bind({});
 
 Description.args = {
   title: 'Description vs children',
@@ -116,14 +82,14 @@ Description.args = {
     'Pass only a string through the description prop or you can use children if the contents require more',
 };
 
-export const Children = (args) => {
+export const Children: StoryFn<typeof BannerTip> = (args) => {
   return (
     <BannerTip {...args}>
       Description shouldn&apos;t repeat title. 1-3 lines. Can contain a{' '}
       <ButtonLink
-        size={Size.inherit}
+        size={ButtonLinkSize.Inherit}
         href="https://metamask.io/"
-        target="_blank"
+        externalLink
       >
         hyperlink.
       </ButtonLink>
@@ -131,23 +97,20 @@ export const Children = (args) => {
   );
 };
 
-export const ActionButton = (args) => {
-  return <BannerTip {...args} />;
-};
+export const ActionButton = Template.bind({});
 
 ActionButton.args = {
   title: 'Action prop demo',
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
-    iconName: IconName.Arrow2Right,
-    iconPositionRight: true,
+    endIconName: IconName.Arrow2Right,
   },
   children:
     'Use actionButtonLabel for action text, actionButtonOnClick for the onClick handler, and actionButtonProps to pass any ButtonLink prop types such as iconName',
 };
 
-export const OnClose = (args) => {
+export const OnClose: StoryFn<typeof BannerTip> = (args) => {
   const [isShown, setShown] = useState(true);
   const bannerTipToggle = () => {
     if (isShown) {
@@ -171,7 +134,7 @@ OnClose.args = {
   children: 'Click the close button icon to hide this notifcation',
 };
 
-export const StartAccessory = (args) => {
+export const StartAccessory: StoryFn<typeof BannerTip> = (args) => {
   return (
     <BannerTip
       {...args}

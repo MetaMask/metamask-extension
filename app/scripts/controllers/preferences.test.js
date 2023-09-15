@@ -42,6 +42,7 @@ describe('preferences controller', () => {
       tokenListController,
       onInfuraIsBlocked: jest.fn(),
       onInfuraIsUnblocked: jest.fn(),
+      onAccountRemoved: jest.fn(),
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
     });
   });
@@ -106,6 +107,65 @@ describe('preferences controller', () => {
           address: '0x7e57e277',
         },
       });
+    });
+  });
+
+  describe('onAccountRemoved', () => {
+    it('should remove an address from state', () => {
+      const testAddress = '0xda22le';
+      let accountRemovedListener;
+      const onAccountRemoved = (callback) => {
+        accountRemovedListener = callback;
+      };
+      preferencesController = new PreferencesController({
+        initLangCode: 'en_US',
+        tokenListController,
+        onInfuraIsBlocked: jest.fn(),
+        onInfuraIsUnblocked: jest.fn(),
+        initState: {
+          identities: {
+            [testAddress]: {
+              name: 'Account 1',
+              address: testAddress,
+            },
+          },
+        },
+        onAccountRemoved,
+        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+      });
+
+      accountRemovedListener(testAddress);
+
+      expect(
+        preferencesController.store.getState().identities['0xda22le'],
+      ).toStrictEqual(undefined);
+    });
+
+    it('should throw an error if address not found', () => {
+      const testAddress = '0xda22le';
+      let accountRemovedListener;
+      const onAccountRemoved = (callback) => {
+        accountRemovedListener = callback;
+      };
+      preferencesController = new PreferencesController({
+        initLangCode: 'en_US',
+        tokenListController,
+        onInfuraIsBlocked: jest.fn(),
+        onInfuraIsUnblocked: jest.fn(),
+        initState: {
+          identities: {
+            '0x7e57e2': {
+              name: 'Account 1',
+              address: '0x7e57e2',
+            },
+          },
+        },
+        onAccountRemoved,
+        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+      });
+      expect(() => {
+        accountRemovedListener(testAddress);
+      }).toThrow(`${testAddress} can't be deleted cause it was not found`);
     });
   });
 

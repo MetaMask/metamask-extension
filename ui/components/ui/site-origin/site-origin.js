@@ -5,6 +5,15 @@ import Chip from '../chip';
 import IconWithFallback from '../icon-with-fallback';
 import { BorderColor } from '../../../helpers/constants/design-system';
 
+/**
+ * @deprecated The `<SiteOrigin />` component has been deprecated in favor of the new `<TagUrl>` component from the component-library.
+ * Please update your code to use the new `<TagUrl>` component instead, which can be found at ui/components/component-library/tag-url/tag-url.js.
+ * You can find documentation for the new `TagUrl` component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-tagurl--docs}
+ * If you would like to help with the replacement of the old `SiteOrigin` component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/20489}
+ */
+
 export default function SiteOrigin({
   siteOrigin,
   iconSrc,
