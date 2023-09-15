@@ -8,7 +8,7 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-const switchToEthereumMainnet = {
+const mainnetProviderConfig = {
   providerConfig: {
     chainId: '0x1',
     nickname: '',
@@ -23,7 +23,7 @@ describe('PPOM Settings', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(switchToEthereumMainnet)
+          .withNetworkController(mainnetProviderConfig)
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -51,7 +51,7 @@ describe('PPOM Settings', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(switchToEthereumMainnet)
+          .withNetworkController(mainnetProviderConfig)
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
