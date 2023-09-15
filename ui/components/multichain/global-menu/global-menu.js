@@ -44,9 +44,9 @@ import {
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
-  getNotifySnaps,
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  getNotifySnaps,
   getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -73,7 +73,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const address = useSelector(getSelectedAddress);
   const unapprovedTransactons = useSelector(getUnapprovedTransactions);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const notifySnaps = useSelector(getNotifySnaps);
+  ///: END:ONLY_INCLUDE_IN
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactons).length > 0;
