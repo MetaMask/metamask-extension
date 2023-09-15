@@ -57,10 +57,6 @@ async function main() {
             description: `run snaps e2e tests`,
             type: 'boolean',
           })
-          .option('blockaid', {
-            description: `run blockaid e2e tests`,
-            type: 'boolean',
-          })
           .option('mv3', {
             description: `run mv3 specific e2e tests`,
             type: 'boolean',
@@ -98,7 +94,6 @@ async function main() {
     rpc,
     buildType,
     updateSnapshot,
-    blockaid,
   } = argv;
 
   let testPaths;
@@ -113,6 +108,7 @@ async function main() {
         'test-snap-manageAccount.spec.js',
         'test-snap-rpc.spec.js',
         'test-snap-lifecycle.spec.js',
+        'ppom-toggle-settings.spec.js',
       ];
       testPaths = testPaths.filter((p) =>
         filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
@@ -120,9 +116,6 @@ async function main() {
     }
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
-    testPaths = await getTestPathsForTestDir(testDir);
-  } else if (blockaid) {
-    const testDir = path.join(__dirname, 'blockaid');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
