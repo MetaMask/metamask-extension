@@ -1,14 +1,6 @@
 .confirm-add-suggested-token {
   padding: 16px;
 
-  &__link {
-    @include H7;
-
-    display: inline;
-    color: var(--color-primary-default);
-    padding-left: 0;
-  }
-
   &__header {
     @include H7;
 

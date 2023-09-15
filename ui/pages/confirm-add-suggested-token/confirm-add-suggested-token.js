@@ -92,9 +92,8 @@ const ConfirmAddSuggestedToken = () => {
             <Button
               variant={ButtonVariant.Link}
               key="confirm-add-suggested-token-duplicate-warning"
-              className="confirm-add-suggested-token__link"
-              rel="noopener noreferrer"
-              target="_blank"
+              externalLink
+              size="inherit"
               href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
             >
               {t('learnScamRisk')}
