@@ -37,6 +37,7 @@
     "test:unit:global": "mocha test/unit-global/*.test.js",
     "test:unit:mocha": "node ./test/run-unit-tests.js --mocha",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
+    "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
     "test:e2e:chrome:mv3": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mv3",
     "test:e2e:chrome:rpc": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --rpc",
