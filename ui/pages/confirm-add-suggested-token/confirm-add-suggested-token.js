@@ -93,6 +93,7 @@ const ConfirmAddSuggestedToken = () => {
             <Button
               variant={ButtonVariant.Link}
               key="confirm-add-suggested-token-duplicate-warning"
+              className="confirm-add-suggested-token__link"
               externalLink
               size={ButtonLinkSize.Inherit}
               href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
