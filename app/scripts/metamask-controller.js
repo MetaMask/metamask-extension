@@ -98,6 +98,7 @@ import {
   ERC1155,
   ERC20,
   ERC721,
+  ChaidId,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
@@ -247,7 +248,9 @@ import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
-import SelectedNetworkController from './controllers/selected-network-controller';
+
+import {SelectedNetworkController} from '@metamask/selected-network-controller';
+import { RequestQueueController, requestQueueMiddleware }  from './controllers/request-queue-controller';
 
 import {
   CaveatMutatorFactories,
@@ -2535,14 +2538,20 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setProviderType:
-        networkController.setProviderType.bind(networkController),
+      setProviderType: (type) => {
+        this.selectedNetworkController.setChainForDomain('metamask', ChainId[type]);
+        debugger;
+        return this.networkController.setProviderType(type);
+      },
+      setActiveNetwork: (networkConfigurationId) => {
+        const chainId = this.networkController.state.networkConfigurations[networkConfigurationId];
+        this.selectedNetworkController.setChainForDomain('metamask', chainId);
+        return this.networkController.setActiveNetwork(networkConfigurationId);
+      },
       rollbackToPreviousProvider:
-        networkController.rollbackToPreviousProvider.bind(networkController),
+      networkController.rollbackToPreviousProvider.bind(networkController),
       removeNetworkConfiguration:
-        networkController.removeNetworkConfiguration.bind(networkController),
-      setActiveNetwork:
-        networkController.setActiveNetwork.bind(networkController),
+      networkController.removeNetworkConfiguration.bind(networkController),
       upsertNetworkConfiguration:
         this.networkController.upsertNetworkConfiguration.bind(
           this.networkController,
@@ -4236,6 +4245,19 @@ export default class MetamaskController extends EventEmitter {
 
     const providerConfig = this.networkController.store.getState().providerConfig;
 
+    const switchChain = (chainId) => {
+      const type = CHAIN_ID_TO_TYPE_MAP[chainId];
+      if (type) {
+        this.networkController.setProviderType(type);
+      } else {
+        const networkConfigId =
+          this.networkController.getNetworkConfigurationForChainId(chainId);
+        this.networkController.setActiveNetwork(networkConfigId);
+      }
+    };
+
+    const { chainId: currentChainId } = providerConfig;
+
     if (
       this.selectedNetworkController.getChainForDomain(origin) === undefined
     ) {
@@ -4243,34 +4265,40 @@ export default class MetamaskController extends EventEmitter {
         'setting default chain id for ',
         origin,
         'to ',
-        providerConfig.chainId,
+        currentChainId,
       );
-      this.selectedNetworkController.setChainForDomain(
-        origin,
-        providerConfig.chainId,
-      );
+      this.selectedNetworkController.setChainForDomain(origin, currentChainId);
     }
 
-    console.log('providerConfig.chainId', providerConfig.chainId);
+    console.log('current chainId (providerConfig.chainId)', currentChainId);
     console.log(
       'chainForDomain',
       origin,
       'is ',
       this.selectedNetworkController.getChainForDomain(origin),
     );
+    // should we check here if current chain === chainForDomain and switch if necessary?
+    if (
+      this.selectedNetworkController.getChainForDomain(origin) !==
+      currentChainId
+    ) {
+      switchChain(this.selectedNetworkController.getChainForDomain(origin));
+    }
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
     // add some middleware that will switch chain on each request (as needed)
     engine.push(
-      createAsyncMiddleware(async (req, res, next) => {
+      createAsyncMiddleware(async (req, _, next) => {
+        const { chainId: activeChainId } =
+          this.networkController.state.providerConfig;
         if (req.method === 'wallet_switchEthereumChain') {
           console.log(
             'switch ethereum chain called with',
             req.params[0].chainId,
           );
-          await next();
+          await next(); // eslint-ignore-line node/callback-return
           console.log('setting selected network', req.params[0].chainId);
           this.selectedNetworkController.setChainForDomain(
             origin,
@@ -4284,9 +4312,7 @@ export default class MetamaskController extends EventEmitter {
         console.log('chainIdForRequest', chainIdForRequest);
 
         // if queue has anything in it && method call depends on chainId
-        const sameChainAsCurrent =
-          chainIdForRequest ===
-          this.networkController.store.getState().providerConfig.chainId;
+        const sameChainAsCurrent = chainIdForRequest === activeChainId;
         if (
           this.selectedNetworkController.hasQueuedRequests() &&
           !sameChainAsCurrent
@@ -4300,10 +4326,7 @@ export default class MetamaskController extends EventEmitter {
         // await all promises in the queue
         // then continue
 
-        if (
-          chainIdForRequest !==
-          this.networkController.store.getState().providerConfig.chainId
-        ) {
+        if (chainIdForRequest !== activeChainId) {
           console.log('SHOULD SWITCH NETWORK');
           const type = CHAIN_ID_TO_TYPE_MAP[chainIdForRequest];
           if (type) {
