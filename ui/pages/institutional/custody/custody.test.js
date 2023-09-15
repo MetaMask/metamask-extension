@@ -5,29 +5,41 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import CustodyPage from '.';
 
-const mockedReturnedValue = jest.fn().mockReturnValue({ type: 'TYPE' });
-const mockedGetCustodianJWTList = jest.fn().mockReturnValue({ type: 'TYPE' });
+const mockedConnectCustodyAddresses = jest
+  .fn()
+  .mockReturnValue({ type: 'TYPE' });
+const mockedGetCustodianJWTList = jest
+  .fn()
+  .mockImplementation(() => async (dispatch) => {
+    const jwtList = ['jwt1', 'jwt2', 'jwt3'];
+    dispatch({ type: 'TYPE', payload: jwtList });
+    return jwtList;
+  });
 
-const mockedGetCustodianAccounts = jest.fn().mockReturnValue(async () => null);
+const mockedGetCustodianAccounts = jest
+  .fn()
+  .mockImplementation(() => async (dispatch) => {
+    const accounts = [
+      {
+        name: 'test',
+        address: '0x123',
+        balance: '0x123',
+        custodianDetails: 'custodianDetails',
+        labels: [{ key: 'key', value: 'value' }],
+        chanId: 'chanId',
+      },
+    ];
+    dispatch({ type: 'TYPE', payload: accounts });
+    return accounts;
+  });
 const mockedGetCustodianToken = jest.fn().mockReturnValue('testJWT');
-
-const mockedGetCustodianConnectRequest = jest.fn().mockReturnValue({
-  type: 'TYPE',
-  custodian: 'saturn',
-  token: 'token',
-  apiUrl: 'url',
-  custodianType: undefined,
-  custodianName: 'saturn',
-});
 
 jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
-    getCustodianConnectRequest: mockedGetCustodianConnectRequest,
     getCustodianToken: mockedGetCustodianToken,
     getCustodianAccounts: mockedGetCustodianAccounts,
-    getCustodianAccountsByAddress: mockedReturnedValue,
     getCustodianJWTList: mockedGetCustodianJWTList,
-    connectCustodyAddresses: mockedReturnedValue,
+    connectCustodyAddresses: mockedConnectCustodyAddresses,
   }),
 }));
 
@@ -35,6 +47,16 @@ describe('CustodyPage', function () {
   const mockStore = {
     metamask: {
       providerConfig: { chainId: 0x1, type: 'test' },
+      institutionalFeatures: {
+        connectRequests: [
+          {
+            token: 'token',
+            environment: 'saturn',
+            service: 'saturn',
+            apiUrl: 'url',
+          },
+        ],
+      },
       mmiConfiguration: {
         portfolio: {
           enabled: true,
@@ -42,12 +64,24 @@ describe('CustodyPage', function () {
         },
         custodians: [
           {
-            type: 'Saturn',
-            name: 'saturn',
+            type: 'Saturn A',
+            name: 'saturn a',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
-            displayName: 'Saturn Custody',
+            displayName: 'Saturn Custody A',
+            production: true,
+            refreshTokenUrl: null,
+            isNoteToTraderSupported: false,
+            version: 1,
+          },
+          {
+            type: 'Saturn B',
+            name: 'saturn b',
+            apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
+            iconUrl:
+              'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
+            displayName: 'Saturn Custody B',
             production: true,
             refreshTokenUrl: null,
             isNoteToTraderSupported: false,
@@ -69,19 +103,14 @@ describe('CustodyPage', function () {
 
   const store = configureMockStore([thunk])(mockStore);
 
-  it('renders CustodyPage', async () => {
-    const { container } = renderWithProvider(<CustodyPage />, store);
-
-    await waitFor(() => {
-      expect(container).toMatchSnapshot();
-    });
-  });
-
   it('opens connect custody without any custody selected', async () => {
-    const { getByTestId } = renderWithProvider(<CustodyPage />, store);
+    act(() => {
+      renderWithProvider(<CustodyPage />, store);
+    });
 
     await waitFor(() => {
-      expect(getByTestId('custody-connect-button')).toBeDefined();
+      const connectCustodyBtn = screen.getAllByTestId('custody-connect-button');
+      expect(connectCustodyBtn[0]).toBeDefined();
     });
   });
 
@@ -91,13 +120,81 @@ describe('CustodyPage', function () {
     });
 
     await waitFor(() => {
-      const custodyBtn = screen.getByTestId('custody-connect-button');
-      fireEvent.click(custodyBtn);
+      const custodyBtns = screen.getAllByTestId('custody-connect-button');
+      fireEvent.click(custodyBtns[0]);
     });
 
     await waitFor(() => {
       expect(screen.getByTestId('jwt-form-connect-button')).toBeInTheDocument();
       expect(mockedGetCustodianJWTList).toHaveBeenCalled();
     });
+  });
+
+  it('calls getCustodianJwtList when first custody button is clicked, showing the jwt form and testing the sorting function', async () => {
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        mmiConfiguration: {
+          ...mockStore.metamask.mmiConfiguration,
+          custodians: [
+            {
+              ...mockStore.metamask.mmiConfiguration.custodians[0],
+              name: 'saturn b',
+              displayName: 'Saturn Custody B',
+            },
+            {
+              ...mockStore.metamask.mmiConfiguration.custodians[1],
+              name: 'saturn a',
+              displayName: 'Saturn Custody A',
+            },
+            {
+              ...mockStore.metamask.mmiConfiguration.custodians[2],
+              name: 'saturn c',
+              displayName: 'Saturn Custody C',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    await waitFor(() => {
+      // Saturn Custody A will be the first one to appear
+      const saturnCustodyA = screen.getByText('Saturn Custody A');
+      const parentContainer = saturnCustodyA.closest('ul');
+      expect(parentContainer).toMatchSnapshot();
+    });
+  });
+
+  it('renders PulseLoader when loading state is true', async () => {
+    mockedGetCustodianToken.mockImplementation(
+      () => new Promise((resolve) => resolve(null)),
+    );
+    mockedGetCustodianAccounts.mockImplementation(
+      () => new Promise((resolve) => resolve(null)),
+    );
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, store);
+      expect(screen.getByTestId('pulse-loader')).toBeDefined();
+    });
+  });
+
+  it('handles connection errors correctly', async () => {
+    mockedGetCustodianAccounts.mockImplementation(
+      () => new Promise((resolve) => resolve(null)),
+    );
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, store);
+    });
+
+    expect(screen.getByTestId('connect-error')).toBeDefined();
   });
 });
