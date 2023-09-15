@@ -31,6 +31,7 @@ import {
   LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1333,7 +1334,18 @@ export function getNonTestNetworks(state) {
     // Custom networks added by the user
     ...Object.values(networkConfigurations)
       .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
-      .map((network) => ({ ...network, removable: true })),
+      .map((network) => ({
+        ...network,
+        rpcPrefs: {
+          ...network.rpcPrefs,
+          // Provide an image based on chainID if a network
+          // has been added without an image
+          imageUrl:
+            network?.rpcPrefs?.imageUrl ??
+            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+        },
+        removable: true,
+      })),
   ];
 }
 
