@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.2.0]
+
 ## [11.1.0]
 
 ## [11.0.0]
@@ -3973,7 +3975,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.2.0...HEAD
+[11.2.0]: https://github.com/MetaMask/metamask-extension/compare/v11.1.0...v11.2.0
 [11.1.0]: https://github.com/MetaMask/metamask-extension/compare/v11.0.0...v11.1.0
 [11.0.0]: https://github.com/MetaMask/metamask-extension/compare/v10.35.1...v11.0.0
 [10.35.1]: https://github.com/MetaMask/metamask-extension/compare/v10.35.0...v10.35.1
