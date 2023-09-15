@@ -36,12 +36,12 @@ import {
   getSelectedAddress,
   hasTransactionPendingApprovals,
   getApprovalFlows,
+  getCurrentNetworkTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
-  getCurrentNetworkTransactions,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
