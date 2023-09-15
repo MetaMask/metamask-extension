@@ -174,7 +174,6 @@ export const SENTRY_BACKGROUND_STATE = {
     dismissSeedBackUpReminder: true,
     featureFlags: true,
     forgottenPassword: true,
-    identities: false,
     incomingTransactionsPreferences: true,
     infuraBlocked: true,
     ipfsGateway: false,
