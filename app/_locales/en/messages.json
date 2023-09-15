@@ -3145,6 +3145,9 @@
   "password": {
     "message": "Password"
   },
+  "passwordMmiTermsWarning": {
+    "message": "I understand that MetaMask Institutional cannot recover this password for me. $1"
+  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -3159,7 +3162,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "I understand that MetaMask $2 cannot recover this password for me. $1"
+    "message": "I understand that MetaMask cannot recover this password for me. $1"
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"

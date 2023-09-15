@@ -220,6 +220,20 @@ export default function CreatePassword({
     }
   };
 
+  const createPasswordLink = (
+    <a
+      onClick={(e) => e.stopPropagation()}
+      key="create-password__link-text"
+      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span className="create-password__link-text">
+        {t('learnMoreUpperCase')}
+      </span>
+    </a>
+  );
+
   return (
     <div className="create-password__wrapper" data-testid="create-password">
       {
@@ -314,22 +328,16 @@ export default function CreatePassword({
                 variant={TypographyVariant.H5}
                 boxProps={{ marginLeft: 3 }}
               >
-                {t('passwordTermsWarning', [
-                  <a
-                    onClick={(e) => e.stopPropagation()}
-                    key="create-password__link-text"
-                    href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span className="create-password__link-text">
-                      {t('learnMoreUpperCase')}
-                    </span>
-                  </a>,
-                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                  'Institutional',
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  t('passwordTermsWarning', [createPasswordLink])
                   ///: END:ONLY_INCLUDE_IN
-                ])}
+                }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                  t('passwordMmiTermsWarning', [createPasswordLink])
+                  ///: END:ONLY_INCLUDE_IN
+                }
               </Typography>
             </label>
           </Box>
