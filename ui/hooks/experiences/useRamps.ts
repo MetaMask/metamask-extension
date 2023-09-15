@@ -21,7 +21,7 @@ const useRamps = (): IUseRamps => {
         return 'https://faucet.sepolia.dev/';
       default: {
         const params = new URLSearchParams();
-        params.set('metamaskEntry', 'ext_buy_button');
+        params.set('metamaskEntry', 'ext_buy_sell_button');
         if (metaMetricsId) {
           params.set('metametricsId', metaMetricsId);
         }

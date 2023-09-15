@@ -352,7 +352,9 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });
