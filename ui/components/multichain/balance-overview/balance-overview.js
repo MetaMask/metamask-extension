@@ -35,6 +35,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
+///: END:ONLY_INCLUDE_IN
 
 export const BalanceOverview = () => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -157,7 +160,7 @@ export const BalanceOverview = () => {
                 location: 'Home',
                 text: 'Portfolio',
                 chain_id: chainId,
-                token_symbol: 'ETH',
+                token_symbol: CURRENCY_SYMBOLS.ETH,
               },
             });
           }}

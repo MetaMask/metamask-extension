@@ -172,11 +172,12 @@ export default class SwapsController {
   }
 
   async fetchSwapsNetworkConfig(chainId) {
-    const response = await fetchWithCache(
-      getBaseApi('network', chainId),
-      { method: 'GET' },
-      { cacheRefreshTime: 600000 },
-    );
+    const response = await fetchWithCache({
+      url: getBaseApi('network', chainId),
+      fetchOptions: { method: 'GET' },
+      cacheOptions: { cacheRefreshTime: 600000 },
+      functionName: 'fetchSwapsNetworkConfig',
+    });
     const { refreshRates, parameters = {} } = response || {};
     if (
       !refreshRates ||
