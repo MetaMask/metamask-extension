@@ -456,6 +456,12 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          `${this.tokenListController.name}:stateChange`,
+          listener,
+      ),
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(this.networkController),
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -724,6 +730,9 @@ export default class MetamaskController extends EventEmitter {
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
+        ),
+        onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+          this.preferencesController.store,
         ),
       },
       {
@@ -3755,10 +3764,10 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  handleWatchAssetRequest = (asset, type, origin) => {
+  handleWatchAssetRequest = ({ asset, type, origin, networkClientId }) => {
     switch (type) {
       case ERC20:
-        return this.tokensController.watchAsset(asset, type);
+        return this.tokensController.watchAsset({asset, type, networkClientId});
       case ERC721:
       case ERC1155:
         return this.nftController.watchNft(asset, type, origin);
