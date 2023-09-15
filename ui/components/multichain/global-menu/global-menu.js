@@ -44,6 +44,7 @@ import {
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
+  getNotifySnaps,
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
@@ -71,6 +72,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const history = useHistory();
   const address = useSelector(getSelectedAddress);
   const unapprovedTransactons = useSelector(getUnapprovedTransactions);
+
+  const notifySnaps = useSelector(getNotifySnaps);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactons).length > 0;
@@ -167,40 +170,42 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       )}
       {
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-        <>
-          <MenuItem
-            iconName={IconName.Notification}
-            onClick={() => {
-              closeMenu();
-              history.push(NOTIFICATIONS_ROUTE);
-            }}
-          >
-            {t('notifications')}
-            {unreadNotificationsCount > 0 && (
-              <Text
-                as="span"
-                display={Display.InlineBlock}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                backgroundColor={BackgroundColor.primaryDefault}
-                color={TextColor.primaryInverse}
-                padding={[0, 1, 0, 1]}
-                variant={TextVariant.bodyXs}
-                textAlign={TextAlign.Center}
-                data-testid="global-menu-notification-count"
-                style={{
-                  borderRadius: '16px',
-                  minWidth: '24px',
-                }}
-                marginInlineStart={2}
-              >
-                {unreadNotificationsCount > 99
-                  ? '99+'
-                  : unreadNotificationsCount}
-              </Text>
-            )}
-          </MenuItem>
-        </>
+        notifySnaps.length ? (
+          <>
+            <MenuItem
+              iconName={IconName.Notification}
+              onClick={() => {
+                closeMenu();
+                history.push(NOTIFICATIONS_ROUTE);
+              }}
+            >
+              {t('notifications')}
+              {unreadNotificationsCount > 0 && (
+                <Text
+                  as="span"
+                  display={Display.InlineBlock}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                  color={TextColor.primaryInverse}
+                  padding={[0, 1, 0, 1]}
+                  variant={TextVariant.bodyXs}
+                  textAlign={TextAlign.Center}
+                  data-testid="global-menu-notification-count"
+                  style={{
+                    borderRadius: '16px',
+                    minWidth: '24px',
+                  }}
+                  marginInlineStart={2}
+                >
+                  {unreadNotificationsCount > 99
+                    ? '99+'
+                    : unreadNotificationsCount}
+                </Text>
+              )}
+            </MenuItem>
+          </>
+        ) : null
         ///: END:ONLY_INCLUDE_IN(snaps)
       }
       <MenuItem
