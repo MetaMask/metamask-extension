@@ -8,8 +8,8 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Blockaid Settings', function () {
-  it('should not show blockaid UI when toggle is off', async function () {
+describe('PPOM Settings', function () {
+  it('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -36,7 +36,7 @@ describe('Blockaid Settings', function () {
     );
   });
 
-  it('should show the blockaid UI when the toggle is on', async function () {
+  it('should show the PPOM warning when the toggle is on', async function () {
     await withFixtures(
       {
         dapp: true,
