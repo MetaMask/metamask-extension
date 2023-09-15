@@ -1,12 +1,12 @@
-import React, { useState, useContext } from 'react';
-import {
+import React, {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  useDispatch,
+  useState,
+  useContext,
   ///: END:ONLY_INCLUDE_IN
-  useSelector,
-} from 'react-redux';
+} from 'react';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import { setCompletedOnboarding } from '../../../store/actions';
 ///: END:ONLY_INCLUDE_IN
@@ -29,28 +29,29 @@ import {
 import Box from '../../../components/ui/box';
 import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin-mmi-billboard';
 ///: END:ONLY_INCLUDE_IN
+import { Text } from '../../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { getFirstTimeFlowType } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
-import { getFirstTimeFlowType } from '../../../selectors';
-import { Text } from '../../../components/component-library';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import OnboardingPinBillboard from './pin-billboard';
 ///: END:ONLY_INCLUDE_IN
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
-  ///: END:ONLY_INCLUDE_IN
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
@@ -70,6 +71,7 @@ export default function OnboardingPinExtension() {
       history.push(DEFAULT_ROUTE);
     }
   };
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <div
@@ -154,11 +156,6 @@ export default function OnboardingPinExtension() {
           </div>
           <div className="onboarding-pin-extension__buttons">
             <Button
-              data-testid={
-                selectedIndex === 0
-                  ? 'pin-extension-next'
-                  : 'pin-extension-done'
-              }
               type="primary"
               onClick={() => history.push(MMI_ONBOARDING_COMPLETION_ROUTE)}
             >
