@@ -1949,25 +1949,12 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/permission-controller>@metamask/utils": true,
         "@metamask/permission-controller>nanoid": true,
+        "@metamask/utils": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "immer": true,
         "json-rpc-engine": true
-      }
-    },
-    "@metamask/permission-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1989,6 +1976,52 @@
     "@metamask/phishing-warning>eth-phishing-detect": {
       "packages": {
         "eslint>optionator>fast-levenshtein": true
+      }
+    },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "MessageEvent.prototype": true,
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "browser": true,
+        "chrome": true,
+        "location.origin": true,
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/post-message-stream>readable-stream": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>process-nextick-args": true,
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true,
+        "@metamask/post-message-stream>readable-stream>string_decoder": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>process-nextick-args": {
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true
       }
     },
     "@metamask/ppom-validator>elliptic": {
@@ -2051,20 +2084,7 @@
     },
     "@metamask/rpc-methods-flask>@metamask/snaps-ui": {
       "packages": {
-        "@metamask/rpc-methods-flask>@metamask/snaps-ui>@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/rpc-methods-flask>@metamask/snaps-ui>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
+        "@metamask/rpc-methods-flask>@metamask/utils": true,
         "superstruct": true
       }
     },
@@ -2206,8 +2226,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/permission-controller": true,
+        "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
-        "@metamask/snaps-controllers-flask>@metamask/post-message-stream": true,
         "@metamask/snaps-controllers-flask>@metamask/rpc-methods": true,
         "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
         "@metamask/snaps-controllers-flask>@metamask/utils": true,
@@ -2224,41 +2244,13 @@
         "pump": true
       }
     },
-    "@metamask/snaps-controllers-flask>@metamask/post-message-stream": {
-      "globals": {
-        "MessageEvent.prototype": true,
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "browser": true,
-        "chrome": true,
-        "location.origin": true,
-        "postMessage": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "@metamask/snaps-controllers-flask>@metamask/post-message-stream>@metamask/utils": true,
-        "@metamask/snaps-controllers-flask>concat-stream>readable-stream": true
-      }
-    },
-    "@metamask/snaps-controllers-flask>@metamask/post-message-stream>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
     "@metamask/snaps-controllers-flask>@metamask/rpc-methods": {
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/permission-controller": true,
         "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": true,
-        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-utils": true,
         "@metamask/snaps-controllers-flask>@metamask/utils": true,
         "eth-rpc-errors": true,
         "superstruct": true
@@ -2266,19 +2258,34 @@
     },
     "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": {
       "packages": {
-        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui>@metamask/utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
         "superstruct": true
       }
     },
-    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui>@metamask/utils": {
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-utils": {
       "globals": {
         "TextDecoder": true,
-        "TextEncoder": true
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
       },
       "packages": {
+        "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "@metamask/snaps-utils-flask>is-svg": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
         "browserify>buffer": true,
-        "nock>debug": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
         "semver": true,
         "superstruct": true
       }
