@@ -1,23 +1,16 @@
-import React, {
-  useState,
-  useContext,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IN
-} from 'react';
+import React, { useState, useContext } from 'react';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   useDispatch,
   ///: END:ONLY_INCLUDE_IN
   useSelector,
 } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { useHistory } from 'react-router-dom';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 import { setCompletedOnboarding } from '../../../store/actions';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { useHistory } from 'react-router-dom';
-import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin-mmi-billboard';
 ///: END:ONLY_INCLUDE_IN
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
@@ -26,9 +19,17 @@ import {
   FontWeight,
   TextAlign,
 } from '../../../helpers/constants/design-system';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  DEFAULT_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MMI_ONBOARDING_COMPLETION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/constants/routes';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import Box from '../../../components/ui/box';
-import { MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin-mmi-billboard';
 ///: END:ONLY_INCLUDE_IN
 import {
   MetaMetricsEventCategory,
@@ -45,24 +46,18 @@ import OnboardingPinBillboard from './pin-billboard';
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const dispatch = useDispatch();
   ///: END:ONLY_INCLUDE_IN
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const history = useHistory();
-  useEffect(() => setSelectedIndex(1), []);
-  ///: END:ONLY_INCLUDE_IN
-
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
     } else {
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       await dispatch(setCompletedOnboarding());
-      ///: END:ONLY_INCLUDE_IN
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.OnboardingWalletSetupComplete,
@@ -74,9 +69,7 @@ export default function OnboardingPinExtension() {
           new_wallet: firstTimeFlowType === FIRST_TIME_FLOW_TYPES.CREATE,
         },
       });
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      history.push(MMI_ONBOARDING_COMPLETION_ROUTE);
-      ///: END:ONLY_INCLUDE_IN
+      history.push(DEFAULT_ROUTE);
     }
   };
 
@@ -126,50 +119,57 @@ export default function OnboardingPinExtension() {
               />
             </div>
           </Carousel>
+          <div className="onboarding-pin-extension__buttons">
+            <Button
+              data-testid={
+                selectedIndex === 0
+                  ? 'pin-extension-next'
+                  : 'pin-extension-done'
+              }
+              type="primary"
+              onClick={handleClick}
+            >
+              {selectedIndex === 0 ? t('next') : t('done')}
+            </Button>
+          </div>
         </>
         ///: END:ONLY_INCLUDE_IN
       }
 
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        <div>
-          <Box textAlign={TextAlign.Center}>
-            <Text
-              variant={TextVariant.headingLg}
-              align={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
+        <>
+          <div>
+            <Box textAlign={TextAlign.Center}>
+              <Text
+                variant={TextVariant.headingLg}
+                align={TextAlign.Center}
+                fontWeight={FontWeight.Bold}
+              >
+                {t('pinExtensionTitle')}
+              </Text>
+              <Text marginTop={3} marginBottom={3}>
+                {t('pinExtensionDescription')}
+              </Text>
+              <OnboardingPinMmiBillboard />
+            </Box>
+          </div>
+          <div className="onboarding-pin-extension__buttons">
+            <Button
+              data-testid={
+                selectedIndex === 0
+                  ? 'pin-extension-next'
+                  : 'pin-extension-done'
+              }
+              type="primary"
+              onClick={() => history.push(MMI_ONBOARDING_COMPLETION_ROUTE)}
             >
-              {t('pinExtensionTitle')}
-            </Text>
-            <Text marginTop={3} marginBottom={3}>
-              {t('pinExtensionDescription')}
-            </Text>
-            <OnboardingPinMmiBillboard />
-          </Box>
-        </div>
+              {t('continue')}
+            </Button>
+          </div>
+        </>
         ///: END:ONLY_INCLUDE_IN
       }
-
-      <div className="onboarding-pin-extension__buttons">
-        <Button
-          data-testid={
-            selectedIndex === 0 ? 'pin-extension-next' : 'pin-extension-done'
-          }
-          type="primary"
-          onClick={handleClick}
-        >
-          {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-            selectedIndex === 0 ? t('next') : t('done')
-            ///: END:ONLY_INCLUDE_IN
-          }
-          {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            t('continue')
-            ///: END:ONLY_INCLUDE_IN
-          }
-        </Button>
-      </div>
     </div>
   );
 }
