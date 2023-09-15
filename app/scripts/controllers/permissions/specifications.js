@@ -82,11 +82,11 @@ export const getCaveatSpecifications = ({ getInternalAccounts }) => {
  *
  * @param {{
  *   getAllAccounts: () => Promise<string[]>,
- *   getIdentities: () => Record<string, Identity>,
+ *   getInternalAccounts: () => Record<string, InternalAccount>,
  * }} options - Options bag.
  * @param options.getAllAccounts - A function that returns all Ethereum accounts
  * in the current MetaMask instance.
- * @param options.getIdentities - A function that returns the
+ * @param options.getInternalAccounts - A function that returns the
  * `PreferencesController` identity objects for all Ethereum accounts in the
  * @param options.captureKeyringTypesWithMissingIdentities - A function that
  * captures extra error information about the "Missing identity for address"
