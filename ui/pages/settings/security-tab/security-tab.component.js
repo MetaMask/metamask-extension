@@ -408,6 +408,7 @@ export default class SecurityTab extends PureComponent {
                 if (value) {
                   // turning from true to false
                   this.props.setIpfsGateway('');
+                  this.props.setUseAddressBarEnsResolution(false);
                 } else {
                   // turning from false to true
                   handleIpfsGatewayChange(this.state.ipfsGateway);
