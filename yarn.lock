@@ -3448,14 +3448,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^3.1.0, @lavamoat/aa@npm:^3.1.1":
-  version: 3.1.4
-  resolution: "@lavamoat/aa@npm:3.1.4"
+"@lavamoat/aa@npm:^3.1.1, @lavamoat/aa@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "@lavamoat/aa@npm:3.1.5"
   dependencies:
     resolve: "npm:^1.22.3"
   bin:
     lavamoat-ls: src/cli.js
-  checksum: eec9c70f210c1bbaba3611b64cbc1b04488abe3a3f2b52b61f2964cb97d59844d22aad4138a0790f9aa8e79d221927fff841432f780fc8ef42398d56f7e5bdbc
+  checksum: 35e186fb0aaed5a2494dca4b8d353ead3123ff8a4964d502bdfe8ac369a774499a9ed2c45d04621b33f3c3fbf26ae8255fe4c3a4686f8a5dcb5a8da516be723a
   languageName: node
   linkType: hard
 
@@ -3474,19 +3474,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:5.2.4, @lavamoat/lavapack@npm:^5.2.4":
-  version: 5.2.4
-  resolution: "@lavamoat/lavapack@npm:5.2.4"
+"@lavamoat/lavapack@npm:^5.2.4, @lavamoat/lavapack@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "@lavamoat/lavapack@npm:5.4.1"
   dependencies:
     JSONStream: "npm:^1.3.5"
     combine-source-map: "npm:^0.8.0"
     convert-source-map: "npm:^2.0.0"
     json-stable-stringify: "npm:^1.0.2"
-    lavamoat-core: "npm:^14.2.3"
+    lavamoat-core: "npm:^14.4.1"
     readable-stream: "npm:^3.6.0"
     through2: "npm:^4.0.2"
     umd: "npm:^3.0.3"
-  checksum: 2dbd0c8a7d9eac0e1195496e4af424e60e8e6fc925557255431381a48373b249f019b935b9c9e75fb7742d44156fb1b20f038fffb9d1220074302a8c863a22d6
+  checksum: 63a3d947d6438149acb06349cc4160367f522040b9b87c43df8e617424634aa67f9f31058b0c6a0b02f2eac4c9dd6b16fe39f9ecf9c8fd4a4a5f3b31cfa4fb8f
   languageName: node
   linkType: hard
 
@@ -22794,49 +22794,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:15.7.4":
-  version: 15.7.4
-  resolution: "lavamoat-browserify@npm:15.7.4"
+"lavamoat-browserify@npm:^15.7.4":
+  version: 15.9.1
+  resolution: "lavamoat-browserify@npm:15.9.1"
   dependencies:
-    "@lavamoat/aa": "npm:^3.1.0"
-    "@lavamoat/lavapack": "npm:^5.2.4"
+    "@lavamoat/aa": "npm:^3.1.5"
+    "@lavamoat/lavapack": "npm:^5.4.1"
     browser-resolve: "npm:^2.0.0"
     concat-stream: "npm:^2.0.0"
     convert-source-map: "npm:^1.9.0"
     duplexify: "npm:^4.1.1"
     json-stable-stringify: "npm:^1.0.1"
-    lavamoat-core: "npm:^14.2.3"
+    lavamoat-core: "npm:^14.4.1"
     pify: "npm:^4.0.1"
     readable-stream: "npm:^3.6.0"
     source-map: "npm:^0.7.4"
     through2: "npm:^3.0.0"
-  checksum: 70551bd7ba1bce540863e69298e9905156cbc133b3ba9a574da49f3651db60f6c9baedded0b91e0445bf98a8b5dc28939bb09cdd7235a11f9fa63ff28ec99e6d
+  checksum: d462d983c433df0e77dbde7cbc122e81554fc0ffbdb4bee05afbc7e3413b4ae6fafd1985068cded5cf693dbf1a97a1de7c0a219fa181bf9086a9fefd231030a5
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:14.2.3":
-  version: 14.2.3
-  resolution: "lavamoat-core@npm:14.2.3"
+"lavamoat-core@npm:^14.4.1":
+  version: 14.4.1
+  resolution: "lavamoat-core@npm:14.4.1"
   dependencies:
     json-stable-stringify: "npm:^1.0.2"
-    lavamoat-tofu: "npm:^6.0.3"
+    lavamoat-tofu: "npm:^6.2.1"
     merge-deep: "npm:^3.0.3"
-  checksum: 572cbb33c47701d34cebed933c55074e607374763a222c19ec39ffa9ee6ae2550ad7958f9b23d10e7b0be620c4d4bc156e7b6b9e010ef26064ee8d22759589e4
+  checksum: 3ba352e96d728f015f193a671fef28be3c221e486956e693a4ec4690c871aa4b5aa9bd0bfb1bb9b260f1bd7709eb078f839d39c7c065640800d368a55e7e5cc3
   languageName: node
   linkType: hard
 
-"lavamoat-core@patch:lavamoat-core@npm%3A14.2.3#~/.yarn/patches/lavamoat-core-npm-14.2.3-2b45f8e57b.patch":
-  version: 14.2.3
-  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A14.2.3#~/.yarn/patches/lavamoat-core-npm-14.2.3-2b45f8e57b.patch::version=14.2.3&hash=5307c6"
-  dependencies:
-    json-stable-stringify: "npm:^1.0.2"
-    lavamoat-tofu: "npm:^6.0.3"
-    merge-deep: "npm:^3.0.3"
-  checksum: e03c9ec93a62e8b030ab473116d54e18d5b9eafe1c410a52593bf029506aa67f2194620f75e41dcc68d7b535b5b49dcc154667944375c673796a1d45a14abf37
-  languageName: node
-  linkType: hard
-
-"lavamoat-tofu@npm:^6.0.3":
+"lavamoat-tofu@npm:^6.2.1":
   version: 6.2.1
   resolution: "lavamoat-tofu@npm:6.2.1"
   dependencies:
@@ -22846,11 +22835,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-viz@npm:6.0.11":
-  version: 6.0.11
-  resolution: "lavamoat-viz@npm:6.0.11"
+"lavamoat-viz@npm:^6.0.11":
+  version: 6.2.1
+  resolution: "lavamoat-viz@npm:6.2.1"
   dependencies:
-    lavamoat-core: "npm:^14.2.3"
+    lavamoat-core: "npm:^14.4.1"
     ncp: "npm:^2.0.0"
     open: "npm:^7.0.3"
     pify: "npm:^4.0.1"
@@ -22858,29 +22847,29 @@ __metadata:
     yargs: "npm:^16.0.0"
   bin:
     lavamoat-viz: bin/index.js
-  checksum: 9c89bf1493afea8f842daeab4e9768ae0967c180c4be66b127cabca1e4af655f8d5cf24afbf7597f5c312876f7aaac91d5e1d783d29aec9df1247ce1a05fc5e3
+  checksum: 26ade3b21dd49f4f742e37d2ac52174e792447ed92b470c4618f9ac7397a9bbb51d0c225efb0a6319dfa021a566668acefd5fb07e0e6838e8df7efd508e527a4
   languageName: node
   linkType: hard
 
-"lavamoat@npm:7.1.2":
-  version: 7.1.2
-  resolution: "lavamoat@npm:7.1.2"
+"lavamoat@npm:^7.1.2":
+  version: 7.3.1
+  resolution: "lavamoat@npm:7.3.1"
   dependencies:
     "@babel/code-frame": "npm:^7.21.4"
     "@babel/highlight": "npm:^7.18.6"
-    "@lavamoat/aa": "npm:^3.1.0"
+    "@lavamoat/aa": "npm:^3.1.5"
     bindings: "npm:^1.5.0"
     htmlescape: "npm:^1.1.1"
     json-stable-stringify: "npm:^1.0.2"
-    lavamoat-core: "npm:^14.2.3"
-    lavamoat-tofu: "npm:^6.0.3"
+    lavamoat-core: "npm:^14.4.1"
+    lavamoat-tofu: "npm:^6.2.1"
     node-gyp-build: "npm:^4.6.0"
     resolve: "npm:^1.22.3"
     yargs: "npm:^17.7.2"
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: c6be3d5d9ef1ca478279c18a4142f003038245bdbee8ae9d3382166398334a04fd692ed9380dde09e8934c419469849bfb06f868d336cfb73dbd4b7628b47bd8
+  checksum: e2a294e8c1f911f2d7c33315fbe405c2917c2be9ed77f3504a3e5fbc62cf2aaba043e3cd86e0b7164f0930b687196784f440441f3e9fe5731a9cff1c3027cc4c
   languageName: node
   linkType: hard
 
@@ -24100,7 +24089,7 @@ __metadata:
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^2.3.1"
-    "@lavamoat/lavapack": "npm:5.2.4"
+    "@lavamoat/lavapack": "npm:^5.2.4"
     "@lavamoat/snow": "npm:^1.5.0"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.12"
@@ -24333,9 +24322,9 @@ __metadata:
     junit-report-merger: "npm:^4.0.0"
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
-    lavamoat: "npm:7.1.2"
-    lavamoat-browserify: "npm:15.7.4"
-    lavamoat-viz: "npm:6.0.11"
+    lavamoat: "npm:^7.1.2"
+    lavamoat-browserify: "npm:^15.7.4"
+    lavamoat-viz: "npm:^6.0.11"
     localforage: "npm:^1.9.0"
     lockfile-lint: "npm:^4.10.6"
     lodash: "npm:^4.17.21"
