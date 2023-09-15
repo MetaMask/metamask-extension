@@ -5,9 +5,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   useSelector,
 } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { useHistory } from 'react-router-dom';
-///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 import { setCompletedOnboarding } from '../../../store/actions';

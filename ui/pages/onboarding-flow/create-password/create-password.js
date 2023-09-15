@@ -220,17 +220,6 @@ export default function CreatePassword({
     }
   };
 
-  const walletButton =
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    t('continue');
-  ///: END:ONLY_INCLUDE_IN
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  secretRecoveryPhrase && firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
-    ? t('importMyWallet')
-    : t('createNewWallet');
-  ///: END:ONLY_INCLUDE_IN
-
   return (
     <div className="create-password__wrapper" data-testid="create-password">
       {
@@ -357,7 +346,19 @@ export default function CreatePassword({
             disabled={!isValid || !termsChecked}
             onClick={handleCreate}
           >
-            {walletButton}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              t('continue')
+              ///: END:ONLY_INCLUDE_IN
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+              secretRecoveryPhrase &&
+              firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+                ? t('importMyWallet')
+                : t('createNewWallet')
+              ///: END:ONLY_INCLUDE_IN
+            }
           </Button>
         </form>
       </Box>
