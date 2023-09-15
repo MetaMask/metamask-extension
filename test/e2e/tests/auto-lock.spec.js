@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { queryByTestId } = require('@testing-library/react');
 
 describe('Auto-Lock Timer', function () {
   const ganacheOptions = {
@@ -47,9 +46,11 @@ describe('Auto-Lock Timer', function () {
           '[data-testid="advanced-setting-auto-lock"] button',
         );
         // Verify the wallet is loccked
-        const pageTitle = queryByTestId('unlock-page__title');
+        const pageTitle = await driver.findElement(
+          '[data-testid="unlock-page-title"]',
+        );
         const unlockButton = await driver.findElement('.unlock-page button');
-        assert.equal(pageTitle.innerText, 'Welcome back!');
+        assert.equal(await pageTitle.getText(), 'Welcome back!');
         assert.equal(await unlockButton.isDisplayed(), true);
       },
     );
