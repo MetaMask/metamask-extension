@@ -29,7 +29,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           </p>
           <div
             class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
-            data-testid="advanced-setting-security-alerts-toggle-option"
+            data-testid="settings-toggle-security-alert-blockaid"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -157,8 +157,8 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--color-text-alternative"
           >
             <span>
-               
-              This service is experimental. By enabling this feature, you agree to OpenSea's 
+
+              This service is experimental. By enabling this feature, you agree to OpenSea's
               <a
                 href="http://opensea.io/securityproviderterms"
                 rel="noopener noreferrer"
@@ -167,7 +167,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
                 terms of use
               </a>
               .
-               
+
             </span>
           </h6>
         </div>

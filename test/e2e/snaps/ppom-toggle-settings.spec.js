@@ -69,7 +69,7 @@ describe('PPOM Settings', function () {
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
         await driver.clickElement(
-          '[data-testid="advanced-setting-security-alerts-toggle-option"] .toggle-button > div',
+          '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
         );
 
         await openDapp(driver);

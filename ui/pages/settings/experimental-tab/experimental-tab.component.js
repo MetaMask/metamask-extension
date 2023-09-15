@@ -89,7 +89,7 @@ export default class ExperimentalTab extends PureComponent {
                 {t('securityAlertsDescription')}
               </Text>
               <div
-                data-testid="advanced-setting-security-alerts-toggle-option"
+                data-testid="settings-toggle-security-alert-blockaid"
                 className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
               >
                 <Text
