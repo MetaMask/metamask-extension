@@ -20,8 +20,8 @@ import {
 } from '../../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
-export default function ConfirmationNetworkSwitch({ newNetwork }) {
-  const { chainId, nickname, type } = useSelector(getProviderConfig);
+export default function ConfirmationNetworkSwitch({ newNetwork, fromNetwork }) {
+  const { chainId, nickname, type } = fromNetwork;
 
   return (
     <Box
