@@ -5,6 +5,7 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   BannerAlert,
   Button,
+  ButtonLinkSize,
   ButtonVariant,
 } from '../../components/component-library';
 import Identicon from '../../components/ui/identicon';
@@ -93,7 +94,7 @@ const ConfirmAddSuggestedToken = () => {
               variant={ButtonVariant.Link}
               key="confirm-add-suggested-token-duplicate-warning"
               externalLink
-              size="inherit"
+              size={ButtonLinkSize.Inherit}
               href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
             >
               {t('learnScamRisk')}
