@@ -167,6 +167,10 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+import { SnapsNameProvider } from './lib/SnapsNameProvider';
+///: END:ONLY_INCLUDE_IN
+
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import * as PPOMModule from './lib/ppom/ppom';
@@ -1507,6 +1511,11 @@ export default class MetamaskController extends EventEmitter {
         new EtherscanNameProvider({}),
         new TokenNameProvider({}),
         new LensNameProvider(),
+        new SnapsNameProvider({
+          getPermissionSubjects: () => this.permissionController.state.subjects,
+          getSnaps: () => Object.values(this.snapController.state.snaps),
+          handleSnapRequest: this.handleSnapRequest.bind(this),
+        }),
       ],
       state: initState.NameController,
     });
