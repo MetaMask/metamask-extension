@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { chain } from 'lodash';
 import SendRowWrapper from '../send-row-wrapper';
 import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
@@ -69,9 +70,19 @@ export default class SendAssetRow extends Component {
 
   async componentDidMount() {
     const sendableTokens = this.props.tokens.filter((token) => !token.isERC721);
-    const sendableNfts = this.props.nfts.filter(
+    const sendableNftsNotSorted = this.props.nfts.filter(
       (nft) => nft.isCurrentlyOwned && nft.standard === TokenStandard.ERC721,
     );
+    // Group and sort the sendableNfts Array
+    const sendableNfts = chain(sendableNftsNotSorted)
+      .groupBy('address')
+      .mapValues((group) => {
+        return group.sort((a, b) => a.tokenId - b.tokenId);
+      })
+      .values()
+      .flatten()
+      .value();
+
     this.setState({ sendableTokens, sendableNfts });
   }
 

@@ -246,6 +246,8 @@ workflows:
             - test-e2e-firefox
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
+            - test-e2e-chrome-snaps-flask
+            - test-e2e-firefox-snaps-flask
             - test-storybook
       - benchmark:
           requires:
@@ -1202,6 +1204,9 @@ jobs:
       - run:
           name: Publish Flask release to Sentry
           command: yarn sentry:publish --build-type flask
+      - run:
+          name: Publish MMI release to Sentry
+          command: yarn sentry:publish --build-type mmi
       - run:
           name: Create GitHub release
           command: |
