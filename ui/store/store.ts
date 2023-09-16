@@ -53,7 +53,7 @@ interface TemporaryBackgroundState {
   providerConfig: {
     chainId: string;
   };
-  currentNetworkTxList: TransactionMeta[];
+  transactions: TransactionMeta[];
   selectedAddress: string;
   identities: {
     [address: string]: {
@@ -62,9 +62,6 @@ interface TemporaryBackgroundState {
   };
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedTxs: {
-    [transactionId: string]: TransactionMeta;
-  };
   unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
