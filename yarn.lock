@@ -1929,14 +1929,14 @@ __metadata:
   linkType: hard
 
 "@ensdomains/content-hash@npm:^2.5.6":
-  version: 2.5.6
-  resolution: "@ensdomains/content-hash@npm:2.5.6"
+  version: 2.5.7
+  resolution: "@ensdomains/content-hash@npm:2.5.7"
   dependencies:
     cids: "npm:^1.1.5"
     js-base64: "npm:^3.6.0"
-    multicodec: "npm:^2.1.0"
+    multicodec: "npm:^3.2.0"
     multihashes: "npm:^2.0.0"
-  checksum: b93714894574eadfc9bc84dc34548f8cf99172714bc9d55f1fc4768fe840743981c1e005249b5aca165670a66a2df7cebfb0cf8c1c5ba652acc64028d61fd200
+  checksum: 819e64301ea20bb40ad934ab65e7a7391d401a933f256a38e7e4fd981b00b831f0b4704fac07c62dd6a3eb3dede35daaf91a6055d1520c88a05de3c841ffbe52
   languageName: node
   linkType: hard
 
@@ -19232,8 +19232,8 @@ __metadata:
   linkType: hard
 
 "gridplus-sdk@npm:^2.5.1":
-  version: 2.5.1
-  resolution: "gridplus-sdk@npm:2.5.1"
+  version: 2.5.2
+  resolution: "gridplus-sdk@npm:2.5.2"
   dependencies:
     "@ethereumjs/common": "npm:3.1.1"
     "@ethereumjs/tx": "npm:4.1.1"
@@ -19254,7 +19254,7 @@ __metadata:
     rlp: "npm:^3.0.0"
     secp256k1: "npm:4.0.2"
     uuid: "npm:^9.0.0"
-  checksum: 57deeae78fc5f904309e689054baabaed8b078b896ecfd5d724889c6ea424a113db64c3fd79d4dca7cc5f558167d7af754506df5c0692ee76087822ae60c3873
+  checksum: 566a9cb7a028cd9f9b650aab3d93c32b88eb4fa7bdf44b506b4cdc85e27dc91dbd3f3297aeed0e8abe8135dc7fbfce6c7d0381d26ab88a51acf4d90195140369
   languageName: node
   linkType: hard
 
@@ -22510,27 +22510,6 @@ __metadata:
   version: 4.4.0
   resolution: "js-sdsl@npm:4.4.0"
   checksum: 529d29cf54906b3987a51962e81b112333010be2cac740497dad10048da85839f5ec8d9f0338d6866d93cccf999100ae4d7e81fddaa85e24cb23f2e0c5766c09
-  languageName: node
-  linkType: hard
-
-"js-sha3@npm:0.5.5":
-  version: 0.5.5
-  resolution: "js-sha3@npm:0.5.5"
-  checksum: 9ce8bfabdba2cfb94b911125fc278e2f46cc01b6590c98833d9361199e2c2b4bca0427d04da6aa083f05c2c3982029200964a3d6e417b0c126c80f2e32c2d5eb
-  languageName: node
-  linkType: hard
-
-"js-sha3@npm:0.8.0, js-sha3@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "js-sha3@npm:0.8.0"
-  checksum: a49ac6d3a6bfd7091472a28ab82a94c7fb8544cc584ee1906486536ba1cb4073a166f8c7bb2b0565eade23c5b3a7b8f7816231e0309ab5c549b737632377a20c
-  languageName: node
-  linkType: hard
-
-"js-sha3@npm:^0.5.7":
-  version: 0.5.7
-  resolution: "js-sha3@npm:0.5.7"
-  checksum: 32885c7edb50fca04017bacada8e5315c072d21d3d35e071e9640fc5577e200076a4718e0b2f33d86ab704accb68d2ade44f1e2ca424cc73a5929b9129dab948
   languageName: node
   linkType: hard
 
@@ -25987,16 +25966,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multibase@npm:^3.0.0":
-  version: 3.1.2
-  resolution: "multibase@npm:3.1.2"
-  dependencies:
-    "@multiformats/base-x": "npm:^4.0.1"
-    web-encoding: "npm:^1.0.6"
-  checksum: 92d1dd2dcf63d9a54027ca1aa2d06160765d1457bb207e30e9c9bf5c8d111eab5014c858ec30bcb99b38cb16244919bd93c9b881e90765a1e462c8fac8413d0e
-  languageName: node
-  linkType: hard
-
 "multibase@npm:^4.0.1":
   version: 4.0.4
   resolution: "multibase@npm:4.0.4"
@@ -26006,30 +25975,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multicodec@npm:^2.1.0":
-  version: 2.1.3
-  resolution: "multicodec@npm:2.1.3"
+"multicodec@npm:^3.0.1, multicodec@npm:^3.2.0":
+  version: 3.2.1
+  resolution: "multicodec@npm:3.2.1"
   dependencies:
-    uint8arrays: "npm:1.1.0"
+    uint8arrays: "npm:^3.0.0"
     varint: "npm:^6.0.0"
-  checksum: dbf149d0c44b9dd5a354cacd5d7743326e9972744715c349e4a32cc0b048d90df847e850acd9b118d4b986bc85ddf3e8d481ac75aafa8df596d75df873e459ff
+  checksum: 5a2f4418ec8b45e623b745e96a4e4b6e1cf6538f8cda8b6139c9b0fdf385db3b59c5e99e28ca5af144cb0953df0d567a86e781783446e32a654313e2ac746f0f
   languageName: node
   linkType: hard
 
-"multicodec@npm:^3.0.1":
-  version: 3.1.0
-  resolution: "multicodec@npm:3.1.0"
-  dependencies:
-    uint8arrays: "npm:^2.1.5"
-    varint: "npm:^6.0.0"
-  checksum: d8a593c6ed5a46ea0e39255a9ad12459b05e36a0a96db7e2773770b9d3e16120f6708b4c9b5b727f1c7f6b8ab1582f78a323736f40caf9051df5966ec884c623
-  languageName: node
-  linkType: hard
-
-"multiformats@npm:^9.5.2":
-  version: 9.5.2
-  resolution: "multiformats@npm:9.5.2"
-  checksum: 2cac9c251c7d7e1d8a6d9db6025c5c9adfbc39c0bb3cb6f2a2f7ebce959bf1c529b73895d620bcb655da65ede8c5ce3596c401330938436877eed4ae53e88d32
+"multiformats@npm:^9.4.2, multiformats@npm:^9.5.2":
+  version: 9.9.0
+  resolution: "multiformats@npm:9.9.0"
+  checksum: ad55c7d480d22f4258a68fd88aa2aab744fe0cb1e68d732fc886f67d858b37e3aa6c2cec12b2960ead7730d43be690931485238569952d8a3d7f90fdc726c652
   languageName: node
   linkType: hard
 
@@ -33729,22 +33688,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uint8arrays@npm:1.1.0":
-  version: 1.1.0
-  resolution: "uint8arrays@npm:1.1.0"
+"uint8arrays@npm:^2.1.3":
+  version: 2.1.10
+  resolution: "uint8arrays@npm:2.1.10"
   dependencies:
-    multibase: "npm:^3.0.0"
-    web-encoding: "npm:^1.0.2"
-  checksum: 839e17a24ae3e0f8dd12e6edc04bc52763ad402bf1db46ea3057d032efdac017ea810e1d7ea28068c58533f57fb6985833c323bac287498cace7608a115abb6e
+    multiformats: "npm:^9.4.2"
+  checksum: 63ceb5fecc09de69641531c847e0b435d15a73587e40d4db23ed9b8a1ebbe839ae39fe81a15ea6079cdf642fcf2583983f9a5d32726edc4bc5e87634f34e3bd5
   languageName: node
   linkType: hard
 
-"uint8arrays@npm:^2.1.3, uint8arrays@npm:^2.1.5":
-  version: 2.1.5
-  resolution: "uint8arrays@npm:2.1.5"
+"uint8arrays@npm:^3.0.0":
+  version: 3.1.1
+  resolution: "uint8arrays@npm:3.1.1"
   dependencies:
-    multibase: "npm:^4.0.1"
-  checksum: 521a120ad21250004a95330d0501c87344c5072376b5d5d9ef642721f7913cc1880b823715e5d8829307a9dda73c3064283cb3a7442f0e85fef781cfca4f0334
+    multiformats: "npm:^9.4.2"
+  checksum: 536e70273c040484aa7d522031a9dbca1fe8c06eb58a3ace1064ba68825b4e2764d4a0b604a1c451e7b8be0986dc94f23a419cfe9334bd116716074a2d29b33d
   languageName: node
   linkType: hard
 
@@ -34918,7 +34876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-encoding@npm:^1.0.2, web-encoding@npm:^1.0.6":
+"web-encoding@npm:^1.0.2":
   version: 1.1.5
   resolution: "web-encoding@npm:1.1.5"
   dependencies:
