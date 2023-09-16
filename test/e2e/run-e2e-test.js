@@ -123,7 +123,7 @@ async function main() {
   const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
   if (mmi) {
-    extraArgs.push('-g', '@ignore-mmi', '-i');
+    extraArgs.push('-g', '@no-mmi', '-i');
   }
 
   const dir = 'test/test-results/e2e';
