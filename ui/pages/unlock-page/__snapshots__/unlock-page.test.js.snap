@@ -1,5 +1,94 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Unlock Page should match Received 1`] = `
+<div>
+  <div
+    class="unlock-page__container"
+  >
+    <div
+      class="unlock-page"
+      data-testid="unlock-page"
+    >
+      <div
+        class="unlock-page__mascot-container"
+      >
+        <div
+          style="z-index: 0;"
+        >
+          <svg />
+        </div>
+      </div>
+      <h1
+        class="unlock-page__title"
+      >
+        Welcome back!
+      </h1>
+      <div>
+        The decentralized web awaits
+      </div>
+      <form
+        class="unlock-page__form"
+      >
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+        >
+          <input
+             autocomplete="on"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-dashed mm-box--border-style-none"
+                 data-testid="unlock-password"
+                 focused="true"
+                 id="password"
+                 placeholder="Password"
+                 type="password"
+                 value=""
+               />
+
+        </div>
+      </form>
+      <button
+        class="button btn--rounded btn-default"
+        data-testid="unlock-submit"
+        disabled=""
+        role="button"
+        style="margin-top: 20px; height: 60px; font-weight: 400; box-shadow: none; border-radius: 100px;"
+        tabindex="0"
+        variant="contained"
+      >
+        Unlock
+      </button>
+      <div
+        class="unlock-page__links"
+      >
+        <a
+          class="button btn-link unlock-page__link"
+          role="button"
+          tabindex="0"
+        >
+          Forgot password?
+        </a>
+      </div>
+      <div
+        class="unlock-page__support"
+      >
+        <span>
+
+          Need help? Contact
+          <a
+            href="https://support.metamask.io"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            MetaMask support
+          </a>
+
+
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Unlock Page should match snapshot 1`] = `
 <div>
   <div
@@ -30,30 +119,18 @@ exports[`Unlock Page should match snapshot 1`] = `
         class="unlock-page__form"
       >
         <div
-          class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
         >
-          <label
-            class="MuiFormLabel-root MuiInputLabel-root TextField-materialLabel-1 MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink Mui-focused Mui-focused TextField-materialFocused-2"
-            data-shrink="true"
-            for="password"
-            id="password-label"
-          >
-            Password
-          </label>
-          <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline TextField-materialUnderline-3 MuiInputBase-fullWidth MuiInput-fullWidth Mui-focused Mui-focused MuiInputBase-formControl MuiInput-formControl"
-          >
-            <input
-              aria-invalid="false"
-              autocomplete="current-password"
-              class="MuiInputBase-input MuiInput-input"
-              data-testid="unlock-password"
-              dir="auto"
-              id="password"
-              type="password"
-              value=""
-            />
-          </div>
+          <input
+            autocomplete="on"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-dashed mm-box--border-style-none"
+            data-testid="unlock-password"
+            focused="true"
+            id="password"
+            placeholder="Password"
+            type="password"
+            value=""
+          />
         </div>
       </form>
       <button

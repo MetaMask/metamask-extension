@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import {
-  DISPLAY,
+  Display,
   Size,
   AlignItems,
   BorderRadius,
   BackgroundColor,
+  BorderStyle,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
+import { Box } from '../box';
 
 import { Input } from '../input';
 
@@ -101,7 +103,8 @@ export const TextField = ({
         },
         className,
       )}
-      display={DISPLAY.INLINE_FLEX}
+      width={BlockSize.Full}
+      display={Display.InlineFlex}
       backgroundColor={BackgroundColor.backgroundDefault}
       alignItems={AlignItems.center}
       borderWidth={1}
@@ -117,6 +120,7 @@ export const TextField = ({
         autoComplete={autoComplete}
         autoFocus={autoFocus}
         backgroundColor={BackgroundColor.transparent}
+        borderRadius={BorderStyle.dashed}
         data-testid={testId}
         defaultValue={defaultValue}
         disabled={disabled}

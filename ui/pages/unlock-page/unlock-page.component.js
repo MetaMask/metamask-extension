@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../components/ui/button';
-import TextField from '../../components/ui/text-field';
+import { TextField } from '../../components/component-library/text-field';
 import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -181,16 +181,14 @@ export default class UnlockPage extends Component {
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
-              data-testid="unlock-password"
-              label={t('password')}
-              type="password"
+              testId="unlock-password"
               value={password}
+              type="password"
               onChange={(event) => this.handleInputChange(event)}
               error={error}
               autoFocus
-              autoComplete="current-password"
-              theme="material"
-              fullWidth
+              autoComplete
+              placeholder={t('password')}
             />
           </form>
           {this.renderSubmitButton()}
