@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../fixture-builder');
 const {
   convertToHexValue,
@@ -9,7 +10,6 @@ const {
   sleepSeconds,
   WINDOW_TITLES,
 } = require('../helpers');
-const { toHex } = require('@metamask/controller-utils');
 
 const TEST_CHAIN_ID = toHex(100);
 
@@ -19,8 +19,8 @@ const MOCK_CHAINLIST_RESPONSE = [
     chain: 'ETH',
     icon: 'ethereum',
     rpc: [
-      'https://mainnet.infura.io/v3/${INFURA_API_KEY}',
-      'wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}',
+      'https://mainnet.infura.io/v3/<INFURA_API_KEY>',
+      'wss://mainnet.infura.io/ws/v3/<INFURA_API_KEY?',
       'https://api.mycryptoapi.com/eth',
       'https://cloudflare-eth.com',
       'https://ethereum.publicnode.com',
@@ -335,7 +335,7 @@ describe('Custom network', function () {
           );
 
           const addChainJSONRPCCall = function () {
-            var params = [
+            const params = [
               {
                 chainId: '0x123',
                 chainName: 'Antani',
@@ -689,8 +689,8 @@ async function failCandidateNetworkValidation(driver) {
   await driver.clickElement(addNetworkManuallyButtonSelector);
 
   const [
+    ,
     // first element is the search input that we don't need to fill
-    _,
     networkNameInputEl,
     newRPCURLInputEl,
     chainIDInputEl,
@@ -792,8 +792,8 @@ async function candidateNetworkIsNotValidated(driver) {
   await driver.clickElement(addNetworkManuallyButtonSelector);
 
   const [
+    ,
     // first element is the search input that we don't need to fill
-    _,
     networkNameInputEl,
     newRPCURLInputEl,
     chainIDInputEl,

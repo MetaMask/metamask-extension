@@ -371,7 +371,9 @@ export default class SecurityTab extends PureComponent {
             <span>{t('useSafeChainsListValidation')}</span>
             <div className="settings-page__content-description">
               {t('useSafeChainsListValidationDescription', [
-                <b>{useSafeChainsListValidationWebsite}</b>,
+                <b key="safechain-list-validation-website">
+                  {useSafeChainsListValidationWebsite}
+                </b>,
               ])}
             </div>
           </div>

@@ -254,28 +254,28 @@ describe('preferences controller', () => {
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.useSafeChainsListValidation, true);
+
+      expect(state.useSafeChainsListValidation).toStrictEqual(true);
     });
 
     it('should set the `setUseSafeChainsListValidation` property in state', function () {
-      assert.equal(
+      expect(
         preferencesController.store.getState().useSafeChainsListValidation,
-        true,
-      );
+      ).toStrictEqual(true);
 
       preferencesController.setUseSafeChainsListValidation(false);
 
-      assert.equal(
+      expect(
         preferencesController.store.getState().useSafeChainsListValidation,
-        false,
-      );
+      ).toStrictEqual(false);
     });
   });
 
   describe('setUseTokenDetection', function () {
     it('should default to false', function () {
-      preferencesController.store.getState().useTokenDetection;
-      assert.equal(state.useTokenDetection, false);
+      const state = preferencesController.store.getState().useTokenDetection;
+
+      expect(state.useTokenDetection).toStrictEqual(false);
     });
 
     it('should set the useTokenDetection property in state', () => {
