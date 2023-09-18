@@ -963,7 +963,6 @@ export default class TransactionController extends EventEmitter {
       if (blockTimestamp) {
         txMeta.blockTimestamp = blockTimestamp;
       }
-      // transaction verified on the blockchain
       txMeta.verifiedOnBlockchain = true;
 
       this.txStateManager.setTxStatusConfirmed(txId);

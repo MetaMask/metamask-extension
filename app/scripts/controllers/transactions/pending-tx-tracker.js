@@ -181,12 +181,10 @@ export default class PendingTransactionTracker extends EventEmitter {
     const txId = txMeta.id;
 
     // Only check submitted txs
-    if (txMeta.status !== TransactionStatus.submitted) {
-      return;
-    }
-
-    // Skip processing transactions verified on the blockchain
-    if (txMeta.verifiedOnBlockchain) {
+    if (
+      txMeta.status !== TransactionStatus.submitted ||
+      txMeta.verifiedOnBlockchain
+    ) {
       return;
     }
 
