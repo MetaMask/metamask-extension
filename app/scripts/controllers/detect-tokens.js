@@ -33,7 +33,6 @@ export default class DetectTokensController {
    * @param config.assetsContractController
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
-   * @param config.controllerMessenger
    * @param config.getCurrentSelectedAccount
    */
   constructor({
