@@ -12,6 +12,11 @@ import PreferencesController from './preferences';
 import AppStateController from './app-state';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import {
+  CHAIN_IDS,
+  NETWORK_TYPES,
+  TEST_NETWORK_TICKER_MAP,
+} from '../../../shared/constants/network';
 
 jest.mock('./permissions', () => ({
   getPermissionBackgroundApiMethods: () => ({
@@ -71,6 +76,60 @@ describe('MMIController', function () {
       registerActionHandler: jest.fn(),
       publish: jest.fn(),
     };
+
+    networkController = new NetworkController({
+      messenger: new ControllerMessenger().getRestricted({
+        name: 'NetworkController',
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'NetworkController:networkWillChange',
+          'NetworkController:networkDidChange',
+          'NetworkController:infuraIsBlocked',
+          'NetworkController:infuraIsUnblocked',
+        ],
+      }),
+      state: {
+        providerConfig: {
+          type: NETWORK_TYPES.SEPOLIA,
+          chainId: CHAIN_IDS.SEPOLIA,
+          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+        },
+      },
+      infuraProjectId: 'mock-infura-project-id',
+    });
+
+    controllerMessenger = new ControllerMessenger();
+
+    accountsController = new AccountsController({
+      messenger: controllerMessenger.getRestricted({
+        name: 'AccountsController',
+        allowedEvents: [
+          'SnapController:stateChange',
+          'KeyringController:accountRemoved',
+          'KeyringController:stateChange',
+          'AccountsController:selectedAccountChange',
+        ],
+        allowedActions: [
+          'AccountsController:setCurrentAccount',
+          'AccountsController:setAccountName',
+          'AccountsController:listAccounts',
+          'AccountsController:updateAccounts',
+          'KeyringController:getAccounts',
+          'KeyringController:getKeyringsByType',
+          'KeyringController:getKeyringForAccount',
+        ],
+      }),
+      state: {
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+            [mockAccount2.id]: mockAccount2,
+          },
+          selectedAccount: mockAccount.id,
+        },
+      },
+      keyringApiEnabled: false,
+    });
 
     mmiController = new MMIController({
       mmiConfigurationController: new MmiConfigurationController(),
