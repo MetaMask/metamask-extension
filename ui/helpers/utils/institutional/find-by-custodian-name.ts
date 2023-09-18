@@ -19,6 +19,10 @@ export function findCustodianByDisplayName(
 ): Custodian | null {
   const formatedDisplayName = displayName.toLowerCase();
 
+  if(!custodians) {
+    return null;
+  }
+
   for (const custodian of custodians) {
     const custodianName = custodian.name.toLowerCase();
 

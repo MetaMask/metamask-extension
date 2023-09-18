@@ -39,6 +39,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
+  CUSTODY_ACCOUNT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
@@ -167,6 +168,7 @@ const CustodyPage = () => {
               try {
                 const custodianByDisplayName = findCustodianByDisplayName(
                   custodian.displayName,
+                  custodians
                 );
                 const jwtListValue = await dispatch(
                   mmiActions.getCustodianJWTList(custodian.name),
@@ -178,15 +180,8 @@ const CustodyPage = () => {
                 setCurrentJwt(jwtListValue[0] || '');
                 setJwtList(jwtListValue);
 
-                /**
-                 * NOTE: USE THE CONFIGURATION API VALUES, WHEN AVAILABE
-                 * We need to get the urls of the custodians that have UI
-                 * and for those we do: setIsConfirmConnectCustodianModalVisible(true)
-                 * For custodians that don't have a UI and need to manually add the token in our
-                 * view, we do: setSelectedCustodianDisplayName(custodian.displayName)
-                 */
                 // open confirm Connect Custodian modal
-                if (custodianByDisplayName) {
+                if (custodianByDisplayName.displayName.toLocaleLowerCase() !== 'gk8') {
                   setMatchedCustodian(custodianByDisplayName);
                   setIsConfirmConnectCustodianModalVisible(true);
                 } else {
@@ -352,7 +347,7 @@ const CustodyPage = () => {
     setConnectError('');
     setSelectError('');
 
-    history.push(DEFAULT_ROUTE);
+    history.push(CUSTODY_ACCOUNT_ROUTE);
   };
 
   const setSelectAllAccounts = (e) => {
