@@ -1441,13 +1441,13 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork();
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
-      keyringController: this.keyringController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'DecryptMessageController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
+          `${this.coreKeyringController.name}:decryptMessage`,
         ],
       }),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
