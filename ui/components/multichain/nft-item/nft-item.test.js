@@ -6,11 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { NftItem } from '.';
 
-const store = configureStore({
-  metamask: {
-    ...mockState.metamask,
-  },
-});
+const store = configureStore(mockState);
 
 const noIpfsStore = configureStore({
   metamask: {
