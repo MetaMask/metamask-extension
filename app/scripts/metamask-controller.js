@@ -7,7 +7,7 @@ import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
   debounce,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   throttle,
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
@@ -1882,8 +1882,7 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   /**
    * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
    *
@@ -1902,6 +1901,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     SECOND * 60,
   );
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Passes a JSON-RPC request object to the SnapController for execution.
