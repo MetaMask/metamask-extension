@@ -62,6 +62,7 @@ export default class PreferencesController {
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
+      useRequestQueue: false,
       openSeaEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertsEnabled: false,
@@ -224,6 +225,15 @@ export default class PreferencesController {
    */
   setUseCurrencyRateCheck(val) {
     this.store.updateState({ useCurrencyRateCheck: val });
+  }
+
+  /**
+   * Setter for the `useRequestQueue` property
+   *
+   * @param {boolean} val - Whether or not the user wants to have requests queued if network change is required.
+   */
+  setUseRequestQueue(val) {
+    this.store.updateState({ useRequestQueue: val });
   }
 
   /**
@@ -475,6 +485,16 @@ export default class PreferencesController {
   getSelectedAddress() {
     return this.store.getState().selectedAddress;
   }
+
+  /**
+   * Getter for the `useRequestQueue` property
+   *
+   * @returns {boolean} whether this option is on or off.
+   */
+  getUseRequestQueue() {
+    return this.store.getState().useRequestQueue;
+  }
+
 
   /**
    * Sets a custom label for an account
