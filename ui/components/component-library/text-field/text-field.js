@@ -113,7 +113,7 @@ export const TextField = ({
     >
       {startAccessory}
       <InputComponent
-        {...(error && <>aria-invalid={error}</>)} // This stops it from including the attribute when `aria-invalid="false"`
+        {...(error && { 'aria-invalid': error })}
         autoComplete={autoComplete}
         autoFocus={autoFocus}
         backgroundColor={BackgroundColor.transparent}

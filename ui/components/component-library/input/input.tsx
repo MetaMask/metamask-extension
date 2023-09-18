@@ -47,7 +47,7 @@ export const Input: InputComponent = React.forwardRef(
         },
         className,
       )}
-      {...(error && <>aria-invalid={error}</>)} // This stops it from including the attribute when `aria-invalid="false"`
+      {...(error && { 'aria-invalid': error })}
       as="input"
       autoComplete={autoComplete ? 'on' : 'off'}
       autoFocus={autoFocus}
