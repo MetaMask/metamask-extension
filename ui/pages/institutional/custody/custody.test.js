@@ -234,4 +234,115 @@ describe('CustodyPage', function () {
 
     expect(screen.getByTestId('custody-accounts-empty')).toBeDefined();
   });
+
+  it('handles connection errors correctly', async () => {
+    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
+      dispatch({ type: 'TYPE', payload: [] });
+      throw new Error('Test Error');
+    });
+
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [
+            {
+              token: 'token',
+              environment: 'Saturn A',
+              service: 'Saturn A',
+              apiUrl: 'url',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('connect-error')).toBeDefined();
+      expect(screen.getByTestId('connect-error')).toHaveTextContent(
+        'Test Error',
+      );
+    });
+  });
+
+  it('handles authentication errors correctly', async () => {
+    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
+      dispatch({ type: 'TYPE', payload: [] });
+      throw new Error('401: Unauthorized');
+    });
+
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [
+            {
+              token: 'token',
+              environment: 'Saturn A',
+              service: 'Saturn A',
+              apiUrl: 'url',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('connect-error')).toBeDefined();
+      expect(screen.getByTestId('connect-error')).toHaveTextContent(
+        'Authentication error. Please ensure you have entered the correct token',
+      );
+    });
+  });
+
+  it('handles network errors correctly', async () => {
+    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
+      dispatch({ type: 'TYPE', payload: [] });
+      throw new Error('Network Error');
+    });
+
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [
+            {
+              token: 'token',
+              environment: 'Saturn A',
+              service: 'Saturn A',
+              apiUrl: 'url',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('connect-error')).toBeDefined();
+      expect(screen.getByTestId('connect-error')).toHaveTextContent(
+        'Network error. Please ensure you have entered the correct API URL',
+      );
+    });
+  });
 });

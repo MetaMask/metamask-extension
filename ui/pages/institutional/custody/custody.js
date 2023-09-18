@@ -364,6 +364,7 @@ const CustodyPage = () => {
           {selectError}
         </Text>
       )}
+
       {!accounts && !selectedCustodianType && (
         <Box
           padding={4}
@@ -533,6 +534,7 @@ const CustodyPage = () => {
             <input
               type="checkbox"
               id="selectAllAccounts"
+              data-testid="select-all-accounts"
               name="selectAllAccounts"
               marginRight={2}
               marginLeft={2}
