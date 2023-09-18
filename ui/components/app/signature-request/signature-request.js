@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import {
   useDispatch,
   useSelector,
@@ -53,7 +53,11 @@ import {
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
+import {
+  SECURITY_PROVIDER_MESSAGE_SEVERITY,
+  SecurityProvider,
+  SECURITY_PROVIDER_CONFIG,
+} from '../../../../shared/constants/security-provider';
 
 import {
   TextAlign,
@@ -155,6 +159,21 @@ const SignatureRequest = ({ txData }) => {
     return { sanitizedMessage, domain, primaryType };
   });
 
+  const onClickBlockaidSupport = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        action: 'Sign Request',
+        type,
+        version,
+        external_link_clicked: true,
+        security_alert_support_link:
+          SECURITY_PROVIDER_CONFIG[SecurityProvider.Blockaid].supportUrl,
+      },
+    });
+  }, []);
+
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (accountType === 'custody') {
@@ -250,6 +269,7 @@ const SignatureRequest = ({ txData }) => {
             marginLeft={4}
             marginRight={4}
             marginBottom={4}
+            onClickBlockaidSupport={onClickBlockaidSupport}
           />
           ///: END:ONLY_INCLUDE_IN
         }

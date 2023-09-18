@@ -9,13 +9,7 @@ import {
   Text,
 } from '../../component-library';
 import Disclosure from '../../ui/disclosure';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { DisclosureVariant } from '../../ui/disclosure/disclosure.constants';
-import { getURLHostName } from '../../../helpers/utils/util';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -39,22 +33,10 @@ function SecurityProviderBannerAlert({
   provider,
   severity,
   title,
+  onClickBlockaidSupport,
   ...props
 }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const contactUsEventClicked = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        external_link_clicked: getURLHostName(
-          SECURITY_PROVIDER_CONFIG[provider].supportUrl,
-        ),
-      },
-    });
-  };
 
   return (
     <BannerAlert
@@ -86,7 +68,7 @@ function SecurityProviderBannerAlert({
                 size={Size.inherit}
                 href={SECURITY_PROVIDER_CONFIG[provider].supportUrl}
                 externalLink
-                onClick={contactUsEventClicked}
+                onClick={onClickBlockaidSupport}
               >
                 {t('contactUs')}
               </ButtonLink>,
@@ -144,6 +126,9 @@ SecurityProviderBannerAlert.propTypes = {
 
   /** Name of the security provider */
   provider: PropTypes.oneOf(Object.values(SecurityProvider)),
+
+  /** Function to be called when the blockaid support link is clicked */
+  onClickBlockaidSupport: PropTypes.func,
 };
 
 export default SecurityProviderBannerAlert;
