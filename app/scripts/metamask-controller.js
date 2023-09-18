@@ -1901,9 +1901,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     SECOND * 60,
   );
-  ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   /**
    * Passes a JSON-RPC request object to the SnapController for execution.
    *
