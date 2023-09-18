@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CustodyPage calls getCustodianJwtList when first custody button is clicked, showing the jwt form and testing the sorting function 1`] = `
+exports[`CustodyPage renders jwt token list when first custodian is selected, showing the jwt form and testing the sorting function 1`] = `
 <ul
   width="full"
 >

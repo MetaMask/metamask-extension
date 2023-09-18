@@ -16,22 +16,7 @@ const mockedGetCustodianJWTList = jest
     return jwtList;
   });
 
-const mockedGetCustodianAccounts = jest
-  .fn()
-  .mockImplementation(() => async (dispatch) => {
-    const accounts = [
-      {
-        name: 'test',
-        address: '0x123',
-        balance: '0x123',
-        custodianDetails: 'custodianDetails',
-        labels: [{ key: 'key', value: 'value' }],
-        chanId: 'chanId',
-      },
-    ];
-    dispatch({ type: 'TYPE', payload: accounts });
-    return accounts;
-  });
+const mockedGetCustodianAccounts = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockedGetCustodianToken = jest.fn().mockReturnValue('testJWT');
 
 jest.mock('../../../store/institutional/institution-background', () => ({
@@ -48,14 +33,7 @@ describe('CustodyPage', function () {
     metamask: {
       providerConfig: { chainId: 0x1, type: 'test' },
       institutionalFeatures: {
-        connectRequests: [
-          {
-            token: 'token',
-            environment: 'saturn',
-            service: 'saturn',
-            apiUrl: 'url',
-          },
-        ],
+        connectRequests: [],
       },
       mmiConfiguration: {
         portfolio: {
@@ -65,7 +43,7 @@ describe('CustodyPage', function () {
         custodians: [
           {
             type: 'Saturn A',
-            name: 'saturn a',
+            name: 'Saturn A',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
@@ -77,7 +55,7 @@ describe('CustodyPage', function () {
           },
           {
             type: 'Saturn B',
-            name: 'saturn b',
+            name: 'Saturn B',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
@@ -103,7 +81,7 @@ describe('CustodyPage', function () {
 
   const store = configureMockStore([thunk])(mockStore);
 
-  it('opens connect custody without any custody selected', async () => {
+  it('renders the list of custodians in mmiController when there is no accounts from connectRequest', async () => {
     act(() => {
       renderWithProvider(<CustodyPage />, store);
     });
@@ -114,7 +92,7 @@ describe('CustodyPage', function () {
     });
   });
 
-  it('calls getCustodianJwtList on custody select when connect btn is click and clicks connect button and shows the jwt form', async () => {
+  it('renders jwt token list when there is no accounts and custodian is selected from the list of custodians in mmiController', async () => {
     act(() => {
       renderWithProvider(<CustodyPage />, store);
     });
@@ -130,7 +108,7 @@ describe('CustodyPage', function () {
     });
   });
 
-  it('calls getCustodianJwtList when first custody button is clicked, showing the jwt form and testing the sorting function', async () => {
+  it('renders jwt token list when first custodian is selected, showing the jwt form and testing the sorting function', async () => {
     const newMockStore = {
       ...mockStore,
       metamask: {
@@ -186,15 +164,74 @@ describe('CustodyPage', function () {
     });
   });
 
-  it('handles connection errors correctly', async () => {
-    mockedGetCustodianAccounts.mockImplementation(
-      () => new Promise((resolve) => resolve(null)),
-    );
+  it('renders custody accounts list when I have accounts from connectRequest', async () => {
+    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
+      const accounts = [
+        {
+          name: 'Saturn Test Name',
+          address: '0x123',
+          balance: '0x1',
+          custodianDetails: 'custodianDetails',
+          labels: [{ key: 'key', value: 'testLabels' }],
+          chanId: 'chanId',
+        },
+      ];
+      dispatch({ type: 'TYPE', payload: accounts });
+      return accounts;
+    });
+
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [
+            {
+              token: 'token',
+              environment: 'Saturn A',
+              service: 'Saturn A',
+              apiUrl: 'url',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
 
     await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('select-all-accounts')).toBeDefined();
+      expect(screen.getByText('0x123')).toBeDefined();
+      expect(screen.getByText('testLabels')).toBeDefined();
+      expect(screen.getByText('Saturn Test Name')).toBeDefined();
+    });
+  });
+
+  it('renders custodian list, initiates connect custodian, displays jwt token list, clicks connect button, and finally shows "no accounts available" message', async () => {
+    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
+      const accounts = [];
+      dispatch({ type: 'TYPE', payload: accounts });
+      return accounts;
+    });
+
+    act(() => {
       renderWithProvider(<CustodyPage />, store);
     });
 
-    expect(screen.getByTestId('connect-error')).toBeDefined();
+    await waitFor(() => {
+      const custodyBtns = screen.getAllByTestId('custody-connect-button');
+      fireEvent.click(custodyBtns[0]);
+    });
+
+    await waitFor(() => {
+      const connectBtn = screen.getByTestId('jwt-form-connect-button');
+      fireEvent.click(connectBtn);
+    });
+
+    expect(screen.getByTestId('custody-accounts-empty')).toBeDefined();
   });
 });
