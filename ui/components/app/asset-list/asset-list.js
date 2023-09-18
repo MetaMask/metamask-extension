@@ -69,6 +69,13 @@ const AssetList = ({ onClickAsset }) => {
   return (
     <>
       {process.env.MULTICHAIN ? <BalanceOverview /> : null}
+      {detectedTokens.length > 0 &&
+      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+        <DetectedTokensBanner
+          actionButtonOnClick={() => setShowDetectedTokens(true)}
+          margin={4}
+        />
+      ) : null}
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
@@ -92,13 +99,6 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      {detectedTokens.length > 0 &&
-      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
-        <DetectedTokensBanner
-          actionButtonOnClick={() => setShowDetectedTokens(true)}
-          margin={4}
-        />
-      ) : null}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <ImportTokenLink margin={4} marginBottom={2} />
       </Box>
