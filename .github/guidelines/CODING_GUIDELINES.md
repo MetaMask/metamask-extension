@@ -24,7 +24,7 @@ avatar-account
 ```
 
 ### 4. Follow Naming Conventions
-- You should always use PascalCase when naming components to differentiate them from other non-component TSX files. For example: *TextField*, *NavMenu*, and *SuccessButton*.
+- You should always use PascalCase when naming components. For example: *TextField*, *NavMenu*, and *SuccessButton*.
 - Use camelCase for functions declared inside components like *handleInput()* or *showElement()*.
 - When creating hooks use *withHookName()*.
 
