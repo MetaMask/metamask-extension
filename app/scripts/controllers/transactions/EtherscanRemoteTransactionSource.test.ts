@@ -3,7 +3,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '../../../../shared/constants/transaction';
-import createRandomId from '../../../../shared/modules/random-id';
 import type {
   EtherscanTokenTransactionMeta,
   EtherscanTransactionMeta,
@@ -24,6 +23,9 @@ jest.mock('./etherscan', () => ({
 jest.mock('../../../../shared/modules/random-id');
 
 const ID_MOCK = '123';
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => ID_MOCK),
+}));
 
 const ETHERSCAN_TRANSACTION_BASE_MOCK: EtherscanTransactionMetaBase = {
   blockNumber: '4535105',
@@ -135,8 +137,6 @@ describe('EtherscanRemoteTransactionSource', () => {
       typeof fetchEtherscanTokenTransactions
     >;
 
-  const createIdMock = createRandomId as jest.MockedFn<typeof createRandomId>;
-
   beforeEach(() => {
     jest.resetAllMocks();
 
@@ -147,8 +147,6 @@ describe('EtherscanRemoteTransactionSource', () => {
     fetchEtherscanTokenTransactionsMock.mockResolvedValue(
       ETHERSCAN_TOKEN_TRANSACTION_RESPONSE_EMPTY_MOCK,
     );
-
-    createIdMock.mockReturnValue(ID_MOCK);
   });
 
   describe('isSupportedNetwork', () => {
