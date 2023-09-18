@@ -410,14 +410,13 @@ describe('MetaMaskController', () => {
           metamaskController.accountsController.listAccounts();
 
         internalAccounts.forEach((account) => {
-          expect(addresses.includes(account.address)).toBe(true);
+          expect(addresses.includes(account.address)).toContain(true);
         });
 
         addresses.forEach((address) => {
-          assert.ok(
+          expect(
             internalAccounts.find((account) => account.address === address),
-            `internalAccounts should include all Addresses: ${address}`,
-          );
+          ).toBe(true);
         });
       });
     });
@@ -553,7 +552,7 @@ describe('MetaMaskController', () => {
 
         delete secondTestAccount.metadata.lastSelected;
 
-        assert.deepEqual(secondTestAccount, {
+        expect(secondTestAccount).toStrictEqual({
           id: 'f73954ab-4605-459c-b0ff-23978b190709',
           address: TEST_ADDRESS_ALT,
           options: {},
@@ -1016,12 +1015,12 @@ describe('MetaMaskController', () => {
       it('should call keyringController.removeAccount', async () => {
         expect(
           metamaskController.keyringController.removeAccount,
-        ).toHaveBeenCalledWith(addressToRemove);
+        ).toHaveBeenCalledWith(accountAddressTobeRemoved);
       });
       it('should call metamaskController.removeAllAccountPermissions', async () => {
         expect(
           metamaskController.removeAllAccountPermissions,
-        ).toHaveBeenCalledWith(addressToRemove);
+        ).toHaveBeenCalledWith(accountAddressTobeRemoved);
       });
       it('should return address', async () => {
         expect(ret).toStrictEqual('0x1');
@@ -1029,7 +1028,7 @@ describe('MetaMaskController', () => {
       it('should call coreKeyringController.getKeyringForAccount', async () => {
         expect(
           metamaskController.coreKeyringController.getKeyringForAccount,
-        ).toHaveBeenCalledWith(addressToRemove);
+        ).toHaveBeenCalledWith(accountAddressTobeRemoved);
       });
       it('should call keyring.destroy', async () => {
         expect(mockKeyring.destroy).toHaveBeenCalledTimes(1);
