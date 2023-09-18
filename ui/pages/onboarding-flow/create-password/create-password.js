@@ -341,33 +341,42 @@ export default function CreatePassword({
               </Typography>
             </label>
           </Box>
-          <Button
-            data-testid={
-              secretRecoveryPhrase &&
-              firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
-                ? 'create-password-import'
-                : 'create-password-wallet'
-            }
-            type="primary"
-            large
-            className="create-password__form--submit-button"
-            disabled={!isValid || !termsChecked}
-            onClick={handleCreate}
-          >
-            {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              t('continue')
-              ///: END:ONLY_INCLUDE_IN
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-              secretRecoveryPhrase &&
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            <Button
+              type="primary"
+              large
+              className="create-password__form--submit-button"
+              disabled={!isValid || !termsChecked}
+              onClick={handleCreate}
+            >
+              {t('continue')}
+            </Button>
+            ///: END:ONLY_INCLUDE_IN
+          }
+
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            <Button
+              data-testid={
+                secretRecoveryPhrase &&
+                firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+                  ? 'create-password-import'
+                  : 'create-password-wallet'
+              }
+              type="primary"
+              large
+              className="create-password__form--submit-button"
+              disabled={!isValid || !termsChecked}
+              onClick={handleCreate}
+            >
+              {secretRecoveryPhrase &&
               firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
                 ? t('importMyWallet')
-                : t('createNewWallet')
-              ///: END:ONLY_INCLUDE_IN
-            }
-          </Button>
+                : t('createNewWallet')}
+            </Button>
+            ///: END:ONLY_INCLUDE_IN
+          }
         </form>
       </Box>
       {shouldInjectMetametricsIframe ? (

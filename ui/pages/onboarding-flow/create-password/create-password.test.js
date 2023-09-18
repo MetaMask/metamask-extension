@@ -376,7 +376,7 @@ describe('Onboarding Create Password', () => {
       const importWalletButton = queryByTestId('create-password-import');
 
       expect(importWalletButton.textContent).toMatchInlineSnapshot(
-        `"ContinueImport my wallet"`,
+        `"Import my wallet"`,
       );
 
       fireEvent.click(importWalletButton);
