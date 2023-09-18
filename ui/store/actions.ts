@@ -4568,7 +4568,7 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
 }
 ///: END:ONLY_INCLUDE_IN
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 export function trackInsightSnapUsage(snapId: string) {
   return async () => {
     await submitRequestToBackground('_trackSnapExportUsage', [
