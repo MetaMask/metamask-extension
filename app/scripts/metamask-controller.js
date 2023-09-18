@@ -847,7 +847,12 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     additionalKeyrings.push(
       (() => {
-        const builder = () => new SnapKeyring(this.snapController);
+        const builder = () =>
+          new SnapKeyring(this.snapController, {
+            saveState: async () => {
+              await this.keyringController.persistAllKeyrings();
+            },
+          });
         builder.type = SnapKeyring.type;
         return builder;
       })(),
@@ -1137,7 +1142,12 @@ export default class MetamaskController extends EventEmitter {
     const detectTokensControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'DetectTokensController',
-        allowedEvents: ['NetworkController:stateChange'],
+        allowedActions: ['KeyringController:getState'],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
+        ],
       });
     this.detectTokensController = new DetectTokensController({
       messenger: detectTokensControllerMessenger,
@@ -1145,7 +1155,6 @@ export default class MetamaskController extends EventEmitter {
       tokensController: this.tokensController,
       assetsContractController: this.assetsContractController,
       network: this.networkController,
-      keyringMemStore: this.keyringController.memStore,
       tokenList: this.tokenListController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1364,13 +1373,13 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork();
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
-      keyringController: this.keyringController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'DecryptMessageController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
+          `${this.coreKeyringController.name}:decryptMessage`,
         ],
       }),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1433,7 +1442,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
-      keyringController: this.keyringController,
+      keyringController: this.coreKeyringController,
       txController: this.txController,
       securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
@@ -1858,18 +1867,15 @@ export default class MetamaskController extends EventEmitter {
    * Initialize the snap keyring if it is not present.
    */
   async getSnapKeyring() {
-    if (!this.snapKeyring) {
-      let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
+    let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
+      KeyringType.snap,
+    );
+    if (!snapKeyring) {
+      snapKeyring = await this.coreKeyringController.addNewKeyring(
         KeyringType.snap,
       );
-      if (!snapKeyring) {
-        snapKeyring = await this.keyringController.addNewKeyring(
-          KeyringType.snap,
-        );
-      }
-      this.snapKeyring = snapKeyring;
     }
-    return this.snapKeyring;
+    return snapKeyring;
   }
   ///: END:ONLY_INCLUDE_IN
 
@@ -1911,6 +1917,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Gets the currently selected locale from the PreferencesController.
+   *
+   * @returns The currently selected locale.
+   */
+  getLocale() {
+    const { currentLocale } = this.preferencesController.store.getState();
+
+    return currentLocale;
+  }
+
+  /**
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
@@ -1919,6 +1936,7 @@ export default class MetamaskController extends EventEmitter {
       ...buildSnapRestrictedMethodSpecifications({
         encrypt,
         decrypt,
+        getLocale: this.getLocale.bind(this),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',
@@ -1965,9 +1983,6 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
-        saveSnapKeyring: async () => {
-          await this.keyringController.persistAllKeyrings();
-        },
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
