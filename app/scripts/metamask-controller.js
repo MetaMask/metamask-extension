@@ -101,7 +101,7 @@ import {
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
-import { AccountsController } from '@metamask-previews/accounts-controller';
+import { AccountsController } from '@metamask/accounts-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -887,6 +887,15 @@ export default class MetamaskController extends EventEmitter {
         'KeyringController:stateChange',
         'AccountsController:selectedAccountChange',
       ],
+      allowedActions: [
+        'AccountsController:setCurrentAccount',
+        'AccountsController:setAccountName',
+        'AccountsController:listAccounts',
+        'AccountsController:updateAccounts',
+        'KeyringController:getAccounts',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+      ],
     });
 
     const keyringApiEnabled = process.env.KEYRING_API_ENABLED ?? false;
@@ -894,16 +903,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountsController = new AccountsController({
       messenger: accountsControllerMessenger,
       state: initState.AccountsController,
-      getKeyringForAccount:
-        this.coreKeyringController.getKeyringForAccount.bind(
-          this.coreKeyringController,
-        ),
-      getKeyringByType: this.coreKeyringController.getKeyringsByType.bind(
-        this.coreKeyringController,
-      ),
-      getAccounts: this.coreKeyringController.getAccounts.bind(
-        this.coreKeyringController,
-      ),
       keyringApiEnabled,
     });
 

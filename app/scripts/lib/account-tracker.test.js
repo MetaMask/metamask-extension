@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { AccountsController } from '@metamask-previews/accounts-controller';
+import { AccountsController } from '@metamask/accounts-controller';
 
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 

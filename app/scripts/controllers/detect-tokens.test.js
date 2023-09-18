@@ -12,7 +12,7 @@ import {
 import { toHex } from '@metamask/controller-utils';
 import { EthMethod, EthAccountType } from '@metamask/keyring-api';
 import { NetworkController } from '@metamask/network-controller';
-import { AccountsController } from '@metamask-previews/accounts-controller';
+import { AccountsController } from '@metamask/accounts-controller';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
