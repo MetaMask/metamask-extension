@@ -1,8 +1,8 @@
 # MetaMask Coding Guidelines
 
-### 1. New Code Should be Typescript
-- New components and utilities should be written in Typescript and enforce typing.
-- Existing code should be refactored into Typescript where time allows. If you are replacing a component, use Typescript.
+### 1. New Code Should be TypeScript
+- New components and utilities should be written in TypeScript and enforce typing.
+- Existing code should be refactored into TypeScript where time allows. If you are replacing a component, use TypeScript.
 
 ### 2. Using Functional Components and Hooks Instead of Classes
 - Use functional components and hooks as they result in more concise and readable code compared to classes.
