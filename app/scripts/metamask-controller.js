@@ -1152,7 +1152,12 @@ export default class MetamaskController extends EventEmitter {
     const detectTokensControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'DetectTokensController',
-        allowedEvents: ['NetworkController:stateChange'],
+        allowedActions: ['KeyringController:getState'],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
+        ],
       });
     this.detectTokensController = new DetectTokensController({
       messenger: detectTokensControllerMessenger,
@@ -1160,7 +1165,6 @@ export default class MetamaskController extends EventEmitter {
       tokensController: this.tokensController,
       assetsContractController: this.assetsContractController,
       network: this.networkController,
-      keyringMemStore: this.keyringController.memStore,
       tokenList: this.tokenListController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1379,13 +1383,13 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork();
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
-      keyringController: this.keyringController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'DecryptMessageController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
+          `${this.coreKeyringController.name}:decryptMessage`,
         ],
       }),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1448,7 +1452,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
-      keyringController: this.keyringController,
+      keyringController: this.coreKeyringController,
       txController: this.txController,
       securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
