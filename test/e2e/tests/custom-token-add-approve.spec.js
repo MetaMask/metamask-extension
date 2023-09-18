@@ -81,7 +81,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('approves an already created token and displays the token approval data @no_mmi', async function () {
+  it('approves an already created token and displays the token approval data @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
