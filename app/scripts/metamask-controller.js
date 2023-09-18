@@ -101,6 +101,9 @@ import {
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -228,7 +231,6 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
-import { HandlerType } from '@metamask/snaps-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

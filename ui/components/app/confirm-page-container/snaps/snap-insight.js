@@ -1,4 +1,9 @@
-import React, { useEffect } from 'react';
+import React, {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react';
+
 import PropTypes from 'prop-types';
 
 import {
@@ -25,7 +30,9 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import { trackInsightSnapUsage } from '../../../../store/actions';
+///: END:ONLY_INCLUDE_IN
 
 export const SnapInsight = ({ data, loading }) => {
   const t = useI18nContext();
