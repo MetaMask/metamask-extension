@@ -45,7 +45,6 @@ export default class DetectTokensController {
     tokensController,
     assetsContractController = null,
     trackMetaMetricsEvent,
-    controllerMessenger,
     getCurrentSelectedAccount,
   } = {}) {
     this.messenger = messenger;
@@ -65,9 +64,8 @@ export default class DetectTokensController {
     this.detectedTokens = this.tokensController?.state.detectedTokens;
     this.chainId = this.getChainIdFromNetworkStore();
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
-    this.controllerMessenger = controllerMessenger;
 
-    this.controllerMessenger.subscribe(
+    messenger.subscribe(
       'AccountsController:selectedAccountChange',
       (account) => {
         const useTokenDetection =
