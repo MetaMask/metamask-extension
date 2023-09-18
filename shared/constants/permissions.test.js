@@ -39,8 +39,7 @@ describe('RestrictedMethods', () => {
         'eth_accounts',
         ...Object.keys(restrictedMethodPermissionBuilders).filter(
           (targetName) =>
-            !Object.keys(ExcludedSnapPermissions).includes(targetName) &&
-            !FlaskOnlyPermissions.includes(targetName),
+            !Object.keys(ExcludedSnapPermissions).includes(targetName),
         ),
       ].sort(),
     );
@@ -59,10 +58,12 @@ describe('Flask Restricted Methods', () => {
       ExcludedSnapPermissions,
     ).filter((key) => !FlaskOnlyPermissions.includes(key));
 
-    expect(flaskMethods).toStrictEqual(
+    expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
       [
         'eth_accounts',
-        ...Object.keys(restrictedMethodPermissionBuilders),
+        ...Object.keys(restrictedMethodPermissionBuilders).filter(
+          (targetName) => !flaskExcludedSnapPermissions.includes(targetName),
+        ),
       ].sort(),
     );
   });
