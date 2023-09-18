@@ -23,7 +23,7 @@ jest.mock('./etherscan', () => ({
 
 jest.mock('../../../../shared/modules/random-id');
 
-const ID_MOCK = 123;
+const ID_MOCK = '123';
 
 const ETHERSCAN_TRANSACTION_BASE_MOCK: EtherscanTransactionMetaBase = {
   blockNumber: '4535105',
