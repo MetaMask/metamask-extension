@@ -41,7 +41,7 @@ body:
     id: design
     attributes:
       label: Design
-      placeholder: Link to Figma design or screenshots
+      placeholder: If available, provide a link to the design (e.g., Figma) or screenshots. If you're an external contributor and don't have access to the design, feel free to skip this step or provide any visual representation of the issue if possible.
 
   - type: markdown
     attributes:
