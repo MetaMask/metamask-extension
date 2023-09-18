@@ -784,7 +784,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should have no policy gaps for UI controller state', async function () {
+  it('should have no policy gaps for UI controller state @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -808,7 +808,7 @@ describe('Sentry errors', function () {
     );
   });
 
-  it('should not have extra properties in UI state mask', async function () {
+  it('should not have extra properties in UI state mask @no-mmi', async function () {
     const expectedMissingState = {
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
