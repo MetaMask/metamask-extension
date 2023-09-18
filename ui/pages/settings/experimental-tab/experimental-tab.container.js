@@ -6,12 +6,14 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   setSecurityAlertsEnabled,
   ///: END:ONLY_INCLUDE_IN
+  setUseRequestQueue,
 } from '../../../store/actions';
 import {
   getIsTransactionSecurityCheckEnabled,
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   getIsSecurityAlertsEnabled,
   ///: END:ONLY_INCLUDE_IN
+  getUseRequestQueue,
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
@@ -22,16 +24,19 @@ const mapStateToProps = (state) => {
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     ///: END:ONLY_INCLUDE_IN
+    useRequestQueue: getUseRequestQueue(state),
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setTransactionSecurityCheckEnabled: (val) =>
-      dispatch(setTransactionSecurityCheckEnabled(val)),
+    dispatch(setTransactionSecurityCheckEnabled(val)),
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     setSecurityAlertsEnabled: (val) => setSecurityAlertsEnabled(val),
     ///: END:ONLY_INCLUDE_IN
+
+    setUseRequestQueue: (val) => dispatch(setUseRequestQueue(val)),
   };
 };
 

@@ -3878,6 +3878,18 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
+  "toggleRequestQueueField": {
+    "message": "Enable or disable request queueing when network switching is required"
+  },
+  "toggleRequestQueueDescription": {
+    "message": "When a dapp or the wallet makes a network request, it's possible that the currently selected network is not the same as what is expected. Turning this feature on will switch the network according to the origin of the request. Using switch ethereum chain will change the saved chain for the particular origin."
+  },
+  "toggleRequestQueueOff": {
+    "message": "off"
+  },
+  "toggleRequestQueueOn": {
+    "message": "on"
+  },
   "show": {
     "message": "Show"
   },

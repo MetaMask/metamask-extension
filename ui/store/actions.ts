@@ -4426,6 +4426,13 @@ export function setSecurityAlertsEnabled(val: boolean): void {
 }
 ///: END:ONLY_INCLUDE_IN
 
+export function setUseRequestQueue(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseRequestQueue', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }

@@ -2337,6 +2337,10 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
+      setUseRequestQueue:
+        preferencesController.setUseRequestQueue.bind(
+          preferencesController,
+        ),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -4142,6 +4146,10 @@ export default class MetamaskController extends EventEmitter {
     // add some middleware that will switch chain on each request (as needed)
     engine.push(
       createAsyncMiddleware(async (req, res, next) => {
+        if (this.preferencesController.getUseRequestQueue() === false) {
+          return await next();
+        }
+
         const networkClientIdForRequest = req.networkClientId;
         const sameNetworkClientIdAsCurrent = () =>
           networkClientIdForRequest ===
