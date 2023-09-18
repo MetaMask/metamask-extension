@@ -207,6 +207,7 @@ export default function ContractDetailsModal({
           borderRadius={Size.SM}
           borderStyle={BorderStyle.solid}
           borderColor={BorderColor.borderDefault}
+          alignItems={AlignItems.center}
           className="contract-details-modal__content__contract"
         >
           <Identicon
