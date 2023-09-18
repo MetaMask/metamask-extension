@@ -1,11 +1,6 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../component-library';
+import React, { useContext } from 'react';
+import { ETHERSCAN_SUPPORTED_NETWORKS } from '../../../../shared/constants/network';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,10 +11,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-
-import Tooltip from '../../ui/tooltip';
-import ToggleButton from '../../ui/toggle-button';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  Text,
+} from '../../component-library';
 import { I18nContext } from '../../../contexts/i18n';
+import ToggleButton from '../../ui/toggle-button';
+import Tooltip from '../../ui/tooltip';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
@@ -46,6 +46,8 @@ const NetworkToggle = ({
 
   const networkName = networkPreferences.label;
 
+  const { domain } = ETHERSCAN_SUPPORTED_NETWORKS[chainId];
+
   return (
     <Box
       marginTop={6}
@@ -68,21 +70,39 @@ const NetworkToggle = ({
           src={networkPreferences.imageUrl}
           name={networkName}
         />
-        <Text
-          color={TextColor.textDefault}
-          backgroundColor={BackgroundColor.transparent}
-          variant={TextVariant.bodyMd}
-          ellipsis
-          marginLeft={2}
-        >
-          {networkName.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-            <Tooltip title={networkName} position="bottom">
-              {networkName}
-            </Tooltip>
-          ) : (
-            networkName
-          )}
-        </Text>
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          <Text
+            color={TextColor.textDefault}
+            backgroundColor={BackgroundColor.transparent}
+            variant={TextVariant.bodyMd}
+            ellipsis
+            marginLeft={2}
+          >
+            {networkName.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+              <Tooltip title={networkName} position="bottom">
+                {networkName}
+              </Tooltip>
+            ) : (
+              networkName
+            )}
+          </Text>
+          <Text
+            color={TextColor.primaryDefault}
+            backgroundColor={BackgroundColor.transparent}
+            variant={TextVariant.bodySm}
+            ellipsis
+            marginLeft={2}
+          >
+            <a
+              key={`network_${domain}_link`}
+              href={`https://${domain}`}
+              rel="noreferrer"
+              target="_blank"
+            >
+              {domain.charAt(0).toUpperCase() + domain.slice(1)}
+            </a>
+          </Text>
+        </Box>
       </Box>
 
       <ToggleButton
