@@ -232,7 +232,6 @@
     "@metamask-institutional/rpc-allowlist": "^1.0.0",
     "@metamask-institutional/sdk": "^0.1.18",
     "@metamask-institutional/transaction-update": "^0.1.27",
-    "@metamask-institutional/websocket-client": "^0.1.29",
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",
