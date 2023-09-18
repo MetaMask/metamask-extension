@@ -753,7 +753,7 @@ class FixtureBuilder {
   withTransactionControllerMultipleTransactions() {
     return this.withTransactionController({
       transactions: {
-        7911313280012623: {
+        '7911313280012623': {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -768,7 +768,7 @@ class FixtureBuilder {
                 maxFeePerGas: '0x59682f0c',
                 maxPriorityFeePerGas: '0x59682f00',
               },
-              id: 7911313280012623,
+              id: '7911313280012623',
               loadingDefaults: true,
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
@@ -794,7 +794,7 @@ class FixtureBuilder {
               },
             ],
           ],
-          id: 7911313280012623,
+          id: '7911313280012623',
           loadingDefaults: false,
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
@@ -810,7 +810,7 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-        7911313280012624: {
+        '7911313280012624': {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -825,7 +825,7 @@ class FixtureBuilder {
                 maxFeePerGas: '0x59682f0c',
                 maxPriorityFeePerGas: '0x59682f00',
               },
-              id: 7911313280012624,
+              id: '7911313280012624',
               loadingDefaults: true,
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
@@ -851,7 +851,7 @@ class FixtureBuilder {
               },
             ],
           ],
-          id: 7911313280012624,
+          id: '7911313280012624',
           loadingDefaults: false,
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
@@ -867,7 +867,7 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-        7911313280012625: {
+        '7911313280012625': {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -882,7 +882,7 @@ class FixtureBuilder {
                 maxFeePerGas: '0x59682f0c',
                 maxPriorityFeePerGas: '0x59682f00',
               },
-              id: 7911313280012625,
+              id: '7911313280012625',
               loadingDefaults: true,
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
@@ -908,7 +908,7 @@ class FixtureBuilder {
               },
             ],
           ],
-          id: 7911313280012625,
+          id: '7911313280012625',
           loadingDefaults: false,
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
@@ -924,7 +924,7 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-        7911313280012626: {
+        '7911313280012626': {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -939,7 +939,7 @@ class FixtureBuilder {
                 maxFeePerGas: '0x59682f0c',
                 maxPriorityFeePerGas: '0x59682f00',
               },
-              id: 7911313280012626,
+              id: '7911313280012626',
               loadingDefaults: true,
               metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
@@ -965,7 +965,7 @@ class FixtureBuilder {
               },
             ],
           ],
-          id: 7911313280012626,
+          id: '7911313280012626',
           loadingDefaults: false,
           metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
@@ -988,12 +988,12 @@ class FixtureBuilder {
   withTransactionControllerTypeOneTransaction() {
     return this.withTransactionController({
       transactions: {
-        4046084157914634: {
+        '4046084157914634': {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
               chainId: CHAIN_IDS.LOCALHOST,
-              id: 4046084157914634,
+              id: '4046084157914634',
               loadingDefaults: true,
               metamaskNetworkId: '1337',
               origin: 'metamask',
@@ -1018,13 +1018,13 @@ class FixtureBuilder {
               },
             ],
           ],
-          id: 4046084157914634,
+          id: '4046084157914634',
           loadingDefaults: false,
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
-            id: 4046084157914634,
+            id: '4046084157914634',
             loadingDefaults: true,
             metamaskNetworkId: '1337',
             origin: 'metamask',
@@ -1057,12 +1057,12 @@ class FixtureBuilder {
   withTransactionControllerTypeTwoTransaction() {
     return this.withTransactionController({
       transactions: {
-        4046084157914634: {
+        '4046084157914634': {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
               chainId: CHAIN_IDS.LOCALHOST,
-              id: 4046084157914634,
+              id: '4046084157914634',
               loadingDefaults: true,
               metamaskNetworkId: '1337',
               origin: 'metamask',
@@ -1089,13 +1089,13 @@ class FixtureBuilder {
               },
             ],
           ],
-          id: 4046084157914634,
+          id: '4046084157914634',
           loadingDefaults: false,
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
-            id: 4046084157914634,
+            id: '4046084157914634',
             loadingDefaults: true,
             metamaskNetworkId: '1337',
             origin: 'metamask',
@@ -1132,12 +1132,12 @@ class FixtureBuilder {
   withTransactionControllerApprovedTransaction() {
     return this.withTransactionController({
       transactions: {
-        4046084157914634: {
+        '4046084157914634': {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
               chainId: CHAIN_IDS.LOCALHOST,
-              id: 4046084157914634,
+              id: '4046084157914634',
               loadingDefaults: true,
               metamaskNetworkId: '1337',
               origin: 'metamask',
@@ -1173,13 +1173,13 @@ class FixtureBuilder {
               },
             ],
           ],
-          id: 4046084157914634,
+          id: '4046084157914634',
           loadingDefaults: false,
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
-            id: 4046084157914634,
+            id: '4046084157914634',
             loadingDefaults: true,
             metamaskNetworkId: '1337',
             origin: 'metamask',
@@ -1216,12 +1216,12 @@ class FixtureBuilder {
   withTransactionControllerCompletedTransaction() {
     return this.withTransactionController({
       transactions: {
-        5748272735958801: {
+        '5748272735958801': {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
               chainId: CHAIN_IDS.LOCALHOST,
-              id: 5748272735958801,
+              id: '5748272735958801',
               loadingDefaults: true,
               metamaskNetworkId: '1337',
               origin: 'metamask',
@@ -1333,7 +1333,7 @@ class FixtureBuilder {
               },
             ],
           ],
-          id: 5748272735958801,
+          id: '5748272735958801',
           loadingDefaults: false,
           metamaskNetworkId: '5',
           origin: 'metamask',
@@ -1367,11 +1367,11 @@ class FixtureBuilder {
   withTransactionControllerIncomingTransaction() {
     return this.withTransactionController({
       transactions: {
-        5748272735958807: {
+        '5748272735958807': {
           blockNumber: '1',
           chainId: CHAIN_IDS.LOCALHOST,
           hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
-          id: 5748272735958807,
+          id: '5748272735958807',
           metamaskNetworkId: '1337',
           status: 'confirmed',
           time: 1671635520000,
