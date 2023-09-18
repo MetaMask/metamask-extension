@@ -1,0 +1,45 @@
+diff --git a/dist/KeyringController.d.ts b/dist/KeyringController.d.ts
+index a05f2a9f9315f700fa83440b983b714c6779e966..37e891ff84fa85f42fca8bf1f16f1e8a3971841a 100644
+--- a/dist/KeyringController.d.ts
++++ b/dist/KeyringController.d.ts
+@@ -1,10 +1,11 @@
+ import type { TxData, TypedTransaction } from '@ethereumjs/tx';
+-import { type MetaMaskKeyring as QRKeyring, type IKeyringState as IQRKeyringState } from '@keystonehq/metamask-airgapped-keyring';
++import type {  MetaMaskKeyring as QRKeyring, IKeyringState as IQRKeyringState } from '@keystonehq/metamask-airgapped-keyring';
+ import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+ import { BaseControllerV2 } from '@metamask/base-controller';
+ import type { PersonalMessageParams, TypedMessageParams } from '@metamask/message-manager';
+ import type { PreferencesController } from '@metamask/preferences-controller';
+ import type { Eip1024EncryptedData, Hex, Keyring, Json } from '@metamask/utils';
++import type { KeyringController as EthKeyringController } from '@metamask/eth-keyring-controller';
+ import type { Patch } from 'immer';
+ declare const name = "KeyringController";
+ /**
+@@ -167,6 +168,10 @@ export declare class KeyringController extends BaseControllerV2<typeof name, Key
+      * @param opts.state - Initial state to set on this controller.
+      */
+     constructor({ removeIdentity, syncIdentities, updateIdentities, setSelectedAddress, setAccountLabel, encryptor, keyringBuilders, cacheEncryptionKey, messenger, state, }: KeyringControllerOptions);
++    /**
++     * Gets the internal keyring controller.
++     */
++    getEthKeyringController(): EthKeyringController;
+     /**
+      * Adds a new account to the default (first) HD seed phrase keyring.
+      *
+diff --git a/dist/KeyringController.js b/dist/KeyringController.js
+index c4dd1d01787c74be424d48761b7fdbffb9cfb1f7..f7825475862d7fcb9d205d5b4c05aff8f5114a32 100644
+--- a/dist/KeyringController.js
++++ b/dist/KeyringController.js
+@@ -154,6 +154,12 @@ class KeyringController extends base_controller_1.BaseControllerV2 {
+         this.setAccountLabel = setAccountLabel;
+         __classPrivateFieldGet(this, _KeyringController_instances, "m", _KeyringController_registerMessageHandlers).call(this);
+     }
++    /**
++     * Gets the internal keyring controller.
++     */
++    getEthKeyringController() {
++        return __classPrivateFieldGet(this, _KeyringController_keyring, "f");
++    }
+     /**
+      * Adds a new account to the default (first) HD seed phrase keyring.
+      *
