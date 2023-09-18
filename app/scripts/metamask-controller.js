@@ -99,7 +99,6 @@ import {
   ERC20,
   ERC721,
   BUILT_IN_NETWORKS,
-  ChainId,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -123,7 +122,6 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
-  CHAIN_ID_TO_TYPE_MAP,
 } from '../../shared/constants/network';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -2411,7 +2409,9 @@ export default class MetamaskController extends EventEmitter {
       },
       setActiveNetwork: (networkConfigurationId) => {
         // shouldnt be required now that we are using the latest sel net ctrl.
-        this.selectedNetworkController.setNetworkClientIdForMetamask(networkConfigurationId);
+        this.selectedNetworkController.setNetworkClientIdForMetamask(
+          networkConfigurationId,
+        );
         return this.networkController.setActiveNetwork(networkConfigurationId);
       },
       rollbackToPreviousProvider:
@@ -4111,13 +4111,13 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
     const switchChain = (networkClientId) => {
-      const isBuiltIn = BUILT_IN_NETWORKS[networkClientId] !== undefined && BUILT_IN_NETWORKS[networkClientId].chainId;
+      const isBuiltIn =
+        BUILT_IN_NETWORKS[networkClientId] !== undefined &&
+        BUILT_IN_NETWORKS[networkClientId].chainId;
       if (isBuiltIn) {
-        const type = this.networkController.setProviderType(networkClientId);
+        // for builtin networks, the networkClientId happens to the be same as the 'type'
+        this.networkController.setProviderType(networkClientId);
       } else {
-        debugger;
-        const { chainId } =
-            this.networkController.state.networkConfigurations[networkClientId];
         this.networkController.setActiveNetwork(networkClientId);
       }
     };
@@ -4133,12 +4133,10 @@ export default class MetamaskController extends EventEmitter {
         origin,
         selectedNetworkClientId,
       );
-    } else {
+    } else if (selectedNetworkClientIdForDomain !== selectedNetworkClientId) {
       // handles switching chain when the provider is set up... not really the right spot to be doing this. We are using setupProvider as a 'proxy' for what we really want which is everytime the wallet 'pops up' - via api call or manually opening the wallet.
       // also worth noting that this calls methods which do async stuff, but we are not waiting for it to complete or handling any potential errors.
-      if (selectedNetworkClientIdForDomain !== selectedNetworkClientId) {
-        switchChain(selectedNetworkClientIdForDomain);
-      }
+      switchChain(selectedNetworkClientIdForDomain);
     }
 
     // add some middleware that will switch chain on each request (as needed)
@@ -4152,15 +4150,21 @@ export default class MetamaskController extends EventEmitter {
         if (req.method === 'wallet_switchEthereumChain') {
           // decide if we want to show a confirmation
           // we can check the chainId in the request against the chainId for the domain-specific network configuration. If they are the same, then we dont show a confirmation. We dont need to switch because subsequent requests will cause the switching automatically. Later we can make this check for a permission instead.
-          if (req.params[0].chainId === this.networkController.getNetworkClientById(networkClientIdForRequest)?.configuration?.chainId) {
-            console.log('EARLY RETURNING BECAUSE SELECTED NETWORK IS ALREADY CORRECTLY SET TO THE RIGHT NETWORKID');
+          if (
+            req.params[0].chainId ===
+            this.networkController.getNetworkClientById(
+              networkClientIdForRequest,
+            )?.configuration?.chainId
+          ) {
+            console.log(
+              'EARLY RETURNING BECAUSE SELECTED NETWORK IS ALREADY CORRECTLY SET TO THE RIGHT NETWORKID',
+            );
             // possible adjustments that could be made to this:
             //   - if the selectedNetworkClientIdForDomain is not the same
             //  - maybe we want to broadcast a notification that the chain is changed for the domain
             res.result = null;
             return;
           }
-
 
           // otherwise, put up the confirmation dialog
 
@@ -4181,13 +4185,14 @@ export default class MetamaskController extends EventEmitter {
           switchChain(networkClientIdForRequest);
         }
 
+        // eslint-disable-next-line node/callback-return
         const reqPromise = next();
         this.queuedRequestController.enqueueRequest(
           networkClientIdForRequest,
           // eslint-disable-next-line node/callback-return
-           reqPromise
+          reqPromise,
         );
-        return reqPromise;
+        await reqPromise;
       }),
     );
 
@@ -4329,7 +4334,10 @@ export default class MetamaskController extends EventEmitter {
             this.networkController,
           ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
-        getNetworkClientIdForDomain: this.selectedNetworkController.getNetworkClientIdForDomain.bind(this.selectedNetworkController),
+        getNetworkClientIdForDomain:
+          this.selectedNetworkController.getNetworkClientIdForDomain.bind(
+            this.selectedNetworkController,
+          ),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
@@ -4924,7 +4932,6 @@ export default class MetamaskController extends EventEmitter {
 
   resolvePendingApproval = async (id, value, options) => {
     try {
-      debugger;
       await this.approvalController.accept(id, value, options);
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {

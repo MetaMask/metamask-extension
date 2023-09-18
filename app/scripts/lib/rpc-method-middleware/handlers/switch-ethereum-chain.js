@@ -26,7 +26,7 @@ const switchEthereumChain = {
     setActiveNetwork: true,
     requestUserApproval: true,
     getNetworkConfigurations: true,
-    getNetworkClientIdForDomain: true
+    getNetworkClientIdForDomain: true,
   },
 };
 export default switchEthereumChain;
@@ -47,6 +47,23 @@ function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   }
 
   return findNetworkConfigurationBy({ chainId });
+}
+
+function findExistingNetworkByNetworkClientId(networkClientId, getNetworkConfigurations) {
+  if (
+    BUILT_IN_INFURA_NETWORKS[networkClientId]
+  ) {
+    const {chainId, ticker, rpcUrl } = BUILT_IN_INFURA_NETWORKS[networkClientId];
+    return {
+      chainId,
+      ticker,
+      rpcUrl,
+      type: networkClientId,
+      nickname: NETWORK_TO_NAME_MAP[networkClientId]
+    };
+  }
+
+  return getNetworkConfigurations()[networkClientId];
 }
 
 async function switchEthereumChainHandler(
@@ -109,8 +126,14 @@ async function switchEthereumChainHandler(
   }
 
   const requestData = {
-    toNetworkConfiguration: findExistingNetwork(_chainId, findNetworkConfigurationBy),
-    fromNetworkConfiguration: getNetworkConfigurations()[getNetworkClientIdForDomain(origin)],
+    toNetworkConfiguration: findExistingNetwork(
+      _chainId,
+      findNetworkConfigurationBy,
+    ),
+    fromNetworkConfiguration: findExistingNetworkByNetworkClientId(
+      getNetworkClientIdForDomain(origin),
+      getNetworkConfigurations
+    )
   };
 
   if (requestData.toNetworkConfiguration) {
@@ -119,7 +142,6 @@ async function switchEthereumChainHandler(
     // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
 
     if (currentChainId === _chainId) {
-      console.log("RETURNING BECAUSE CURRENT CHAIN IS ALREADY CORRECT NO NEED TO SWITCH");
       res.result = null;
       return end();
     }

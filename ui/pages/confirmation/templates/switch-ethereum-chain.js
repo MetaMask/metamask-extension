@@ -29,7 +29,6 @@ async function getAlerts(_pendingApproval, state) {
 }
 
 function getValues(pendingApproval, t, actions) {
-  debugger;
   return {
     content: [
       {
@@ -70,14 +69,18 @@ function getValues(pendingApproval, t, actions) {
           key: 'network-being-switched',
           props: {
             newNetwork: {
-              chainId: pendingApproval.requestData.toNetworkConfiguration.chainId,
-              nickname: pendingApproval.requestData.toNetworkConfiguration.nickname,
+              chainId:
+                pendingApproval.requestData.toNetworkConfiguration.chainId,
+              nickname:
+                pendingApproval.requestData.toNetworkConfiguration.nickname,
             },
             fromNetwork: {
-              chainId: pendingApproval.requestData.fromNetworkConfiguration.chainId,
-              nickname: pendingApproval.requestData.fromNetworkConfiguration.nickname,
+              chainId:
+                pendingApproval.requestData.fromNetworkConfiguration.chainId,
+              nickname:
+                pendingApproval.requestData.fromNetworkConfiguration.nickname,
               type: pendingApproval.requestData.fromNetworkConfiguration.type,
-            }
+            },
           },
         },
       },
