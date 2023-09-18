@@ -2,7 +2,7 @@
 To maintain a consistent and efficient development workflow, we have set specific label guidelines for all pull requests (PRs). Please ensure you adhere to the following instructions:
 
 ### Mandatory team labels:
-- **Internal Developers**: Every PR raised by an internal developer must include a label prefixed with `team-` (e.g., `team-mobile-ux`, `team-mobile-platform`, etc.). This indicates the respective internal team responsible for the PR.
+- **Internal Developers**: Every PR raised by an internal developer must include a label prefixed with `team-` (e.g., `team-extension-ux`, `team-extension-platform`, etc.). This indicates the respective internal team responsible for the PR.
 
 - **External Contributors**: PRs from contributors outside the organization must have the `external-contributor` label.
 
