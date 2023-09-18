@@ -20,12 +20,15 @@ jest.mock('./etherscan', () => ({
   fetchEtherscanTokenTransactions: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/random-id');
-
 const ID_MOCK = '123';
-jest.mock('uuid', () => ({
-  v4: jest.fn(() => ID_MOCK),
-}));
+jest.mock('uuid', () => {
+  const actual = jest.requireActual('uuid');
+
+  return {
+    ...actual,
+    v4: () => ID_MOCK,
+  };
+});
 
 const ETHERSCAN_TRANSACTION_BASE_MOCK: EtherscanTransactionMetaBase = {
   blockNumber: '4535105',
