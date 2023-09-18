@@ -14,7 +14,10 @@ import UserPreferencedCurrencyDisplay from '../../components/app/user-preference
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import {
   TransactionType,
   TransactionStatus,
@@ -55,6 +58,10 @@ import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
+import {
+  SecurityProvider,
+  SECURITY_PROVIDER_CONFIG,
+} from '../../../shared/constants/security-provider';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -326,7 +333,11 @@ export default class ConfirmTransactionBase extends Component {
       isBuyableChain,
       useCurrencyRateCheck,
       tokenSymbol,
+      actionKey,
+      txData: { origin },
+      methodData = {},
     } = this.props;
+
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
 
@@ -451,6 +462,27 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
+    const onClickBlockaidSupport = () => {
+      const { trackEvent } = this.context;
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.ExternalLinkClicked,
+        properties: {
+          action: 'Confirm Screen',
+          legacy_event: true,
+          recipientKnown: null,
+          functionType:
+            actionKey ||
+            getMethodName(methodData.name) ||
+            TransactionType.contractInteraction,
+          origin,
+          external_link_clicked: true,
+          security_alert_support_link:
+            SECURITY_PROVIDER_CONFIG[SecurityProvider.Blockaid].supportUrl,
+        },
+      });
+    };
+
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
@@ -464,6 +496,7 @@ export default class ConfirmTransactionBase extends Component {
           type={txData.type}
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
+          onClickBlockaidSupport={onClickBlockaidSupport}
         />
         <TransactionDetail
           disabled={isDisabled()}
