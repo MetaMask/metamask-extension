@@ -752,8 +752,8 @@ export function getIpfsGateway(state) {
 
 export function getInfuraBlocked(state) {
   return (
-    state.metamask.networksMetadata[getSelectedNetworkClientId(state)].status ===
-    NetworkStatus.Blocked
+    state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
+      .status === NetworkStatus.Blocked
   );
 }
 
