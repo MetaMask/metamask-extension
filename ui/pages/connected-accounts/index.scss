@@ -1,5 +1,8 @@
 .connected-accounts {
   &__footer {
+    overflow: hidden;
+    margin-bottom: 8px;
+
     a,
     a:hover {
       @include H6;
