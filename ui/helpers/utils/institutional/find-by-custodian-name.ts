@@ -19,7 +19,7 @@ export function findCustodianByDisplayName(
 ): Custodian | null {
   const formatedDisplayName = displayName.toLowerCase();
 
-  if(!custodians) {
+  if (!custodians) {
     return null;
   }
 

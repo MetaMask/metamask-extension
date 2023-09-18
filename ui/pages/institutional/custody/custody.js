@@ -168,7 +168,7 @@ const CustodyPage = () => {
               try {
                 const custodianByDisplayName = findCustodianByDisplayName(
                   custodian.displayName,
-                  custodians
+                  custodians,
                 );
                 const jwtListValue = await dispatch(
                   mmiActions.getCustodianJWTList(custodian.name),
@@ -180,12 +180,15 @@ const CustodyPage = () => {
                 setCurrentJwt(jwtListValue[0] || '');
                 setJwtList(jwtListValue);
 
-                // open confirm Connect Custodian modal
-                if (custodianByDisplayName.displayName.toLocaleLowerCase() !== 'gk8') {
+                // open confirm Connect Custodian modal except for gk8
+                if (
+                  custodianByDisplayName.displayName.toLocaleLowerCase() ===
+                  'gk8'
+                ) {
+                  setSelectedCustodianType(custodian.type);
+                } else {
                   setMatchedCustodian(custodianByDisplayName);
                   setIsConfirmConnectCustodianModalVisible(true);
-                } else {
-                  setSelectedCustodianType(custodian.type);
                 }
 
                 trackEvent({
