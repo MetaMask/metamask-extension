@@ -1915,12 +1915,8 @@ export default class MetamaskController extends EventEmitter {
    */
   handleSnapRequest(args) {
     // we're not tracking at this point in flask because we eagerly fetch insights in v2
-    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-    if (args.handler !== HandlerType.OnTransaction) {
-      ///: END:ONLY_INCLUDE_IN
-      this._trackSnapExportUsage(args.snapId, args.handler);
-      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-    }
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+    this._trackSnapExportUsage(args.snapId, args.handler);
     ///: END:ONLY_INCLUDE_IN
 
     return this.controllerMessenger.call('SnapController:handleRequest', args);
