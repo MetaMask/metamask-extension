@@ -46,7 +46,6 @@ exports[`App Footer should match snapshot 1`] = `
       >
         <span
           class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"
-          data-testid="app-footer-connections-button"
           style="mask-image: url('./images/icons/global.svg');"
         />
         <p
