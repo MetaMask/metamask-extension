@@ -11,16 +11,15 @@
 - An example of a component file structure:
 
 ```.tsx
-AvatarAccount
-├── AvatarAccount.constants.ts
-├── AvatarAccount.stories.tsx
-├── AvatarAccount.styles.ts
-├── AvatarAccount.test.tsx
-├── AvatarAccount.tsx
-├── AvatarAccount.types.ts
+avatar-account
+├── avatar-account.stories.tsx
+├── avatar-account.scss
+├── avatar-account.test.tsx
+├── avatar-account.tsx
+├── avatar-account.types.ts
 ├── README.md
 ├── __snapshots__
-│   └── AvatarAccount.test.tsx.snap
+│   └── avatar-account.test.tsx.snap
 └── index.ts
 ```
 
