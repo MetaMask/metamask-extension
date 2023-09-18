@@ -297,29 +297,26 @@ describe('Institutional selectors', () => {
       expect(isSupported).toBe(true);
     });
 
-    it('throws an error if selectedIdentity is null', () => {
-      const state = buildState({
-        metamask: {
-          identities: {},
-          keyrings: [],
-          custodianSupportedChains: {},
-          selectedAddress: null,
-          providerConfig: {},
-        },
-      });
-
-      expect(() => getIsCustodianSupportedChain(state)).toThrow(
-        'Invalid state',
-      );
-    });
-
     it('throws an error if accountType is null', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Custody Account A',
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+                address: accountAddress,
+              },
             },
           },
           keyrings: [],
@@ -338,9 +335,25 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Custody Account A',
+                  keyring: {
+                    type: 'Custody',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+                address: accountAddress,
+              },
             },
           },
           keyrings: [
@@ -364,71 +377,25 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {
-            [accountAddress]: null,
-          },
-          selectedAddress: accountAddress,
-          providerConfig: {
-            chainId: toHex(1),
-          },
-        },
-      });
-
-      const isSupported = getIsCustodianSupportedChain(state);
-
-      expect(isSupported).toBe(true);
-    });
-
-
-      expect(() => getIsCustodianSupportedChain(state)).toThrow(
-        'Invalid state',
-      );
-    });
-
-    it('throws an error if providerConfig is null', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {},
-          selectedAddress: accountAddress,
-          providerConfig: null,
-        },
-      });
-
-      expect(() => getIsCustodianSupportedChain(state)).toThrow(
-        'Invalid state',
-      );
-    });
-
-    it('returns true if supportedChains is null', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Custody Account A',
+                  keyring: {
+                    type: 'Custody',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+                address: accountAddress,
+              },
             },
           },
           keyrings: [
@@ -456,9 +423,25 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Custody Account A',
+                  keyring: {
+                    type: 'Custody',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+                address: accountAddress,
+              },
             },
           },
           keyrings: [
@@ -488,9 +471,25 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Custody Account A',
+                  keyring: {
+                    type: 'Custody',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+                address: accountAddress,
+              },
             },
           },
           keyrings: [
@@ -520,9 +519,25 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Custody Account A',
+                  keyring: {
+                    type: 'Custody',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+                address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+              },
             },
           },
           keyrings: [
