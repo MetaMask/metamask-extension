@@ -72,8 +72,8 @@ describe('migration #98', () => {
 
     const newStorage = await migrate(oldStorage);
 
-    const migratedTransactions = newStorage.data.TransactionController
-      .transactions as any;
+    const migratedTransactions = newStorage?.data?.TransactionController
+      ?.transactions as any;
 
     Object.keys(migratedTransactions).forEach((newTxId) => {
       expect(typeof newTxId).toBe('string');
