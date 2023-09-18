@@ -158,6 +158,10 @@
     "domains": {},
     "perDomainNetwork": "boolean"
   },
+  "SelectedNetworkController": {
+    "domains": {},
+    "perDomainNetwork": "boolean"
+  },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",

@@ -23,6 +23,11 @@ import { NonEmptyArray } from '@metamask/controller-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
 import { InternalAccount } from '@metamask/keyring-api';
+import {
+  SetNameRequest,
+  UpdateProposedNamesRequest,
+  UpdateProposedNamesResult,
+} from '@metamask/name-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -38,12 +43,12 @@ import {
   getApprovalFlows,
   getInternalAccount,
   getSelectedInternalAccount,
+  getCurrentNetworkTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
-  getCurrentNetworkTransactions,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -4521,6 +4526,32 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
     console.error(error);
   }
   return networkEIP1559Compatibility;
+}
+
+export function updateProposedNames(
+  request: UpdateProposedNamesRequest,
+): ThunkAction<
+  UpdateProposedNamesResult,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (async () => {
+    const data = await submitRequestToBackground<UpdateProposedNamesResult>(
+      'updateProposedNames',
+      [request],
+    );
+
+    return data;
+  }) as any;
+}
+
+export function setName(
+  request: SetNameRequest,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (async () => {
+    await submitRequestToBackground<void>('setName', [request]);
+  }) as any;
 }
 
 /**

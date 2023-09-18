@@ -1899,6 +1899,14 @@
         "browserify>url": true
       }
     },
+    "@metamask/name-controller": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/base-controller": true
+      }
+    },
     "@metamask/network-controller": {
       "globals": {
         "URL": true,

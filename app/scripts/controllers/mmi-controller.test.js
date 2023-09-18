@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { KeyringController } from '@metamask/eth-keyring-controller';
+import { KeyringController } from '@metamask/keyring-controller';
 import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { SignatureController } from '@metamask/signature-controller';
@@ -64,53 +64,19 @@ describe('MMIController', function () {
   let networkController;
 
   beforeEach(function () {
-    controllerMessenger = new ControllerMessenger();
-    accountsController = new AccountsController({
-      state: {
-        internalAccounts: {
-          accounts: {
-            'mock-id': mockAccount,
-            'mock-id-2': mockAccount2,
-          },
-          selectedAccount: mockAccount.id,
-        },
-      },
-      messenger: controllerMessenger.getRestricted({
-        name: 'AccountsController',
-        allowedEvents: [
-          'SnapController:stateChange',
-          'KeyringController:accountRemoved',
-          'KeyringController:stateChange',
-          'AccountsController:selectedAccountChange',
-        ],
-      }),
-      onKeyringStateChange: jest.fn(),
-      getKeyringForAccount: jest.fn(),
-      getKeyringByType: jest.fn(),
-      getAccounts: jest.fn(),
-      onSnapStateChange: jest.fn(),
-      onKeyringStateChange: jest.fn(),
-    });
-    networkController = new NetworkController({
-      messenger: controllerMessenger.getRestricted({
-        name: 'NetworkController',
-      }),
-      state: {},
-      infuraProjectId: 'mockInfuraProjectId',
-      trackMetaMetricsEvent: jest.fn(),
-    });
+    const mockMessenger = {
+      call: jest.fn(() => ({
+        catch: jest.fn(),
+      })),
+      registerActionHandler: jest.fn(),
+      publish: jest.fn(),
+    };
 
     mmiController = new MMIController({
       mmiConfigurationController: new MmiConfigurationController(),
       keyringController: new KeyringController({
-        initState: {
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: ['0x1', '0x2'],
-            },
-          ],
-        },
+        messenger: mockMessenger,
+        initState: {},
       }),
       transactionUpdateController: new TransactionUpdateController({
         getCustodyKeyring: jest.fn(),
@@ -132,13 +98,10 @@ describe('MMIController', function () {
         },
       }),
       signatureController: new SignatureController({
-        messenger: {
-          registerActionHandler: jest.fn(),
-          publish: jest.fn(),
-          call: jest.fn(),
-        },
+        messenger: mockMessenger,
         keyringController: new KeyringController({
           initState: {},
+          messenger: mockMessenger,
         }),
         isEthSignEnabled: jest.fn(),
         getAllState: jest.fn(),
@@ -170,11 +133,7 @@ describe('MMIController', function () {
         qrHardwareStore: {
           subscribe: jest.fn(),
         },
-        messenger: {
-          call: jest.fn(() => ({
-            catch: jest.fn(),
-          })),
-        },
+        messenger: mockMessenger,
       }),
       custodianEventHandlerFactory: jest.fn(),
       accountsController,

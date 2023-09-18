@@ -390,6 +390,68 @@ describe('Institutional selectors', () => {
       expect(isSupported).toBe(true);
     });
 
+
+      expect(() => getIsCustodianSupportedChain(state)).toThrow(
+        'Invalid state',
+      );
+    });
+
+    it('throws an error if providerConfig is null', () => {
+      const accountAddress = '0x1';
+      const state = buildState({
+        metamask: {
+          identities: {
+            [accountAddress]: {
+              address: accountAddress,
+            },
+          },
+          keyrings: [
+            {
+              type: 'Custody',
+              accounts: [accountAddress],
+            },
+          ],
+          custodianSupportedChains: {},
+          selectedAddress: accountAddress,
+          providerConfig: null,
+        },
+      });
+
+      expect(() => getIsCustodianSupportedChain(state)).toThrow(
+        'Invalid state',
+      );
+    });
+
+    it('returns true if supportedChains is null', () => {
+      const accountAddress = '0x1';
+      const state = buildState({
+        metamask: {
+          identities: {
+            [accountAddress]: {
+              address: accountAddress,
+            },
+          },
+          keyrings: [
+            {
+              type: 'Custody',
+              accounts: [accountAddress],
+            },
+          ],
+          custodianSupportedChains: {
+            [accountAddress]: null,
+          },
+          selectedAddress: accountAddress,
+          providerConfig: {
+            chainId: toHex(1),
+          },
+        },
+      });
+
+      const isSupported = getIsCustodianSupportedChain(state);
+
+      expect(isSupported).toBe(true);
+    });
+
     it('returns false if the supportedChains array is empty', () => {
       const accountAddress = '0x1';
       const state = buildState({
