@@ -898,12 +898,10 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    const keyringApiEnabled = process.env.KEYRING_API_ENABLED ?? false;
-
     this.accountsController = new AccountsController({
       messenger: accountsControllerMessenger,
       state: initState.AccountsController,
-      keyringApiEnabled,
+      keyringApiEnabled: process.env.KEYRING_API_ENABLED ?? false,
     });
 
     this.permissionController = new PermissionController({
