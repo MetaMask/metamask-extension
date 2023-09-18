@@ -293,7 +293,7 @@ export default class MMIController extends EventEmitter {
     );
 
     for (let i = 0; i < newAccounts.length; i++) {
-      await this.keyringController.addNewAccount(keyring);
+      await this.keyringController.addNewAccountForKeyring(keyring);
     }
 
     const allAccounts = await this.keyringController.getAccounts();
