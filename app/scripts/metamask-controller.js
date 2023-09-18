@@ -3386,7 +3386,7 @@ export default class MetamaskController extends EventEmitter {
       keyring
         .getMemStore()
         .subscribe(
-          this.appStateController.updateQRHardwarePopoverState.bind(
+          this.appStateController.updateQRHardware.bind(
             this.appStateController,
           ),
         );

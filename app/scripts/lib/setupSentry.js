@@ -66,7 +66,7 @@ export const SENTRY_BACKGROUND_STATE = {
     notificationGasPollTokens: true,
     outdatedBrowserWarningLastShown: true,
     popupGasPollTokens: true,
-    qrHardwarePopoverState: true,
+    qrHardware: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     serviceWorkerLastActiveTime: true,
