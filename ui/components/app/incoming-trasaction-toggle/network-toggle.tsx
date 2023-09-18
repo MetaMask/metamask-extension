@@ -47,6 +47,7 @@ const NetworkToggle = ({
   const networkName = networkPreferences.label;
 
   const { domain } = ETHERSCAN_SUPPORTED_NETWORKS[chainId];
+  const upperCaseDomain = domain.charAt(0).toUpperCase() + domain.slice(1);
 
   return (
     <Box
@@ -99,7 +100,7 @@ const NetworkToggle = ({
               rel="noreferrer"
               target="_blank"
             >
-              {domain.charAt(0).toUpperCase() + domain.slice(1)}
+              {upperCaseDomain}
             </a>
           </Text>
         </Box>
