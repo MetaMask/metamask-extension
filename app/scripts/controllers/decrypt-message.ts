@@ -25,7 +25,7 @@ import {
 import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { Patch } from 'immer';
 import type { KeyringControllerDecryptMessageAction } from '@metamask/keyring-controller';
-import { Eip1024EncryptedData, hasProperty } from '@metamask/utils';
+import { Eip1024EncryptedData, hasProperty, isObject } from '@metamask/utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
@@ -36,6 +36,17 @@ const stateMetadata = {
   unapprovedDecryptMsgCount: { persist: false, anonymous: false },
 };
 
+/**
+ * Type guard that checks for the presence of the required properties
+ * for EIP-1024 encrypted data.
+ *
+ * See: https://eips.ethereum.org/EIPS/eip-1024
+ *
+ * @param message - The message to check.
+ * @param message.from - The sender of the message.
+ * @param message.data - The EIP-1024 encrypted data.
+ * @returns Whether the message is an EIP-1024 encrypted message.
+ */
 export const isEIP1024EncryptedMessage = (message: {
   from: string;
   data: unknown;
@@ -44,8 +55,7 @@ export const isEIP1024EncryptedMessage = (message: {
   data: Eip1024EncryptedData;
 } => {
   if (
-    message.data &&
-    typeof message.data === 'object' &&
+    isObject(message.data) &&
     hasProperty(message.data, 'version') &&
     hasProperty(message.data, 'nonce') &&
     hasProperty(message.data, 'ephemPublicKey') &&
