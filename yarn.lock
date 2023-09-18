@@ -4358,6 +4358,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/name-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/name-controller@npm:1.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.1"
+    immer: "npm:^9.0.6"
+  checksum: 2366672299a6cf4f7ad78dd023e110fb175606911018a8b2efd1243898d2e74f9eb4fd59b1579c386441b21f000f74e700dd47b955aa99b6f0ba08686dcf2104
+  languageName: node
+  linkType: hard
+
 "@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0":
   version: 10.3.1
   resolution: "@metamask/network-controller@npm:10.3.1"
@@ -24215,6 +24225,7 @@ __metadata:
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
+    "@metamask/name-controller": "npm:^1.0.0"
     "@metamask/network-controller": "npm:^12.1.1"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
