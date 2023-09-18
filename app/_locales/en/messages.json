@@ -2356,6 +2356,9 @@
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."
   },
+  "mmiNewNFTDetectedMessage": {
+    "message": "Allow MetaMask Institutional to automatically detect NFTs from OpenSea and display in your wallet."
+  },
   "more": {
     "message": "more"
   },
@@ -2472,6 +2475,9 @@
   },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkNameZkSyncEra": {
+    "message": "zkSync Era"
   },
   "networkProvider": {
     "message": "Network provider"
@@ -3260,6 +3266,14 @@
   "permission_getEntropyDescription": {
     "message": "Allow the snap to derive arbitrary keys unique to this snap, without exposing them. These keys are separate from your MetaMask account(s) and not related to your private keys or Secret Recovery Phrase. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_getEntropy` permission"
+  },
+  "permission_getLocale": {
+    "message": "View your preferred language.",
+    "description": "The description for the `snap_getLocale` permission"
+  },
+  "permission_getLocaleDescription": {
+    "message": "Let this Snap access your preferred language from your MetaMask settings. This can be used to localize and display the Snap's content using your language.",
+    "description": "An extended description for the `snap_getLocale` permission"
   },
   "permission_lifecycleHooks": {
     "message": "Use lifecycle hooks.",
@@ -4304,7 +4318,7 @@
     "message": "Stake"
   },
   "stakeDescription": {
-    "message": "Hold up your crypto and earn potential profits"
+    "message": "Stake your crypto to earn rewards"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."

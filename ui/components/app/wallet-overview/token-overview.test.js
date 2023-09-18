@@ -52,6 +52,12 @@ describe('TokenOverview', () => {
         },
       ],
       contractExchangeRates: {},
+      mmiConfiguration: {
+        portfolio: {
+          enabled: true,
+        },
+        url: 'https://metamask-institutional.io',
+      },
     },
   };
 
@@ -321,6 +327,18 @@ describe('TokenOverview', () => {
       );
       const bridgeButton = queryByTestId('token-overview-bridge');
       expect(bridgeButton).not.toBeInTheDocument();
+    });
+
+    it('should show the MMI Portfolio and Stake buttons', () => {
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={token} />,
+        store,
+      );
+      const mmiStakeButton = queryByTestId('token-overview-mmi-stake');
+      const mmiPortfolioButton = queryByTestId('token-overview-mmi-portfolio');
+
+      expect(mmiStakeButton).toBeInTheDocument();
+      expect(mmiPortfolioButton).toBeInTheDocument();
     });
   });
 });
