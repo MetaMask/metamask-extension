@@ -48,6 +48,20 @@ export default function ConnectedAccounts({
         ?.caveats[0]?.value,
     )?.length;
 
+  const connectedPermissionSubjects = isPermissionSubject && [
+    [
+      Object.keys(
+        permissionSubjects[originOfActiveTab]?.permissions?.wallet_snap
+          ?.caveats[0]?.value,
+      ),
+    ],
+  ];
+
+  const connectedPermissionSubjectsMetaData = connectedPermissionSubjects.map(
+    (p) => subjectMetadata[p],
+  );
+  console.log(subjectMetadata, connectedPermissionSubjectsMetaData);
+
   const connectedAccountsDescription =
     connectedAccounts.length > 0
       ? t('connectedAccountsDescriptionPlural', [connectedAccounts.length])
@@ -122,6 +136,7 @@ export default function ConnectedAccounts({
           onDisconnect={() => onDisconnect(originOfActiveTab)}
         />
       )}
+
     </Popover>
   );
 }
