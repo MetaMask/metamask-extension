@@ -228,6 +228,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
+import { HandlerType } from '@metamask/snaps-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1911,7 +1912,14 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   handleSnapRequest(args) {
-    this._trackSnapExportUsage(args.snapId, args.handler);
+    // we're not tracking at this point in flask because we eagerly fetch insights in v2
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    if (args.handler !== HandlerType.OnTransaction) {
+      ///: END:ONLY_INCLUDE_IN
+      this._trackSnapExportUsage(args.snapId, args.handler);
+      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     return this.controllerMessenger.call('SnapController:handleRequest', args);
   }

@@ -4566,6 +4566,15 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
     );
   };
 }
+
+export function trackInsightSnapUsage(snapId: string) {
+  return async () => {
+    await submitRequestToBackground('_trackSnapExportUsage', [
+      snapId,
+      HandlerType.OnTransaction,
+    ]);
+  };
+}
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)

@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { useSelector } from 'react-redux';
+import {
+  useSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  useDispatch,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react-redux';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { Text } from '../../../component-library';
 import {
@@ -20,6 +25,7 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
+import { trackInsightSnapUsage } from '../../../../store/actions';
 
 export const SnapInsight = ({ data, loading }) => {
   const t = useI18nContext();
@@ -28,6 +34,16 @@ export const SnapInsight = ({ data, loading }) => {
     snapId,
     response: { content },
   } = data;
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const trackInsightUsage = async () => {
+      await dispatch(trackInsightSnapUsage(snapId));
+    };
+    trackInsightUsage();
+  }, [snapId, dispatch]);
+  ///: END:ONLY_INCLUDE_IN
 
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
