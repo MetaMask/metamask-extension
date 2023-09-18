@@ -169,6 +169,20 @@ describe('DecryptMessageController', () => {
     expect(result).toBe(mockExtState);
   });
 
+  it('should throw when decrypting invalid message', async () => {
+    const messageToDecrypt = {
+      ...messageMock,
+      data: '0x7b2022666f6f223a202262617222207d',
+    };
+    decryptMessageManagerMock.approveMessage.mockResolvedValue(
+      messageToDecrypt,
+    );
+
+    expect(
+      decryptMessageController.decryptMessage(messageToDecrypt),
+    ).rejects.toThrow('Invalid encrypted data.');
+  });
+
   it('should cancel decrypt request', async () => {
     const messageToDecrypt = {
       ...messageMock,
@@ -209,6 +223,17 @@ describe('DecryptMessageController', () => {
       'decryptedMessage',
     );
     expect(result).toBe(mockExtState);
+  });
+
+  it('should throw when decrypting invalid message inline', async () => {
+    const messageToDecrypt = {
+      ...messageMock,
+      data: '0x7b2022666f6f223a202262617222207d',
+    };
+
+    expect(
+      decryptMessageController.decryptMessageInline(messageToDecrypt),
+    ).rejects.toThrow('Invalid encrypted data.');
   });
 
   it('should be able to cancel decrypt message', async () => {
