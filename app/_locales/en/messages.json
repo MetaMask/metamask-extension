@@ -5568,5 +5568,17 @@
   },
   "snapAccountCreated": {
       "message": "Your account is ready!"
+  },
+  "removeSnapAccountTitle": {
+    "message": "Remove account"
+  },
+  "removeSnapAccountDescription": {
+    "message": "$1 wants to remove this account from MetaMask:"
+  },
+  "removeSnapAccountWarning": {
+    "message": "Be sure you can access this account on your own before removing it"
+  },
+  "removeSnapAccountBannerDescription": {
+    "message": "Be sure you can access this account on your own before removing it"
   }
 }

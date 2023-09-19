@@ -873,6 +873,7 @@ export default class MetamaskController extends EventEmitter {
                 await this.approvalController.addAndShowApprovalRequest({
                   origin,
                   type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+                  expectsResult: true,
                 });
 
               if (confirmationResult) {
@@ -881,7 +882,6 @@ export default class MetamaskController extends EventEmitter {
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: addAccountApprovalId,
-                    message: 'snapAccountCreated',
                   });
                 } catch (error) {
                   await this.approvalController.error({
@@ -896,7 +896,7 @@ export default class MetamaskController extends EventEmitter {
                 this.approvalController.endFlow({
                   id: addAccountApprovalId,
                 });
-                throw new Error('User denied account addition');
+                throw new Error('User denied account creation');
               }
             },
             removeAccount: async (address, snapId, handleUserInput) => {
@@ -907,6 +907,8 @@ export default class MetamaskController extends EventEmitter {
                 await this.approvalController.addAndShowApprovalRequest({
                   origin: snapId,
                   type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+                  requestData: { publicAddress: address },
+                  expectsResult: true,
                 });
 
               if (confirmationResult) {

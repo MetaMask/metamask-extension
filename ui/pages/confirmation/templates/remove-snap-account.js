@@ -1,5 +1,6 @@
 function getValues(pendingApproval, t, actions, _history) {
   const { origin: snapId, snapName } = pendingApproval;
+  const { publicAddress } = pendingApproval.requestData;
 
   return {
     content: [
@@ -9,11 +10,12 @@ function getValues(pendingApproval, t, actions, _history) {
         props: {
           snapId,
           snapName,
+          publicAddress,
         },
       },
     ],
     cancelText: t('cancel'),
-    submitText: t('create'),
+    submitText: t('remove'),
     onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, true),
     onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
   };
