@@ -68,7 +68,7 @@ function mapStateToProps(state) {
     isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
     accountDetailsAccountId: state.appState.accountDetailsAccountId,
     isImportTokensModalOpen: state.appState.importTokensModalOpen,
-    isImportNftsModalOpen: state.appState.importNftsModalOpen,
+    isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     isSelectActionModalOpen: state.appState.showSelectActionModal,
   };
