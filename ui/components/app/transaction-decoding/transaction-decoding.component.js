@@ -38,8 +38,10 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     (async () => {
       setLoading(true);
       try {
-        const networks = await fetchWithCache(FETCH_SUPPORTED_NETWORKS_URI, {
-          method: 'GET',
+        const networks = await fetchWithCache({
+          url: FETCH_SUPPORTED_NETWORKS_URI,
+          fetchOptions: { method: 'GET' },
+          functionName: 'fetchSupportedNetworks',
         });
 
         if (
@@ -57,7 +59,11 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           'network-id': network,
         })}`;
 
-        const response = await fetchWithCache(requestUrl, { method: 'GET' });
+        const response = await fetchWithCache({
+          url: requestUrl,
+          fetchOptions: { method: 'GET' },
+          functionName: 'fetchProject',
+        });
 
         const { info: projectInfo, fetchedVia, address } = response;
 

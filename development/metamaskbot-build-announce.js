@@ -75,6 +75,12 @@ async function start() {
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
+  const mmiBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-mmi/metamask-mmi-${platform}-${VERSION}-mmi.0.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
 
   // links to bundle browser builds
   const bundles = {};
@@ -140,6 +146,7 @@ async function start() {
     `builds: ${buildLinks}`,
     `builds (beta): ${betaBuildLinks}`,
     `builds (flask): ${flaskBuildLinks}`,
+    `builds (MMI): ${mmiBuildLinks}`,
     `build viz: ${depVizLink}`,
     `mv3: ${moduleInitStatsBackgroundLink}`,
     `mv3: ${moduleInitStatsUILink}`,

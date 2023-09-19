@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { Box, Text } from '../../../components/component-library';
 import {
   FlexDirection,
+  OverflowWrap,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -12,7 +12,11 @@ const Detail = ({
 }: React.PropsWithChildren<{ title: string }>) => {
   return (
     <Box flexDirection={FlexDirection.Column} marginBottom={4}>
-      <Text variant={TextVariant.bodySmBold} marginBottom={1}>
+      <Text
+        variant={TextVariant.bodySmBold}
+        overflowWrap={OverflowWrap.BreakWord}
+        marginBottom={1}
+      >
         {title}
       </Text>
       {children}

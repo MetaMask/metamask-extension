@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { Text } from '../../../components/component-library';
 import CheckBox from '../../../components/ui/check-box';
 import Box from '../../../components/ui/box';
 import {
@@ -93,16 +93,6 @@ export default function OnboardingWelcome() {
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     history.push(ONBOARDING_METAMETRICS);
   };
-
-  trackEvent({
-    category: MetaMetricsEventCategory.Onboarding,
-    event: MetaMetricsEventName.OnboardingWelcome,
-    properties: {
-      message_title: t('welcomeToMetaMask'),
-      app_version: global?.platform?.getVersion(),
-    },
-    addEventBeforeMetricsOptIn: true,
-  });
 
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">

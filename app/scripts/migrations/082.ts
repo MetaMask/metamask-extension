@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
 import { v4 } from 'uuid';
+import log from 'loglevel';
 
 export const version = 82;
 
@@ -25,14 +26,56 @@ export async function migrate(originalVersionedData: {
 }
 
 function transformState(state: Record<string, unknown>) {
+  if (!hasProperty(state, 'PreferencesController')) {
+    log.warn(`state.PreferencesController is undefined`);
+    return state;
+  }
+  if (!isObject(state.PreferencesController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.PreferencesController is ${typeof state.PreferencesController}`,
+      ),
+    );
+    return state;
+  }
   if (
-    !hasProperty(state, 'PreferencesController') ||
-    !isObject(state.PreferencesController) ||
-    !isObject(state.NetworkController) ||
-    !hasProperty(state.PreferencesController, 'frequentRpcListDetail') ||
-    !Array.isArray(state.PreferencesController.frequentRpcListDetail) ||
-    !state.PreferencesController.frequentRpcListDetail.every(isObject)
+    !hasProperty(state, 'NetworkController') ||
+    !isObject(state.NetworkController)
   ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController is ${typeof state.NetworkController}`,
+      ),
+    );
+    return state;
+  }
+  if (
+    !hasProperty(state.PreferencesController, 'frequentRpcListDetail') ||
+    !Array.isArray(state.PreferencesController.frequentRpcListDetail)
+  ) {
+    const inPost077SupplementFor082State =
+      state.NetworkController.networkConfigurations &&
+      state.PreferencesController.frequentRpcListDetail === undefined;
+    if (!inPost077SupplementFor082State) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.PreferencesController.frequentRpcListDetail is ${typeof state
+            .PreferencesController.frequentRpcListDetail}`,
+        ),
+      );
+    }
+    return state;
+  }
+  if (!state.PreferencesController.frequentRpcListDetail.every(isObject)) {
+    const erroneousElement =
+      state.PreferencesController.frequentRpcListDetail.find(
+        (element) => !isObject(element),
+      );
+    global.sentry?.captureException?.(
+      new Error(
+        `state.PreferencesController.frequentRpcListDetail contains an element of type ${typeof erroneousElement}`,
+      ),
+    );
     return state;
   }
   const { PreferencesController, NetworkController } = state;

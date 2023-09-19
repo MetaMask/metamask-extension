@@ -3,15 +3,14 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { getSnapPrefix } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
-import Box from '../../../ui/box';
 import {
   BackgroundColor,
   TextColor,
-  FLEX_DIRECTION,
+  FlexDirection,
   TextVariant,
   AlignItems,
-  DISPLAY,
-  BLOCK_SIZES,
+  Display,
+  BlockSize,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -19,7 +18,7 @@ import {
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
 
-import { Text } from '../../../component-library';
+import { Text, Box } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 import SnapVersion from '../snap-version/snap-version';
@@ -50,9 +49,9 @@ const SnapAuthorshipHeader = ({
     <Box
       className={classnames('snaps-authorship-header', className)}
       backgroundColor={BackgroundColor.backgroundDefault}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
       alignItems={AlignItems.center}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       padding={4}
       style={{
         boxShadow,
@@ -64,8 +63,8 @@ const SnapAuthorshipHeader = ({
       <Box
         marginLeft={4}
         marginRight={4}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         style={{ overflow: 'hidden' }}
       >
         <Text ellipsis fontWeight={FontWeight.Medium}>

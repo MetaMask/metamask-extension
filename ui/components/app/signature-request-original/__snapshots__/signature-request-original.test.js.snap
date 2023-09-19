@@ -137,7 +137,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
               <span
                 class="icon-with-fallback__fallback"
               >
-                U
+                G
               </span>
             </div>
           </div>
@@ -147,7 +147,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             >
-              Unknown private network
+              goerli
             </h6>
             <h6
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"

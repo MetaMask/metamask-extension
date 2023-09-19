@@ -24,7 +24,9 @@ export interface TemporaryMessageDataType {
     data: string;
   };
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  custodyId?: string;
+  metadata?: {
+    custodyId?: string;
+  };
   status?: string;
   ///: END:ONLY_INCLUDE_IN
 }
@@ -51,7 +53,7 @@ interface TemporaryBackgroundState {
   providerConfig: {
     chainId: string;
   };
-  currentNetworkTxList: TransactionMeta[];
+  transactions: TransactionMeta[];
   selectedAddress: string;
   identities: {
     [address: string]: {
@@ -60,14 +62,17 @@ interface TemporaryBackgroundState {
   };
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedTxs: {
-    [transactionId: string]: TransactionMeta;
-  };
   unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
   networkId: string | null;
-  networkStatus: NetworkStatus;
+  networksMetadata: {
+    [NetworkClientId: string]: {
+      EIPS: { [eip: string]: boolean };
+      status: NetworkStatus;
+    };
+  };
+  selectedNetworkClientId: string;
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   approvalFlows: ApprovalControllerState['approvalFlows'];
   knownMethodData?: {

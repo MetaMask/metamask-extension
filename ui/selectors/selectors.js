@@ -3,16 +3,12 @@ import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
 import {
-  createSelector,
-  createSelectorCreator,
-  defaultMemoize,
-} from 'reselect';
-import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   memoize,
   ///: END:ONLY_INCLUDE_IN
-  isEqual,
 } from 'lodash';
+import { createSelector } from 'reselect';
+import { NameType } from '@metamask/name-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -93,10 +89,20 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
+import {
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
+  NOTIFICATION_OPEN_BETA_SNAPS,
+} from '../../shared/notifications';
+import {
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
+} from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+// eslint-disable-next-line import/order
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
+import { createDeepEqualSelector } from './util';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -105,7 +111,16 @@ import { getPermissionSubjects } from './permissions';
  * @param {object} state - Redux state object.
  */
 export function isNetworkLoading(state) {
-  return state.metamask.networkStatus !== NetworkStatus.Available;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    selectedNetworkClientId &&
+    state.metamask.networksMetadata[selectedNetworkClientId].status !==
+      NetworkStatus.Available
+  );
+}
+
+export function getSelectedNetworkClientId(state) {
+  return state.metamask.selectedNetworkClientId;
 }
 
 export function getNetworkIdentifier(state) {
@@ -281,28 +296,38 @@ export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.networkId ?? 'loading';
 }
 
+/**
+ * Get MetaMask accounts, including account name and balance.
+ */
 export const getMetaMaskAccounts = createSelector(
-  getMetaMaskAccountsRaw,
+  getMetaMaskIdentities,
+  getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (currentAccounts, cachedBalances) =>
-    Object.entries(currentAccounts).reduce(
-      (selectedAccounts, [accountID, account]) => {
-        if (account.balance === null || account.balance === undefined) {
-          return {
-            ...selectedAccounts,
-            [accountID]: {
-              ...account,
-              balance: cachedBalances && cachedBalances[accountID],
-            },
-          };
-        }
-        return {
-          ...selectedAccounts,
-          [accountID]: account,
+  (identities, balances, cachedBalances) =>
+    Object.keys(identities).reduce((accounts, address) => {
+      // TODO: mix in the identity state here as well, consolidating this
+      // selector with `accountsWithSendEtherInfoSelector`
+      let account = {};
+
+      if (balances[address]) {
+        account = {
+          ...account,
+          ...balances[address],
         };
-      },
-      {},
-    ),
+      }
+
+      if (account.balance === null || account.balance === undefined) {
+        account = {
+          ...account,
+          balance: cachedBalances && cachedBalances[address],
+        };
+      }
+
+      return {
+        ...accounts,
+        [address]: account,
+      };
+    }, {}),
 );
 
 export function getSelectedAddress(state) {
@@ -325,11 +350,23 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
+/**
+ * Get identity state.
+ *
+ * @param {object} state - Redux state
+ * @returns {object} A map of account addresses to identities (which includes the account name)
+ */
 export function getMetaMaskIdentities(state) {
   return state.metamask.identities;
 }
 
-export function getMetaMaskAccountsRaw(state) {
+/**
+ * Get account balances state.
+ *
+ * @param {object} state - Redux state
+ * @returns {object} A map of account addresses to account objects (which includes the account balance)
+ */
+export function getMetaMaskAccountBalances(state) {
   return state.metamask.accounts;
 }
 
@@ -368,7 +405,7 @@ export const getMetaMaskAccountsConnected = createSelector(
 
 export function isBalanceCached(state) {
   const selectedAccountBalance =
-    state.metamask.accounts[getSelectedAddress(state)].balance;
+    getMetaMaskAccountBalances(state)[getSelectedAddress(state)]?.balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
@@ -543,7 +580,7 @@ export function getTotalUnapprovedSignatureRequestCount(state) {
 }
 
 export function getUnapprovedTxCount(state) {
-  const { unapprovedTxs = {} } = state.metamask;
+  const unapprovedTxs = getUnapprovedTransactions(state);
   return Object.keys(unapprovedTxs).length;
 }
 
@@ -586,6 +623,11 @@ export function getIsMainnet(state) {
   return chainId === CHAIN_IDS.MAINNET;
 }
 
+export function getIsLineaMainnet(state) {
+  const chainId = getCurrentChainId(state);
+  return chainId === CHAIN_IDS.LINEA_MAINNET;
+}
+
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
@@ -622,12 +664,13 @@ export function getDisabledRpcMethodPreferences(state) {
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
+  const isLineaMainNet = getIsLineaMainnet(state);
   const isCustomNetwork = getIsCustomNetwork(state);
   const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   const { showFiatInTestnets } = getPreferences(state);
   return Boolean(
-    (isMainNet || isCustomNetwork || showFiatInTestnets) &&
+    (isMainNet || isLineaMainNet || isCustomNetwork || showFiatInTestnets) &&
       useCurrencyRateCheck &&
       conversionRate,
   );
@@ -690,9 +733,9 @@ export function getKnownMethodData(state, data) {
   }
   const prefixedData = addHexPrefix(data);
   const fourBytePrefix = prefixedData.slice(0, 10);
-  const { knownMethodData } = state.metamask;
-
-  return knownMethodData && knownMethodData[fourBytePrefix];
+  const { knownMethodData, use4ByteResolution } = state.metamask;
+  // If 4byte setting is off, we do not want to return the knownMethodData
+  return use4ByteResolution && knownMethodData?.[fourBytePrefix];
 }
 
 export function getFeatureFlags(state) {
@@ -755,9 +798,8 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 
 export function getSwapsDefaultToken(state) {
   const selectedAccount = getSelectedAccount(state);
-  const { balance } = selectedAccount;
+  const balance = selectedAccount?.balance;
   const chainId = getCurrentChainId(state);
-
   const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {
@@ -812,8 +854,6 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
-const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
-
 export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
   getMetaMaskIdentities,
   (identities) => identities,
@@ -835,16 +875,10 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   },
 );
 
-export const getUnapprovedTransactions = (state) =>
-  state.metamask.unapprovedTxs;
-
-export const getCurrentNetworkTransactionList = (state) =>
-  state.metamask.currentNetworkTxList;
-
 export const getTxData = (state) => state.confirmTransaction.txData;
 
 export const getUnapprovedTransaction = createDeepEqualSelector(
-  getUnapprovedTransactions,
+  (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => {
     return (
@@ -854,7 +888,7 @@ export const getUnapprovedTransaction = createDeepEqualSelector(
 );
 
 export const getTransaction = createDeepEqualSelector(
-  getCurrentNetworkTransactionList,
+  (state) => getCurrentNetworkTransactions(state),
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => {
     return (
@@ -903,8 +937,17 @@ export const getSnap = createDeepEqualSelector(
   },
 );
 
+export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).reduce((acc, cur) => {
+    if (cur.enabled) {
+      acc[cur.id] = cur;
+    }
+    return acc;
+  }, {});
+});
+
 export const getInsightSnaps = createDeepEqualSelector(
-  getSnaps,
+  getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
     return Object.values(snaps).filter(
@@ -1008,6 +1051,14 @@ function getAllowedAnnouncementIds(state) {
     19: false,
     20: currentKeyringIsLedger && isFirefox,
     21: isSwapsChain,
+    22: true,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: true,
+    ///: END:ONLY_INCLUDE_IN
+    24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
+    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
+    [NOTIFICATION_OPEN_BETA_SNAPS]: true,
   };
 }
 
@@ -1100,6 +1151,16 @@ export function getUseTokenDetection(state) {
  */
 export function getUseNftDetection(state) {
   return Boolean(state.metamask.useNftDetection);
+}
+
+/**
+ * To get the useBlockie flag which determines whether we show blockies or Jazzicons
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseBlockie(state) {
+  return Boolean(state.metamask.useBlockie);
 }
 
 /**
@@ -1211,6 +1272,7 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
       id: NETWORK_TYPES.GOERLI,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.SEPOLIA,
@@ -1219,6 +1281,7 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
       id: NETWORK_TYPES.SEPOLIA,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.LINEA_GOERLI,
@@ -1230,11 +1293,12 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.LINEA_GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
       id: NETWORK_TYPES.LINEA_GOERLI,
+      removable: false,
     },
     // Localhosts
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
-    ),
+    ...Object.values(networkConfigurations)
+      .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
+      .map((network) => ({ ...network, removable: true })),
   ];
 }
 
@@ -1253,6 +1317,7 @@ export function getNonTestNetworks(state) {
       providerType: NETWORK_TYPES.MAINNET,
       ticker: CURRENCY_SYMBOLS.ETH,
       id: NETWORK_TYPES.MAINNET,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -1264,11 +1329,12 @@ export function getNonTestNetworks(state) {
       providerType: NETWORK_TYPES.LINEA_MAINNET,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
       id: NETWORK_TYPES.LINEA_MAINNET,
+      removable: false,
     },
     // Custom networks added by the user
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
-    ),
+    ...Object.values(networkConfigurations)
+      .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
+      .map((network) => ({ ...network, removable: true })),
   ];
 }
 
@@ -1290,30 +1356,52 @@ export function getIsOptimism(state) {
   );
 }
 
-export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOptimism(state);
+export function getIsBase(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.BASE ||
+    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
+  );
 }
-/**
- *  To retrieve the maxBaseFee and priotitFee teh user has set as default
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getAdvancedGasFeeValues(state) {
-  return state.metamask.advancedGasFee;
+
+export function getIsOpbnb(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.OPBNB ||
+    getCurrentChainId(state) === CHAIN_IDS.OPBNB_TESTNET
+  );
+}
+
+export function getIsOpStack(state) {
+  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
+}
+
+export function getIsMultiLayerFeeNetwork(state) {
+  return getIsOpStack(state);
 }
 
 /**
- *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
+ *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
  * @param {*} state
- * @returns Boolean
+ * @returns {{maxBaseFee: string, priorityFee: string} | undefined}
  */
-export function getIsAdvancedGasFeeDefault(state) {
-  const { advancedGasFee } = state.metamask;
-  return (
-    Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
-  );
+export function getAdvancedGasFeeValues(state) {
+  // This will not work when we switch to supporting multi-chain.
+  // There are four non-test files that use this selector.
+  // advanced-gas-fee-defaults
+  // base-fee-input
+  // priority-fee-input
+  // useGasItemFeeDetails
+  // The first three are part of the AdvancedGasFeePopover
+  // The latter is used by the EditGasPopover
+  // Both of those are used in Confirmations as well as transaction-list-item
+  // All of the call sites have access to the GasFeeContext, which has a
+  // transaction object set on it, but there are currently no guarantees that
+  // the transaction has a chainId associated with it. To have this method
+  // support multichain we'll need a reliable way for the chainId of the
+  // transaction being modified to be available to all callsites and either
+  // pass it in to the selector as a second parameter, or access it at the
+  // callsite.
+  return state.metamask.advancedGasFee[getCurrentChainId(state)];
 }
 
 /**
@@ -1529,6 +1617,18 @@ export function getOnboardedInThisUISession(state) {
  */
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
+}
+
+export function getNames(state) {
+  return state.metamask.names || {};
+}
+
+export function getEthereumAddressNames(state) {
+  return state.metamask.names?.[NameType.ETHEREUM_ADDRESS] || {};
+}
+
+export function getNameSources(state) {
+  return state.metamask.nameSources || {};
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)

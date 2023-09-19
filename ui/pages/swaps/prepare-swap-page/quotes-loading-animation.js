@@ -11,7 +11,7 @@ import {
   AlignItems,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { Text } from '../../../components/component-library';
 import MascotBackgroundAnimation from '../mascot-background-animation/mascot-background-animation';
 
 export default function QuotesLoadingAnimation(props) {

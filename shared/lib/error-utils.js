@@ -86,32 +86,32 @@ export async function getErrorHtml(
    * see the string and will not be able to check if the locale key exists.
    */
   return `
-    <div class="critical-error">
-      <div class="critical-error__icon">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13.2325 9.78823L9.14559 1.96347C8.59641 0.910661 7.83651 0.333313 6.99998 0.333313C6.16345 0.333313 5.40354 0.910661 4.85437 1.96347L0.767492 9.78823C0.250247 10.7867 0.192775 11.7444 0.607848 12.4984C1.02292 13.2523 1.8403 13.6666 2.9131 13.6666H11.0869C12.1597 13.6666 12.977 13.2523 13.3921 12.4984C13.8072 11.7444 13.7497 10.7799 13.2325 9.78823ZM6.52105 5.08794C6.52105 4.80945 6.73816 4.57852 6.99998 4.57852C7.26179 4.57852 7.47891 4.80945 7.47891 5.08794V8.4841C7.47891 8.76259 7.26179 8.99353 6.99998 8.99353C6.73816 8.99353 6.52105 8.76259 6.52105 8.4841V5.08794ZM7.45337 11.0041C7.42144 11.0312 7.38951 11.0584 7.35758 11.0856C7.31927 11.1127 7.28095 11.1331 7.24264 11.1467C7.20432 11.1671 7.16601 11.1807 7.12131 11.1874C7.08299 11.1942 7.03829 11.201 6.99998 11.201C6.96166 11.201 6.91696 11.1942 6.87226 11.1874C6.83395 11.1807 6.79563 11.1671 6.75732 11.1467C6.71901 11.1331 6.68069 11.1127 6.64238 11.0856C6.61045 11.0584 6.57852 11.0312 6.54659 11.0041C6.43165 10.875 6.3614 10.6984 6.3614 10.5218C6.3614 10.3452 6.43165 10.1686 6.54659 10.0395C6.57852 10.0124 6.61045 9.98521 6.64238 9.95804C6.68069 9.93087 6.71901 9.91049 6.75732 9.8969C6.79563 9.87653 6.83395 9.86294 6.87226 9.85615C6.95528 9.83577 7.04468 9.83577 7.12131 9.85615C7.16601 9.86294 7.20432 9.87653 7.24264 9.8969C7.28095 9.91049 7.31927 9.93087 7.35758 9.95804C7.38951 9.98521 7.42144 10.0124 7.45337 10.0395C7.56831 10.1686 7.63855 10.3452 7.63855 10.5218C7.63855 10.6984 7.56831 10.875 7.45337 11.0041Z" fill="#F66A0A"/>
-        </svg>
-      </div>
-      <div class="critical-error__dscription">
-        <div class="critical-error__alert">
-          <p class="critical-error__alert__message">
+    <div class="critical-error__container">
+      <div class="critical-error">
+        <div class="critical-error__icon">
+          <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path d="m443 342l-126-241c-16-32-40-50-65-50-26 0-50 18-66 50l-126 241c-16 30-18 60-5 83 13 23 38 36 71 36l251 0c33 0 58-13 71-36 13-23 11-53-5-83z m-206-145c0-8 6-15 15-15 8 0 14 7 14 15l0 105c0 8-6 15-14 15-9 0-15-7-15-15z m28 182c-1 1-2 2-3 3-1 0-2 1-3 1-1 1-2 1-4 2-1 0-2 0-3 0-2 0-3 0-4 0-2-1-3-1-4-2-1 0-2-1-3-1-1-1-2-2-3-3-4-4-6-9-6-15 0-5 2-11 6-15 1 0 2-1 3-2 1-1 2-2 3-2 1-1 2-1 4-1 2-1 5-1 7 0 2 0 3 0 4 1 1 0 2 1 3 2 1 1 2 2 3 2 4 4 6 10 6 15 0 6-2 11-6 15z"/>
+          </svg>
+        </div>
+        <div>
+          <p>
             ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
             ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
           </p>
-          <span id='critical-error-button' class="critical-error__alert__action-link">
+          <div id="critical-error-button" class="critical-error__link critical-error__link-restart">
             ${t('restartMetamask')}
-          </span>
+          </div>
+          <p class="critical-error__footer">
+            <span>${t('stillGettingMessage')}</span>
+            <a
+              href=${supportLink}
+              class="critical-error__link"
+              target="_blank"
+              rel="noopener noreferrer">
+                ${t('sendBugReport')}
+              </a>
+          </p>
         </div>
-        <p class="critical-error__paragraph">
-          ${t('stillGettingMessage')}
-          <a
-            href=${supportLink}
-            class="critical-error__paragraph__link"
-            target="_blank"
-            rel="noopener noreferrer">
-              ${t('sendBugReport')}
-            </a>
-        </p>
       </div>
     </div>
     `;

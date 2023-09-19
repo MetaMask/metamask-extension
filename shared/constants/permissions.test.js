@@ -9,10 +9,12 @@ import {
 
 describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {
-    // Since long-running is fenced out this causes problems with the test, we re-add it here.
+    // Since some permissions are fenced out, this causes problems with the
+    // test, so we re-add them here.
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
       [
         'endowment:long-running',
+        'endowment:lifecycle-hooks',
         ...Object.keys(endowmentPermissionBuilders).filter(
           (targetName) =>
             !Object.keys(ExcludedSnapEndowments).includes(targetName),
@@ -22,12 +24,14 @@ describe('EndowmentPermissions', () => {
   });
 });
 
+const FlaskOnlyPermissions = ['snap_manageAccounts', 'snap_getLocale'];
+
 describe('RestrictedMethods', () => {
   it('has the expected permission keys', () => {
     // this is done because we there is a difference between flask and stable permissions
     // the code fence in `shared/constants/snaps/permissions.ts` is not supported in jest
     const mainBuildRestrictedMethodPermissions = Object.keys(RestrictedMethods)
-      .filter((key) => key !== 'snap_manageAccounts')
+      .filter((key) => !FlaskOnlyPermissions.includes(key))
       .sort();
 
     expect(mainBuildRestrictedMethodPermissions).toStrictEqual(
@@ -52,7 +56,7 @@ describe('Flask Restricted Methods', () => {
   it('has the expected flask permission keys', () => {
     const flaskExcludedSnapPermissions = Object.keys(
       ExcludedSnapPermissions,
-    ).filter((key) => key !== 'snap_manageAccounts');
+    ).filter((key) => !FlaskOnlyPermissions.includes(key));
 
     expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
       [

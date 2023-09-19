@@ -16,9 +16,16 @@ import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
 import Box from '../../ui/box';
 import InfoTooltip from '../../ui/info-tooltip';
-import Popover from '../../ui/popover';
 import AppLoadingSpinner from '../app-loading-spinner';
-import { Button, ButtonLink, Text } from '../../component-library';
+import {
+  Text,
+  Button,
+  ButtonLink,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+} from '../../component-library';
 
 const CancelSpeedupPopover = () => {
   const {
@@ -82,68 +89,74 @@ const CancelSpeedupPopover = () => {
   };
 
   return (
-    <Popover
-      title={
-        <>
-          {editGasMode === EditGasModes.cancel
-            ? `❌${t('cancel')}`
-            : `🚀${t('speedUp')}`}
-        </>
-      }
+    <Modal
+      isOpen
       onClose={() => closeModal(['cancelSpeedUpTransaction'])}
       className="cancel-speedup-popover"
     >
-      <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
-      <div className="cancel-speedup-popover__wrapper">
-        <Text
-          alignItems={AlignItems.center}
-          display={Display.Flex}
-          variant={TextVariant.bodySm}
-          marginBottom={2}
-          paddingBottom={2}
-          className="cancel-speedup-popover__description"
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader
+          onClose={() => closeModal(['cancelSpeedUpTransaction'])}
+          marginBottom={4}
         >
-          {t('cancelSpeedUpLabel', [
-            <strong key="cancelSpeedupReplace">{t('replace')}</strong>,
-          ])}
-          <InfoTooltip
-            position="top"
-            contentText={
-              <>
-                <Text variant={TextVariant.bodySm}>
-                  {t('cancelSpeedUpTransactionTooltip', [
-                    editGasMode === EditGasModes.cancel
-                      ? t('cancel')
-                      : t('speedUp'),
-                  ])}
-                </Text>
-                <ButtonLink
-                  variant={TextVariant.bodySm}
-                  href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
-                  target="_blank"
-                >
-                  {t('learnMoreUpperCase')}
-                </ButtonLink>
-              </>
-            }
-          />
-        </Text>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          flexDirection={FlexDirection.Column}
-          marginTop={2}
-        >
-          <div className="cancel-speedup-popover__edit-gas-button">
-            {!appIsLoading && <EditGasFeeButton />}
-          </div>
-          <div className="cancel-speedup-popover__gas-details">
-            <GasDetailsItem />
-          </div>
-        </Box>
-        <Button onClick={submitTransactionChange}>{t('submit')}</Button>
-      </div>
-    </Popover>
+          {editGasMode === EditGasModes.cancel
+            ? `❌${t('cancel')}`
+            : `🚀${t('speedUp')}`}
+        </ModalHeader>
+
+        <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
+        <div className="cancel-speedup-popover__wrapper">
+          <Text
+            alignItems={AlignItems.center}
+            display={Display.Flex}
+            variant={TextVariant.bodySm}
+            marginBottom={2}
+            paddingBottom={2}
+            className="cancel-speedup-popover__description"
+          >
+            {t('cancelSpeedUpLabel', [
+              <strong key="cancelSpeedupReplace">{t('replace')}</strong>,
+            ])}
+            <InfoTooltip
+              position="top"
+              contentText={
+                <>
+                  <Text variant={TextVariant.bodySm}>
+                    {t('cancelSpeedUpTransactionTooltip', [
+                      editGasMode === EditGasModes.cancel
+                        ? t('cancel')
+                        : t('speedUp'),
+                    ])}
+                  </Text>
+                  <ButtonLink
+                    variant={TextVariant.bodySm}
+                    href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                    target="_blank"
+                  >
+                    {t('learnMoreUpperCase')}
+                  </ButtonLink>
+                </>
+              }
+            />
+          </Text>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            flexDirection={FlexDirection.Column}
+            marginTop={2}
+          >
+            <div className="cancel-speedup-popover__edit-gas-button">
+              {!appIsLoading && <EditGasFeeButton />}
+            </div>
+            <div className="cancel-speedup-popover__gas-details">
+              <GasDetailsItem />
+            </div>
+          </Box>
+          <Button onClick={submitTransactionChange}>{t('submit')}</Button>
+        </div>
+      </ModalContent>
+    </Modal>
   );
 };
 

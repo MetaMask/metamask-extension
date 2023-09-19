@@ -189,17 +189,8 @@
   "addContact": {
     "message": "Add contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Add custom IPFS gateway"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
-  },
   "addCustomNetwork": {
     "message": "Add custom network"
-  },
-  "addCustomToken": {
-    "message": "Add custom token"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
@@ -249,6 +240,9 @@
   "addHardwareWallet": {
     "message": "Add hardware wallet"
   },
+  "addIPFSGateway": {
+    "message": "Add your preferred IPFS gateway"
+  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -293,6 +287,9 @@
   "address": {
     "message": "Address"
   },
+  "addressCopied": {
+    "message": "Address copied!"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -303,10 +300,8 @@
     "message": "Advanced configuration"
   },
   "advancedGasFeeDefaultOptIn": {
-    "message": "Save these $1 as my default for \"Advanced\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Always use these values and advanced setting as default."
+    "message": "Save these values as my default for the $1 network.",
+    "description": "$1 is the current network name."
   },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
@@ -565,11 +560,47 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidDescriptionApproveFarming": {
+    "message": "If you approve this request, a third party known for scams might take all your assets."
+  },
+  "blockaidDescriptionBlurFarming": {
+    "message": "If you approve this request, someone can steal your assets listed on Blur."
+  },
+  "blockaidDescriptionFailed": {
+    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "You're interacting with a malicious domain. If you approve this request, you might lose your assets."
+  },
+  "blockaidDescriptionMightLoseAssets": {
+    "message": "If you approve this request, you might lose your assets."
+  },
+  "blockaidDescriptionSeaportFarming": {
+    "message": "If you approve this request, someone can steal your assets listed on OpenSea."
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
+  "blockaidTitleDeceptive": {
+    "message": "This is a deceptive request"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "Request may not be safe"
+  },
+  "blockaidTitleSuspicious": {
+    "message": "This is a suspicious request"
+  },
   "blockies": {
     "message": "Blockies"
   },
   "bridge": {
     "message": "Bridge"
+  },
+  "bridgeDescription": {
+    "message": "Transfer tokens from different networks"
+  },
+  "bridgeDisabled": {
+    "message": "Bridge is not available in this network"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -588,6 +619,16 @@
   },
   "buyAsset": {
     "message": "Buy $1",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyDescription": {
+    "message": "Hold up your crypto and earn potential profits"
+  },
+  "buyDisabled": {
+    "message": "Buy is not available in this network"
+  },
+  "buyMoreAsset": {
+    "message": "Buy more $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "buyNow": {
@@ -672,6 +713,10 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "comboNoOptions": {
+    "message": "No options found",
+    "description": "Default text shown in the combo field dropdown if no options."
   },
   "configureSnapPopupDescription": {
     "message": "You're now leaving MetaMask to configure this snap."
@@ -806,6 +851,9 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "connections": {
+    "message": "Connections"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -869,9 +917,6 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
-  },
-  "copyPrivateKey": {
-    "message": "This is your private key (click to copy)"
   },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
@@ -1095,8 +1140,12 @@
   "deleteNetwork": {
     "message": "Delete network?"
   },
-  "deleteNetworkDescription": {
-    "message": "Are you sure you want to delete this network?"
+  "deleteNetworkIntro": {
+    "message": "If you delete this network, you will need to add it again to view your assets in this network"
+  },
+  "deleteNetworkTitle": {
+    "message": "Delete $1 network?",
+    "description": "$1 represents the name of the network"
   },
   "deposit": {
     "message": "Deposit"
@@ -1113,6 +1162,9 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "desktopApp": {
+    "message": "Desktop App"
   },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
@@ -1244,6 +1296,12 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
+  "displayNftMedia": {
+    "message": "Display NFT media"
+  },
+  "displayNftMediaDescription": {
+    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  },
   "domain": {
     "message": "Domain"
   },
@@ -1366,14 +1424,11 @@
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
+  "enableForAllNetworks": {
+    "message": "Enable for all networks"
+  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Enable OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartSwaps": {
     "message": "Enable smart swaps"
@@ -1402,6 +1457,24 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Enhanced token detection is currently available on $1. $2"
   },
+  "ensDomainsSettingDescriptionIntro": {
+    "message": "MetaMask lets you see ENS domains like \"https://metamask.eth\" right in your browser's address bar. Here's how it works:"
+  },
+  "ensDomainsSettingDescriptionOutro": {
+    "message": "Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services."
+  },
+  "ensDomainsSettingDescriptionPoint1": {
+    "message": "MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name."
+  },
+  "ensDomainsSettingDescriptionPoint2": {
+    "message": "If the code is linked to IPFS, it gets the content from the IPFS network."
+  },
+  "ensDomainsSettingDescriptionPoint3": {
+    "message": "Then, you can see the content, usually a website or something similar."
+  },
+  "ensDomainsSettingTitle": {
+    "message": "Show ENS domains in address bar"
+  },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
   },
@@ -1428,9 +1501,6 @@
   },
   "enterOptionalPassword": {
     "message": "Enter optional password"
-  },
-  "enterPassword": {
-    "message": "Enter password"
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
@@ -1508,11 +1578,8 @@
   "exploreMetaMaskSnaps": {
     "message": "Explore MetaMask Snaps"
   },
-  "exportPrivateKey": {
-    "message": "Export private key"
-  },
   "extendWalletWithSnaps": {
-    "message": "Extend the wallet experience."
+    "message": "Customize your wallet experience."
   },
   "externalExtension": {
     "message": "External extension"
@@ -1729,8 +1796,11 @@
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
+  "hardwareWalletsInfo": {
+    "message": "Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with."
+  },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask."
+    "message": "Select a hardware wallet you would like to use with MetaMask."
   },
   "here": {
     "message": "here",
@@ -2009,6 +2079,22 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
   },
+  "ipfsGateway": {
+    "message": "IPFS gateway"
+  },
+  "ipfsGatewayDescription": {
+    "message": "MetaMask uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
+  },
+  "ipfsToggleModalDescriptionOne": {
+    "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
+  },
+  "ipfsToggleModalDescriptionTwo": {
+    "message": "Selecting Confirm turns on IPFS resolution. You can turn it off in $1 at any time.",
+    "description": "$1 is the method to turn off ipfs"
+  },
+  "ipfsToggleModalSettings": {
+    "message": "Settings > Security and privacy"
+  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -2270,11 +2356,11 @@
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."
   },
+  "mmiNewNFTDetectedMessage": {
+    "message": "Allow MetaMask Institutional to automatically detect NFTs from OpenSea and display in your wallet."
+  },
   "more": {
     "message": "more"
-  },
-  "moreComingSoon": {
-    "message": "More coming soon..."
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
@@ -2285,6 +2371,38 @@
   },
   "name": {
     "message": "Name"
+  },
+  "nameAddressLabel": {
+    "message": "Address",
+    "description": "Label above address field in name component modal."
+  },
+  "nameInstructionsNew": {
+    "message": "You are interacting with an unknown contract address. If you trust this author, set a personal display name to identify it going forward.",
+    "description": "Instruction text in name component modal when value is not recognised."
+  },
+  "nameInstructionsSaved": {
+    "message": "Interactions with this address will always be identified using this personal display name.",
+    "description": "Instruction text in name component modal when value is saved."
+  },
+  "nameLabel": {
+    "message": "Display name",
+    "description": "Label above name input field in name component modal."
+  },
+  "nameModalTitleNew": {
+    "message": "Unknown address",
+    "description": "Title of the modal created by the name component when value is not recognised."
+  },
+  "nameModalTitleSaved": {
+    "message": "Saved address",
+    "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameNoProposedNames": {
+    "message": "No proposed names found",
+    "description": "Text shown in the proposed name dropdown if none found."
+  },
+  "nameSetPlaceholder": {
+    "message": "Set a personal display name...",
+    "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees.",
@@ -2357,6 +2475,9 @@
   },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkNameZkSyncEra": {
+    "message": "zkSync Era"
   },
   "networkProvider": {
     "message": "Network provider"
@@ -2432,9 +2553,6 @@
   "newTokensImportedTitle": {
     "message": "Token imported"
   },
-  "newValues": {
-    "message": "new values"
-  },
   "next": {
     "message": "Next"
   },
@@ -2492,6 +2610,9 @@
   },
   "noNFTs": {
     "message": "No NFTs yet"
+  },
+  "noNetworksFound": {
+    "message": "No networks found for the given search query"
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
@@ -2689,6 +2810,36 @@
   "notifications21Title": {
     "message": "Introducing new and refreshed Swaps!"
   },
+  "notifications22ActionText": {
+    "message": "Got it"
+  },
+  "notifications22Description": {
+    "message": "💡 Just click the global menu or account menu to find them!"
+  },
+  "notifications22Title": {
+    "message": "Looking for your account details or the block explorer URL?"
+  },
+  "notifications23ActionText": {
+    "message": "Enable security alerts"
+  },
+  "notifications23DescriptionOne": {
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid on Ethereum Mainnet."
+  },
+  "notifications23DescriptionTwo": {
+    "message": "Always do your own due diligence before approving requests."
+  },
+  "notifications23Title": {
+    "message": "Stay safe with security alerts"
+  },
+  "notifications24ActionText": {
+    "message": "Got it"
+  },
+  "notifications24Description": {
+    "message": "Advanced gas fee settings are now remembered based on the network you're using. This means you can set specific advanced gas fees for each network and avoid overpaying for gas or stuck transactions."
+  },
+  "notifications24Title": {
+    "message": "Advanced gas fees by network"
+  },
   "notifications3ActionText": {
     "message": "Read more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
@@ -2770,8 +2921,16 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
+  "notificationsDropLedgerFirefoxDescription": {
+    "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
+  },
+  "notificationsDropLedgerFirefoxTitle": {
+    "message": "Dropping Ledger Support for Firefox",
+    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
+  },
   "notificationsEmptyText": {
-    "message": "Nothing to see here."
+    "message": "This is where you can find notifications from your installed snaps."
   },
   "notificationsHeader": {
     "message": "Notifications"
@@ -2782,6 +2941,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Learn more"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 We're excited to announce the Open Beta of MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personalize your wallet with snaps built by the developer community!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps help you do more with MetaMask — like connect to more networks, see transaction insights, and get custom notifications."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Introducing MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
@@ -2919,10 +3093,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
-  },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "Showing incoming transactions in your wallet relies on communication with $1. Etherscan will have access to your Ethereum address and your IP address. View $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
@@ -3097,6 +3267,22 @@
     "message": "Allow the snap to derive arbitrary keys unique to this snap, without exposing them. These keys are separate from your MetaMask account(s) and not related to your private keys or Secret Recovery Phrase. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_getEntropy` permission"
   },
+  "permission_getLocale": {
+    "message": "View your preferred language.",
+    "description": "The description for the `snap_getLocale` permission"
+  },
+  "permission_getLocaleDescription": {
+    "message": "Let this Snap access your preferred language from your MetaMask settings. This can be used to localize and display the Snap's content using your language.",
+    "description": "An extended description for the `snap_getLocale` permission"
+  },
+  "permission_lifecycleHooks": {
+    "message": "Use lifecycle hooks.",
+    "description": "The description for the `endowment:lifecycle-hooks` permission"
+  },
+  "permission_lifecycleHooksDescription": {
+    "message": "Allow the snap to use lifecycle hooks to run code at specific times during its lifecycle.",
+    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
+  },
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
@@ -3220,9 +3406,6 @@
   },
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
-  },
-  "portfolioView": {
-    "message": "Portfolio view"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -3552,9 +3735,6 @@
   "searchResults": {
     "message": "Search results"
   },
-  "searchTokens": {
-    "message": "Search tokens"
-  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -3570,14 +3750,18 @@
   "securityAlerts": {
     "message": "Security alerts"
   },
-  "securityAlertsDescription1": {
-    "message": "Enable this to have your transactions and signature requests reviewed locally (no data shared with third parties) and warnings displayed when malicious activity is detected."
-  },
-  "securityAlertsDescription2": {
-    "message": "Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature."
+  "securityAlertsDescription": {
+    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
+  },
+  "securityProviderPoweredBy": {
+    "message": "Powered by $1",
+    "description": "The security provider that is providing data"
+  },
+  "seeDetails": {
+    "message": "See details"
   },
   "seedPhraseConfirm": {
     "message": "Confirm Secret Recovery Phrase"
@@ -3657,6 +3841,9 @@
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
   },
+  "selectAnAction": {
+    "message": "Select an action"
+  },
   "selectHdPath": {
     "message": "Select HD path"
   },
@@ -3669,9 +3856,6 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
-  "selectProvider": {
-    "message": "Select providers:"
-  },
   "selectType": {
     "message": "Select Type"
   },
@@ -3683,6 +3867,9 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
+  },
+  "sendDescription": {
+    "message": "Send crypto to any account"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -3749,17 +3936,20 @@
     "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
+  "showIncomingTransactionsInformation": {
+    "message": "This relies on each network which will have access to your Ethereum address and your IP address."
+  },
   "showMore": {
     "message": "Show more"
+  },
+  "showNft": {
+    "message": "Show NFT"
   },
   "showPermissions": {
     "message": "Show permissions"
   },
   "showPrivateKey": {
     "message": "Show private key"
-  },
-  "showPrivateKeys": {
-    "message": "Show Private Keys"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -3799,6 +3989,9 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+  },
+  "smartContracts": {
+    "message": "Smart contracts"
   },
   "smartSwap": {
     "message": "Smart swap"
@@ -3957,7 +4150,7 @@
     "message": "The snap didn't return any insight"
   },
   "snapsPrivacyWarningFirstMessage": {
-    "message": "You acknowledge that the snap that you are about to install is a Third Party Service as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "message": "You acknowledge that any Snap that you install is a Third Party Service, unless otherwise identified, as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
@@ -3965,7 +4158,7 @@
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys has no access to information you share with these third parties.",
+    "message": "Consensys has no access to information you share with Third Party Services.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
@@ -3989,9 +4182,6 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
-  },
-  "source": {
-    "message": "Source"
   },
   "speedUp": {
     "message": "Speed up"
@@ -4126,6 +4316,9 @@
   },
   "stake": {
     "message": "Stake"
+  },
+  "stakeDescription": {
+    "message": "Stake your crypto to earn rewards"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -4263,6 +4456,9 @@
   "swap": {
     "message": "Swap"
   },
+  "swapAdjustSlippage": {
+    "message": "Adjust slippage"
+  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -4315,14 +4511,17 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
+  "swapDescription": {
+    "message": "Swap and trade your tokens"
+  },
   "swapDirectContract": {
     "message": "Direct contract"
   },
+  "swapDisabled": {
+    "message": "Swap is not available in this network"
+  },
   "swapEditLimit": {
     "message": "Edit limit"
-  },
-  "swapEditTransactionSettings": {
-    "message": "Edit transaction settings"
   },
   "swapEnableDescription": {
     "message": "This is required and gives MetaMask permission to swap your $1.",
@@ -4384,6 +4583,9 @@
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
+  "swapHighSlippage": {
+    "message": "High slippage"
+  },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
   },
@@ -4397,6 +4599,9 @@
   },
   "swapLearnMore": {
     "message": "Learn more about Swaps"
+  },
+  "swapLowSlippage": {
+    "message": "Low slippage"
   },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
@@ -4508,6 +4713,20 @@
   "swapShowLatestQuotes": {
     "message": "Show latest quotes"
   },
+  "swapSlippageHighDescription": {
+    "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageHighTitle": {
+    "message": "High slippage"
+  },
+  "swapSlippageLowDescription": {
+    "message": "A value this low ($1%) may result in a failed swap",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageLowTitle": {
+    "message": "Low slippage"
+  },
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
   },
@@ -4521,26 +4740,14 @@
     "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
   },
   "swapSlippageOverLimitTitle": {
-    "message": "Reduce slippage to continue"
+    "message": "Very high slippage"
   },
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
-  "swapSlippageTooLowDescription": {
-    "message": "Max slippage is too low which may cause your transaction to fail."
-  },
-  "swapSlippageTooLowTitle": {
-    "message": "Increase slippage to avoid transaction failure"
-  },
   "swapSlippageTooltip": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
-  },
-  "swapSlippageVeryHighDescription": {
-    "message": "The slippage entered is considered very high and may result in a bad rate"
-  },
-  "swapSlippageVeryHighTitle": {
-    "message": "Very high slippage"
   },
   "swapSlippageZeroDescription": {
     "message": "There are fewer zero-slippage quote providers which will result in a less competitive quote."
@@ -4586,6 +4793,9 @@
   "swapTokenBalanceUnavailable": {
     "message": "We were unable to retrieve your $1 balance",
     "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
+  "swapTokenNotAvailable": {
+    "message": "Token is not available to swap in this region"
   },
   "swapTokenToToken": {
     "message": "Swap $1 to $2",
@@ -5020,9 +5230,6 @@
   "txInsightsNotSupported": {
     "message": "Transaction insights not supported for this contract at this time."
   },
-  "typePassword": {
-    "message": "Type your MetaMask password"
-  },
   "typeYourSRP": {
     "message": "Type your Secret Recovery Phrase"
   },
@@ -5093,11 +5300,17 @@
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
   },
+  "use4ByteResolution": {
+    "message": "Decode smart contracts"
+  },
+  "use4ByteResolutionDescription": {
+    "message": "To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contract that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared."
+  },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
+  "useMultiAccountBalanceCheckerSettingDescription": {
+    "message": "Get faster balance updates by batching account balance requests. This lets us fetch your account balances together, so you get quicker updates for an improved experience. When this feature is off, third parties may be less likely to associate your accounts with each other."
   },
   "useNftDetection": {
     "message": "Autodetect NFTs"
@@ -5204,6 +5417,9 @@
   "visitWebSite": {
     "message": "Visit our website"
   },
+  "wallet": {
+    "message": "Wallet"
+  },
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
@@ -5231,8 +5447,7 @@
     "message": "Want to add this network?"
   },
   "wantsToAddThisAsset": {
-    "message": "$1 wants to add this asset to your wallet",
-    "description": "$1 is the name of the website that wants to add an asset to your wallet"
+    "message": "This allows the following asset to be added to your wallet."
   },
   "warning": {
     "message": "Warning"

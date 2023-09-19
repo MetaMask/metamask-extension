@@ -1,4 +1,10 @@
+.multichain-network-list-menu-content-wrapper {
+  &__dialog {
+    max-height: 100%;
+  }
+}
+
 .multichain-network-list-menu {
-  max-height: 200px;
+  max-height: 100%;
   overflow: auto;
 }

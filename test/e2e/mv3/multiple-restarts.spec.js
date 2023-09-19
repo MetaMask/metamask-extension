@@ -6,22 +6,19 @@ const {
   WALLET_PASSWORD,
   WINDOW_TITLES,
   DEFAULT_GANACHE_OPTIONS,
-  generateETHBalance,
-  roundToXDecimalPlaces,
   generateRandNumBetween,
   sleepSeconds,
   terminateServiceWorker,
   unlockWallet,
   largeDelayMs,
+  genRandInitBal,
+  roundToXDecimalPlaces,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MV3 - Restart service worker multiple times', function () {
   it('Simple simple send flow within full screen view should still be usable', async function () {
-    const initialBalance = roundToXDecimalPlaces(
-      generateRandNumBetween(10, 100),
-      4,
-    );
+    const { initialBalance, initialBalanceInHex } = genRandInitBal();
 
     await withFixtures(
       {
@@ -30,7 +27,7 @@ describe('MV3 - Restart service worker multiple times', function () {
           accounts: [
             {
               secretKey: DEFAULT_GANACHE_OPTIONS.accounts[0].secretKey,
-              balance: generateETHBalance(initialBalance),
+              balance: initialBalanceInHex,
             },
           ],
         }),

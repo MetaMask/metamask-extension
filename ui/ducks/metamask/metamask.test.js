@@ -1,3 +1,5 @@
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
@@ -7,7 +9,6 @@ import reduceMetamask, {
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  getUnapprovedTxs,
   isNotEIP1559Network,
 } from './metamask';
 
@@ -42,7 +43,13 @@ describe('MetaMask Reducers', () => {
         nativeCurrency: 'ETH',
         useCurrencyRateCheck: true,
         networkId: '5',
-        networkStatus: 'available',
+        selectedNetworkClientId: NetworkType.goerli,
+        networksMetadata: {
+          [NetworkType.goerli]: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
         providerConfig: {
           type: 'testnet',
           chainId: '0x5',
@@ -83,8 +90,8 @@ describe('MetaMask Reducers', () => {
             },
           },
         },
-        unapprovedTxs: {
-          4768706228115573: {
+        transactions: [
+          {
             id: 4768706228115573,
             time: 1487363153561,
             status: TransactionStatus.unapproved,
@@ -103,10 +110,7 @@ describe('MetaMask Reducers', () => {
             maxCost: 'de234b52e4a0800',
             gasPrice: '4a817c800',
           },
-        },
-        networkDetails: {
-          EIPS: { 1559: true },
-        },
+        ],
       },
       {},
     ),
@@ -170,7 +174,7 @@ describe('MetaMask Reducers', () => {
 
   it('updates value of tx by id', () => {
     const oldState = {
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 1,
           txParams: 'foo',
@@ -184,7 +188,7 @@ describe('MetaMask Reducers', () => {
       value: 'bar',
     });
 
-    expect(state.currentNetworkTxList[0].txParams).toStrictEqual('bar');
+    expect(state.transactions[0].txParams).toStrictEqual('bar');
   });
 
   it('close welcome screen', () => {
@@ -321,30 +325,6 @@ describe('MetaMask Reducers', () => {
         ]);
       });
     });
-
-    it('should return the unapproved txs', () => {
-      expect(getUnapprovedTxs(mockState)).toStrictEqual({
-        4768706228115573: {
-          id: 4768706228115573,
-          time: 1487363153561,
-          status: TransactionStatus.unapproved,
-          gasMultiplier: 1,
-          metamaskNetworkId: '5',
-          txParams: {
-            from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-            to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
-            value: '0xde0b6b3a7640000',
-            metamaskId: 4768706228115573,
-            metamaskNetworkId: '5',
-            gas: '0x5209',
-          },
-          txFee: '17e0186e60800',
-          txValue: 'de0b6b3a7640000',
-          maxCost: 'de234b52e4a0800',
-          gasPrice: '4a817c800',
-        },
-      });
-    });
   });
 
   describe('isNotEIP1559Network()', () => {
@@ -354,15 +334,21 @@ describe('MetaMask Reducers', () => {
           ...mockState,
           metamask: {
             ...mockState.metamask,
-            networkDetails: {
-              EIPS: { 1559: false },
+            selectedNetworkClientId: NetworkType.mainnet,
+            networksMetadata: {
+              [NetworkType.mainnet]: {
+                EIPS: {
+                  1559: false,
+                },
+                status: 'available',
+              },
             },
           },
         }),
       ).toStrictEqual(true);
     });
 
-    it('should return false if networkDetails.EIPS.1559 is not false', () => {
+    it('should return false if networksMetadata[selectedNetworkClientId].EIPS.1559 is not false', () => {
       expect(isNotEIP1559Network(mockState)).toStrictEqual(false);
 
       expect(
@@ -370,8 +356,12 @@ describe('MetaMask Reducers', () => {
           ...mockState,
           metamask: {
             ...mockState.metamask,
-            networkDetails: {
-              EIPS: { 1559: undefined },
+            selectedNetworkClientId: NetworkType.mainnet,
+            networksMetadata: {
+              [NetworkType.mainnet]: {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
             },
           },
         }),

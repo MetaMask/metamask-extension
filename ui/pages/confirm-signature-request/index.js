@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
 import { cloneDeep } from 'lodash';
+import { SubjectType } from '@metamask/permission-controller';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -16,13 +17,16 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
+  getTargetSubjectMetadata,
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 
-const signatureSelect = (txData) => {
+const signatureSelect = (txData, targetSubjectMetadata) => {
   const {
     type,
     msgParams: { version, siwe },
@@ -36,7 +40,7 @@ const signatureSelect = (txData) => {
     return SignatureRequest;
   }
 
-  if (siwe?.isSIWEMessage) {
+  if (siwe?.isSIWEMessage && targetSubjectMetadata !== SubjectType.Snap) {
     return SignatureRequestSIWE;
   }
 
@@ -51,9 +55,7 @@ const ConfirmTxScreen = ({ match }) => {
   );
   const sendTo = useSelector(getSendTo);
   const {
-    unapprovedTxs,
     identities,
-    currentNetworkTxList,
     currentCurrency,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
@@ -61,6 +63,8 @@ const ConfirmTxScreen = ({ match }) => {
     networkId,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const { chainId } = useSelector(getProviderConfig);
   const { txId: index } = useSelector((state) => state.appState);
 
@@ -167,11 +171,16 @@ const ConfirmTxScreen = ({ match }) => {
   const txData = getTxData() || {};
 
   const { msgParams } = txData;
+
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, msgParams?.origin),
+  );
+
   if (!msgParams) {
     return <Loading />;
   }
 
-  const SigComponent = signatureSelect(txData);
+  const SigComponent = signatureSelect(txData, targetSubjectMetadata);
 
   return (
     <SigComponent

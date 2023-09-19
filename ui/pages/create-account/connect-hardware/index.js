@@ -24,8 +24,8 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZES,
   Button,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
 import SelectHardware from './select-hardware';
@@ -60,6 +60,7 @@ export const LATTICE_HD_PATHS = [
 const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
 export const TREZOR_HD_PATHS = [
   { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
+  { name: `Legacy (Ledger / MEW / MyCrypto)`, value: MEW_PATH },
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
 
@@ -371,6 +372,7 @@ class ConnectHardwareForm extends Component {
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
           ledgerTransportType={this.props.ledgerTransportType}
+          onCancel={this.onCancel}
         />
       );
     }

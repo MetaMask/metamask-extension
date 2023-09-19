@@ -9,7 +9,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
       class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
     >
       <p
-        class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-alternative"
       >
         Your accounts
       </p>
@@ -445,7 +445,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
       class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
     >
       <p
-        class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-alternative"
       >
         Your accounts
       </p>
@@ -718,7 +718,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
         class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
       >
         <p
-          class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-alternative"
         >
           Contacts
         </p>

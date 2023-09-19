@@ -7,12 +7,12 @@ import {
   Color,
   Display,
   FontWeight,
-  Size,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
@@ -30,9 +30,7 @@ const Template = (args) => <ActivityListItem {...args} />;
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
   'data-testid': 'activity-list-item',
-  onClick: () => {
-    console.log('clicked list item');
-  },
+  onClick: () => undefined,
   className: 'custom-class',
   title: 'Activity Title',
   icon: (
@@ -44,7 +42,7 @@ DefaultStory.args = {
         <AvatarNetwork
           className="activity-tx__network-badge"
           data-testid="activity-tx-network-badge"
-          size={Size.XS}
+          size={AvatarNetworkSize.Xs}
           name="Network Name"
           src="./images/eth_logo.png"
           borderWidth={1}

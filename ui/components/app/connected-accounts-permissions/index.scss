@@ -33,21 +33,17 @@
   }
 
   &__list {
-    padding-top: 8px;
+    padding-block: 8px;
+    height: 100%;
+    overflow: auto;
   }
 
   &__list-item {
     display: flex;
   }
 
-  & &__checkbox {
-    font-size: $font-size-h4;
-    margin: 0 8px 0 0;
-  }
-
   &__list-container {
     max-height: 0;
-    overflow: hidden;
     height: auto;
     transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 

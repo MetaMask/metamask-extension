@@ -21,32 +21,16 @@ import {
   Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
-import {
-  GOERLI_DISPLAY_NAME,
-  LINEA_GOERLI_DISPLAY_NAME,
-  SEPOLIA_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
-
-function getAvatarNetworkColor(name) {
-  switch (name) {
-    case GOERLI_DISPLAY_NAME:
-      return BackgroundColor.goerli;
-    case LINEA_GOERLI_DISPLAY_NAME:
-      return BackgroundColor.lineaGoerli;
-    case SEPOLIA_DISPLAY_NAME:
-      return BackgroundColor.sepolia;
-    default:
-      return undefined;
-  }
-}
 
 export const NetworkListItem = ({
   name,
   iconSrc,
   selected = false,
+  focus = true,
   onClick,
   onDeleteClick,
 }) => {
@@ -54,10 +38,10 @@ export const NetworkListItem = ({
   const networkRef = useRef();
 
   useEffect(() => {
-    if (networkRef.current && selected) {
+    if (networkRef.current && focus) {
       networkRef.current.focus();
     }
-  }, [networkRef, selected]);
+  }, [networkRef, focus]);
 
   return (
     <Box
@@ -148,4 +132,8 @@ NetworkListItem.propTypes = {
    * Executes when the delete icon is clicked
    */
   onDeleteClick: PropTypes.func,
+  /**
+   * Represents if the network item should be keyboard selected
+   */
+  focus: PropTypes.bool,
 };

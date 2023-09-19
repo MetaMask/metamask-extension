@@ -44,6 +44,7 @@ import {
   Modal,
   ButtonPrimary,
   ButtonSecondary,
+  ButtonSecondarySize,
   Box,
   FormTextField,
   Label,
@@ -62,17 +63,14 @@ export const ImportNftsModal = ({ onClose }) => {
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
-  const addressEnteredOnImportTokensPage =
-    history?.location?.state?.addressEnteredOnImportTokensPage;
-  const contractAddressToConvertFromTokenToNft =
-    history?.location?.state?.tokenAddress;
+  const {
+    tokenAddress: initialTokenAddress,
+    tokenId: initialTokenId,
+    ignoreErc20Token,
+  } = useSelector((state) => state.appState.importNftsModal);
 
-  const [nftAddress, setNftAddress] = useState(
-    addressEnteredOnImportTokensPage ??
-      contractAddressToConvertFromTokenToNft ??
-      '',
-  );
-  const [tokenId, setTokenId] = useState('');
+  const [nftAddress, setNftAddress] = useState(initialTokenAddress ?? '');
+  const [tokenId, setTokenId] = useState(initialTokenId ?? '');
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
@@ -98,10 +96,10 @@ export const ImportNftsModal = ({ onClose }) => {
       setNftAddFailed(true);
       return;
     }
-    if (contractAddressToConvertFromTokenToNft) {
+    if (ignoreErc20Token && nftAddress) {
       await dispatch(
         ignoreTokens({
-          tokensToIgnore: contractAddressToConvertFromTokenToNft,
+          tokensToIgnore: nftAddress,
           dontShowLoadingIndicator: true,
         }),
       );
@@ -237,7 +235,6 @@ export const ImportNftsModal = ({ onClose }) => {
                 </Box>
               </Box>
               <FormTextField
-                autoFocus
                 dataTestId="token-id"
                 id="token-id"
                 placeholder={t('nftTokenIdPlaceholder')}
@@ -259,7 +256,7 @@ export const ImportNftsModal = ({ onClose }) => {
           paddingBottom={4}
         >
           <ButtonSecondary
-            size={Size.LG}
+            size={ButtonSecondarySize.Lg}
             onClick={() => onClose()}
             block
             className="import-nfts-modal__cancel-button"
