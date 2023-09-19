@@ -371,9 +371,6 @@
   "amount": {
     "message": "Montant"
   },
-  "apiUrl": {
-    "message": "URL de l’API"
-  },
   "appDescription": {
     "message": "Extension Ethereum pour navigateur",
     "description": "The description of the application"
@@ -416,7 +413,7 @@
     "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT suivants."
   },
   "approveTokenDescriptionWithoutSymbol": {
-    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT via $1$.",
+    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT via $1.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveTokenTitle": {
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Dépôt"
-  },
-  "custodianAccount": {
-    "message": "Compte de dépôt"
   },
   "custodianAccountAddedDesc": {
     "message": "Vous pouvez maintenant utiliser vos comptes de dépôt dans MetaMask Institutional."
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "Demandez ici"
-  },
-  "mmiAddToken": {
-    "message": "La page à $1 souhaite autoriser le jeton de dépôt suivant dans MetaMask institutionnel"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional est conçu et établi dans le monde entier."

@@ -41,12 +41,12 @@ import {
   getSelectedAddress,
   hasTransactionPendingApprovals,
   getApprovalFlows,
+  getCurrentNetworkTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
-  getCurrentNetworkTransactions,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -2413,9 +2413,14 @@ export function hideModal(): Action {
   };
 }
 
-export function showImportNftsModal(): Action {
+export function showImportNftsModal(payload: {
+  tokenAddress?: string;
+  tokenId?: string;
+  ignoreErc20Token?: boolean;
+}) {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
+    payload,
   };
 }
 

@@ -761,8 +761,7 @@
     },
     "@metamask-institutional/extension": {
       "globals": {
-        "console.log": true,
-        "fetch": true
+        "console.log": true
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -2011,6 +2010,11 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/selected-network-controller": {
+      "packages": {
+        "@metamask/base-controller": true
       }
     },
     "@metamask/signature-controller": {
