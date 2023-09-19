@@ -70,12 +70,12 @@ const AssetList = ({ onClickAsset }) => {
     <>
       {process.env.MULTICHAIN ? <BalanceOverview /> : null}
       {detectedTokens.length > 0 &&
-      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
-        <DetectedTokensBanner
-          actionButtonOnClick={() => setShowDetectedTokens(true)}
-          margin={4}
-        />
-      ) : null}
+        !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
+          <DetectedTokensBanner
+            actionButtonOnClick={() => setShowDetectedTokens(true)}
+            margin={4}
+          />
+        )}
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
