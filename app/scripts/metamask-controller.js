@@ -469,8 +469,8 @@ export default class MetamaskController extends EventEmitter {
       config: {
         provider: this.provider,
         selectedAddress:
-          initState.AccountsController.internalAccounts.accounts[
-            initState.AccountsController.internalAccounts.selectedAccount
+          initState?.AccountsController?.internalAccounts?.accounts[
+            initState?.AccountsController?.internalAccounts?.selectedAccount
           ]?.address ?? '',
       },
       state: initState.TokensController,
