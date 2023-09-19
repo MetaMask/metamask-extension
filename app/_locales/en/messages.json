@@ -3304,6 +3304,10 @@
     "message": "Add and control Ethereum accounts",
     "description": "The description for `snap_manageAccounts` permission"
   },
+  "permission_manageAccountsDescription": {
+    "message": "Let this Snap add Ethereum accounts and control them (sign transactions and messages).",
+    "description": "An extended description for the `snap_manageAccounts` permission"
+  },
   "permission_manageBip32Keys": {
     "message": "Control your accounts and assets under $1 ($2).",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
