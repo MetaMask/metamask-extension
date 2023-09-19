@@ -92,14 +92,14 @@ export default function NftsItems({
   const history = useHistory();
 
   const renderCollectionImage = (collectionImage, collectionName) => {
-    if (collectionImage?.includes('ipfs') && !ipfsGateway) {
+    if (collectionImage?.startsWith('ipfs') && !ipfsGateway) {
       return (
         <div className="nfts-items__collection-image-alt">
           {collectionName?.[0]?.toUpperCase() ?? null}
         </div>
       );
     }
-    if (!openSeaEnabled && !collectionImage?.includes('ipfs')) {
+    if (!openSeaEnabled && !collectionImage?.startsWith('ipfs')) {
       return (
         <div className="nfts-items__collection-image-alt">
           {collectionName?.[0]?.toUpperCase() ?? null}
