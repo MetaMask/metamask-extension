@@ -516,6 +516,9 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
+const PRIVATE_KEY_TWO =
+  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const defaultGanacheOptions = {
@@ -748,6 +751,7 @@ module.exports = {
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
+  PRIVATE_KEY_TWO,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
