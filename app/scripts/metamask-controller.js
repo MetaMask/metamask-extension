@@ -445,7 +445,10 @@ export default class MetamaskController extends EventEmitter {
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'TokensController',
       allowedActions: ['ApprovalController:addRequest'],
-      allowedEvents: ['NetworkController:stateChange'],
+      allowedEvents: [
+        'NetworkController:stateChange',
+        'AccountsController:selectedAccountChange',
+      ],
     });
     this.tokensController = new TokensController({
       messenger: tokensControllerMessenger,
@@ -463,7 +466,13 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
-      config: { provider: this.provider },
+      config: {
+        provider: this.provider,
+        selectedAddress:
+          initState.AccountsController.internalAccounts.accounts[
+            initState.AccountsController.internalAccounts.selectedAccount
+          ]?.address ?? '',
+      },
       state: initState.TokensController,
     });
 
