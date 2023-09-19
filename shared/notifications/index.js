@@ -156,6 +156,15 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
+  27: {
+    id: 27,
+    date: null,
+    image: {
+      src: 'images/sell_button_whatsnew.png',
+      width: '100%',
+    },
+  },
+
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -416,6 +425,17 @@ export const getTranslatedUINotifications = (t, locale) => {
       date: UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date),
+          )
+        : '',
+    },
+    27: {
+      ...UI_NOTIFICATIONS[27],
+      title: t('notifications27Title'),
+      description: t('notifications27Description'),
+      actionText: t('notifications27ActionText'),
+      date: UI_NOTIFICATIONS[27].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[27].date),
           )
         : '',
     },

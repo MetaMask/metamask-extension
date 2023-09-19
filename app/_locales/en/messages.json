@@ -2853,6 +2853,15 @@
   "notifications24Title": {
     "message": "Advanced gas fees by network"
   },
+  "notifications27ActionText": {
+    "message": "Try it on MetaMask Portfolio"
+  },
+  "notifications27Description": {
+    "message": "Introducing the ‘Buy & Sell’ button, giving you easy access to our latest feature: Sell. When clicked, you’ll be redirected to MetaMask Portfolio, where you’ll be able to convert your crypto to cash in a flash. Initially available for ETH on mainnet in the US (state restrictions apply), UK, and parts of Europe."
+  },
+  "notifications27Title": {
+    "message": "Sell your crypto, get cash"
+  },
   "notifications3ActionText": {
     "message": "Read more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."

@@ -125,6 +125,11 @@ function getActionFunctionById(id, history) {
         url: 'https://metamask.io/snaps/',
       });
     },
+    27: () => {
+      updateViewedNotifications({ 27: true });
+      global.platform.openTab({
+        url: 'https://portfolio.metamask.io/sell/' });
+    },
   };
 
   return actionFunctions[id];
@@ -411,6 +416,7 @@ export default function WhatsNewPopup({
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
+    27: renderFirstNotification,
   };
 
   return (

@@ -1073,6 +1073,7 @@ function getAllowedAnnouncementIds(state) {
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
+    27: true,
   };
 }
 
