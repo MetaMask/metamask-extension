@@ -6,44 +6,40 @@ import {
   NameProviderSourceResult,
   NameType,
 } from '@metamask/name-controller';
+import { GetPermissionControllerState } from '@metamask/permission-controller';
 import {
-  PermissionControllerSubjects,
-  PermissionConstraint,
-} from '@metamask/permission-controller';
-import {
-  Snap,
   OnNameLookupArgs,
   HandlerType,
   OnNameLookupResponse,
+  TruncatedSnap,
 } from '@metamask/snaps-utils';
 import log from 'loglevel';
+import {
+  GetAllSnaps,
+  GetSnap,
+  HandleSnapRequest,
+} from '@metamask/snaps-controllers';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
 
-export type SnapRequest = {
-  snapId: string;
-  origin: string;
-  handler: HandlerType;
-  request: any;
-};
+type AllowedActions =
+  | GetAllSnaps
+  | GetSnap
+  | HandleSnapRequest
+  | GetPermissionControllerState;
+
+export type SnapsNameProviderMessenger = RestrictedControllerMessenger<
+  'SnapsNameProvider',
+  AllowedActions,
+  never,
+  AllowedActions['type'],
+  never
+>;
 
 export class SnapsNameProvider implements NameProvider {
-  #getPermissionSubjects: () => PermissionControllerSubjects<PermissionConstraint>;
+  #messenger: SnapsNameProviderMessenger;
 
-  #getSnaps: () => Snap[];
-
-  #handleSnapRequest: (request: SnapRequest) => Promise<OnNameLookupResponse>;
-
-  constructor({
-    getPermissionSubjects,
-    getSnaps,
-    handleSnapRequest,
-  }: {
-    getPermissionSubjects: () => PermissionControllerSubjects<PermissionConstraint>;
-    getSnaps: () => Snap[];
-    handleSnapRequest: (request: any) => Promise<any>;
-  }) {
-    this.#getPermissionSubjects = getPermissionSubjects;
-    this.#getSnaps = getSnaps;
-    this.#handleSnapRequest = handleSnapRequest;
+  constructor({ messenger }: { messenger: SnapsNameProviderMessenger }) {
+    this.#messenger = messenger;
   }
 
   getMetadata(): NameProviderMetadata {
@@ -54,10 +50,15 @@ export class SnapsNameProvider implements NameProvider {
     };
 
     const sourceLabels = snaps.reduce(
-      (acc: NameProviderMetadata['sourceLabels'], snap) => ({
-        ...acc,
-        [snap.id]: snap.manifest.proposedName,
-      }),
+      (acc: NameProviderMetadata['sourceLabels'], snap) => {
+        const snapDetails = this.#messenger.call('SnapController:get', snap.id);
+        const snapName = snapDetails?.manifest.proposedName;
+
+        return {
+          ...acc,
+          [snap.id]: snapName || snap.id,
+        };
+      },
       {},
     );
 
@@ -90,9 +91,12 @@ export class SnapsNameProvider implements NameProvider {
     return { results };
   }
 
-  #getNameLookupSnaps(): Snap[] {
-    const permissionSubjects = this.#getPermissionSubjects();
-    const snaps = this.#getSnaps();
+  #getNameLookupSnaps(): TruncatedSnap[] {
+    const permissionSubjects = this.#messenger.call(
+      'PermissionController:getState',
+    ).subjects;
+
+    const snaps = this.#messenger.call('SnapController:getAll');
 
     return snaps.filter(
       ({ id }) => permissionSubjects[id]?.permissions['endowment:name-lookup'],
@@ -100,7 +104,7 @@ export class SnapsNameProvider implements NameProvider {
   }
 
   async #getSnapProposedName(
-    snap: Snap,
+    snap: TruncatedSnap,
     request: NameProviderRequest,
   ): Promise<{ sourceId: string; result: NameProviderSourceResult }> {
     const { chainId: chainIdHex, value } = request;
@@ -116,16 +120,19 @@ export class SnapsNameProvider implements NameProvider {
     let resultError;
 
     try {
-      const result = await this.#handleSnapRequest({
-        snapId: snap.id,
-        origin: '',
-        handler: HandlerType.OnNameLookup,
-        request: {
-          jsonrpc: '2.0',
-          method: ' ',
-          params: nameLookupRequest,
+      const result = (await this.#messenger.call(
+        'SnapController:handleRequest',
+        {
+          snapId: snap.id,
+          origin: '',
+          handler: HandlerType.OnNameLookup,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: nameLookupRequest,
+          },
         },
-      });
+      )) as OnNameLookupResponse;
 
       const domain = result?.resolvedDomain;
 

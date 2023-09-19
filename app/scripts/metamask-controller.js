@@ -1512,9 +1512,15 @@ export default class MetamaskController extends EventEmitter {
         new TokenNameProvider({}),
         new LensNameProvider(),
         new SnapsNameProvider({
-          getPermissionSubjects: () => this.permissionController.state.subjects,
-          getSnaps: () => Object.values(this.snapController.state.snaps),
-          handleSnapRequest: this.handleSnapRequest.bind(this),
+          messenger: this.controllerMessenger.getRestricted({
+            name: 'SnapsNameProvider',
+            allowedActions: [
+              'SnapController:getAll',
+              'SnapController:get',
+              'SnapController:handleRequest',
+              'PermissionController:getState',
+            ],
+          }),
         }),
       ],
       state: initState.NameController,

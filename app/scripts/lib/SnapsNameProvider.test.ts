@@ -1,6 +1,15 @@
 import { NameType } from '@metamask/name-controller';
 import { HandlerType } from '@metamask/snaps-utils';
-import { SnapsNameProvider } from './SnapsNameProvider';
+import {
+  GetAllSnaps,
+  GetSnap,
+  HandleSnapRequest,
+} from '@metamask/snaps-controllers';
+import { GetPermissionControllerState } from '@metamask/permission-controller';
+import {
+  SnapsNameProvider,
+  SnapsNameProviderMessenger,
+} from './SnapsNameProvider';
 
 const VALUE_MOCK = 'TestValue';
 const CHAIN_ID_MOCK = '0x1';
@@ -29,15 +38,63 @@ const SNAP_MOCK_3 = {
   },
 };
 
-const OPTIONS_MOCK = {
-  getPermissionSubjects: () => ({
-    [SNAP_MOCK.id]: { permissions: { 'endowment:name-lookup': true } },
-    [SNAP_MOCK_2.id]: { permissions: { 'endowment:name-lookup': true } },
-    [SNAP_MOCK_3.id]: { permissions: {} },
-  }),
-  getSnaps: () => [SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3],
-  handleSnapRequest: () => Promise.resolve(),
-} as any;
+function createMockMessenger({
+  getAllSnaps,
+  getSnap,
+  handleSnapRequest,
+  getPermissionControllerState,
+}: {
+  getAllSnaps?: jest.Mocked<GetAllSnaps['handler']>;
+  getSnap?: jest.Mocked<GetSnap['handler']>;
+  handleSnapRequest?: jest.Mocked<HandleSnapRequest['handler']>;
+  getPermissionControllerState?: jest.Mocked<
+    GetPermissionControllerState['handler']
+  >;
+} = {}): SnapsNameProviderMessenger {
+  const getAllSnapsMock =
+    getAllSnaps ||
+    jest.fn().mockReturnValue([SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3]);
+
+  const getSnapMock =
+    getSnap ||
+    jest
+      .fn()
+      .mockImplementation((snapId) =>
+        [SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3].find(({ id }) => id === snapId),
+      );
+
+  const handleSnapRequestMock =
+    handleSnapRequest || jest.fn().mockResolvedValue(Promise.resolve());
+
+  const getPermissionControllerStateMock =
+    getPermissionControllerState ||
+    jest.fn().mockReturnValue({
+      subjects: {
+        [SNAP_MOCK.id]: { permissions: { 'endowment:name-lookup': true } },
+        [SNAP_MOCK_2.id]: { permissions: { 'endowment:name-lookup': true } },
+        [SNAP_MOCK_3.id]: { permissions: {} },
+      },
+    });
+
+  const callMock = jest.fn().mockImplementation((method, ...args) => {
+    switch (method) {
+      case 'SnapController:getAll':
+        return getAllSnapsMock();
+      case 'SnapController:get':
+        return getSnapMock(args[0]);
+      case 'SnapController:handleRequest':
+        return handleSnapRequestMock(args[0]);
+      case 'PermissionController:getState':
+        return getPermissionControllerStateMock();
+      default:
+        return undefined;
+    }
+  });
+
+  return {
+    call: callMock,
+  } as any;
+}
 
 describe('SnapsNameProvider', () => {
   beforeEach(() => {
@@ -46,7 +103,10 @@ describe('SnapsNameProvider', () => {
 
   describe('getMetadata', () => {
     it('returns metadata for installed snap with permissions', () => {
-      const provider = new SnapsNameProvider(OPTIONS_MOCK);
+      const provider = new SnapsNameProvider({
+        messenger: createMockMessenger(),
+      });
+
       const metadata = provider.getMetadata();
       const { sourceIds, sourceLabels } = metadata;
 
@@ -63,19 +123,17 @@ describe('SnapsNameProvider', () => {
 
   describe('getProposedNames', () => {
     it('returns the resolved names from name lookup requests to snaps with permissions', async () => {
-      const handleSnapRequest = jest.fn();
+      const handleSnapRequest = jest
+        .fn()
+        .mockResolvedValueOnce({
+          resolvedDomain: NAME_MOCK,
+        })
+        .mockResolvedValueOnce({
+          resolvedDomain: NAME_MOCK_2,
+        });
 
       const provider = new SnapsNameProvider({
-        ...OPTIONS_MOCK,
-        handleSnapRequest,
-      });
-
-      handleSnapRequest.mockResolvedValueOnce({
-        resolvedDomain: NAME_MOCK,
-      });
-
-      handleSnapRequest.mockResolvedValueOnce({
-        resolvedDomain: NAME_MOCK_2,
+        messenger: createMockMessenger({ handleSnapRequest }),
       });
 
       const response = await provider.getProposedNames({
@@ -117,20 +175,19 @@ describe('SnapsNameProvider', () => {
     });
 
     it('returns errors if name lookup requests fail', async () => {
-      const handleSnapRequest = jest.fn();
+      const handleSnapRequest = jest
+        .fn()
+        .mockImplementationOnce(() => {
+          throw new Error(ERROR_MOCK);
+        })
+        .mockResolvedValueOnce({
+          resolvedDomain: NAME_MOCK_2,
+        });
+
       const errorMock = new Error('TestError');
 
       const provider = new SnapsNameProvider({
-        ...OPTIONS_MOCK,
-        handleSnapRequest,
-      });
-
-      handleSnapRequest.mockImplementationOnce(() => {
-        throw new Error(ERROR_MOCK);
-      });
-
-      handleSnapRequest.mockResolvedValueOnce({
-        resolvedDomain: NAME_MOCK_2,
+        messenger: createMockMessenger({ handleSnapRequest }),
       });
 
       const response = await provider.getProposedNames({
@@ -154,16 +211,14 @@ describe('SnapsNameProvider', () => {
     });
 
     it('returns empty array if name lookup request returns undefined', async () => {
-      const handleSnapRequest = jest.fn();
+      const getAllSnaps = jest.fn().mockReturnValue([SNAP_MOCK]);
 
-      const provider = new SnapsNameProvider({
-        ...OPTIONS_MOCK,
-        getSnaps: () => [SNAP_MOCK],
-        handleSnapRequest,
+      const handleSnapRequest = jest.fn().mockResolvedValueOnce({
+        resolvedName: undefined,
       });
 
-      handleSnapRequest.mockResolvedValueOnce({
-        resolvedName: undefined,
+      const provider = new SnapsNameProvider({
+        messenger: createMockMessenger({ getAllSnaps, handleSnapRequest }),
       });
 
       const response = await provider.getProposedNames({
