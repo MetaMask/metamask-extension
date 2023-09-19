@@ -371,9 +371,6 @@
   "amount": {
     "message": "금액"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "수탁자"
-  },
-  "custodianAccount": {
-    "message": "수탁 계정"
   },
   "custodianAccountAddedDesc": {
     "message": "이제 MetaMask Institutional에서 수탁 계정을 사용할 수 있습니다."
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "여기에서 요청하세요"
-  },
-  "mmiAddToken": {
-    "message": "$1의 페이지는 다음과 같은 MetaMask 기관 수탁 토큰을 승인하려고 합니다"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional은 전 세계적으로 설계 및 구축되었습니다."
