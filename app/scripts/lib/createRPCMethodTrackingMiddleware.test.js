@@ -6,11 +6,11 @@ import {
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
 const metricsState = { participateInMetaMetrics: null };
