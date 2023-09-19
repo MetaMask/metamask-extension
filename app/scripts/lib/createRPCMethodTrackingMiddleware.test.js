@@ -7,6 +7,10 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../shared/constants/security-provider';
 
 const trackEvent = jest.fn();
 const metricsState = { participateInMetaMetrics: null };
@@ -115,6 +119,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const req = {
         method: MESSAGE_TYPE.ETH_SIGN,
         origin: 'some.dapp',
+        securityAlertResponse: {
+          result_type: BlockaidResultType.Malicious,
+          reason: BlockaidReason.maliciousDomain,
+        },
       };
 
       const res = {
@@ -128,6 +136,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN,
+          security_alert_response: BlockaidResultType.Malicious,
+          security_alert_reason: BlockaidReason.maliciousDomain,
         },
         referrer: { url: 'some.dapp' },
       });

@@ -11,6 +11,10 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../shared/constants/security-provider';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -182,6 +186,14 @@ export default function createRPCMethodTrackingMiddleware({
           from = req?.params?.[0];
         }
         const paramsExamplePassword = req?.params?.[2];
+
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        eventProperties.security_alert_response =
+          req.securityAlertResponse?.result_type ??
+          BlockaidResultType.NotApplicable;
+        eventProperties.security_alert_reason =
+          req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+        ///: END:ONLY_INCLUDE_IN
 
         const msgData = {
           msgParams: {
