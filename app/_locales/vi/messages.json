@@ -371,9 +371,6 @@
   "amount": {
     "message": "Số tiền"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Lưu ký"
-  },
-  "custodianAccount": {
-    "message": "Tài khoản lưu ký"
   },
   "custodianAccountAddedDesc": {
     "message": "Giờ đây bạn có thể sử dụng tài khoản lưu ký của mình trong MetaMask Institutional."
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "Yêu cầu tại đây"
-  },
-  "mmiAddToken": {
-    "message": "Trang tại $1 muốn ủy quyền token lưu ký sau trong MetaMask Institutional"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional được thiết kế và xây dựng trên khắp thế giới."
