@@ -22,6 +22,7 @@ import {
   getIpfsGateway,
   getSelectedAddress,
   getCurrentNetwork,
+  getOpenSeaEnabled,
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -53,6 +54,7 @@ export default function NftsItems({
   const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
   useEffect(() => {
     if (
@@ -97,6 +99,14 @@ export default function NftsItems({
         </div>
       );
     }
+    if (!openSeaEnabled && !collectionImage?.includes('ipfs')) {
+      return (
+        <div className="nfts-items__collection-image-alt">
+          {collectionName?.[0]?.toUpperCase() ?? null}
+        </div>
+      );
+    }
+
     if (collectionImage) {
       return (
         <img
