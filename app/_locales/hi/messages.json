@@ -371,9 +371,6 @@
   "amount": {
     "message": "अमाउंट"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "कस्टोडियन"
-  },
-  "custodianAccount": {
-    "message": "कस्टोडियन अकाउंट"
   },
   "custodianAccountAddedDesc": {
     "message": "अब आप MetaMask Institutional में अपने कस्टोडियन एकाउंट्स का इस्तेमाल कर सकते हैं।"
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "यहां रिक्वेस्ट करें"
-  },
-  "mmiAddToken": {
-    "message": "$1 पर मौजूद पेज MetaMask Institutional में निम्नलिखित कस्टोडियन टोकन को अधिकृत करना चाहता है"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional को दुनिया भर में डिजाइन किया और बनाया गया है।"

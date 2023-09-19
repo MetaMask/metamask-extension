@@ -2413,9 +2413,14 @@ export function hideModal(): Action {
   };
 }
 
-export function showImportNftsModal(): Action {
+export function showImportNftsModal(payload: {
+  tokenAddress?: string;
+  tokenId?: string;
+  ignoreErc20Token?: boolean;
+}) {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
+    payload,
   };
 }
 
