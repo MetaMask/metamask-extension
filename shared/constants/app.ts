@@ -49,7 +49,6 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
   SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
   SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION: `${RestrictedMethods.snap_manageAccounts}:confirmation`,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
@@ -75,8 +74,6 @@ export const SNAP_DIALOG_TYPES = {
   [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
   [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
   [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
-  'snap_manageAccounts:confirmation':
-    MESSAGE_TYPE.SNAP_MANAGE_ACCOUNTS_CONFIRMATION,
 };
 ///: END:ONLY_INCLUDE_IN
 
