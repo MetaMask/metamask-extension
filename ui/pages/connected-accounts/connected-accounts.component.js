@@ -7,9 +7,9 @@ import Popover from '../../components/ui/popover';
 import ConnectedAccountsList from '../../components/app/connected-accounts-list';
 import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions';
 import { getURLHost } from '../../helpers/utils/util';
-import ConnectedSitesList from '../../components/app/connected-sites-list';
 import { removePermissionsFor, updateCaveat } from '../../store/actions';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
 
 export default function ConnectedAccounts({
   accountToConnect = null,
@@ -37,30 +37,15 @@ export default function ConnectedAccounts({
       WALLET_SNAP_PERMISSION_KEY
     ];
 
-  // To get the metaData of the snap connected
-  const connectedSubjects = [connectedSubjectsMetadata];
-
-  // To evaluate the length of connected snaps
-  const connectedPermissionSubjectsLength =
+  const connectedPermissionSubjects =
     isPermissionSubject &&
     Object.keys(
       permissionSubjects[originOfActiveTab]?.permissions?.wallet_snap
         ?.caveats[0]?.value,
-    )?.length;
-
-  const connectedPermissionSubjects = isPermissionSubject && [
-    [
-      Object.keys(
-        permissionSubjects[originOfActiveTab]?.permissions?.wallet_snap
-          ?.caveats[0]?.value,
-      ),
-    ],
-  ];
-
+    );
   const connectedPermissionSubjectsMetaData = connectedPermissionSubjects.map(
-    (p) => subjectMetadata[p],
+    (sub) => subjectMetadata[sub],
   );
-  console.log(subjectMetadata, connectedPermissionSubjectsMetaData);
 
   const connectedAccountsDescription =
     connectedAccounts.length > 0
@@ -74,8 +59,8 @@ export default function ConnectedAccounts({
     subtitle = t('connectedSnapAndNoAccountDescription');
   } else if (connectedAccounts.length && isPermissionSubject) {
     subtitle = t('connectedAccountsAndSnapDescription', [
-      connectedAccounts.length,
-      connectedPermissionSubjectsLength,
+      connectedAccounts.length > 0,
+      connectedPermissionSubjects.length > 0,
     ]);
   } else {
     subtitle = t('connectedAccountsEmptyDescription');
@@ -130,13 +115,13 @@ export default function ConnectedAccounts({
         setSelectedAddress={setSelectedAddress}
         shouldRenderListOptions
       />
-      {isPermissionSubject && connectedSubjects.length > 0 && (
-        <ConnectedSitesList
-          connectedSubjects={connectedSubjects}
-          onDisconnect={() => onDisconnect(originOfActiveTab)}
-        />
-      )}
-
+      {isPermissionSubject &&
+        connectedPermissionSubjectsMetaData.length > 0 && (
+          <ConnectedSnaps
+            connectedSubjects={connectedPermissionSubjectsMetaData}
+            onDisconnect={() => onDisconnect(originOfActiveTab)}
+          />
+        )}
     </Popover>
   );
 }
