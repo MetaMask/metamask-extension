@@ -30,7 +30,7 @@ export default class ConnectedAccountsList extends PureComponent {
           type: PropTypes.string.isRequired,
         }).isRequired,
       }).isRequired,
-    }).isRequired,
+    }),
     connectedAccounts: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string.isRequired,
