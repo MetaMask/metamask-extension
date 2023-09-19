@@ -143,6 +143,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import {
@@ -856,7 +859,7 @@ export default class MetamaskController extends EventEmitter {
               const confirmationResult =
                 await this.approvalController.addAndShowApprovalRequest({
                   origin,
-                  type: 'snap_manageAccounts:confirmation',
+                  type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
                 });
 
               if (confirmationResult) {

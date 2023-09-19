@@ -6,6 +6,7 @@ import {
   setNewNetworkAdded,
   upsertNetworkConfiguration,
 } from '../../../store/actions';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import createSnapAccount from './create-snap-account';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
@@ -27,7 +28,8 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
-  'snap_manageAccounts:confirmation': createSnapAccount,
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
+    createSnapAccount,
   ///: END:ONLY_INCLUDE_IN
 };
 

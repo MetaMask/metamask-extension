@@ -44,6 +44,7 @@ import Loading from '../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -217,7 +218,7 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogAlert,
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
-    'snap_manageAccounts:confirmation',
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
   ];
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
