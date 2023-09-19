@@ -1,13 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
-import { SnapCaveatType } from '@metamask/rpc-methods-flask';
-import { useDispatch } from 'react-redux';
 import Popover from '../../components/ui/popover';
 import ConnectedAccountsList from '../../components/app/connected-accounts-list';
 import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions';
 import { getURLHost } from '../../helpers/utils/util';
-import { removePermissionsFor, updateCaveat } from '../../store/actions';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
 
@@ -28,7 +25,6 @@ export default function ConnectedAccounts({
   permissionSubjects,
 }) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const connectedSubjectsMetadata = subjectMetadata[originOfActiveTab];
   const isPermissionSubject =
     permissionSubjects[originOfActiveTab]?.origin ===
@@ -66,30 +62,6 @@ export default function ConnectedAccounts({
     subtitle = t('connectedAccountsEmptyDescription');
   }
 
-  const onDisconnect = (connectedOrigin) => {
-    const caveatValue =
-      permissionSubjects[connectedOrigin].permissions[
-        WALLET_SNAP_PERMISSION_KEY
-      ].caveats[0].value;
-    const newCaveatValue = { ...caveatValue };
-    if (Object.keys(newCaveatValue) > 0) {
-      dispatch(
-        updateCaveat(
-          connectedOrigin,
-          WALLET_SNAP_PERMISSION_KEY,
-          SnapCaveatType.SnapIds,
-          newCaveatValue,
-        ),
-      );
-    } else {
-      dispatch(
-        removePermissionsFor({
-          [connectedOrigin]: [WALLET_SNAP_PERMISSION_KEY],
-        }),
-      );
-    }
-  };
-
   return (
     <Popover
       title={
@@ -119,7 +91,6 @@ export default function ConnectedAccounts({
         connectedPermissionSubjectsMetaData.length > 0 && (
           <ConnectedSnaps
             connectedSubjects={connectedPermissionSubjectsMetaData}
-            onDisconnect={() => onDisconnect(originOfActiveTab)}
           />
         )}
     </Popover>
