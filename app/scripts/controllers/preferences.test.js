@@ -24,6 +24,7 @@ const NETWORK_CONFIGURATION_DATA = {
 describe('preferences controller', () => {
   let preferencesController;
   let tokenListController;
+  let preferencesControllerMessenger;
 
   beforeEach(() => {
     const tokenListMessenger = new ControllerMessenger().getRestricted({
@@ -37,6 +38,11 @@ describe('preferences controller', () => {
       messenger: tokenListMessenger,
     });
 
+    preferencesControllerMessenger = new ControllerMessenger().getRestricted({
+      name: 'PreferencesController',
+      allowedEvents: ['AccountsController:selectedAccountChange'],
+    });
+
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
       tokenListController,
@@ -44,6 +50,7 @@ describe('preferences controller', () => {
       onInfuraIsUnblocked: jest.fn(),
       onAccountRemoved: jest.fn(),
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
+      controllerMessenger: preferencesControllerMessenger,
     });
   });
 

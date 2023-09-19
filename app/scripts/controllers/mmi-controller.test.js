@@ -67,6 +67,7 @@ describe('MMIController', function () {
   let controllerMessenger;
   let accountsController;
   let networkController;
+  let preferencesControllerMessenger;
 
   beforeEach(function () {
     const mockMessenger = {
@@ -131,6 +132,11 @@ describe('MMIController', function () {
       keyringApiEnabled: false,
     });
 
+    preferencesControllerMessenger = new ControllerMessenger().getRestricted({
+      name: 'PreferencesController',
+      allowedEvents: ['AccountsController:selectedAccountChange'],
+    });
+
     mmiController = new MMIController({
       mmiConfigurationController: new MmiConfigurationController(),
       keyringController: new KeyringController({
@@ -167,6 +173,7 @@ describe('MMIController', function () {
         securityProviderRequest: jest.fn(),
         getCurrentChainId: jest.fn(),
       }),
+
       preferencesController: new PreferencesController({
         initState: {},
         onInfuraIsBlocked: jest.fn(),
@@ -174,6 +181,7 @@ describe('MMIController', function () {
         onAccountRemoved: jest.fn(),
         provider: {},
         networkConfigurations: {},
+        controllerMessenger: preferencesControllerMessenger,
       }),
       appStateController: new AppStateController({
         addUnlockListener: jest.fn(),
