@@ -833,6 +833,9 @@ export default class MetamaskController extends EventEmitter {
             saveState: async () => {
               await this.keyringController.persistAllKeyrings();
             },
+            removeAccount: async (address) => {
+              await this.removeAccount(address);
+            },
           });
         builder.type = SnapKeyring.type;
         return builder;

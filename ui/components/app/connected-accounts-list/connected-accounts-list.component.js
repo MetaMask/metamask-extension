@@ -16,16 +16,39 @@ export default class ConnectedAccountsList extends PureComponent {
 
   static propTypes = {
     accountToConnect: PropTypes.shape({
+      id: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-    }),
+      balance: PropTypes.string.isRequired,
+      metadata: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        snap: PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string,
+          enabled: PropTypes.bool,
+        }),
+        keyring: PropTypes.shape({
+          type: PropTypes.string.isRequired,
+        }).isRequired,
+      }).isRequired,
+    }).isRequired,
     connectedAccounts: PropTypes.arrayOf(
       PropTypes.shape({
+        id: PropTypes.string.isRequired,
         address: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        lastActive: PropTypes.number,
-      }),
-    ).isRequired,
+        balance: PropTypes.string.isRequired,
+        metadata: PropTypes.shape({
+          name: PropTypes.string.isRequired,
+          snap: PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string,
+            enabled: PropTypes.bool,
+          }),
+          keyring: PropTypes.shape({
+            type: PropTypes.string.isRequired,
+          }).isRequired,
+        }).isRequired,
+      }).isRequired,
+    ),
     connectAccount: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string.isRequired,
     removePermittedAccount: PropTypes.func,
@@ -76,7 +99,10 @@ export default class ConnectedAccountsList extends PureComponent {
       return null;
     }
 
-    const { address, name } = accountToConnect;
+    const {
+      address,
+      metadata: { name },
+    } = accountToConnect;
     return (
       <ConnectedAccountsListItem
         className="connected-accounts-list__row--highlight"
@@ -134,26 +160,28 @@ export default class ConnectedAccountsList extends PureComponent {
       <>
         <main className="connected-accounts-list">
           {this.renderUnconnectedAccount()}
-          {connectedAccounts.map(({ accountId, address, name }, index) => {
-            return (
-              <ConnectedAccountsListItem
-                key={address}
-                address={address}
-                name={`${name} (…${address.substr(-4, 4)})`}
-                status={index === 0 ? t('active') : null}
-                options={
-                  shouldRenderListOptions
-                    ? this.renderListItemOptions(address)
-                    : null
-                }
-                action={
-                  address === selectedAddress
-                    ? null
-                    : this.renderListItemAction(accountId)
-                }
-              />
-            );
-          })}
+          {connectedAccounts.map(
+            ({ id, address, metadata: { name } }, index) => {
+              return (
+                <ConnectedAccountsListItem
+                  key={address}
+                  address={address}
+                  name={`${name} (…${address.substr(-4, 4)})`}
+                  status={index === 0 ? t('active') : null}
+                  options={
+                    shouldRenderListOptions
+                      ? this.renderListItemOptions(address)
+                      : null
+                  }
+                  action={
+                    address === selectedAddress
+                      ? null
+                      : this.renderListItemAction(id)
+                  }
+                />
+              );
+            },
+          )}
         </main>
       </>
     );
