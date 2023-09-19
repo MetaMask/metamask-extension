@@ -871,7 +871,7 @@ export default class MetamaskController extends EventEmitter {
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: addAccountApprovalId,
-                    message: 'Your account is ready!',
+                    message: 'snapAccountCreated',
                   });
                 } catch (error) {
                   await this.approvalController.error({
