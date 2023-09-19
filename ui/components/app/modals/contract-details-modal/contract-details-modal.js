@@ -28,6 +28,7 @@ import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-
 import { ButtonIcon, IconName, Text } from '../../../component-library';
 import Name from '../../name/name';
 import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
+import { DEFAULT_NAME_SOURCE_PRIORITY } from '../../../../../shared/constants/names';
 
 export default function ContractDetailsModal({
   onClose,
@@ -220,7 +221,7 @@ export default function ContractDetailsModal({
                 <Name
                   value={toAddress}
                   type={NameType.ETHEREUM_ADDRESS}
-                  sourcePriority={['ens', 'lens', 'token', 'etherscan']}
+                  sourcePriority={DEFAULT_NAME_SOURCE_PRIORITY}
                 />
               </Text>
             ) : (
