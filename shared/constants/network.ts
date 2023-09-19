@@ -336,13 +336,13 @@ export const BUILT_IN_INFURA_NETWORKS = pick(
 
 export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 
-type SupportedNetworksType = {
-  [key: string]: {
-    domain: string;
-    subdomain: string;
-    networkId: string;
-  };
-};
+// type SupportedNetworksType = {
+//   [key: string]: {
+//     domain: string;
+//     subdomain: string;
+//     networkId: string;
+//   };
+// };
 
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
@@ -439,7 +439,7 @@ const defaultEtherscanSubdomainPrefix = 'api';
 /**
  * Map of all Etherscan supported networks.
  */
-export const ETHERSCAN_SUPPORTED_NETWORKS: SupportedNetworksType = {
+export const ETHERSCAN_SUPPORTED_NETWORKS = {
   [CHAIN_IDS.GOERLI]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-${

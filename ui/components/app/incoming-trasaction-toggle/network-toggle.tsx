@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ETHERSCAN_SUPPORTED_NETWORKS } from '../../../../shared/constants/network';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   AlignItems,
   BackgroundColor,
@@ -17,7 +18,6 @@ import {
   Box,
   Text,
 } from '../../component-library';
-import { I18nContext } from '../../../contexts/i18n';
 import ToggleButton from '../../ui/toggle-button';
 import Tooltip from '../../ui/tooltip';
 
@@ -46,8 +46,27 @@ const NetworkToggle = ({
 
   const networkName = networkPreferences.label;
 
-  const { domain } = ETHERSCAN_SUPPORTED_NETWORKS[chainId];
-  const upperCaseDomain = domain.charAt(0).toUpperCase() + domain.slice(1);
+  // console.log({ ETHERSCAN_SUPPORTED_NETWORKS, chainId });
+
+  type SupportedChainId = keyof typeof ETHERSCAN_SUPPORTED_NETWORKS;
+
+  const networkDomainAndSubdomain =
+    ETHERSCAN_SUPPORTED_NETWORKS?.[chainId as SupportedChainId];
+
+  // console.log({ stuff });
+
+  const domain = networkDomainAndSubdomain?.domain;
+
+  // console.log({ domain });
+
+  console.log({
+    ETHERSCAN_SUPPORTED_NETWORKS,
+    domain,
+    chainId,
+  });
+
+  // const upperCaseDomain = domain?.charAt(0)?.toUpperCase() + domain?.slice(1);
+  const upperCaseDomain = domain?.charAt(0)?.toUpperCase() + domain?.slice(1);
 
   return (
     <Box
@@ -94,14 +113,21 @@ const NetworkToggle = ({
             ellipsis
             marginLeft={2}
           >
-            <a
-              key={`network_${domain}_link`}
-              href={`https://${domain}`}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {upperCaseDomain}
-            </a>
+            {
+              // For tests, we have localhost in the network list, but obviously
+              // there's no 3rd party API for incoming transactions for such
+              // Chain ID (0x539). We don't show any link, then.
+              domain && (
+                <a
+                  key={`network_${domain}_link`}
+                  href={`https://${domain}`}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {upperCaseDomain}
+                </a>
+              )
+            }
           </Text>
         </Box>
       </Box>
