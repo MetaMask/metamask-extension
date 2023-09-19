@@ -819,68 +819,11 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
         "@metamask/base-controller": true,
+        "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "ethereumjs-util": true,
         "uuid": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/utils": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true,
-        "@metamask/keyring-api": true,
-        "browserify>events": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/utils": true,
-        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
-        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
-        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
-        "browserify>buffer": true,
-        "ethereumjs-abi>ethereumjs-util>ethjs-util": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
       }
     },
     "@metamask/address-book-controller": {
@@ -1357,16 +1300,28 @@
     },
     "@metamask/eth-snap-keyring": {
       "globals": {
-        "console.error": true,
-        "console.warn": true
+        "console.error": true
       },
       "packages": {
         "@ethereumjs/tx": true,
+        "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/eth-snap-keyring>uuid": true,
         "@metamask/keyring-api": true,
         "browserify>events": true,
         "superstruct": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
+        "@metamask/eth-snap-keyring>@metamask/utils": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
+        "browserify>buffer": true,
+        "ethereumjs-abi>ethereumjs-util>ethjs-util": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
