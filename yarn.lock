@@ -24327,6 +24327,8 @@ __metadata:
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
     "@metamask-institutional/sdk": "npm:^0.1.18"
     "@metamask-institutional/transaction-update": "npm:^0.1.27"
+    "@metamask-previews/keyring-controller": "patch:@metamask-previews/keyring-controller@npm%3A7.4.0-preview.f0f357a#~/.yarn/patches/@metamask-previews-keyring-controller-npm-7.4.0-preview.f0f357a-50cc3f549f.patch"
+    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@1.0.0-preview.f0f357a"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^3.4.0"
