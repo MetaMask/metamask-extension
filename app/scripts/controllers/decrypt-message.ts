@@ -24,7 +24,7 @@ import {
 } from '@metamask/approval-controller';
 import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { Patch } from 'immer';
-import type { KeyringControllerDecryptMessageAction } from '@metamask/keyring-controller';
+import type { KeyringControllerDecryptMessageAction } from '@metamask-previews/keyring-controller';
 import { Eip1024EncryptedData, hasProperty, isObject } from '@metamask/utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
