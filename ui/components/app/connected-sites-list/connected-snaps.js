@@ -7,15 +7,41 @@ import { Menu, MenuItem } from '../../ui/menu';
 import { SNAPS_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import SnapAvatar from '../snaps/snap-avatar';
 import { Display } from '../../../helpers/constants/design-system';
+import ConnectedAccountsListOptions from '../connected-accounts-list/connected-accounts-list-options';
 
 export default function ConnectedSnaps({ connectedSubjects, onDisconnect }) {
-  const [showOptions, setShowOptions] = useState(false);
-  const ref = useRef(false);
+  const [showOptions, setShowOptions] = useState(null);
   const t = useI18nContext();
   const history = useHistory();
 
   const settingsClick = (id) => {
     history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(id)}`);
+  };
+  const renderListItemOptions = (snapId) => {
+    return (
+      <ConnectedAccountsListOptions
+        onHide={() => setShowOptions(null)}
+        onShowOptions={() => setShowOptions(snapId)}
+        show={showOptions === snapId}
+      >
+        <MenuItem
+          iconName={IconName.Logout}
+          onClick={(e) => {
+            e.preventDefault();
+            onDisconnect(snapId);
+          }}
+        >
+          {t('disconnectThisAccount')}
+          {snapId}
+        </MenuItem>
+        <MenuItem
+          iconName={IconName.Setting}
+          onClick={() => settingsClick(snapId)}
+        >
+          {t('snapsSettings')}
+        </MenuItem>
+      </ConnectedAccountsListOptions>
+    );
   };
 
   return (
@@ -28,38 +54,7 @@ export default function ConnectedSnaps({ connectedSubjects, onDisconnect }) {
               {subject.name}
             </Text>
           </Box>
-          <Box ref={ref}>
-            <ButtonIcon
-              iconName={IconName.MoreVertical}
-              className="connected-accounts-options__button"
-              onClick={() => setShowOptions(true)}
-              ariaLabel={t('options')}
-            />
-            {showOptions ? (
-              <Menu
-                anchorElement={ref.current}
-                onHide={() => setShowOptions(false)}
-                popperOptions={{
-                  modifiers: [
-                    { name: 'preventOverflow', options: { altBoundary: true } },
-                  ],
-                }}
-              >
-                <MenuItem
-                  iconName={IconName.Logout}
-                  onClick={() => onDisconnect(subject.origin)}
-                >
-                  {subject.origin}
-                </MenuItem>
-                <MenuItem
-                  iconName={IconName.Setting}
-                  onClick={() => settingsClick(subject.origin)}
-                >
-                  {t('snapsSettings')}
-                </MenuItem>
-              </Menu>
-            ) : null}
-          </Box>
+          {renderListItemOptions(subject.origin)}
         </Box>
       ))}
     </Box>
