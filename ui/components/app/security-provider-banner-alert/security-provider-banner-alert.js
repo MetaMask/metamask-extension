@@ -26,14 +26,15 @@ import {
   SecurityProvider,
   SECURITY_PROVIDER_CONFIG,
 } from '../../../../shared/constants/security-provider';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function SecurityProviderBannerAlert({
   description,
   details,
+  onClickSupportLink,
   provider,
   severity,
   title,
-  onClickBlockaidSupport,
   ...props
 }) {
   const t = useContext(I18nContext);
@@ -66,9 +67,9 @@ function SecurityProviderBannerAlert({
               <ButtonLink
                 key={`security-provider-button-supporturl-${provider}`}
                 size={Size.inherit}
-                href={SECURITY_PROVIDER_CONFIG[provider].supportUrl}
+                href={ZENDESK_URLS.SUPPORT_URL}
                 externalLink
-                onClick={onClickBlockaidSupport}
+                onClick={onClickSupportLink}
               >
                 {t('contactUs')}
               </ButtonLink>,
@@ -128,7 +129,7 @@ SecurityProviderBannerAlert.propTypes = {
   provider: PropTypes.oneOf(Object.values(SecurityProvider)),
 
   /** Function to be called when the blockaid support link is clicked */
-  onClickBlockaidSupport: PropTypes.func,
+  onClickSupportLink: PropTypes.func,
 };
 
 export default SecurityProviderBannerAlert;

@@ -53,11 +53,8 @@ import {
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
-import {
-  SECURITY_PROVIDER_MESSAGE_SEVERITY,
-  SecurityProvider,
-  SECURITY_PROVIDER_CONFIG,
-} from '../../../../shared/constants/security-provider';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 import {
   TextAlign,
@@ -159,7 +156,7 @@ const SignatureRequest = ({ txData }) => {
     return { sanitizedMessage, domain, primaryType };
   });
 
-  const onClickBlockaidSupport = useCallback(() => {
+  const onClickSupportLink = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
       event: MetaMetricsEventName.ExternalLinkClicked,
@@ -168,8 +165,7 @@ const SignatureRequest = ({ txData }) => {
         type,
         version,
         external_link_clicked: true,
-        security_alert_support_link:
-          SECURITY_PROVIDER_CONFIG[SecurityProvider.Blockaid].supportUrl,
+        security_alert_support_link: ZENDESK_URLS.SUPPORT_URL,
       },
     });
   }, []);
@@ -269,7 +265,7 @@ const SignatureRequest = ({ txData }) => {
             marginLeft={4}
             marginRight={4}
             marginBottom={4}
-            onClickBlockaidSupport={onClickBlockaidSupport}
+            onClickSupportLink={onClickSupportLink}
           />
           ///: END:ONLY_INCLUDE_IN
         }

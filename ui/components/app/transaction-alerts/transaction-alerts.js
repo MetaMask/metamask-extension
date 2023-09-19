@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { PriorityLevels } from '../../../../shared/constants/gas';
-import { submittedPendingTransactionsSelector } from '../../../selectors';
+import {
+  submittedPendingTransactionsSelector,
+  getKnownMethodData,
+} from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import SimulationErrorMessage from '../../ui/simulation-error-message';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getMethodName } from '../../../helpers/utils/metrics';
+import { TransactionType } from '../../../../shared/constants/transaction';
 
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -19,6 +24,11 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -54,14 +64,38 @@ const TransactionAlerts = ({
   const isSendingZero =
     hasProperTxType &&
     (currentTokenAmount === '0x0' || currentTokenAmount === '0');
+  const trackEvent = useContext(MetaMetricsContext);
+  const { txParams = {} } = txData;
+  const methodData = useSelector(
+    (state) => getKnownMethodData(state, txParams.data) || {},
+  );
+
+  const onClickSupportLink = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        action: 'Confirm Screen',
+        legacy_event: true,
+        recipientKnown: null,
+        functionType:
+          'confirm' ||
+          getMethodName(methodData.name) ||
+          TransactionType.contractInteraction,
+        origin: txData?.origin,
+        external_link_clicked: true,
+        security_alert_support_link: ZENDESK_URLS.SUPPORT_URL,
+      },
+    });
+  }, []);
 
   return (
     <div className="transaction-alerts">
       {
         ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
         <BlockaidBannerAlert
+          onClickSupportLink={onClickSupportLink}
           securityAlertResponse={txData?.securityAlertResponse}
-          onClickBlockaidSupport={onClickBlockaidSupport}
         />
         ///: END:ONLY_INCLUDE_IN
       }

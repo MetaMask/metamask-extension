@@ -9,8 +9,6 @@ type SecurityProviderConfig = Record<
     readonly tKeyName: string;
     /** URL to securty provider website */
     readonly url: string;
-    /** URL to security provider support page */
-    readonly supportUrl: string;
   }
 >;
 
@@ -18,7 +16,6 @@ export const SECURITY_PROVIDER_CONFIG: Readonly<SecurityProviderConfig> = {
   [SecurityProvider.Blockaid]: {
     tKeyName: 'blockaid',
     url: 'https://blockaid.io/',
-    supportUrl: 'https://support.metamask.io/hc/en-us',
   },
 };
 
