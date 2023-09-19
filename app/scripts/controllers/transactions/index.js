@@ -2826,7 +2826,7 @@ export default class TransactionController extends EventEmitter {
       const { origin } = txMeta;
 
       const approvalResult = await this._requestApproval(
-        String(txId),
+        txId,
         origin,
         { txId },
         {
