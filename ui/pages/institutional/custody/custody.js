@@ -39,6 +39,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
+  CUSTODY_ACCOUNT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
@@ -51,6 +52,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
+import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
+import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -63,11 +66,16 @@ const CustodyPage = () => {
   const { custodians } = useSelector(getMMIConfiguration);
 
   const [loading, setLoading] = useState(true);
+  const [
+    isConfirmConnectCustodianModalVisible,
+    setIsConfirmConnectCustodianModalVisible,
+  ] = useState(false);
   const [selectedAccounts, setSelectedAccounts] = useState({});
   const [selectedCustodianName, setSelectedCustodianName] = useState('');
   const [selectedCustodianImage, setSelectedCustodianImage] = useState(null);
   const [selectedCustodianDisplayName, setSelectedCustodianDisplayName] =
     useState('');
+  const [matchedCustodian, setMatchedCustodian] = useState(null);
   const [selectedCustodianType, setSelectedCustodianType] = useState('');
   const [connectError, setConnectError] = useState('');
   const [currentJwt, setCurrentJwt] = useState('');
@@ -158,16 +166,31 @@ const CustodyPage = () => {
             data-testid="custody-connect-button"
             onClick={async () => {
               try {
+                const custodianByDisplayName = findCustodianByDisplayName(
+                  custodian.displayName,
+                  custodians,
+                );
                 const jwtListValue = await dispatch(
                   mmiActions.getCustodianJWTList(custodian.name),
                 );
                 setSelectedCustodianName(custodian.name);
-                setSelectedCustodianType(custodian.type);
-                setSelectedCustodianImage(custodian.iconUrl);
                 setSelectedCustodianDisplayName(custodian.displayName);
+                setSelectedCustodianImage(custodian.iconUrl);
                 setApiUrl(custodian.apiUrl);
                 setCurrentJwt(jwtListValue[0] || '');
                 setJwtList(jwtListValue);
+
+                // open confirm Connect Custodian modal except for gk8
+                if (
+                  custodianByDisplayName.displayName.toLocaleLowerCase() ===
+                  'gk8'
+                ) {
+                  setSelectedCustodianType(custodian.type);
+                } else {
+                  setMatchedCustodian(custodianByDisplayName);
+                  setIsConfirmConnectCustodianModalVisible(true);
+                }
+
                 trackEvent({
                   category: MetaMetricsEventCategory.MMI,
                   event: MetaMetricsEventName.CustodianSelected,
@@ -326,6 +349,8 @@ const CustodyPage = () => {
     setCurrentJwt('');
     setConnectError('');
     setSelectError('');
+
+    history.push(CUSTODY_ACCOUNT_ROUTE);
   };
 
   const setSelectAllAccounts = (e) => {
@@ -598,7 +623,9 @@ const CustodyPage = () => {
                   pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
                   state: {
                     imgSrc: selectedCustodian.iconUrl,
-                    title: t('custodianAccountAddedTitle'),
+                    title: t('custodianAccountAddedTitle', [
+                      selectedCustodian.displayName,
+                    ]),
                     description: t('custodianAccountAddedDesc'),
                   },
                 });
@@ -615,9 +642,7 @@ const CustodyPage = () => {
               setApiUrl('');
               setAddNewTokenClicked(false);
 
-              if (Object.keys(connectRequest).length) {
-                history.push(DEFAULT_ROUTE);
-              }
+              history.push(DEFAULT_ROUTE);
 
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,
@@ -662,6 +687,14 @@ const CustodyPage = () => {
             </Button>
           </Box>
         </>
+      )}
+
+      {isConfirmConnectCustodianModalVisible && (
+        <ConfirmConnectCustodianModal
+          onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
+          custodianName={selectedCustodianDisplayName}
+          custodianURL={matchedCustodian?.website}
+        />
       )}
     </Box>
   );
