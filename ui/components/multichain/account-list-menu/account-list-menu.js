@@ -29,6 +29,9 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getIsAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
 import {
@@ -57,6 +60,9 @@ export const AccountListMenu = ({ onClose }) => {
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
+  ///: END:ONLY_INCLUDE_IN
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState('');
@@ -265,8 +271,8 @@ export const AccountListMenu = ({ onClose }) => {
               </Box>
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-                <>
-                  <Box marginTop={4}>
+                addSnapAccountEnabled && (
+                  <Box marginBottom={4}>
                     <ButtonLink
                       size={Size.SM}
                       startIconName={IconName.Snaps}
@@ -284,7 +290,7 @@ export const AccountListMenu = ({ onClose }) => {
                       {t('settingAddSnapAccount')}
                     </ButtonLink>
                   </Box>
-                </>
+                )
                 ///: END:ONLY_INCLUDE_IN
               }
               {
