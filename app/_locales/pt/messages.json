@@ -3194,14 +3194,6 @@
     "message": "Permitir que o snap use ganchos de ciclo de vida para executar códigos em momentos específicos durante seu ciclo de vida.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "Executar indefinidamente.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Permitir que o snap seja executado indefinidamente, por exemplo, enquanto processa grandes volumes de dados.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Adicionar e controlar contas Ethereum",
     "description": "The description for `snap_manageAccounts` permission"

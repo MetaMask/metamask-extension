@@ -3194,14 +3194,6 @@
     "message": "Snap को उसके लाइफसाइकल के दौरान खास समयों पर कोड चलाने के लिए लाइफसाइकल हुक का इस्तेमाल करने की अनुमति दें।",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "अनिश्चित काल तक चलाएं।",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "उदाहरण के लिए, बड़ी मात्रा में डेटा प्रॉसेस करते समय Snap को अनिश्चित काल तक चलने दें।",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Ethereum अकाउंट जोड़ें और नियंत्रित करें",
     "description": "The description for `snap_manageAccounts` permission"
