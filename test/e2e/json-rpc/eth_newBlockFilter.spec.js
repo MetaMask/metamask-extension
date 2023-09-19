@@ -49,7 +49,7 @@ describe('eth_newBlockFilter', function () {
           params: ['0x01'],
         });
 
-        await driver.delay(500);
+        await driver.delay(1000);
 
         const filterChanges = await driver.executeScript(
           `return window.ethereum.request(${getFilterChangesRequest})`,
