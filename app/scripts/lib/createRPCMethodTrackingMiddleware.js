@@ -11,10 +11,12 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+///: END:ONLY_INCLUDE_IN
 
 /**
  * These types determine how the method tracking middleware handles incoming
