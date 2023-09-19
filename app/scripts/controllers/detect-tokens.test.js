@@ -26,6 +26,7 @@ describe('DetectTokensController', function () {
     tokensController,
     tokenListController,
     accountsController,
+    preferencesControllerMessenger,
     messenger;
 
   const noop = () => undefined;
@@ -231,6 +232,11 @@ describe('DetectTokensController', function () {
     });
     await tokenListController.start();
 
+    preferencesControllerMessenger = new ControllerMessenger().getRestricted({
+      name: 'PreferencesController',
+      allowedEvents: ['AccountsController:selectedAccountChange'],
+    });
+
     preferences = new PreferencesController({
       network,
       provider,
@@ -239,6 +245,7 @@ describe('DetectTokensController', function () {
       onInfuraIsUnblocked: sinon.stub(),
       networkConfigurations: {},
       onAccountRemoved: sinon.stub(),
+      controllerMessenger: preferencesControllerMessenger,
     });
     preferences.setUseTokenDetection(true);
 
