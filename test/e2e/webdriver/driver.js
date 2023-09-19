@@ -356,6 +356,10 @@ class Driver {
       until.elementLocated(this.buildLocator('.metamask-loaded')),
       10 * 1000,
     );
+
+    // Temporary to see if this helps Firefox
+    await new Promise((r) => setTimeout(r, 200));
+
     return response;
   }
 
