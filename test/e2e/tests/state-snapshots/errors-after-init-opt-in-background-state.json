@@ -137,7 +137,7 @@
     "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
-    "selectedAddress": "string",
+    "selectedAddress": "",
     "lostIdentities": "object",
     "forgottenPassword": false,
     "preferences": {

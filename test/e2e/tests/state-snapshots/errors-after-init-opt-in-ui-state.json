@@ -93,7 +93,7 @@
     "openSeaEnabled": false,
     "advancedGasFee": {},
     "incomingTransactionsPreferences": {},
-    "selectedAddress": "string",
+    "selectedAddress": "",
     "lostIdentities": "object",
     "forgottenPassword": false,
     "ipfsGateway": "string",
