@@ -181,6 +181,7 @@ export const SENTRY_BACKGROUND_STATE = {
     knownMethodData: false,
     ledgerTransportType: true,
     lostIdentities: false,
+    selectedAddress: true,
     openSeaEnabled: true,
     preferences: {
       autoLockTimeLimit: true,
