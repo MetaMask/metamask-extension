@@ -4285,9 +4285,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:7.2.0":
-  version: 7.2.0
-  resolution: "@metamask/keyring-controller@npm:7.2.0"
+"@metamask/keyring-controller@npm:7.4.0":
+  version: 7.4.0
+  resolution: "@metamask/keyring-controller@npm:7.4.0"
   dependencies:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@metamask/base-controller": "npm:^3.2.1"
@@ -4301,13 +4301,13 @@ __metadata:
     immer: "npm:^9.0.6"
   peerDependencies:
     "@metamask/preferences-controller": ^4.4.0
-  checksum: 3535d698f68f732658787943eaff3ebabdc1e3d0e6bce731cff413b0fb98d19fb127841e525d9031fa96b50e75840686da9cd0615ab6772914e2b18fe1797df1
+  checksum: 17b3f24d57dc79689ee6c0159f931ba71b10cbb728cecce6595ec69c46bc706289e90e22b9e7709fef8719ff99594adccd842a3a687fcc651a55cd873f2bc219
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-7.2.0-fcc0c7893b.patch":
-  version: 7.2.0
-  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-7.2.0-fcc0c7893b.patch::version=7.2.0&hash=6f51dc"
+"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.4.0#~/.yarn/patches/@metamask-keyring-controller-npm-7.4.0-5dd5df31c7.patch":
+  version: 7.4.0
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.4.0#~/.yarn/patches/@metamask-keyring-controller-npm-7.4.0-5dd5df31c7.patch::version=7.4.0&hash=4a7ca3"
   dependencies:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@metamask/base-controller": "npm:^3.2.1"
@@ -4321,7 +4321,7 @@ __metadata:
     immer: "npm:^9.0.6"
   peerDependencies:
     "@metamask/preferences-controller": ^4.4.0
-  checksum: b3f0ffac12077c19bef8d978237b24ebe40c2bbee1363ee5cfdf7a09b600540981d3bdbac96845645cd976e0bdb55f56f80442a2797e1538abb00744194edf17
+  checksum: d6965c9e3f7fe00481ed544fae172aa04f8212e570ccea4c1d16f52f42c775759df59a1009c52937e1f6c6a764c16b80b89c457a4765009ff9bb1d454aab42ab
   languageName: node
   linkType: hard
 
@@ -24221,7 +24221,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^6.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/keyring-controller": "npm:^7.2.0"
+    "@metamask/keyring-controller": "npm:^7.4.0"
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
