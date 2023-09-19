@@ -90,6 +90,13 @@ export default function NftsItems({
   const history = useHistory();
 
   const renderCollectionImage = (collectionImage, collectionName) => {
+    if (collectionImage?.includes('ipfs') && !ipfsGateway) {
+      return (
+        <div className="nfts-items__collection-image-alt">
+          {collectionName?.[0]?.toUpperCase() ?? null}
+        </div>
+      );
+    }
     if (collectionImage) {
       return (
         <img
@@ -170,8 +177,12 @@ export default function NftsItems({
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
               const { image, address, tokenId, name, imageOriginal } = nft;
-              const nftImage = getAssetImageURL(imageOriginal, ipfsGateway);
+              const nftImage = getAssetImageURL(
+                imageOriginal ?? image,
+                ipfsGateway,
+              );
               const nftImageAlt = getNftImageAlt(nft);
+              const isImageHosted = image.includes('https:');
               const nftImageURL = imageOriginal?.includes('ipfs')
                 ? nftImage
                 : image;
@@ -188,7 +199,7 @@ export default function NftsItems({
                   <NftItem
                     nftImageURL={nftImageURL}
                     alt={nftImageAlt}
-                    src={image}
+                    src={isImageHosted ? image : nftImage}
                     name={name}
                     tokenId={tokenId}
                     networkName={currentChain.nickname}
