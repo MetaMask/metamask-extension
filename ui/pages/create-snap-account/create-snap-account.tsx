@@ -11,10 +11,9 @@ import {
 } from '../../helpers/constants/design-system';
 import { CreateSnapAccountContent } from './components';
 
-interface CreateSnapAccountProps {
+export interface CreateSnapAccountProps {
   snapId: string;
   snapName: string;
-  onAccountNameChange: (value: string) => void;
 }
 
 const CreateSnapAccount = ({ snapId, snapName }: CreateSnapAccountProps) => {

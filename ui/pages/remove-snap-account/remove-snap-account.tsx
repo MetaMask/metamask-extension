@@ -11,13 +11,17 @@ import {
 } from '../../helpers/constants/design-system';
 import { RemoveSnapAccountContent } from './components';
 
-interface CreateSnapAccountProps {
+export interface RemoveSnapAccountProps {
   snapId: string;
   snapName: string;
-  onAccountNameChange: (value: string) => void;
+  publicAddress: string;
 }
 
-const RemoveSnapAccount = ({ snapId, snapName }: CreateSnapAccountProps) => {
+const RemoveSnapAccount = ({
+  snapId,
+  snapName,
+  publicAddress,
+}: RemoveSnapAccountProps) => {
   return (
     <Box
       className="remove-snap-account-page"
@@ -27,7 +31,7 @@ const RemoveSnapAccount = ({ snapId, snapName }: CreateSnapAccountProps) => {
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      padding={[0, 4]}
+      paddingBottom={4}
     >
       <Box
         display={Display.Flex}
@@ -41,7 +45,11 @@ const RemoveSnapAccount = ({ snapId, snapName }: CreateSnapAccountProps) => {
           alignItems={AlignItems.center}
           height={BlockSize.Full}
         >
-          <RemoveSnapAccountContent snapName={snapName} snapId={snapId} />
+          <RemoveSnapAccountContent
+            snapName={snapName}
+            snapId={snapId}
+            publicAddress={publicAddress}
+          />
         </Box>
       </Box>
     </Box>

@@ -11,16 +11,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import SnapAvatar from '../../../components/app/snaps/snap-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
-interface CreateSnapAccountContentProps {
-  snapName: string;
-  snapId: string;
-}
+import { CreateSnapAccountProps } from '../create-snap-account';
 
 const CreateSnapAccountContent = ({
   snapName,
   snapId,
-}: CreateSnapAccountContentProps) => {
+}: CreateSnapAccountProps) => {
   const t = useI18nContext();
 
   return (
