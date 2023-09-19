@@ -264,7 +264,11 @@ export default function ConfirmationPage({
 
   useEffect(() => {
     // Check if the current pendingConfirmation.type is 'snap_manageAccounts:confirmation' to store the snap info for the success/error screen
-    if (pendingConfirmation?.type === 'snap_manageAccounts:confirmation') {
+    if (
+      Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES).includes(
+        pendingConfirmation?.type,
+      )
+    ) {
       setPrevSnapInfo({
         origin: pendingConfirmation.origin,
       });

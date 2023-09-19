@@ -5565,5 +5565,8 @@
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new Snap account to your wallet"
+  },
+  "snapAccountCreated": {
+      "message": "Your account is ready!"
   }
 }

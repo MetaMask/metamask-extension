@@ -862,7 +862,10 @@ export default class MetamaskController extends EventEmitter {
       (() => {
         const builder = () =>
           new SnapKeyring(this.snapController, {
-            saveState: async (origin) => {
+            saveState: async () => {
+              await this.keyringController.persistAllKeyrings();
+            },
+            addAccount: async (_address, origin, handleUserInput) => {
               const { id: addAccountApprovalId } =
                 this.approvalController.startFlow();
 
@@ -874,27 +877,29 @@ export default class MetamaskController extends EventEmitter {
 
               if (confirmationResult) {
                 try {
+                  await handleUserInput(confirmationResult);
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: addAccountApprovalId,
-                    message: 'Your account is ready!',
+                    message: 'snapAccountCreated',
                   });
                 } catch (error) {
                   await this.approvalController.error({
                     error: error.message,
                   });
-                  await this.approvalController.endFlow({
+                  this.approvalController.endFlow({
                     id: addAccountApprovalId,
                   });
                 }
               } else {
-                await this.approvalController.endFlow({
+                await handleUserInput(confirmationResult);
+                this.approvalController.endFlow({
                   id: addAccountApprovalId,
                 });
                 throw new Error('User denied account addition');
               }
             },
-            removeAccount: async (address, snapId) => {
+            removeAccount: async (address, snapId, handleUserInput) => {
               const { id: removeAccountApprovalId } =
                 this.approvalController.startFlow();
 
@@ -906,6 +911,8 @@ export default class MetamaskController extends EventEmitter {
 
               if (confirmationResult) {
                 try {
+                  await handleUserInput(confirmationResult);
+                  await this.removeAccount(address);
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: removeAccountApprovalId,
@@ -915,17 +922,17 @@ export default class MetamaskController extends EventEmitter {
                   await this.approvalController.error({
                     error: error.message,
                   });
-                  await this.approvalController.endFlow({
+                  this.approvalController.endFlow({
                     id: removeAccountApprovalId,
                   });
                 }
               } else {
-                await this.approvalController.endFlow({
+                await handleUserInput(confirmationResult);
+                this.approvalController.endFlow({
                   id: removeAccountApprovalId,
                 });
                 throw new Error('User denied account removal');
               }
-              await this.removeAccount(address);
             },
           });
         builder.type = SnapKeyring.type;

@@ -10,6 +10,8 @@ type TemplateRendererComponent = {
     | (string | TemplateRendererComponent)[];
 };
 
+type TranslateFunction = (key: string) => string | undefined;
+
 /**
  * Processes an error message or ResultComponent and returns a TemplateRendererComponent
  * or an array of strings | TemplateRendererComponents.
@@ -41,13 +43,22 @@ export function processError(
  *
  * @param input - The message or component to process.
  * @param fallback - The fallback string to use when the input is not valid.
+ * @param translate - Optional function to translate the input string.
  * @returns The processed message.
  */
 export function processString(
   input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
+  translate?: TranslateFunction,
 ): string | TemplateRendererComponent | (string | TemplateRendererComponent)[] {
-  const currentInput = convertResultComponents(input) || fallback;
+  // Check for translation if translate function is provided
+  let translatedInput;
+  if (typeof input === 'string' && translate) {
+    translatedInput = translate(input);
+  }
+
+  const currentInput =
+    convertResultComponents(translatedInput || input) || fallback;
 
   if (typeof currentInput !== 'string') {
     return currentInput;
