@@ -43,9 +43,9 @@ export default function ConnectedAccounts({
       permissionSubjects[originOfActiveTab]?.permissions?.wallet_snap
         ?.caveats[0]?.value,
     );
-  const connectedPermissionSubjectsMetaData = connectedPermissionSubjects.map(
-    (sub) => subjectMetadata[sub],
-  );
+  const connectedPermissionSubjectsMetaData =
+    isPermissionSubject &&
+    connectedPermissionSubjects?.map((sub) => subjectMetadata[sub]);
 
   const connectedAccountsDescription =
     connectedAccounts.length > 0

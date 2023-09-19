@@ -1,13 +1,12 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { ButtonIcon, IconName } from '../../component-library';
-import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
-import SiteOrigin from '../../ui/site-origin';
+import { Box, ButtonIcon, IconName, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu, MenuItem } from '../../ui/menu';
-import { SNAPS_LIST_ROUTE } from '../../../helpers/constants/routes';
+import { SNAPS_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import SnapAvatar from '../snaps/snap-avatar';
+import { Display } from '../../../helpers/constants/design-system';
 
 export default function ConnectedSnaps({ connectedSubjects, onDisconnect }) {
   const [showOptions, setShowOptions] = useState(false);
@@ -15,28 +14,21 @@ export default function ConnectedSnaps({ connectedSubjects, onDisconnect }) {
   const t = useI18nContext();
   const history = useHistory();
 
-  const getSubjectDisplayName = (subject) => {
-    if (subject.extensionId) {
-      return t('externalExtension');
-    }
-
-    // We strip https schemes only, and only if the URL has no port.
-    return stripHttpsSchemeWithoutPort(subject.origin);
+  const settingsClick = (id) => {
+    history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(id)}`);
   };
 
   return (
-    <main className="connected-sites-list__content-rows">
+    <Box className="connected-sites-list__content-rows">
       {connectedSubjects.map((subject) => (
-        <div key={subject.origin} className="connected-sites-list__content-row">
-          <div className="connected-sites-list__subject-info">
+        <Box key={subject.origin} className="connected-sites-list__content-row">
+          <Box className="connected-sites-list__subject-info">
             <SnapAvatar snapId={subject.origin} />
-            <SiteOrigin
-              className="connected-sites-list__subject-name"
-              title={subject.extensionId || subject.origin}
-              siteOrigin={getSubjectDisplayName(subject)}
-            />
-          </div>
-          <div ref={ref}>
+            <Text display={Display.Block} as="strong">
+              {subject.name}
+            </Text>
+          </Box>
+          <Box ref={ref}>
             <ButtonIcon
               iconName={IconName.MoreVertical}
               className="connected-accounts-options__button"
@@ -57,20 +49,20 @@ export default function ConnectedSnaps({ connectedSubjects, onDisconnect }) {
                   iconName={IconName.Logout}
                   onClick={() => onDisconnect(subject.origin)}
                 >
-                  {t('disconnect')}
+                  {subject.origin}
                 </MenuItem>
                 <MenuItem
                   iconName={IconName.Setting}
-                  onClick={() => history.push(SNAPS_LIST_ROUTE)}
+                  onClick={() => settingsClick(subject.origin)}
                 >
                   {t('snapsSettings')}
                 </MenuItem>
               </Menu>
             ) : null}
-          </div>
-        </div>
+          </Box>
+        </Box>
       ))}
-    </main>
+    </Box>
   );
 }
 
