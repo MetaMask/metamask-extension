@@ -128,7 +128,7 @@ function getActionFunctionById(id, history) {
     27: () => {
       updateViewedNotifications({ 27: true });
       global.platform.openTab({
-        url: 'https://portfolio.metamask.io/sell/' });
+        url: 'https://portfolio.metamask.io/sell/build-quote' });
     },
   };
 
