@@ -78,6 +78,7 @@ export default class PreferencesController {
       },
       knownMethodData: {},
       currentLocale: opts.initLangCode,
+      selectedAddress: '',
       lostIdentities: {},
       forgottenPassword: false,
       preferences: {
@@ -111,6 +112,16 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
+    this.controllerMessenger = opts.controllerMessenger;
+
+    // TODO: Not every controller is updated to use selectedAccount from the AccountsController
+    // This is a temporary stop gap until all other controllers stop subscribing to selectedAddress.
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      ({ address }) => {
+        this.store.updateState({ selectedAddress: address });
+      },
+    );
 
     this._subscribeToInfuraAvailability();
 

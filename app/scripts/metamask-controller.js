@@ -422,6 +422,12 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokenListController,
     });
 
+    this.preferencesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'PreferencesController',
+        allowedEvents: ['AccountsController:selectedAccountChange'],
+      });
+
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
@@ -440,6 +446,7 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
+      controllerMessenger: this.preferencesControllerMessenger,
     });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
@@ -3597,8 +3604,8 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
 
-    const { identities } = this.preferencesController.store.getState();
-    return { ...keyState, identities };
+    const accounts = this.accountsController.listAccounts();
+    return { ...keyState, accounts };
   }
 
   //
