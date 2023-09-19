@@ -88,12 +88,20 @@ buildTypes:
   mmi:
     features:
       - build-mmi
+      - snaps
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
+<<<<<<< Updated upstream
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
+=======
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/1.0.2/index.html
+      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v1/configuration/default
+>>>>>>> Stashed changes
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
     # For some reason, MMI uses this type of versioning
