@@ -4368,23 +4368,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^0.2.3, @metamask/keyring-api@npm:^0.2.4":
-  version: 0.2.4
-  resolution: "@metamask/keyring-api@npm:0.2.4"
-  dependencies:
-    "@metamask/providers": "npm:^12.0.0"
-    "@metamask/rpc-methods": "npm:^0.38.1-flask.1"
-    "@metamask/snaps-controllers": "npm:^0.38.2-flask.1"
-    "@metamask/snaps-utils": "npm:^0.38.2-flask.1"
-    "@metamask/utils": "npm:^8.1.0"
-    "@types/uuid": "npm:^9.0.1"
-    superstruct: "npm:^1.0.3"
-    uuid: "npm:^9.0.0"
-  checksum: d61e2bf7252135e5bb099bb10886fcbd4c25392e3bfe9beb267b57f97e653b687e727fd67726492723837b66c40cd226e2539c5a80ebfbe1e56ebf9e93f93728
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^0.2.5":
+"@metamask/keyring-api@npm:^0.2.3, @metamask/keyring-api@npm:^0.2.4, @metamask/keyring-api@npm:^0.2.5":
   version: 0.2.5
   resolution: "@metamask/keyring-api@npm:0.2.5"
   dependencies:
@@ -4731,26 +4715,6 @@ __metadata:
     pump: "npm:^3.0.0"
     webextension-polyfill: "npm:^0.10.0"
   checksum: 702399f2e21f3ce952c8a09d238ac777f33ef7fdc653793df1a833634eead27194602b9ef5ab44a4d519116b10815dc615ea7c304743eeeddae498d0973aad38
-  languageName: node
-  linkType: hard
-
-"@metamask/providers@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/providers@npm:12.0.0"
-  dependencies:
-    "@metamask/json-rpc-engine": "npm:^7.1.1"
-    "@metamask/object-multiplex": "npm:^1.1.0"
-    "@metamask/rpc-errors": "npm:^6.0.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.1.0"
-    detect-browser: "npm:^5.2.0"
-    extension-port-stream: "npm:^2.1.1"
-    fast-deep-equal: "npm:^3.1.3"
-    is-stream: "npm:^2.0.0"
-    json-rpc-middleware-stream: "npm:^4.2.1"
-    pump: "npm:^3.0.0"
-    webextension-polyfill: "npm:^0.10.0"
-  checksum: 8c3895593a71de6e165276f00069b57f83b5bb6991b6bb9444ae556d0ceb3252d56b546eb136b19b854b919c4368bf30b37c993da8904ea8ddf200323759e715
   languageName: node
   linkType: hard
 

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { KeyringController } from '@metamask/keyring-controller';
+import { KeyringController } from '@metamask-previews/keyring-controller';
 import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { SignatureController } from '@metamask/signature-controller';
