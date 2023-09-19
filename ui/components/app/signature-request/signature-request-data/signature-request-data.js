@@ -2,7 +2,8 @@ import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
-import { getAccountName, getInternalAccounts } from '../../../../selectors';
+import { NameType } from '@metamask/name-controller';
+import { getInternalAccounts, getAccountName } from '../../../../selectors';
 import Address from '../../transaction-decoding/components/decoding/address';
 import {
   isValidHexAddress,
@@ -16,9 +17,12 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { sanitizeString } from '../../../../helpers/utils/util';
 import { Box, Text } from '../../../component-library';
+import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
+import Name from '../../name/name';
 
 function SignatureRequestData({ data }) {
   const accounts = useSelector(getInternalAccounts);
+  const petnamesEnabled = usePetnamesEnabled();
 
   return (
     <Box as="ul" className="signature-request-data__node">
@@ -62,11 +66,19 @@ function SignatureRequestData({ data }) {
                   color={TextColor.infoDefault}
                   className="signature-request-data__node__value__address"
                 >
-                  <Address
-                    addressOnly
-                    checksummedRecipientAddress={toChecksumHexAddress(value)}
-                    recipientName={getAccountName(accounts, value)}
-                  />
+                  {petnamesEnabled ? (
+                    <Name
+                      value={value}
+                      type={NameType.ETHEREUM_ADDRESS}
+                      sourcePriority={['ens', 'lens', 'token', 'etherscan']}
+                    />
+                  ) : (
+                    <Address
+                      addressOnly
+                      checksummedRecipientAddress={toChecksumHexAddress(value)}
+                      recipientName={getAccountName(accounts, value)}
+                    />
+                  )}
                 </Text>
               ) : (
                 sanitizeString(`${value}`)

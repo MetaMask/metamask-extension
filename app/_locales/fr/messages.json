@@ -371,9 +371,6 @@
   "amount": {
     "message": "Montant"
   },
-  "apiUrl": {
-    "message": "URL de l’API"
-  },
   "appDescription": {
     "message": "Extension Ethereum pour navigateur",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Dépôt"
-  },
-  "custodianAccount": {
-    "message": "Compte de dépôt"
   },
   "custodianAccountAddedDesc": {
     "message": "Vous pouvez maintenant utiliser vos comptes de dépôt dans MetaMask Institutional."
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "Demandez ici"
-  },
-  "mmiAddToken": {
-    "message": "La page à $1 souhaite autoriser le jeton de dépôt suivant dans MetaMask institutionnel"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional est conçu et établi dans le monde entier."

@@ -102,6 +102,16 @@ import {
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import { AccountsController } from '@metamask/accounts-controller';
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+import {
+  NameController,
+  ENSNameProvider,
+  EtherscanNameProvider,
+  TokenNameProvider,
+  LensNameProvider,
+} from '@metamask/name-controller';
+///: END:ONLY_INCLUDE_IN
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -1597,6 +1607,27 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    this.nameController = new NameController({
+      getChainId: () => this.networkController.state.providerConfig.chainId,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'NameController',
+        allowedActions: [],
+      }),
+      providers: [
+        new ENSNameProvider({
+          reverseLookup: this.ensController.reverseResolveAddress.bind(
+            this.ensController,
+          ),
+        }),
+        new EtherscanNameProvider({}),
+        new TokenNameProvider({}),
+        new LensNameProvider(),
+      ],
+      state: initState.NameController,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     this.txController.on('newSwapApproval', (txMeta) => {
       this.swapsController.setApproveTxId(txMeta.id);
     });
@@ -1803,6 +1834,9 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       PPOMController: this.ppomController,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      NameController: this.nameController,
+      ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
     });
 
@@ -1839,12 +1873,14 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
-
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         CustodyController: this.custodyController.store,
         InstitutionalFeaturesController:
           this.institutionalFeaturesController.store,
         MmiConfigurationController: this.mmiConfigurationController.store,
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        NameController: this.nameController,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
       },
@@ -2952,6 +2988,13 @@ export default class MetamaskController extends EventEmitter {
 
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
+
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      updateProposedNames: this.nameController.updateProposedNames.bind(
+        this.nameController,
+      ),
+      setName: this.nameController.setName.bind(this.nameController),
+      ///: END:ONLY_INCLUDE_IN
     };
   }
 
