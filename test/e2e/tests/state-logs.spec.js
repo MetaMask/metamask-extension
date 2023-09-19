@@ -69,8 +69,8 @@ describe('State logs', function () {
         assert.notEqual(info, null);
         // Verify Json
         assert.equal(
-          info?.metamask?.identities[
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
+          info?.metamask?.internalAccounts.accounts[
+            info?.metamask?.internalAccounts.selectedAccount
           ].address,
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
