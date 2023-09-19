@@ -24,11 +24,6 @@ jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(
     jest.fn().mockReturnValue({
       push: jest.fn(),
-      location: {
-        state: {
-          tokenAddress: '0xTokenAddress',
-        },
-      },
     }),
   ),
 }));
@@ -48,7 +43,7 @@ jest.mock('../../../store/actions.ts', () => ({
 }));
 
 describe('ImportNftsModal', () => {
-  const store = configureMockStore([thunk])(mockState);
+  let store = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
     jest.restoreAllMocks();
@@ -97,6 +92,11 @@ describe('ImportNftsModal', () => {
   });
 
   it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
+    store = configureMockStore([thunk])({
+      ...mockState,
+      appState: { importNftsModal: { ignoreErc20Token: true } },
+    });
+
     const onClose = jest.fn();
     const { getByPlaceholderText, getByText } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
@@ -133,7 +133,7 @@ describe('ImportNftsModal', () => {
 
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
-        tokensToIgnore: '0xTokenAddress',
+        tokensToIgnore: VALID_ADDRESS,
       });
     });
   });
