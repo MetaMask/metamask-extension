@@ -49,7 +49,7 @@ import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi, blockaid)
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
@@ -156,6 +156,7 @@ const SignatureRequest = ({ txData }) => {
     return { sanitizedMessage, domain, primaryType };
   });
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   const onClickSupportLink = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -169,6 +170,7 @@ const SignatureRequest = ({ txData }) => {
       },
     });
   }, []);
+  ///: END:ONLY_INCLUDE_IN
 
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
