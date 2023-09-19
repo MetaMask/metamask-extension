@@ -80,6 +80,7 @@ export const SNAP_DIALOG_TYPES = {
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
+  confirmRemoveAccount: 'snap_manageAccounts:confirmRemoveAccount',
 };
 ///: END:ONLY_INCLUDE_IN
 

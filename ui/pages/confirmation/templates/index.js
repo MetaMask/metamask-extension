@@ -8,6 +8,7 @@ import {
 } from '../../../store/actions';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import createSnapAccount from './create-snap-account';
+import removeSnapAccount from './remove-snap-account';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
@@ -30,6 +31,8 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
     createSnapAccount,
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmRemoveAccount]:
+    removeSnapAccount,
   ///: END:ONLY_INCLUDE_IN
 };
 

@@ -20,6 +20,7 @@ import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
+import { RemoveSnapAccount } from '../../../pages/remove-snap-account';
 ///: END:ONLY_INCLUDE_IN
 
 export const safeComponentList = {
@@ -48,6 +49,7 @@ export const safeComponentList = {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Copyable,
   CreateSnapAccount,
+  RemoveSnapAccount,
   SnapDelineator,
   SnapUIMarkdown,
   Spinner,

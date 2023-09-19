@@ -884,7 +884,37 @@ export default class MetamaskController extends EventEmitter {
                 throw new Error('User denied account addition');
               }
             },
-            removeAccount: async (address) => {
+            removeAccount: async (address, snapId) => {
+              const { id: removeAccountApprovalId } =
+                this.approvalController.startFlow();
+
+              const confirmationResult =
+                await this.approvalController.addAndShowApprovalRequest({
+                  origin: snapId,
+                  type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+                });
+
+              if (confirmationResult) {
+                try {
+                  await this.keyringController.persistAllKeyrings();
+                  await this.approvalController.success({
+                    flowToEnd: removeAccountApprovalId,
+                    message: 'Account removed',
+                  });
+                } catch (error) {
+                  await this.approvalController.error({
+                    error: error.message,
+                  });
+                  await this.approvalController.endFlow({
+                    id: removeAccountApprovalId,
+                  });
+                }
+              } else {
+                await this.approvalController.endFlow({
+                  id: removeAccountApprovalId,
+                });
+                throw new Error('User denied account removal');
+              }
               await this.removeAccount(address);
             },
           });
