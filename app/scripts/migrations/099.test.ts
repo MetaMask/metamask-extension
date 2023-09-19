@@ -1,4 +1,4 @@
-import { migrate, version } from './098';
+import { migrate, version } from './099';
 
 const oldVersion = 98;
 describe('migration #99', () => {
