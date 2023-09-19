@@ -27,8 +27,11 @@ const switchEthereumChain = {
     requestUserApproval: true,
     getNetworkConfigurations: true,
     getNetworkClientIdForDomain: true,
+    getUseRequestQueue: true,
+    getProviderConfig: true,
   },
 };
+
 export default switchEthereumChain;
 
 function findExistingNetwork(chainId, findNetworkConfigurationBy) {
@@ -81,6 +84,8 @@ async function switchEthereumChainHandler(
     requestUserApproval,
     getNetworkConfigurations,
     getNetworkClientIdForDomain,
+    getUseRequestQueue,
+    getProviderConfig,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -135,6 +140,10 @@ async function switchEthereumChainHandler(
       getNetworkConfigurations
     )
   };
+
+  if (getUseRequestQueue() === false) {
+    requestData.fromNetworkConfiguration = getProviderConfig();
+  }
 
   if (requestData.toNetworkConfiguration) {
     const currentChainId = getCurrentChainId();

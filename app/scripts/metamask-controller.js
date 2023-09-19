@@ -2226,7 +2226,7 @@ export default class MetamaskController extends EventEmitter {
   getProviderNetworkState(memState) {
     const { networkId } = memState || this.getState();
     return {
-      chainId: this.networkController.state.providerConfig.chainId,
+      chainId: this.networkController.state.providerConfig.chainId, // change this to selectedNetworkController value (needs origin)
       networkVersion: networkId ?? 'loading',
     };
   }
@@ -2331,6 +2331,9 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
+      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(this.preferencesController),
+      getProviderConfig: () => this.networkController.state.providerConfig,
+
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       setSecurityAlertsEnabled:
         preferencesController.setSecurityAlertsEnabled.bind(
@@ -4132,15 +4135,17 @@ export default class MetamaskController extends EventEmitter {
       this.selectedNetworkController.getNetworkClientIdForDomain(origin);
 
     // Not sure that this will happen anymore
-    if (selectedNetworkClientIdForDomain === undefined) {
-      this.selectedNetworkController.setNetworkClientIdForDomain(
-        origin,
-        selectedNetworkClientId,
-      );
-    } else if (selectedNetworkClientIdForDomain !== selectedNetworkClientId) {
-      // handles switching chain when the provider is set up... not really the right spot to be doing this. We are using setupProvider as a 'proxy' for what we really want which is everytime the wallet 'pops up' - via api call or manually opening the wallet.
-      // also worth noting that this calls methods which do async stuff, but we are not waiting for it to complete or handling any potential errors.
-      switchChain(selectedNetworkClientIdForDomain);
+    if (this.preferencesController.getUseRequestQueue() === true) {
+      if (selectedNetworkClientIdForDomain === undefined) {
+        this.selectedNetworkController.setNetworkClientIdForDomain(
+          origin,
+          selectedNetworkClientId,
+        );
+      } else if (selectedNetworkClientIdForDomain !== selectedNetworkClientId) {
+        // handles switching chain when the provider is set up... not really the right spot to be doing this. We are using setupProvider as a 'proxy' for what we really want which is everytime the wallet 'pops up' - via api call or manually opening the wallet.
+        // also worth noting that this calls methods which do async stuff, but we are not waiting for it to complete or handling any potential errors.
+        switchChain(selectedNetworkClientIdForDomain);
+      }
     }
 
     // add some middleware that will switch chain on each request (as needed)
@@ -4331,26 +4336,28 @@ export default class MetamaskController extends EventEmitter {
         getNetworkConfigurations: () =>
           this.networkController.state.networkConfigurations,
         upsertNetworkConfiguration:
-          this.networkController.upsertNetworkConfiguration.bind(
-            this.networkController,
-          ),
+        this.networkController.upsertNetworkConfiguration.bind(
+          this.networkController,
+        ),
         setActiveNetwork: this.networkController.setActiveNetwork.bind(
           this.networkController,
         ),
         findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
-            this.networkController,
-          ),
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         getNetworkClientIdForDomain:
-          this.selectedNetworkController.getNetworkClientIdForDomain.bind(
-            this.selectedNetworkController,
-          ),
+        this.selectedNetworkController.getNetworkClientIdForDomain.bind(
+          this.selectedNetworkController,
+        ),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
 
+        getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(this.preferencesController),
+        getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
           // when using this format, type happens to be the same as the networkClientId...
           // this.selectedNetworkController.setNetworkClientIdForMetamask(type);
