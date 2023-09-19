@@ -352,7 +352,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'LoggingController',
       }),
       state: initState.LoggingController,
-    })
+    });
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiConfigurationController = new MmiConfigurationController({
@@ -1706,7 +1706,6 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
-      LoggingController: this.loggingController,
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       PPOMController: this.ppomController,
       ///: END:ONLY_INCLUDE_IN
@@ -1736,6 +1735,7 @@ export default class MetamaskController extends EventEmitter {
       NftController: this.nftController,
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
+      LoggingController: this.loggingController,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -1784,6 +1784,7 @@ export default class MetamaskController extends EventEmitter {
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
+        LoggingController: this.loggingController,
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
