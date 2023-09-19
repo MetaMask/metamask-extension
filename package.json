@@ -233,7 +233,7 @@
     "@metamask-institutional/sdk": "^0.1.18",
     "@metamask-institutional/transaction-update": "^0.1.27",
     "@metamask-previews/keyring-controller": "patch:@metamask-previews/keyring-controller@npm%3A7.4.0-preview.f0f357a#~/.yarn/patches/@metamask-previews-keyring-controller-npm-7.4.0-preview.f0f357a-50cc3f549f.patch",
-    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@1.0.0-preview.f0f357a",
+    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@1.0.0-preview.c5136a4",
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",

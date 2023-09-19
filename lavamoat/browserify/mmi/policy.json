@@ -955,9 +955,6 @@
       }
     },
     "@metamask/accounts-controller": {
-      "globals": {
-        "console.warn": true
-      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
