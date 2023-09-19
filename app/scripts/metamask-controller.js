@@ -849,8 +849,37 @@ export default class MetamaskController extends EventEmitter {
       (() => {
         const builder = () =>
           new SnapKeyring(this.snapController, {
-            saveState: async () => {
-              await this.keyringController.persistAllKeyrings();
+            saveState: async (origin) => {
+              const { id: addAccountApprovalId } =
+                this.approvalController.startFlow();
+
+              const confirmationResult =
+                await this.approvalController.addAndShowApprovalRequest({
+                  origin,
+                  type: 'snap_manageAccounts:confirmation',
+                });
+
+              if (confirmationResult) {
+                try {
+                  await this.keyringController.persistAllKeyrings();
+                  await this.approvalController.success({
+                    flowToEnd: addAccountApprovalId,
+                    message: 'Your account is ready!',
+                  });
+                } catch (error) {
+                  await this.approvalController.error({
+                    error: error.message,
+                  });
+                  await this.approvalController.endFlow({
+                    id: addAccountApprovalId,
+                  });
+                }
+              } else {
+                await this.approvalController.endFlow({
+                  id: addAccountApprovalId,
+                });
+                throw new Error('User denied account addition');
+              }
             },
             removeAccount: async (address) => {
               await this.removeAccount(address);
@@ -1992,10 +2021,6 @@ export default class MetamaskController extends EventEmitter {
         endApprovalFlow: this.approvalController.endFlow.bind(
           this.approvalController,
         ),
-        setApprovalFlowLoadingText:
-          this.approvalController.setFlowLoadingText.bind(
-            this.approvalController,
-          ),
         showApprovalSuccess: this.approvalController.success.bind(
           this.approvalController,
         ),
