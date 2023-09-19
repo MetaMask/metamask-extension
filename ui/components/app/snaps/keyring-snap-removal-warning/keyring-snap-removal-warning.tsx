@@ -21,7 +21,6 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
-  Severity,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import InfoTooltip from '../../../ui/info-tooltip';
