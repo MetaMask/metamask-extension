@@ -3,6 +3,7 @@ import { InternalAccount } from '@metamask/keyring-api';
 import { Snap } from '@metamask/snaps-utils';
 import {
   BannerAlert,
+  BannerAlertSeverity,
   Box,
   Button,
   ButtonSize,
@@ -83,7 +84,7 @@ export default function KeyringRemovalSnapWarning({
           </ModalHeader>
           {showConfirmation === false ? (
             <>
-              <BannerAlert severity={Severity.Warning} className="">
+              <BannerAlert severity={BannerAlertSeverity.Warning} className="">
                 {t('backupKeyringSnapReminder')}
               </BannerAlert>
               <Box
@@ -111,7 +112,7 @@ export default function KeyringRemovalSnapWarning({
                 marginTop={6}
               >
                 <BannerAlert
-                  severity={Severity.Warning}
+                  severity={BannerAlertSeverity.Warning}
                   className=""
                   marginBottom={4}
                 >
