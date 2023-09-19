@@ -959,11 +959,36 @@
         "console.warn": true
       },
       "packages": {
+        "@metamask/accounts-controller>@metamask/keyring-api": true,
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
-        "@metamask/keyring-api": true,
         "ethereumjs-util": true,
         "uuid": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/accounts-controller>@metamask/keyring-api>@metamask/utils": true,
+        "@metamask/accounts-controller>@metamask/keyring-api>uuid": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/address-book-controller": {
@@ -1374,9 +1399,9 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/eth-snap-keyring>uuid": true,
-        "@metamask/keyring-api": true,
         "browserify>events": true,
         "superstruct": true
       }
@@ -1409,6 +1434,13 @@
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/eth-snap-keyring>@metamask/utils": true,
+        "@metamask/eth-snap-keyring>uuid": true,
         "superstruct": true
       }
     },

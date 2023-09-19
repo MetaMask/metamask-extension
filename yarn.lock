@@ -4384,6 +4384,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-api@npm:^0.2.5":
+  version: 0.2.5
+  resolution: "@metamask/keyring-api@npm:0.2.5"
+  dependencies:
+    "@metamask/providers": "npm:^13.0.0"
+    "@metamask/rpc-methods": "npm:^0.38.1-flask.1"
+    "@metamask/snaps-controllers": "npm:^0.38.2-flask.1"
+    "@metamask/snaps-utils": "npm:^0.38.2-flask.1"
+    "@metamask/utils": "npm:^8.1.0"
+    "@types/uuid": "npm:^9.0.1"
+    superstruct: "npm:^1.0.3"
+    uuid: "npm:^9.0.0"
+  checksum: 89dabd4c876403c77d4994bdcb0f82bc46cf4cea73b21af1ffb3e3ee007eb97144578eef6f638fcac97df77f2d0475765efc1c41327c463df104394e19a22c77
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-controller@npm:7.4.0":
   version: 7.4.0
   resolution: "@metamask/keyring-controller@npm:7.4.0"
@@ -4735,6 +4751,25 @@ __metadata:
     pump: "npm:^3.0.0"
     webextension-polyfill: "npm:^0.10.0"
   checksum: 8c3895593a71de6e165276f00069b57f83b5bb6991b6bb9444ae556d0ceb3252d56b546eb136b19b854b919c4368bf30b37c993da8904ea8ddf200323759e715
+  languageName: node
+  linkType: hard
+
+"@metamask/providers@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/providers@npm:13.0.0"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^7.1.1"
+    "@metamask/object-multiplex": "npm:^1.1.0"
+    "@metamask/rpc-errors": "npm:^6.0.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.1.0"
+    detect-browser: "npm:^5.2.0"
+    extension-port-stream: "npm:^2.1.1"
+    fast-deep-equal: "npm:^3.1.3"
+    is-stream: "npm:^2.0.0"
+    json-rpc-middleware-stream: "npm:^4.2.1"
+    webextension-polyfill: "npm:^0.10.0"
+  checksum: c6fe1936741a2b782960f0a12148602754fabe55b75707fd80716d5a42ca4f672d838d1ba36873e96f4afdc5360247e3b737c95b7ca532a74e135218cb65033a
   languageName: node
   linkType: hard
 
@@ -24340,7 +24375,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^6.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/keyring-api": "npm:^0.2.4"
+    "@metamask/keyring-api": "npm:^0.2.5"
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
