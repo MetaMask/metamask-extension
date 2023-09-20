@@ -59,14 +59,11 @@ export default function setupEnsIpfsResolver({
     const useAddressBarEnsResolution = getUseAddressBarEnsResolution();
 
     const ensSiteUrl = `https://app.ens.domains/name/${name}`;
-    /*
-    if (!useAddressBarEnsResolution || ipfsGateway === '') {
-      return;
-    }
-    */
 
-    if (useAddressBarEnsResolution) {
-      browser.tabs.update(tabId, { url: `loading.html` });
+    // This is the only case where we can show the loading indicator
+    // https://github.com/MetaMask/metamask-extension/issues/20910#issuecomment-1723962822
+    if (useAddressBarEnsResolution && ipfsGateway) {
+      browser.tabs.update(tabId, { url: 'loading.html' });
     }
 
     let url = ensSiteUrl;
@@ -87,6 +84,7 @@ export default function setupEnsIpfsResolver({
         // If the ENS is via IPFS and that setting is disabled,
         // Do not resolve the ENS
         if (ipfsGateway === '') {
+          url = null;
           return;
         }
         const resolvedUrl = `https://${hash}.${type.slice(
@@ -131,7 +129,11 @@ export default function setupEnsIpfsResolver({
     } catch (err) {
       console.warn(err);
     } finally {
-      if (!useAddressBarEnsResolution && url === ensSiteUrl) {
+      if (
+        url &&
+        (useAddressBarEnsResolution ||
+          (!useAddressBarEnsResolution && url !== ensSiteUrl))
+      ) {
         browser.tabs.update(tabId, { url });
       }
     }
