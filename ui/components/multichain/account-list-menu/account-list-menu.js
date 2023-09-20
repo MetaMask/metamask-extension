@@ -204,7 +204,7 @@ export const AccountListMenu = ({ onClose }) => {
             </Box>
             {/* Add / Import / Hardware */}
             <Box padding={4}>
-              <Box marginBottom={4}>
+              <Box>
                 <ButtonLink
                   size={Size.SM}
                   startIconName={IconName.Add}
@@ -224,7 +224,7 @@ export const AccountListMenu = ({ onClose }) => {
                   {t('addAccount')}
                 </ButtonLink>
               </Box>
-              <Box marginBottom={4}>
+              <Box marginTop={4}>
                 <ButtonLink
                   size={Size.SM}
                   startIconName={IconName.Import}
@@ -243,7 +243,7 @@ export const AccountListMenu = ({ onClose }) => {
                   {t('importAccount')}
                 </ButtonLink>
               </Box>
-              <Box marginBottom={4}>
+              <Box marginTop={4}>
                 <ButtonLink
                   size={Size.SM}
                   startIconName={IconName.Hardware}
@@ -272,7 +272,7 @@ export const AccountListMenu = ({ onClose }) => {
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
                 addSnapAccountEnabled && (
-                  <Box marginBottom={4}>
+                  <Box marginTop={4}>
                     <ButtonLink
                       size={Size.SM}
                       startIconName={IconName.Snaps}
