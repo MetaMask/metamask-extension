@@ -5,11 +5,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { BalanceOverview } from '.';
 
 const render = () => {
-  const store = configureStore({
-    metamask: {
-      ...mockState.metamask,
-    },
-  });
+  const store = configureStore(mockState);
   return renderWithProvider(<BalanceOverview />, store);
 };
 
