@@ -49,7 +49,7 @@ import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi, blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi,blockaid)
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
