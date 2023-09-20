@@ -38,7 +38,7 @@ describe('Test Snap Account', function () {
         await driver.delay(500);
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
+        let windowHandles = await driver.waitUntilXWindowHandles(
           3,
           1000,
           10000,
@@ -68,10 +68,10 @@ describe('Test Snap Account', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle(
-          'SSK - Snap Simple Keyring',
-          windowHandles,
-        );
+        // switch to snap dapp
+        const dappPage = windowHandles[1];
+        await driver.switchToWindow(dappPage);
+        await driver.delay(1000);
 
         // check the dapp connection status
         await driver.waitForSelector({
