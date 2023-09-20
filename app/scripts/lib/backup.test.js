@@ -6,14 +6,6 @@ import Backup from './backup';
 function getMockPreferencesController() {
   const mcState = {
     getSelectedAddress: sinon.stub().returns('0x01'),
-    selectedAddress: '0x01',
-    identities: {
-      '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B': {
-        address: '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B',
-        lastSelected: 1655380342907,
-        name: 'Account 3',
-      },
-    },
     lostIdentities: {
       '0xfd59bbe569376e3d3e4430297c3c69ea93f77435': {
         address: '0xfd59bbe569376e3d3e4430297c3c69ea93f77435',
@@ -73,11 +65,11 @@ function getMockAccountsController() {
   const state = {
     internalAccounts: {
       accounts: {},
+      selectedAccount: '',
     },
-    selectedAccount: '',
   };
 
-  const loadBackup = ({ internalAccounts }) => {
+  const loadBackup = (internalAccounts) => {
     Object.assign(state, { internalAccounts });
   };
 
@@ -233,18 +225,6 @@ describe('Backup', function () {
       );
       // make sure identities are not lost after restore
       assert.equal(
-        backup.preferencesController.store.identities[
-          '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B'
-        ].lastSelected,
-        1655380342907,
-      );
-      assert.equal(
-        backup.preferencesController.store.identities[
-          '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B'
-        ].name,
-        'Account 3',
-      );
-      assert.equal(
         backup.preferencesController.store.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].lastSelected,
@@ -256,8 +236,6 @@ describe('Backup', function () {
         ].name,
         'Ledger 1',
       );
-      // make sure selected address is not lost after restore
-      assert.equal(backup.preferencesController.store.selectedAddress, '0x01');
       // check address book backup
       assert.equal(
         backup.addressBookController.store.addressBook['0x61'][
@@ -276,6 +254,38 @@ describe('Backup', function () {
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].isEns,
         false,
+      );
+
+      // make sure the internal accounts are restored
+      assert.deepStrictEqual(
+        backup.accountsController.state.internalAccounts.accounts[
+          'fcbcdca4-cc47-4bc8-b455-b14421e9277e'
+        ],
+        {
+          address: '0x129af01f4b770b30615f049790e1e206ebaa7b10',
+          id: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
+          metadata: {
+            keyring: { type: 'HD Key Tree' },
+            lastSelected: 1693289751176,
+            name: 'Account 1',
+          },
+          methods: [
+            'personal_sign',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          options: {},
+          type: 'eip155:eoa',
+        },
+      );
+
+      // make sure selected account is restored
+      assert.equal(
+        backup.accountsController.state.internalAccounts.selectedAccount,
+        'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
       );
     });
   });

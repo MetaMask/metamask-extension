@@ -22,9 +22,7 @@ export default class Backup {
     const { preferences, addressBook, network, internalAccounts } =
       JSON.parse(jsonString);
     if (preferences) {
-      preferences.identities = existingPreferences.identities;
       preferences.lostIdentities = existingPreferences.lostIdentities;
-      preferences.selectedAddress = existingPreferences.selectedAddress;
 
       this.preferencesController.store.updateState(preferences);
     }
@@ -65,9 +63,7 @@ export default class Backup {
     /**
      * We can remove these properties since we will won't be restoring identities from backup
      */
-    delete userData.preferences.identities;
     delete userData.preferences.lostIdentities;
-    delete userData.preferences.selectedAddress;
 
     const result = JSON.stringify(userData);
 
