@@ -3871,9 +3871,6 @@
     "message": "Αυτό βασίζεται στο $1, το οποίο θα έχει πρόσβαση στη διεύθυνση Ethereum και τη διεύθυνση IP σας. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Αυτό βασίζεται σε κάθε δίκτυο που θα έχει πρόσβαση στη διεύθυνση Ethereum και στη διεύθυνση IP σας."
-  },
   "showMore": {
     "message": "Εμφάνιση περισσότερων"
   },

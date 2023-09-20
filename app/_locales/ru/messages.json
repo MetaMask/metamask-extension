@@ -3871,9 +3871,6 @@
     "message": "Это использует $1, который будет иметь доступ к вашему адресу Ethereum и вашему IP-адресу. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Это зависит от каждой сети, которая будет иметь доступ к вашему адресу Ethereum и вашему IP-адресу."
-  },
   "showMore": {
     "message": "Показать больше"
   },

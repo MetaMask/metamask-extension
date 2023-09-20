@@ -3871,9 +3871,6 @@
     "message": "这取决于$1，即可以访问您的以太坊地址和 IP 地址的网络。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "这取决于每个可以访问您的以太坊地址和 IP 地址的网络。"
-  },
   "showMore": {
     "message": "展开"
   },

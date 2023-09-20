@@ -335,6 +335,14 @@ export const BUILT_IN_INFURA_NETWORKS = pick(
 
 export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 
+// type SupportedNetworksType = {
+//   [key: string]: {
+//     domain: string;
+//     subdomain: string;
+//     networkId: string;
+//   };
+// };
+
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
@@ -426,6 +434,7 @@ export const INFURA_BLOCKED_KEY = 'countryBlocked';
 
 const defaultEtherscanDomain = 'etherscan.io';
 const defaultEtherscanSubdomainPrefix = 'api';
+
 /**
  * Map of all Etherscan supported networks.
  */

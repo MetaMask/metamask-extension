@@ -3871,9 +3871,6 @@
     "message": "Umaasa ito sa $1 na magkakaroon ng access sa iyong Ethereum address at sa iyong IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Umaasa ito sa bawat network na magkakaroon ng access sa iyong Ethereum address at sa iyong IP address."
-  },
   "showMore": {
     "message": "Ipakita ang iba pa"
   },

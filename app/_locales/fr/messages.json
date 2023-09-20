@@ -3871,9 +3871,6 @@
     "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Cela dépend de chaque réseau qui aura accès à votre adresse Ethereum et à votre adresse IP."
-  },
   "showMore": {
     "message": "Afficher plus"
   },

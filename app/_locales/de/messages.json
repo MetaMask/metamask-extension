@@ -3871,9 +3871,6 @@
     "message": "Das hängt von $1 ab, das Zugriff auf Ihre Ethereum-Adresse und Ihre IP-Adresse hat. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Dies hängt von jedem Netzwerk ab, das Zugriff auf Ihre Ethereum-Adresse und IP-Adresse hat."
-  },
   "showMore": {
     "message": "Mehr anzeigen"
   },
