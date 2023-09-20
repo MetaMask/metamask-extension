@@ -11,6 +11,10 @@ jest.mock('webextension-polyfill', () => {
   };
 });
 
+jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
+  usePetnamesEnabled: () => false,
+}));
+
 const UNRESOLVED = Symbol('timedOut');
 
 // Store this in case it gets stubbed later
