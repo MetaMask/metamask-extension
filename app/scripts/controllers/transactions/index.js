@@ -2793,7 +2793,7 @@ export default class TransactionController extends EventEmitter {
     const incomingTransactions = transactions
       .filter(
         (tx) =>
-          (tx.type === TransactionType.incoming && tx.from !== tx.to) ||
+          tx.type === TransactionType.incoming ||
           !this._hasTransactionHash(tx.hash, currentTransactions),
       )
       .reduce((result, tx) => {
