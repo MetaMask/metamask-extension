@@ -60,8 +60,7 @@ export default function setupEnsIpfsResolver({
 
     const ensSiteUrl = `https://app.ens.domains/name/${name}`;
 
-    // This is the only case where we can show the loading indicator
-    // https://github.com/MetaMask/metamask-extension/issues/20910#issuecomment-1723962822
+    // We cannot show this if useAddressBarEnsResolution is off...
     if (useAddressBarEnsResolution && ipfsGateway) {
       browser.tabs.update(tabId, { url: 'loading.html' });
     }
@@ -71,7 +70,9 @@ export default function setupEnsIpfsResolver({
     // If we're testing ENS domain resolution support,
     // we assume the ENS domains URL
     if (process.env.IN_TEST) {
-      browser.tabs.update(tabId, { url });
+      if (useAddressBarEnsResolution || ipfsGateway) {
+        browser.tabs.update(tabId, { url });
+      }
       return;
     }
 
@@ -129,6 +130,8 @@ export default function setupEnsIpfsResolver({
     } catch (err) {
       console.warn(err);
     } finally {
+      // Only forward to destination URL if a URL exists and
+      // useAddressBarEnsResolution is properly
       if (
         url &&
         (useAddressBarEnsResolution ||
