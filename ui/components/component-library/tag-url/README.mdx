@@ -12,13 +12,11 @@ The `TagUrl` is a component used to display dApp information
 
 ## Props
 
-The `TagUrl` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props.
-
 <ArgsTable of={TagUrl} />
 
 ### Action Button Label
 
-If we want to have a button in `TagUrl` component. You can update the `ButtonLink` component props used for the action button using `actionButtonProps`
+Use the `actionButtonLabel` to add a `ButtonLink` inside of `TagUrl`. Use the `actionButtonProps` prop object to add the necessary `href` or `onClick`.
 
 <Canvas>
   <Story id="components-componentlibrary-tagurl--action-button-label" />
@@ -32,18 +30,30 @@ import { TagUrl } from '../../ui/component-library/tag-url';
   src="https://uniswap.org/favicon.ico"
   showLockIcon
   actionButtonLabel="Permissions"
+  actionButtonProps={{
+    externalLink: true,
+    href: 'https://metamask.io',
+  }}
 />
 <TagUrl
   label="app.uniswap.org"
   src="https://uniswap.org/favicon.ico"
   showLockIcon
   actionButtonLabel="Action"
+  actionButtonProps={{
+    externalLink: true,
+    href: 'https://metamask.io',
+  }}
 />
 <TagUrl
   label="app.uniswap.org"
   src="https://uniswap.org/favicon.ico"
   showLockIcon
   actionButtonLabel="Click"
+  actionButtonProps={{
+    externalLink: true,
+    href: 'https://metamask.io',
+  }}
 />
 ```
 
@@ -51,7 +61,7 @@ import { TagUrl } from '../../ui/component-library/tag-url';
 
 Use the `showLockIcon` prop to render a lock icon next to the `label`. It's intended use is to display if the url uses `https`. This logic should be added during implementation and is not included in the component.
 
-Off(`undefined`) by default.
+`false` by default.
 
 Props for the lock icon can be changed using the `lockIconProps`
 
@@ -89,8 +99,8 @@ import { TagUrl } from '../../ui/component-library/tag-url';
   showLockIcon
 />
 <TagUrl
-  src="https://peepeth.com/favicon-32x32.png"
-  label="peepeth.com"
+  src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+  label="metamask.github.io"
   showLockIcon
 />
 <TagUrl
@@ -120,9 +130,9 @@ import { TagUrl } from '../../ui/component-library/tag-url';
   label="app.uniswap.org"
 />
 <TagUrl
-  src="https://metamask.io/icons/icon-48x48.png?v=48400a28770e10dd52a8c0e539aeb282"
+  src="https://metamask.github.io/test-dapp/metamask-fox.svg"
   showLockIcon
-  label="metamask.io"
+  label="metamask.github.io"
 />
 <TagUrl
   src=""

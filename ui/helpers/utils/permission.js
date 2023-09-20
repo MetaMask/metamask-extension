@@ -16,6 +16,7 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
+  AvatarIconSize,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Icon,
   Text,
@@ -44,7 +45,7 @@ function getLeftIcon(iconName) {
   return (
     <AvatarIcon
       iconName={iconName}
-      size={IconSize.Sm}
+      size={AvatarIconSize.Sm}
       iconProps={{
         size: IconSize.Xs,
       }}
@@ -260,6 +261,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     label: t('permission_manageState'),
     description: t('permission_manageStateDescription'),
     leftIcon: IconName.AddSquare,
+    weight: 3,
+  }),
+  [RestrictedMethods.snap_getLocale]: ({ t }) => ({
+    label: t('permission_getLocale'),
+    description: t('permission_getLocaleDescription'),
+    leftIcon: IconName.Home,
     weight: 3,
   }),
   [RestrictedMethods.wallet_snap]: ({

@@ -155,7 +155,7 @@ export const getBaseApi = function (type, chainId) {
     case 'trade':
       return `${baseUrl}/trades?`;
     case 'tokens':
-      return `${baseUrl}/tokens`;
+      return `${baseUrl}/tokens?includeBlockedTokens=true`;
     case 'token':
       return `${baseUrl}/token`;
     case 'topAssets':
@@ -274,11 +274,12 @@ export async function fetchTradesInfo(
 
   const queryString = new URLSearchParams(urlParams).toString();
   const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
-  const tradesResponse = await fetchWithCache(
-    tradeURL,
-    { method: 'GET', headers: clientIdHeader },
-    { cacheRefreshTime: 0, timeout: SECOND * 15 },
-  );
+  const tradesResponse = await fetchWithCache({
+    url: tradeURL,
+    fetchOptions: { method: 'GET', headers: clientIdHeader },
+    cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
+    functionName: 'fetchTradesInfo',
+  });
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (
       quote.trade &&

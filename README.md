@@ -16,9 +16,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 - Install [Node.js](https://nodejs.org) version 18
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
-- Install [Yarn v3](https://yarnpkg.com/getting-started/install)
-  - ONLY follow the steps in the "Install Corepack" and "Updating the global Yarn version" sections
-  - DO NOT take any of the steps in the "Initializing your project", "Updating to the latest versions" or "Installing the latest build fresh from master" sections. These steps could result in your repo being reset or installing the wrong yarn version, which can break your build.
+- Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
 - Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc`
   - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
@@ -88,15 +86,17 @@ These test scripts all support additional options, which might be helpful for de
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
-  --browser        Set the browser used; either 'chrome' or 'firefox'.
-                                         [string] [choices: "chrome", "firefox"]
-  --debug          Run tests in debug mode, logging each driver interaction
-                                                      [boolean] [default: false]
-  --retries        Set how many times the test should be retried upon failure.
-                                                           [number] [default: 0]
-  --leave-running  Leaves the browser running after a test fails, along with
-                   anything else that the test used (ganache, the test dapp,
-                   etc.)                              [boolean] [default: false]
+  --browser           Set the browser used; either 'chrome' or 'firefox'.
+                                            [string] [choices: "chrome", "firefox"]
+  --debug             Run tests in debug mode, logging each driver interaction
+                                                         [boolean] [default: false]
+  --retries           Set how many times the test should be retried upon failure.
+                                                              [number] [default: 0]
+  --leave-running     Leaves the browser running after a test fails, along with
+                      anything else that the test used (ganache, the test dapp,
+                      etc.)                              [boolean] [default: false]
+  --update-snapshot   Update E2E test snapshots
+                                             [alias: -u] [boolean] [default: false]
 ```
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:

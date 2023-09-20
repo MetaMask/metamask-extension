@@ -17,6 +17,7 @@ import configureStore from './store/store';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getUnapprovedTransactions,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -27,7 +28,7 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { _setBackgroundConnection } from './store/action-queue';
 
-log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
+log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
 let reduxStore;
 
@@ -152,9 +153,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   const store = configureStore(draftInitialState);
   reduxStore = store;
 
+  const unapprovedTxs = getUnapprovedTransactions(metamaskState);
+
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
-    metamaskState.unapprovedTxs,
+    unapprovedTxs,
     metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,
@@ -233,14 +236,9 @@ function setupStateHooks(store) {
     });
     return state;
   };
-  window.stateHooks.getSentryState = function () {
+  window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
-    const maskedReduxState = maskObject(reduxState, SENTRY_UI_STATE);
-    return {
-      browser: window.navigator.userAgent,
-      store: maskedReduxState,
-      version: global.platform.getVersion(),
-    };
+    return maskObject(reduxState, SENTRY_UI_STATE);
   };
 }
 

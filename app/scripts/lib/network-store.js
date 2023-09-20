@@ -15,6 +15,7 @@ export default class ReadOnlyNetworkStore {
     this._initialized = false;
     this._initializing = this._init();
     this._state = undefined;
+    this.mostRecentRetrievedState = null;
   }
 
   /**
@@ -46,6 +47,11 @@ export default class ReadOnlyNetworkStore {
   async get() {
     if (!this._initialized) {
       await this._initializing;
+    }
+    // Delay setting this until after the first read, to match the
+    // behavior of the local store.
+    if (!this.mostRecentRetrievedState) {
+      this.mostRecentRetrievedState = this._state;
     }
     return this._state;
   }

@@ -172,14 +172,14 @@ describe('MetaMaskController', function () {
 
       await metamaskController.createNewVaultAndKeychain('test@123');
       await Promise.all([
-        metamaskController.importAccountWithStrategy('Private Key', [
+        metamaskController.importAccountWithStrategy('privateKey', [
           importPrivkey,
         ]),
         Promise.resolve(1).then(() => {
           keyringControllerState1 = JSON.stringify(
             metamaskController.keyringController.memStore.getState(),
           );
-          metamaskController.importAccountWithStrategy('Private Key', [
+          metamaskController.importAccountWithStrategy('privateKey', [
             importPrivkey,
           ]);
         }),
@@ -217,6 +217,14 @@ describe('MetaMaskController', function () {
       );
       assert.notEqual(result1, undefined);
       assert.deepEqual(result1, result2);
+    });
+  });
+
+  describe('#setLocked', function () {
+    it('should lock the wallet', async function () {
+      const { isUnlocked, keyrings } = await metamaskController.setLocked();
+      assert(!isUnlocked);
+      assert.deepEqual(keyrings, []);
     });
   });
 
