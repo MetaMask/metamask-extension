@@ -229,7 +229,7 @@ export default class TransactionController extends EventEmitter {
       isEnabled: () =>
         Boolean(
           this.preferencesStore.getState().incomingTransactionsPreferences?.[
-            this._getChainId()
+            this._getCurrentChainId()
           ] && this._hasCompletedOnboarding(),
         ),
       lastFetchedBlockNumbers: opts.initState?.lastFetchedBlockNumbers || {},
@@ -345,6 +345,9 @@ export default class TransactionController extends EventEmitter {
       this._requestTransactionApproval(txMeta, {
         shouldShowRequest: false,
       }).catch((error) => {
+        if (error.code === errorCodes.provider.userRejectedRequest) {
+          return;
+        }
         log.error('Error during persisted transaction approval', error);
       });
     });
@@ -960,6 +963,7 @@ export default class TransactionController extends EventEmitter {
       if (blockTimestamp) {
         txMeta.blockTimestamp = blockTimestamp;
       }
+      txMeta.verifiedOnBlockchain = true;
 
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
@@ -1857,11 +1861,6 @@ export default class TransactionController extends EventEmitter {
         customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
 
       txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
-      // add nonce debugging information to txMeta
-      txMeta.nonceDetails = nonceLock.nonceDetails;
-      if (customNonceValue) {
-        txMeta.nonceDetails.customNonceValue = customNonceValue;
-      }
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions#approveTransaction',
@@ -2135,16 +2134,12 @@ export default class TransactionController extends EventEmitter {
    * Updates the memStore in transaction controller
    */
   _updateMemstore() {
-    const { transactions } = this.store.getState();
-    const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
-
-    const currentNetworkTxList = this.txStateManager.getTransactions({
+    const transactions = this.getTransactions({
+      filterToCurrentNetwork: false,
       limit: MAX_MEMSTORE_TX_LIST_SIZE,
     });
 
     this.memStore.updateState({
-      unapprovedTxs,
-      currentNetworkTxList,
       transactions,
     });
   }

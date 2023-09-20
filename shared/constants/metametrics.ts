@@ -525,7 +525,6 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NftAdded = 'NFT Added',
-  OnboardingWelcome = 'App Installed',
   OnboardingWalletCreationStarted = 'Wallet Setup Selected',
   OnboardingWalletImportStarted = 'Wallet Import Started',
   OnboardingWalletCreationAttempted = 'Wallet Password Created',
@@ -550,6 +549,7 @@ export enum MetaMetricsEventName {
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
+  QuoteError = 'Quote Error',
   ServiceWorkerRestarted = 'Service Worker Restarted',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -690,6 +690,7 @@ export enum MetaMetricsEventKeyType {
 
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
+  GasTimeout = 'gas_timeout',
 }
 
 export enum MetaMetricsNetworkEventSource {

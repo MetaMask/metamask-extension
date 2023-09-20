@@ -130,16 +130,12 @@ export default function SignatureRequestSIWE({ txData }) {
         <ConfirmPageContainerNavigation />
       </div>
       <SignatureRequestHeader txData={txData} />
-      <Header
-        fromAccount={fromAccount}
-        domain={origin}
-        isSIWEDomainValid={isSIWEDomainValid}
-        subjectMetadata={targetSubjectMetadata}
-      />
+
       {
         ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
         <BlockaidBannerAlert
           securityAlertResponse={txData?.securityAlertResponse}
+          margin={4}
         />
         ///: END:ONLY_INCLUDE_IN
       }
@@ -148,6 +144,13 @@ export default function SignatureRequestSIWE({ txData }) {
           securityProviderResponse={txData.securityProviderResponse}
         />
       )}
+
+      <Header
+        fromAccount={fromAccount}
+        domain={origin}
+        isSIWEDomainValid={isSIWEDomainValid}
+        subjectMetadata={targetSubjectMetadata}
+      />
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <BannerAlert

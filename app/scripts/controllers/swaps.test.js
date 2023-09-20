@@ -860,7 +860,10 @@ describe('SwapsController', function () {
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
         assert.strictEqual(
-          timedoutGasReturnStub.calledOnceWithExactly(MOCK_APPROVAL_NEEDED),
+          timedoutGasReturnStub.calledOnceWithExactly(
+            MOCK_APPROVAL_NEEDED,
+            TEST_AGG_ID_APPROVAL,
+          ),
           true,
         );
       });

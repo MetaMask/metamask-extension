@@ -78,7 +78,7 @@ const IncomingTransactionToggle = ({
       </Text>
 
       <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-        {t('showIncomingTransactionsInformation')}
+        {t('showIncomingTransactionsExplainer')}
       </Text>
       <Box
         marginTop={3}

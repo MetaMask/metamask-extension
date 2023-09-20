@@ -156,7 +156,7 @@ function ViewSnap() {
         />
       </Box>
       <Box className="view-snap__connected-sites" marginTop={12}>
-        <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+        <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
           {t('connectedSites')}
         </Text>
         <ConnectedSitesList

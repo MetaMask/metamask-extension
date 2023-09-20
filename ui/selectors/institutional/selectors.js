@@ -52,27 +52,51 @@ export function getCustodianIconForAddress(state, address) {
 }
 
 export function getIsCustodianSupportedChain(state) {
-  const selectedIdentity = getSelectedIdentity(state);
-  const accountType = getAccountType(state);
-  const providerConfig = getProviderConfig(state);
+  try {
+    const selectedIdentity = getSelectedIdentity(state);
+    const accountType = getAccountType(state);
+    const providerConfig = getProviderConfig(state);
 
-  const supportedChains =
-    accountType === 'custody'
-      ? getCustodyAccountSupportedChains(state, selectedIdentity.address)
-      : null;
+    if (!selectedIdentity || !accountType || !providerConfig) {
+      throw new Error('Invalid state');
+    }
 
-  return supportedChains?.supportedChains
-    ? supportedChains.supportedChains.includes(
-        hexToDecimal(providerConfig.chainId),
-      )
-    : true;
+    if (typeof providerConfig.chainId !== 'string') {
+      throw new Error('Chain ID must be a string');
+    }
+
+    // eslint-disable-next-line require-unicode-regexp
+    if (!/^0x[0-9a-f]+$/i.test(providerConfig.chainId)) {
+      throw new Error('Chain ID must be a hexadecimal number');
+    }
+
+    if (accountType !== 'custody') {
+      return true;
+    }
+
+    const supportedChains = getCustodyAccountSupportedChains(
+      state,
+      selectedIdentity.address,
+    );
+
+    if (!supportedChains || !supportedChains.supportedChains) {
+      return true;
+    }
+
+    return supportedChains.supportedChains.includes(
+      hexToDecimal(providerConfig.chainId),
+    );
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export function getMMIAddressFromModalOrAddress(state) {
-  return (
-    state.appState.modal.modalState.props.address ||
-    state.metamask.selectedAddress
-  );
+  const modalAddress = state?.appState?.modal?.modalState?.props?.address;
+  const selectedAddress = state?.metamask?.selectedAddress;
+
+  return modalAddress || selectedAddress;
 }
 
 export function getMMIConfiguration(state) {
@@ -84,14 +108,16 @@ export function getInteractiveReplacementToken(state) {
 }
 
 export function getIsNoteToTraderSupported(state, fromChecksumHexAddress) {
-  let isNoteToTraderSupported = false;
-  if (state.metamask.custodyAccountDetails?.[fromChecksumHexAddress]) {
-    const { custodianName } =
-      state.metamask.custodyAccountDetails[fromChecksumHexAddress];
+  const { custodyAccountDetails, mmiConfiguration } = state.metamask;
+  const accountDetails = custodyAccountDetails?.[fromChecksumHexAddress];
 
-    isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
-      (custodian) => custodian.name === custodianName,
-    )?.isNoteToTraderSupported;
+  if (!accountDetails) {
+    return false;
   }
-  return isNoteToTraderSupported;
+
+  const foundCustodian = mmiConfiguration?.custodians?.find(
+    (custodian) => custodian.name === accountDetails.custodianName,
+  );
+
+  return foundCustodian ? foundCustodian.isNoteToTraderSupported : false;
 }
