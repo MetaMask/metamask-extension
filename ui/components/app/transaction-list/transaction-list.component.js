@@ -170,6 +170,41 @@ export default function TransactionList({
     [],
   );
 
+  // Remove transactions within each date group that are incoming transactions
+  // to a user that not the current one.
+  const removeIncomingTxsButToAnotherAddress = (dateGroup) => {
+    const isIncomingTxsButToAnotherAddress = (transaction) =>
+      transaction.type === 'incoming' &&
+      transaction.txParams.to.toLowerCase() !== selectedAddress.toLowerCase();
+
+    dateGroup.transactionGroups = dateGroup.transactionGroups.map(
+      (transactionGroup) => {
+        transactionGroup.transactions = transactionGroup.transactions.filter(
+          (transaction) => !isIncomingTxsButToAnotherAddress(transaction),
+        );
+
+        return transactionGroup;
+      },
+    );
+
+    return dateGroup;
+  };
+
+  // Remove transaction groups with no transactions
+  const removeTxGroupsWithNoTx = (dateGroup) => {
+    dateGroup.transactionGroups = dateGroup.transactionGroups.filter(
+      (transactionGroup) => {
+        return transactionGroup.transactions.length > 0;
+      },
+    );
+
+    return dateGroup;
+  };
+
+  // Remove date groups with no transaction groups
+  const dateGroupsWithTransactionGroups = (dateGroup) =>
+    dateGroup.transactionGroups.length > 0;
+
   return (
     <Box className="transaction-list" paddingTop={4}>
       <Box className="transaction-list__transactions">
@@ -213,36 +248,9 @@ export default function TransactionList({
           {completedTransactions.length > 0 ? (
             completedTransactions
               .slice(0, limit)
-              .map((dateGroup) => {
-                // Filter out transactions within each date group that are
-                // incoming transactions to a user that not the current one.
-                dateGroup.transactionGroups = dateGroup.transactionGroups.map(
-                  (transactionGroup) => {
-                    const isTxIncomingButToAnotherAddress = (transaction) =>
-                      transaction.type === 'incoming' &&
-                      transaction.txParams.to.toLowerCase() !==
-                        selectedAddress.toLowerCase();
-
-                    transactionGroup.transactions =
-                      transactionGroup.transactions.filter(
-                        (transaction) =>
-                          !isTxIncomingButToAnotherAddress(transaction),
-                      );
-
-                    return transactionGroup;
-                  },
-                );
-
-                // Remove transaction groups with no transactions
-                dateGroup.transactionGroups =
-                  dateGroup.transactionGroups.filter((transactionGroup) => {
-                    return transactionGroup.transactions.length > 0;
-                  });
-
-                return dateGroup;
-              })
-              // Remove date groups with no transaction groups
-              .filter((dateGroup) => dateGroup.transactionGroups.length > 0)
+              .map(removeIncomingTxsButToAnotherAddress)
+              .map(removeTxGroupsWithNoTx)
+              .filter(dateGroupsWithTransactionGroups)
               .map((dateGroup) => {
                 return dateGroup.transactionGroups.map(
                   (transactionGroup, index) => {
