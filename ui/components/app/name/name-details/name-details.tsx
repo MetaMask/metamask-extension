@@ -40,6 +40,11 @@ import { setName as saveName } from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { I18nContext } from '../../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 
 export interface NameDetailsProps {
   onClose: () => void;
@@ -63,41 +68,19 @@ export default function NameDetails({
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
+  const trackEvent = useContext(MetaMetricsContext);
+  const [dropdownOpened, setDropdownOpened] = useState(false);
+  const hasSavedName = Boolean(savedName);
 
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
     boolean,
     (value: string) => void,
   ];
 
-  const handleSaveClick = useCallback(async () => {
-    await dispatch(saveName({ value, type, name, sourceId: selectedSourceId }));
-    onClose();
-  }, [name, selectedSourceId, onClose]);
-
-  const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
-
-  const handleNameChange = useCallback(
-    (newName: string) => {
-      setName(newName);
-
-      const selectedProposedName =
-        proposedNames?.[selectedSourceId as string]?.[0];
-
-      if (newName !== selectedProposedName) {
-        setSelectedSourceId(undefined);
-      }
-    },
-    [setName, selectedSourceId],
-  );
-
-  const handleProposedNameClick = useCallback(
-    (option: any) => {
-      setSelectedSourceId(option.sourceId);
-    },
-    [setSelectedSourceId],
-  );
+  useEffect(() => {
+    setName(savedName ?? '');
+    setSelectedSourceId(savedSourceId ?? undefined);
+  }, [savedName, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(() => {
     const sourceIds = Object.keys(proposedNames);
@@ -123,12 +106,86 @@ export default function NameDetails({
     );
   }, [proposedNames, nameSources]);
 
-  useEffect(() => {
-    setName(savedName ?? '');
-    setSelectedSourceId(savedSourceId ?? undefined);
-  }, [savedName, savedSourceId, setName, setSelectedSourceId]);
+  const trackPetnamesEvent = useCallback(
+    async (
+      event:
+        | MetaMetricsEventName.PetnamesStarted
+        | MetaMetricsEventName.PetnamesCancelled
+        | MetaMetricsEventName.PetnamesSaved,
+    ) => {
+      trackEvent({
+        event,
+        category: MetaMetricsEventCategory.Petnames,
+        properties: {
+          flow_type: hasSavedName ? 'update' : 'add',
+          petnames_category: type,
+          petnames_suggestion_sources: proposedNameOptions.map(
+            (option) => option.sourceId,
+          ),
+          ...(event === MetaMetricsEventName.PetnamesCancelled
+            ? {
+                petnames_suggestions_viewed: dropdownOpened,
+              }
+            : {}),
+          ...(event === MetaMetricsEventName.PetnamesSaved
+            ? {
+                petnames_saved_source: selectedSourceId ?? null,
+              }
+            : {}),
+        },
+      }).catch((error) => {
+        console.log('Petnames metrics tracking failed', error);
+      });
+    },
+    [
+      trackEvent,
+      proposedNameOptions,
+      dropdownOpened,
+      savedName,
+      selectedSourceId,
+      type,
+    ],
+  );
 
-  const hasSavedName = Boolean(savedName);
+  const handleSaveClick = useCallback(async () => {
+    trackPetnamesEvent(MetaMetricsEventName.PetnamesSaved);
+    await dispatch(saveName({ value, type, name, sourceId: selectedSourceId }));
+    onClose();
+  }, [name, selectedSourceId, onClose, trackPetnamesEvent]);
+
+  const handleClose = useCallback(() => {
+    trackPetnamesEvent(MetaMetricsEventName.PetnamesCancelled);
+    onClose();
+  }, [onClose, trackPetnamesEvent]);
+
+  const handleNameChange = useCallback(
+    (newName: string) => {
+      setName(newName);
+
+      const selectedProposedName =
+        proposedNames?.[selectedSourceId as string]?.[0];
+
+      if (newName !== selectedProposedName) {
+        setSelectedSourceId(undefined);
+      }
+    },
+    [setName, selectedSourceId],
+  );
+
+  const handleProposedNameClick = useCallback(
+    (option: any) => {
+      setSelectedSourceId(option.sourceId);
+    },
+    [setSelectedSourceId],
+  );
+
+  const handleDropdownOpen = useCallback(() => {
+    setDropdownOpened(true);
+  }, [setDropdownOpened]);
+
+  useEffect(() => {
+    trackPetnamesEvent(MetaMetricsEventName.PetnamesStarted);
+  }, []);
 
   return (
     <Box>
@@ -184,6 +241,7 @@ export default function NameDetails({
               placeholder={t('nameSetPlaceholder')}
               noOptionsText={t('nameNoProposedNames')}
               onChange={handleNameChange}
+              onDropdownOpen={handleDropdownOpen}
               onOptionClick={handleProposedNameClick}
             />
           </Label>

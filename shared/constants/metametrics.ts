@@ -545,6 +545,10 @@ export enum MetaMetricsEventName {
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
   PermissionsRequested = 'Permissions Requested',
+  PetnamesCancelled = 'Petnames Cancelled',
+  PetnamesDisplayed = 'Petnames Displayed',
+  PetnamesSaved = 'Petnames Saved',
+  PetnamesStarted = 'Petnames Started',
   PhishingPageDisplayed = 'Phishing Page Displayed',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
@@ -662,18 +666,19 @@ export enum MetaMetricsEventCategory {
   Navigation = 'Navigation',
   Network = 'Network',
   Onboarding = 'Onboarding',
+  Petnames = 'Petnames',
   Phishing = 'Phishing',
   Retention = 'Retention',
   ServiceWorkers = 'service_workers',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
+  Tokens = 'Tokens',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IN
-  Tokens = 'Tokens',
 }
 
 export enum MetaMetricsEventLinkType {

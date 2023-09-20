@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
@@ -6,6 +12,11 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useName } from '../../../hooks/useName';
 import { updateProposedNames } from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import NameDetails from './name-details/name-details';
 
 const DEFAULT_UPDATE_DELAY = 60 * 5; // 5 Minutes
@@ -40,6 +51,7 @@ export default function Name({
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { name, proposedNames, proposedNamesLastUpdated } = useName(
     value,
@@ -71,17 +83,29 @@ export default function Name({
     setModalOpen(false);
   }, [setModalOpen]);
 
-  const proposedName = useMemo((): string | undefined => {
+  const [proposedName, proposedSourceId] = useMemo((): [string?, string?] => {
     for (const sourceId of sourcePriority ?? []) {
       const sourceProposedNames = proposedNames[sourceId] ?? [];
 
       if (sourceProposedNames.length) {
-        return sourceProposedNames[0];
+        return [sourceProposedNames[0], sourceId];
       }
     }
 
-    return undefined;
+    return [undefined, undefined];
   }, [proposedNames, sourcePriority]);
+
+  useEffect(() => {
+    trackEvent({
+      event: MetaMetricsEventName.PetnamesDisplayed,
+      category: MetaMetricsEventCategory.Petnames,
+      properties: {
+        petnames_category: type,
+        saved_name: Boolean(name),
+        proposed_source: proposedSourceId ?? null,
+      },
+    });
+  }, []);
 
   const formattedValue =
     type === NameType.ETHEREUM_ADDRESS ? shortenAddress(value) : value;
