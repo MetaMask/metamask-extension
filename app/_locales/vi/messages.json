@@ -3877,9 +3877,6 @@
     "message": "Chọn tùy chọn này nếu bạn muốn dùng Etherscan để hiển thị các giao dịch đến trong danh sách giao dịch",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Điều này phụ thuộc vào từng mạng sẽ có quyền truy cập vào địa chỉ Ethereum và địa chỉ IP của bạn."
-  },
   "showMore": {
     "message": "Hiển thị thêm"
   },
