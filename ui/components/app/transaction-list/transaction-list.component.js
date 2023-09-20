@@ -215,10 +215,10 @@ export default function TransactionList({
               .slice(0, limit)
               .map((dateGroup) => {
                 // Filter out transactions within each date group that are
-                // incoming transactions from the current user.
+                // incoming transactions to a user that not the current one.
                 dateGroup.transactionGroups = dateGroup.transactionGroups.map(
                   (transactionGroup) => {
-                    const isTxIncomingToAnotherAddress = (transaction) =>
+                    const isTxIncomingButToAnotherAddress = (transaction) =>
                       transaction.type === 'incoming' &&
                       transaction.txParams.to.toLowerCase() !==
                         selectedAddress.toLowerCase();
@@ -226,7 +226,7 @@ export default function TransactionList({
                     transactionGroup.transactions =
                       transactionGroup.transactions.filter(
                         (transaction) =>
-                          !isTxIncomingToAnotherAddress(transaction),
+                          !isTxIncomingButToAnotherAddress(transaction),
                       );
 
                     return transactionGroup;
