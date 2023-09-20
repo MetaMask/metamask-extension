@@ -86,7 +86,7 @@ export default function NftDetails({ nft }) {
   );
   const nftImageAlt = getNftImageAlt(nft);
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
-  const isImageHosted = image?.includes('https:');
+  const isImageHosted = image?.startsWith('https:');
 
   const formattedTimestamp = formatDate(
     new Date(lastSale?.event_timestamp).getTime(),
