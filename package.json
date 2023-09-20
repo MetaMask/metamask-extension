@@ -447,7 +447,7 @@
     "bify-module-groups": "^2.0.0",
     "brfs": "^2.0.2",
     "browser-util-inspect": "^0.2.0",
-    "browserify": "^16.5.1",
+    "browserify": "^17.0.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "chromedriver": "^116.0.0",
