@@ -31,6 +31,7 @@ export const KeyringAccountListItem = ({
       borderColor={BorderColor.borderDefault}
       padding={3}
       width={BlockSize.Full}
+      data-testid="keyring-account-list-item"
     >
       <Box
         display={Display.Flex}
@@ -55,6 +56,7 @@ export const KeyringAccountListItem = ({
       >
         <ButtonIcon
           ariaLabel="snap-url-export"
+          data-testid="keyring-account-link"
           iconName={IconName.Export}
           color={IconColor.primaryDefault}
           onClick={() => {

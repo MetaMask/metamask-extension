@@ -1,6 +1,9 @@
 import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
 import { Snap } from '@metamask/snaps-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import messages from '../../../../../app/_locales/en/messages.json';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
@@ -35,15 +38,8 @@ const defaultArgs = {
         },
       },
       options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
     },
     {
       address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -55,23 +51,21 @@ const defaultArgs = {
         },
       },
       options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
     },
   ],
 };
 
 describe('Keyring Snap Remove Warning', () => {
+  let store;
+  beforeAll(() => {
+    store = configureMockStore()(mockStore);
+  });
   it('show render the keyring snap warning and content', () => {
     const { getByText } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,
+      store,
     );
     expect(
       getByText(messages.backupKeyringSnapReminder.message),
@@ -87,6 +81,7 @@ describe('Keyring Snap Remove Warning', () => {
   it('displays the keyring snap confirmation removal modal', async () => {
     const { getByText, getByTestId, getAllByText } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,
+      store,
     );
 
     const nextButton = getByText('Continue');
@@ -115,6 +110,32 @@ describe('Keyring Snap Remove Warning', () => {
       expect(removeSnapButton).not.toBeDisabled();
       fireEvent.click(removeSnapButton);
       expect(mockOnSubmit).toBeCalled();
+    });
+  });
+
+  it('opens block explorer for account', async () => {
+    global.platform = { openTab: jest.fn() };
+    const { getByText, getAllByTestId } = renderWithProvider(
+      <KeyringSnapRemovalWarning {...defaultArgs} />,
+      store,
+    );
+
+    const getAccountsToBeRemoved = getAllByTestId('keyring-account-list-item');
+    expect(getAccountsToBeRemoved.length).toBe(2);
+
+    expect(
+      getByText(defaultArgs.keyringAccounts[0].metadata.name),
+    ).toBeInTheDocument();
+    expect(
+      getByText(defaultArgs.keyringAccounts[1].metadata.name),
+    ).toBeInTheDocument();
+
+    const accountLink = getAllByTestId('keyring-account-link');
+
+    fireEvent.click(accountLink[0]);
+
+    await waitFor(() => {
+      expect(global.platform.openTab).toHaveBeenCalled();
     });
   });
 });

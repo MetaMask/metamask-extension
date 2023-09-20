@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { InternalAccount } from '@metamask/keyring-api';
+import { getAccountLink } from '@metamask/etherscan-link';
 import { Snap } from '@metamask/snaps-utils';
+import { useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -24,6 +26,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import InfoTooltip from '../../../ui/info-tooltip';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
 export default function KeyringRemovalSnapWarning({
@@ -48,6 +51,7 @@ export default function KeyringRemovalSnapWarning({
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
+  const { chainId } = useSelector(getProviderConfig);
 
   const validateConfirmationInput = (input: string): boolean => {
     setError(false);
@@ -91,14 +95,17 @@ export default function KeyringRemovalSnapWarning({
                 justifyContent={JustifyContent.spaceBetween}
               >
                 <Text>{t('removeKeyringSnap')}</Text>
-                <InfoTooltip contentText={t('removeKeyringSnapToolTip')} />
+                <InfoTooltip
+                  contentText={t('removeKeyringSnapToolTip')}
+                  position="top"
+                />
               </Box>
               {keyringAccounts.map((account, index) => {
                 return (
                   <KeyringAccountListItem
                     key={index}
                     account={account}
-                    snapUrl={''}
+                    snapUrl={getAccountLink(account.address, chainId)}
                   />
                 );
               })}
