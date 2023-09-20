@@ -36,6 +36,13 @@ function wrapElementWithAPI(element, driver) {
         throw new Error(`Provided state: '${state}' is not supported`);
     }
   };
+
+  element.nestedFindElement = async (rawLocator) => {
+    const locator = driver.buildLocator(rawLocator);
+    const newElement = await element.findElement(locator);
+    return wrapElementWithAPI(newElement, driver);
+  };
+
   return element;
 }
 
