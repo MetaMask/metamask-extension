@@ -23,6 +23,13 @@ describe('Privacy Settings Onboarding View', () => {
         [CHAIN_IDS.SEPOLIA]: false,
         [CHAIN_IDS.LINEA_GOERLI]: true,
       },
+      usePhishDetect: true,
+      use4ByteResolution: true,
+      useTokenDetection: false,
+      useCurrencyRateCheck: true,
+      useMultiAccountBalanceChecker: true,
+      ipfsGateway: 'test.link',
+      useAddressBarEnsResolution: true,
     },
   };
 
@@ -58,7 +65,7 @@ describe('Privacy Settings Onboarding View', () => {
       <PrivacySettings />,
       store,
     );
-    // All settings are initialized toggled to true
+    // All settings are initialized toggled to be same as default
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(0);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(0);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(0);
@@ -96,7 +103,7 @@ describe('Privacy Settings Onboarding View', () => {
 
     expect(setUsePhishDetectStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
-    expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(false);
+    expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
