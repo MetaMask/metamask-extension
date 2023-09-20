@@ -381,11 +381,6 @@ export interface TransactionMeta {
   /** A boolean representing when the user manually edited the gas limit. */
   userEditedGasLimit: boolean;
   /**
-   * A metadata object containing information used to derive the suggested
-   * nonce, useful for debugging nonce issues.
-   */
-  nonceDetails: Record<string, any>;
-  /**
    * A hex string of the final signed transaction, ready to submit to the
    * network.
    */
@@ -405,6 +400,10 @@ export interface TransactionMeta {
   submittedTime?: number;
   /** The error encountered during the transaction */
   txErr?: TxError;
+  /**
+   * Whether the transaction is verified on the blockchain.
+   */
+  verifiedOnBlockchain?: boolean;
 }
 
 /**

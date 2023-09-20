@@ -371,9 +371,6 @@
   "amount": {
     "message": "Valor"
   },
-  "apiUrl": {
-    "message": "URL da API"
-  },
   "appDescription": {
     "message": "Uma carteira de Ethereum no seu navegador",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Custodiante"
-  },
-  "custodianAccount": {
-    "message": "Conta custodiante"
   },
   "custodianAccountAddedDesc": {
     "message": "Agora você pode usar suas contas de custódia no MetaMask Institutional."
@@ -2346,9 +2340,6 @@
   "missingSettingRequest": {
     "message": "Solicite aqui"
   },
-  "mmiAddToken": {
-    "message": "A página em $1 gostaria de autorizar o seguinte token de custodiante na MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "O MetaMask Institutional é projetado e desenvolvido ao redor do mundo."
   },
@@ -2899,6 +2890,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Marcar todas como lidas"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Saiba mais"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Estamos empolgados de anunciar o Beta Aberto do MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personalize sua carteira com snaps criados pela comunidade de desenvolvedores!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Os snaps ajudam a fazer mais com a MetaMask, como conectar-se a mais redes, ver insights de transações e receber notificações personalizadas."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Apresentamos o MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 novos tokens encontrados nesta conta",
@@ -3871,9 +3877,6 @@
     "message": "Isso depende de $1, que terá acesso ao seu endereço Ethereum e ao seu endereço IP. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Isso depende de cada rede que terá acesso ao seu endereço Ethereum e ao seu endereço IP."
-  },
   "showMore": {
     "message": "Exibir mais"
   },
@@ -4083,6 +4086,10 @@
   },
   "snapsNoInsight": {
     "message": "O snap não retornou nenhum insight"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Informações compartilhadas com Serviços de Terceiros serão coletadas diretamente por eles, de acordo com políticas de privacidade próprias. Por favor, consulte-as para obter mais informações.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Gerencie seus snaps"

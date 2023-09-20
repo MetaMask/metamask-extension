@@ -371,9 +371,6 @@
   "amount": {
     "message": "Montant"
   },
-  "apiUrl": {
-    "message": "URL de l’API"
-  },
   "appDescription": {
     "message": "Extension Ethereum pour navigateur",
     "description": "The description of the application"
@@ -416,7 +413,7 @@
     "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT suivants."
   },
   "approveTokenDescriptionWithoutSymbol": {
-    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT via $1$.",
+    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT via $1.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveTokenTitle": {
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Dépôt"
-  },
-  "custodianAccount": {
-    "message": "Compte de dépôt"
   },
   "custodianAccountAddedDesc": {
     "message": "Vous pouvez maintenant utiliser vos comptes de dépôt dans MetaMask Institutional."
@@ -2346,9 +2340,6 @@
   "missingSettingRequest": {
     "message": "Demandez ici"
   },
-  "mmiAddToken": {
-    "message": "La page à $1 souhaite autoriser le jeton de dépôt suivant dans MetaMask institutionnel"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional est conçu et établi dans le monde entier."
   },
@@ -2899,6 +2890,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Marquer tout comme lu"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "En savoir plus"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Nous sommes ravis d’annoncer le lancement de la version bêta publique de MetaMask Snaps !"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personnalisez votre portefeuille avec des snaps conçus par la communauté de développeurs !"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Les snaps vous aident à profiter pleinement de MetaMask, par exemple vous connecter à plus de réseaux, voir un aperçu des transactions et recevoir des notifications personnalisées."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Présentation de MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
@@ -3871,9 +3877,6 @@
     "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Cela dépend de chaque réseau qui aura accès à votre adresse Ethereum et à votre adresse IP."
-  },
   "showMore": {
     "message": "Afficher plus"
   },
@@ -4083,6 +4086,10 @@
   },
   "snapsNoInsight": {
     "message": "Le snap n’a renvoyé aucun aperçu"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Toute information que vous partagez avec des services tiers sera collectée directement par ces services tiers conformément à leur politique de confidentialité. Pour plus d’informations, veuillez consulter leur politique de confidentialité.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Gérez vos Snaps"

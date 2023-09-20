@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TokenAllowancePage should match snapshot 1`] = `
+exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
 <div>
   <div
     class="mm-box token-allowance-container page-container"
@@ -352,8 +352,29 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
               </div>
             </div>
           </div>
-          <div
-            class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-auto mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            Use site suggestion
+          </button>
+        </div>
+        <div
+          class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+        >
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--padding-inline-end-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="custom-spending-cap-input"
+            focused="true"
+            id="custom-spending-cap"
+            placeholder="Enter a number"
+            type="text"
+            value="1"
+          />
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            data-testid="custom-spending-cap-max-button"
+
           >
             <input
               autocomplete="off"
@@ -369,24 +390,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               data-testid="custom-spending-cap-max-button"
             >
-              Max
-            </button>
-          </div>
-          <div
-            class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
-          >
-            <span>
-               
-              This allows the third party to spend 
-              <span
-                class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
-              >
-                7
-                 
-                TST
-              </span>
-               from your current balance.
-               
+              1  
             </span>
           </div>
           <a
