@@ -682,7 +682,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('displayNftMedia')}</span>
           <div className="settings-page__content-description">
-            {t('displayNftMediaDescription')}
+            {t('displayNftMediaDesc')}
           </div>
         </div>
 

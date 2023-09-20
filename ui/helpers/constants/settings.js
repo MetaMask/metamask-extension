@@ -223,7 +223,7 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('displayNftMedia'),
-    descriptionMessage: (t) => t('displayNftMediaDescription'),
+    descriptionMessage: (t) => t('displayNftMediaDesc'),
     route: `${SECURITY_ROUTE}#opensea-api`,
     icon: 'fa fa-lock',
   },

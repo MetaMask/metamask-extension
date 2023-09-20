@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "NFTメディアの表示"
   },
-  "displayNftMediaDescription": {
-    "message": "NFTのメディアとデータを表示した場合、IPアドレスがOpenSeaをはじめとするサードパーティに公開されます。その結果、攻撃者がユーザーのIPアドレスとイーサリアムアドレスを関連付けられるようになる可能性があります。NFTの自動検出はこの設定に依存しており、この設定を無効にすると利用できなくなります。"
-  },
   "domain": {
     "message": "ドメイン"
   },

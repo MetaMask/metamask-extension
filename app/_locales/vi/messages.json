@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Hiển thị phương tiện NFT"
   },
-  "displayNftMediaDescription": {
-    "message": "Thao tác hiển thị dữ liệu và phương tiện NFT sẽ hiển thị địa chỉ IP của bạn với OpenSea hoặc các bên thứ ba khác. Điều này có thể cho phép kẻ tấn công liên kết địa chỉ IP với địa chỉ Ethereum của bạn. Tính năng tự động phát hiện NFT dựa trên chế độ cài đặt này và sẽ không khả dụng khi chế độ cài đặt này bị tắt."
-  },
   "domain": {
     "message": "Tên miền"
   },

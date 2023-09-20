@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Ipakita ang NFT media"
   },
-  "displayNftMediaDescription": {
-    "message": "Ang pagpapakita ng media at data ng NFT ay naglalantad sa iyong IP address sa OpenSea o sa ibang mga third party. Maaari nitong payagan ang mga umaatake na iugnay ang iyong IP address sa iyong Ethereum address. Umaasa ang awtomatikong pagtuklas ng NFT sa setting na ito, at hindi magagamit kapag naka-off ito."
-  },
   "domain": {
     "message": "Domain"
   },

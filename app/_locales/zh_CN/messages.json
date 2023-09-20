@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "显示NFT媒体"
   },
-  "displayNftMediaDescription": {
-    "message": "显示NFT媒体和数据时，OpenSea或其他第三方会获悉您的IP地址。这可能会使攻击者能够将您的IP地址和您的以太坊地址关联起来。NFT自动检测依赖于此设置，关闭后将不可用。"
-  },
   "domain": {
     "message": "域"
   },

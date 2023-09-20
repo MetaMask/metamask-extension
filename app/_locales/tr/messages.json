@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "NFT medyasını göster"
   },
-  "displayNftMediaDescription": {
-    "message": "NFT medyasının ve verilerin gösterilmesi IP adresinizin OpenSea'ye veya diğer üçüncü taraflara aktarılmasına neden olur. Bu durum, saldırganların IP adresinizi Ethereum adresinizle ilişkilendirmesini sağlayabilir. NFT otomatik algılama bu ayara dayalıdır ve bu ayar kapatıldığında kullanılamaz olur."
-  },
   "domain": {
     "message": "Alan"
   },

@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "NFT 미디어 표시"
   },
-  "displayNftMediaDescription": {
-    "message": "NFT 미디어와 데이터를 표시하면 IP 주소가 OpenSea나 다른 타사에 노출될 수 있습니다. 그러면 이더리움 주소와 연관된 IP 주소가 공격 세력에 의해 이용될 수 있습니다. NFT 자동 감지 기능에는 이 설정이 필요합니다. 이 설정을 비활성화하면 해당 기능도 사용할 수 없습니다."
-  },
   "domain": {
     "message": "도메인"
   },

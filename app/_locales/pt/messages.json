@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Exibir mídias de NFTs"
   },
-  "displayNftMediaDescription": {
-    "message": "Exibir mídias e dados de NFTs expõe seu endereço IP à OpenSea ou outros terceiros. Isso pode possibilitar que invasores associem seu endereço IP ao seu endereço Ethereum. A detecção automática de NFTs depende dessa configuração e ficará indisponível quando ela estiver desativada."
-  },
   "domain": {
     "message": "Domínio"
   },

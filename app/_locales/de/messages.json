@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "NFT-Medien anzeigen"
   },
-  "displayNftMediaDescription": {
-    "message": "Das Anzeigen von NFT-Medien und Daten gibt legt IP-Adresse OpenSea oder andere Drittanbieter gegenüber offen. Dies kann es Angreifern gestatten, Ihre IP-Adresse mit Ihrer Etherum-Adresse in Verbindung zu bringen. Die automatische NFT-Erkennung benötigt diese Einstellung und wird nicht zur Verfügung stehen, wenn diese deaktiviert ist."
-  },
   "domain": {
     "message": "Domain"
   },

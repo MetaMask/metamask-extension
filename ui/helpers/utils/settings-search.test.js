@@ -103,8 +103,8 @@ const t = (key) => {
       return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those services.';
     case 'displayNftMedia':
       return 'Display NFT media';
-    case 'displayNftMediaDescription':
-      return "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off.";
+    case 'displayNftMediaDesc':
+      return "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off.";
     case 'useNftDetection':
       return 'Autodetect NFTs';
     case 'useNftDetectionDescription':
