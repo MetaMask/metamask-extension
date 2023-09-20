@@ -244,7 +244,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
-import { updateCurrentLocale } from './translate';
+import { updateCurrentLocale, t } from './translate';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -869,71 +869,74 @@ export default class MetamaskController extends EventEmitter {
               const { id: addAccountApprovalId } =
                 this.approvalController.startFlow();
 
-              const confirmationResult =
-                await this.approvalController.addAndShowApprovalRequest({
-                  origin,
-                  type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-                  expectsResult: true,
-                });
+              try {
+                const confirmationResult =
+                  await this.approvalController.addAndShowApprovalRequest({
+                    origin,
+                    type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+                  });
 
-              if (confirmationResult) {
-                try {
+                if (confirmationResult) {
+                  try {
+                    await handleUserInput(confirmationResult);
+                    await this.keyringController.persistAllKeyrings();
+                    await this.approvalController.success({
+                      message: t('snapAccountCreated'),
+                    });
+                  } catch (error) {
+                    await this.approvalController.error({
+                      error: error.message,
+                    });
+                    throw new Error(
+                      `Error occurred while creating snap account: ${error.message}`,
+                    );
+                  }
+                } else {
                   await handleUserInput(confirmationResult);
-                  await this.keyringController.persistAllKeyrings();
-                  await this.approvalController.success({
-                    flowToEnd: addAccountApprovalId,
-                  });
-                } catch (error) {
-                  await this.approvalController.error({
-                    error: error.message,
-                  });
-                  this.approvalController.endFlow({
-                    id: addAccountApprovalId,
-                  });
+                  throw new Error('User denied account creation');
                 }
-              } else {
-                await handleUserInput(confirmationResult);
+              } finally {
                 this.approvalController.endFlow({
                   id: addAccountApprovalId,
                 });
-                throw new Error('User denied account creation');
               }
             },
             removeAccount: async (address, snapId, handleUserInput) => {
               const { id: removeAccountApprovalId } =
                 this.approvalController.startFlow();
 
-              const confirmationResult =
-                await this.approvalController.addAndShowApprovalRequest({
-                  origin: snapId,
-                  type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-                  requestData: { publicAddress: address },
-                  expectsResult: true,
-                });
+              try {
+                const confirmationResult =
+                  await this.approvalController.addAndShowApprovalRequest({
+                    origin: snapId,
+                    type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+                    requestData: { publicAddress: address },
+                  });
 
-              if (confirmationResult) {
-                try {
+                if (confirmationResult) {
+                  try {
+                    await this.removeAccount(address);
+                    await handleUserInput(confirmationResult);
+                    await this.keyringController.persistAllKeyrings();
+                    await this.approvalController.success({
+                      message: t('snapAccountRemoved'),
+                    });
+                  } catch (error) {
+                    await this.approvalController.error({
+                      error: error.message,
+                    });
+                    throw new Error(
+                      `Error occurred while removing snap account: ${error.message}`,
+                    );
+                  }
+                } else {
                   await handleUserInput(confirmationResult);
-                  await this.removeAccount(address);
-                  await this.keyringController.persistAllKeyrings();
-                  await this.approvalController.success({
-                    flowToEnd: removeAccountApprovalId,
-                    message: 'Account removed',
-                  });
-                } catch (error) {
-                  await this.approvalController.error({
-                    error: error.message,
-                  });
-                  this.approvalController.endFlow({
-                    id: removeAccountApprovalId,
-                  });
+                  throw new Error('User denied account removal');
                 }
-              } else {
-                await handleUserInput(confirmationResult);
+              } finally {
                 this.approvalController.endFlow({
                   id: removeAccountApprovalId,
                 });
-                throw new Error('User denied account removal');
               }
             },
           });
@@ -2119,22 +2122,6 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
-        requestUserApproval:
-          this.approvalController.addAndShowApprovalRequest.bind(
-            this.approvalController,
-          ),
-        startApprovalFlow: this.approvalController.startFlow.bind(
-          this.approvalController,
-        ),
-        endApprovalFlow: this.approvalController.endFlow.bind(
-          this.approvalController,
-        ),
-        showApprovalSuccess: this.approvalController.success.bind(
-          this.approvalController,
-        ),
-        showApprovalError: this.approvalController.error.bind(
-          this.approvalController,
-        ),
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),

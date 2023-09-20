@@ -5580,5 +5580,8 @@
   },
   "removeSnapAccountBannerDescription": {
     "message": "Be sure you can access this account on your own before removing it"
+  },
+  "snapAccountRemoved": {
+      "message": "Account removed"
   }
 }
