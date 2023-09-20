@@ -103,8 +103,9 @@ describe('CustodyPage', function () {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('jwt-form-connect-button')).toBeInTheDocument();
-      expect(mockedGetCustodianJWTList).toHaveBeenCalled();
+      expect(
+        screen.getByTestId('confirm-connect-custodian-modal'),
+      ).toBeInTheDocument();
     });
   });
 
