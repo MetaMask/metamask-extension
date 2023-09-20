@@ -43,7 +43,7 @@ export function useTokenDisplayValue(
       // and a token object has been provided
       token &&
       // and the provided token object contains a defined decimal value we need to calculate amount
-      token.decimals &&
+      token.decimals != null &&
       // and we are able to parse the token detail we to calculate amount from the raw data
       tokenValue,
   );
