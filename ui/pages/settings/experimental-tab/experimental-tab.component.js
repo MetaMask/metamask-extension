@@ -88,7 +88,10 @@ export default class ExperimentalTab extends PureComponent {
               >
                 {t('securityAlertsDescription')}
               </Text>
-              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
+              <div
+                data-testid="settings-toggle-security-alert-blockaid"
+                className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
+              >
                 <Text
                   variant={TextVariant.bodyMd}
                   color={TextColor.textDefault}
