@@ -872,6 +872,7 @@ export default class MetamaskController extends EventEmitter {
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: addAccountApprovalId,
+                    message: 'snapAccountCreated', // translation key for message
                   });
                 } catch (error) {
                   await this.approvalController.error({
@@ -880,6 +881,9 @@ export default class MetamaskController extends EventEmitter {
                   this.approvalController.endFlow({
                     id: addAccountApprovalId,
                   });
+                  throw new Error(
+                    `Error occurred while creating snap account: ${error.message}`,
+                  );
                 }
               } else {
                 await handleUserInput(confirmationResult);
@@ -903,12 +907,12 @@ export default class MetamaskController extends EventEmitter {
 
               if (confirmationResult) {
                 try {
-                  await handleUserInput(confirmationResult);
                   await this.removeAccount(address);
+                  await handleUserInput(confirmationResult);
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: removeAccountApprovalId,
-                    message: 'Account removed',
+                    message: 'snapAccountRemoved', // translation key for message
                   });
                 } catch (error) {
                   await this.approvalController.error({
@@ -917,6 +921,9 @@ export default class MetamaskController extends EventEmitter {
                   this.approvalController.endFlow({
                     id: removeAccountApprovalId,
                   });
+                  throw new Error(
+                    `Error occurred while removing snap account: ${error.message}`,
+                  );
                 }
               } else {
                 await handleUserInput(confirmationResult);
