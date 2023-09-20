@@ -7,11 +7,10 @@ const {
   largeDelayMs,
   veryLargeDelayMs,
   WINDOW_TITLES,
-  sleepSeconds,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
-describe.only('4byte setting', function () {
+describe('4byte setting', function () {
   it('makes a call to 4byte when the setting is on', async function () {
     const smartContract = SMART_CONTRACTS.PIGGYBANK;
     await withFixtures(
