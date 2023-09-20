@@ -2791,7 +2791,11 @@ export default class TransactionController extends EventEmitter {
     const currentTransactions = this.store.getState().transactions || {};
 
     const incomingTransactions = transactions
-      .filter((tx) => !this._hasTransactionHash(tx.hash, currentTransactions))
+      .filter(
+        (tx) =>
+          (tx.type === TransactionType.incoming && tx.from !== tx.to) ||
+          !this._hasTransactionHash(tx.hash, currentTransactions),
+      )
       .reduce((result, tx) => {
         result[tx.id] = tx;
         return result;
