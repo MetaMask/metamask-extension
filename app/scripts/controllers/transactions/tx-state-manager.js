@@ -134,6 +134,7 @@ export default class TransactionStateManager extends EventEmitter {
       loadingDefaults: true,
       dappSuggestedGasFees,
       sendFlowHistory: [],
+      verifiedOnBlockchain: false,
       ...opts,
     };
   }

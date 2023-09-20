@@ -104,6 +104,7 @@ const EXPECTED_NORMALISED_TRANSACTION_BASE = {
     value: '0xb1a2bc2ec50000',
   },
   type: TransactionType.incoming,
+  verifiedOnBlockchain: false,
 };
 
 const EXPECTED_NORMALISED_TRANSACTION_SUCCESS = {

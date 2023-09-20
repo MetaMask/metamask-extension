@@ -1706,7 +1706,7 @@
         "browserify>insert-module-globals": true,
         "browserify>module-deps": true,
         "browserify>read-only-stream": true,
-        "browserify>shasum": true,
+        "browserify>shasum-object": true,
         "browserify>syntax-error": true,
         "browserify>through2": true,
         "labeled-stream-splicer": true,
@@ -1798,7 +1798,7 @@
     "browserify>deps-sort": {
       "packages": {
         "browserify>deps-sort>through2": true,
-        "watchify>browserify>shasum-object": true
+        "browserify>shasum-object": true
       }
     },
     "browserify>deps-sort>through2": {
@@ -1946,18 +1946,15 @@
         "readable-stream": true
       }
     },
-    "browserify>shasum": {
+    "browserify>shasum-object": {
       "builtin": {
-        "buffer.Buffer.isBuffer": true,
         "crypto.createHash": true
       },
+      "globals": {
+        "Buffer.isBuffer": true
+      },
       "packages": {
-        "browserify>shasum>json-stable-stringify": true
-      }
-    },
-    "browserify>shasum>json-stable-stringify": {
-      "packages": {
-        "lavamoat>json-stable-stringify>jsonify": true
+        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
     "browserify>string_decoder": {
@@ -8978,17 +8975,6 @@
         "chokidar>anymatch": true,
         "through2": true,
         "watchify>xtend": true
-      }
-    },
-    "watchify>browserify>shasum-object": {
-      "builtin": {
-        "crypto.createHash": true
-      },
-      "globals": {
-        "Buffer.isBuffer": true
-      },
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
     "webpack>browserslist": {
