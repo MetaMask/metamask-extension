@@ -1405,6 +1405,20 @@ class FixtureBuilder {
     });
   }
 
+  withNameController(data) {
+    merge(
+      this.fixture.data.NameController
+        ? this.fixture.data.NameController
+        : (this.fixture.data.NameController = {}),
+      data,
+    );
+    return this;
+  }
+
+  withNoNames() {
+    return this.withNameController({ names: {} });
+  }
+
   build() {
     this.fixture.meta = {
       version: 74,

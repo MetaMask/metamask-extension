@@ -371,9 +371,6 @@
   "amount": {
     "message": "Importe"
   },
-  "apiUrl": {
-    "message": "URL de la API"
-  },
   "appDescription": {
     "message": "Un monedero de Ethereum en el explorador",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Custodio"
-  },
-  "custodianAccount": {
-    "message": "Cuenta custodiada"
   },
   "custodianAccountAddedDesc": {
     "message": "Ahora ya puede usar sus cuentas custodiadas en MetaMask Institutional."
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "Solicítelo aquí"
-  },
-  "mmiAddToken": {
-    "message": "A la página de $1 le gustaría autorizar el siguiente token custodiado en MetaMask Institutional"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional está diseñado y construido en todo el mundo."

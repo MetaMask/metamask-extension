@@ -371,9 +371,6 @@
   "amount": {
     "message": "金額"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "ブラウザにあるイーサリアムウォレット",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "カストディアン"
-  },
-  "custodianAccount": {
-    "message": "カストディアンアカウント"
   },
   "custodianAccountAddedDesc": {
     "message": "カストディアンアカウントをMetaMask Institutionalで使えるようになりました。"
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "ここからリクエスト"
-  },
-  "mmiAddToken": {
-    "message": "$1のページがMetaMask Institutionalで次のカストディアントークンの承認を求めています"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"

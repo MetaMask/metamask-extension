@@ -363,7 +363,7 @@ export const ImportTokensModal = ({ onClose }) => {
             <ButtonLink
               className="import-tokens-modal__nft-address-error-link"
               onClick={() => {
-                dispatch(showImportNftsModal());
+                dispatch(showImportNftsModal({ tokenAddress: address }));
                 onClose();
               }}
               color={TextColor.primaryDefault}

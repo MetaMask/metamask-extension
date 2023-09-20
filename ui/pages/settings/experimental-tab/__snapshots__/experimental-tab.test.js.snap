@@ -29,6 +29,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           </p>
           <div
             class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
+            data-testid="settings-toggle-security-alert-blockaid"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
