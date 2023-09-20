@@ -19,11 +19,11 @@ import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import SimulationErrorMessage from '../../ui/simulation-error-message';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-// / BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { getMethodName } from '../../../helpers/utils/metrics';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-// / END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IN
 
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -77,13 +77,13 @@ const TransactionAlerts = ({
     hasProperTxType &&
     (currentTokenAmount === '0x0' || currentTokenAmount === '0');
 
-  // / BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   const trackEvent = useContext(MetaMetricsContext);
   const txParams = txData?.txParams || {};
   const methodData = useSelector((state) =>
     getKnownMethodData(state, txParams?.data),
   );
-  // / END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   const onClickSupportLink = useCallback(() => {
