@@ -65,7 +65,10 @@ const ConfirmAddSuggestedNFT = () => {
   const history = useHistory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const suggestedNfts = useSelector(getSuggestedNfts);
+  const suggestedNftsNotSorted = useSelector(getSuggestedNfts);
+  const suggestedNfts = suggestedNftsNotSorted.sort(
+    (a, b) => a.requestData.asset.tokenId - b.requestData.asset.tokenId,
+  );
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);

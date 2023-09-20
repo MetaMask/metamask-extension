@@ -153,6 +153,10 @@
     "isLineaMainnetReleased": true,
     "selectedAddress": "string"
   },
+  "SelectedNetworkController": {
+    "domains": {},
+    "perDomainNetwork": "boolean"
+  },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
@@ -218,8 +222,6 @@
     "allDetectedTokens": {}
   },
   "TxController": {
-    "unapprovedTxs": "object",
-    "currentNetworkTxList": "object",
     "transactions": "object"
   }
 }

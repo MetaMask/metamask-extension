@@ -56,6 +56,7 @@ export default class AccountTracker {
    * @param {object} opts.blockTracker - A block tracker, which emits events for each new block
    * @param {Function} opts.getCurrentChainId - A function that returns the `chainId` for the current global network
    * @param {Function} opts.getNetworkIdentifier - A function that returns the current network
+   * @param {Function} opts.onAccountRemoved - Allows subscribing to keyring controller accountRemoved event
    */
   constructor(opts = {}) {
     const initState = {
@@ -82,6 +83,9 @@ export default class AccountTracker {
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
     this.preferencesController = opts.preferencesController;
     this.onboardingController = opts.onboardingController;
+
+    // subscribe to account removal
+    opts.onAccountRemoved((address) => this.removeAccount([address]));
 
     this.onboardingController.store.subscribe(
       previousValueComparator(async (prevState, currState) => {
