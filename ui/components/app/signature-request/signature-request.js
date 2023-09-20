@@ -1,4 +1,11 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useCallback,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react';
 import {
   useDispatch,
   useSelector,
@@ -54,7 +61,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 import {
   TextAlign,
@@ -91,6 +97,7 @@ import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessag
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IN
 
 import Message from './signature-request-message';
