@@ -54,6 +54,8 @@ import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
+const GK8_DISPLAY_NAME = 'gk8';
+
 const CustodyPage = () => {
   const t = useI18nContext();
   const history = useHistory();
@@ -137,7 +139,10 @@ const CustodyPage = () => {
         setJwtList(jwtListValue);
 
         // open confirm Connect Custodian modal except for gk8
-        if (custodianByDisplayName.displayName.toLocaleLowerCase() === 'gk8') {
+        if (
+          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
+          GK8_DISPLAY_NAME
+        ) {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);

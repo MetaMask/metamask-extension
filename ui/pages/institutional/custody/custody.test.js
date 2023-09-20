@@ -42,20 +42,21 @@ describe('CustodyPage', function () {
         },
         custodians: [
           {
-            type: 'Saturn A',
-            name: 'Saturn A',
+            type: 'GK8',
+            name: 'gk8',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
-            displayName: 'Saturn Custody A',
+            displayName: 'gk8',
             production: true,
             refreshTokenUrl: null,
             isNoteToTraderSupported: false,
             version: 1,
+            website: 'test website',
           },
           {
             type: 'Saturn B',
-            name: 'Saturn B',
+            name: 'Saturn Custody B',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
@@ -64,6 +65,7 @@ describe('CustodyPage', function () {
             refreshTokenUrl: null,
             isNoteToTraderSupported: false,
             version: 1,
+            website: 'test website',
           },
         ],
       },
@@ -102,11 +104,8 @@ describe('CustodyPage', function () {
       fireEvent.click(custodyBtns[0]);
     });
 
-    await waitFor(() => {
-      expect(
-        screen.getByTestId('confirm-connect-custodian-modal'),
-      ).toBeInTheDocument();
-    });
+    expect(screen.getByTestId('jwt-form-connect-button')).toBeInTheDocument();
+    expect(mockedGetCustodianJWTList).toHaveBeenCalled();
   });
 
   it('renders jwt token list when first custodian is selected, showing the jwt form and testing the sorting function', async () => {
@@ -119,18 +118,21 @@ describe('CustodyPage', function () {
           custodians: [
             {
               ...mockStore.metamask.mmiConfiguration.custodians[0],
-              name: 'saturn b',
+              name: 'Saturn Custody B',
               displayName: 'Saturn Custody B',
+              website: 'test website',
             },
             {
               ...mockStore.metamask.mmiConfiguration.custodians[1],
-              name: 'saturn a',
+              name: 'Saturn Custody A',
               displayName: 'Saturn Custody A',
+              website: 'test website',
             },
             {
               ...mockStore.metamask.mmiConfiguration.custodians[2],
-              name: 'saturn c',
+              name: 'Saturn Custody C',
               displayName: 'Saturn Custody C',
+              website: 'test website',
             },
           ],
         },
@@ -416,5 +418,38 @@ describe('CustodyPage', function () {
         'Network error. Please ensure you have entered the correct API URL',
       );
     });
+  });
+
+  it('does open confirm Connect Custodian modal when custodian display name is not gk8', async () => {
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        mmiConfiguration: {
+          ...mockStore.metamask.mmiConfiguration,
+          custodians: [
+            {
+              ...mockStore.metamask.mmiConfiguration.custodians[0],
+              displayName: 'Saturn Custody B',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    act(() => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    await waitFor(() => {
+      const custodyBtns = screen.getAllByTestId('custody-connect-button');
+      fireEvent.click(custodyBtns[0]);
+    });
+
+    expect(
+      screen.queryByTestId('confirm-connect-custodian-modal'),
+    ).toBeInTheDocument();
   });
 });
