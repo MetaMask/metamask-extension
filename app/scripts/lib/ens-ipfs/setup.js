@@ -58,13 +58,18 @@ export default function setupEnsIpfsResolver({
     const ipfsGateway = getIpfsGateway();
     const useAddressBarEnsResolution = getUseAddressBarEnsResolution();
 
+    const ensSiteUrl = `https://app.ens.domains/name/${name}`;
+    /*
     if (!useAddressBarEnsResolution || ipfsGateway === '') {
       return;
     }
+    */
 
-    browser.tabs.update(tabId, { url: `loading.html` });
+    if (useAddressBarEnsResolution) {
+      browser.tabs.update(tabId, { url: `loading.html` });
+    }
 
-    let url = `https://app.ens.domains/name/${name}`;
+    let url = ensSiteUrl;
 
     // If we're testing ENS domain resolution support,
     // we assume the ENS domains URL
@@ -79,6 +84,11 @@ export default function setupEnsIpfsResolver({
         name,
       });
       if (type === 'ipfs-ns' || type === 'ipns-ns') {
+        // If the ENS is via IPFS and that setting is disabled,
+        // Do not resolve the ENS
+        if (ipfsGateway === '') {
+          return;
+        }
         const resolvedUrl = `https://${hash}.${type.slice(
           0,
           4,
@@ -121,7 +131,9 @@ export default function setupEnsIpfsResolver({
     } catch (err) {
       console.warn(err);
     } finally {
-      browser.tabs.update(tabId, { url });
+      if (!useAddressBarEnsResolution && url === ensSiteUrl) {
+        browser.tabs.update(tabId, { url });
+      }
     }
   }
 }
