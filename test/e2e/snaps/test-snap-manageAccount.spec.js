@@ -99,7 +99,10 @@ describe('Test Snap Account', function () {
         await driver.clickElement('[data-testid="account-menu-icon"]');
 
         const label = await driver.findElement('.mm-tag');
-        assert.strictEqual(await label.getText(), 'Snaps');
+        assert.strictEqual(
+          await label.getText(),
+          'MetaMask Simple Snap Keyring',
+        );
       },
     );
   });
