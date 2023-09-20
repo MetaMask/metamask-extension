@@ -18,6 +18,7 @@ import SnapAuthorshipExpanded from '../../../../components/app/snaps/snap-author
 import Box from '../../../../components/ui/box';
 import SnapRemoveWarning from '../../../../components/app/snaps/snap-remove-warning';
 import KeyringSnapRemovalWarning from '../../../../components/app/snaps/keyring-snap-removal-warning';
+import KeyringSnapRemovalResult from '../../../../components/app/snaps/keyring-snap-removal-result';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
 
 import { SNAPS_LIST_ROUTE } from '../../../../helpers/constants/routes';
@@ -40,6 +41,12 @@ import SnapPermissionsList from '../../../../components/app/snaps/snap-permissio
 import { SnapDelineator } from '../../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
+const KeyringSnapRemovalResultStatus = {
+  Success: 'success',
+  Failed: 'failed',
+  None: 'none',
+};
+
 function ViewSnap() {
   const t = useI18nContext();
   const history = useHistory();
@@ -55,6 +62,9 @@ function ViewSnap() {
   const internalAccounts = useSelector(getInternalAccounts);
 
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
+  const [removeKeyringSnapResult, setRemoveKeyringSnapResult] = useState({
+    result: KeyringSnapRemovalResultStatus.None,
+  });
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -219,9 +229,30 @@ function ViewSnap() {
             onClose={() => setIsShowingRemoveWarning(false)}
             onBack={() => setIsShowingRemoveWarning(false)}
             onSubmit={async () => {
-              await dispatch(removeSnap(snap.id));
+              try {
+                await dispatch(removeSnap(snap.id));
+                setRemoveKeyringSnapResult({
+                  result: KeyringSnapRemovalResultStatus.Success,
+                });
+              } catch (e) {
+                setRemoveKeyringSnapResult({
+                  result: KeyringSnapRemovalResultStatus.Failed,
+                });
+              } finally {
+                setIsShowingRemoveWarning(false);
+              }
             }}
             isOpen={isShowingRemoveWarning && isKeyringSnap}
+          />
+          <KeyringSnapRemovalResult
+            snapName={snap.manifest.proposedName}
+            result={removeKeyringSnapResult.result}
+            isOpen={removeKeyringSnapResult.result !== 'none'}
+            onClose={() =>
+              setRemoveKeyringSnapResult({
+                result: KeyringSnapRemovalResultStatus.None,
+              })
+            }
           />
         </Box>
       </Box>
