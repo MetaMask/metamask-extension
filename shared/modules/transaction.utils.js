@@ -40,20 +40,6 @@ const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
 
 /**
- * Checks whether a given transaction matches the specified chain ID.
- * This function is used to determine if a transaction is relevant to the current chain.
- *
- * @param transaction - The transaction metadata to check.
- * @param chainId - The chain ID of the current network.
- * @returns A boolean value indicating whether the transaction matches the current chain ID.
- */
-export function transactionMatchesChainId(transaction, chainId) {
-  // Legacy: in earlier versions of extension, chain ID was only persisted to `txParams.chainId`
-  const txChainId = transaction.chainId ?? transaction.txParams.chainId;
-  return txChainId === chainId;
-}
-
-/**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
  * and valid inputs. This will return false for non hex string inputs.
  *

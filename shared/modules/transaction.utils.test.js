@@ -6,7 +6,6 @@ import {
   isEIP1559Transaction,
   isLegacyTransaction,
   parseStandardTokenTransactionData,
-  transactionMatchesChainId,
 } from './transaction.utils';
 
 describe('Transaction.utils', function () {
@@ -386,93 +385,6 @@ describe('Transaction.utils', function () {
       expect(result).toMatchObject({
         type: TransactionType.contractInteraction,
         getCodeResponse: '0x0a',
-      });
-    });
-  });
-
-  describe('transactionMatchesChainId', () => {
-    const mockTransaction = {
-      chainId: '0x1',
-      id: '1',
-      time: 123456,
-      txParams: {
-        chainId: '0x1',
-        from: '0x123',
-        gas: '0x100',
-        gasPrice: '0x300',
-        value: '0x200',
-        nonce: '0x1',
-      },
-      status: 'unapproved',
-    };
-
-    describe('chainId exists on transaction meta only', () => {
-      const transaction = {
-        ...mockTransaction,
-        txParams: {
-          ...mockTransaction.txParams,
-          chainId: undefined,
-        },
-      };
-
-      it('returns false if chainId does not match transaction meta chainId', () => {
-        expect(transactionMatchesChainId(transaction, '0x2')).toBe(false);
-      });
-
-      it('returns true if chainId matches transaction meta chainId', () => {
-        expect(transactionMatchesChainId(transaction, '0x1')).toBe(true);
-      });
-    });
-
-    describe('chainId exists on txParams only', () => {
-      const transaction = {
-        ...mockTransaction,
-        chainId: undefined,
-      };
-
-      it('returns false if chainId does not match txParams chainId', () => {
-        expect(transactionMatchesChainId(transaction, '0x2')).toBe(false);
-      });
-
-      it('returns true if chainId matches txParams chainId', () => {
-        expect(transactionMatchesChainId(transaction, '0x1')).toBe(true);
-      });
-    });
-
-    describe('chainId exists on transaction meta and txParams', () => {
-      const transaction = {
-        ...mockTransaction,
-        txParams: {
-          ...mockTransaction.txParams,
-          chainId: '0x2',
-        },
-      };
-
-      it('returns false if chainId does not match transaction meta chainId', () => {
-        expect(transactionMatchesChainId(transaction, '0x2')).toBe(false);
-      });
-
-      it('returns true if chainId matches transaction meta chainId', () => {
-        expect(transactionMatchesChainId(transaction, '0x1')).toBe(true);
-      });
-    });
-
-    describe('chainId is missing on both transaction meta and txParams', () => {
-      const transaction = {
-        ...mockTransaction,
-        chainId: undefined,
-        txParams: {
-          ...mockTransaction.txParams,
-          chainId: undefined,
-        },
-      };
-
-      it('returns false if chainId value is provided', () => {
-        expect(transactionMatchesChainId(transaction, '0x1')).toBe(false);
-      });
-
-      it('returns true if chainId value is undefined', () => {
-        expect(transactionMatchesChainId(transaction, undefined)).toBe(true);
       });
     });
   });

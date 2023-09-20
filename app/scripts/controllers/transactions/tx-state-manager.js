@@ -5,7 +5,6 @@ import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
 import createId from '../../../../shared/modules/random-id';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { transactionMatchesChainId } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
 import {
@@ -153,7 +152,7 @@ export default class TransactionStateManager extends EventEmitter {
       this.store.getState().transactions,
       (transaction) =>
         transaction.status === TransactionStatus.unapproved &&
-        transactionMatchesChainId(transaction, chainId),
+        transaction.chainId === chainId,
     );
   }
 
@@ -273,8 +272,7 @@ export default class TransactionStateManager extends EventEmitter {
       .reverse()
       .filter((tx) => {
         const { chainId, status, txParams } = tx;
-        const txChainId = chainId ?? txParams.chainId;
-        const key = `${txParams.nonce}-${txChainId}-${txParams.from}`;
+        const key = `${txParams.nonce}-${chainId}-${txParams.from}`;
         if (nonceNetworkSet.has(key)) {
           return false;
         } else if (
@@ -436,12 +434,7 @@ export default class TransactionStateManager extends EventEmitter {
     // matching transactions that are sorted by time.
     const filteredTransactions = sortBy(
       pickBy(transactionsToFilter, (transaction) => {
-        // default matchesCriteria to the value of transactionMatchesChainId
-        // when filterToCurrentNetwork is true.
-        if (
-          filterToCurrentNetwork &&
-          transactionMatchesChainId(transaction, chainId) === false
-        ) {
+        if (filterToCurrentNetwork && transaction.chainId !== chainId) {
           return false;
         }
         // iterate over the predicateMethods keys to check if the transaction
@@ -610,7 +603,7 @@ export default class TransactionStateManager extends EventEmitter {
         transactions,
         (transaction) =>
           transaction.txParams.from === address &&
-          transactionMatchesChainId(transaction, chainId),
+          transaction.chainId === chainId,
       ),
     });
   }
