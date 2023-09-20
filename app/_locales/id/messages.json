@@ -3877,9 +3877,6 @@
     "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Ini bergantung pada setiap jaringan yang akan memiliki akses ke alamat Ethereum dan alamat IP Anda."
-  },
   "showMore": {
     "message": "Tampilkan selengkapnya"
   },
