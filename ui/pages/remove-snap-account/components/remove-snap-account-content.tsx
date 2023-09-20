@@ -20,6 +20,7 @@ import SnapAvatar from '../../../components/app/snaps/snap-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Card from '../../../components/ui/card';
 import { RemoveSnapAccountProps } from '../remove-snap-account';
+import ViewAccountOnBlockExplorer from './view-account-on-block-explorer';
 
 const CreateSnapAccountContent = ({
   snapName,
@@ -27,7 +28,6 @@ const CreateSnapAccountContent = ({
   publicAddress,
 }: RemoveSnapAccountProps) => {
   const t = useI18nContext();
-
   return (
     <Box
       display={Display.Flex}
@@ -65,14 +65,25 @@ const CreateSnapAccountContent = ({
             description={t('removeSnapAccountBannerDescription')}
           />
         </Box>
-        <Box>
-          <Card>
-            <Text color={TextColor.textMuted} variant={TextVariant.bodyXs}>
+        <Card display={Display.Flex} gap={4}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <Text color={TextColor.textMuted} variant={TextVariant.bodySm}>
               {t('publicAddress')}
             </Text>
-            <Text variant={TextVariant.bodySm}>{publicAddress}</Text>
-          </Card>
-        </Box>
+            <Text variant={TextVariant.bodyXs}>{publicAddress}</Text>
+          </Box>
+          <Box
+            display={Display.Flex}
+            marginLeft={'auto'}
+            alignItems={AlignItems.center}
+          >
+            <ViewAccountOnBlockExplorer publicAddress={publicAddress} />
+          </Box>
+        </Card>
       </Box>
     </Box>
   );
