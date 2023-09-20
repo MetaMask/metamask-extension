@@ -56,13 +56,7 @@ function SecurityProviderBannerAlert({
 
       {provider && (
         <>
-          <Text
-            marginTop={3}
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            color={Color.textAlternative}
-            variant={TextVariant.bodySm}
-          >
+          <Text marginTop={3} display={Display.Flex}>
             {t('somethingDoesntLookRight', [
               <ButtonLink
                 key={`security-provider-button-supporturl-${provider}`}
@@ -128,7 +122,7 @@ SecurityProviderBannerAlert.propTypes = {
   /** Name of the security provider */
   provider: PropTypes.oneOf(Object.values(SecurityProvider)),
 
-  /** Function to be called when the blockaid support link is clicked */
+  /** Function to be called when the support link is clicked */
   onClickSupportLink: PropTypes.func,
 };
 

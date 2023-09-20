@@ -7,12 +7,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { PriorityLevels } from '../../../../shared/constants/gas';
-import {
-  submittedPendingTransactionsSelector,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  getKnownMethodData,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../../selectors';
+import { submittedPendingTransactionsSelector } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlert, ButtonLink, Text } from '../../component-library';
@@ -20,8 +15,6 @@ import SimulationErrorMessage from '../../ui/simulation-error-message';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { getMethodName } from '../../../helpers/utils/metrics';
-import { TransactionType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 ///: END:ONLY_INCLUDE_IN
 
@@ -79,10 +72,6 @@ const TransactionAlerts = ({
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   const trackEvent = useContext(MetaMetricsContext);
-  const txParams = txData?.txParams || {};
-  const methodData = useSelector((state) =>
-    getKnownMethodData(state, txParams?.data),
-  );
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -92,12 +81,6 @@ const TransactionAlerts = ({
       event: MetaMetricsEventName.ExternalLinkClicked,
       properties: {
         action: 'Confirm Screen',
-        legacy_event: true,
-        recipientKnown: null,
-        functionType:
-          'confirm' ||
-          getMethodName(methodData.name) ||
-          TransactionType.contractInteraction,
         origin: txData?.origin,
         external_link_clicked: true,
         security_alert_support_link: ZENDESK_URLS.SUPPORT_URL,

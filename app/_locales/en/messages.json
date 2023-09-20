@@ -4267,7 +4267,8 @@
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
   },
   "somethingDoesntLookRight": {
-    "message": "Something doesn't look right? $1"
+    "message": "Something doesn't look right? $1",
+    "description": "A false positive message for users to contact support. $1 is a link to the support page."
   },
   "somethingIsWrong": {
     "message": "Something's gone wrong. Try reloading the page."
