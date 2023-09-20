@@ -1,25 +1,25 @@
-import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  nonceSortedCompletedTransactionsSelector,
-  nonceSortedPendingTransactionsSelector,
-} from '../../../selectors/transactions';
-import { getCurrentChainId } from '../../../selectors';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import TransactionListItem from '../transaction-list-item';
-import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
-import Button from '../../ui/button';
-import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { Box, Text } from '../../component-library';
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
+import {
+  nonceSortedCompletedTransactionsSelector,
+  nonceSortedPendingTransactionsSelector,
+} from '../../../selectors/transactions';
+import { Box, Text } from '../../component-library';
+import Button from '../../ui/button';
+import TransactionListItem from '../transaction-list-item';
+import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
 
 const PAGE_INCREMENT = 10;
 
@@ -113,6 +113,8 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
+  const selectedAddress = useSelector(getSelectedAddress);
+
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
@@ -209,32 +211,67 @@ export default function TransactionList({
         )}
         <Box className="transaction-list__completed-transactions">
           {completedTransactions.length > 0 ? (
-            completedTransactions.slice(0, limit).map((dateGroup) => {
-              return dateGroup.transactionGroups.map(
-                (transactionGroup, index) => {
-                  return (
-                    <>
-                      {renderDateStamp(index, dateGroup)}
-                      {transactionGroup.initialTransaction?.transactionType ===
-                      TransactionType.smart ? (
-                        <SmartTransactionListItem
-                          transactionGroup={transactionGroup}
-                          smartTransaction={transactionGroup.initialTransaction}
-                          key={`${transactionGroup.nonce}:${index}`}
-                        />
-                      ) : (
-                        <TransactionListItem
-                          transactionGroup={transactionGroup}
-                          key={`${transactionGroup.nonce}:${
-                            limit + index - 10
-                          }`}
-                        />
-                      )}
-                    </>
-                  );
-                },
-              );
-            })
+            completedTransactions
+              .slice(0, limit)
+              .map((dateGroup) => {
+                // Filter out transactions within each date group that are
+                // incoming transactions from the current user.
+                dateGroup.transactionGroups = dateGroup.transactionGroups.map(
+                  (transactionGroup) => {
+                    const isTxIncomingToAnotherAddress = (transaction) =>
+                      transaction.type === 'incoming' &&
+                      transaction.txParams.to.toLowerCase() !==
+                        selectedAddress.toLowerCase();
+
+                    transactionGroup.transactions =
+                      transactionGroup.transactions.filter(
+                        (transaction) =>
+                          !isTxIncomingToAnotherAddress(transaction),
+                      );
+
+                    return transactionGroup;
+                  },
+                );
+
+                // Remove transaction groups with no transactions
+                dateGroup.transactionGroups =
+                  dateGroup.transactionGroups.filter((transactionGroup) => {
+                    return transactionGroup.transactions.length > 0;
+                  });
+
+                return dateGroup;
+              })
+              // Remove date groups with no transaction groups
+              .filter((dateGroup) => dateGroup.transactionGroups.length > 0)
+              .map((dateGroup) => {
+                console.log({ dateGroup });
+                return dateGroup.transactionGroups.map(
+                  (transactionGroup, index) => {
+                    return (
+                      <>
+                        {renderDateStamp(index, dateGroup)}
+                        {transactionGroup.initialTransaction
+                          ?.transactionType === TransactionType.smart ? (
+                          <SmartTransactionListItem
+                            transactionGroup={transactionGroup}
+                            smartTransaction={
+                              transactionGroup.initialTransaction
+                            }
+                            key={`${transactionGroup.nonce}:${index}`}
+                          />
+                        ) : (
+                          <TransactionListItem
+                            transactionGroup={transactionGroup}
+                            key={`${transactionGroup.nonce}:${
+                              limit + index - 10
+                            }`}
+                          />
+                        )}
+                      </>
+                    );
+                  },
+                );
+              })
           ) : (
             <Box className="transaction-list__empty">
               <Box className="transaction-list__empty-text">
