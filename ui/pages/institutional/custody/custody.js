@@ -79,6 +79,8 @@ const CustodyPage = () => {
   const [accounts, setAccounts] = useState();
   const address = useSelector(getSelectedAddress);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
+  const isCheckBoxSelected =
+    accounts && Object.keys(selectedAccounts).length === accounts.length;
 
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
@@ -254,7 +256,7 @@ const CustodyPage = () => {
               true,
             ),
           );
-          console.log('tetetdstsdfgsdfsd', accountsValue);
+
           setAccounts(accountsValue);
 
           trackEvent({
@@ -367,6 +369,7 @@ const CustodyPage = () => {
 
       {!accounts && !selectedCustodianType && (
         <Box
+          data-testid="connect-custodial-account"
           padding={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -421,6 +424,7 @@ const CustodyPage = () => {
               marginTop={4}
             >
               <ButtonIcon
+                data-testid="custody-back-button"
                 ariaLabel={t('back')}
                 iconName={IconName.ArrowLeft}
                 size={IconSize.Sm}
@@ -466,6 +470,7 @@ const CustodyPage = () => {
             ) : (
               <Box display={Display.Flex} gap={4}>
                 <Button
+                  data-testid="custody-cancel-button"
                   block
                   variant={ButtonVariant.Secondary}
                   size={ButtonSize.Lg}
@@ -534,13 +539,13 @@ const CustodyPage = () => {
             <input
               type="checkbox"
               id="selectAllAccounts"
-              data-testid="select-all-accounts"
+              data-testid={`select-all-accounts-selected-${isCheckBoxSelected}`}
               name="selectAllAccounts"
               marginRight={2}
               marginLeft={2}
               value={{}}
               onChange={(e) => setSelectAllAccounts(e)}
-              checked={Object.keys(selectedAccounts).length === accounts.length}
+              checked={isCheckBoxSelected}
             />
             <Label htmlFor="selectAllAccounts">{t('selectAllAccounts')}</Label>
           </Box>

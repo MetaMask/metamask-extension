@@ -204,7 +204,9 @@ describe('CustodyPage', function () {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('select-all-accounts')).toBeDefined();
+      expect(
+        screen.getByTestId('select-all-accounts-selected-false'),
+      ).toBeDefined();
       expect(screen.getByText('0x123')).toBeDefined();
       expect(screen.getByText('testLabels')).toBeDefined();
       expect(screen.getByText('Saturn Test Name')).toBeDefined();
@@ -233,6 +235,75 @@ describe('CustodyPage', function () {
     });
 
     expect(screen.getByTestId('custody-accounts-empty')).toBeDefined();
+  });
+
+  it('renders the list of custodians in mmiController when the user clicks on cancel button', async () => {
+    act(() => {
+      renderWithProvider(<CustodyPage />, store);
+    });
+
+    await waitFor(() => {
+      const custodyBtns = screen.getAllByTestId('custody-connect-button');
+      fireEvent.click(custodyBtns[0]);
+    });
+
+    act(() => {
+      const custodyCancelBtn = screen.getAllByTestId('custody-cancel-button');
+      fireEvent.click(custodyCancelBtn[0]);
+    });
+
+    expect(screen.getByTestId('connect-custodial-account')).toBeDefined();
+  });
+
+  it('should select all accounts when "Select All Accounts" checkbox is clicked', async () => {
+    // Mock the accounts
+    const accounts = [
+      {
+        name: 'Saturn Test Name',
+        address: '0x123',
+        balance: '0x1',
+        custodianDetails: 'custodianDetails',
+        labels: [{ key: 'key', value: 'testLabels' }],
+        chanId: 'chanId',
+      },
+    ];
+
+    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
+      dispatch({ type: 'TYPE', payload: accounts });
+      return accounts;
+    });
+
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [
+            {
+              token: 'token',
+              environment: 'Saturn A',
+              service: 'Saturn A',
+              apiUrl: 'url',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    act(() => {
+      const checkbox = screen.getByTestId('select-all-accounts-selected-false');
+      fireEvent.click(checkbox);
+    });
+
+    expect(
+      screen.getByTestId('select-all-accounts-selected-true'),
+    ).toBeChecked();
   });
 
   it('handles connection errors correctly', async () => {
