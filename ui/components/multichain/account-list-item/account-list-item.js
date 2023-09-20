@@ -100,7 +100,10 @@ export const AccountListItem = ({
   const { keyring } = account.metadata;
   const isRemovable =
     keyring.type !== KeyringType.hdKeyTree && keyring.type !== KeyringType.snap;
-  const label = getLabel(keyring, t);
+  const label =
+    keyring.type === KeyringType.snap
+      ? account.metadata.snap.name
+      : getLabel(keyring, t);
 
   const trackEvent = useContext(MetaMetricsContext);
 

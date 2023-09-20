@@ -118,13 +118,19 @@ describe('AccountListItem', () => {
           keyring: {
             type: 'Snap Keyring',
           },
+          snap: {
+            name: 'Metamask Simple Snap',
+            id: 'metamask-simple-snap',
+            enabled: true,
+          },
         },
         options: {},
         methods: [...Object.values(EthMethod)],
         type: EthAccountType.Eoa,
+        balance: '0x0',
       },
     });
 
-    expect(getByText('Snaps')).toBeInTheDocument();
+    expect(getByText('Metamask Simple Snap')).toBeInTheDocument();
   });
 });
