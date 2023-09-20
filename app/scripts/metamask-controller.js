@@ -866,9 +866,9 @@ export default class MetamaskController extends EventEmitter {
                   expectsResult: true,
                 });
 
-              if (confirmationResult) {
+              if (confirmationResult.value) {
                 try {
-                  await handleUserInput(confirmationResult);
+                  await handleUserInput(confirmationResult.value);
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: addAccountApprovalId,
@@ -886,7 +886,7 @@ export default class MetamaskController extends EventEmitter {
                   );
                 }
               } else {
-                await handleUserInput(confirmationResult);
+                await handleUserInput(confirmationResult.value);
                 this.approvalController.endFlow({
                   id: addAccountApprovalId,
                 });
@@ -905,10 +905,10 @@ export default class MetamaskController extends EventEmitter {
                   expectsResult: true,
                 });
 
-              if (confirmationResult) {
+              if (confirmationResult.value) {
                 try {
                   await this.removeAccount(address);
-                  await handleUserInput(confirmationResult);
+                  await handleUserInput(confirmationResult.value);
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: removeAccountApprovalId,
@@ -926,7 +926,7 @@ export default class MetamaskController extends EventEmitter {
                   );
                 }
               } else {
-                await handleUserInput(confirmationResult);
+                await handleUserInput(confirmationResult.value);
                 this.approvalController.endFlow({
                   id: removeAccountApprovalId,
                 });
