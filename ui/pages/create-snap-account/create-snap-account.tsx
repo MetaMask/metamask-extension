@@ -26,22 +26,17 @@ const CreateSnapAccount = ({ snapId, snapName }: CreateSnapAccountProps) => {
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      padding={[0, 4]}
+      paddingBottom={2}
+      paddingTop={2}
     >
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
         height={BlockSize.Full}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          height={BlockSize.Full}
-        >
-          <CreateSnapAccountContent snapName={snapName} snapId={snapId} />
-        </Box>
+        <CreateSnapAccountContent snapName={snapName} snapId={snapId} />
       </Box>
     </Box>
   );

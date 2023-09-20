@@ -1,16 +1,6 @@
 import React from 'react';
 import RemoveSnapAccountContent from './remove-snap-account-content';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  OverflowWrap,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+
 
 export default {
   title: 'Components/UI/RemoveSnapAccountContent', // title should follow the folder structure location of the component. Don't use spaces.
