@@ -371,9 +371,6 @@
   "amount": {
     "message": "Halaga"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Ethereum Wallet sa iyong Browser",
     "description": "The description of the application"
@@ -984,9 +981,6 @@
   },
   "custodian": {
     "message": "Tagapangalaga"
-  },
-  "custodianAccount": {
-    "message": "Account ng tagapangalaga"
   },
   "custodianAccountAddedDesc": {
     "message": "Maaari mo na ngayong gamitin ang iyong mga custodian account sa MetaMask Institutional."
@@ -2349,9 +2343,6 @@
   },
   "missingSettingRequest": {
     "message": "Humiling dito"
-  },
-  "mmiAddToken": {
-    "message": "Ang pahina sa $1 ay nais pahintulutan ang sumusunod na tagapangalaga na token sa MetaMask Institutional"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "Ang MetaMask Institutional ay dinisenyo at binuo sa buong mundo."
@@ -3889,9 +3880,6 @@
   "showIncomingTransactionsDescription": {
     "message": "Umaasa ito sa $1 na magkakaroon ng access sa iyong Ethereum address at sa iyong IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsInformation": {
-    "message": "Umaasa ito sa bawat network na magkakaroon ng access sa iyong Ethereum address at sa iyong IP address."
   },
   "showMore": {
     "message": "Ipakita ang iba pa"

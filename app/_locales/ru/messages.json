@@ -371,9 +371,6 @@
   "amount": {
     "message": "Сумма"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Кошелек Ethereum в вашем браузере",
     "description": "The description of the application"
@@ -984,9 +981,6 @@
   },
   "custodian": {
     "message": "Депозитарий"
-  },
-  "custodianAccount": {
-    "message": "Депозитарный счет"
   },
   "custodianAccountAddedDesc": {
     "message": "Теперь вы можете использовать свои депозитарные счета в MetaMask Institutional."
@@ -2349,9 +2343,6 @@
   },
   "missingSettingRequest": {
     "message": "Запросите здесь"
-  },
-  "mmiAddToken": {
-    "message": "Страница в $1 хочет авторизовать следующий токен депозитария в MetaMask Institutional"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional разработан и создан с учетом потребностей в разных частях мира."
@@ -3889,9 +3880,6 @@
   "showIncomingTransactionsDescription": {
     "message": "Это использует $1, который будет иметь доступ к вашему адресу Ethereum и вашему IP-адресу. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsInformation": {
-    "message": "Это зависит от каждой сети, которая будет иметь доступ к вашему адресу Ethereum и вашему IP-адресу."
   },
   "showMore": {
     "message": "Показать больше"

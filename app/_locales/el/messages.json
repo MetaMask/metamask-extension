@@ -371,9 +371,6 @@
   "amount": {
     "message": "Ποσό"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Ένα Πορτοφόλι Ethereum στο Πρόγραμμα Περιήγησής σας",
     "description": "The description of the application"
@@ -984,9 +981,6 @@
   },
   "custodian": {
     "message": "Θεματοφύλακας"
-  },
-  "custodianAccount": {
-    "message": "Λογαριασμός θεματοφύλακα"
   },
   "custodianAccountAddedDesc": {
     "message": "Μπορείτε τώρα να χρησιμοποιήσετε τους λογαριασμούς θεματοφύλακά σας στο MetaMask Institutional."
@@ -2349,9 +2343,6 @@
   },
   "missingSettingRequest": {
     "message": "Υποβάλετε αίτημα εδώ"
-  },
-  "mmiAddToken": {
-    "message": "Η σελίδα στο $1 θα ήθελε να εξουσιοδοτήσει το ακόλουθο token θεματοφύλακα στο MetaMask Institutional"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "Το MetaMask Institutional έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
@@ -3889,9 +3880,6 @@
   "showIncomingTransactionsDescription": {
     "message": "Αυτό βασίζεται στο $1, το οποίο θα έχει πρόσβαση στη διεύθυνση Ethereum και τη διεύθυνση IP σας. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsInformation": {
-    "message": "Αυτό βασίζεται σε κάθε δίκτυο που θα έχει πρόσβαση στη διεύθυνση Ethereum και στη διεύθυνση IP σας."
   },
   "showMore": {
     "message": "Εμφάνιση περισσότερων"

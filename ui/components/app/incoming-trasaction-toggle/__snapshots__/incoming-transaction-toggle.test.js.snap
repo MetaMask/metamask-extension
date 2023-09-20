@@ -13,7 +13,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
     <p
       class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
     >
-      This relies on each network which will have access to your Ethereum address and your IP address.
+      This relies on different third-party APIs for each network, which expose your Ethereum address and your IP address.
     </p>
     <div
       class="mm-box mm-box--margin-top-3 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
@@ -86,11 +86,26 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
             src="./images/eth_logo.png"
           />
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
-          Ethereum Mainnet
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+          >
+            Ethereum Mainnet
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--margin-left-2 mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            <a
+              href="https://etherscan.io"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Etherscan.io
+            </a>
+          </p>
+        </div>
       </div>
       <label
         class="toggle-button toggle-button--on"
@@ -154,11 +169,26 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
             src="./images/linea-logo-mainnet.png"
           />
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
-          Linea Mainnet
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+          >
+            Linea Mainnet
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--margin-left-2 mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            <a
+              href="https://lineascan.build"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Lineascan.build
+            </a>
+          </p>
+        </div>
       </div>
       <label
         class="toggle-button toggle-button--off"
@@ -218,11 +248,26 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
         >
           F
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
-          FANTOM
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+          >
+            FANTOM
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--margin-left-2 mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            <a
+              href="https://ftmscan.com"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Ftmscan.com
+            </a>
+          </p>
+        </div>
       </div>
       <label
         class="toggle-button toggle-button--on"
@@ -282,11 +327,26 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
         >
           G
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
-          Goerli
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+          >
+            Goerli
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--margin-left-2 mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            <a
+              href="https://etherscan.io"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Etherscan.io
+            </a>
+          </p>
+        </div>
       </div>
       <label
         class="toggle-button toggle-button--off"
@@ -346,11 +406,26 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
         >
           S
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
-          Sepolia
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+          >
+            Sepolia
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--margin-left-2 mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            <a
+              href="https://etherscan.io"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Etherscan.io
+            </a>
+          </p>
+        </div>
       </div>
       <label
         class="toggle-button toggle-button--on"
@@ -414,11 +489,26 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
             src="./images/linea-logo-testnet.png"
           />
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
-          Linea Goerli
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default mm-box--background-color-transparent"
+          >
+            Linea Goerli
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--margin-left-2 mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            <a
+              href="https://lineascan.build"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Lineascan.build
+            </a>
+          </p>
+        </div>
       </div>
       <label
         class="toggle-button toggle-button--on"

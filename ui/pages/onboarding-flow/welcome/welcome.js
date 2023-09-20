@@ -94,16 +94,6 @@ export default function OnboardingWelcome() {
     history.push(ONBOARDING_METAMETRICS);
   };
 
-  trackEvent({
-    category: MetaMetricsEventCategory.Onboarding,
-    event: MetaMetricsEventName.OnboardingWelcome,
-    properties: {
-      message_title: t('welcomeToMetaMask'),
-      app_version: global?.platform?.getVersion(),
-    },
-    addEventBeforeMetricsOptIn: true,
-  });
-
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
       <Carousel showThumbs={false} showStatus={false} showArrows>
