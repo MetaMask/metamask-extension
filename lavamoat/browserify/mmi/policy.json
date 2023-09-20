@@ -761,8 +761,7 @@
     },
     "@metamask-institutional/extension": {
       "globals": {
-        "console.log": true,
-        "fetch": true
+        "console.log": true
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -1816,6 +1815,14 @@
     "@metamask/message-manager>jsonschema": {
       "packages": {
         "browserify>url": true
+      }
+    },
+    "@metamask/name-controller": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/base-controller": true
       }
     },
     "@metamask/network-controller": {

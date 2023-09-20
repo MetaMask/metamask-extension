@@ -26,7 +26,12 @@ interface AppState {
     values?: { address?: string | null };
   } | null;
   networkDropdownOpen: boolean;
-  importNftsModalOpen: boolean;
+  importNftsModal: {
+    open: boolean;
+    tokenAddress?: string;
+    tokenId?: string;
+    ignoreErc20Token?: boolean;
+  };
   showIpfsModalOpen: boolean;
   importTokensModalOpen: boolean;
   showSelectActionModal: boolean;
@@ -98,7 +103,7 @@ const initialState: AppState = {
   alertMessage: null,
   qrCodeData: null,
   networkDropdownOpen: false,
-  importNftsModalOpen: false,
+  importNftsModal: { open: false },
   showIpfsModalOpen: false,
   importTokensModalOpen: false,
   showSelectActionModal: false,
@@ -174,13 +179,18 @@ export default function reduceApp(
     case actionConstants.IMPORT_NFTS_MODAL_OPEN:
       return {
         ...appState,
-        importNftsModalOpen: true,
+        importNftsModal: {
+          open: true,
+          ...action.payload,
+        },
       };
 
     case actionConstants.IMPORT_NFTS_MODAL_CLOSE:
       return {
         ...appState,
-        importNftsModalOpen: false,
+        importNftsModal: {
+          open: false,
+        },
       };
 
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
