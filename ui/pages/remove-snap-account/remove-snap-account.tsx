@@ -7,7 +7,6 @@ import {
   BorderStyle,
   Display,
   FlexDirection,
-  JustifyContent,
 } from '../../helpers/constants/design-system';
 import { RemoveSnapAccountContent } from './components';
 
@@ -31,26 +30,20 @@ const RemoveSnapAccount = ({
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      paddingBottom={4}
+      paddingBottom={2}
+      paddingTop={2}
     >
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
         height={BlockSize.Full}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          height={BlockSize.Full}
-        >
-          <RemoveSnapAccountContent
-            snapName={snapName}
-            snapId={snapId}
-            publicAddress={publicAddress}
-          />
-        </Box>
+        <RemoveSnapAccountContent
+          snapName={snapName}
+          snapId={snapId}
+          publicAddress={publicAddress}
+        />
       </Box>
     </Box>
   );

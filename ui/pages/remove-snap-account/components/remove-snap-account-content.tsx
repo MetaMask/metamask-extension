@@ -13,6 +13,7 @@ import {
   JustifyContent,
   OverflowWrap,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import SnapAvatar from '../../../components/app/snaps/snap-avatar';
@@ -66,8 +67,10 @@ const CreateSnapAccountContent = ({
         </Box>
         <Box>
           <Card>
-            <Text variant={TextVariant.bodyMd}>{t('publicAddress')}</Text>
-            <Text variant={TextVariant.bodyMd}>{publicAddress}</Text>
+            <Text color={TextColor.textMuted} variant={TextVariant.bodyXs}>
+              {t('publicAddress')}
+            </Text>
+            <Text variant={TextVariant.bodySm}>{publicAddress}</Text>
           </Card>
         </Box>
       </Box>
