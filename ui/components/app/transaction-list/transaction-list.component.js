@@ -244,7 +244,6 @@ export default function TransactionList({
               // Remove date groups with no transaction groups
               .filter((dateGroup) => dateGroup.transactionGroups.length > 0)
               .map((dateGroup) => {
-                console.log({ dateGroup });
                 return dateGroup.transactionGroups.map(
                   (transactionGroup, index) => {
                     return (
