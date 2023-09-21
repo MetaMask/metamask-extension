@@ -385,7 +385,7 @@ export default class MetamaskController extends EventEmitter {
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           type: 'rpc',
-          id: "networkConfigurationId",
+          id: 'networkConfigurationId',
         },
         networkConfigurations: {
           networkConfigurationId: {
