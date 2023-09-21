@@ -4121,7 +4121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2, @metamask/eth-sig-util@npm:^5.1.0":
+"@metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2":
   version: 5.1.0
   resolution: "@metamask/eth-sig-util@npm:5.1.0"
   dependencies:
@@ -4708,6 +4708,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/rpc-errors@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/rpc-errors@npm:6.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^8.0.0"
+    fast-safe-stringify: "npm:^2.0.6"
+  checksum: f907a01d061fe9354fa88a1891adeb393505f7a679342fcbc46ec81385558ac1791b442c6b68f5df61765d7927b54b988f562b5dd2bfa09150d25d39298e3eaa
+  languageName: node
+  linkType: hard
+
 "@metamask/rpc-methods-flask@npm:@metamask/rpc-methods@0.38.3-flask.1, @metamask/rpc-methods@npm:^0.38.3-flask.1":
   version: 0.38.3-flask.1
   resolution: "@metamask/rpc-methods@npm:0.38.3-flask.1"
@@ -5036,6 +5046,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/snaps-ui@npm:^0.37.4-flask.1":
+  version: 0.37.4-flask.1
+  resolution: "@metamask/snaps-ui@npm:0.37.4-flask.1"
+  dependencies:
+    "@metamask/utils": "npm:^6.0.1"
+    superstruct: "npm:^1.0.3"
+  checksum: e57ca1e375d0c7860f198143789226552cb449a654e97b639f90a0cb577f9d46387c7c65b5dacc05b7fa613ed8499021df286590b6c633b6f5be8578d4d9f6a9
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-ui@npm:^1.0.2":
   version: 1.0.2
   resolution: "@metamask/snaps-ui@npm:1.0.2"
@@ -5230,7 +5250,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^8.1.0":
+"@metamask/utils@npm:^8.0.0, @metamask/utils@npm:^8.1.0":
   version: 8.1.0
   resolution: "@metamask/utils@npm:8.1.0"
   dependencies:
