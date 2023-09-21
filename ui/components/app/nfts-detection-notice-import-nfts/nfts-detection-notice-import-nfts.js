@@ -17,7 +17,9 @@ export default function NftsDetectionNoticeImportNFTs() {
         history.push(`${SECURITY_ROUTE}#opensea-api`);
       }}
     >
-      {t('newNFTDetectedInImportNFTsMessage', [<b>{t('newNFTDetectedInImportNFTsMessageStrongText')}</b>])}
+      {t('newNFTDetectedInImportNFTsMessage', [
+        <b>{t('newNFTDetectedInImportNFTsMessageStrongText')}</b>,
+      ])}
     </BannerAlert>
   );
 }
