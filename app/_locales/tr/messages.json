@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "Yeni sözleşme"
   },
-  "newNFTDetectedMessage": {
-    "message": "MetaMask'in Opensea'den NFT'leri otomatik olarak algılamasına ve cüzdanında görüntülemesine izin ver."
-  },
-  "newNFTsDetected": {
-    "message": "Yeni! NFT algılama"
-  },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
   },

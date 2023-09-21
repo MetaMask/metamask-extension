@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "Новый контракт"
   },
-  "newNFTDetectedMessage": {
-    "message": "Разрешите MetaMask автоматически обнаруживать NFT из OpenSea и отображать их в вашем кошельке."
-  },
-  "newNFTsDetected": {
-    "message": "Новинка! Определение NFT"
-  },
   "newNetworkAdded": {
     "message": "«$1» успешно добавлен!"
   },

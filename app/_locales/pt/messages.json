@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "Novo contrato"
   },
-  "newNFTDetectedMessage": {
-    "message": "Permita que a MetaMask detecte automaticamente os NFTs da OpenSea e mostre-os em sua carteira."
-  },
-  "newNFTsDetected": {
-    "message": "Novidade! Detecção de NFT"
-  },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
   },

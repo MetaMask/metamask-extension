@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "नया कॉन्ट्रैक्ट"
   },
-  "newNFTDetectedMessage": {
-    "message": "Opensea से ऑटोमेटिक तरीके से NFT का पता लगाने और अपने वॉलेट में दिखाने के लिए MetaMask को अनुमति दें।"
-  },
-  "newNFTsDetected": {
-    "message": "नया! NFT डिटेक्शन"
-  },
   "newNetworkAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
   },

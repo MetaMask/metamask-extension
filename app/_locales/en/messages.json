@@ -2365,9 +2365,6 @@
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."
   },
-  "mmiNewNFTDetectedMessage": {
-    "message": "Allow MetaMask Institutional to automatically detect NFTs from OpenSea and display in your wallet."
-  },
   "more": {
     "message": "more"
   },
@@ -2540,11 +2537,20 @@
   "newContract": {
     "message": "New contract"
   },
-  "newNFTDetectedMessage": {
-    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your wallet."
+  "newNFTDetectedInImportNFTsMessage": {
+    "message": "To see your NFT, turn on Display NFT media in $1."
   },
-  "newNFTsDetected": {
-    "message": "New! NFT detection"
+  "newNFTDetectedInImportNFTsMessageStrongText": {
+    "message": "Settings > Security and privacy"
+  },
+  "newNFTDetectedInNFTsTabMessage": {
+    "message": "Let MetaMask automatically detect and display NFTs in your wallet."
+  },
+  "mmiNewNFTDetectedInNFTsTabMessage": {
+    "message": "Let MetaMask Institutional automatically detect and display NFTs in your wallet."
+  },
+  "newNFTsAutodetected": {
+    "message": "NFT autodetection"
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -3865,6 +3871,9 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Turn on NFT detection in Settings"
+  },
+  "selectDisplayMediaPrivacyPreference": {
+    "message": "Turn on Display NFT media"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."

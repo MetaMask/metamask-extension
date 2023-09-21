@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "新しいコントラクト"
   },
-  "newNFTDetectedMessage": {
-    "message": "OpenseaからのNFTの自動検出とウォレットへの表示をMetaMaskに許可してください。"
-  },
-  "newNFTsDetected": {
-    "message": "新機能！NFT検出"
-  },
   "newNetworkAdded": {
     "message": "「$1」が追加されました！"
   },

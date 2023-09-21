@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "新合约"
   },
-  "newNFTDetectedMessage": {
-    "message": "允许 MetaMask 自动检测 Opensea 的 NFT 并在您的钱包中显示。"
-  },
-  "newNFTsDetected": {
-    "message": "新功能！NFT 检测"
-  },
   "newNetworkAdded": {
     "message": "成功添加了 “$1”！"
   },

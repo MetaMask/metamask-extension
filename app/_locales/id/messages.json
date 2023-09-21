@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "Kontrak baru"
   },
-  "newNFTDetectedMessage": {
-    "message": "Izinkan MetaMask mendeteksi NFT dari Opensea secara otomatis dan menampilkannya di dompet Anda."
-  },
-  "newNFTsDetected": {
-    "message": "Baru! Deteksi NFT"
-  },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
   },

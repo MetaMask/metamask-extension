@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "Hợp đồng mới"
   },
-  "newNFTDetectedMessage": {
-    "message": "Cho phép MetaMask tự động phát hiện NFT từ OpenSea và hiển thị trên ví MetaMask của bạn."
-  },
-  "newNFTsDetected": {
-    "message": "Mới! Phát hiện NFT"
-  },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"
   },

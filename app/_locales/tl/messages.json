@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "Bagong kontrata"
   },
-  "newNFTDetectedMessage": {
-    "message": "Payagan ang MetaMask na awtomatikong makita ang mga NFT mula sa Opensea at ipakita sa iyong wallet."
-  },
-  "newNFTsDetected": {
-    "message": "Bago! Pag-detect ng NFT"
-  },
   "newNetworkAdded": {
     "message": "Ang “$1” matagumpay na naidagdag!"
   },

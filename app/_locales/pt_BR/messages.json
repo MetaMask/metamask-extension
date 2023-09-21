@@ -1392,9 +1392,6 @@
   "newContract": {
     "message": "Novo contrato"
   },
-  "newNFTsDetected": {
-    "message": "Novidade! Detecção de NFT"
-  },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
   },

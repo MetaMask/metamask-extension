@@ -2471,12 +2471,6 @@
   "newContract": {
     "message": "Νέο συμβόλαιο"
   },
-  "newNFTDetectedMessage": {
-    "message": "Επιτρέψτε στο MetaMask να εντοπίζει αυτόματα τα NFT από το Opensea και να τα εμφανίζει στο πορτοφόλι σας."
-  },
-  "newNFTsDetected": {
-    "message": "Νέο! Εντοπισμός των NFT"
-  },
   "newNetworkAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
   },
