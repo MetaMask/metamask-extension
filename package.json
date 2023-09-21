@@ -269,7 +269,7 @@
     "@metamask/ppom-validator": "^0.5.0",
     "@metamask/providers": "^11.1.0",
     "@metamask/rate-limit-controller": "^3.0.0",
-    "@metamask/rpc-methods": "^1.0.2",
+    "@metamask/rpc-methods": "^2.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^1.0.0",
