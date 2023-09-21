@@ -6,7 +6,10 @@ import { BalanceOverview } from '.';
 
 const render = () => {
   const store = configureStore(mockState);
-  return renderWithProvider(<BalanceOverview />, store);
+  return renderWithProvider(
+    <BalanceOverview balance="$1,209.02" loading={false} />,
+    store,
+  );
 };
 
 describe('Balance Overview and Portfolio for Tokens', () => {
