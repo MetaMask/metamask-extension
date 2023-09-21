@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.1.0]
-
 ### Added
 - What's New popup on dropping of support for Ledger support for firefox ([#19498](https://github.com/MetaMask/metamask-extension/pull/19498))
 - Network Menu Search ([#19985](https://github.com/MetaMask/metamask-extension/pull/19985))
