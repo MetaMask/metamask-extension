@@ -310,6 +310,8 @@ describe('Petnames', function () {
     );
   });
 
+  // Pending release of new example snap
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('can propose names using installed snaps', async function () {
     await withFixtures(
       {
