@@ -455,6 +455,9 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  PetnameAddressCount = 'petname_addresses_count',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 /**
