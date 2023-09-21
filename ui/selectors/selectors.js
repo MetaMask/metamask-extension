@@ -1536,6 +1536,18 @@ export function getIsSecurityAlertsEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+/**
+ * Get the state of the `addSnapAccountEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `addSnapAccountEnabled` flag.
+ */
+export function getIsAddSnapAccountEnabled(state) {
+  return state.metamask.addSnapAccountEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
