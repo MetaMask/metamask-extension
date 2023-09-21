@@ -895,7 +895,7 @@ describe('MetaMaskController', () => {
 
         expect(
           metamaskController.accountsController.setAccountName,
-        ).toBeCalledWith('mock-id-11', 'Trezor 11');
+        ).toHaveBeenCalledWith('mock-id-11', 'Trezor 11');
       });
     });
 
