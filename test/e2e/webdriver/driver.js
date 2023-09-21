@@ -351,14 +351,11 @@ class Driver {
 
   async navigate(page = Driver.PAGES.HOME) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
-    // Wait for asyncronous JavaScript to load
+    // Wait for asyncronous JavaScript to load and app to render
     await this.driver.wait(
-      until.elementLocated(this.buildLocator('.metamask-loaded')),
+      until.elementLocated(this.buildLocator('.metamask-loaded .app')),
       10 * 1000,
     );
-
-    // Temporary to see if this helps Firefox
-    await new Promise((r) => setTimeout(r, 200));
 
     return response;
   }
