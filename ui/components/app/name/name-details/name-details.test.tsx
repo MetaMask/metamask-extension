@@ -1,10 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { setName } from '../../../../store/actions';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -22,11 +27,10 @@ const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
 const CHAIN_ID_MOCK = '0x1';
 const SAVED_NAME_MOCK = 'TestName';
 const SAVED_NAME_2_MOCK = 'TestName2';
-const SOURCE_ID_MOCK = 'TestSourceId';
+const SOURCE_ID_MOCK = 'TestSourceId1';
 const SOURCE_ID_2_MOCK = 'TestSourceId2';
 const PROPOSED_NAME_MOCK = 'TestProposedName';
 const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
-const PROPOSED_NAME_3_MOCK = 'TestProposedName3';
 
 const STATE_MOCK = {
   metamask: {
@@ -38,8 +42,8 @@ const STATE_MOCK = {
         [ADDRESS_SAVED_NAME_MOCK]: {
           [CHAIN_ID_MOCK]: {
             proposedNames: {
-              [SOURCE_ID_MOCK]: [PROPOSED_NAME_MOCK, PROPOSED_NAME_2_MOCK],
-              [SOURCE_ID_2_MOCK]: [PROPOSED_NAME_3_MOCK],
+              [SOURCE_ID_MOCK]: [PROPOSED_NAME_MOCK],
+              [SOURCE_ID_2_MOCK]: [PROPOSED_NAME_2_MOCK],
             },
             name: SAVED_NAME_MOCK,
             sourceId: SOURCE_ID_MOCK,
@@ -48,8 +52,8 @@ const STATE_MOCK = {
         [ADDRESS_NO_NAME_MOCK]: {
           [CHAIN_ID_MOCK]: {
             proposedNames: {
-              [SOURCE_ID_MOCK]: [PROPOSED_NAME_MOCK, PROPOSED_NAME_2_MOCK],
-              [SOURCE_ID_2_MOCK]: [PROPOSED_NAME_3_MOCK],
+              [SOURCE_ID_MOCK]: [PROPOSED_NAME_MOCK],
+              [SOURCE_ID_2_MOCK]: [PROPOSED_NAME_2_MOCK],
             },
             name: null,
           },
@@ -58,6 +62,39 @@ const STATE_MOCK = {
     },
   },
 };
+
+async function saveName(
+  component: ReturnType<typeof renderWithProvider>,
+  sourceId: string | null,
+  name: string | null,
+  hasName: boolean,
+) {
+  const { getByPlaceholderText, getByText } = component;
+  const nameInput = getByPlaceholderText('Set a personal display name...');
+  const saveButton = getByText(hasName ? 'Ok' : 'Save', { exact: false });
+
+  await act(async () => {
+    fireEvent.click(nameInput);
+  });
+
+  if (sourceId) {
+    const providerOption = getByText(sourceId);
+
+    await act(async () => {
+      fireEvent.click(providerOption);
+    });
+  }
+
+  if (name !== null) {
+    await act(async () => {
+      fireEvent.change(nameInput, { target: { value: name } });
+    });
+  }
+
+  await act(async () => {
+    fireEvent.click(saveButton);
+  });
+}
 
 describe('NameDetails', () => {
   const store = configureStore()(STATE_MOCK);
@@ -94,7 +131,7 @@ describe('NameDetails', () => {
   });
 
   it('saves current name on save button click', async () => {
-    const { getByPlaceholderText, getByText } = renderWithProvider(
+    const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
@@ -103,16 +140,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    const nameInput = getByPlaceholderText('Set a personal display name...');
-    const saveButton = getByText('Save', { exact: false });
-
-    await act(async () => {
-      fireEvent.change(nameInput, { target: { value: SAVED_NAME_MOCK } });
-    });
-
-    await act(async () => {
-      fireEvent.click(saveButton);
-    });
+    await saveName(component, null, SAVED_NAME_MOCK, false);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -124,7 +152,7 @@ describe('NameDetails', () => {
   });
 
   it('saves selected source on save button click', async () => {
-    const { getByPlaceholderText, getByText } = renderWithProvider(
+    const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
@@ -133,22 +161,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    const nameInput = getByPlaceholderText('Set a personal display name...');
-    const saveButton = getByText('Save', { exact: false });
-
-    await act(async () => {
-      fireEvent.click(nameInput);
-    });
-
-    const providerOption = getByText(PROPOSED_NAME_MOCK);
-
-    await act(async () => {
-      fireEvent.click(providerOption);
-    });
-
-    await act(async () => {
-      fireEvent.click(saveButton);
-    });
+    await saveName(component, SOURCE_ID_MOCK, null, false);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -160,7 +173,7 @@ describe('NameDetails', () => {
   });
 
   it('clears current name on save button click if name is empty', async () => {
-    const { getByPlaceholderText, getByText } = renderWithProvider(
+    const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
@@ -169,16 +182,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    const nameInput = getByPlaceholderText('Set a personal display name...');
-    const saveButton = getByText('Ok');
-
-    await act(async () => {
-      fireEvent.change(nameInput, { target: { value: '' } });
-    });
-
-    await act(async () => {
-      fireEvent.click(saveButton);
-    });
+    await saveName(component, null, '', true);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -190,7 +194,7 @@ describe('NameDetails', () => {
   });
 
   it('clears selected source when name changed', async () => {
-    const { getByPlaceholderText, getByText } = renderWithProvider(
+    const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
@@ -199,16 +203,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    const nameInput = getByPlaceholderText('Set a personal display name...');
-    const saveButton = getByText('Ok');
-
-    await act(async () => {
-      fireEvent.change(nameInput, { target: { value: SAVED_NAME_2_MOCK } });
-    });
-
-    await act(async () => {
-      fireEvent.click(saveButton);
-    });
+    await saveName(component, null, SAVED_NAME_2_MOCK, true);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -216,6 +211,115 @@ describe('NameDetails', () => {
       type: NameType.ETHEREUM_ADDRESS,
       name: SAVED_NAME_2_MOCK,
       sourceId: undefined,
+    });
+  });
+
+  describe('metrics', () => {
+    it('sends open modal event', async () => {
+      const trackEventMock = jest.fn();
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={trackEventMock}>
+          <NameDetails
+            type={NameType.ETHEREUM_ADDRESS}
+            value={ADDRESS_SAVED_NAME_MOCK}
+            onClose={() => undefined}
+          />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+      expect(trackEventMock).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.PetnameModalOpened,
+        category: MetaMetricsEventCategory.Petnames,
+        properties: {
+          has_petname: true,
+          petname_category: NameType.ETHEREUM_ADDRESS,
+          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+        },
+      });
+    });
+
+    it('sends created event', async () => {
+      const trackEventMock = jest.fn();
+
+      const component = renderWithProvider(
+        <MetaMetricsContext.Provider value={trackEventMock}>
+          <NameDetails
+            type={NameType.ETHEREUM_ADDRESS}
+            value={ADDRESS_NO_NAME_MOCK}
+            onClose={() => undefined}
+          />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+      await saveName(component, SOURCE_ID_MOCK, null, false);
+
+      expect(trackEventMock).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.PetnameCreated,
+        category: MetaMetricsEventCategory.Petnames,
+        properties: {
+          petname_category: NameType.ETHEREUM_ADDRESS,
+          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          petname_source: SOURCE_ID_MOCK,
+        },
+      });
+    });
+
+    it('sends updated event', async () => {
+      const trackEventMock = jest.fn();
+
+      const component = renderWithProvider(
+        <MetaMetricsContext.Provider value={trackEventMock}>
+          <NameDetails
+            type={NameType.ETHEREUM_ADDRESS}
+            value={ADDRESS_SAVED_NAME_MOCK}
+            onClose={() => undefined}
+          />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+      await saveName(component, SOURCE_ID_2_MOCK, null, true);
+
+      expect(trackEventMock).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.PetnameUpdated,
+        category: MetaMetricsEventCategory.Petnames,
+        properties: {
+          petname_category: NameType.ETHEREUM_ADDRESS,
+          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          petname_source: SOURCE_ID_2_MOCK,
+          petname_previous_source: SOURCE_ID_MOCK,
+        },
+      });
+    });
+
+    it('sends deleted event', async () => {
+      const trackEventMock = jest.fn();
+
+      const component = renderWithProvider(
+        <MetaMetricsContext.Provider value={trackEventMock}>
+          <NameDetails
+            type={NameType.ETHEREUM_ADDRESS}
+            value={ADDRESS_SAVED_NAME_MOCK}
+            onClose={() => undefined}
+          />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+      await saveName(component, null, '', true);
+
+      expect(trackEventMock).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.PetnameDeleted,
+        category: MetaMetricsEventCategory.Petnames,
+        properties: {
+          petname_category: NameType.ETHEREUM_ADDRESS,
+          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          petname_previous_source: SOURCE_ID_MOCK,
+        },
+      });
     });
   });
 });

@@ -69,7 +69,6 @@ export default function NameDetails({
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
-  const [dropdownOpened, setDropdownOpened] = useState(false);
   const hasSavedName = Boolean(savedName);
 
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
@@ -108,53 +107,64 @@ export default function NameDetails({
 
   const trackPetnamesEvent = useCallback(
     async (
-      event:
-        | MetaMetricsEventName.PetnamesStarted
-        | MetaMetricsEventName.PetnamesCancelled
-        | MetaMetricsEventName.PetnamesSaved,
+      event: MetaMetricsEventName,
+      additionalProperties: Record<string, any>,
     ) => {
+      const suggestedNameSources = [
+        ...new Set(proposedNameOptions.map((option) => option.sourceId)),
+      ];
+
+      const properties: Record<string, any> = {
+        petname_category: type,
+        suggested_names_sources: suggestedNameSources,
+        ...additionalProperties,
+      };
+
       trackEvent({
         event,
         category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          flow_type: hasSavedName ? 'update' : 'add',
-          petnames_category: type,
-          petnames_suggestion_sources: proposedNameOptions.map(
-            (option) => option.sourceId,
-          ),
-          ...(event === MetaMetricsEventName.PetnamesCancelled
-            ? {
-                petnames_suggestions_viewed: dropdownOpened,
-              }
-            : {}),
-          ...(event === MetaMetricsEventName.PetnamesSaved
-            ? {
-                petnames_saved_source: selectedSourceId ?? null,
-              }
-            : {}),
-        },
-      }).catch((error) => {
-        console.log('Petnames metrics tracking failed', error);
+        properties,
       });
     },
-    [
-      trackEvent,
-      proposedNameOptions,
-      dropdownOpened,
-      savedName,
-      selectedSourceId,
-      type,
-    ],
+    [trackEvent, proposedNameOptions, type],
   );
 
+  const trackPetnamesSaveEvent = useCallback(() => {
+    const petnameSource = selectedSourceId ?? null;
+
+    if (hasSavedName && !name?.length) {
+      trackPetnamesEvent(MetaMetricsEventName.PetnameDeleted, {
+        petname_previous_source: savedSourceId,
+      });
+      return;
+    }
+
+    if (hasSavedName && name?.length) {
+      trackPetnamesEvent(MetaMetricsEventName.PetnameUpdated, {
+        petname_previous_source: savedSourceId,
+        petname_source: petnameSource,
+      });
+      return;
+    }
+
+    trackPetnamesEvent(MetaMetricsEventName.PetnameCreated, {
+      petname_source: petnameSource,
+    });
+  }, [hasSavedName, name, savedSourceId, selectedSourceId, trackPetnamesEvent]);
+
+  const trackPetnamesOpenEvent = useCallback(() => {
+    trackPetnamesEvent(MetaMetricsEventName.PetnameModalOpened, {
+      has_petname: hasSavedName,
+    });
+  }, [hasSavedName, trackPetnamesEvent]);
+
   const handleSaveClick = useCallback(async () => {
-    trackPetnamesEvent(MetaMetricsEventName.PetnamesSaved);
+    trackPetnamesSaveEvent();
     await dispatch(saveName({ value, type, name, sourceId: selectedSourceId }));
     onClose();
   }, [name, selectedSourceId, onClose, trackPetnamesEvent]);
 
   const handleClose = useCallback(() => {
-    trackPetnamesEvent(MetaMetricsEventName.PetnamesCancelled);
     onClose();
   }, [onClose, trackPetnamesEvent]);
 
@@ -179,12 +189,8 @@ export default function NameDetails({
     [setSelectedSourceId],
   );
 
-  const handleDropdownOpen = useCallback(() => {
-    setDropdownOpened(true);
-  }, [setDropdownOpened]);
-
   useEffect(() => {
-    trackPetnamesEvent(MetaMetricsEventName.PetnamesStarted);
+    trackPetnamesOpenEvent();
   }, []);
 
   return (
@@ -241,7 +247,6 @@ export default function NameDetails({
               placeholder={t('nameSetPlaceholder')}
               noOptionsText={t('nameNoProposedNames')}
               onChange={handleNameChange}
-              onDropdownOpen={handleDropdownOpen}
               onOptionClick={handleProposedNameClick}
             />
           </Label>

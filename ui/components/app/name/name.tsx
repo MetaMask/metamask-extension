@@ -97,12 +97,12 @@ export default function Name({
 
   useEffect(() => {
     trackEvent({
-      event: MetaMetricsEventName.PetnamesDisplayed,
+      event: MetaMetricsEventName.PetnameDisplayed,
       category: MetaMetricsEventCategory.Petnames,
       properties: {
-        petnames_category: type,
-        saved_name: Boolean(name),
-        proposed_source: proposedSourceId ?? null,
+        petname_category: type,
+        has_petname: Boolean(name),
+        suggested_source: proposedSourceId ?? null,
       },
     });
   }, []);

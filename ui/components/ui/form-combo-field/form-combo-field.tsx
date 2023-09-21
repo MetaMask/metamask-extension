@@ -32,9 +32,6 @@ export interface FormComboFieldProps {
   /** Callback function to invoke when the value changes. */
   onChange?: (value: string) => void;
 
-  /** Callback function to invoke when the dropdown is opened. */
-  onDropdownOpen?: () => void;
-
   /** Callback function to invoke when a dropdown option is clicked. */
   onOptionClick?: (option: FormComboFieldOption) => void;
 
@@ -141,7 +138,6 @@ export default function FormComboField({
   maxDropdownHeight,
   noOptionsText,
   onChange,
-  onDropdownOpen,
   onOptionClick,
   options,
   placeholder,
@@ -197,7 +193,6 @@ export default function FormComboField({
       <div
         onClick={() => {
           setDropdownVisible(true);
-          onDropdownOpen?.();
         }}
       >
         {/* @ts-ignore */}

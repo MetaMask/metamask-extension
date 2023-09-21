@@ -3,6 +3,11 @@ import { NameType } from '@metamask/name-controller';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { updateProposedNames } from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import Name from './name';
 
 jest.mock('../../../store/actions', () => ({
@@ -49,7 +54,7 @@ const STATE_MOCK = {
         },
         [ADDRESS_SAVED_NAME_MOCK]: {
           [CHAIN_ID_MOCK]: {
-            proposedNames: null,
+            proposedNames: { [SOURCE_ID_MOCK]: [PROPOSED_NAME_MOCK] },
             name: SAVED_NAME_MOCK,
           },
         },
@@ -207,4 +212,34 @@ describe('Name', () => {
       expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
     },
   );
+
+  describe('metrics', () => {
+    it.each([
+      ['saved', ADDRESS_SAVED_NAME_MOCK, true],
+      ['unknown', ADDRESS_PROPOSED_NAME_MOCK, false],
+    ])('sends displayed event with %s name', async (_, value, hasPetname) => {
+      const trackEventMock = jest.fn();
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={trackEventMock}>
+          <Name
+            type={NameType.ETHEREUM_ADDRESS}
+            value={value}
+            sourcePriority={[SOURCE_ID_MOCK]}
+          />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+      expect(trackEventMock).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.PetnameDisplayed,
+        category: MetaMetricsEventCategory.Petnames,
+        properties: {
+          petname_category: NameType.ETHEREUM_ADDRESS,
+          suggested_source: SOURCE_ID_MOCK,
+          has_petname: hasPetname,
+        },
+      });
+    });
+  });
 });
