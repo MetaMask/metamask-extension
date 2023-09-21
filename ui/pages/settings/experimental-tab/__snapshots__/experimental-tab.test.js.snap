@@ -185,7 +185,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         class="settings-page__content-item"
       >
         <span>
-          Snap Accounts
+          Snap accounts
         </span>
         <div
           class="settings-page__content-description"
@@ -201,7 +201,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             <h5
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-0 mm-box--color-text-default"
             >
-              Enable "Add snap account"
+              Enable "Add Snap account"
             </h5>
             <div
               class="mm-box"
