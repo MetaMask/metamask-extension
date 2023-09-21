@@ -56,8 +56,7 @@ To start the [React DevTools](https://github.com/facebook/react-devtools), run `
 
 To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):
 
-- Install the package `remotedev-server` and `sqlite3` (e.g. `yarn add remotedev-server sqlite3`)
-`Usage Error: The 'yarn global' commands have been removed in 2.x - consider using 'yarn dlx' or a third-party plugin instead`
+- Install the package `remotedev-server` globally (e.g. `yarn dlx remotedev-server`)
 - Install the Redux Devtools extension.
 - Open the Redux DevTools extension and check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked).
 
