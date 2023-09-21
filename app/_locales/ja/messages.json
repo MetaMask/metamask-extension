@@ -3877,9 +3877,6 @@
     "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする$1に依存します。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする各ネットワークに依存します。"
-  },
   "showMore": {
     "message": "他を表示"
   },
