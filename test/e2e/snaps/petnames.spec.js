@@ -335,7 +335,7 @@ describe('Petnames', function () {
         const addresses = await getAddressesInMessage(driver);
 
         assert.deepEqual(await getProposedNames(driver, addresses[0]), [
-          ['test.domain - 0xCD2 / 0x539', 'Name Lookup Example Snap'],
+          ['example.domain - 0xCD2 / 0x539', 'Name Lookup Example Snap'],
           ['test.lens', 'Lens Protocol'],
         ]);
       },

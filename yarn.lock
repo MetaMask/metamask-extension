@@ -3641,9 +3641,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-keyring@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask-institutional/custody-keyring@npm:1.0.1"
+"@metamask-institutional/custody-keyring@npm:^1.0.1, @metamask-institutional/custody-keyring@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@metamask-institutional/custody-keyring@npm:1.0.2"
   dependencies:
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethereumjs/util": "npm:^8.0.5"
@@ -3653,7 +3653,7 @@ __metadata:
     "@metamask/obs-store": "npm:^8.0.0"
     crypto: "npm:^1.0.1"
     lodash.clonedeep: "npm:^4.5.0"
-  checksum: c9c763bd8416bd4434f4ae00d687f3bd33c6f4c6b7c299f0887e772e077b82291f59ecb6eebcac18cce56775887dfa8bc0a1be121d38ba35b5d5650bbb85ddf9
+  checksum: eff487de17a9d7ea889a953f9874ee0a55b568928c97bf93a90c33af52acfc8958d708d8fb4e4cd909ec0e57757409ac86476b6ab89b72b72b4f6559eab3b06b
   languageName: node
   linkType: hard
 
@@ -4325,6 +4325,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/logging-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/logging-controller@npm:1.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^4.3.2"
+    uuid: "npm:^8.3.2"
+  checksum: ce70fab9e5345e08c5a361a6ee2ca4095a4ad25939728617b762d0465045f3efb3f87d5b98f2bebe504e2b7d5072b18a2164c90604ee5a00cf5bff51ac1ae205
+  languageName: node
+  linkType: hard
+
 "@metamask/logo@npm:^3.1.1":
   version: 3.1.1
   resolution: "@metamask/logo@npm:3.1.1"
@@ -4941,13 +4952,13 @@ __metadata:
   linkType: hard
 
 "@metamask/snaps-registry@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@metamask/snaps-registry@npm:1.2.1"
+  version: 1.2.2
+  resolution: "@metamask/snaps-registry@npm:1.2.2"
   dependencies:
     "@metamask/utils": "npm:^6.0.0"
     "@noble/secp256k1": "npm:^1.7.1"
     superstruct: "npm:^1.0.3"
-  checksum: de16245fd26b98f9bab7764838f7911aec0ecc409dd814b3ed6fe39a1cb2ea579c3a31deafbd348082942f6aae1a82d8e2dd8fd46fb071c3d1e4974b0d07e87a
+  checksum: b7273d5554081749c92610c7da7d9407c7f33eef9184d8297e9f204be902f4825f8d9cee561135c5eed9b4d978ef4e3b3ec4cbdbd669ac36d9f7ad433389668f
   languageName: node
   linkType: hard
 
@@ -4962,13 +4973,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-ui-flask@npm:@metamask/snaps-ui@0.37.3-flask.1":
-  version: 0.37.3-flask.1
-  resolution: "@metamask/snaps-ui@npm:0.37.3-flask.1"
+"@metamask/snaps-ui-flask@npm:@metamask/snaps-ui@0.37.5-flask.1, @metamask/snaps-ui@npm:^0.37.5-flask.1":
+  version: 0.37.5-flask.1
+  resolution: "@metamask/snaps-ui@npm:0.37.5-flask.1"
   dependencies:
-    "@metamask/utils": "npm:^6.0.1"
+    "@metamask/utils": "npm:^8.1.0"
     superstruct: "npm:^1.0.3"
-  checksum: 4fbcaf50cf79ce43c5c1929174ad566a7bcfc8d3bd7c21c83c295493aa510bcc93a78c02636d973f369b79887ce726fc3025a62154bf6dfd363c426ec9506e3d
+  checksum: a0f665df2d758a6d43c556a4b921a930b9e0cbac21195829d4d187428d071b0c53b8c5b0288029074b562272383a931407d80c8a7af5f9792bec1d5354f6d4ad
   languageName: node
   linkType: hard
 
@@ -4979,16 +4990,6 @@ __metadata:
     "@metamask/utils": "npm:^6.0.1"
     superstruct: "npm:^1.0.3"
   checksum: 30833668bb832cb8cf4a377d2dea132d5fab3eed8d4d7d77ee40cce6bc38f3a65327f210e7336734b28253d8fd9182868b9e040fb56703f39ad5a9f5b1ad3606
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-ui@npm:^0.37.5-flask.1":
-  version: 0.37.5-flask.1
-  resolution: "@metamask/snaps-ui@npm:0.37.5-flask.1"
-  dependencies:
-    "@metamask/utils": "npm:^8.1.0"
-    superstruct: "npm:^1.0.3"
-  checksum: a0f665df2d758a6d43c556a4b921a930b9e0cbac21195829d4d187428d071b0c53b8c5b0288029074b562272383a931407d80c8a7af5f9792bec1d5354f6d4ad
   languageName: node
   linkType: hard
 
@@ -24128,7 +24129,7 @@ __metadata:
     "@lavamoat/snow": "npm:^1.5.0"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.12"
-    "@metamask-institutional/custody-keyring": "npm:^1.0.1"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.2"
     "@metamask-institutional/extension": "npm:^0.3.5"
     "@metamask-institutional/institutional-features": "npm:^1.2.4"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
@@ -24163,6 +24164,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/keyring-controller": "npm:^7.4.0"
+    "@metamask/logging-controller": "npm:^1.0.1"
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
@@ -24188,7 +24190,7 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^1.0.2"
     "@metamask/snaps-controllers-flask": "npm:@metamask/snaps-controllers@0.39.0-flask.1"
     "@metamask/snaps-ui": "npm:^1.0.2"
-    "@metamask/snaps-ui-flask": "npm:@metamask/snaps-ui@0.37.3-flask.1"
+    "@metamask/snaps-ui-flask": "npm:@metamask/snaps-ui@0.37.5-flask.1"
     "@metamask/snaps-utils": "npm:^1.0.2"
     "@metamask/snaps-utils-flask": "npm:@metamask/snaps-utils@0.38.4-flask.1"
     "@metamask/subject-metadata-controller": "npm:^2.0.0"
