@@ -350,7 +350,7 @@ export default class MMIController extends EventEmitter {
 
     // FIXME: status maps are not a thing anymore
     this.custodyController.storeCustodyStatusMap(
-      custodian.name,
+      custodian.envName,
       keyring.getStatusMap(),
     );
 

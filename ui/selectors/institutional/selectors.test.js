@@ -72,7 +72,7 @@ function buildState(overrides = {}) {
         custodians: [
           {
             type: 'saturn',
-            name: 'saturn',
+            envName: 'saturn',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl: 'images/saturn.svg',
             displayName: 'Saturn Custody',
@@ -688,7 +688,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: true,
               },
             ],
@@ -712,7 +712,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: false,
               },
             ],
@@ -732,7 +732,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: true,
               },
             ],
@@ -754,7 +754,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: true,
               },
             ],
@@ -778,7 +778,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: true,
               },
             ],

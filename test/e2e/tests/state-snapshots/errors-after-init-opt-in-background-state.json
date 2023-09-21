@@ -74,6 +74,9 @@
     "keyringTypes": "object",
     "keyrings": "object"
   },
+  "LoggingController": {
+    "logs": "object"
+  },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",

@@ -44,7 +44,7 @@ export function getCustodianIconForAddress(state, address) {
     const { custodianName } =
       state.metamask.custodyAccountDetails[checksummedAddress];
     custodianIcon = state.metamask.mmiConfiguration?.custodians?.find(
-      (custodian) => custodian.name === custodianName,
+      (custodian) => custodian.envName === custodianName,
     )?.iconUrl;
   }
 
@@ -116,7 +116,7 @@ export function getIsNoteToTraderSupported(state, fromChecksumHexAddress) {
   }
 
   const foundCustodian = mmiConfiguration?.custodians?.find(
-    (custodian) => custodian.name === accountDetails.custodianName,
+    (custodian) => custodian.envName === accountDetails.custodianName,
   );
 
   return foundCustodian ? foundCustodian.isNoteToTraderSupported : false;

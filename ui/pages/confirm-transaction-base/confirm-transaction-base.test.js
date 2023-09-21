@@ -240,7 +240,7 @@ describe('Confirm Transaction Base', () => {
     mockedStore.metamask.mmiConfiguration = {
       custodians: [
         {
-          name: 'saturn-dev',
+          envName: 'saturn-dev',
           displayName: 'Saturn Custody',
           isNoteToTraderSupported: true,
         },

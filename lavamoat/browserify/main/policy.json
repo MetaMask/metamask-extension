@@ -1700,6 +1700,12 @@
         "crypto": true
       }
     },
+    "@metamask/logging-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "uuid": true
+      }
+    },
     "@metamask/logo": {
       "globals": {
         "addEventListener": true,
