@@ -14,6 +14,7 @@ import { Icon, IconName, PickerNetwork } from '../../../component-library';
 import {
   BackgroundColor,
   BorderColor,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import { getTestNetworkBackgroundColor } from '../../../../selectors';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
@@ -82,14 +83,14 @@ export default function ConfirmPageContainerHeader({
                 ? nickname ?? t('privateNetwork')
                 : t(getNetworkLabelKey(networkType))
             }
+            as="div"
             backgroundColor={BackgroundColor.transparent}
             borderColor={BorderColor.borderMuted}
-            iconProps={{ display: 'none' }}
+            iconProps={{ display: Display.None }}
             avatarNetworkProps={{
               backgroundColor: testNetworkBackgroundColor,
               className: 'confirm-page-container-header-avatar-network-base',
             }}
-            className="mm-picker-network-div"
           />
         )}
       </div>
