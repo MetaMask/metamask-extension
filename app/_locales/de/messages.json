@@ -5230,21 +5230,6 @@
   "useNftDetection": {
     "message": "NFTs automatisch erkennen"
   },
-  "useNftDetectionDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um NFTs in Ihrer Wallet zu erkennen, was bedeutet, dass Ihre IP an zentrale Server weitergegeben werden könnte. Hier müssen einige Dinge beachtet werden, wenn diese Funktion aktiviert wird."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Ihre Konto-Adresse wird für die Drittanbieter-APIs sichtbar sein."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT-Metadaten können Links zu Webseiten mit Betrugs- oder Phishing-Inhalten enthalten."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Jeder kann NFTs via Airdrop in Ihrem Konto ablegen. Dies kann anstößige Inhalte einschließen, die automatisch in Ihrer Wallet angezeigt werden könnten."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Lassen Sie diese Funktion deaktiviert, wenn Sie nicht möchten, dass die App Daten von diesen Diensten bezieht."
-  },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"
   },

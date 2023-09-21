@@ -5230,21 +5230,6 @@
   "useNftDetection": {
     "message": "NFT 자동 감지"
   },
-  "useNftDetectionDescription": {
-    "message": "지갑에서 NFT를 감지하려면 타사 API를 사용해야 합니다. 이렇게 하면 IP 주소가 중앙 서버에 노출될 수 있습니다. 이 기능을 사용하시려면 몇 가지 점을 주의해야 합니다."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "타사 API에서 회원님의 계정 주소를 파악할 수 있습니다."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT 메타 데이터에는 사기나 허위 사이트의 링크가 담겨 있을 수 있습니다."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "누구든지 회원님의 계정으로 NFT를 에어드롭할 수 있습니다. 여기에는 지갑에 자동으로 표시될 수도 있는 공격적인 콘텐츠도 포함될 수 있습니다."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "해당 서비스로부터 데이터를 가져오기를 원치 않으시면 이 기능을 끄세요."
-  },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"
   },

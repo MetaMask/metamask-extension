@@ -5230,21 +5230,6 @@
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
   },
-  "useNftDetectionDescription": {
-    "message": "Usamos APIs terceirizadas para detectar NFTs na sua carteira, ou seja, seu endereço IP pode ser exposto a servidores centralizados. Há algumas coisas para se ter cuidado ao ativar esse recurso."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "O endereço da sua conta estará exposto às APIs terceirizadas."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Os metadados de NFTs podem conter links para golpes ou sites de phishing."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Qualquer pessoa pode realizar o airdrop de NFTs em sua conta. Isso inclui conteúdo ofensivo que pode ser exibido automaticamente em sua carteira."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Deixe desativado esse recurso se não quiser que o app obtenha dados desses serviços."
-  },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
   },

@@ -5230,21 +5230,6 @@
   "useNftDetection": {
     "message": "Tự động phát hiện NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện NFT trong ví của bạn, điều này có thể làm lộ địa chỉ IP của bạn cho các máy chủ tập trung. Có một vài điều cần thận trọng khi kích hoạt tính năng này."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Các API của bên thứ ba có thể xem được địa chỉ tài khoản của bạn."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Siêu dữ liệu NFT có thể chứa liên kết dẫn đến các trang web lừa đảo."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Bất kỳ ai cũng có thể gửi NFT vào tài khoản của bạn. Điều này có thể khiến nội dung xúc phạm tự động hiển thị trong ví của bạn."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Tắt tính năng này nếu bạn không muốn ứng dụng lấy dữ liệu từ các dịch vụ đó."
-  },
   "usePhishingDetection": {
     "message": "Sử dụng tính năng phát hiện lừa đảo"
   },

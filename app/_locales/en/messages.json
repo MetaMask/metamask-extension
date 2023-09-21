@@ -5343,20 +5343,8 @@
   "useNftDetection": {
     "message": "Autodetect NFTs"
   },
-  "useNftDetectionDescription": {
-    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Your account address will be viewable to third-party APIs."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT metadata may contain links to scams or phishing sites."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Leave this feature off if you don't want the app to pull data from those services."
+  "useNftDetectionDescriptionText": {
+    "message": "Let MetaMask add NFTs you own using third-party services (like OpenSea). Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"

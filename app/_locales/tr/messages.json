@@ -5230,21 +5230,6 @@
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
   },
-  "useNftDetectionDescription": {
-    "message": "Cüzdanınızdaki NFT'leri algılamak için üçüncü taraf API'leri kullanırız, yani IP adresinizin merkezi sunuculara açıklanmasına neden olabilir. Bu özelliği etkinleştirirken dikkat edilmesi gereken birkaç konu vardır."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Hesap adresiniz üçüncü taraf API'lerinde görüntülenebilir."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT meta verileri dolandırıcılık veya kimlik avı sitelerine bağlantılar içerebilir."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Hesabınıza herkes NFT airdrop'u gerçekleştirebilir. Cüzdanınızda otomatik olarak gösterilebilen saldırgan içerik de buna dahil olabilir."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Uygulamanın bu hizmetlerden veri çekmesini istemiyorsanız bu özelliği kapalı bırakın."
-  },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"
   },

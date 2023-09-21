@@ -736,15 +736,7 @@ export default class SecurityTab extends PureComponent {
           <span>{t('useNftDetection')}</span>
           <div className="settings-page__content-description">
             <Text color={TextColor.textAlternative}>
-              {t('useNftDetectionDescription')}
-            </Text>
-            <ul className="settings-page__content-unordered-list">
-              <li>{t('useNftDetectionDescriptionLine2')}</li>
-              <li>{t('useNftDetectionDescriptionLine3')}</li>
-              <li>{t('useNftDetectionDescriptionLine4')}</li>
-            </ul>
-            <Text color={TextColor.textAlternative} paddingTop={4}>
-              {t('useNftDetectionDescriptionLine5')}
+              {t('useNftDetectionDescriptionText')}
             </Text>
           </div>
         </div>

@@ -5230,21 +5230,6 @@
   "useNftDetection": {
     "message": "NFTを自動検出"
   },
-  "useNftDetectionDescription": {
-    "message": "当社はサードパーティAPIを使用して、ウォレットのNFTを検出します。これにより、ユーザーのIPアドレスが中央サーバーに開示される可能性があります。この機能を有効にする場合は、いくつかの注意点があります。"
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "アカウントアドレスがサードパーティAPIに開示されます。"
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFTのメタデータには、詐欺サイトやフィッシングサイトへのリンクが含まれている可能性があります。"
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "誰でもユーザーのアカウントにNFTをエアドロップできます。これには不快なコンテンツが含まれていて、ウォレットに自動的に表示される可能性があります。"
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "アプリによるこれらのサービスからのデータの取得を希望しない場合は、この機能をオフのままにしてください。"
-  },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
   },

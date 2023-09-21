@@ -2659,9 +2659,6 @@
   "useNftDetection": {
     "message": "Autodetectar NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "La visualización de medios y datos de NFT puede exponer su dirección IP a servidores centralizados. Las API de terceros (como OpenSea) se utilizan para detectar NFT en su cartera. Esto expone la dirección de su cuenta con esos servicios. Deje esta opción desactivada si no quiere que la aplicación extraiga datos de esos servicios."
-  },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"
   },
