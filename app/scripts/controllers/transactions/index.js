@@ -2792,7 +2792,7 @@ export default class TransactionController extends EventEmitter {
 
     const incomingTransactions = transactions
       .filter((tx) =>
-        this._dedupUnlessNotIncoming(tx.hash, currentTransactions),
+        this._hasNoDuplicateIncoming(tx.hash, currentTransactions),
       )
       .reduce((result, tx) => {
         result[tx.id] = tx;
@@ -2821,9 +2821,9 @@ export default class TransactionController extends EventEmitter {
    * @returns {boolean} - Returns true if there is at least one transaction that either has a different hash
    * than the provided txHash or has a type different from 'incoming'. Otherwise, it returns false.
    */
-  _dedupUnlessNotIncoming(txHash, transactions) {
-    return Object.values(transactions).some(
-      (tx) => tx.hash !== txHash || tx.type !== TransactionType.incoming,
+  _hasNoDuplicateIncoming(txHash, transactions) {
+    return !Object.values(transactions).some(
+      (tx) => tx.hash === txHash && tx.type === TransactionType.incoming,
     );
   }
 
