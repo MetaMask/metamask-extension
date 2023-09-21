@@ -87,7 +87,7 @@ function ViewSnap() {
         .caveats[0].value;
     const newCaveatValue = { ...caveatValue };
     delete newCaveatValue[snapId];
-    if (Object.keys(newCaveatValue).length > 0) {
+    if (Object.keys(newCaveatValue) > 0) {
       dispatch(
         updateCaveat(
           connectedOrigin,
