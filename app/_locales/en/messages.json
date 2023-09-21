@@ -4027,7 +4027,7 @@
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
   "snapAccounts": {
-    "message": "Snap Accounts"
+    "message": "Snap accounts"
   },
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
