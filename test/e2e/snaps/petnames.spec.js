@@ -24,14 +24,16 @@ async function login(driver) {
 }
 
 async function openTestSnaps(driver) {
-  const handle = await driver.openNewPage('http://localhost:8081');
+  const handle = await driver.openNewPage('http://localhost:9000');
   await driver.delay(1000);
   return handle;
 }
 
 async function installNameLookupSnap(driver) {
   // Click Connect Button
-  const connectButton = await driver.findElement('#connectNameLookupSnap');
+  const connectButton = await driver.findElement(
+    '[data-testid="name-lookup"] button',
+  );
   await driver.scrollToElement(connectButton);
   await driver.delay(1000);
   await connectButton.click();
@@ -331,7 +333,7 @@ describe('Petnames', function () {
         const addresses = await getAddressesInMessage(driver);
 
         assert.deepEqual(await getProposedNames(driver, addresses[0]), [
-          ['Test Token - 0xCD2 / 0x539', 'MetaMask Name Lookup Test Snap'],
+          ['Test Token - 0xCD2 / 0x539', 'Name Lookup Example Snap'],
           ['test.lens', 'Lens Protocol'],
         ]);
       },

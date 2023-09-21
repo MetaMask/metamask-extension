@@ -1,10 +1,10 @@
 import { NameType } from '@metamask/name-controller';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType } from '@metamask/snaps-utils-flask';
 import {
   GetAllSnaps,
   GetSnap,
   HandleSnapRequest,
-} from '@metamask/snaps-controllers';
+} from '@metamask/snaps-controllers-flask';
 import { GetPermissionControllerState } from '@metamask/permission-controller';
 import {
   SnapsNameProvider,

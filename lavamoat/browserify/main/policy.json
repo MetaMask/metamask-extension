@@ -1498,10 +1498,49 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
+    "@metamask/key-tree": {
+      "packages": {
+        "@metamask/key-tree>@metamask/utils": true,
+        "@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/scure-bip39": true
+      }
+    },
+    "@metamask/key-tree>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/key-tree>@noble/ed25519": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "@metamask/key-tree>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/key-tree>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@metamask/key-tree>@scure/base": {
@@ -1886,6 +1925,16 @@
         "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
+    "@metamask/providers>@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "end-of-stream": true,
+        "pump>once": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/rate-limit-controller": {
       "globals": {
         "setTimeout": true
@@ -1895,9 +1944,64 @@
         "eth-rpc-errors": true
       }
     },
+    "@metamask/rpc-methods": {
+      "packages": {
+        "@metamask/browser-passworder": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/rpc-methods>@noble/hashes": true,
+        "@metamask/rpc-methods>nanoid": true,
+        "@metamask/snaps-ui": true,
+        "@metamask/snaps-utils": true,
+        "eth-rpc-errors": true,
+        "superstruct": true
+      }
+    },
     "@metamask/rpc-methods-flask>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree": {
+      "packages": {
+        "@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/scure-bip39": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/utils>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/rpc-methods>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -1977,6 +2081,221 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "@metamask/snaps-controllers": {
+      "globals": {
+        "URL": true,
+        "chrome.offscreen.createDocument": true,
+        "chrome.offscreen.hasDocument": true,
+        "clearTimeout": true,
+        "document.getElementById": true,
+        "fetch.bind": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/permission-controller": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/utils": true,
+        "@metamask/snaps-controllers>@xstate/fsm": true,
+        "@metamask/snaps-controllers>concat-stream": true,
+        "@metamask/snaps-controllers>gunzip-maybe": true,
+        "@metamask/snaps-controllers>nanoid": true,
+        "@metamask/snaps-controllers>readable-web-to-node-stream": true,
+        "@metamask/snaps-controllers>tar-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "pump": true
+      }
+    },
+    "@metamask/snaps-controllers-flask": {
+      "globals": {
+        "URL": true,
+        "chrome.offscreen.createDocument": true,
+        "chrome.offscreen.hasDocument": true,
+        "clearTimeout": true,
+        "document.getElementById": true,
+        "fetch.bind": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/snaps-controllers-flask>@metamask/permission-controller": true,
+        "@metamask/snaps-controllers-flask>@metamask/post-message-stream": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers-flask>@metamask/snaps-registry": true,
+        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "@metamask/snaps-controllers-flask>concat-stream": true,
+        "@metamask/snaps-controllers-flask>nanoid": true,
+        "@metamask/snaps-controllers>@xstate/fsm": true,
+        "@metamask/snaps-controllers>gunzip-maybe": true,
+        "@metamask/snaps-controllers>readable-web-to-node-stream": true,
+        "@metamask/snaps-controllers>tar-stream": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "stream-browserify": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/permission-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/permission-controller>@metamask/utils": true,
+        "@metamask/snaps-controllers-flask>nanoid": true,
+        "deep-freeze-strict": true,
+        "eth-rpc-errors": true,
+        "immer": true,
+        "json-rpc-engine": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/permission-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/post-message-stream": {
+      "globals": {
+        "MessageEvent.prototype": true,
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "browser": true,
+        "chrome": true,
+        "location.origin": true,
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/snaps-controllers-flask>@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/post-message-stream>readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/post-message-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods": {
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/snaps-controllers-flask>@metamask/permission-controller": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": true,
+        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "eth-rpc-errors": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/snaps-registry": {
+      "packages": {
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/snaps-utils": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "@metamask/snaps-utils-flask>is-svg": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>concat-stream": {
+      "packages": {
+        "@metamask/snaps-controllers-flask>concat-stream>readable-stream": true,
+        "browserify>buffer": true,
+        "browserify>concat-stream>typedarray": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>concat-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2162,6 +2481,126 @@
         "nock>debug": true,
         "semver": true,
         "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-utils>@metamask/key-tree": true,
+        "@metamask/snaps-utils>@metamask/utils": true,
+        "@metamask/snaps-utils>@noble/hashes": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils-flask>is-svg": {
+      "packages": {
+        "@metamask/snaps-utils-flask>is-svg>fast-xml-parser": true
+      }
+    },
+    "@metamask/snaps-utils-flask>is-svg>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-utils-flask>is-svg>fast-xml-parser>strnum": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/key-tree": {
+      "packages": {
+        "@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/scure-bip39": true,
+        "@metamask/snaps-utils>@metamask/key-tree>@noble/hashes": true,
+        "@metamask/snaps-utils>@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/key-tree>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry": {
+      "packages": {
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@metamask/utils>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-utils>cron-parser": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "luxon": true
+      }
+    },
+    "@metamask/snaps-utils>rfdc": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name": {
+      "packages": {
+        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+      "packages": {
+        "browserify>process": true,
+        "semver": true
       }
     },
     "@metamask/subject-metadata-controller": {
@@ -3251,6 +3690,22 @@
         "document.createElement": true
       }
     },
+    "chalk": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "chalk>supports-color": true
+      }
+    },
+    "chalk>ansi-styles": {
+      "packages": {
+        "chalk>ansi-styles>color-convert": true
+      }
+    },
+    "chalk>ansi-styles>color-convert": {
+      "packages": {
+        "jest-canvas-mock>moo-color>color-name": true
+      }
+    },
     "classnames": {
       "globals": {
         "classNames": "write",
@@ -4016,2136 +4471,6 @@
       }
     },
     "extension-port-stream": {
-      "packages": {
-        "browserify>buffer": true,
-        "stream-browserify": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/BaseControllerV2.js": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/immer/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/ControllerMessenger.js": {
-      "globals": {
-        "setTimeout": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/BaseController.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/BaseControllerV2.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/ControllerMessenger.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/constants.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/types.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/siwe.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/util.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/logger.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/siwe.js": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/logger.js": true,
-        "external:../snaps-monorepo/node_modules/@spruceid/siwe-parser/dist/parsers.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/util.js": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-ens-namehash/index.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/index.js": true,
-        "external:../snaps-monorepo/node_modules/ethjs-unit/lib/index.js": true,
-        "external:../snaps-monorepo/node_modules/fast-deep-equal/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/base64.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/bytes.js": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/checksum.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/base64.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/coercers.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/hex.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/hex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha3.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/base64.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/checksum.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/coercers.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/collections.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/encryption-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/hex.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/json.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/keyring.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/logging.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/misc.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/number.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/opaque.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/time.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/transaction-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/versions.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/json.js": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/logging.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/debug/src/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/number.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/versions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/semver/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/BIP44CoinTypeNode.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/BIP44Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/SLIP10Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/BIP44Node.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/SLIP10Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/extended-keys.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/SLIP10Node.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivation.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/bip32.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/curve.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/ed25519.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/secp256k1.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/secp256k1/lib/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/ed25519.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/ed25519/lib/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/curve.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/ed25519.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/secp256k1.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/secp256k1.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/secp256k1/lib/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivation.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/BIP44CoinTypeNode.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/BIP44Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/SLIP10Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/bip32.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/shared.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha3.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/bip39.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/SLIP10Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/dist/wordlists/english.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/hmac.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha512.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/bip32.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/bip39.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/slip10.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/shared.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/SLIP10Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/hmac.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha512.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/slip10.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/shared.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/extended-keys.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/BIP44Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/secp256k1.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/BIP44CoinTypeNode.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/BIP44Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/SLIP10Node.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/derivers/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/utils.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/constants.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/curves/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/dist/wordlists/english.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/ripemd160.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha256.js": true,
-        "external:../snaps-monorepo/node_modules/@scure/base/lib/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/base64.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/bytes.js": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/checksum.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/base64.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/coercers.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/hex.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/hex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha3.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/base64.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/checksum.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/coercers.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/collections.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/encryption-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/hex.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/json.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/keyring.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/logging.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/misc.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/number.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/opaque.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/time.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/transaction-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/versions.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/json.js": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/logging.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/debug/src/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/number.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/versions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/semver/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/dist/ObjectMultiplex.js": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/dist/Substream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/readable-browser.js": true,
-        "external:../snaps-monorepo/node_modules/end-of-stream/index.js": true,
-        "external:../snaps-monorepo/node_modules/once/once.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/dist/Substream.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/readable-browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/dist/ObjectMultiplex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_duplex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_writable.js": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_passthrough.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_transform.js": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_readable.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/isarray/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/internal/streams/BufferList.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/string_decoder/lib/string_decoder.js": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_transform.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_writable.js": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true,
-        "external:../snaps-monorepo/node_modules/util-deprecate/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/internal/streams/BufferList.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/internal/streams/destroy.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/internal/streams/stream-browser.js": {
-      "packages": {
-        "browserify>events": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/readable-browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_passthrough.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_transform.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/readable-stream/lib/_stream_writable.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/safe-buffer/index.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/string_decoder/lib/string_decoder.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/Caveat.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/Permission.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/errors.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/Permission.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/nanoid/index.browser.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/PermissionController.js": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/Caveat.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/Permission.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/errors.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/permission-middleware.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/deep-freeze-strict/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/immer/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/nanoid/index.browser.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/SubjectMetadataController.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/errors.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/Caveat.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/Permission.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/PermissionController.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/SubjectMetadataController.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/errors.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/rpc-methods/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/permission-middleware.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/errors.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/rpc-methods/getPermissions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/rpc-methods/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/rpc-methods/getPermissions.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/rpc-methods/requestPermissions.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/rpc-methods/requestPermissions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/controller-utils/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/errors.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/utils.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/base64.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/bytes.js": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/checksum.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/base64.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/coercers.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/hex.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/hex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha3.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/base64.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/checksum.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/coercers.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/collections.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/encryption-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/hex.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/json.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/keyring.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/logging.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/misc.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/number.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/opaque.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/time.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/transaction-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/versions.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/json.js": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/logging.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/debug/src/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/number.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/versions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/semver/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/BasePostMessageStream.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/readable-stream/readable-browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/WebWorker/WebWorkerParentPostMessageStream.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/BasePostMessageStream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/WebWorker/WebWorkerPostMessageStream.js": {
-      "globals": {
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "postMessage": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/BasePostMessageStream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/BasePostMessageStream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/WebWorker/WebWorkerParentPostMessageStream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/WebWorker/WebWorkerPostMessageStream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/runtime/BrowserRuntimePostMessageStream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/window/WindowPostMessageStream.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/runtime/BrowserRuntimePostMessageStream.js": {
-      "globals": {
-        "browser": true,
-        "chrome": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/BasePostMessageStream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/utils.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/window/WindowPostMessageStream.js": {
-      "globals": {
-        "MessageEvent.prototype": true,
-        "addEventListener": true,
-        "location.origin": true,
-        "postMessage": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/BasePostMessageStream.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/base64.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/bytes.js": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/checksum.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/base64.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/coercers.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/hex.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/hex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/base64.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/checksum.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/coercers.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/collections.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/encryption-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/hex.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/json.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/keyring.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/logging.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/misc.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/number.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/opaque.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/time.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/transaction-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/versions.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/json.js": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/logging.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/debug/src/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/number.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/versions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/node_modules/@metamask/utils/dist/assert.js": true,
-        "external:../snaps-monorepo/node_modules/semver/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/safe-event-emitter/index.js": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>events": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/dist/index.js": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/_assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/pbkdf2.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/sha256.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/sha512.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/utils.js": true,
-        "external:../snaps-monorepo/node_modules/@scure/base/lib/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/_sha2.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/_assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/cryptoBrowser.js": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/hmac.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/_assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/pbkdf2.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/_assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/hmac.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/sha256.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/_sha2.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/sha512.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/_sha2.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/_u64.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/utils.js": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/scure-bip39/node_modules/@noble/hashes/cryptoBrowser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/snaps-registry/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/snaps-registry/dist/verify.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/snaps-registry/dist/verify.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/secp256k1/lib/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/base64.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/bytes.js": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/caip-types.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/checksum.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/base64.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/coercers.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/hex.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/hex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha3.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/base64.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/caip-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/checksum.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/coercers.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/collections.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/encryption-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/hex.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/json.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/keyring.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/logging.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/misc.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/number.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/opaque.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/time.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/transaction-types.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/versions.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/json.js": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/logging.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/debug/src/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/number.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/hex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/versions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/assert.js": true,
-        "external:../snaps-monorepo/node_modules/semver/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/ed25519/lib/index.js": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/hashes/_sha2.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@noble/hashes/_assert.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/hashes/crypto.js": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/hashes/hmac.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@noble/hashes/_assert.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/hashes/ripemd160.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@noble/hashes/_sha2.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/hashes/sha256.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@noble/hashes/_sha2.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/hashes/sha3.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@noble/hashes/_assert.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/_u64.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/hashes/sha512.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@noble/hashes/_sha2.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/_u64.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/hashes/utils.js": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@noble/hashes/crypto.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@noble/secp256k1/lib/index.js": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@scure/base/lib/index.js": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@spruceid/siwe-parser/dist/abnf.js": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/api.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/node-exports.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@spruceid/siwe-parser/dist/parsers.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@spruceid/siwe-parser/dist/abnf.js": true,
-        "external:../snaps-monorepo/node_modules/@spruceid/siwe-parser/dist/regex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/@xstate/fsm/lib/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@xstate/fsm/lib/types.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ansi-styles/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/color-convert/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/api.js": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/attributes.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/parser.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/scanner.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/show-rules.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-conv-api/converter.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/node-exports.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/attributes.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/rule-attributes.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/rule-dependencies.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/parser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/sabnf-grammar.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/semantic-callbacks.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/syntax-callbacks.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/node-exports.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/rule-attributes.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/rule-dependencies.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/scanner-callbacks.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/utilities.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/scanner.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/scanner-callbacks.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/scanner-grammar.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/node-exports.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/semantic-callbacks.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/node-exports.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-api/syntax-callbacks.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/node-exports.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-conv-api/converter.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-conv-api/transformers.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-conv-api/transformers.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/ast.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/utilities.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/node-exports.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/ast.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/circular-buffer.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/emitcss.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/parser.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/stats.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/style.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/trace.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/utilities.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/parser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/utilities.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/stats.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/style.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/utilities.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/trace.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/circular-buffer.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/style.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/utilities.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/utilities.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-conv-api/converter.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/emitcss.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/apg-js/src/apg-lib/style.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/bl/BufferList.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/bl/bl.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bl/BufferList.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/readable-browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/brorand/index.js": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/buffer-from/index.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/builtins/index.js": {
-      "packages": {
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/semver/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/chalk/source/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/ansi-styles/index.js": true,
-        "external:../snaps-monorepo/node_modules/chalk/node_modules/supports-color/browser.js": true,
-        "external:../snaps-monorepo/node_modules/chalk/source/templates.js": true,
-        "external:../snaps-monorepo/node_modules/chalk/source/util.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/cipher-base/index.js": {
-      "packages": {
-        "browserify>stream-browserify": true,
-        "browserify>string_decoder": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/color-convert/conversions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/color-name/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/color-convert/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/color-convert/conversions.js": true,
-        "external:../snaps-monorepo/node_modules/color-convert/route.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/color-convert/route.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/color-convert/conversions.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/concat-stream/index.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/buffer-from/index.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/readable-browser.js": true,
-        "external:../snaps-monorepo/node_modules/typedarray/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/create-hash/browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/cipher-base/index.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/md5.js/index.js": true,
-        "external:../snaps-monorepo/node_modules/ripemd160/index.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/cron-parser/lib/date.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/luxon/build/cjs-browser/luxon.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/cron-parser/lib/expression.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/cron-parser/lib/date.js": true,
-        "external:../snaps-monorepo/node_modules/cron-parser/lib/field_stringify.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/cron-parser/lib/field_stringify.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/cron-parser/lib/field_compactor.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/cron-parser/lib/parser.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "external:../snaps-monorepo/node_modules/cron-parser/lib/expression.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/debug/src/browser.js": {
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/debug/src/common.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/debug/src/common.js": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/debug/node_modules/ms/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/index.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/readable-browser.js": true,
-        "external:../snaps-monorepo/node_modules/end-of-stream/index.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/stream-shift/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/isarray/index.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/string_decoder/lib/string_decoder.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true,
-        "external:../snaps-monorepo/node_modules/util-deprecate/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/BufferList.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/destroy.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/internal/streams/stream-browser.js": {
-      "packages": {
-        "browserify>events": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/readable-browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_passthrough.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_transform.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/readable-stream/lib/_stream_writable.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/safe-buffer/index.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/duplexify/node_modules/string_decoder/lib/string_decoder.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/duplexify/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/brorand/index.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/index.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curves.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/ec/index.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/eddsa/index.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/package.json": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/base.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/edwards.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/base.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/base.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/edwards.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/mont.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/short.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/mont.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/base.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/short.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/base.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curves.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curve/index.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/precomputed/secp256k1.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/ec/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/brorand/index.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curves.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/ec/key.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/ec/signature.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true,
-        "external:../snaps-monorepo/node_modules/hmac-drbg/lib/hmac-drbg.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/ec/key.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/ec/signature.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/eddsa/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/curves.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/eddsa/key.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/eddsa/signature.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/eddsa/key.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/eddsa/signature.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic/utils.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-assert/index.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-crypto-utils/lib/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/end-of-stream/index.js": {
-      "packages": {
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/once/once.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/eth-ens-namehash/index.js": {
-      "globals": {
-        "name": "write"
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/idna-uts46-hx/uts46.js": true,
-        "external:../snaps-monorepo/node_modules/js-sha3/src/sha3.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/classes.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/fast-safe-stringify/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/errors.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/classes.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/error-constants.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/classes.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/error-constants.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/errors.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/utils.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/classes.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/error-constants.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/account.js": {
-      "packages": {
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/constants.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/hash.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/helpers.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/internal.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/types.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/secp256k1.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/address.js": {
-      "packages": {
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/account.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/bytes.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/helpers.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/internal.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/constants.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/rlp/dist.browser/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/hash.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/create-hash/browser.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/helpers.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/keccak.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/helpers.js": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/internal.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/account.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/address.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/constants.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/hash.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/internal.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/object.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/signature.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/types.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/internal.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/object.js": {
-      "packages": {
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/internal.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/signature.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/hash.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/helpers.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/types.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/secp256k1.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/types.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/bytes.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/externals.js": true,
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/dist.browser/internal.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/bn.js/lib/bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/hash-utils.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/keccak.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/hash-utils.js": true,
-        "external:../snaps-monorepo/node_modules/keccak/js.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/random.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/randombytes/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/secp256k1.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/ethereumjs-util/node_modules/ethereum-cryptography/random.js": true,
-        "external:../snaps-monorepo/node_modules/secp256k1/elliptic.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ethjs-unit/lib/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/ethjs-unit/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/number-to-bn/src/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/fast-xml-parser/src/fxp.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/validator.js": true,
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlbuilder/json2xml.js": true,
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/fast-xml-parser/src/validator.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/util.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlbuilder/json2xml.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlbuilder/orderedJs2Xml.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js": {
-      "globals": {
-        "entityName": true,
-        "val": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/util.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/util.js": true,
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js": true,
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js": true,
-        "external:../snaps-monorepo/node_modules/strnum/strnum.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/validator.js": true,
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js": true,
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js": true,
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/xmlparser/node2json.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/fs-constants/browser.js": {
-      "packages": {
-        "browserify>constants-browserify": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/gunzip-maybe/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/browserify-zlib/src/index.js": true,
-        "external:../snaps-monorepo/node_modules/is-deflate/index.js": true,
-        "external:../snaps-monorepo/node_modules/is-gzip/index.js": true,
-        "external:../snaps-monorepo/node_modules/peek-stream/index.js": true,
-        "external:../snaps-monorepo/node_modules/pumpify/index.js": true,
-        "external:../snaps-monorepo/node_modules/through2/through2.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/browserify-zlib/src/binding.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/constants.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/deflate.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/inflate.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/messages.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/zstream.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/browserify-zlib/src/index.js": {
-      "packages": {
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/browserify-zlib/src/binding.js": true,
-        "readable-stream": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/deflate.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/utils/common.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/adler32.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/crc32.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/messages.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/trees.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/inflate.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/utils/common.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/adler32.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/crc32.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/inffast.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/inftrees.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/inftrees.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/utils/common.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/zlib/trees.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/node_modules/pako/lib/utils/common.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash-base/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/readable-browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/common.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/hmac.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/ripemd.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/common.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-assert/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/hmac.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-assert/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/ripemd.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/common.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/1.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/224.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/256.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/384.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/512.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/1.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/common.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/common.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/224.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/256.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/256.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/common.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/common.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-assert/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/384.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/512.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/512.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/common.js": true,
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-assert/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/sha/common.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hash.js/lib/hash/utils.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-assert/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/hmac-drbg/lib/hmac-drbg.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash.js/lib/hash.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-assert/index.js": true,
-        "external:../snaps-monorepo/node_modules/minimalistic-crypto-utils/lib/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/idna-uts46-hx/idna-map.js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/idna-uts46-hx/uts46.js": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>punycode": true,
-        "external:../snaps-monorepo/node_modules/idna-uts46-hx/idna-map.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/immer/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/immer/dist/immer.cjs.development.js": true,
-        "external:../snaps-monorepo/node_modules/immer/dist/immer.cjs.production.min.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/is-svg/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/fast-xml-parser/src/fxp.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/js-sha3/src/sha3.js": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/JsonRpcEngine.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/safe-event-emitter/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/idRemapMiddleware.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/getUniqueId.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/JsonRpcEngine.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/createAsyncMiddleware.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/createScaffoldMiddleware.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/getUniqueId.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/idRemapMiddleware.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/mergeMiddleware.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/mergeMiddleware.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/JsonRpcEngine.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/dist/createEngineStream.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/readable-browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/dist/createStreamMiddleware.js": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/safe-event-emitter/index.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/readable-browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/dist/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/dist/createEngineStream.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/dist/createStreamMiddleware.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_duplex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_writable.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_passthrough.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_transform.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_readable.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/isarray/index.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/internal/streams/BufferList.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/string_decoder/lib/string_decoder.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_transform.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_duplex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_writable.js": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true,
-        "external:../snaps-monorepo/node_modules/util-deprecate/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/internal/streams/BufferList.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/internal/streams/destroy.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/internal/streams/stream-browser.js": {
-      "packages": {
-        "browserify>events": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/readable-browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_passthrough.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_transform.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/readable-stream/lib/_stream_writable.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/safe-buffer/index.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/string_decoder/lib/string_decoder.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/keccak/js.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/keccak/lib/api/index.js": true,
-        "external:../snaps-monorepo/node_modules/keccak/lib/keccak.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/keccak/lib/api/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/keccak/lib/api/keccak.js": true,
-        "external:../snaps-monorepo/node_modules/keccak/lib/api/shake.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/keccak/lib/api/keccak.js": {
       "packages": {
         "browserify>buffer": true,
         "stream-browserify": true
@@ -7001,6 +5326,11 @@
       "globals": {
         "console.warn": true,
         "define": true
+      }
+    },
+    "terser>source-map-support>buffer-from": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "uuid": {
