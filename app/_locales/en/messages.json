@@ -458,6 +458,9 @@
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
   },
+    "snapsConnected": {
+    "message": "Snaps connected"
+  },
   "autoDetectTokens": {
     "message": "Autodetect tokens"
   },
@@ -4313,6 +4316,9 @@
   },
   "statusNotConnectedAccount": {
     "message": "No accounts connected"
+  },
+    "accountsConnected": {
+    "message": "Accounts connected"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"

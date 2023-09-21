@@ -1,12 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/rpc-methods-flask';
+import { useDispatch } from 'react-redux';
 import Popover from '../../components/ui/popover';
 import ConnectedAccountsList from '../../components/app/connected-accounts-list';
 import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions';
 import { getURLHost } from '../../helpers/utils/util';
+import { removePermissionsFor, updateCaveat } from '../../store/actions';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
+import { TextVariant } from '../../helpers/constants/design-system';
+import { Box, Text } from '../../components/component-library';
 
 export default function ConnectedAccounts({
   accountToConnect = null,
@@ -25,6 +30,7 @@ export default function ConnectedAccounts({
   permissionSubjects,
 }) {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const connectedSubjectsMetadata = subjectMetadata[originOfActiveTab];
   const isPermissionSubject =
     permissionSubjects[originOfActiveTab]?.origin ===
@@ -53,14 +59,38 @@ export default function ConnectedAccounts({
     subtitle = connectedAccountsDescription;
   } else if (isPermissionSubject && !connectedAccounts.length) {
     subtitle = t('connectedSnapAndNoAccountDescription');
-  } else if (connectedAccounts.length && isPermissionSubject) {
+  } else if (connectedAccounts && isPermissionSubject) {
     subtitle = t('connectedAccountsAndSnapDescription', [
-      connectedAccounts.length > 0,
-      connectedPermissionSubjects.length > 0,
+      connectedAccounts.length,
+      connectedPermissionSubjects.length,
     ]);
   } else {
     subtitle = t('connectedAccountsEmptyDescription');
   }
+
+  const onDisconnect = (connectedOrigin) => {
+    const caveatValue =
+      permissionSubjects[connectedOrigin].permissions[
+        WALLET_SNAP_PERMISSION_KEY
+      ].caveats[0].value;
+    const newCaveatValue = { ...caveatValue };
+    if (Object.keys(newCaveatValue) > 0) {
+      dispatch(
+        updateCaveat(
+          connectedOrigin,
+          WALLET_SNAP_PERMISSION_KEY,
+          SnapCaveatType.SnapIds,
+          newCaveatValue,
+        ),
+      );
+    } else {
+      dispatch(
+        removePermissionsFor({
+          [connectedOrigin]: [WALLET_SNAP_PERMISSION_KEY],
+        }),
+      );
+    }
+  };
 
   return (
     <Popover
@@ -73,25 +103,44 @@ export default function ConnectedAccounts({
       onClose={() => history.push(mostRecentOverviewPage)}
       footerClassName="connected-accounts__footer"
       footer={
-        permissions?.length > 0 && (
+        connectedAccounts.length > 0 && ( // show permissions only for connected accounts not snaps
           <ConnectedAccountsPermissions permissions={permissions} />
         )
       }
     >
-      <ConnectedAccountsList
-        accountToConnect={accountToConnect}
-        connectAccount={connectAccount}
-        connectedAccounts={connectedAccounts}
-        selectedAddress={selectedAddress}
-        removePermittedAccount={removePermittedAccount}
-        setSelectedAddress={setSelectedAddress}
-        shouldRenderListOptions
-      />
+      <Box>
+        {connectedAccounts.length > 0 ? (
+          <Box marginLeft={6}>
+            <Text variant={TextVariant.bodyLgMedium}>
+              {t('accountsConnected')}&nbsp;({connectedAccounts.length})
+            </Text>
+          </Box>
+        ) : null}
+
+        <ConnectedAccountsList
+          accountToConnect={accountToConnect}
+          connectAccount={connectAccount}
+          connectedAccounts={connectedAccounts}
+          selectedAddress={selectedAddress}
+          removePermittedAccount={removePermittedAccount}
+          setSelectedAddress={setSelectedAddress}
+          shouldRenderListOptions
+        />
+      </Box>
       {isPermissionSubject &&
         connectedPermissionSubjectsMetaData.length > 0 && (
-          <ConnectedSnaps
-            connectedSubjects={connectedPermissionSubjectsMetaData}
-          />
+          <Box>
+            <Box marginLeft={6}>
+              <Text variant={TextVariant.bodyLgMedium}>
+                {t('snapsConnected')}&nbsp;({connectedPermissionSubjects.length}
+                )
+              </Text>
+            </Box>
+            <ConnectedSnaps
+              connectedSubjects={connectedPermissionSubjectsMetaData}
+              onDisconnect={() => onDisconnect(originOfActiveTab)}
+            />
+          </Box>
         )}
     </Popover>
   );
