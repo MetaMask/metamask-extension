@@ -289,19 +289,21 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <ToggleButton
-                  value={addSnapAccountEnabled}
-                  onToggle={(value) => {
-                    trackEvent({
-                      event: MetaMetricsEventName.AddSnapAccountEnabled,
-                      category: MetaMetricsEventCategory.Settings,
-                      properties: {
-                        enabled: !value,
-                      },
-                    });
-                    setAddSnapAccountEnabled(!value);
-                  }}
-                />
+                <Box data-testid="add-snap-account-toggle">
+                  <ToggleButton
+                    value={addSnapAccountEnabled}
+                    onToggle={(value) => {
+                      trackEvent({
+                        event: MetaMetricsEventName.AddSnapAccountEnabled,
+                        category: MetaMetricsEventCategory.Settings,
+                        properties: {
+                          enabled: !value,
+                        },
+                      });
+                      setAddSnapAccountEnabled(!value);
+                    }}
+                  />
+                </Box>
               </div>
               <Text
                 variant={TextVariant.bodySm}
