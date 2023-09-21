@@ -107,7 +107,7 @@ describe('Test Snap update', function () {
 
         await driver.waitForSelector({ text: 'Update' });
 
-        await driver.clickElement('[data-testid="snap-update-scroll"]');
+        await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
         await driver.clickElement({
           text: 'Update',
