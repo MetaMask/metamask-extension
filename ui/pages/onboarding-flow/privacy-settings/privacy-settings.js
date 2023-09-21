@@ -280,10 +280,10 @@ export default function PrivacySettings() {
                   style={{ listStyleType: 'circle' }}
                 >
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint1')}
+                    {t('ensDomainsSettingDescriptionPart1')}
                   </Text>
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint2')}
+                    {t('ensDomainsSettingDescriptionPart2')}
                   </Text>
                 </Box>
                 <Text variant={TextVariant.inherit}>

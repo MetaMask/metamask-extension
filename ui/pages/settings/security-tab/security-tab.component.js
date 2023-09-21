@@ -728,9 +728,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('useNftDetection')}</span>
           <div className="settings-page__content-description">
-            <Text color={TextColor.textAlternative}>
-              {t('useNftDetectionDescriptionText')}
-            </Text>
+            {t('useNftDetectionDescriptionText')}
           </div>
         </div>
 
