@@ -200,7 +200,7 @@ describe('EthOverview', () => {
             portfolio: {
               enabled: true,
               url: 'https://metamask-institutional.io',
-            }
+            },
           },
           keyrings: [
             {
