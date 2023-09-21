@@ -5,6 +5,7 @@ import { getNfts, getTokens } from '../ducks/metamask/metamask';
 import { getAssetDetails } from '../helpers/utils/token-util';
 import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import * as util from '../helpers/utils/util';
 import { usePrevious } from './usePrevious';
 import { useTokenTracker } from './useTokenTracker';
 
@@ -38,6 +39,21 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
         transactionData,
         nfts,
       );
+      const token = util.getContractAtAddress(tokenAddress);
+
+      const symbol = await token.symbol();
+      const name = await token.name();
+
+      if (!assetDetails.symbol) {
+        setCurrentAsset({
+          ...assetDetails,
+          symbol: symbol[0],
+          name: name[0],
+        });
+        dispatch(hideLoadingIndication());
+        return;
+      }
+
       setCurrentAsset(assetDetails);
       dispatch(hideLoadingIndication());
     }

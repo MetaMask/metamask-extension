@@ -33,6 +33,13 @@ const renderUseAssetDetails = ({
   );
 };
 
+jest.mock('../helpers/utils/util', () => ({
+  getContractAtAddress: jest.fn(() => ({
+    symbol: async () => 'TEST',
+    name: async () => 'Test Token',
+  })),
+}));
+
 describe('useAssetDetails', () => {
   let getTokenStandardAndDetailsStub;
 
@@ -63,7 +70,7 @@ describe('useAssetDetails', () => {
     expect(result.current).toStrictEqual(
       expect.objectContaining({
         assetAddress: tokenAddress,
-        tokenSymbol: '',
+        tokenSymbol: 'T',
       }),
     );
   });
@@ -224,13 +231,13 @@ describe('useAssetDetails', () => {
 
     expect(result.current).toStrictEqual({
       assetAddress: tokenAddress,
-      assetName: undefined,
+      assetName: 'T',
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
       tokenId,
       tokenImage: image,
-      tokenSymbol: '',
+      tokenSymbol: 'T',
       userBalance: undefined,
       tokenAmount: undefined,
     });
