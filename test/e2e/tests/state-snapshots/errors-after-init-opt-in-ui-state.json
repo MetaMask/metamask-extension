@@ -193,7 +193,8 @@
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
-    "approvalFlows": "object"
+    "approvalFlows": "object",
+    "logs": "object"
   },
   "send": "object",
   "swaps": "object",
