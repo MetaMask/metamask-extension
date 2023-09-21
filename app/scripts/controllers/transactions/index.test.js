@@ -3426,7 +3426,7 @@ describe('Transaction Controller', function () {
       });
     });
 
-    it('ignores new transactions if hash matches existing transaction', async function () {
+    it('adds new transactions to state if hash matches existing transaction but no type has been defined', async function () {
       const existingTransaction = TRANSACTION_META_MOCK;
       const incomingTransaction1 = { ...TRANSACTION_META_MOCK, id: 2 };
       const incomingTransaction2 = { ...TRANSACTION_META_MOCK, id: 3 };
@@ -3442,6 +3442,8 @@ describe('Transaction Controller', function () {
 
       assert.deepEqual(txController.store.getState().transactions, {
         [existingTransaction.id]: existingTransaction,
+        [incomingTransaction1.id]: incomingTransaction1,
+        [incomingTransaction2.id]: incomingTransaction2,
       });
     });
   });
