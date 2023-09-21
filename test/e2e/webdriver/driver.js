@@ -356,7 +356,6 @@ class Driver {
       until.elementLocated(this.buildLocator('.metamask-loaded .app')),
       10 * 1000,
     );
-
     return response;
   }
 
