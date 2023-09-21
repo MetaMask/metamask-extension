@@ -3426,24 +3426,44 @@ describe('Transaction Controller', function () {
       });
     });
 
-    it('adds new transactions to state if hash matches existing transaction but no type has been defined', async function () {
-      const existingTransaction = TRANSACTION_META_MOCK;
-      const incomingTransaction1 = { ...TRANSACTION_META_MOCK, id: 2 };
-      const incomingTransaction2 = { ...TRANSACTION_META_MOCK, id: 3 };
+    it('ignores new transactions if hash matches existing incoming transaction', async function () {
+      const existingTransaction = {
+        ...TRANSACTION_META_MOCK,
+        id: 1,
+        type: TransactionType.incoming,
+      };
+      const existingTransaction2 = {
+        ...TRANSACTION_META_MOCK,
+        id: 1,
+        type: TransactionType.simpleSend,
+      };
+
+      const incomingTransaction1 = {
+        ...TRANSACTION_META_MOCK,
+        id: 2,
+        type: TransactionType.incoming,
+      };
+      const simpleSendTransaction2 = {
+        ...TRANSACTION_META_MOCK,
+        id: 3,
+        type: TransactionType.simpleSend,
+      };
 
       txController.store.getState().transactions = {
         [existingTransaction.id]: existingTransaction,
+        [existingTransaction2.id]: existingTransaction2,
       };
 
       await incomingTransactionHelperEventMock.firstCall.args[1]({
-        added: [incomingTransaction1, incomingTransaction2],
+        added: [incomingTransaction1, simpleSendTransaction2],
         updated: [],
       });
 
       assert.deepEqual(txController.store.getState().transactions, {
         [existingTransaction.id]: existingTransaction,
+        [existingTransaction2.id]: existingTransaction2,
         [incomingTransaction1.id]: incomingTransaction1,
-        [incomingTransaction2.id]: incomingTransaction2,
+        [simpleSendTransaction2.id]: simpleSendTransaction2,
       });
     });
   });

@@ -2812,13 +2812,15 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * This function checks if there is any transaction in the provided transactions object
-   * that either has a different hash than the provided txHash or has a type different from 'incoming'.
+   * This function checks if there is not any transaction in the provided
+   * transactions object that has the same hash as the provided txHash and has a
+   * type of 'incoming'.
    *
    * @param {string} txHash - The transaction hash to compare with.
    * @param {object} transactions - The transactions to check in.
-   * @returns {boolean} Returns true if there is at least one transaction that either has a different hash
-   * than the provided txHash or has a type different from 'incoming'. Otherwise, it returns false.
+   * @returns {boolean} Returns false if there is a transaction that has the
+   * same hash as the provided txHash and has a type of 'incoming'. Otherwise,
+   * it returns true.
    */
   _hasNoDuplicateIncoming(txHash, transactions) {
     return !Object.values(transactions).some(
