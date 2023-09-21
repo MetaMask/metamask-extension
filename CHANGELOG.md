@@ -50,6 +50,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Modify full screen settings styles and spacing ([#20676](https://github.com/MetaMask/metamask-extension/pull/20676)) ([#20674](https://github.com/MetaMask/metamask-extension/pull/20674)) 
 - Switch display order of fiat and eth values in Account List Menu ([#20334](https://github.com/MetaMask/metamask-extension/pull/20334))
 - Update OpenSea alert placement on Token Allowance, Confirm Pages, SIWE, and Signature V3/V4 pages ([#20530](https://github.com/MetaMask/metamask-extension/pull/20530))
+- Update scroll behaviour on Snaps install screens, so users can scroll with a button, and proceed to the next screen after scrolling to the bottom once ([#20889](https://github.com/MetaMask/metamask-extension/pull/20889))
+- Allow easier viewing of all permissions in the dapp permission modal, by making the list of permissions scrollable ([#20409](https://github.com/MetaMask/metamask-extension/pull/20409))
+- Improve spacing and border styling on Snaps details page ([#20854](https://github.com/MetaMask/metamask-extension/pull/20854))
 
 
 ### Fixed
@@ -65,6 +68,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Fix eth-sign toggle alignment in settings ([#20587](https://github.com/MetaMask/metamask-extension/pull/20587))
 - Fix to ensure proper validation and error handling of custom IPFS gateway input in settings ([#19700](https://github.com/MetaMask/metamask-extension/pull/19700))
 - Properly display trailing elipses in long numbers in the swaps UI ([#20525](https://github.com/MetaMask/metamask-extension/pull/20525))
+- Prevent disabled Snaps from appearing in the transaction insight Snap dropdown on the Confirmation screen ([#20850](https://github.com/MetaMask/metamask-extension/pull/20850))
 
 ## [11.0.0]
 ### Added
