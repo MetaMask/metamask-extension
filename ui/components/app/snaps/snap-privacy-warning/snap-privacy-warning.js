@@ -1,24 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Box from '../../../ui/box/box';
 import Popover from '../../../ui/popover';
 import {
   AvatarIcon,
+  AvatarIconSize,
+  Box,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
   ButtonLink,
   ButtonLinkSize,
   IconName,
-  IconSize,
   Text,
 } from '../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   FontWeight,
   IconColor,
   JustifyContent,
@@ -43,7 +43,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
           <Box
             marginTop={4}
             className="snap-privacy-warning__header__info-icon"
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             justifyContent={JustifyContent.center}
             alignItems={AlignItems.center}
           >
@@ -51,14 +51,14 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
               iconName={IconName.Info}
               color={IconColor.infoDefault}
               backgroundColor={BackgroundColor.primaryMuted}
-              size={IconSize.Md}
+              size={AvatarIconSize.Md}
             />
           </Box>
           <Box
             className="snap-privacy-warning__header__title"
             marginTop={4}
             marginBottom={4}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             justifyContent={JustifyContent.center}
             alignItems={AlignItems.center}
           >
@@ -119,12 +119,12 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
           <Box
             className="snap-privacy-warning__footer"
             marginTop={6}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
           >
             <Button
               variant={BUTTON_VARIANT.SECONDARY}
               size={BUTTON_SIZES.LG}
-              width={BLOCK_SIZES.FULL}
+              width={BlockSize.Full}
               className="snap-privacy-warning__cancel-button"
               onClick={onCanceled}
               marginRight={2}
@@ -134,7 +134,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
             <Button
               variant={BUTTON_VARIANT.PRIMARY}
               size={BUTTON_SIZES.LG}
-              width={BLOCK_SIZES.FULL}
+              width={BlockSize.Full}
               className="snap-privacy-warning__ok-button"
               onClick={onAccepted}
               marginLeft={2}

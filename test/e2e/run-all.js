@@ -4,6 +4,7 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
+const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.readdir(testDir, { withFileTypes: true });
@@ -64,16 +65,36 @@ async function main() {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
           })
+          .option('build-type', {
+            description: `Sets the build-type to test for. This may filter out tests.`,
+            type: 'string',
+            choices: Object.keys(loadBuildTypesConfig().buildTypes),
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
             type: 'number',
+          })
+          .option('update-snapshot', {
+            alias: 'u',
+            default: false,
+            description: 'Update E2E snapshots',
+            type: 'boolean',
           }),
     )
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3, rpc } = argv;
+  const {
+    browser,
+    debug,
+    retries,
+    snaps,
+    mv3,
+    rpc,
+    buildType,
+    updateSnapshot,
+  } = argv;
 
   let testPaths;
 
@@ -100,6 +121,21 @@ async function main() {
     }
   }
 
+  // These tests should only be ran on Flask for now.
+  if (buildType !== 'flask') {
+    const filteredTests = [
+      'settings-add-snap-account-toggle.spec.js',
+      'test-snap-manageAccount.spec.js',
+      'test-snap-rpc.spec.js',
+      'test-snap-lifecycle.spec.js',
+      'ppom-toggle-settings.spec.js',
+      'petnames.spec.js',
+    ];
+    testPaths = testPaths.filter((p) =>
+      filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
+    );
+  }
+
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
 
   const args = [runE2eTestPath];
@@ -111,6 +147,9 @@ async function main() {
   }
   if (debug) {
     args.push('--debug');
+  }
+  if (updateSnapshot) {
+    args.push('--update-snapshot');
   }
 
   // For running E2Es in parallel in CI

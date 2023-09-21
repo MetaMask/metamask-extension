@@ -9,8 +9,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import NftsTab from '../../components/app/nfts-tab';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 ///: END:ONLY_INCLUDE_IN
@@ -781,6 +781,7 @@ export default class Home extends PureComponent {
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
+    const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
     const showWhatsNew =
       completedOnboarding &&
@@ -848,23 +849,25 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IN
           }
           <div className="home__main-view">
-            <div className="home__balance-wrapper">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                <EthOverview showAddress />
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <EthOverview
-                  showAddress
-                  mmiPortfolioEnabled={mmiPortfolioEnabled}
-                  mmiPortfolioUrl={mmiPortfolioUrl}
-                />
-                ///: END:ONLY_INCLUDE_IN
-              }
-            </div>
-            <Box style={{ flexGrow: '1' }}>
+            {process.env.MULTICHAIN ? null : (
+              <div className="home__balance-wrapper">
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  <EthOverview showAddress />
+                  ///: END:ONLY_INCLUDE_IN
+                }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                  <EthOverview
+                    showAddress
+                    mmiPortfolioEnabled={mmiPortfolioEnabled}
+                    mmiPortfolioUrl={mmiPortfolioUrl}
+                  />
+                  ///: END:ONLY_INCLUDE_IN
+                }
+              </div>
+            )}
+            <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
               <Tabs
                 t={this.context.t}
                 defaultActiveTabKey={defaultHomeActiveTabName}
@@ -928,11 +931,7 @@ export default class Home extends PureComponent {
                   name={this.context.t('nfts')}
                   tabKey="nfts"
                 >
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                    <NftsTab />
-                    ///: END:ONLY_INCLUDE_IN
-                  }
+                  <NftsTab />
                   {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-main)
                     <ButtonLink

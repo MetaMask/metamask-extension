@@ -9,7 +9,7 @@ declare class Platform {
   closeCurrentWindow: () => void;
 }
 
-declare class SentryObject extends Sentry {
+type SentryObject = Sentry & {
   // Verifies that the user has opted into metrics and then updates the sentry
   // instance to track sessions and begins the session.
   startSession: () => void;
@@ -20,7 +20,7 @@ declare class SentryObject extends Sentry {
 
   // Calls either startSession or endSession based on optin status
   toggleSession: () => void;
-}
+};
 
 export declare global {
   var platform: Platform;

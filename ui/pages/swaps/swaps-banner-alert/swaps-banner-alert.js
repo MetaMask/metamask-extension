@@ -23,59 +23,72 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-  SLIPPAGE_OVER_LIMIT_ERROR,
   SLIPPAGE_VERY_HIGH_ERROR,
-  SLIPPAGE_TOO_LOW_ERROR,
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
 import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
 
-export default function SwapsBannerAlert({ swapsErrorKey }) {
+export default function SwapsBannerAlert({
+  swapsErrorKey,
+  showTransactionSettingsLink,
+  currentSlippage,
+}) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   let severity = SEVERITIES.DANGER;
   let title;
   let description;
+
+  const transactionSettingsLink = (
+    <Text variant={TextVariant.bodyMd}>
+      <ButtonLink
+        onClick={(e) => {
+          e.preventDefault();
+          dispatch(setTransactionSettingsOpened(true));
+        }}
+        size={ButtonLinkSize.Inherit}
+      >
+        {t('swapAdjustSlippage')}
+      </ButtonLink>
+    </Text>
+  );
+
   switch (swapsErrorKey) {
-    case SLIPPAGE_OVER_LIMIT_ERROR:
+    case SLIPPAGE_VERY_HIGH_ERROR:
       title = t('swapSlippageOverLimitTitle');
       description = (
         <Box>
           <Text variant={TextVariant.bodyMd} as="h6">
             {t('swapSlippageOverLimitDescription')}
           </Text>
-          <ButtonLink
-            size={ButtonLinkSize.Inherit}
-            textProps={{
-              variant: TextVariant.bodyMd,
-              alignItems: AlignItems.flexStart,
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              dispatch(setTransactionSettingsOpened(true));
-            }}
-          >
-            {t('swapEditTransactionSettings')}
-          </ButtonLink>
+          {transactionSettingsLink}
         </Box>
       );
       break;
-    case SLIPPAGE_VERY_HIGH_ERROR:
+    case SLIPPAGE_HIGH_ERROR:
       severity = SEVERITIES.WARNING;
-      title = t('swapSlippageVeryHighTitle');
+      title = t('swapSlippageHighTitle');
       description = (
-        <Text variant={TextVariant.bodyMd} as="h6">
-          {t('swapSlippageVeryHighDescription')}
-        </Text>
+        <Box>
+          <Text variant={TextVariant.bodyMd} as="h6">
+            {t('swapSlippageHighDescription', [currentSlippage])}
+          </Text>
+          {showTransactionSettingsLink && transactionSettingsLink}
+        </Box>
       );
       break;
-    case SLIPPAGE_TOO_LOW_ERROR:
+    case SLIPPAGE_LOW_ERROR:
       severity = SEVERITIES.WARNING;
-      title = t('swapSlippageTooLowTitle');
+      title = t('swapSlippageLowTitle');
       description = (
-        <Text variant={TextVariant.bodyMd} as="h6">
-          {t('swapSlippageTooLowDescription')}
-        </Text>
+        <Box>
+          <Text variant={TextVariant.bodyMd} as="h6">
+            {t('swapSlippageLowDescription', [currentSlippage])}
+          </Text>
+          {showTransactionSettingsLink && transactionSettingsLink}
+        </Box>
       );
       break;
     case SLIPPAGE_NEGATIVE_ERROR:
@@ -85,19 +98,7 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
           <Text variant={TextVariant.bodyMd} as="h6">
             {t('swapSlippageNegativeDescription')}
           </Text>
-          <ButtonLink
-            size={ButtonLinkSize.Inherit}
-            textProps={{
-              variant: TextVariant.bodyMd,
-              alignItems: AlignItems.flexStart,
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              dispatch(setTransactionSettingsOpened(true));
-            }}
-          >
-            {t('swapEditTransactionSettings')}
-          </ButtonLink>
+          {transactionSettingsLink}
         </Box>
       );
       break;
@@ -163,7 +164,11 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
   }
 
   return (
-    <BannerAlert severity={severity} title={title}>
+    <BannerAlert
+      severity={severity}
+      title={title}
+      titleProps={{ 'data-testid': 'swaps-banner-title' }}
+    >
       {description}
     </BannerAlert>
   );
@@ -171,4 +176,6 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
 
 SwapsBannerAlert.propTypes = {
   swapsErrorKey: PropTypes.string,
+  showTransactionSettingsLink: PropTypes.bool,
+  currentSlippage: PropTypes.number,
 };

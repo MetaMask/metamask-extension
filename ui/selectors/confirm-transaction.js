@@ -30,9 +30,12 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { checkNetworkAndAccountSupports1559 } from '.';
+import {
+  checkNetworkAndAccountSupports1559,
+  getUnapprovedTransactions,
+} from '.';
 
-const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
+const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
