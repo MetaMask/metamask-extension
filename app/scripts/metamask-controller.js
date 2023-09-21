@@ -873,6 +873,13 @@ export default class MetamaskController extends EventEmitter {
                   await this.approvalController.success({
                     flowToEnd: addAccountApprovalId,
                     message: t('snapAccountCreated'),
+                    header: [
+                      {
+                        key: 'snapHeader',
+                        element: 'SnapAuthorshipHeader',
+                        properties: { snapId: origin },
+                      },
+                    ],
                   });
                 } catch (error) {
                   await this.approvalController.error({

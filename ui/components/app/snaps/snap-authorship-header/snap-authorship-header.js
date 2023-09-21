@@ -28,6 +28,12 @@ const SnapAuthorshipHeader = ({
   className,
   boxShadow = 'var(--shadow-size-lg) var(--color-shadow-default)',
 }) => {
+  console.log(
+    'SNAPS/ snap-authorship-header.js called with',
+    snapId,
+    className,
+    boxShadow,
+  );
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata

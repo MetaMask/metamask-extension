@@ -5,6 +5,7 @@ import TruncatedDefinitionList from '../../ui/truncated-definition-list';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
 import Box from '../../ui/box';
+// import { Box } from '../../component-library';
 import MetaMaskTranslation from '../metamask-translation';
 import NetworkDisplay from '../network-display';
 import TextArea from '../../ui/textarea/textarea';
@@ -23,6 +24,7 @@ import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
 import { RemoveSnapAccount } from '../../../pages/remove-snap-account';
+import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IN
 
 export const safeComponentList = {
@@ -57,5 +59,6 @@ export const safeComponentList = {
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,
+  SnapAuthorshipHeader,
   ///: END:ONLY_INCLUDE_IN
 };

@@ -424,13 +424,6 @@ export default function ConfirmationPage({
           )
           ///: END:ONLY_INCLUDE_IN
         }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-          prevSnapInfo && pendingConfirmation?.origin === 'metamask' && (
-            <SnapAuthorshipHeader snapId={prevSnapInfo.origin} />
-          )
-          ///: END:ONLY_INCLUDE_IN
-        }
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
         {showWarningModal && (
           <ConfirmationWarningModal
