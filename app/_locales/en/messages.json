@@ -1482,7 +1482,7 @@
     "message": "MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name."
   },
   "ensDomainsSettingDescriptionPart2": {
-    "message": "If the code links to IPFS, you can see the content associated with it (usuall a website)."
+    "message": "If the code links to IPFS, you can see the content associated with it (usually a website)."
   },
   "ensDomainsSettingTitle": {
     "message": "Show ENS domains in address bar"
