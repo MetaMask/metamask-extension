@@ -131,7 +131,7 @@
         "@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "browserify>buffer": true,
-        "browserify>events": true
+        "webpack>events": true
       }
     },
     "@ethereumjs/common>crc-32": {
@@ -164,8 +164,8 @@
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": true,
         "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true,
         "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>insert-module-globals>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true,
+        "webpack>events": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": {
@@ -517,9 +517,9 @@
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": true,
         "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": true,
         "browserify>buffer": true,
-        "browserify>events": true,
         "ethereumjs-util>rlp": true,
-        "uuid": true
+        "uuid": true,
+        "webpack>events": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": {
@@ -542,7 +542,7 @@
       "packages": {
         "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2": true,
         "@metamask/safe-event-emitter": true,
-        "browserify>stream-browserify": true
+        "stream-browserify": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2": {
@@ -780,12 +780,12 @@
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/utils": true,
-        "browserify>events": true,
         "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
         "ethereumjs-util": true,
         "single-call-balance-checker-abi": true,
-        "uuid": true
+        "uuid": true,
+        "webpack>events": true
       }
     },
     "@metamask/assets-controllers>@metamask/abi-utils": {
@@ -938,14 +938,14 @@
         "@metamask/desktop>eciesjs": true,
         "@metamask/desktop>otpauth": true,
         "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>stream-browserify": true,
         "end-of-stream": true,
         "extension-port-stream": true,
         "loglevel": true,
         "obj-multiplex": true,
+        "stream-browserify": true,
         "uuid": true,
-        "webextension-polyfill": true
+        "webextension-polyfill": true,
+        "webpack>events": true
       }
     },
     "@metamask/desktop>@metamask/obs-store": {
@@ -955,7 +955,7 @@
       "packages": {
         "@metamask/desktop>@metamask/obs-store>through2": true,
         "@metamask/safe-event-emitter": true,
-        "browserify>stream-browserify": true
+        "stream-browserify": true
       }
     },
     "@metamask/desktop>@metamask/obs-store>through2": {
@@ -1026,7 +1026,7 @@
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/eth-keyring-controller>obs-store": true,
-        "browserify>events": true
+        "webpack>events": true
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": {
@@ -1110,8 +1110,8 @@
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "browserify>buffer": true,
-        "browserify>events": true,
-        "mocha>serialize-javascript>randombytes": true
+        "mocha>serialize-javascript>randombytes": true,
+        "webpack>events": true
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": {
@@ -1149,8 +1149,8 @@
         "@metamask/eth-ledger-bridge-keyring>eth-sig-util": true,
         "@metamask/eth-ledger-bridge-keyring>hdkey": true,
         "browserify>buffer": true,
-        "browserify>events": true,
-        "ethereumjs-util": true
+        "ethereumjs-util": true,
+        "webpack>events": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>eth-sig-util": {
@@ -1204,8 +1204,8 @@
         "@metamask/eth-snap-keyring>@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/eth-snap-keyring>uuid": true,
-        "browserify>events": true,
-        "superstruct": true
+        "superstruct": true,
+        "webpack>events": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
@@ -1294,18 +1294,12 @@
     },
     "@metamask/eth-token-tracker>deep-equal": {
       "packages": {
-        "@metamask/eth-token-tracker>deep-equal>is-arguments": true,
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@ngraveio/bc-ur>assert>object-is": true,
+        "browserify>util>is-arguments": true,
         "globalthis>define-properties>object-keys": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
         "string.prototype.matchall>regexp.prototype.flags": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>is-arguments": {
-      "packages": {
-        "koa>is-generator-function>has-tostringtag": true,
-        "string.prototype.matchall>call-bind": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
@@ -1409,7 +1403,7 @@
         "@metamask/eth-trezor-keyring>@trezor/connect-web": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "browserify>buffer": true,
-        "browserify>events": true
+        "webpack>events": true
       }
     },
     "@metamask/eth-trezor-keyring>@metamask/utils": {
@@ -1451,8 +1445,8 @@
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "browserify>events": true,
-        "mockttp>graphql-tag>tslib": true
+        "mockttp>graphql-tag>tslib": true,
+        "webpack>events": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": {
@@ -1483,8 +1477,8 @@
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
         "browserify>buffer": true,
-        "browserify>events": true,
-        "lavamoat>json-stable-stringify": true
+        "lavamoat>json-stable-stringify": true,
+        "webpack>events": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>bytebuffer": {
@@ -1665,7 +1659,7 @@
         "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/obs-store": true,
-        "browserify>events": true
+        "webpack>events": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util": {
@@ -1753,9 +1747,9 @@
         "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
         "browserify>buffer": true,
-        "browserify>events": true,
         "ethereumjs-util": true,
-        "uuid": true
+        "uuid": true,
+        "webpack>events": true
       }
     },
     "@metamask/message-manager>@metamask/eth-sig-util": {
@@ -1881,7 +1875,7 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify>events": true
+        "webpack>events": true
       }
     },
     "@metamask/notification-controller": {
@@ -1900,7 +1894,7 @@
       "packages": {
         "@metamask/obs-store>through2": true,
         "@metamask/safe-event-emitter": true,
-        "browserify>stream-browserify": true
+        "stream-browserify": true
       }
     },
     "@metamask/obs-store>through2": {
@@ -1998,7 +1992,7 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify>events": true
+        "webpack>events": true
       }
     },
     "@metamask/scure-bip39": {
@@ -2030,10 +2024,10 @@
         "@metamask/controller-utils": true,
         "@metamask/message-manager": true,
         "browserify>buffer": true,
-        "browserify>events": true,
         "eth-rpc-errors": true,
         "ethereumjs-util": true,
-        "lodash": true
+        "lodash": true,
+        "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -2067,6 +2061,157 @@
         "define": true
       }
     },
+    "@metamask/snaps-controllers-flask": {
+      "globals": {
+        "URL": true,
+        "chrome.offscreen.createDocument": true,
+        "chrome.offscreen.hasDocument": true,
+        "clearTimeout": true,
+        "document.getElementById": true,
+        "fetch.bind": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/permission-controller": true,
+        "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/snaps-controllers-flask>@metamask/post-message-stream": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "@metamask/snaps-controllers-flask>concat-stream": true,
+        "@metamask/snaps-controllers-flask>nanoid": true,
+        "@metamask/snaps-controllers>@xstate/fsm": true,
+        "@metamask/snaps-controllers>gunzip-maybe": true,
+        "@metamask/snaps-controllers>readable-web-to-node-stream": true,
+        "@metamask/snaps-controllers>tar-stream": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "pump": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/post-message-stream": {
+      "globals": {
+        "MessageEvent.prototype": true,
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "browser": true,
+        "chrome": true,
+        "location.origin": true,
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/snaps-controllers-flask>@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/snaps-controllers-flask>concat-stream>readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/post-message-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods": {
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/permission-controller": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": true,
+        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "eth-rpc-errors": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/snaps-utils": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "@metamask/snaps-utils-flask>is-svg": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>concat-stream": {
+      "packages": {
+        "@metamask/snaps-controllers-flask>concat-stream>readable-stream": true,
+        "browserify>buffer": true,
+        "browserify>concat-stream>typedarray": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>concat-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/snaps-controllers-flask>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -2075,6 +2220,51 @@
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-web-to-node-stream": {
+      "packages": {
+        "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream": {
+      "packages": {
+        "@metamask/snaps-controllers>tar-stream>fs-constants": true,
+        "@metamask/snaps-controllers>tar-stream>readable-stream": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "browserify>util": true,
+        "end-of-stream": true,
+        "madge>ora>bl": true,
+        "pumpify>inherits": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>fs-constants": {
+      "packages": {
+        "browserify>constants-browserify": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/snaps-ui-flask": {
@@ -2503,9 +2693,9 @@
         "@truffle/codec>cbor>nofilter": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "browserify>stream-browserify": true,
         "browserify>url": true,
-        "browserify>util": true
+        "browserify>util": true,
+        "stream-browserify": true
       }
     },
     "@truffle/codec>cbor>bignumber.js": {
@@ -2517,8 +2707,8 @@
     "@truffle/codec>cbor>nofilter": {
       "packages": {
         "browserify>buffer": true,
-        "browserify>stream-browserify": true,
-        "browserify>util": true
+        "browserify>util": true,
+        "stream-browserify": true
       }
     },
     "@truffle/codec>web3-utils": {
@@ -2881,8 +3071,8 @@
         "browserify>browserify-zlib>pako": true,
         "browserify>buffer": true,
         "browserify>process": true,
-        "browserify>stream-browserify": true,
-        "browserify>util": true
+        "browserify>util": true,
+        "stream-browserify": true
       }
     },
     "browserify>buffer": {
@@ -2943,9 +3133,9 @@
         "browserify>crypto-browserify>create-hmac": true,
         "browserify>crypto-browserify>public-encrypt>browserify-rsa": true,
         "browserify>crypto-browserify>public-encrypt>parse-asn1": true,
-        "browserify>stream-browserify": true,
         "ethereumjs-util>create-hash": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "stream-browserify": true
       }
     },
     "browserify>crypto-browserify>create-ecdh": {
@@ -3041,11 +3231,6 @@
         "mocha>serialize-javascript>randombytes": true
       }
     },
-    "browserify>events": {
-      "globals": {
-        "console": true
-      }
-    },
     "browserify>has": {
       "packages": {
         "browserify>has>function-bind": true
@@ -3079,13 +3264,6 @@
         "define": true
       }
     },
-    "browserify>stream-browserify": {
-      "packages": {
-        "browserify>events": true,
-        "pumpify>inherits": true,
-        "readable-stream": true
-      }
-    },
     "browserify>stream-http": {
       "globals": {
         "AbortController": true,
@@ -3114,11 +3292,11 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
-        "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "browserify>string_decoder": {
@@ -3147,12 +3325,45 @@
       "globals": {
         "console.error": true,
         "console.log": true,
-        "console.trace": true,
-        "process": true
+        "console.trace": true
       },
       "packages": {
         "browserify>process": true,
-        "browserify>util>inherits": true
+        "browserify>util>is-arguments": true,
+        "browserify>util>is-typed-array": true,
+        "browserify>util>which-typed-array": true,
+        "koa>is-generator-function": true,
+        "pumpify>inherits": true
+      }
+    },
+    "browserify>util>is-arguments": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
+    "browserify>util>is-typed-array": {
+      "packages": {
+        "browserify>util>is-typed-array>for-each": true,
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>available-typed-arrays": true,
+        "string.prototype.matchall>es-abstract>gopd": true
+      }
+    },
+    "browserify>util>is-typed-array>for-each": {
+      "packages": {
+        "string.prototype.matchall>es-abstract>is-callable": true
+      }
+    },
+    "browserify>util>which-typed-array": {
+      "packages": {
+        "browserify>util>is-typed-array": true,
+        "browserify>util>is-typed-array>for-each": true,
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>available-typed-arrays": true,
+        "string.prototype.matchall>es-abstract>gopd": true
       }
     },
     "browserify>vm-browserify": {
@@ -3160,6 +3371,22 @@
         "document.body.appendChild": true,
         "document.body.removeChild": true,
         "document.createElement": true
+      }
+    },
+    "chalk": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "chalk>supports-color": true
+      }
+    },
+    "chalk>ansi-styles": {
+      "packages": {
+        "chalk>ansi-styles>color-convert": true
+      }
+    },
+    "chalk>ansi-styles>color-convert": {
+      "packages": {
+        "jest-canvas-mock>moo-color>color-name": true
       }
     },
     "classnames": {
@@ -3224,13 +3451,13 @@
     },
     "debounce-stream>duplexer": {
       "packages": {
-        "browserify>stream-browserify": true
+        "stream-browserify": true
       }
     },
     "debounce-stream>through": {
       "packages": {
         "browserify>process": true,
-        "browserify>stream-browserify": true
+        "stream-browserify": true
       }
     },
     "depcheck>@vue/compiler-sfc>postcss>nanoid": {
@@ -3321,10 +3548,10 @@
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
-        "browserify>events": true,
         "eth-lattice-keyring>@ethereumjs/tx": true,
         "eth-lattice-keyring>gridplus-sdk": true,
-        "eth-lattice-keyring>rlp": true
+        "eth-lattice-keyring>rlp": true,
+        "webpack>events": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/tx": {
@@ -3412,7 +3639,7 @@
         "@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "browserify>buffer": true,
-        "browserify>events": true
+        "webpack>events": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx": {
@@ -3432,7 +3659,7 @@
         "@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "browserify>buffer": true,
-        "browserify>events": true
+        "webpack>events": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx>ethereum-cryptography": {
@@ -3651,10 +3878,10 @@
     },
     "ethereumjs-util>create-hash>cipher-base": {
       "packages": {
-        "browserify>stream-browserify": true,
         "browserify>string_decoder": true,
         "koa>content-disposition>safe-buffer": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "stream-browserify": true
       }
     },
     "ethereumjs-util>create-hash>md5.js": {
@@ -3675,11 +3902,11 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
-        "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {
@@ -3745,11 +3972,11 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
-        "browserify>events": true,
         "browserify>process": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>scrypt-js": {
@@ -3929,7 +4156,7 @@
     "extension-port-stream": {
       "packages": {
         "browserify>buffer": true,
-        "browserify>stream-browserify": true
+        "stream-browserify": true
       }
     },
     "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/BaseControllerV2.js": {
@@ -6059,1469 +6286,7 @@
     "external:../snaps-monorepo/node_modules/keccak/lib/api/keccak.js": {
       "packages": {
         "browserify>buffer": true,
-        "browserify>stream-browserify": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/keccak/lib/api/shake.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>stream-browserify": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/keccak/lib/keccak.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/keccak/lib/keccak-state-unroll.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/luxon/build/cjs-browser/luxon.js": {
-      "globals": {
-        "Intl": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/md5.js/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/hash-base/index.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/nanoid/index.browser.cjs": {
-      "globals": {
-        "crypto.getRandomValues": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/nanoid/url-alphabet/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/number-to-bn/src/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/number-to-bn/node_modules/bn.js/lib/bn.js": true,
-        "external:../snaps-monorepo/node_modules/strip-hex-prefix/src/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/once/once.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/wrappy/wrappy.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/peek-stream/index.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/buffer-from/index.js": true,
-        "external:../snaps-monorepo/node_modules/duplexify/index.js": true,
-        "external:../snaps-monorepo/node_modules/through2/through2.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/pump/index.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/end-of-stream/index.js": true,
-        "external:../snaps-monorepo/node_modules/once/once.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/pumpify/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/duplexify/index.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/pumpify/node_modules/pump/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/pumpify/node_modules/pump/index.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/end-of-stream/index.js": true,
-        "external:../snaps-monorepo/node_modules/once/once.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/randombytes/browser.js": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_duplex.js": {
-      "packages": {
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_writable.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_passthrough.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_transform.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_readable.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/errors-browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/async_iterator.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/buffer_list.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/from-browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/state.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/string_decoder/lib/string_decoder.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_transform.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/errors-browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_duplex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_writable.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/errors-browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/state.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/util-deprecate/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/async_iterator.js": {
-      "packages": {
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/end-of-stream.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/buffer_list.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/destroy.js": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/end-of-stream.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/readable-stream/errors-browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/pipeline.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/readable-stream/errors-browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/end-of-stream.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/state.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/readable-stream/errors-browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/stream-browser.js": {
-      "packages": {
-        "browserify>events": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-stream/readable-browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_passthrough.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_transform.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/_stream_writable.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/end-of-stream.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/lib/internal/streams/pipeline.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/readable-web-to-node-stream/lib/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/readable-stream/readable-browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/rfdc/index.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/ripemd160/index.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/hash-base/index.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/rlp/dist.browser/index.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/rlp/node_modules/bn.js/lib/bn.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/rlp/node_modules/bn.js/lib/bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/safe-buffer/index.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/secp256k1/elliptic.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/secp256k1/lib/elliptic.js": true,
-        "external:../snaps-monorepo/node_modules/secp256k1/lib/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/secp256k1/lib/elliptic.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/elliptic/lib/elliptic.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/classes/comparator.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/cmp.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/debug.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/parse-options.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/re.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/classes/range.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/comparator.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/constants.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/debug.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/parse-options.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/re.js": true,
-        "external:../snaps-monorepo/node_modules/semver/node_modules/lru-cache/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/classes/semver.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/internal/constants.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/debug.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/parse-options.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/re.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/clean.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/parse.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/cmp.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/eq.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/gt.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/gte.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/lt.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/lte.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/neq.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/coerce.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/parse.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/re.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/compare-build.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/compare-loose.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/compare.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/diff.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/parse.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/eq.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/gt.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/gte.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/inc.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/lt.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/lte.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/major.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/minor.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/neq.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/parse.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/patch.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/prerelease.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/parse.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/rcompare.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/rsort.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare-build.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/satisfies.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/sort.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare-build.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/functions/valid.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/parse.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/comparator.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/clean.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/cmp.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/coerce.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/compare-build.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/compare-loose.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/diff.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/eq.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/gt.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/gte.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/inc.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/lt.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/lte.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/major.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/minor.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/neq.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/parse.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/patch.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/prerelease.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/rcompare.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/rsort.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/satisfies.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/sort.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/valid.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/constants.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/identifiers.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/re.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/gtr.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/intersects.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/ltr.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/max-satisfying.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/min-satisfying.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/min-version.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/outside.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/simplify.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/subset.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/to-comparators.js": true,
-        "external:../snaps-monorepo/node_modules/semver/ranges/valid.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/internal/debug.js": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/internal/re.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/internal/constants.js": true,
-        "external:../snaps-monorepo/node_modules/semver/internal/debug.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/node_modules/lru-cache/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/yallist/yallist.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/gtr.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/ranges/outside.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/intersects.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/ltr.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/ranges/outside.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/max-satisfying.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/min-satisfying.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/min-version.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/gt.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/outside.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/comparator.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/semver.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/gt.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/gte.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/lt.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/lte.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/satisfies.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/simplify.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/satisfies.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/subset.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/comparator.js": true,
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/compare.js": true,
-        "external:../snaps-monorepo/node_modules/semver/functions/satisfies.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/to-comparators.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/semver/ranges/valid.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/semver/classes/range.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/sha.js/hash.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/sha.js/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/sha.js/sha.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/sha1.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/sha224.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/sha256.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/sha384.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/sha512.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/sha.js/sha.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/hash.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/sha.js/sha1.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/hash.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/sha.js/sha224.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/hash.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/sha256.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/sha.js/sha256.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/hash.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/sha.js/sha384.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/hash.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/sha512.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/sha.js/sha512.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/sha.js/hash.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/string_decoder/lib/string_decoder.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/strip-hex-prefix/src/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/is-hex-prefixed/src/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": {
-      "globals": {
-        "console.warn": true,
-        "define": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/tar-stream/extract.js": {
-      "packages": {
-        "browserify>util": true,
-        "external:../snaps-monorepo/node_modules/bl/bl.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/readable-browser.js": true,
-        "external:../snaps-monorepo/node_modules/tar-stream/headers.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/tar-stream/headers.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/tar-stream/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/tar-stream/extract.js": true,
-        "external:../snaps-monorepo/node_modules/tar-stream/pack.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/tar-stream/pack.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "external:../snaps-monorepo/node_modules/end-of-stream/index.js": true,
-        "external:../snaps-monorepo/node_modules/fs-constants/browser.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/readable-stream/readable-browser.js": true,
-        "external:../snaps-monorepo/node_modules/tar-stream/headers.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_writable.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_passthrough.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_transform.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_readable.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/isarray/index.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/internal/streams/BufferList.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/string_decoder/lib/string_decoder.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_transform.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_writable.js": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "external:../snaps-monorepo/node_modules/core-util-is/lib/util.js": true,
-        "external:../snaps-monorepo/node_modules/inherits/inherits_browser.js": true,
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/internal/streams/destroy.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/internal/streams/stream-browser.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/safe-buffer/index.js": true,
-        "external:../snaps-monorepo/node_modules/util-deprecate/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/internal/streams/BufferList.js": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/internal/streams/destroy.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/process-nextick-args/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/internal/streams/stream-browser.js": {
-      "packages": {
-        "browserify>events": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/readable-browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_duplex.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_passthrough.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_readable.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_transform.js": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/lib/_stream_writable.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/safe-buffer/index.js": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/node_modules/string_decoder/lib/string_decoder.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/through2/node_modules/safe-buffer/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/through2/through2.js": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>util": true,
-        "external:../snaps-monorepo/node_modules/through2/node_modules/readable-stream/readable-browser.js": true,
-        "external:../snaps-monorepo/node_modules/xtend/immutable.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/util-deprecate/browser.js": {
-      "globals": {
-        "console.trace": true,
-        "console.warn": true,
-        "localStorage": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/validate-npm-package-name/lib/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/builtins/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/node_modules/yallist/yallist.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/yallist/iterator.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/index.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/index.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/common/snapInstallation.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/handlers.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/getSnaps.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/invokeSnapSugar.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/requestSnaps.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/handlers.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/middleware.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/invokeSnapSugar.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/middleware.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/handlers.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/requestSnaps.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/permitted/common/snapInstallation.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/invokeSnap.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/caveats/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/caveats/permittedCoinTypes.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/caveats/permittedDerivationPaths.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/caveats/snapIds.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip32Entropy.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip32PublicKey.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip44Entropy.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/invokeSnap.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/caveats/permittedCoinTypes.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/caveats/permittedDerivationPaths.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/caveats/snapIds.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/dialog.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip32Entropy.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip32PublicKey.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip44Entropy.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getEntropy.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getLocale.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/caveats/index.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/dialog.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip32Entropy.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip32PublicKey.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getBip44Entropy.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getEntropy.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/getLocale.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/invokeSnap.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/manageAccounts.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/manageState.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/notify.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/invokeSnap.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/manageAccounts.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/manageState.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/restricted/notify.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/utils.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha3.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/cronjob/CronjobController.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/Timer.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/cronjob.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/cronjob/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/cronjob/CronjobController.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/fsm.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@xstate/fsm/lib/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/cronjob/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/browser.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/utils.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/logging.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/AbstractExecutionService.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/object-multiplex/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-engine/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/json-rpc-middleware-stream/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/nanoid/index.browser.cjs": true,
-        "external:../snaps-monorepo/node_modules/pump/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/logging.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/ProxyPostMessageStream.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/AbstractExecutionService.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/ExecutionService.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/ProxyPostMessageStream.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/iframe/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/offscreen/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/webworker/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/iframe/IframeExecutionService.js": {
-      "globals": {
-        "document.getElementById": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/browser.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/AbstractExecutionService.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/iframe/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/iframe/IframeExecutionService.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/offscreen/OffscreenExecutionService.js": {
-      "globals": {
-        "chrome.offscreen.createDocument": true,
-        "chrome.offscreen.hasDocument": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/browser.js": true,
-        "external:../snaps-monorepo/node_modules/nanoid/index.browser.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/AbstractExecutionService.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/ProxyPostMessageStream.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/offscreen/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/offscreen/OffscreenExecutionService.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/webworker/WebWorkerExecutionService.js": {
-      "globals": {
-        "document.getElementById": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/post-message-stream/dist/browser.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/nanoid/index.browser.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/AbstractExecutionService.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/ProxyPostMessageStream.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/webworker/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/services/webworker/WebWorkerExecutionService.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/SnapController.js": {
-      "globals": {
-        "clearTimeout": true,
-        "fetch.bind": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@xstate/fsm/lib/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/nanoid/index.browser.cjs": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/fsm.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/logging.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/RequestQueue.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/Timer.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/rpc.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/permissions.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/registry/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/utils.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/Timer.js": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/cronjob.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/ethereum-provider.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/cronjob.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/ethereum-provider.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/lifecycle-hooks.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/long-running.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/name-lookup.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/network-access.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/rpc.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/transaction-insight.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/web-assembly.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/lifecycle-hooks.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/long-running.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/name-lookup.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/network-access.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/rpc.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/transaction-insight.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/eth-rpc-errors/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/web-assembly.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/permission-controller/dist/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/enum.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/SnapController.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/permissions.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/registry/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/selectors.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/http.js": {
-      "globals": {
-        "URL": true,
-        "fetch.bind": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/http.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/local.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/location.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/npm.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/local.js": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/http.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/location.js": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/http.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/local.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/npm.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/location/npm.js": {
-      "globals": {
-        "URL": true,
-        "fetch.bind": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/concat-stream/index.js": true,
-        "external:../snaps-monorepo/node_modules/gunzip-maybe/index.js": true,
-        "external:../snaps-monorepo/node_modules/pump/index.js": true,
-        "external:../snaps-monorepo/node_modules/readable-web-to-node-stream/lib/index.js": true,
-        "external:../snaps-monorepo/node_modules/tar-stream/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/permissions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/rpc-methods/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/endowments/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/registry/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/registry/json.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/registry/registry.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/registry/json.js": {
-      "globals": {
-        "fetch.bind": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/base-controller/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/snaps-registry/dist/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/registry/registry.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/utils.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-controllers/dist/cjs/snaps/Timer.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/builder.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/nodes.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/index.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/builder.js": true,
-        "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/nodes.js": true,
-        "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/validation.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/nodes.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/validation.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-ui/dist/cjs/nodes.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/checksum.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@noble/hashes/sha256.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/virtual-file/VirtualFile.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/cronjob.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/cron-parser/lib/parser.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/deep-clone.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/rfdc/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/enum.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/structs.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/errors.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/icon.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/is-svg/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/iframe.js": {
-      "globals": {
-        "document.body.appendChild": true,
-        "document.createElement": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/index.browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/array.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/caveats.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/checksum.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/cronjob.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/deep-clone.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/default-endowments.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/entropy.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/enum.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/errors.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/handlers.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/iframe.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/json-rpc.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/json.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/logging.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/manifest/index.browser.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/namespace.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/path.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/snaps.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/strings.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/structs.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/types.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/validation.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/versions.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/virtual-file/index.browser.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/json-rpc.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/json.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/logging.js": {
-      "globals": {
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/manifest/index.browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/manifest/validation.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/manifest/validation.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/key-tree/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/array.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/cronjob.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/entropy.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/json-rpc.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/snaps.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/types.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/namespace.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/path.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/snaps.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/@scure/base/lib/index.js": true,
-        "external:../snaps-monorepo/node_modules/fast-json-stable-stringify/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/node_modules/validate-npm-package-name/lib/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/caveats.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/checksum.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/types.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/structs.js": {
-      "packages": {
-        "browserify>path-browserify": true,
-        "browserify>process": true,
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/chalk/source/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/strings.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/types.js": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/handlers.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/validation.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/icon.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/manifest/validation.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/snaps.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/versions.js": {
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/node_modules/semver/index.js": true,
-        "external:../snaps-monorepo/node_modules/superstruct/dist/index.cjs": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/virtual-file/VirtualFile.js": {
-      "globals": {
-        "TextDecoder": true
-      },
-      "packages": {
-        "external:../snaps-monorepo/node_modules/@metamask/utils/dist/cjs/index.js": true,
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/deep-clone.js": true
-      }
-    },
-    "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/virtual-file/index.browser.js": {
-      "packages": {
-        "external:../snaps-monorepo/packages/snaps-utils/dist/cjs/virtual-file/VirtualFile.js": true
+        "stream-browserify": true
       }
     },
     "fast-json-patch": {
@@ -7568,6 +6333,11 @@
     "koa>content-disposition>safe-buffer": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "koa>is-generator-function": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true
       }
     },
     "koa>is-generator-function>has-tostringtag": {
@@ -7628,6 +6398,24 @@
     "luxon": {
       "globals": {
         "Intl": true
+      }
+    },
+    "madge>ora>bl": {
+      "packages": {
+        "browserify>buffer": true,
+        "madge>ora>bl>readable-stream": true,
+        "pumpify>inherits": true
+      }
+    },
+    "madge>ora>bl>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "mocha>serialize-javascript>randombytes": {
@@ -8221,7 +7009,6 @@
     "readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
-        "browserify>events": true,
         "browserify>process": true,
         "browserify>timers-browserify": true,
         "pumpify>inherits": true,
@@ -8230,7 +7017,8 @@
         "readable-stream>process-nextick-args": true,
         "readable-stream>safe-buffer": true,
         "readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "readable-stream>core-util-is": {
@@ -8287,10 +7075,38 @@
         "sinon>nise>path-to-regexp>isarray": true
       }
     },
+    "stream-browserify": {
+      "packages": {
+        "pumpify>inherits": true,
+        "stream-browserify>readable-stream": true,
+        "webpack>events": true
+      }
+    },
+    "stream-browserify>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
     "string.prototype.matchall>call-bind": {
       "packages": {
         "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>gopd": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>is-callable": {
+      "globals": {
+        "document": true
       }
     },
     "string.prototype.matchall>es-abstract>is-regex": {
