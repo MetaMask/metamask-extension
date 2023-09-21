@@ -22814,7 +22814,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^14.4.1":
+"lavamoat-core@npm:14.4.1":
   version: 14.4.1
   resolution: "lavamoat-core@npm:14.4.1"
   dependencies:
@@ -22822,6 +22822,17 @@ __metadata:
     lavamoat-tofu: "npm:^6.2.1"
     merge-deep: "npm:^3.0.3"
   checksum: 3ba352e96d728f015f193a671fef28be3c221e486956e693a4ec4690c871aa4b5aa9bd0bfb1bb9b260f1bd7709eb078f839d39c7c065640800d368a55e7e5cc3
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch":
+  version: 14.4.1
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch::version=14.4.1&hash=5307c6"
+  dependencies:
+    json-stable-stringify: "npm:^1.0.2"
+    lavamoat-tofu: "npm:^6.2.1"
+    merge-deep: "npm:^3.0.3"
+  checksum: 47a7f3863bd7b7ddb59ea6dad15a48859538725b0ed7bc53fd78a1a3f752c86f77b83f554c6b4a27420beb07d088fbfe1fd0847048c4e53174599d526d503fe8
   languageName: node
   linkType: hard
 
