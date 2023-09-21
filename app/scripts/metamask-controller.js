@@ -230,7 +230,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
-import { updateCurrentLocale } from './translate';
+import { updateCurrentLocale, t } from './translate';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -872,7 +872,7 @@ export default class MetamaskController extends EventEmitter {
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: addAccountApprovalId,
-                    message: 'snapAccountCreated', // translation key for message
+                    message: t('snapAccountCreated'),
                   });
                 } catch (error) {
                   await this.approvalController.error({
@@ -912,7 +912,7 @@ export default class MetamaskController extends EventEmitter {
                   await this.keyringController.persistAllKeyrings();
                   await this.approvalController.success({
                     flowToEnd: removeAccountApprovalId,
-                    message: 'snapAccountRemoved', // translation key for message
+                    message: t('snapAccountRemoved'),
                   });
                 } catch (error) {
                   await this.approvalController.error({

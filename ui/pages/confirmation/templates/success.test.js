@@ -8,9 +8,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import Confirmation from '../confirmation';
 
 jest.mock('../../../../shared/lib/fetch-with-cache');
-jest.mock('path/to/translationModule', () => ({
-  translate: (key) => key,
-}));
 
 const middleware = [thunk];
 const mockApprovalId = 1;

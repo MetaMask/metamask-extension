@@ -70,7 +70,6 @@ function getValues(pendingApproval, t, actions, _history) {
                 children: processString(
                   pendingApproval.requestData.message,
                   t('resultPageSuccessDefaultMessage'),
-                  t,
                 ),
               },
             ],
