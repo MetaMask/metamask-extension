@@ -46,7 +46,11 @@ export const SnapInsight = ({ data, loading }) => {
 
   useEffect(() => {
     const trackInsightUsage = async () => {
-      await dispatch(trackInsightSnapUsage(snapId));
+      try {
+        await dispatch(trackInsightSnapUsage(snapId));
+      } catch {
+        /** no-op */
+      }
     };
     trackInsightUsage();
   }, [snapId, dispatch]);

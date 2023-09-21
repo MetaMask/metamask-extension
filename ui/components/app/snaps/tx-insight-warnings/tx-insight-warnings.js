@@ -39,54 +39,51 @@ export default function TxInsightWarnings({
   onSubmit,
 }) {
   const t = useI18nContext();
-  // values represent if a warning is collapsed
+  // Values represent if a warning is collapsed
   const defaultWarningState = warnings.reduce((warningState, warning, idx) => {
-    if (idx === 0) {
-      warningState[warning.snapId] = false;
-    } else {
-      warningState[warning.snapId] = true;
-    }
+    warningState[warning.snapId] = idx !== 0;
     return warningState;
   }, {});
 
   const [warningState, setWarningState] = useState(defaultWarningState);
   const [isChecked, setIsChecked] = useState(false);
 
-  const handleOnChange = () => setIsChecked(!isChecked);
+  const handleOnChange = () => setIsChecked((state) => !state);
 
   const handleWarningClick = (snapId) => {
-    const newState = { ...warningState };
+    let newState = { ...warningState };
     const nextSnapState = !warningState[snapId];
     const willClose = nextSnapState;
     newState[snapId] = nextSnapState;
     if (!willClose) {
-      const openWarningId = Object.keys(warningState).find(
-        (warningId) => warningId !== snapId && !warningState[warningId],
-      );
-      if (openWarningId !== undefined) {
-        newState[openWarningId] = true;
-      }
+      newState = { ...defaultWarningState };
+      newState[snapId] = false;
+      newState[warnings[0].snapId] = snapId !== warnings[0].snapId;
     }
     setWarningState(newState);
   };
 
   const Warnings = () => {
     const lastWarningIdx = warnings.length - 1;
-    return warnings.map((warning, idx) => {
-      const { snapId, content } = warning;
-      return (
-        <SnapUIRenderer
-          key={`${snapId}-${idx}`}
-          snapId={snapId}
-          data={content}
-          delineatorType={DelineatorType.Warning}
-          onClick={() => handleWarningClick(snapId)}
-          isCollapsable
-          isCollapsed={warningState[snapId]}
-          boxProps={{ marginBottom: idx === lastWarningIdx ? 0 : 4 }}
-        />
-      );
-    });
+    return (
+      <Box className="tx-insights-warnings-modal__content">
+        {warnings.map((warning, idx) => {
+          const { snapId, content } = warning;
+          return (
+            <SnapUIRenderer
+              key={`${snapId}-${idx}`}
+              snapId={snapId}
+              data={content}
+              delineatorType={DelineatorType.Warning}
+              onClick={() => handleWarningClick(snapId)}
+              isCollapsable
+              isCollapsed={warningState[snapId]}
+              boxProps={{ marginBottom: idx === lastWarningIdx ? 0 : 4 }}
+            />
+          );
+        })}
+      </Box>
+    );
   };
 
   // move this to an enum that defines the language to be used in this modal on the various

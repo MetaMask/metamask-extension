@@ -174,10 +174,9 @@ const ConfirmPageContainer = (props) => {
 
   const handleSubmit = () => {
     if (isSetApproveForAll && isApprovalOrRejection) {
-      onSetApprovalForAll();
-    } else {
-      onSubmit();
+      return onSetApprovalForAll();
     }
+    return onSubmit();
   };
 
   // TODO: Better name
@@ -384,7 +383,7 @@ const ConfirmPageContainer = (props) => {
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
         }
-        {insightObject?.warnings?.length > 0 && isShowingTxInsightWarnings && (
+        {isShowingTxInsightWarnings && (
           <TxInsightWarnings
             warnings={insightObject.warnings}
             origin={origin}

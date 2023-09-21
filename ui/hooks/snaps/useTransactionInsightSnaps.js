@@ -34,7 +34,7 @@ export function useTransactionInsightSnaps({
           if (!permission) {
             return Promise.reject(
               new Error(
-                'This snap does not have the transaction insight endowment.',
+                'This Snap does not have the transaction insight endowment.',
               ),
             );
           }
@@ -70,9 +70,6 @@ export function useTransactionInsightSnaps({
 
       if (!cancelled) {
         setData(reformattedData);
-      }
-
-      if (!cancelled) {
         setLoading(false);
       }
     }

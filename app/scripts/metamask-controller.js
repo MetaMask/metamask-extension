@@ -275,6 +275,7 @@ export default class MetamaskController extends EventEmitter {
     const initState = opts.initState || {};
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
+    this.featureFlags = opts.featureFlags;
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
@@ -1958,10 +1959,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   handleSnapRequest(args) {
-    // we're not tracking at this point in flask because we eagerly fetch insights in v2
+    // We're not tracking transaction insights at this point in Flask because we eagerly fetch insights in v2.
     if (
       args.handler !== HandlerType.OnTransaction &&
-      !process.env.ALLOW_LOCAL_SNAPS
+      !this.featureFlags.txInsightV2
     ) {
       this._trackSnapExportUsage(args.snapId, args.handler);
     }
