@@ -66,6 +66,9 @@ export default class PreferencesController {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertsEnabled: false,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      addSnapAccountEnabled: false,
+      ///: END:ONLY_INCLUDE_IN
       advancedGasFee: {},
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -236,6 +239,20 @@ export default class PreferencesController {
   setSecurityAlertsEnabled(securityAlertsEnabled) {
     this.store.updateState({
       securityAlertsEnabled,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  /**
+   * Setter for the `addSnapAccountEnabled` property.
+   *
+   * @param {boolean} addSnapAccountEnabled - Whether or not the user wants to
+   * enable the "Add Snap accounts" button.
+   */
+  setAddSnapAccountEnabled(addSnapAccountEnabled) {
+    this.store.updateState({
+      addSnapAccountEnabled,
     });
   }
   ///: END:ONLY_INCLUDE_IN

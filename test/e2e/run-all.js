@@ -101,20 +101,6 @@ async function main() {
   if (snaps) {
     const testDir = path.join(__dirname, 'snaps');
     testPaths = await getTestPathsForTestDir(testDir);
-
-    if (buildType && buildType !== 'flask') {
-      // These tests should only be ran on Flask for now
-      const filteredTests = [
-        'test-snap-manageAccount.spec.js',
-        'test-snap-rpc.spec.js',
-        'test-snap-lifecycle.spec.js',
-        'ppom-toggle-settings.spec.js',
-        'petnames.spec.js',
-      ];
-      testPaths = testPaths.filter((p) =>
-        filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
-      );
-    }
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
@@ -133,6 +119,21 @@ async function main() {
         ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
       );
     }
+  }
+
+  // These tests should only be ran on Flask for now.
+  if (buildType !== 'flask') {
+    const filteredTests = [
+      'settings-add-snap-account-toggle.spec.js',
+      'test-snap-manageAccount.spec.js',
+      'test-snap-rpc.spec.js',
+      'test-snap-lifecycle.spec.js',
+      'ppom-toggle-settings.spec.js',
+      'petnames.spec.js',
+    ];
+    testPaths = testPaths.filter((p) =>
+      filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
+    );
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
