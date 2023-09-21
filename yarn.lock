@@ -458,7 +458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.0.0, @babel/parser@npm:^7.1.0, @babel/parser@npm:^7.10.1, @babel/parser@npm:^7.12.0, @babel/parser@npm:^7.13.16, @babel/parser@npm:^7.13.9, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.4, @babel/parser@npm:^7.21.5, @babel/parser@npm:^7.21.8, @babel/parser@npm:~7.21.2":
+"@babel/parser@npm:^7.0.0, @babel/parser@npm:^7.1.0, @babel/parser@npm:^7.12.0, @babel/parser@npm:^7.13.16, @babel/parser@npm:^7.13.9, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.4, @babel/parser@npm:^7.21.5, @babel/parser@npm:^7.21.8, @babel/parser@npm:~7.21.2":
   version: 7.21.8
   resolution: "@babel/parser@npm:7.21.8"
   bin:
@@ -1569,7 +1569,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.1.6, @babel/traverse@npm:^7.10.1, @babel/traverse@npm:^7.12.5, @babel/traverse@npm:^7.18.9, @babel/traverse@npm:^7.21.5, @babel/traverse@npm:^7.7.2, @babel/traverse@npm:~7.21.2":
+"@babel/traverse@npm:^7.1.6, @babel/traverse@npm:^7.12.5, @babel/traverse@npm:^7.18.9, @babel/traverse@npm:^7.21.5, @babel/traverse@npm:^7.7.2, @babel/traverse@npm:~7.21.2":
   version: 7.21.5
   resolution: "@babel/traverse@npm:7.21.5"
   dependencies:
@@ -1857,10 +1857,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "@endo/env-options@npm:0.1.3"
-  checksum: dbaa1c6edf2de712b0af76c991f2ffd29e52a27d3adca2292531dbbf42ef0541c03daa4d7f2de3efb223d0cacf303c82fe88c19d44a0f5535dce9ccbe5f66138
+"@endo/env-options@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "@endo/env-options@npm:0.1.4"
+  checksum: 0d6b82bdf07602dfc373a475234a206b61e9d0ab6ea886fdcbd111a37d9ce4e55ead5dbc1c7af52cf67a11a7185b40e7b30c3367da3928897082502d7e1274f1
   languageName: node
   linkType: hard
 
@@ -3448,14 +3448,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^3.1.0, @lavamoat/aa@npm:^3.1.1":
-  version: 3.1.2
-  resolution: "@lavamoat/aa@npm:3.1.2"
+"@lavamoat/aa@npm:^3.1.1, @lavamoat/aa@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "@lavamoat/aa@npm:3.1.5"
   dependencies:
-    resolve: "npm:^1.20.0"
+    resolve: "npm:^1.22.3"
   bin:
     lavamoat-ls: src/cli.js
-  checksum: 2441758d334d1c80bdcc8631ae79103bc6e5a0e5eb254c9d98e9320dfbd265cbe00296d03a7f9dbb0c7aec3e11e28e2267e29f4983e526968ccf1a4bd88b108f
+  checksum: 35e186fb0aaed5a2494dca4b8d353ead3123ff8a4964d502bdfe8ac369a774499a9ed2c45d04621b33f3c3fbf26ae8255fe4c3a4686f8a5dcb5a8da516be723a
   languageName: node
   linkType: hard
 
@@ -3474,19 +3474,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "@lavamoat/lavapack@npm:5.2.0"
+"@lavamoat/lavapack@npm:^5.2.4, @lavamoat/lavapack@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "@lavamoat/lavapack@npm:5.4.1"
   dependencies:
     JSONStream: "npm:^1.3.5"
     combine-source-map: "npm:^0.8.0"
     convert-source-map: "npm:^2.0.0"
     json-stable-stringify: "npm:^1.0.2"
-    lavamoat-core: "npm:^14.2.0"
+    lavamoat-core: "npm:^14.4.1"
     readable-stream: "npm:^3.6.0"
     through2: "npm:^4.0.2"
     umd: "npm:^3.0.3"
-  checksum: 2e71813fc5c4845ce025963bc3db21e25895f5b3b86291228f5e68ecaf95a0c301edca2f9a0d6fc6d5b0177b41c133610a9f7d699e22137b6e25e0914d72cc75
+  checksum: 63a3d947d6438149acb06349cc4160367f522040b9b87c43df8e617424634aa67f9f31058b0c6a0b02f2eac4c9dd6b16fe39f9ecf9c8fd4a4a5f3b31cfa4fb8f
   languageName: node
   linkType: hard
 
@@ -22817,106 +22817,93 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:^15.7.0":
-  version: 15.7.0
-  resolution: "lavamoat-browserify@npm:15.7.0"
+"lavamoat-browserify@npm:^15.7.4":
+  version: 15.9.1
+  resolution: "lavamoat-browserify@npm:15.9.1"
   dependencies:
-    "@lavamoat/aa": "npm:^3.1.0"
-    "@lavamoat/lavapack": "npm:^5.2.0"
+    "@lavamoat/aa": "npm:^3.1.5"
+    "@lavamoat/lavapack": "npm:^5.4.1"
     browser-resolve: "npm:^2.0.0"
     concat-stream: "npm:^2.0.0"
     convert-source-map: "npm:^1.9.0"
     duplexify: "npm:^4.1.1"
     json-stable-stringify: "npm:^1.0.1"
-    lavamoat-core: "npm:^14.2.0"
+    lavamoat-core: "npm:^14.4.1"
     pify: "npm:^4.0.1"
     readable-stream: "npm:^3.6.0"
     source-map: "npm:^0.7.4"
     through2: "npm:^3.0.0"
-  checksum: 74d78a95b22895e9ac094d06b4ab5b5c2bde994f1f61afddb97fe2c055882678f266b3f06248bc592f2853b04c20e5f0ed08291c6b4e68c9e4ce8e6b278b89c0
+  checksum: d462d983c433df0e77dbde7cbc122e81554fc0ffbdb4bee05afbc7e3413b4ae6fafd1985068cded5cf693dbf1a97a1de7c0a219fa181bf9086a9fefd231030a5
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:14.2.0":
-  version: 14.2.0
-  resolution: "lavamoat-core@npm:14.2.0"
+"lavamoat-core@npm:14.4.1":
+  version: 14.4.1
+  resolution: "lavamoat-core@npm:14.4.1"
   dependencies:
     json-stable-stringify: "npm:^1.0.2"
-    lavamoat-tofu: "npm:^6.0.2"
+    lavamoat-tofu: "npm:^6.2.1"
     merge-deep: "npm:^3.0.3"
-  checksum: 2222df8c1c3814897267244321e7d9768ac9524d06c0d6e7b1edc04f2a6857e5b6daf1d8ff560e767292f2956bdcc47f7127202b8caec7fc2ea0de5612bf419c
+  checksum: 3ba352e96d728f015f193a671fef28be3c221e486956e693a4ec4690c871aa4b5aa9bd0bfb1bb9b260f1bd7709eb078f839d39c7c065640800d368a55e7e5cc3
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^10.0.1":
-  version: 10.1.2
-  resolution: "lavamoat-core@npm:10.1.2"
-  dependencies:
-    fromentries: "npm:^1.2.0"
-    json-stable-stringify: "npm:^1.0.1"
-    lavamoat-tofu: "npm:^6.0.0"
-    merge-deep: "npm:^3.0.2"
-    resolve: "npm:^1.15.1"
-  checksum: a98eb0a069fafd57af190cd06a200186719e2659359ecedad1c2813d89e248d944b021261d111dfdf6f3fdea52e05ecb3486767b95337d987636a9ceb9ab2bdf
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@patch:lavamoat-core@npm%3A14.2.0#./.yarn/patches/lavamoat-core-npm-14.2.0-c453f4f755.patch::locator=metamask-crx%40workspace%3A.":
-  version: 14.2.0
-  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A14.2.0#./.yarn/patches/lavamoat-core-npm-14.2.0-c453f4f755.patch::version=14.2.0&hash=5307c6&locator=metamask-crx%40workspace%3A."
+"lavamoat-core@patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch":
+  version: 14.4.1
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch::version=14.4.1&hash=5307c6"
   dependencies:
     json-stable-stringify: "npm:^1.0.2"
-    lavamoat-tofu: "npm:^6.0.2"
+    lavamoat-tofu: "npm:^6.2.1"
     merge-deep: "npm:^3.0.3"
-  checksum: 9acf7eac2be4f368e67f61e04ad521a4e0f8915b86a9ffcd1212f3172c5140ef7d8ca6885bb482b4758a59e7f1a996bc922081a150b15e0c62c029986c055e5f
+  checksum: 47a7f3863bd7b7ddb59ea6dad15a48859538725b0ed7bc53fd78a1a3f752c86f77b83f554c6b4a27420beb07d088fbfe1fd0847048c4e53174599d526d503fe8
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^6.0.0, lavamoat-tofu@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "lavamoat-tofu@npm:6.0.2"
+"lavamoat-tofu@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "lavamoat-tofu@npm:6.2.1"
   dependencies:
-    "@babel/parser": "npm:^7.10.1"
-    "@babel/traverse": "npm:^7.10.1"
-  checksum: a641d68aa64f7b7a5d19608dd1daf77a7f442f86fb4f31ae3c5085c81891e9e0377ce8cfe9b99a3cb8c77c8efa5e0232e44056d0b04b2b364c1d814cb1215d41
+    "@babel/parser": "npm:^7.21.8"
+    "@babel/traverse": "npm:^7.21.5"
+  checksum: be1fecb988a523c1bcda57e71dc4ce1d57dcb0e01e7f4a72a59e545f96e205e9332f9e24d2f7b24fd8945eff066b7c7c8e515fb870f675a00cb94d132c81ff08
   languageName: node
   linkType: hard
 
-"lavamoat-viz@npm:^6.0.9":
-  version: 6.0.9
-  resolution: "lavamoat-viz@npm:6.0.9"
+"lavamoat-viz@npm:^6.0.11":
+  version: 6.2.1
+  resolution: "lavamoat-viz@npm:6.2.1"
   dependencies:
-    lavamoat-core: "npm:^10.0.1"
+    lavamoat-core: "npm:^14.4.1"
     ncp: "npm:^2.0.0"
     open: "npm:^7.0.3"
     pify: "npm:^4.0.1"
-    serve-handler: "npm:^6.1.3"
+    serve-handler: "npm:^6.1.5"
     yargs: "npm:^16.0.0"
   bin:
     lavamoat-viz: bin/index.js
-  checksum: 8dc91c7fbccfbe723e56c6095b35dbe5f6a22533cc5ab3556a5cc64565356eb12e29a76d5db594955024b1b966746bfd9a0c6a69a58f573d79bdd3da3400dfb4
+  checksum: 26ade3b21dd49f4f742e37d2ac52174e792447ed92b470c4618f9ac7397a9bbb51d0c225efb0a6319dfa021a566668acefd5fb07e0e6838e8df7efd508e527a4
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "lavamoat@npm:7.1.0"
+"lavamoat@npm:^7.1.2":
+  version: 7.3.1
+  resolution: "lavamoat@npm:7.3.1"
   dependencies:
     "@babel/code-frame": "npm:^7.21.4"
     "@babel/highlight": "npm:^7.18.6"
-    "@lavamoat/aa": "npm:^3.1.0"
+    "@lavamoat/aa": "npm:^3.1.5"
     bindings: "npm:^1.5.0"
     htmlescape: "npm:^1.1.1"
     json-stable-stringify: "npm:^1.0.2"
-    lavamoat-core: "npm:^14.2.0"
-    lavamoat-tofu: "npm:^6.0.2"
+    lavamoat-core: "npm:^14.4.1"
+    lavamoat-tofu: "npm:^6.2.1"
     node-gyp-build: "npm:^4.6.0"
     resolve: "npm:^1.22.3"
     yargs: "npm:^17.7.2"
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 3add11f2bfb9d21068d92412f1752c12d7a5eda114467ce8fbbba36072e5cbf0940c0024f5e75d8f0583659181d00f862d404a94a799df40eb7e12e5a803baa3
+  checksum: e2a294e8c1f911f2d7c33315fbe405c2917c2be9ed77f3504a3e5fbc62cf2aaba043e3cd86e0b7164f0930b687196784f440441f3e9fe5731a9cff1c3027cc4c
   languageName: node
   linkType: hard
 
@@ -24050,7 +24037,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"merge-deep@npm:^3.0.2, merge-deep@npm:^3.0.3":
+"merge-deep@npm:^3.0.3":
   version: 3.0.3
   resolution: "merge-deep@npm:3.0.3"
   dependencies:
@@ -24136,7 +24123,7 @@ __metadata:
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^2.3.1"
-    "@lavamoat/lavapack": "npm:^5.2.0"
+    "@lavamoat/lavapack": "npm:^5.2.4"
     "@lavamoat/snow": "npm:^1.5.0"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.12"
@@ -24369,9 +24356,9 @@ __metadata:
     junit-report-merger: "npm:^4.0.0"
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
-    lavamoat: "npm:^7.1.0"
-    lavamoat-browserify: "npm:^15.7.0"
-    lavamoat-viz: "npm:^6.0.9"
+    lavamoat: "npm:^7.1.2"
+    lavamoat-browserify: "npm:^15.7.4"
+    lavamoat-viz: "npm:^6.0.11"
     localforage: "npm:^1.9.0"
     lockfile-lint: "npm:^4.10.6"
     lodash: "npm:^4.17.21"
@@ -24431,7 +24418,7 @@ __metadata:
     selenium-webdriver: "npm:^4.9.0"
     semver: "npm:^7.5.4"
     serve-handler: "npm:^6.1.2"
-    ses: "npm:^0.18.7"
+    ses: "npm:^0.18.8"
     single-call-balance-checker-abi: "npm:^1.0.0"
     sinon: "npm:^9.0.0"
     source-map: "npm:^0.7.2"
@@ -29994,7 +29981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.11.1, resolve@npm:^1.14.2, resolve@npm:^1.15.1, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.21.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.22.3, resolve@npm:^1.4.0":
+"resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.11.1, resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.21.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.22.3, resolve@npm:^1.4.0":
   version: 1.22.3
   resolution: "resolve@npm:1.22.3"
   dependencies:
@@ -30020,7 +30007,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-? "resolve@patch:resolve@npm%3A^1.1.4#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.5#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.6#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.10.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.10.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.11.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.15.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.17.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.18.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.19.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.21.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.3#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.4.0#optional!builtin<compat/resolve>"
+? "resolve@patch:resolve@npm%3A^1.1.4#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.5#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.6#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.10.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.10.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.11.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.17.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.18.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.19.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.21.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.3#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.4.0#optional!builtin<compat/resolve>"
 :
   version: 1.22.3
   resolution: "resolve@patch:resolve@npm%3A1.22.3#optional!builtin<compat/resolve>::version=1.22.3&hash=c3c19d"
@@ -30778,7 +30765,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serve-handler@npm:^6.1.2, serve-handler@npm:^6.1.3":
+"serve-handler@npm:^6.1.2, serve-handler@npm:^6.1.5":
   version: 6.1.5
   resolution: "serve-handler@npm:6.1.5"
   dependencies:
@@ -30806,12 +30793,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^0.18.1, ses@npm:^0.18.7":
-  version: 0.18.7
-  resolution: "ses@npm:0.18.7"
+"ses@npm:^0.18.1, ses@npm:^0.18.7, ses@npm:^0.18.8":
+  version: 0.18.8
+  resolution: "ses@npm:0.18.8"
   dependencies:
-    "@endo/env-options": "npm:^0.1.3"
-  checksum: 601b442426bb8113bb855548878771aacb62f3c4eb3c45ff32f70338320f03eeb23c0d7eb834f5539793fa8ce497f304db50cbd5da51ef3531a4e94d424bb98c
+    "@endo/env-options": "npm:^0.1.4"
+  checksum: 243b8d546ca2f0ad68cda1178689c4a4bfab8ac25fd03daccaf6c4b94ee0c10b07eb10b8d477c73ceef9ba10a2205d2bef0bd3c64b8c98130c01adfd9c873103
   languageName: node
   linkType: hard
 
