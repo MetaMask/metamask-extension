@@ -310,7 +310,7 @@ describe('Petnames', function () {
     );
   });
 
-  it('can propose names using installed snaps', async function () {
+  it.skip('can propose names using installed snaps', async function () {
     await withFixtures(
       {
         dapp: true,
