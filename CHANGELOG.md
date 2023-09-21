@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a toggle to allow users to turn off IPFS image resolution ([#20172](https://github.com/MetaMask/metamask-extension/pull/20172))
 - Added toggles to allow users a per-network opt-out of incoming transactions functionality ([#20363](https://github.com/MetaMask/metamask-extension/pull/20363))
 - Added a toggle to allow users to opt-out of 4byte contract method names resolution ([#20098](https://github.com/MetaMask/metamask-extension/pull/20098))
+- MetaMask Institutional releases will now be available from the releases page ([#20788](https://github.com/MetaMask/metamask-extension/pull/20788)) 
 
 ### Changed
 - Display a "Buy more" link in swaps if the user has insufficient funds for a proposed swap ([#20241](https://github.com/MetaMask/metamask-extension/pull/20241))
