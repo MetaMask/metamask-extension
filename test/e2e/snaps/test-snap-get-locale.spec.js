@@ -113,6 +113,60 @@ describe('Test Snap Get Locale', function () {
           css: '#getLocaleResult',
           text: 'null',
         });
+
+        // try switching language to dansk
+        //
+        // switch to the original MM tab
+        const extensionPage = windowHandles[0];
+        await driver.switchToWindow(extensionPage);
+        await driver.delay(1000);
+
+        // click on the global action menu
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        // try to click on the notification item
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.delay(1000);
+
+        // try to click on the snaps item
+        await driver.clickElement({
+          text: 'General',
+          tag: 'div',
+        });
+        await driver.delay(1000);
+
+        // try to click on locale-select
+        await driver.clickElement('[data-testid="locale-select"]');
+
+        // try to select dansk from the list
+        await driver.clickElement({ text: 'Dansk', tag: 'option' });
+
+        // switch back to test snaps tab
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // click on alert dialog
+        await driver.clickElement('#sendGetLocaleHelloButton');
+        await driver.delay(500);
+
+        // switch to dialog popup
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.delay(500);
+
+        // check dialog contents for dansk result
+        const result2 = await driver.findElement('.snap-ui-renderer__panel');
+        await driver.scrollToElement(result2);
+        await driver.delay(500);
+        assert.equal(
+          await result2.getText(),
+          'Hej https://metamask.github.io!\nDette er en dialog!',
+        );
       },
     );
   });
