@@ -97,7 +97,6 @@ import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessag
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IN
 
 import Message from './signature-request-message';
@@ -172,8 +171,7 @@ const SignatureRequest = ({ txData }) => {
         action: 'Sign Request',
         type,
         version,
-        external_link_clicked: true,
-        security_alert_support_link: ZENDESK_URLS.SUPPORT_URL,
+        external_link_clicked: 'security_alert_support_link',
       },
     });
   }, []);

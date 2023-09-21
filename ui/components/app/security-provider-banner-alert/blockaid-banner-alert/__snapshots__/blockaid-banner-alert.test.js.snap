@@ -21,24 +21,6 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
       If you approve this request, a third party known for scams might take all your assets.
     </p>
     <p
-      class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
-    >
-      <span>
-         
-        Something doesn't look right? 
-        <a
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          href="https://support.metamask.io/hc/en-us"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Contact us
-        </a>
-        
-         
-      </span>
-    </p>
-    <p
       class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
     >
       <span
@@ -107,24 +89,6 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
       class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
     >
       If you approve this request, a third party known for scams might take all your assets.
-    </p>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
-    >
-      <span>
-         
-        Something doesn't look right? 
-        <a
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          href="https://support.metamask.io/hc/en-us"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Contact us
-        </a>
-        
-         
-      </span>
     </p>
     <p
       class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
@@ -205,30 +169,30 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
                 Operator is untrusted according to previous activity
               </li>
             </ul>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
+            >
+              <span>
+                 
+                Something doesn't look right? 
+                <a
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  href="https://support.metamask.io/hc/en-us"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Contact us
+                </a>
+                
+                 
+              </span>
+            </p>
           </div>
           <div
             class="disclosure__footer"
           />
         </details>
       </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
-      >
-        <span>
-           
-          Something doesn't look right? 
-          <a
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            href="https://support.metamask.io/hc/en-us"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Contact us
-          </a>
-          
-           
-        </span>
-      </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
       >

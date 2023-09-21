@@ -82,8 +82,7 @@ const TransactionAlerts = ({
       properties: {
         action: 'Confirm Screen',
         origin: txData?.origin,
-        external_link_clicked: true,
-        security_alert_support_link: ZENDESK_URLS.SUPPORT_URL,
+        external_link_clicked: 'security_alert_support_link',
       },
     });
   }, []);
