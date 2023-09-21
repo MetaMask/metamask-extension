@@ -28,6 +28,9 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -801,7 +804,12 @@ export function setupController(
           case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
-          case 'snap_manageAccounts:confirmation':
+          ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+            controller.approvalController.accept(id, false);
+            break;
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
