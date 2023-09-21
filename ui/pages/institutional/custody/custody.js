@@ -96,7 +96,7 @@ const CustodyPage = () => {
     const custodianItems = [];
 
     const sortedCustodians = [...custodians].sort((a, b) =>
-      a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+      a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
     );
 
     function shouldShowInProduction(custodian) {
@@ -113,10 +113,10 @@ const CustodyPage = () => {
 
     function isNotSelectedCustodian(custodian) {
       return (
-        'name' in custodian &&
+        'envName' in custodian &&
         connectRequest &&
         Object.keys(connectRequest).length &&
-        custodian.name !== selectedCustodianName
+        custodian.envName !== selectedCustodianName
       );
     }
 
@@ -128,10 +128,10 @@ const CustodyPage = () => {
         );
 
         const jwtListValue = await dispatch(
-          mmiActions.getCustodianJWTList(custodian.name),
+          mmiActions.getCustodianJWTList(custodian.envName),
         );
 
-        setSelectedCustodianName(custodian.name);
+        setSelectedCustodianName(custodian.envName);
         setSelectedCustodianDisplayName(custodian.displayName);
         setSelectedCustodianImage(custodian.iconUrl);
         setApiUrl(custodian.apiUrl);
@@ -153,7 +153,7 @@ const CustodyPage = () => {
           category: MetaMetricsEventCategory.MMI,
           event: MetaMetricsEventName.CustodianSelected,
           properties: {
-            custodian: custodian.name,
+            custodian: custodian.envName,
           },
         });
       } catch (error) {
@@ -172,7 +172,7 @@ const CustodyPage = () => {
 
       custodianItems.push(
         <Box
-          key={custodian.name}
+          key={custodian.envName}
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
@@ -606,7 +606,7 @@ const CustodyPage = () => {
             onAddAccounts={async () => {
               try {
                 const selectedCustodian = custodians.find(
-                  (custodian) => custodian.name === selectedCustodianName,
+                  (custodian) => custodian.envName === selectedCustodianName,
                 );
 
                 await dispatch(

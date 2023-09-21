@@ -95,5 +95,5 @@ export default ConfirmConnectCustodianModal;
 ConfirmConnectCustodianModal.propTypes = {
   onModalClose: PropTypes.func.isRequired,
   custodianName: PropTypes.string.isRequired,
-  custodianURL: PropTypes.string.isRequired,
+  custodianURL: PropTypes.string,
 };

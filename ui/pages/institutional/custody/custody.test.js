@@ -43,7 +43,7 @@ describe('CustodyPage', function () {
         custodians: [
           {
             type: 'GK8',
-            name: 'gk8',
+            envName: 'gk8',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
@@ -56,7 +56,7 @@ describe('CustodyPage', function () {
           },
           {
             type: 'Saturn B',
-            name: 'Saturn Custody B',
+            envName: 'Saturn Custody B',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
@@ -118,19 +118,19 @@ describe('CustodyPage', function () {
           custodians: [
             {
               ...mockStore.metamask.mmiConfiguration.custodians[0],
-              name: 'Saturn Custody B',
+              envName: 'Saturn Custody B',
               displayName: 'Saturn Custody B',
               website: 'test website',
             },
             {
               ...mockStore.metamask.mmiConfiguration.custodians[1],
-              name: 'Saturn Custody A',
+              envName: 'Saturn Custody A',
               displayName: 'Saturn Custody A',
               website: 'test website',
             },
             {
               ...mockStore.metamask.mmiConfiguration.custodians[2],
-              name: 'Saturn Custody C',
+              envName: 'Saturn Custody C',
               displayName: 'Saturn Custody C',
               website: 'test website',
             },
