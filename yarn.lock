@@ -4020,24 +4020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:11.0.0"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
-    "@metamask/eth-sig-util": "npm:^5.0.0"
-    "@metamask/utils": "npm:^3.0.3"
-    clone: "npm:^2.1.1"
-    eth-block-tracker: "npm:^7.0.0"
-    eth-rpc-errors: "npm:^4.0.3"
-    json-rpc-engine: "npm:^6.1.0"
-    pify: "npm:^3.0.0"
-    safe-stable-stringify: "npm:^2.3.2"
-  checksum: c1bcf11d6e0fc2299e1c807c76a0a2002e18ed9a6d229cd05169d076d2292dcd38f70963676acd29c2797e1960f41effea4f105fb354119a06d3237afcc4eb32
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-middleware@npm:^11.0.2":
+"@metamask/eth-json-rpc-middleware@npm:^11.0.0, @metamask/eth-json-rpc-middleware@npm:^11.0.2":
   version: 11.0.2
   resolution: "@metamask/eth-json-rpc-middleware@npm:11.0.2"
   dependencies:
@@ -4128,7 +4111,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^5.0.0, @metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2, @metamask/eth-sig-util@npm:^5.1.0":
+"@metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2, @metamask/eth-sig-util@npm:^5.1.0":
   version: 5.1.0
   resolution: "@metamask/eth-sig-util@npm:5.1.0"
   dependencies:
@@ -4419,29 +4402,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^12.1.2":
-  version: 12.1.2
-  resolution: "@metamask/network-controller@npm:12.1.2"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/controller-utils": "npm:^4.3.2"
-    "@metamask/eth-json-rpc-infura": "npm:^8.1.1"
-    "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
-    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^6.2.0"
-    async-mutex: "npm:^0.2.6"
-    eth-block-tracker: "npm:^7.0.1"
-    eth-rpc-errors: "npm:^4.0.2"
-    immer: "npm:^9.0.6"
-    json-rpc-engine: "npm:^6.1.0"
-    uuid: "npm:^8.3.2"
-  checksum: ec0cd25ac7851ed4b08cc6fb10bc66a83200b2d25efbf4de5a89fc5d9c845e403a59a5f226008460177cc7e2d26a35f38ca139b22e46083c5472bd86239638e5
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@npm:^12.2.0":
+"@metamask/network-controller@npm:^12.1.2, @metamask/network-controller@npm:^12.2.0":
   version: 12.2.0
   resolution: "@metamask/network-controller@npm:12.2.0"
   dependencies:
@@ -5161,7 +5122,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.4.1":
+"@metamask/utils@npm:^3.4.1":
   version: 3.6.0
   resolution: "@metamask/utils@npm:3.6.0"
   dependencies:
@@ -15984,7 +15945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^7.0.0, eth-block-tracker@npm:^7.0.1":
+"eth-block-tracker@npm:^7.0.1":
   version: 7.0.1
   resolution: "eth-block-tracker@npm:7.0.1"
   dependencies:
