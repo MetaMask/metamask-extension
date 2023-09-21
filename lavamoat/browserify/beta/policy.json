@@ -1834,10 +1834,10 @@
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>@metamask/snaps-ui": true,
+        "@metamask/rpc-methods>@metamask/snaps-utils": true,
         "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/rpc-methods>nanoid": true,
-        "@metamask/snaps-ui": true,
-        "@metamask/snaps-utils": true,
         "eth-rpc-errors": true,
         "superstruct": true
       }
@@ -1855,6 +1855,35 @@
         "@metamask/key-tree>@scure/base": true,
         "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/scure-bip39": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/snaps-utils": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/rpc-methods>@metamask/utils": {
@@ -1957,71 +1986,6 @@
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/snaps-ui": {
-      "packages": {
-        "@metamask/snaps-ui>@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-ui>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-utils": {
-      "globals": {
-        "TextDecoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/snaps-utils>@metamask/key-tree": true,
-        "@metamask/snaps-utils>@metamask/utils": true,
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/key-tree": {
-      "packages": {
-        "@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/snaps-utils>@metamask/utils": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/snaps-utils>cron-parser": {
