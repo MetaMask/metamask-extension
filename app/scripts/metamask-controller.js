@@ -2375,6 +2375,12 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      setAddSnapAccountEnabled:
+        preferencesController.setAddSnapAccountEnabled.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
