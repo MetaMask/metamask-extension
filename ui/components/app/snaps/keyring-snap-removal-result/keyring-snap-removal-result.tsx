@@ -18,8 +18,9 @@ import {
   ModalOverlay,
   Text,
 } from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const KeyringSnapRemovalResult = ({
+const KeyringSnapRemovalResult = ({
   snapName,
   result,
   isOpen,
@@ -30,6 +31,8 @@ export const KeyringSnapRemovalResult = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const t = useI18nContext();
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={() => onClose()}>
@@ -60,9 +63,14 @@ export const KeyringSnapRemovalResult = ({
               size={IconSize.Xl}
               marginBottom={4}
             />
-            <Text variant={TextVariant.bodyMdBold}>{`${snapName} ${
-              result === 'failed' ? 'not' : ''
-            } removed`}</Text>
+            <Text variant={TextVariant.bodyMdBold}>
+              {t('keyringSnapRemovalResult1', [
+                snapName,
+                result === 'failed'
+                  ? t('keyringSnapRemovalResultNotSuccessful')
+                  : '',
+              ])}
+            </Text>
           </Box>
         </ModalContent>
       </Modal>
