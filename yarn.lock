@@ -3641,23 +3641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-keyring@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask-institutional/custody-keyring@npm:1.0.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.1.1"
-    "@ethereumjs/util": "npm:^8.0.5"
-    "@metamask-institutional/configuration-client": "npm:^2.0.0"
-    "@metamask-institutional/sdk": "npm:^0.1.18"
-    "@metamask-institutional/types": "npm:^1.0.3"
-    "@metamask/obs-store": "npm:^8.0.0"
-    crypto: "npm:^1.0.1"
-    lodash.clonedeep: "npm:^4.5.0"
-  checksum: c9c763bd8416bd4434f4ae00d687f3bd33c6f4c6b7c299f0887e772e077b82291f59ecb6eebcac18cce56775887dfa8bc0a1be121d38ba35b5d5650bbb85ddf9
-  languageName: node
-  linkType: hard
-
-"@metamask-institutional/custody-keyring@npm:^1.0.2":
+"@metamask-institutional/custody-keyring@npm:^1.0.1, @metamask-institutional/custody-keyring@npm:^1.0.2":
   version: 1.0.2
   resolution: "@metamask-institutional/custody-keyring@npm:1.0.2"
   dependencies:
