@@ -3305,7 +3305,7 @@
     "description": "The description for `snap_manageAccounts` permission"
   },
   "permission_manageAccountsDescription": {
-    "message": "Access account management methods like account addition and removal and signing capabilities.",
+    "message": "Allow this Snap to add or remove Ethereum accounts, then transact and sign with these accounts.",
     "description": "An extended description for the `snap_manageAccounts` permission"
   },
   "permission_manageBip32Keys": {
