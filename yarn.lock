@@ -3657,6 +3657,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-institutional/custody-keyring@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@metamask-institutional/custody-keyring@npm:1.0.2"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.1.1"
+    "@ethereumjs/util": "npm:^8.0.5"
+    "@metamask-institutional/configuration-client": "npm:^2.0.0"
+    "@metamask-institutional/sdk": "npm:^0.1.18"
+    "@metamask-institutional/types": "npm:^1.0.3"
+    "@metamask/obs-store": "npm:^8.0.0"
+    crypto: "npm:^1.0.1"
+    lodash.clonedeep: "npm:^4.5.0"
+  checksum: eff487de17a9d7ea889a953f9874ee0a55b568928c97bf93a90c33af52acfc8958d708d8fb4e4cd909ec0e57757409ac86476b6ab89b72b72b4f6559eab3b06b
+  languageName: node
+  linkType: hard
+
 "@metamask-institutional/extension@npm:^0.3.5":
   version: 0.3.5
   resolution: "@metamask-institutional/extension@npm:0.3.5"
@@ -24106,7 +24122,7 @@ __metadata:
     "@lavamoat/snow": "npm:^1.5.0"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.12"
-    "@metamask-institutional/custody-keyring": "npm:^1.0.1"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.2"
     "@metamask-institutional/extension": "npm:^0.3.5"
     "@metamask-institutional/institutional-features": "npm:^1.2.4"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"

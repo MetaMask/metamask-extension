@@ -124,7 +124,7 @@ const CustodyPage = () => {
         'name' in custodian &&
         connectRequest &&
         Object.keys(connectRequest).length &&
-        custodian.name !== selectedCustodianName
+        custodian.envName !== selectedCustodianName
       );
     }
 
@@ -171,9 +171,9 @@ const CustodyPage = () => {
                   custodians,
                 );
                 const jwtListValue = await dispatch(
-                  mmiActions.getCustodianJWTList(custodian.name),
+                  mmiActions.getCustodianJWTList(custodian.envName),
                 );
-                setSelectedCustodianName(custodian.name);
+                setSelectedCustodianName(custodian.envName);
                 setSelectedCustodianDisplayName(custodian.displayName);
                 setSelectedCustodianImage(custodian.iconUrl);
                 setApiUrl(custodian.apiUrl);
@@ -195,7 +195,7 @@ const CustodyPage = () => {
                   category: MetaMetricsEventCategory.MMI,
                   event: MetaMetricsEventName.CustodianSelected,
                   properties: {
-                    custodian: custodian.name,
+                    custodian: custodian.envName,
                   },
                 });
               } catch (error) {
@@ -598,7 +598,7 @@ const CustodyPage = () => {
             onAddAccounts={async () => {
               try {
                 const selectedCustodian = custodians.find(
-                  (custodian) => custodian.name === selectedCustodianName,
+                  (custodian) => custodian.envName === selectedCustodianName,
                 );
 
                 await dispatch(
@@ -622,9 +622,9 @@ const CustodyPage = () => {
                 history.push({
                   pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
                   state: {
-                    imgSrc: selectedCustodian.iconUrl,
+                    imgSrc: selectedCustodian && selectedCustodian.iconUrl,
                     title: t('custodianAccountAddedTitle', [
-                      selectedCustodian.displayName,
+                      selectedCustodian && selectedCustodian.displayName || 'Custodian',
                     ]),
                     description: t('custodianAccountAddedDesc'),
                   },
