@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "एडवांस्ड टोकन डिटेक्शन वर्तमान में $1 पर उपलब्ध है। $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask आपको सीधे आपके ब्राउज़़र के एड्रेस बार में \"https://metamask.eth\" जैसे ENS डोमेन देखने की सुविधा देता है। यह ऐसे काम करता है:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "आमतौर पर इस्तेमाल किए जाने वाले ब्राउज़़र यूं तो ENS या IPFS एड्रेसों को हैंडल नहीं करते हैं, लेकिन MetaMask इसमें मदद करता है। इस फीचर का इस्तेमाल करके आपके IP एड्रेस को IPFS थर्ड-पार्टी सेवाओं के साथ शेयर किया जा सकता है।"
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "ENS नाम से जुड़े कोड को खोजने के लिए MetaMask, Ethereum के ENS कॉन्ट्रैक्ट की जांच करता है।"
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "अगर कोड IPFS से लिंक्ड है, तो उसे IPFS नेटवर्क से कॉन्टेंट प्राप्त होता है।"
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "इसके बाद, आप कॉन्टेंट देख सकते हैं, आमतौर पर एक वेबसाइट या कुछ इसी तरह का।"
-  },
   "ensDomainsSettingTitle": {
     "message": "एड्रेस बार में ENS डोमेन दिखाएँ"
   },

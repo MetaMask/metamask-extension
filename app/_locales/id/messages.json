@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Saat ini, deteksi token lanjutan tersedia di $1. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask memungkinkan Anda melihat domain ENS seperti \"https://metamask.eth\" tepat di bilah alamat browser Anda. Berikut cara kerjanya:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Browser biasa umumnya tidak menangani alamat ENS atau IPFS, tetapi MetaMask dapat menanganinya. Alamat IP Anda dapat dibagikan kepada layanan pihak ketiga IPFS saat menggunakan fitur ini."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask memeriksa kontrak ENS Ethereum untuk menemukan kode yang terhubung ke nama ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Jika kode ditautkan ke IPFS, maka kode tersebut mendapatkan konten dari jaringan IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Kemudian, Anda dapat melihat kontennya, umumnya dalam bentuk situs web atau yang serupa."
-  },
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
   },

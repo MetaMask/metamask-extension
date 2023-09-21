@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "$1. $2目前提供增强型代币检测"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask让您可以直接在浏览器地址栏中看到ENS域（例如“https://metamask.eth”）。其工作原理如下："
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "普通浏览器通常不处理ENS或IPFS地址，但MetaMask会帮助解决此问题。使用此功能，您的IP地址可能会与IPFS第三方服务共享。"
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask会检查以太坊的ENS合约，以查找与ENS名称相关的代码。"
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "如果代码链接到IPFS，将会从IPFS网络获取内容。"
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "然后，您可以看到内容，通常是网站或类似的内容。"
-  },
   "ensDomainsSettingTitle": {
     "message": "在地址栏中显示ENS域"
   },

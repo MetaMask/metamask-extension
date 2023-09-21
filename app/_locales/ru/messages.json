@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Улучшенное определение токенов в настоящее время доступно на $1. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask позволяет вам видеть домены ENS, такие как https://metamask.eth, прямо в адресной строке вашего браузера. Вот как это работает:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Обычные браузеры обычно не работают с адресами ENS или IPFS, но MetaMask помогает с этим. При использовании этой функции ваш IP-адрес может быть передан сторонним службам IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask сверяется с контрактом ENS Ethereum, чтобы найти код, связанный с именем ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Если код связан с IPFS, он получает контент из сети IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Затем вы можете увидеть контент, обычно веб-сайт или что-то подобное."
-  },
   "ensDomainsSettingTitle": {
     "message": "Показать домены ENS в адресной строке"
   },

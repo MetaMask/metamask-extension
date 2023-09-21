@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "$1에서 향상된 토큰 감지 기능을 사용할 수 있습니다. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask를 사용하면 브라우저의 주소창에서 \"https://metamask.eth\"과 같은 ENS 도메인을 바로 볼 수 있습니다. 방법은 다음과 같습니다."
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "일반 브라우저에서는 ENS나 IPFS 주소를 취급하지 않습니다. 하지만 MetaMask에서는 가능합니다. 이 기능을 사용하시면 회원님의 IP 주소를 IPFS 타사 서비스와 공유할 수 있습니다."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask에서는 이더리움의 ENS 계약을 확인하여 해당 ENS 이름과 연결되어 있는 코드를 찾습니다."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "해당 코드가 IPFS와 링크되어 있으면 이를 통해 IPFS 네트워크에서 콘텐츠를 불러올 수 있습니다."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "그러면 보통 웹사이트 또는 이와 유사한 형태의 콘텐츠를 볼 수 있습니다."
-  },
   "ensDomainsSettingTitle": {
     "message": "주소창에 ENS 도메인 표시하기"
   },

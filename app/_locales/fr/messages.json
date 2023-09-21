@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "La détection améliorée des jetons est actuellement disponible sur $1. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask vous permet de voir les domaines ENS comme « https://metamask.eth » dans la barre d’adresse de votre navigateur. Voici comment cela fonctionne :"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Les navigateurs ordinaires ne prennent généralement pas en charge les adresses ENS ou IPFS, mais MetaMask peut y remédier. L’utilisation de cette fonctionnalité peut entraîner le partage de votre adresse IP avec des services tiers IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask vérifie le contrat ENS d'Ethereum pour trouver le code lié au nom de domaine ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Si le code est lié au protocole IPFS, il obtient le contenu du réseau IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Vous pourrez alors voir le contenu, qui est généralement un site web ou quelque chose de similaire."
-  },
   "ensDomainsSettingTitle": {
     "message": "Afficher les domaines ENS dans la barre d’adresse"
   },

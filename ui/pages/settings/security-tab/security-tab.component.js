@@ -449,7 +449,7 @@ export default class SecurityTab extends PureComponent {
             {t('ensDomainsSettingTitle')}
             <div className="settings-page__content-description">
               <Text color={TextColor.inherit} variant={TextVariant.inherit}>
-                {t('ensDomainsSettingDescriptionIntro')}
+                {t('ensDomainsSettingDescriptionIntroduction')}
               </Text>
               <Box
                 as="ul"
@@ -463,25 +463,18 @@ export default class SecurityTab extends PureComponent {
                   color={TextColor.inherit}
                   variant={TextVariant.inherit}
                 >
-                  {t('ensDomainsSettingDescriptionPoint1')}
+                  {t('ensDomainsSettingDescriptionPart1')}
                 </Text>
                 <Text
                   as="li"
                   color={TextColor.inherit}
                   variant={TextVariant.inherit}
                 >
-                  {t('ensDomainsSettingDescriptionPoint2')}
-                </Text>
-                <Text
-                  as="li"
-                  color={TextColor.inherit}
-                  variant={TextVariant.inherit}
-                >
-                  {t('ensDomainsSettingDescriptionPoint3')}
+                  {t('ensDomainsSettingDescriptionPart2')}
                 </Text>
               </Box>
               <Text color={TextColor.inherit} variant={TextVariant.inherit}>
-                {t('ensDomainsSettingDescriptionOutro')}
+                {t('ensDomainsSettingDescriptionOutroduction')}
               </Text>
             </div>
           </div>

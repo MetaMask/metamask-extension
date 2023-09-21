@@ -1472,20 +1472,17 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Enhanced token detection is currently available on $1. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask lets you see ENS domains like \"https://metamask.eth\" right in your browser's address bar. Here's how it works:"
+  "ensDomainsSettingDescriptionIntroduction": {
+    "message": "MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:"
   },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services."
+  "ensDomainsSettingDescriptionOutroduction": {
+    "message": "Keep in mind that using this feature exposes your IP address to IPFS third-party services."
   },
-  "ensDomainsSettingDescriptionPoint1": {
+  "ensDomainsSettingDescriptionPart1": {
     "message": "MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name."
   },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "If the code is linked to IPFS, it gets the content from the IPFS network."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Then, you can see the content, usually a website or something similar."
+  "ensDomainsSettingDescriptionPart2": {
+    "message": "If the code links to IPFS, you can see the content associated with it (usuall a website)."
   },
   "ensDomainsSettingTitle": {
     "message": "Show ENS domains in address bar"

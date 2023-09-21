@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Gelişmiş token algılama şu anda $1 üzerinden kullanılabilir. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask, \"https://metamask.eth\" gibi ENS alanlarını tarayıcınızın adres çubuğunda görmenizi sağlar. Şöyle çalışır:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Normal tarayıcılar genellikle ENS veya IPFS adreslerini kullanmaz, ancak MetaMask bu konuda yardımcı olur. Bu özelliği kullandığınızda IP adresiniz IPFS üçüncü taraf hizmetleri ile paylaşılabilir."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask, ENS adına bağlı kodu bulmak için Ethereum'un ENS sözleşmesi ile kontrol gerçekleştirir."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Kod IPFS'ye bağlı ise içeriği IPFS ağından alır."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Ardından, genellikle bir web sitesi veya benzeri olan içeriği görebilirsiniz."
-  },
   "ensDomainsSettingTitle": {
     "message": "ENS alanlarını adres çubuğunda göster"
   },

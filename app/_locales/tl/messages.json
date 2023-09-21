@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Ang pinahusay na pagtuklas ng token ay kasalukuyang magagamit sa $1. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "Pinapahintulutan ka ng MetaMask na makita ang mga ENS domain gaya ng \"https://metamask.eth\" mismo sa address bar ng iyong browser. Narito kung paano ito ginagawa:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Ang mga regular na browser ay kadalasang hindi humahawak ng mga ENS o IPFS address, pero ang MetaMask ay tumutulong dito. Ang paggamit sa feature na ito ay maaring magbahagi sa iyong IP address gamit ang mga IPFS third-party na serbisyo."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "Sinusuri ng MetaMask ang kontrata ng ENS ng Ethereum para mahanap ang code na konektado sa pangalan ng ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Kapag ang code ay naka-link sa IPFS, kinukuha nito ang content mula sa IPFS network."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Pagkatapos, makikita mo ang content, na karaniwang website o isang bagay na katulad."
-  },
   "ensDomainsSettingTitle": {
     "message": "Ipinapakita ang mga ENS domain sa address bar"
   },

@@ -1441,21 +1441,6 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Tính năng phát hiện token nâng cao hiện có sẵn trên $1. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask cho phép bạn xem các tên miền ENS như \"https://metamask.eth\" ngay trên thanh địa chỉ của trình duyệt. Sau đây là cách hoạt động:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Các trình duyệt thông thường thường không xử lý địa chỉ ENS hoặc IPFS, nhưng MetaMask sẽ hỗ trợ xử lý. Việc sử dụng tính năng này có thể chia sẻ địa chỉ IP của bạn với các dịch vụ IPFS bên thứ ba."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask sẽ kiểm tra hợp đồng ENS của Ethereum để tìm mã được kết nối với tên ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Nếu mã được liên kết với IPFS, nó sẽ lấy nội dung từ mạng IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Sau đó, bạn có thể xem nội dung, thường là một trang web hoặc một cái gì đó tương tự."
-  },
   "ensDomainsSettingTitle": {
     "message": "Hiển thị tên miền ENS trong thanh địa chỉ"
   },
