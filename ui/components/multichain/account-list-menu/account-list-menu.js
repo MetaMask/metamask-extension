@@ -295,7 +295,7 @@ export const AccountListMenu = ({ onClose }) => {
               }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <Box>
+                <Box marginTop={4}>
                   <ButtonLink
                     size={Size.SM}
                     startIconName={IconName.Custody}
