@@ -138,7 +138,9 @@ const AssetList = ({ onClickAsset }) => {
 
   return (
     <>
-      {process.env.MULTICHAIN ? <BalanceOverview balance={totalFiat} /> : null}
+      {process.env.MULTICHAIN ? (
+        <BalanceOverview balance={totalFiat} loading={loading} />
+      ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
           <DetectedTokensBanner

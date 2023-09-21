@@ -37,7 +37,7 @@ import {
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IN
 
-export const BalanceOverview = ({ balance }) => {
+export const BalanceOverview = ({ balance, loading }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -89,7 +89,7 @@ export const BalanceOverview = ({ balance }) => {
               'token-balance-overview__secondary-balance': !balanceIsCached,
             })}
           >
-            {balance}
+            {loading ? '' : balance}
           </Text>
         ) : (
           <Spinner
@@ -140,5 +140,12 @@ export const BalanceOverview = ({ balance }) => {
 };
 
 BalanceOverview.propTypes = {
+  /**
+   * String balance of the account
+   */
   balance: PropTypes.string.isRequired,
+  /**
+   * Represents if the token values are currently loading
+   */
+  loading: PropTypes.bool.isRequired,
 };
