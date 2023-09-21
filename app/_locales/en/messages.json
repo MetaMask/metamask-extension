@@ -153,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountsConnected": {
+    "message": "Accounts connected"
+  },
   "active": {
     "message": "Active"
   },
@@ -457,9 +460,6 @@
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
-  },
-    "snapsConnected": {
-    "message": "Snaps connected"
   },
   "autoDetectTokens": {
     "message": "Autodetect tokens"
@@ -4113,6 +4113,9 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsConnected": {
+    "message": "Snaps connected"
+  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
   },
@@ -4316,9 +4319,6 @@
   },
   "statusNotConnectedAccount": {
     "message": "No accounts connected"
-  },
-    "accountsConnected": {
-    "message": "Accounts connected"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
