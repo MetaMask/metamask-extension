@@ -18,7 +18,9 @@ export default function NftsDetectionNoticeImportNFTs() {
       }}
     >
       {t('newNFTDetectedInImportNFTsMessage', [
-        <b>{t('newNFTDetectedInImportNFTsMessageStrongText')}</b>,
+        <b key="new-nft-detected-in-import-nfts-message-strong-text">
+          {t('newNFTDetectedInImportNFTsMessageStrongText')}
+        </b>,
       ])}
     </BannerAlert>
   );
