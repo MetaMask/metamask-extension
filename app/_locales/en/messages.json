@@ -269,7 +269,7 @@
     "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
   "addSnapAccountToggle": {
-    "message": "Enable \"Add snap account\""
+    "message": "Enable \"Add Snap account\""
   },
   "addSnapAccountsDescription": {
     "message": "Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service."
