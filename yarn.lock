@@ -4037,6 +4037,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-middleware@npm:^11.0.2":
+  version: 11.0.2
+  resolution: "@metamask/eth-json-rpc-middleware@npm:11.0.2"
+  dependencies:
+    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
+    "@metamask/eth-sig-util": "npm:^6.0.0"
+    "@metamask/utils": "npm:^5.0.1"
+    clone: "npm:^2.1.1"
+    eth-block-tracker: "npm:^7.0.1"
+    eth-rpc-errors: "npm:^4.0.3"
+    json-rpc-engine: "npm:^6.1.0"
+    pify: "npm:^3.0.0"
+    safe-stable-stringify: "npm:^2.3.2"
+  checksum: 188d98dce78f85fc6364ea78b6f7e14a95cdcf0791a187177a1da8e79b8588d1b08141110b570239d92afeb021c08432d5f10948f4bba983acd1665a013b8a2c
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-provider@npm:^1.0.0":
   version: 1.0.0
   resolution: "@metamask/eth-json-rpc-provider@npm:1.0.0"
@@ -4402,7 +4419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^12.1.1, @metamask/network-controller@npm:^12.1.2":
+"@metamask/network-controller@npm:^12.1.2":
   version: 12.1.2
   resolution: "@metamask/network-controller@npm:12.1.2"
   dependencies:
@@ -4421,6 +4438,28 @@ __metadata:
     json-rpc-engine: "npm:^6.1.0"
     uuid: "npm:^8.3.2"
   checksum: ec0cd25ac7851ed4b08cc6fb10bc66a83200b2d25efbf4de5a89fc5d9c845e403a59a5f226008460177cc7e2d26a35f38ca139b22e46083c5472bd86239638e5
+  languageName: node
+  linkType: hard
+
+"@metamask/network-controller@npm:^12.2.0":
+  version: 12.2.0
+  resolution: "@metamask/network-controller@npm:12.2.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^4.3.2"
+    "@metamask/eth-json-rpc-infura": "npm:^8.1.1"
+    "@metamask/eth-json-rpc-middleware": "npm:^11.0.2"
+    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
+    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
+    "@metamask/utils": "npm:^6.2.0"
+    async-mutex: "npm:^0.2.6"
+    eth-block-tracker: "npm:^7.0.1"
+    eth-rpc-errors: "npm:^4.0.2"
+    immer: "npm:^9.0.6"
+    json-rpc-engine: "npm:^6.1.0"
+    uuid: "npm:^8.3.2"
+  checksum: e5497f00c8a6ed5f00a9a5dccc6ff98cc15cc83ec31493e1387f654e038e244dff6b7954422f753d07461e2d4ef9c9dde2337a6cc4c013e3fae045592278da04
   languageName: node
   linkType: hard
 
@@ -24180,7 +24219,7 @@ __metadata:
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/name-controller": "npm:^1.0.0"
-    "@metamask/network-controller": "npm:^12.1.1"
+    "@metamask/network-controller": "npm:^12.2.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^4.0.0"
