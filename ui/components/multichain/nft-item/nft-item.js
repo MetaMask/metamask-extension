@@ -34,6 +34,25 @@ export const NftItem = ({
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
   const isIpfsURL = nftImageURL?.includes('ipfs:');
+  const renderNftBasedonSrc = src ? (
+    <Box
+      className="nft-item__item nft-item__item-image"
+      data-testid="nft-image"
+      as="img"
+      src={src}
+      alt={alt}
+      display={Display.Block}
+      justifyContent={JustifyContent.center}
+    />
+  ) : (
+    <NftDefaultImage
+      className="nft-item__default-image"
+      data-testid="nft-default-image"
+      name={name}
+      tokenId={tokenId}
+    />
+  );
+
   return (
     <Box
       className="nft-item__container"
@@ -65,15 +84,7 @@ export const NftItem = ({
         }
       >
         {isIpfsEnabled ? (
-          <Box
-            className="nft-item__item nft-item__item-image"
-            data-testid="nft-image"
-            as="img"
-            src={src}
-            alt={alt}
-            display={Display.Block}
-            justifyContent={JustifyContent.center}
-          />
+          <>{renderNftBasedonSrc}</>
         ) : (
           <>
             {isIpfsURL ? (
@@ -85,15 +96,7 @@ export const NftItem = ({
                 clickable={clickable}
               />
             ) : (
-              <Box
-                className="nft-item__item nft-item__item-image"
-                data-testid="nft-image"
-                as="img"
-                src={src}
-                alt={alt}
-                display={Display.Block}
-                justifyContent={JustifyContent.center}
-              />
+              <>{renderNftBasedonSrc}</>
             )}
           </>
         )}
