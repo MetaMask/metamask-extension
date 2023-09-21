@@ -8,6 +8,7 @@ export const EndowmentPermissions = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   'endowment:long-running': 'endowment:long-running',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
+  'endowment:name-lookup': 'endowment:name-lookup',
   ///: END:ONLY_INCLUDE_IN
 } as const);
 
