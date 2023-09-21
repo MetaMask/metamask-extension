@@ -1060,6 +1060,7 @@ export default class MetaMetricsController {
   /**
    * Returns the total number of Ethereum addresses with saved petnames,
    * including all chain ID variations.
+   *
    * @param {object} metamaskState
    * @returns {number}
    */
