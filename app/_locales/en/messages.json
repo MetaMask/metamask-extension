@@ -3949,8 +3949,8 @@
     "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "This relies on each network which will have access to your Ethereum address and your IP address."
+  "showIncomingTransactionsExplainer": {
+    "message": "This relies on different third-party APIs for each network, which expose your Ethereum address and your IP address."
   },
   "showMore": {
     "message": "Show more"
