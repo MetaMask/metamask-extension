@@ -31,7 +31,6 @@ export default function ConnectedSnaps({ connectedSubjects }) {
         .caveats[0].value;
     const newCaveatValue = { ...caveatValue };
     delete newCaveatValue[snapId];
-    console.log(newCaveatValue, 'newCaveatValue');
     if (Object.keys(newCaveatValue).length > 0) {
       dispatch(
         updateCaveat(
@@ -41,7 +40,6 @@ export default function ConnectedSnaps({ connectedSubjects }) {
           newCaveatValue,
         ),
       );
-      console.log("1");
     } else {
       dispatch(
         removePermissionsFor({
