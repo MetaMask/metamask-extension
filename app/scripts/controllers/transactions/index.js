@@ -2791,10 +2791,8 @@ export default class TransactionController extends EventEmitter {
     const currentTransactions = this.store.getState().transactions || {};
 
     const incomingTransactions = transactions
-      .filter(
-        (tx) =>
-          tx.type === TransactionType.incoming ||
-          !this._hasTransactionHash(tx.hash, currentTransactions),
+      .filter((tx) =>
+        this._dedupUnlessNotIncoming(tx.hash, currentTransactions),
       )
       .reduce((result, tx) => {
         result[tx.id] = tx;
@@ -2813,8 +2811,15 @@ export default class TransactionController extends EventEmitter {
     this.store.updateState({ lastFetchedBlockNumbers });
   }
 
-  _hasTransactionHash(hash, transactions) {
-    return Object.values(transactions).some((tx) => tx.hash === hash);
+  // Deduplicates transactions with the same hash, but only if they are not
+  // incoming transactions. The `transactions` object is shared between all
+  // accounts from the same SRP and in the same client. We display the
+  // appropriate `simpleSend` or `incoming` type transaction depending on the
+  // wallet account POV.
+  _dedupUnlessNotIncoming(txHash, transactions) {
+    return Object.values(transactions).some(
+      (tx) => tx.hash !== txHash || tx.type !== TransactionType.incoming,
+    );
   }
 
   // Approvals
