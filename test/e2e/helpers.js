@@ -527,15 +527,26 @@ const defaultGanacheOptions = {
 
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
 
-const sendTransaction = async (driver, recipientAddress, quantity) => {
+const sendTransaction = async (
+  driver,
+  recipientAddress,
+  quantity,
+  isAsyncFlow = false,
+) => {
   await driver.clickElement('[data-testid="eth-overview-send"]');
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
   await driver.clickElement('[data-testid="page-container-footer-next"]');
   await driver.clickElement('[data-testid="page-container-footer-next"]');
-  await driver.clickElement('[data-testid="home__activity-tab"]');
-  await driver.waitForElementNotPresent('.transaction-list-item--unconfirmed');
-  await driver.findElement('.transaction-list-item');
+
+  // the default is to do this block, but if we're testing an async flow, it would get stuck here
+  if (!isAsyncFlow) {
+    await driver.clickElement('[data-testid="home__activity-tab"]');
+    await driver.waitForElementNotPresent(
+      '.transaction-list-item--unconfirmed',
+    );
+    await driver.findElement('.transaction-list-item');
+  }
 };
 
 const findAnotherAccountFromAccountList = async (
@@ -674,14 +685,48 @@ async function terminateServiceWorker(driver) {
 }
 
 /**
+ * This method handles clicking the sign button on signature confrimation
+ * screen.
+ *
+ * @param {WebDriver} driver
+ * @param numHandles
+ */
+async function clickSignOnSignatureConfirmation(driver, numHandles = 2) {
+  await driver.clickElement({ text: 'Sign', tag: 'button' });
+  await driver.waitUntilXWindowHandles(numHandles);
+  await driver.getAllWindowHandles();
+}
+
+/**
+ * Some signing methods have extra security that requires the user to click a
+ * button to validate that they have verified the details. This method handles
+ * performing the necessary steps to click that button.
+ *
+ * @param {WebDriver} driver
+ */
+async function validateContractDetails(driver) {
+  const verifyContractDetailsButton = await driver.findElement(
+    '.signature-request-content__verify-contract-details',
+  );
+
+  verifyContractDetailsButton.click();
+  await driver.clickElement({ text: 'Got it', tag: 'button' });
+
+  // Approve signing typed data
+  await driver.clickElement('[data-testid="signature-request-scroll-button"]');
+  await driver.delay(regularDelayMs);
+}
+
+/**
  * This method assumes the extension is open, the dapp is open and waits for a
  * third window handle to open (the notification window). Once it does it
  * switches to the new window.
  *
  * @param {WebDriver} driver
+ * @param numHandles
  */
-async function switchToNotificationWindow(driver) {
-  await driver.waitUntilXWindowHandles(3);
+async function switchToNotificationWindow(driver, numHandles = 3) {
+  await driver.waitUntilXWindowHandles(numHandles);
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
 }
@@ -788,6 +833,8 @@ module.exports = {
   generateRandNumBetween,
   sleepSeconds,
   terminateServiceWorker,
+  clickSignOnSignatureConfirmation,
+  validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
   onboardingBeginCreateNewWallet,
