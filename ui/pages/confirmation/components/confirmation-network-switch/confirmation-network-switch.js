@@ -1,11 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import Box from '../../../../components/ui/box';
 import SiteIcon from '../../../../components/ui/site-icon';
-import Typography from '../../../../components/ui/typography/typography';
 import {
-  TypographyVariant,
   FontWeight,
   Display,
   JustifyContent,
@@ -13,12 +10,14 @@ import {
   AlignItems,
   TextAlign,
   TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { Box, Text } from '../../../../components/component-library';
 
 export default function ConfirmationNetworkSwitch({ newNetwork }) {
   const { chainId, nickname, type } = useSelector(getProviderConfig);
@@ -46,18 +45,16 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
             <i className="fa fa-question fa-2x" />
           </div>
         )}
-        <Typography
+        <Text
           color={TextColor.textDefault}
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySm}
           fontWeight={FontWeight.Normal}
           align={TextAlign.Center}
-          boxProps={{
-            display: Display.Flex,
-            justifyContent: JustifyContent.center,
-          }}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
         >
           {nickname || NETWORK_TO_NAME_MAP[type]}
-        </Typography>
+        </Text>
       </Box>
       <Box
         className="confirmation-network-switch__center-icon"
@@ -83,18 +80,16 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
             <i className="fa fa-question fa-2x" />
           </div>
         )}
-        <Typography
+        <Text
           color={TextColor.textDefault}
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySm}
           fontWeight={FontWeight.Normal}
           align={TextAlign.Center}
-          boxProps={{
-            display: Display.Flex,
-            justifyContent: JustifyContent.center,
-          }}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
         >
           {newNetwork.nickname}
-        </Typography>
+        </Text>
       </Box>
     </Box>
   );
