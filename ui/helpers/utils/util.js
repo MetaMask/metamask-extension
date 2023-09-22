@@ -113,6 +113,10 @@ export function isValidDomainName(address) {
     .match(
       /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
     );
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  return true;
+  ///: END:ONLY_INCLUDE_IN
+  // eslint-disable-next-line no-unreachable
   return match !== null;
 }
 
