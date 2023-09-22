@@ -161,6 +161,8 @@ module.exports = {
             // Always try to resolve types under `<root>/@types` directory even
             // it doesn't contain any source code, like `@types/unist`
             alwaysTryTypes: true,
+            // Allow importing .cjs files
+            extensions: ['.js', '.cjs'],
           },
         },
       },
