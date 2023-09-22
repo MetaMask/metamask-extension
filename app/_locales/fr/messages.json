@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Activer la détection automatique"
   },
-  "enableForAllNetworks": {
-    "message": "Activer pour tous les réseaux"
-  },
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
   },

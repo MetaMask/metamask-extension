@@ -383,7 +383,7 @@ function onboardingFixture() {
         forgottenPassword: false,
         identities: {},
         infuraBlocked: false,
-        ipfsGateway: 'dweb.link',
+        ipfsGateway: 'dweb.linkssssss',
         knownMethodData: {},
         ledgerTransportType: 'webhid',
         lostIdentities: {},

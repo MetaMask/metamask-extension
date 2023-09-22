@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
-  "enableForAllNetworks": {
-    "message": "すべてのネットワークで有効にする"
-  },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },

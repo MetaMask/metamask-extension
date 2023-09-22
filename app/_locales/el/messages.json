@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Ενεργοποίηση αυτόματου εντοπισμού"
   },
-  "enableForAllNetworks": {
-    "message": "Ενεργοποίηση σε όλα τα δίκτυα"
-  },
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
   },

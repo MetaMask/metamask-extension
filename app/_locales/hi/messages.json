@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट इनेबल करें"
   },
-  "enableForAllNetworks": {
-    "message": "सभी नेटवर्क पर इनेबल करें"
-  },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
   },
