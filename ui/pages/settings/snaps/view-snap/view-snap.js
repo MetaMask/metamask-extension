@@ -26,7 +26,9 @@ import {
   removeSnap,
   removePermissionsFor,
   updateCaveat,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   showKeyringSnapRemovalModal,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../store/actions';
 import {
   getSnaps,
