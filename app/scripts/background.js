@@ -483,6 +483,11 @@ export function setupController(
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
+    featureFlags: {
+      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+      txInsightV2: true,
+      ///: END:ONLY_INCLUDE_IN
+    },
   });
 
   setupEnsIpfsResolver({

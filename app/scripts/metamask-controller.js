@@ -101,6 +101,9 @@ import {
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 import {
   NameController,
@@ -272,6 +275,7 @@ export default class MetamaskController extends EventEmitter {
     const initState = opts.initState || {};
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
+    this.featureFlags = opts.featureFlags;
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
@@ -1929,7 +1933,6 @@ export default class MetamaskController extends EventEmitter {
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-
   /**
    * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
    *
@@ -1960,7 +1963,13 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   handleSnapRequest(args) {
-    this._trackSnapExportUsage(args.snapId, args.handler);
+    // We're not tracking transaction insights at this point in Flask because we eagerly fetch insights in v2.
+    if (
+      args.handler !== HandlerType.OnTransaction &&
+      !this.featureFlags.txInsightV2
+    ) {
+      this._trackSnapExportUsage(args.snapId, args.handler);
+    }
 
     return this.controllerMessenger.call('SnapController:handleRequest', args);
   }

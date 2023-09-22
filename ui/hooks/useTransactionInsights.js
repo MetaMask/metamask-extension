@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { SeverityLevel } from '@metamask/snaps-utils-flask';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
-import { getInsightSnaps } from '../selectors';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
 import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
+import { getInsightSnaps } from '../selectors';
+import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.contractInteraction ||
@@ -20,10 +22,24 @@ const isAllowedTransactionTypes = (transactionType) =>
 // https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
 // Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
+  const { txParams, chainId, origin } = txData;
+  const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+  const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
+
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
   );
+
+  const { data, loading } = useTransactionInsightSnaps({
+    transaction: txParams,
+    chainId: caip2ChainId,
+    origin,
+    insightSnaps,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+    insightSnapId: selectedInsightSnapId,
+    ///: END:ONLY_INCLUDE_IN
+  });
 
   useEffect(() => {
     if (insightSnaps.length && !selectedInsightSnapId) {
@@ -39,48 +55,53 @@ const useTransactionInsights = ({ txData }) => {
     ({ id }) => id === selectedInsightSnapId,
   );
 
-  const { txParams, chainId, origin } = txData;
-  const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-  const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
+  let insightComponent;
 
   if (insightSnaps.length === 1) {
-    return (
+    insightComponent = (
       <Tab
         className="confirm-page-container-content__tab"
-        name={selectedSnap.manifest.proposedName}
+        name={selectedSnap?.manifest.proposedName}
       >
-        <SnapInsight
-          transaction={txParams}
-          origin={origin}
-          chainId={caip2ChainId}
-          selectedSnap={selectedSnap}
-        />
+        <SnapInsight data={data?.[0]} loading={loading} />
       </Tab>
+    );
+  } else {
+    const dropdownOptions = insightSnaps?.map(
+      ({ id, manifest: { proposedName } }) => ({
+        value: id,
+        name: proposedName,
+      }),
+    );
+
+    const selectedSnapData = data?.find(
+      (promise) => promise.snapId === selectedInsightSnapId,
+    );
+
+    insightComponent = (
+      <DropdownTab
+        className="confirm-page-container-content__tab"
+        options={dropdownOptions}
+        selectedOption={selectedInsightSnapId}
+        onChange={(snapId) => setSelectedInsightSnapId(snapId)}
+      >
+        <SnapInsight loading={loading} data={selectedSnapData} />
+      </DropdownTab>
     );
   }
 
-  const dropdownOptions = insightSnaps?.map(
-    ({ id, manifest: { proposedName } }) => ({
-      value: id,
-      name: proposedName,
-    }),
-  );
+  const warnings = data?.reduce((warningsArr, promise) => {
+    if (promise.response?.severity === SeverityLevel.Critical) {
+      const {
+        snapId,
+        response: { content },
+      } = promise;
+      warningsArr.push({ snapId, content });
+    }
+    return warningsArr;
+  }, []);
 
-  return (
-    <DropdownTab
-      className="confirm-page-container-content__tab"
-      options={dropdownOptions}
-      selectedOption={selectedInsightSnapId}
-      onChange={(snapId) => setSelectedInsightSnapId(snapId)}
-    >
-      <SnapInsight
-        transaction={txParams}
-        origin={origin}
-        chainId={caip2ChainId}
-        selectedSnap={selectedSnap}
-      />
-    </DropdownTab>
-  );
+  return { insightComponent, warnings };
 };
 
 export default useTransactionInsights;

@@ -1,7 +1,17 @@
-import React from 'react';
+import React, {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react';
+
 import PropTypes from 'prop-types';
 
-import { useSelector } from 'react-redux';
+import {
+  useSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  useDispatch,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react-redux';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { Text } from '../../../component-library';
 import {
@@ -13,7 +23,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTransactionInsightSnap } from '../../../../hooks/snaps/useTransactionInsightSnap';
 import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../../snaps/snap-ui-renderer';
 import { SnapDelineator } from '../../snaps/snap-delineator';
@@ -21,30 +30,41 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+import { trackInsightSnapUsage } from '../../../../store/actions';
+///: END:ONLY_INCLUDE_IN
 
-export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
+export const SnapInsight = ({ data, loading }) => {
   const t = useI18nContext();
   const {
-    data: response,
     error,
-    loading,
-  } = useTransactionInsightSnap({
-    transaction,
-    chainId,
-    origin,
-    snapId: selectedSnap.id,
-  });
+    snapId,
+    response: { content },
+  } = data;
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const trackInsightUsage = async () => {
+      try {
+        await dispatch(trackInsightSnapUsage(snapId));
+      } catch {
+        /** no-op */
+      }
+    };
+    trackInsightUsage();
+  }, [snapId, dispatch]);
+  ///: END:ONLY_INCLUDE_IN
 
   const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, selectedSnap.id),
+    getTargetSubjectMetadata(state, snapId),
   );
 
-  const snapName = getSnapName(selectedSnap.id, targetSubjectMetadata);
-
-  const data = response?.content;
+  const snapName = getSnapName(snapId, targetSubjectMetadata);
 
   const hasNoData =
-    !error && (loading || !data || (data && Object.keys(data).length === 0));
+    !error &&
+    (loading || !content || (content && Object.keys(content).length === 0));
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -64,8 +84,8 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
         >
           {data && Object.keys(data).length > 0 ? (
             <SnapUIRenderer
-              snapId={selectedSnap.id}
-              data={data}
+              snapId={snapId}
+              data={content}
               delineatorType={DelineatorType.Insights}
             />
           ) : (
@@ -110,19 +130,11 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
 
 SnapInsight.propTypes = {
   /*
-   * The transaction data object
+   * The insight object
    */
-  transaction: PropTypes.object,
+  data: PropTypes.object,
   /*
-   * CAIP2 Chain ID
+   * Boolean as to whether or not the insights are loading
    */
-  chainId: PropTypes.string,
-  /*
-   *  The origin of the transaction
-   */
-  origin: PropTypes.string,
-  /*
-   * The insight snap selected
-   */
-  selectedSnap: PropTypes.object,
+  loading: PropTypes.bool,
 };
