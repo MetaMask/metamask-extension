@@ -271,6 +271,12 @@
   "addSnapAccountModalDescription": {
     "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
+  "addSnapAccountToggle": {
+    "message": "Enable \"Add Snap account\""
+  },
+  "addSnapAccountsDescription": {
+    "message": "Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service."
+  },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
   },
@@ -3313,6 +3319,10 @@
     "message": "Add and control Ethereum accounts",
     "description": "The description for `snap_manageAccounts` permission"
   },
+  "permission_manageAccountsDescription": {
+    "message": "Allow this Snap to add or remove Ethereum accounts, then transact and sign with these accounts.",
+    "description": "An extended description for the `snap_manageAccounts` permission"
+  },
   "permission_manageBip32Keys": {
     "message": "Control your accounts and assets under $1 ($2).",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
@@ -4028,6 +4038,12 @@
   },
   "smartSwapsSubDescription": {
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  },
+  "snapAccounts": {
+    "message": "Snap accounts"
+  },
+  "snapAccountsDescription": {
+    "message": "Accounts controlled by third-party Snaps."
   },
   "snapConfigure": {
     "message": "Configure"
