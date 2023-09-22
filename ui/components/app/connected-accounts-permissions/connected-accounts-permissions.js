@@ -67,7 +67,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
         <ButtonIcon
           size={ButtonIconSize.Sm}
           iconName={expanded ? IconName.ArrowUp : IconName.ArrowDown}
-          ariaLabel={t('close')}
+          ariaLabel={t('showPermissions')}
         />
       </Box>
       {expanded && (
