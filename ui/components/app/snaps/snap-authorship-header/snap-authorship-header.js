@@ -40,8 +40,11 @@ const SnapAuthorshipHeader = ({
     getTargetSubjectMetadata(state, snapId),
   );
 
+  const versionPath = subjectMetadata?.version
+    ? `/v/${subjectMetadata?.version}`
+    : '';
   const url = isNPM
-    ? `https://www.npmjs.com/package/${packageName}/v/${subjectMetadata?.version}`
+    ? `https://www.npmjs.com/package/${packageName}${versionPath}`
     : packageName;
 
   const friendlyName = snapId && getSnapName(snapId, subjectMetadata);

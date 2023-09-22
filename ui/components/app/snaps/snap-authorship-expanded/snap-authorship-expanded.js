@@ -44,8 +44,10 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const snapPrefix = snapId && getSnapPrefix(snapId);
   const packageName = snapId && removeSnapIdPrefix(snapId);
   const isNPM = snapPrefix === 'npm:';
+
+  const versionPath = snap?.version ? `/v/${snap?.version}` : '';
   const url = isNPM
-    ? `https://www.npmjs.com/package/${packageName}/v/${snap?.version}`
+    ? `https://www.npmjs.com/package/${packageName}${versionPath}`
     : packageName;
 
   const subjectMetadata = useSelector((state) =>
