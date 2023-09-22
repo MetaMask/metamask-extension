@@ -122,7 +122,10 @@ async function main() {
   const configFile = path.join(__dirname, '.mocharc.js');
   const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
+  // If mmi flag is passed
   if (mmi) {
+    // Tests that contains `@no-mmi` will be grep (-g) and inverted (-i)
+    // meaning that all tests with @no-mmi in the title will be ignored
     extraArgs.push('-g', '@no-mmi', '-i');
   }
 
