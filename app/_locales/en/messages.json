@@ -1493,9 +1493,6 @@
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
   },

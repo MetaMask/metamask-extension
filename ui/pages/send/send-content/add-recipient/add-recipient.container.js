@@ -19,9 +19,9 @@ import {
   getDomainResolution,
   getDomainError,
   getDomainWarning,
-  getDomainType,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   getResolvingSnap,
+  getDomainType,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../ducks/domains';
 import AddRecipient from './add-recipient.component';
@@ -32,8 +32,8 @@ function mapStateToProps(state) {
   const domainResolution = getDomainResolution(state);
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   const resolvingSnap = getResolvingSnap(state);
-  ///: END:ONLY_INCLUDE_IN
   const domainType = getDomainType(state);
+  ///: END:ONLY_INCLUDE_IN
   let addressBookEntryName = '';
   if (domainResolution) {
     const addressBookEntry = getAddressBookEntry(state, domainResolution) || {};
@@ -65,7 +65,6 @@ function mapStateToProps(state) {
     addressBookEntryName,
     contacts: addressBook.filter(({ name }) => Boolean(name)),
     domainResolution,
-    domainType,
     domainError: getDomainError(state),
     domainWarning: getDomainWarning(state),
     nonContacts,
@@ -74,6 +73,7 @@ function mapStateToProps(state) {
     recipient: getRecipient(state),
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     resolvingSnap,
+    domainType,
     ///: END:ONLY_INCLUDE_IN
   };
 }

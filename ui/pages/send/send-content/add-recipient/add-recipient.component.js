@@ -32,7 +32,6 @@ export default class AddRecipient extends Component {
     addressBook: PropTypes.array,
     updateRecipient: PropTypes.func,
     domainResolution: PropTypes.string,
-    domainType: PropTypes.string,
     domainError: PropTypes.string,
     domainWarning: PropTypes.string,
     addressBookEntryName: PropTypes.string,
@@ -46,6 +45,7 @@ export default class AddRecipient extends Component {
       warning: PropTypes.string,
     }),
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    domainType: PropTypes.string,
     resolvingSnap: PropTypes.string,
     ///: END:ONLY_INCLUDE_IN
     updateRecipientUserInput: PropTypes.func,
