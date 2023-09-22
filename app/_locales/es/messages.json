@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Activar autodetección"
   },
-  "enableForAllNetworks": {
-    "message": "Habilitar para todas las redes"
-  },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },

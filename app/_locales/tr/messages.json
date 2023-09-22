@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
-  "enableForAllNetworks": {
-    "message": "Tüm ağlar için etkinleştir"
-  },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
