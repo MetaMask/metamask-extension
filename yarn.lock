@@ -4343,7 +4343,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^7.5.0":
+"@metamask/keyring-controller@npm:7.5.0":
   version: 7.5.0
   resolution: "@metamask/keyring-controller@npm:7.5.0"
   dependencies:
@@ -4360,6 +4360,26 @@ __metadata:
   peerDependencies:
     "@metamask/preferences-controller": ^4.4.0
   checksum: ef5917584b65452ab61001458dd991d9db00decffa972367355b2260357007a455a682220ce902904f20fd5fb2feb8b51745b4de818512bddc512b2ce55061c1
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.5.0#~/.yarn/patches/@metamask-keyring-controller-npm-7.5.0-5dd5df31c7.patch":
+  version: 7.5.0
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.5.0#~/.yarn/patches/@metamask-keyring-controller-npm-7.5.0-5dd5df31c7.patch::version=7.5.0&hash=4a7ca3"
+  dependencies:
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/eth-keyring-controller": "npm:^13.0.1"
+    "@metamask/message-manager": "npm:^7.3.2"
+    "@metamask/preferences-controller": "npm:^4.4.0"
+    "@metamask/utils": "npm:^6.2.0"
+    async-mutex: "npm:^0.2.6"
+    ethereumjs-util: "npm:^7.0.10"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+  peerDependencies:
+    "@metamask/preferences-controller": ^4.4.0
+  checksum: 6b3e4e9576430b21380e43fe981f281a197f7cd78a747ae6fdc4a32fad8b4fece0715f431f8db07c87a7d1ad12678e726207ed9307685c66b9412de7e501c0c2
   languageName: node
   linkType: hard
 
