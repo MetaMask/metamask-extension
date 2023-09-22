@@ -704,7 +704,7 @@ export function decryptMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(decryptedMsgData.metamaskId as unknown as string));
+    dispatch(completedTx(decryptedMsgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return decryptedMsgData;
   };
@@ -737,7 +737,7 @@ export function encryptionPublicKeyMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.metamaskId as unknown as string));
+    dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
   };
@@ -1327,7 +1327,7 @@ export function cancelDecryptMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.id as unknown as string));
+    dispatch(completedTx(msgData.id));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
   };
@@ -1354,7 +1354,7 @@ export function cancelEncryptionPublicKeyMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.id as unknown as string));
+    dispatch(completedTx(msgData.id));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
   };
