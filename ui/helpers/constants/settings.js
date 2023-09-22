@@ -216,7 +216,7 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('ensDomainsSettingTitle'),
-    descriptionMessage: (t) => t('ensDomainsSettingDescriptionIntro'),
+    descriptionMessage: (t) => t('ensDomainsSettingDescriptionIntroduction'),
     route: `${SECURITY_ROUTE}#ens-domains`,
     icon: 'fa fa-lock',
   },
@@ -230,7 +230,7 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useNftDetection'),
-    descriptionMessage: (t) => t('useNftDetectionDescription'),
+    descriptionMessage: (t) => t('useNftDetectionDescriptionText'),
     route: `${SECURITY_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-lock',
   },

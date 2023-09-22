@@ -107,7 +107,7 @@ const t = (key) => {
       return "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off.";
     case 'useNftDetection':
       return 'Autodetect NFTs';
-    case 'useNftDetectionDescription':
+    case 'useNftDetectionDescriptionText':
       return 'Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services.';
     case 'about':
       return 'About';
