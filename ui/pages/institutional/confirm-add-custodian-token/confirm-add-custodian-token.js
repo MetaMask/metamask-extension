@@ -61,9 +61,10 @@ const ConfirmAddCustodianToken = () => {
   const handleButtonClick = useCallback(
     async (isConfirm) => {
       try {
-        setConnectError('');
-        setIsLoading(true);
         if (isConfirm) {
+          setConnectError('');
+          setIsLoading(true);
+
           if (connectRequest.chainId) {
             const networkType = Object.keys(BUILT_IN_NETWORKS).find(
               (key) =>
