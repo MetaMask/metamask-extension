@@ -868,6 +868,9 @@ export default class MetamaskController extends EventEmitter {
             saveState: async () => {
               await this.keyringController.persistAllKeyrings();
             },
+            removeAccount: async (address) => {
+              await this.removeAccount(address);
+            },
           });
         builder.type = SnapKeyring.type;
         return builder;
@@ -2369,6 +2372,12 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       setSecurityAlertsEnabled:
         preferencesController.setSecurityAlertsEnabled.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      setAddSnapAccountEnabled:
+        preferencesController.setAddSnapAccountEnabled.bind(
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN

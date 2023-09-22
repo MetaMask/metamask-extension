@@ -268,6 +268,12 @@
   "addSnapAccountModalDescription": {
     "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
+  "addSnapAccountToggle": {
+    "message": "Enable \"Add Snap account\""
+  },
+  "addSnapAccountsDescription": {
+    "message": "Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service."
+  },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
   },
@@ -1621,9 +1627,6 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "The dropped file is too big."
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
@@ -4023,6 +4026,12 @@
   },
   "smartSwapsSubDescription": {
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  },
+  "snapAccounts": {
+    "message": "Snap accounts"
+  },
+  "snapAccountsDescription": {
+    "message": "Accounts controlled by third-party Snaps."
   },
   "snapConfigure": {
     "message": "Configure"
