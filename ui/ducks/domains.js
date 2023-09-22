@@ -5,7 +5,11 @@ import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
 
-import { getCurrentChainId, getNameLookupSnapsIds } from '../selectors';
+import {
+  getCurrentChainId,
+  getNameLookupSnapsIds,
+  getPermissionSubjects,
+} from '../selectors';
 import { handleSnapRequest } from '../store/actions';
 import {
   CHAIN_IDS,
@@ -175,6 +179,50 @@ export function initializeDomainSlice() {
   };
 }
 
+export async function fetchResolutions({ domain, address, chainId, state }) {
+  const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
+  const subjects = getPermissionSubjects(state);
+  const nameLookupSnaps = getNameLookupSnapsIds(state);
+
+  const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
+    const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
+    // TODO: add a caveat getter to the snaps monorepo for name lookup similar to the other caveat getters
+    const nameLookupCaveat = permission.caveats[0].value;
+    return nameLookupCaveat.includes(chainId);
+  });
+
+  const snapRequestArgs = domain
+    ? {
+        domain,
+        chainId,
+      }
+    : { address, chainId };
+
+  const results = await Promise.allSettled(
+    filteredNameLookupSnapsIds.map((snapId) => {
+      return handleSnapRequest({
+        snapId,
+        origin: '',
+        handler: 'onNameLookup',
+        request: {
+          jsonrpc: '2.0',
+          method: '',
+          params: { ...snapRequestArgs },
+        },
+      });
+    }),
+  );
+
+  const filteredResults = results.reduce((successfulResolutions, result) => {
+    if (result.status !== 'rejected' && result.value !== null) {
+      successfulResolutions.push(result.value);
+    }
+    return successfulResolutions;
+  }, []);
+
+  return filteredResults;
+}
+
 export function lookupDomainName(domainName) {
   return async (dispatch, getState) => {
     const trimmedDomainName = domainName.trim();
@@ -202,56 +250,28 @@ export function lookupDomainName(domainName) {
         error = err;
       }
       const chainId = getCurrentChainId(state);
-      let network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      const nameLookupSnaps = getNameLookupSnapsIds(state);
-      if (nameLookupSnaps.length > 0) {
-        const results = await Promise.all(
-          nameLookupSnaps.map((snapId) => {
-            return new Promise((resolve) => {
-              handleSnapRequest({
-                snapId,
-                origin: '',
-                handler: 'onNameLookup',
-                request: {
-                  jsonrpc: '2.0',
-                  method: ' ',
-                  params: {
-                    domain: domainName,
-                    chainId: `eip155:${parseInt(chainId, 10)}`,
-                  },
-                },
-              }).then((res) => {
-                resolve(res);
-              });
-            });
-          }),
-        );
-        const successfulResolutions = results.filter(
-          (result) => result !== null,
-        );
-        network = parseInt(chainId, 10);
-        await dispatch(
-          domainLookup({
-            address: successfulResolutions[0].resolvedAddress,
-            error,
-            chainId,
-            network,
-            domainType: 'Other',
-            domainName: trimmedDomainName,
-          }),
-        );
-      } else {
-        await dispatch(
-          domainLookup({
-            address,
-            error,
-            chainId,
-            network,
-            domainType: ENS,
-            domainName: trimmedDomainName,
-          }),
-        );
+      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      if (error || !address) {
+        // TODO: allow for conflict resolution in future iteration, we don't have designs
+        // for this currently, so just displaying the first result.
+        address = fetchResolutions({
+          domain: domainName,
+          chainId: `eip155:${parseInt(chainId, 10)}`,
+          state,
+        })[0]?.resolvedAddress;
       }
+      const hasSnapResolution = error && address;
+
+      await dispatch(
+        domainLookup({
+          address,
+          error,
+          chainId,
+          network: hasSnapResolution ? parseInt(chainId, 10) : network,
+          domainType: hasSnapResolution ? 'Other' : ENS,
+          domainName: trimmedDomainName,
+        }),
+      );
     }
   };
 }
