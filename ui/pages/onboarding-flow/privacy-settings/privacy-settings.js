@@ -15,7 +15,6 @@ import {
   Box,
   PickerNetwork,
   Text,
-  TextField,
   ButtonPrimary,
   ButtonPrimarySize,
   ButtonSecondary,
