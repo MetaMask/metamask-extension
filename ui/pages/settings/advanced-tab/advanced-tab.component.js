@@ -758,6 +758,9 @@ export default class AdvancedTab extends PureComponent {
                   : BannerAlertSeverity.Danger
               }
               description={restoreMessageToRender}
+              descriptionProps={{
+                'data-testid': 'restore-user-data-banner-alert-description',
+              }}
               actionButtonLabel={t('dismiss')}
               actionButtonOnClick={() => {
                 this.setState({
