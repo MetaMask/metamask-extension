@@ -241,6 +241,12 @@ describe('EthOverview', () => {
               },
             },
           },
+          mmiConfiguration: {
+            portfolio: {
+              enabled: true,
+              url: 'https://metamask-institutional.io',
+            },
+          },
         },
       };
 
@@ -263,9 +269,7 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            'https://metamask-institutional.io/swap',
-          ),
+          url: 'https://metamask-institutional.io/swap',
         }),
       );
     });
