@@ -12,7 +12,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
 import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
-import { KeyringController } from '@metamask-previews/keyring-controller';
+import { KeyringController } from '@metamask/keyring-controller';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';

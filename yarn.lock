@@ -3752,46 +3752,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/keyring-controller@npm:7.4.0-preview.f0f357a":
-  version: 7.4.0-preview.f0f357a
-  resolution: "@metamask-previews/keyring-controller@npm:7.4.0-preview.f0f357a"
-  dependencies:
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/eth-keyring-controller": "npm:^13.0.1"
-    "@metamask/message-manager": "npm:^7.3.1"
-    "@metamask/preferences-controller": "npm:^4.4.0"
-    "@metamask/utils": "npm:^6.2.0"
-    async-mutex: "npm:^0.2.6"
-    ethereumjs-util: "npm:^7.0.10"
-    ethereumjs-wallet: "npm:^1.0.1"
-    immer: "npm:^9.0.6"
-  peerDependencies:
-    "@metamask/preferences-controller": ^4.4.0
-  checksum: 86f4b857bcd98228c3e76f5c79e43fb9121580aa542d50e867428b9a353f19713c64cfbb0cddb1ce5b2c2461fc8ead26576dcbd2accba2c4ee485c17dabe501d
-  languageName: node
-  linkType: hard
-
-"@metamask-previews/keyring-controller@patch:@metamask-previews/keyring-controller@npm%3A7.4.0-preview.f0f357a#~/.yarn/patches/@metamask-previews-keyring-controller-npm-7.4.0-preview.f0f357a-50cc3f549f.patch":
-  version: 7.4.0-preview.f0f357a
-  resolution: "@metamask-previews/keyring-controller@patch:@metamask-previews/keyring-controller@npm%3A7.4.0-preview.f0f357a#~/.yarn/patches/@metamask-previews-keyring-controller-npm-7.4.0-preview.f0f357a-50cc3f549f.patch::version=7.4.0-preview.f0f357a&hash=0b2902"
-  dependencies:
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/eth-keyring-controller": "npm:^13.0.1"
-    "@metamask/message-manager": "npm:^7.3.1"
-    "@metamask/preferences-controller": "npm:^4.4.0"
-    "@metamask/utils": "npm:^6.2.0"
-    async-mutex: "npm:^0.2.6"
-    ethereumjs-util: "npm:^7.0.10"
-    ethereumjs-wallet: "npm:^1.0.1"
-    immer: "npm:^9.0.6"
-  peerDependencies:
-    "@metamask/preferences-controller": ^4.4.0
-  checksum: 9dea5099f61b225c2df1bfbf77545a81daecb292f444acf404aae84aa853564ef6453fd4b78c15627a97a170e1b0b4eeb9ff938e37d3e3b4a5ffe45725ae3115
-  languageName: node
-  linkType: hard
-
 "@metamask/abi-utils@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/abi-utils@npm:1.2.0"
@@ -3812,9 +3772,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@0.0.0-preview.d5e3b8e":
-  version: 0.0.0-preview.d5e3b8e
-  resolution: "@metamask-previews/accounts-controller@npm:0.0.0-preview.d5e3b8e"
+"@metamask/accounts-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/accounts-controller@npm:1.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^3.2.1"
     "@metamask/eth-snap-keyring": "npm:^0.2.2"
@@ -3828,8 +3788,8 @@ __metadata:
     nanoid: "npm:^3.1.31"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/keyring-controller": ^7.4.0
-  checksum: 331b65fec535374e0b260f7205a16b609b818ea06d95123cc236baea44babc4165a6ab08590237a6d17585c68de12cdd46fa8916372245a9c9987f0146afaced
+    "@metamask/keyring-controller": ^7.5.0
+  checksum: 9a3b172921a39d313f4688f21b9ad62df4321ecc22b6361e8186fe3fcd61fcd3403cda82389057623db2c3087850fa0e7b2f0c65797b548a4243080e60d4cc0b
   languageName: node
   linkType: hard
 
@@ -4383,6 +4343,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-controller@npm:^7.5.0":
+  version: 7.5.0
+  resolution: "@metamask/keyring-controller@npm:7.5.0"
+  dependencies:
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/eth-keyring-controller": "npm:^13.0.1"
+    "@metamask/message-manager": "npm:^7.3.2"
+    "@metamask/preferences-controller": "npm:^4.4.0"
+    "@metamask/utils": "npm:^6.2.0"
+    async-mutex: "npm:^0.2.6"
+    ethereumjs-util: "npm:^7.0.10"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+  peerDependencies:
+    "@metamask/preferences-controller": ^4.4.0
+  checksum: ef5917584b65452ab61001458dd991d9db00decffa972367355b2260357007a455a682220ce902904f20fd5fb2feb8b51745b4de818512bddc512b2ce55061c1
+  languageName: node
+  linkType: hard
+
 "@metamask/logging-controller@npm:^1.0.1":
   version: 1.0.1
   resolution: "@metamask/logging-controller@npm:1.0.1"
@@ -4404,7 +4384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.2.0, @metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.1":
+"@metamask/message-manager@npm:^7.2.0, @metamask/message-manager@npm:^7.3.0":
   version: 7.3.1
   resolution: "@metamask/message-manager@npm:7.3.1"
   dependencies:
@@ -4417,6 +4397,22 @@ __metadata:
     jsonschema: "npm:^1.2.4"
     uuid: "npm:^8.3.2"
   checksum: 9ba3893a2a739906f63b9b51eceab798cad0f26657d58959cac8620122e80c9ae9007c6f0502a3eb7875398b774c5a59f00adde028cf80a1aa75502f53ef5740
+  languageName: node
+  linkType: hard
+
+"@metamask/message-manager@npm:^7.3.2":
+  version: 7.3.2
+  resolution: "@metamask/message-manager@npm:7.3.2"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^4.3.2"
+    "@metamask/eth-sig-util": "npm:^7.0.0"
+    "@metamask/utils": "npm:^6.2.0"
+    "@types/uuid": "npm:^8.3.0"
+    ethereumjs-util: "npm:^7.0.10"
+    jsonschema: "npm:^1.2.4"
+    uuid: "npm:^8.3.2"
+  checksum: d174a3f567a9e4542018c692c8a20423edff9d0d490f564fc943a0d4f0a8ec65e9342102a275a9cc2fbe64a9203aad69058ff7ef3c8e7e16a2e80c6eb422d477
   languageName: node
   linkType: hard
 
@@ -24205,8 +24201,7 @@ __metadata:
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
     "@metamask-institutional/sdk": "npm:^0.1.18"
     "@metamask-institutional/transaction-update": "npm:^0.1.27"
-    "@metamask-previews/keyring-controller": "patch:@metamask-previews/keyring-controller@npm%3A7.4.0-preview.f0f357a#~/.yarn/patches/@metamask-previews-keyring-controller-npm-7.4.0-preview.f0f357a-50cc3f549f.patch"
-    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@0.0.0-preview.d5e3b8e"
+    "@metamask/accounts-controller": "npm:^1.0.0"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^3.4.0"
@@ -24235,6 +24230,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^0.2.5"
+    "@metamask/keyring-controller": "npm:^7.5.0"
     "@metamask/logging-controller": "npm:^1.0.1"
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
