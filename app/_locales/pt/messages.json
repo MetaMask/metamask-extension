@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Exibir mídias de NFTs"
   },
-  "displayNftMediaDescription": {
-    "message": "Exibir mídias e dados de NFTs expõe seu endereço IP à OpenSea ou outros terceiros. Isso pode possibilitar que invasores associem seu endereço IP ao seu endereço Ethereum. A detecção automática de NFTs depende dessa configuração e ficará indisponível quando ela estiver desativada."
-  },
   "domain": {
     "message": "Domínio"
   },
@@ -1443,21 +1440,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "A detecção aprimorada de tokens está disponível no momento em $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "A MetaMask permite que você veja domínios ENS, como \"https://metamask.eth\", direto da barra de endereço do seu navegador. Veja como funciona:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Os navegadores comuns normalmente não lidam com endereços ENS ou IPFS, mas a MetaMask ajuda nisso. Usar esse recurso pode compartilhar seu endereço IP com serviços terceirizados de IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "A MetaMask verifica com o contrato ENS da Ethereum para encontrar o código conectado ao nome ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Se o código está vinculado ao IPFS, ele recebe o conteúdo da rede IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Então, você poderá ver o conteúdo, geralmente um website ou algo similar."
   },
   "ensDomainsSettingTitle": {
     "message": "Exibir domínios ENS na barra de endereço"
@@ -2473,12 +2455,6 @@
   },
   "newContract": {
     "message": "Novo contrato"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Permita que a MetaMask detecte automaticamente os NFTs da OpenSea e mostre-os em sua carteira."
-  },
-  "newNFTsDetected": {
-    "message": "Novidade! Detecção de NFT"
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
@@ -5238,21 +5214,6 @@
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
-  },
-  "useNftDetectionDescription": {
-    "message": "Usamos APIs terceirizadas para detectar NFTs na sua carteira, ou seja, seu endereço IP pode ser exposto a servidores centralizados. Há algumas coisas para se ter cuidado ao ativar esse recurso."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "O endereço da sua conta estará exposto às APIs terceirizadas."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Os metadados de NFTs podem conter links para golpes ou sites de phishing."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Qualquer pessoa pode realizar o airdrop de NFTs em sua conta. Isso inclui conteúdo ofensivo que pode ser exibido automaticamente em sua carteira."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Deixe desativado esse recurso se não quiser que o app obtenha dados desses serviços."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
