@@ -71,7 +71,12 @@ export default class DomainInput extends Component {
       return null;
     }
 
-    if (isValidDomainName(input)) {
+    let isFlask = false;
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    isFlask = true;
+    ///: END:ONLY_INCLUDE_IN
+
+    if (isFlask || isValidDomainName(input)) {
       lookupDomainName(input);
     } else {
       resetDomainResolution();
