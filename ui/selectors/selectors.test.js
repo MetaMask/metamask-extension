@@ -5,6 +5,7 @@ import {
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
   NETWORK_TYPES,
+  OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
 
@@ -341,6 +342,28 @@ describe('Selectors', () => {
         (network) => network.id === 'some-config-name',
       );
       expect(customNetwork.removable).toBe(true);
+    });
+
+    it('properly proposes a known network image when not provided by adding function', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.OPTIMISM,
+              nickname: OPTIMISM_DISPLAY_NAME,
+              id: 'some-config-name',
+            },
+          },
+        },
+      });
+
+      const optimismConfig = networks.find(
+        ({ chainId }) => chainId === CHAIN_IDS.OPTIMISM,
+      );
+      expect(optimismConfig.rpcPrefs.imageUrl).toBe('./images/optimism.svg');
     });
   });
 
