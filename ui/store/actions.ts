@@ -4444,6 +4444,22 @@ export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
     logErrorWithMessage(error);
   }
 }
+
+export function showKeyringSnapRemovalModal(payload: {
+  snapName: string;
+  result: 'success' | 'error';
+}) {
+  return {
+    type: actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT,
+    payload,
+  };
+}
+
+export function hideKeyringRemovalResultModal() {
+  return {
+    type: actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT,
+  };
+}
 ///: END:ONLY_INCLUDE_IN
 
 export function setFirstTimeUsedNetwork(chainId: string) {
