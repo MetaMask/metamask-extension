@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट इनेबल करें"
   },
-  "enableForAllNetworks": {
-    "message": "सभी नेटवर्क पर इनेबल करें"
-  },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
   },
@@ -1599,9 +1596,6 @@
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "ड्रॉप की गई फाइल बहुत बड़ी है।"
   },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",

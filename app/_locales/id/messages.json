@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
-  "enableForAllNetworks": {
-    "message": "Aktifkan untuk semua jaringan"
-  },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
   },
@@ -1599,9 +1596,6 @@
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "File yang didrop terlalu besar."
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",

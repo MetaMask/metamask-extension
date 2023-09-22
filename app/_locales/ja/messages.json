@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
-  "enableForAllNetworks": {
-    "message": "すべてのネットワークで有効にする"
-  },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
@@ -1599,9 +1596,6 @@
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "ドロップされたファイルが大きすぎます。"
   },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",

@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
   },
-  "enableForAllNetworks": {
-    "message": "Ativar para todas as redes"
-  },
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
@@ -1599,9 +1596,6 @@
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "O arquivo inserido é grande demais."
   },
   "flaskWelcomeUninstall": {
     "message": "você deve desinstalar essa extensão",

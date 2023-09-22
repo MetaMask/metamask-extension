@@ -1442,9 +1442,6 @@
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
-  "enableForAllNetworks": {
-    "message": "Enable for all networks"
-  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
@@ -1627,9 +1624,6 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "The dropped file is too big."
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",

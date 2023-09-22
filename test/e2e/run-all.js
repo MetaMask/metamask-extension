@@ -53,6 +53,10 @@ async function main() {
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
+          .option('mmi', {
+            description: `Run only mmi related tests`,
+            type: 'boolean',
+          })
           .option('snaps', {
             description: `run snaps e2e tests`,
             type: 'boolean',
@@ -89,6 +93,7 @@ async function main() {
     browser,
     debug,
     retries,
+    mmi,
     snaps,
     mv3,
     rpc,
@@ -150,6 +155,9 @@ async function main() {
   }
   if (updateSnapshot) {
     args.push('--update-snapshot');
+  }
+  if (mmi) {
+    args.push('--mmi');
   }
 
   // For running E2Es in parallel in CI
