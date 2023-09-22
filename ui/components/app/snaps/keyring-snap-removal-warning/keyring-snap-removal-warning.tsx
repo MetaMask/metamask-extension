@@ -161,7 +161,7 @@ export default function KeyringRemovalSnapWarning({
               size={ButtonSize.Lg}
               onClick={onCancel}
             >
-              {t('nevermind')}
+              {t('cancel')}
             </Button>
             <Button
               block
