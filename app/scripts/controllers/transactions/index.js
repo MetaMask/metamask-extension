@@ -2425,7 +2425,10 @@ export default class TransactionController extends EventEmitter {
       ) {
         if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
           transactionApprovalAmountType = TransactionApprovalAmountType.revoke;
-        } else if (customTokenAmount) {
+        } else if (
+          customTokenAmount &&
+          customTokenAmount !== dappProposedTokenAmount
+        ) {
           transactionApprovalAmountType = TransactionApprovalAmountType.custom;
         } else if (dappProposedTokenAmount) {
           transactionApprovalAmountType =
