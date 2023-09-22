@@ -38,7 +38,11 @@ const CreateSnapAccountContent = ({
             borderWidth={3}
           />
         </Box>
-        <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
+        <Text
+          data-testid="create-snap-account-content-title"
+          textAlign={TextAlign.Center}
+          variant={TextVariant.headingLg}
+        >
           {t('createSnapAccountTitle')}
         </Text>
         <Text
@@ -46,6 +50,7 @@ const CreateSnapAccountContent = ({
           textAlign={TextAlign.Center}
           padding={[0, 4]}
           overflowWrap={OverflowWrap.Anywhere}
+          data-testid="create-snap-account-content-description"
         >
           {t('createSnapAccountDescription', [snapName])}
         </Text>
