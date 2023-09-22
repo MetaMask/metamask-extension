@@ -921,7 +921,7 @@ exports[`Security Tab should match snapshot 1`] = `
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
               >
-                MetaMask lets you see ENS domains like "https://metamask.eth" right in your browser's address bar. Here's how it works:
+                MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:
               </span>
               <ul
                 class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--padding-inline-start-4"
@@ -935,18 +935,13 @@ exports[`Security Tab should match snapshot 1`] = `
                 <li
                   class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
                 >
-                  If the code is linked to IPFS, it gets the content from the IPFS network.
-                </li>
-                <li
-                  class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
-                >
-                  Then, you can see the content, usually a website or something similar.
+                  If the code links to IPFS, you can see the content associated with it (usually a website).
                 </li>
               </ul>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
               >
-                Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services.
+                Keep in mind that using this feature exposes your IP address to IPFS third-party services.
               </span>
             </div>
           </div>
@@ -1235,29 +1230,7 @@ exports[`Security Tab should match snapshot 1`] = `
           <div
             class="settings-page__content-description"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-            >
-              We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature.
-            </p>
-            <ul
-              class="settings-page__content-unordered-list"
-            >
-              <li>
-                Your account address will be viewable to third-party APIs.
-              </li>
-              <li>
-                NFT metadata may contain links to scams or phishing sites.
-              </li>
-              <li>
-                Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet.
-              </li>
-            </ul>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--padding-top-4 mm-box--color-text-alternative"
-            >
-              Leave this feature off if you don't want the app to pull data from those services.
-            </p>
+            Let MetaMask add NFTs you own using third-party services (like OpenSea). Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk.
           </div>
         </div>
         <div
