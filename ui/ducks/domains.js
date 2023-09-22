@@ -26,7 +26,7 @@ import {
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
-import { isValidDomainName } from '../helpers/utils/util';
+import { getSnapName, isValidDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
   BURN_ADDRESS,
@@ -46,6 +46,8 @@ const initialState = {
   network: null,
   domainType: null,
   domainName: null,
+  // TODO: This should be resolvingSnaps in the future when we allow for conflict resolution
+  resolvingSnap: null,
 };
 
 export const domainInitialState = initialState;
@@ -63,7 +65,12 @@ const slice = createSlice({
       state.resolution = null;
       state.error = null;
       state.warning = null;
-      const { address, error, network, domainType, domainName } =
+      state.domainType = null;
+      state.domainName = null;
+      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+      state.resolvingSnap = null;
+      ///: END:ONLY_INCLUDE_IN
+      const { address, error, network, domainType, domainName, resolvingSnap } =
         action.payload;
       state.domainType = domainType;
       if (state.domainType === ENS) {
@@ -102,6 +109,7 @@ const slice = createSlice({
         }
         if (address) {
           state.resolution = address;
+          state.resolvingSnap = resolvingSnap;
         }
       }
     },
@@ -213,12 +221,18 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
     }),
   );
 
-  const filteredResults = results.reduce((successfulResolutions, result) => {
-    if (result.status !== 'rejected' && result.value !== null) {
-      successfulResolutions.push(result.value);
-    }
-    return successfulResolutions;
-  }, []);
+  const filteredResults = results.reduce(
+    (successfulResolutions, result, idx) => {
+      if (result.status !== 'rejected' && result.value !== null) {
+        successfulResolutions.push({
+          ...result.value,
+          snapId: filteredNameLookupSnapsIds[idx],
+        });
+      }
+      return successfulResolutions;
+    },
+    [],
+  );
 
   return filteredResults;
 }
@@ -243,6 +257,7 @@ export function lookupDomainName(domainName) {
     } else {
       log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
       let address;
+      let fetchedResolutions;
       let error;
       try {
         address = await web3Provider.resolveName(trimmedDomainName);
@@ -252,15 +267,17 @@ export function lookupDomainName(domainName) {
       const chainId = getCurrentChainId(state);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
       if (error || !address) {
-        // TODO: allow for conflict resolution in future iteration, we don't have designs
+        // TODO: allow for conflict resolution in future iterations, we don't have designs
         // for this currently, so just displaying the first result.
-        address = fetchResolutions({
+        fetchedResolutions = fetchResolutions({
           domain: domainName,
           chainId: `eip155:${parseInt(chainId, 10)}`,
           state,
-        })[0]?.resolvedAddress;
+        });
+        address = fetchedResolutions[0].resolvedAddress;
       }
-      const hasSnapResolution = error && address;
+
+      const hasSnapResolution = !error && address;
 
       await dispatch(
         domainLookup({
@@ -270,6 +287,9 @@ export function lookupDomainName(domainName) {
           network: hasSnapResolution ? parseInt(chainId, 10) : network,
           domainType: hasSnapResolution ? 'Other' : ENS,
           domainName: trimmedDomainName,
+          ...(hasSnapResolution
+            ? {}
+            : { resolvingSnap: getSnapName(fetchedResolutions[0].snapId) }),
         }),
       );
     }
@@ -278,6 +298,10 @@ export function lookupDomainName(domainName) {
 
 export function getDomainResolution(state) {
   return state[name].resolution;
+}
+
+export function getResolvingSnap(state) {
+  return state[name].resolvingSnap;
 }
 
 export function getDomainError(state) {

@@ -4472,6 +4472,9 @@
   "submitted": {
     "message": "Submitted"
   },
+  "suggestedBy": {
+    "message": "Suggested by"
+  },
   "support": {
     "message": "Support"
   },

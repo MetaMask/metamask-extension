@@ -7,11 +7,18 @@ import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Confusable from '../../../../components/ui/confusable';
-import { Text } from '../../../../components/component-library';
+import {
+  Text,
+  AvatarIcon,
+  AvatarIconSize,
+  IconName,
+} from '../../../../components/component-library';
 import Box from '../../../../components/ui/box';
 import {
   TextColor,
   TextVariant,
+  IconColor,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 
 export default class AddRecipient extends Component {
@@ -34,6 +41,7 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
+    resolvingSnap: PropTypes.string,
     updateRecipientUserInput: PropTypes.func,
   };
 
@@ -142,15 +150,50 @@ export default class AddRecipient extends Component {
     );
   }
 
-  renderExplicitAddress(address, name, type, domainType = '') {
+  renderExplicitAddress(address, name, type, domainType) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    const { t } = this.context;
     if (domainType === 'Other') {
-      // snap provided resolution
+      // Snap provided resolution.
+      // Pulling the proposed name from the manifest,
+      // because domain resolution isn't in stable + no hardcoded metadata to pull from.
+      // TODO: If there are multiple resolutions (conflicts), we should render all of them
+      const { resolvingSnap } = this.props;
       return (
-        <div>
-
+        <div
+          key={address}
+          className="send__select-recipient-wrapper__group-item"
+          onClick={() => this.selectRecipient(address, name, type)}
+        >
+          <Identicon address={address} diameter={28} />
+          <div className="send__select-recipient-wrapper__group-item__content">
+            <div className="send__select-recipient-wrapper__group-item__title">
+              <Box>
+                <Confusable input={ellipsify(name)} />
+              </Box>
+              <Text paddingLeft={2}>{ellipsify(address)}</Text>
+            </div>
+            <div className="send__select-recipient-wrapper__group-item__subtitle">
+              <Text paddingRight={1}>{t('suggestedBy')}</Text>
+              <AvatarIcon
+                iconName={IconName.Snaps}
+                size={AvatarIconSize.Xs}
+                backgroundColor={IconColor.infoDefault}
+                borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
+                iconProps={{
+                  color: IconColor.infoInverse,
+                }}
+              />
+              <Text color={TextColor.infoDefault}>
+                {ellipsify(resolvingSnap)}
+              </Text>
+            </div>
+          </div>
         </div>
-      )
+      );
     }
+    ///: END:ONLY_INCLUDE_IN
     return (
       <div
         key={address}
@@ -160,13 +203,11 @@ export default class AddRecipient extends Component {
         <Identicon address={address} diameter={28} />
         <div className="send__select-recipient-wrapper__group-item__content">
           <div className="send__select-recipient-wrapper__group-item__title">
-            {name ? <Confusable input={name} /> : ellipsify(address)}
+            <Confusable input={name} />
           </div>
-          {name && (
-            <div className="send__select-recipient-wrapper__group-item__subtitle">
-              {ellipsify(address)}
-            </div>
-          )}
+          <div className="send__select-recipient-wrapper__group-item__subtitle">
+            {ellipsify(address)}
+          </div>
         </div>
       </div>
     );

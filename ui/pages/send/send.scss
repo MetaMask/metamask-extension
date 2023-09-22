@@ -118,6 +118,10 @@
         flex: 1 1 auto;
         width: 0;
       }
+
+      &__subtitle {
+        display: flex;
+      }
     }
 
     &__group-item--selected {
