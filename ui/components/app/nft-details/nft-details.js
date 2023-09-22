@@ -86,6 +86,7 @@ export default function NftDetails({ nft }) {
   } = useSelector(getSelectedInternalAccount);
   const nftImageAlt = getNftImageAlt(nft);
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
+  const isImageHosted = image?.startsWith('https:');
 
   const formattedTimestamp = formatDate(
     new Date(lastSale?.event_timestamp).getTime(),
@@ -187,12 +188,13 @@ export default function NftDetails({ nft }) {
           <Box className="nft-details__nft-item">
             <NftItem
               nftImageURL={nftImageURL}
-              src={image}
+              src={isImageHosted ? image : nftImageURL}
               alt={image ? nftImageAlt : ''}
               name={name}
               tokenId={tokenId}
               networkName={currentChain.nickname}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
+              clickable
             />
           </Box>
           <Box

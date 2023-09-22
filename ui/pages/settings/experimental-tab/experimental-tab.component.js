@@ -5,7 +5,12 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  MetaMetricsEventName,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../../shared/constants/metametrics';
 
 import { Text, Box } from '../../../components/component-library';
 import {
@@ -36,6 +41,10 @@ export default class ExperimentalTab extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertsEnabled: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    addSnapAccountEnabled: PropTypes.bool,
+    setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -238,6 +247,80 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  renderKeyringSnapsToggle() {
+    const { t, trackEvent } = this.context;
+    const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
+
+    return (
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
+          color={TextColor.textAlternative}
+          marginBottom={2}
+          fontWeight={FontWeight.Bold}
+        >
+          {t('snaps')}
+        </Text>
+        <Box
+          ref={this.settingsRefs[1]}
+          className="settings-page__content-row settings-page__content-row-experimental"
+          marginBottom={3}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('snapAccounts')}</span>
+            <div className="settings-page__content-description">
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textAlternative}
+              >
+                {t('snapAccountsDescription')}
+              </Text>
+
+              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h5"
+                  color={TextColor.textDefault}
+                  fontWeight={FontWeight.Medium}
+                  marginBottom={0}
+                >
+                  {t('addSnapAccountToggle')}
+                </Text>
+                <Box data-testid="add-snap-account-toggle">
+                  <ToggleButton
+                    value={addSnapAccountEnabled}
+                    onToggle={(value) => {
+                      trackEvent({
+                        event: MetaMetricsEventName.AddSnapAccountEnabled,
+                        category: MetaMetricsEventCategory.Settings,
+                        properties: {
+                          enabled: !value,
+                        },
+                      });
+                      setAddSnapAccountEnabled(!value);
+                    }}
+                  />
+                </Box>
+              </div>
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textAlternative}
+                marginTop={0}
+              >
+                {t('addSnapAccountsDescription')}
+              </Text>
+            </div>
+          </div>
+        </Box>
+      </>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   render() {
     return (
       <div className="settings-page__body">
@@ -247,6 +330,11 @@ export default class ExperimentalTab extends PureComponent {
           ///: END:ONLY_INCLUDE_IN
         }
         {this.renderTransactionSecurityCheckToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          this.renderKeyringSnapsToggle()
+          ///: END:ONLY_INCLUDE_IN
+        }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           this.renderDesktopEnableButton()

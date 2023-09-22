@@ -630,9 +630,10 @@ const CustodyPage = () => {
                 history.push({
                   pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
                   state: {
-                    imgSrc: selectedCustodian.iconUrl,
+                    imgSrc: selectedCustodian && selectedCustodian.iconUrl,
                     title: t('custodianAccountAddedTitle', [
-                      selectedCustodian.displayName,
+                      (selectedCustodian && selectedCustodian.displayName) ||
+                        'Custodian',
                     ]),
                     description: t('custodianAccountAddedDesc'),
                   },
