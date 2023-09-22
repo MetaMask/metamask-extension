@@ -25,7 +25,6 @@ import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
-import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 ///: END:ONLY_INCLUDE_IN
 import {
   getIsSwapsChain,
@@ -178,7 +177,7 @@ const TokenOverview = ({ className, token }) => {
                 onClick={() => {
                   stakingEvent();
                   global.platform.openTab({
-                    url: 'https://metamask-institutional.io/stake',
+                    url: `${mmiPortfolioUrl}/stake`,
                   });
                 }}
               />
@@ -195,7 +194,9 @@ const TokenOverview = ({ className, token }) => {
                   data-testid="token-overview-mmi-portfolio"
                   onClick={() => {
                     portfolioEvent();
-                    window.open(mmiPortfolioUrl, '_blank');
+                    global.platform.openTab({
+                      url: mmiPortfolioUrl,
+                    });
                   }}
                 />
               )}
@@ -252,7 +253,7 @@ const TokenOverview = ({ className, token }) => {
               onClick={() => {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 global.platform.openTab({
-                  url: MMI_SWAPS_URL,
+                  url: `${mmiPortfolioUrl}/swap`,
                 });
                 ///: END:ONLY_INCLUDE_IN
 
