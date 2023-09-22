@@ -63,7 +63,7 @@ export default function ConnectedAccountsListItem({
             </Text>
             {status ? (
               <Text
-                variant={TextVariant.bodyLgMedium}
+                variant={TextVariant.bodyMd}
                 className="connected-accounts-list__account-status"
                 color={TextColor.successDefault}
               >
