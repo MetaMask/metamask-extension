@@ -966,6 +966,16 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
   },
 );
 
+export const getNotifySnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions.snap_notify,
+    );
+  },
+);
+
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).map((snap) => {
     return {
