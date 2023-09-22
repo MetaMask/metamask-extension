@@ -75,9 +75,17 @@ describe('migration #99', () => {
     const migratedTransactions = (newStorage.data.TransactionController as any)
       .transactions;
 
-    Object.keys(migratedTransactions).forEach((newTxId) => {
-      expect(typeof newTxId).toBe('string');
-      expect(newTxId).toBe(migratedTransactions[newTxId].id);
+    const [firstTxId, secondTxId] = Object.keys(migratedTransactions);
+
+    expect(migratedTransactions).toStrictEqual({
+      [firstTxId]: {
+        id: firstTxId,
+        otherProp: 1,
+      },
+      [secondTxId]: {
+        id: secondTxId,
+        otherProp: 2,
+      },
     });
   });
 });
