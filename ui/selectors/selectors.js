@@ -8,6 +8,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
 import { createSelector } from 'reselect';
+import { NameType } from '@metamask/name-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -936,8 +937,17 @@ export const getSnap = createDeepEqualSelector(
   },
 );
 
+export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).reduce((acc, cur) => {
+    if (cur.enabled) {
+      acc[cur.id] = cur;
+    }
+    return acc;
+  }, {});
+});
+
 export const getInsightSnaps = createDeepEqualSelector(
-  getSnaps,
+  getEnabledSnaps,
   getPermissionSubjects,
   (snaps, subjects) => {
     return Object.values(snaps).filter(
@@ -1523,6 +1533,18 @@ export function getIsSecurityAlertsEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+/**
+ * Get the state of the `addSnapAccountEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `addSnapAccountEnabled` flag.
+ */
+export function getIsAddSnapAccountEnabled(state) {
+  return state.metamask.addSnapAccountEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
@@ -1607,6 +1629,18 @@ export function getOnboardedInThisUISession(state) {
  */
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
+}
+
+export function getNames(state) {
+  return state.metamask.names || {};
+}
+
+export function getEthereumAddressNames(state) {
+  return state.metamask.names?.[NameType.ETHEREUM_ADDRESS] || {};
+}
+
+export function getNameSources(state) {
+  return state.metamask.nameSources || {};
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)

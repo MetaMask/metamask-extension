@@ -371,9 +371,6 @@
   "amount": {
     "message": "金額"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "ブラウザにあるイーサリアムウォレット",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "カストディアン"
-  },
-  "custodianAccount": {
-    "message": "カストディアンアカウント"
   },
   "custodianAccountAddedDesc": {
     "message": "カストディアンアカウントをMetaMask Institutionalで使えるようになりました。"
@@ -1605,9 +1599,6 @@
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "ドロップされたファイルが大きすぎます。"
   },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
@@ -2345,9 +2336,6 @@
   },
   "missingSettingRequest": {
     "message": "ここからリクエスト"
-  },
-  "mmiAddToken": {
-    "message": "$1のページがMetaMask Institutionalで次のカストディアントークンの承認を求めています"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
@@ -3885,9 +3873,6 @@
   "showIncomingTransactionsDescription": {
     "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする$1に依存します。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsInformation": {
-    "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする各ネットワークに依存します。"
   },
   "showMore": {
     "message": "他を表示"

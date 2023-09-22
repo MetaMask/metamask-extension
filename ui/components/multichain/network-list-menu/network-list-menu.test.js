@@ -84,7 +84,7 @@ describe('NetworkListMenu', () => {
 
   it('shows the correct selected network when networks share the same chain ID', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
-    render(false, '0x1', 'testNetworkConfigurationId');
+    render(false, CHAIN_IDS.MAINNET, 'testNetworkConfigurationId');
 
     // Contains Mainnet and the two custom networks
     const networkItems = document.querySelectorAll(

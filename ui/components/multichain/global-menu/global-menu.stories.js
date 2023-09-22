@@ -13,7 +13,7 @@ export default {
     },
   },
   args: {
-    closeMenu: () => console.log('Closing menu!'),
+    closeMenu: () => undefined,
     anchorElement: null,
   },
 };

@@ -17,29 +17,6 @@
       },
       "origin": "metamask",
       "type": "simpleSend",
-      "nonceDetails": {
-        "params": {
-          "highestLocallyConfirmed": 12,
-          "highestSuggested": 12,
-          "nextNetworkNonce": 12
-        },
-        "local": {
-          "name": "local",
-          "nonce": 12,
-          "details": {
-            "startPoint": 12,
-            "highest": 12
-          }
-        },
-        "network": {
-          "name": "network",
-          "nonce": 12,
-          "details": {
-            "blockNumber": "0x62d5dc",
-            "baseCount": 12
-          }
-        }
-      },
       "r": "0xe0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595",
       "s": "0x1c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
       "v": "0x2c",
@@ -78,29 +55,6 @@
         },
         "origin": "metamask",
         "type": "sentEther",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 12,
-            "highestSuggested": 12,
-            "nextNetworkNonce": 12
-          },
-          "local": {
-            "name": "local",
-            "nonce": 12,
-            "details": {
-              "startPoint": 12,
-              "highest": 12
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 12,
-            "details": {
-              "blockNumber": "0x62d5dc",
-              "baseCount": 12
-            }
-          }
-        },
         "r": "0xe0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595",
         "s": "0x1c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
         "v": "0x2c",
@@ -139,29 +93,6 @@
       },
       "origin": "metamask",
       "type": "simpleSend",
-      "nonceDetails": {
-        "params": {
-          "highestLocallyConfirmed": 12,
-          "highestSuggested": 12,
-          "nextNetworkNonce": 12
-        },
-        "local": {
-          "name": "local",
-          "nonce": 12,
-          "details": {
-            "startPoint": 12,
-            "highest": 12
-          }
-        },
-        "network": {
-          "name": "network",
-          "nonce": 12,
-          "details": {
-            "blockNumber": "0x62d5dc",
-            "baseCount": 12
-          }
-        }
-      },
       "r": "0xe0b79a8e33b15460ea79b05a5fb16bc067a796592eeb4edc5007c88615c12595",
       "s": "0x1c834a25f1df07af5122996a40e99e554a40dc971a25041bc6e31638846c4f58",
       "v": "0x2c",
@@ -204,29 +135,6 @@
       },
       "origin": "metamask",
       "type": "simpleSend",
-      "nonceDetails": {
-        "params": {
-          "highestLocallyConfirmed": 0,
-          "highestSuggested": 10,
-          "nextNetworkNonce": 10
-        },
-        "local": {
-          "name": "local",
-          "nonce": 11,
-          "details": {
-            "startPoint": 10,
-            "highest": 11
-          }
-        },
-        "network": {
-          "name": "network",
-          "nonce": 10,
-          "details": {
-            "blockNumber": "0x62d5cc",
-            "baseCount": 10
-          }
-        }
-      },
       "r": "0xe6828baea0a93a52779ffa5ea55e927781fb7d4be58107a29c75d314d433d055",
       "s": "0x10613f984c57b8928d8ed9fce16ddda5746767e5f68f4c8fc29542e86a61f458",
       "v": "0x2b",
@@ -265,29 +173,6 @@
         },
         "origin": "metamask",
         "type": "sentEther",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 0,
-            "highestSuggested": 10,
-            "nextNetworkNonce": 10
-          },
-          "local": {
-            "name": "local",
-            "nonce": 11,
-            "details": {
-              "startPoint": 10,
-              "highest": 11
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 10,
-            "details": {
-              "blockNumber": "0x62d5cc",
-              "baseCount": 10
-            }
-          }
-        },
         "r": "0xe6828baea0a93a52779ffa5ea55e927781fb7d4be58107a29c75d314d433d055",
         "s": "0x10613f984c57b8928d8ed9fce16ddda5746767e5f68f4c8fc29542e86a61f458",
         "v": "0x2b",
@@ -326,29 +211,6 @@
       },
       "origin": "metamask",
       "type": "simpleSend",
-      "nonceDetails": {
-        "params": {
-          "highestLocallyConfirmed": 0,
-          "highestSuggested": 10,
-          "nextNetworkNonce": 10
-        },
-        "local": {
-          "name": "local",
-          "nonce": 11,
-          "details": {
-            "startPoint": 10,
-            "highest": 11
-          }
-        },
-        "network": {
-          "name": "network",
-          "nonce": 10,
-          "details": {
-            "blockNumber": "0x62d5cc",
-            "baseCount": 10
-          }
-        }
-      },
       "r": "0xe6828baea0a93a52779ffa5ea55e927781fb7d4be58107a29c75d314d433d055",
       "s": "0x10613f984c57b8928d8ed9fce16ddda5746767e5f68f4c8fc29542e86a61f458",
       "v": "0x2b",
@@ -391,29 +253,6 @@
       },
       "origin": "metamask",
       "type": "simpleSend",
-      "nonceDetails": {
-        "params": {
-          "highestLocallyConfirmed": 0,
-          "highestSuggested": 10,
-          "nextNetworkNonce": 10
-        },
-        "local": {
-          "name": "local",
-          "nonce": 10,
-          "details": {
-            "startPoint": 10,
-            "highest": 10
-          }
-        },
-        "network": {
-          "name": "network",
-          "nonce": 10,
-          "details": {
-            "blockNumber": "0x62d5cb",
-            "baseCount": 10
-          }
-        }
-      },
       "r": "0x94b120a1df80be3dfad057b7ccac866b6b7583b63d61e5b021811c8b7ffc9a3b",
       "s": "0x1778de08e29a4c8dfc3aa3e2c2338e98494ebd2c380c901d0dfba95126dde65f",
       "v": "0x2c",
@@ -453,29 +292,6 @@
         },
         "origin": "metamask",
         "type": "sentEther",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 0,
-            "highestSuggested": 10,
-            "nextNetworkNonce": 10
-          },
-          "local": {
-            "name": "local",
-            "nonce": 10,
-            "details": {
-              "startPoint": 10,
-              "highest": 10
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 10,
-            "details": {
-              "blockNumber": "0x62d5cb",
-              "baseCount": 10
-            }
-          }
-        },
         "r": "0x94b120a1df80be3dfad057b7ccac866b6b7583b63d61e5b021811c8b7ffc9a3b",
         "s": "0x1778de08e29a4c8dfc3aa3e2c2338e98494ebd2c380c901d0dfba95126dde65f",
         "v": "0x2c",
@@ -515,29 +331,6 @@
       },
       "origin": "metamask",
       "type": "simpleSend",
-      "nonceDetails": {
-        "params": {
-          "highestLocallyConfirmed": 0,
-          "highestSuggested": 10,
-          "nextNetworkNonce": 10
-        },
-        "local": {
-          "name": "local",
-          "nonce": 10,
-          "details": {
-            "startPoint": 10,
-            "highest": 10
-          }
-        },
-        "network": {
-          "name": "network",
-          "nonce": 10,
-          "details": {
-            "blockNumber": "0x62d5cb",
-            "baseCount": 10
-          }
-        }
-      },
       "r": "0x94b120a1df80be3dfad057b7ccac866b6b7583b63d61e5b021811c8b7ffc9a3b",
       "s": "0x1778de08e29a4c8dfc3aa3e2c2338e98494ebd2c380c901d0dfba95126dde65f",
       "v": "0x2c",
@@ -894,29 +687,6 @@
           "maxPriorityFeePerGas": "0x3B9ACA00"
         },
         "estimatedBaseFee": "3ba182755",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 87,
-            "highestSuggested": 87,
-            "nextNetworkNonce": 87
-          },
-          "local": {
-            "name": "local",
-            "nonce": 87,
-            "details": {
-              "startPoint": 87,
-              "highest": 87
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 87,
-            "details": {
-              "blockNumber": "0xa28e38",
-              "baseCount": 87
-            }
-          }
-        },
         "r": "0xd13310569a8d5876e37788183034bfe4bc3b49c0663c5fd9b2bf13adf9b4791c",
         "s": "0x7a83d8840e7edcdf4fdedfd2bc1ce19775e54fd17f29ede5165591a1cf3febea",
         "v": "0x00",
@@ -1010,29 +780,6 @@
         "maxPriorityFeePerGas": "0x3B9ACA00"
       },
       "estimatedBaseFee": "3ba182755",
-      "nonceDetails": {
-        "params": {
-          "highestLocallyConfirmed": 87,
-          "highestSuggested": 87,
-          "nextNetworkNonce": 87
-        },
-        "local": {
-          "name": "local",
-          "nonce": 87,
-          "details": {
-            "startPoint": 87,
-            "highest": 87
-          }
-        },
-        "network": {
-          "name": "network",
-          "nonce": 87,
-          "details": {
-            "blockNumber": "0xa28e38",
-            "baseCount": 87
-          }
-        }
-      },
       "r": "0xd13310569a8d5876e37788183034bfe4bc3b49c0663c5fd9b2bf13adf9b4791c",
       "s": "0x7a83d8840e7edcdf4fdedfd2bc1ce19775e54fd17f29ede5165591a1cf3febea",
       "v": "0x00",
@@ -1125,29 +872,6 @@
         "maxPriorityFeePerGas": "0x3B9ACA00"
       },
       "estimatedBaseFee": "3ba182755",
-      "nonceDetails": {
-        "params": {
-          "highestLocallyConfirmed": 87,
-          "highestSuggested": 87,
-          "nextNetworkNonce": 87
-        },
-        "local": {
-          "name": "local",
-          "nonce": 87,
-          "details": {
-            "startPoint": 87,
-            "highest": 87
-          }
-        },
-        "network": {
-          "name": "network",
-          "nonce": 87,
-          "details": {
-            "blockNumber": "0xa28e38",
-            "baseCount": 87
-          }
-        }
-      },
       "r": "0xd13310569a8d5876e37788183034bfe4bc3b49c0663c5fd9b2bf13adf9b4791c",
       "s": "0x7a83d8840e7edcdf4fdedfd2bc1ce19775e54fd17f29ede5165591a1cf3febea",
       "v": "0x00",

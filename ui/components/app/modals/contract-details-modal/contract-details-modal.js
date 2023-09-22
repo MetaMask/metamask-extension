@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
+import { NameType } from '@metamask/name-controller';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
@@ -25,6 +26,8 @@ import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
 import { ButtonIcon, IconName, Text } from '../../../component-library';
+import Name from '../../name/name';
+import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
 
 export default function ContractDetailsModal({
   onClose,
@@ -41,10 +44,12 @@ export default function ContractDetailsModal({
   const t = useI18nContext();
   const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
   const [copiedToAddress, handleCopyToAddress] = useCopyToClipboard();
+  const petnamesEnabled = usePetnamesEnabled();
 
   const addressBookEntry = useSelector((state) => ({
     data: getAddressBookEntry(state, toAddress),
   }));
+
   const nft =
     assetStandard === TokenStandard.ERC721 ||
     assetStandard === TokenStandard.ERC1155 ||
@@ -202,6 +207,7 @@ export default function ContractDetailsModal({
           borderRadius={Size.SM}
           borderStyle={BorderStyle.solid}
           borderColor={BorderColor.borderDefault}
+          alignItems={AlignItems.center}
           className="contract-details-modal__content__contract"
         >
           <Identicon
@@ -210,15 +216,24 @@ export default function ContractDetailsModal({
             address={toAddress}
           />
           <Box data-testid="recipient">
-            <Text
-              fontWeight={FontWeight.Bold}
-              variant={TextVariant.bodyMd}
-              as="h5"
-              marginTop={4}
-            >
-              {addressBookEntry?.data?.name || ellipsify(toAddress)}
-            </Text>
-            {addressBookEntry?.data?.name && (
+            {petnamesEnabled ? (
+              <Text variant={TextVariant.bodyMd} as="h5">
+                <Name
+                  value={toAddress}
+                  type={NameType.ETHEREUM_ADDRESS}
+                  sourcePriority={['ens', 'lens', 'token', 'etherscan']}
+                />
+              </Text>
+            ) : (
+              <Text
+                fontWeight={FontWeight.Bold}
+                variant={TextVariant.bodyMd}
+                as="h5"
+              >
+                {addressBookEntry?.data?.name || ellipsify(toAddress)}
+              </Text>
+            )}
+            {!petnamesEnabled && addressBookEntry?.data?.name && (
               <Text
                 variant={TextVariant.bodySm}
                 as="h6"

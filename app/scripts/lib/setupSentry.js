@@ -115,6 +115,9 @@ export const SENTRY_BACKGROUND_STATE = {
     keyrings: false,
     keyringTypes: false,
   },
+  LoggingController: {
+    logs: false,
+  },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
     fragments: false,
@@ -198,6 +201,7 @@ export const SENTRY_BACKGROUND_STATE = {
     usePhishDetect: true,
     useTokenDetection: true,
   },
+  SelectedNetworkController: { domains: true, perDomainNetwork: false },
   SignatureController: {
     unapprovedMsgCount: true,
     unapprovedMsgs: false,

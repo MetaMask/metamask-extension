@@ -144,6 +144,8 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
+    "domains": {},
+    "perDomainNetwork": "boolean",
     "snapErrors": "object",
     "snaps": "object",
     "snapStates": "object",
@@ -192,7 +194,8 @@
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
-    "approvalFlows": "object"
+    "approvalFlows": "object",
+    "logs": "object"
   },
   "send": "object",
   "swaps": "object",

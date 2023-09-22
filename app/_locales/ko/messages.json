@@ -371,9 +371,6 @@
   "amount": {
     "message": "금액"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "수탁자"
-  },
-  "custodianAccount": {
-    "message": "수탁 계정"
   },
   "custodianAccountAddedDesc": {
     "message": "이제 MetaMask Institutional에서 수탁 계정을 사용할 수 있습니다."
@@ -1605,9 +1599,6 @@
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "드롭한 파일 크기가 너무 큽니다."
   },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
@@ -2345,9 +2336,6 @@
   },
   "missingSettingRequest": {
     "message": "여기에서 요청하세요"
-  },
-  "mmiAddToken": {
-    "message": "$1의 페이지는 다음과 같은 MetaMask 기관 수탁 토큰을 승인하려고 합니다"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional은 전 세계적으로 설계 및 구축되었습니다."
@@ -3885,9 +3873,6 @@
   "showIncomingTransactionsDescription": {
     "message": "이 항목을 선택하면 Etherscan을 사용해 거래 목록에 수신 거래를 표시할 수 있습니다.",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsInformation": {
-    "message": "이 기능을 이용하려면 이더리움 주소와 IP 주소에 접근 가능한 네트워크가 필요합니다."
   },
   "showMore": {
     "message": "더 보기"

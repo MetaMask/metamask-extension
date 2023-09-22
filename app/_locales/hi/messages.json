@@ -371,9 +371,6 @@
   "amount": {
     "message": "अमाउंट"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "कस्टोडियन"
-  },
-  "custodianAccount": {
-    "message": "कस्टोडियन अकाउंट"
   },
   "custodianAccountAddedDesc": {
     "message": "अब आप MetaMask Institutional में अपने कस्टोडियन एकाउंट्स का इस्तेमाल कर सकते हैं।"
@@ -1605,9 +1599,6 @@
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "ड्रॉप की गई फाइल बहुत बड़ी है।"
   },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",
@@ -2345,9 +2336,6 @@
   },
   "missingSettingRequest": {
     "message": "यहां रिक्वेस्ट करें"
-  },
-  "mmiAddToken": {
-    "message": "$1 पर मौजूद पेज MetaMask Institutional में निम्नलिखित कस्टोडियन टोकन को अधिकृत करना चाहता है"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional को दुनिया भर में डिजाइन किया और बनाया गया है।"
@@ -3885,9 +3873,6 @@
   "showIncomingTransactionsDescription": {
     "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsInformation": {
-    "message": "यह हर उस नेटवर्क पर निर्भर करता है जिसे आपके Ethereum एड्रेस और आपके IP एड्रेस का एक्सेस होगा।"
   },
   "showMore": {
     "message": "अधिक दिखाएं"
