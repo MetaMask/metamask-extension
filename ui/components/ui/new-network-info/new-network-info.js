@@ -55,8 +55,8 @@ const NewNetworkInfo = () => {
         url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
         functionName: 'getIsTokenDetectionSupported',
       });
-      const IsTokenDetectionSupported = !fetchedTokenData?.error;
-      setTokenDetectionSupported(IsTokenDetectionSupported);
+      const isTokenDetectionSupported = !fetchedTokenData?.error;
+      setTokenDetectionSupported(isTokenDetectionSupported);
       setIsLoading(false);
     } catch {
       // If there's any error coming from getIsTokenDetectionSupported
