@@ -1600,9 +1600,6 @@
     "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
     "description": "Helps user import their account from a JSON file"
   },
-  "fileTooBig": {
-    "message": "Kích thước tập tin thả vào quá lớn."
-  },
   "flaskWelcomeUninstall": {
     "message": "bạn nên gỡ cài đặt tiện ích mở rộng này",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."

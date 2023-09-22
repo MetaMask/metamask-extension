@@ -1600,9 +1600,6 @@
     "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
     "description": "Helps user import their account from a JSON file"
   },
-  "fileTooBig": {
-    "message": "Le fichier déconnecté est trop volumineux."
-  },
   "flaskWelcomeUninstall": {
     "message": "vous devriez désinstaller cette extension",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
