@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Bật tự động phát hiện"
   },
-  "enableForAllNetworks": {
-    "message": "Bật cho tất cả các mạng"
-  },
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },

@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " 자동 감지 활성화"
   },
-  "enableForAllNetworks": {
-    "message": "모든 네트워크에 활성화"
-  },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },

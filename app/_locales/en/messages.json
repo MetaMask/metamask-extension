@@ -1442,9 +1442,6 @@
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
-  "enableForAllNetworks": {
-    "message": "Enable for all networks"
-  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },

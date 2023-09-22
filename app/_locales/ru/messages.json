@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Включить автоопределение"
   },
-  "enableForAllNetworks": {
-    "message": "Включить для всех сетей"
-  },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },

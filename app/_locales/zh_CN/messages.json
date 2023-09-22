@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " 启用自动检测"
   },
-  "enableForAllNetworks": {
-    "message": "为所有网络启用"
-  },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
   },

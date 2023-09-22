@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
-  "enableForAllNetworks": {
-    "message": "Paganahin para sa lahat ng network"
-  },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
   },
