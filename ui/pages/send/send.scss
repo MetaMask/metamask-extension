@@ -121,6 +121,7 @@
 
       &__title, &__subtitle {
         display: flex;
+        flex-direction: row;
       }
     }
 
