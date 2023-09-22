@@ -33,6 +33,8 @@ export const ExcludedSnapEndowments = Object.freeze({
     'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps/issues/945.',
   'endowment:lifecycle-hooks':
     'This endowment is experimental and therefore not available.',
+  'endowment:name-lookup':
+    'This endowment is experimental and therefore not available.',
   ///: END:ONLY_INCLUDE_IN
 });
 
