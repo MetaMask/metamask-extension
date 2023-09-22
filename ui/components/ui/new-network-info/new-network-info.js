@@ -16,10 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import {
-  getNativeCurrencyImage,
-  getUseTokenDetection,
-} from '../../../selectors';
+import { getCurrentNetwork, getUseTokenDetection } from '../../../selectors';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
@@ -35,8 +32,8 @@ const NewNetworkInfo = () => {
   const [showPopup, setShowPopup] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const autoDetectToken = useSelector(getUseTokenDetection);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const providerConfig = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   const onCloseClick = () => {
     setShowPopup(false);
@@ -108,8 +105,11 @@ const NewNetworkInfo = () => {
               color: Color.textDefault,
             }}
             leftIcon={
-              primaryTokenImage ? (
-                <Identicon image={primaryTokenImage} diameter={14} />
+              currentNetwork?.rpcPrefs?.imageUrl ? (
+                <Identicon
+                  image={currentNetwork?.rpcPrefs?.imageUrl}
+                  diameter={14}
+                />
               ) : (
                 <Icon
                   className="question"
