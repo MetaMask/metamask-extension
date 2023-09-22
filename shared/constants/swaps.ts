@@ -142,8 +142,6 @@ export const WETH_ZKSYNC_ERA_CONTRACT_ADDRESS =
 
 const SWAPS_TESTNET_CHAIN_ID = '0x539';
 
-export const MMI_SWAPS_URL = 'https://metamask-institutional.io/swap';
-
 export const SWAPS_API_V2_BASE_URL = 'https://swap.metaswap.codefi.network';
 export const SWAPS_DEV_API_V2_BASE_URL = 'https://swap.dev-api.cx.metamask.io';
 export const GAS_API_BASE_URL = 'https://gas-api.metaswap.codefi.network';
