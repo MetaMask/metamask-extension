@@ -7,7 +7,7 @@ import ConnectedAccountsPermissions from '../../components/app/connected-account
 import { getURLHost } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
-import { TextVariant } from '../../helpers/constants/design-system';
+import { TextColor, TextVariant } from '../../helpers/constants/design-system';
 import { Box, Text } from '../../components/component-library';
 
 export default function ConnectedAccounts({
@@ -71,9 +71,14 @@ export default function ConnectedAccounts({
           ? t('currentExtension')
           : getURLHost(activeTabOrigin)
       }
+      headerProps={{
+        paddingLeft: 4,
+        paddingRight: 4,
+      }}
       subtitle={subtitle}
       onClose={() => history.push(mostRecentOverviewPage)}
       footerClassName="connected-accounts__footer"
+      ConnectedAccountsPermissions={{}}
       footer={
         connectedAccounts.length > 0 && ( // show permissions only for connected accounts not snaps
           <ConnectedAccountsPermissions permissions={permissions} />
@@ -82,8 +87,11 @@ export default function ConnectedAccounts({
     >
       <Box>
         {connectedAccounts.length > 0 ? (
-          <Box marginLeft={6}>
-            <Text variant={TextVariant.bodyLgMedium}>
+          <Box marginLeft={4}>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
+            >
               {t('accountsConnected')}&nbsp;({connectedAccounts.length})
             </Text>
           </Box>
@@ -102,8 +110,11 @@ export default function ConnectedAccounts({
       {isPermissionSubject &&
         connectedPermissionSubjectsMetaData.length > 0 && (
           <Box>
-            <Box marginLeft={6}>
-              <Text variant={TextVariant.bodyLgMedium}>
+            <Box marginLeft={4}>
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+              >
                 {t('snapsConnected')}&nbsp;({connectedPermissionSubjects.length}
                 )
               </Text>

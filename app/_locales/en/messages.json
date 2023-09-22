@@ -4183,7 +4183,7 @@
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettings": {
-    "message": "Snaps settings"
+    "message": "Snap settings"
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"

@@ -9,7 +9,14 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MenuItem } from '../../ui/menu';
 import { SNAPS_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import SnapAvatar from '../snaps/snap-avatar';
-import { Display } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import ConnectedAccountsListOptions from '../connected-accounts-list/connected-accounts-list-options';
 import {
   getOriginOfCurrentTab,
@@ -79,16 +86,32 @@ export default function ConnectedSnaps({ connectedSubjects }) {
   };
 
   return (
-    <Box className="connected-sites-list__content-rows">
+    <Box className="connected-snaps-list__content-rows" width={BlockSize.Full}>
       {connectedSubjects.map((subject) => (
-        <Box key={subject.origin} className="connected-sites-list__content-row">
-          <Box className="connected-sites-list__subject-info" gap={2}>
+        <Box
+          key={subject.origin}
+          className="connected-snaps-list__content-row"
+          width={BlockSize.Full}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          padding={4}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Box
+            className="connected-snaps-list__subject-info"
+            gap={4}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+          >
             <SnapAvatar
               snapId={subject.origin}
               badgeSize={IconSize.Xs}
               avatarSize={IconSize.Md}
             />
-            <Text display={Display.Block} as="strong">
+            <Text
+              variant={TextVariant.bodyLgMedium}
+              className="connected-accounts-list__account-name"
+            >
               {subject.name}
             </Text>
           </Box>
