@@ -61,8 +61,8 @@ describe('ViewSnap', () => {
       container.getElementsByClassName('connected-sites-list__content-rows')
         ?.length,
     ).toBe(1);
-    // Remove snap
-    expect(getByText('Remove snap')).toBeDefined();
+    // Remove Snap
+    expect(getByText('Remove Snap')).toBeDefined();
     expect(
       getByText(
         'This action will delete the snap, its data and revoke your given permissions.',
