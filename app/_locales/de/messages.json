@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "NFT-Medien anzeigen"
   },
-  "displayNftMediaDescription": {
-    "message": "Das Anzeigen von NFT-Medien und Daten gibt legt IP-Adresse OpenSea oder andere Drittanbieter gegenüber offen. Dies kann es Angreifern gestatten, Ihre IP-Adresse mit Ihrer Etherum-Adresse in Verbindung zu bringen. Die automatische NFT-Erkennung benötigt diese Einstellung und wird nicht zur Verfügung stehen, wenn diese deaktiviert ist."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1414,9 +1411,6 @@
   "enableAutoDetect": {
     "message": " Automatische Erkennung aktivieren"
   },
-  "enableForAllNetworks": {
-    "message": "Für alle Netzwerke aktivieren"
-  },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
   },
@@ -1446,21 +1440,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Erweiterte Token-Erkennung ist derzeit über $1 verfügbar. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask zeigt Ihnen ENS-Domains wie „https://metamask.eth“ direkt in der Adressleiste Ihres Browsers an. So funktioniert es:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Normale Browser können in der Regel nicht mit ENS- oder IPFS-Adressen umgehen, aber MetaMask hilft dabei. Bei Verwendung dieser Funktion wird Ihre IP-Adresse eventuell mit IPFS-Diensten von Drittanbietern geteilt."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask findet mithilfe von Ethereums ENS-Contract den mit dem ENS-Namen verbundenen Code."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Wenn der Code mit IPFS verknüpft ist, erhält MetaMask den Content vom IPFS-Netzwerk."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Daraufhin wird dieser, normalerweise eine Webseite oder etwas Ähnliches, angezeigt."
   },
   "ensDomainsSettingTitle": {
     "message": "ENS-Domains in der Adresszeile anzeigen"
@@ -2476,12 +2455,6 @@
   },
   "newContract": {
     "message": "Neuer Contract"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Erlauben Sie MetaMask, automatisch NFTs von Opensea zu erkennen und in Ihrer Wallet anzuzeigen."
-  },
-  "newNFTsDetected": {
-    "message": "Neu! NFT-Erkennung"
   },
   "newNetworkAdded": {
     "message": "„$1“ wurde erfolgreich hinzugefügt!"
@@ -5241,21 +5214,6 @@
   },
   "useNftDetection": {
     "message": "NFTs automatisch erkennen"
-  },
-  "useNftDetectionDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um NFTs in Ihrer Wallet zu erkennen, was bedeutet, dass Ihre IP an zentrale Server weitergegeben werden könnte. Hier müssen einige Dinge beachtet werden, wenn diese Funktion aktiviert wird."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Ihre Konto-Adresse wird für die Drittanbieter-APIs sichtbar sein."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT-Metadaten können Links zu Webseiten mit Betrugs- oder Phishing-Inhalten enthalten."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Jeder kann NFTs via Airdrop in Ihrem Konto ablegen. Dies kann anstößige Inhalte einschließen, die automatisch in Ihrer Wallet angezeigt werden könnten."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Lassen Sie diese Funktion deaktiviert, wenn Sie nicht möchten, dass die App Daten von diesen Diensten bezieht."
   },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"
