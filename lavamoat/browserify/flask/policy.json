@@ -1213,31 +1213,12 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
         "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
         "browserify>buffer": true,
         "ethereumjs-abi>ethereumjs-util>ethjs-util": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/utils": {
@@ -1829,11 +1810,44 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>@metamask/abi-utils": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>@metamask/utils": true,
         "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
         "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
-        "bn.js": true,
         "browserify>buffer": true,
         "ethereumjs-abi>ethereumjs-util>ethjs-util": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/message-manager>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": {

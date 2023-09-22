@@ -4404,23 +4404,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.2.0, @metamask/message-manager@npm:^7.3.0":
-  version: 7.3.1
-  resolution: "@metamask/message-manager@npm:7.3.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/controller-utils": "npm:^4.3.2"
-    "@metamask/eth-sig-util": "npm:^6.0.0"
-    "@metamask/utils": "npm:^6.2.0"
-    "@types/uuid": "npm:^8.3.0"
-    ethereumjs-util: "npm:^7.0.10"
-    jsonschema: "npm:^1.2.4"
-    uuid: "npm:^8.3.2"
-  checksum: 9ba3893a2a739906f63b9b51eceab798cad0f26657d58959cac8620122e80c9ae9007c6f0502a3eb7875398b774c5a59f00adde028cf80a1aa75502f53ef5740
-  languageName: node
-  linkType: hard
-
-"@metamask/message-manager@npm:^7.3.2":
+"@metamask/message-manager@npm:^7.2.0, @metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.2":
   version: 7.3.2
   resolution: "@metamask/message-manager@npm:7.3.2"
   dependencies:
