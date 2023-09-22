@@ -15,6 +15,7 @@ describe('EndowmentPermissions', () => {
       [
         'endowment:long-running',
         'endowment:lifecycle-hooks',
+        'endowment:name-lookup',
         ...Object.keys(endowmentPermissionBuilders).filter(
           (targetName) =>
             !Object.keys(ExcludedSnapEndowments).includes(targetName),
