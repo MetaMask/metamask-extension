@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
@@ -12,7 +11,6 @@ import {
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import Chip from '../../../components/ui/chip';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -22,10 +20,11 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import {
   Button,
-  BUTTON_SIZES,
-  BUTTON_VARIANT,
+  ButtonSize,
+  ButtonVariant,
   Box,
   Text,
+  Tag,
 } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
@@ -43,7 +42,10 @@ const ConfirmAddCustodianToken = () => {
 
   const { custodians } = useSelector(getMMIConfiguration);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
+  const connectRequests = useSelector(
+    getInstitutionalConnectRequests,
+    shallowEqual,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
 
@@ -70,31 +72,25 @@ const ConfirmAddCustodianToken = () => {
     },
   });
 
-  let custodianLabel = t('custodian');
-
-  if (
-    connectRequest.labels &&
-    connectRequest.labels.some((label) => label.key === 'service')
-  ) {
-    custodianLabel = connectRequest.labels.find(
-      (label) => label.key === 'service',
-    ).value;
-  }
-
+  const custodianLabel =
+    connectRequest.labels?.find((label) => label.key === 'service')?.value ||
+    t('custodian');
   const custodian = findCustodianByDisplayName(custodianLabel, custodians);
 
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
-        <Chip
+        <Tag
           borderColor={BorderColor.borderMuted}
           label={connectRequest.origin}
-          maxContent={false}
-          leftIconUrl={custodian?.iconUrl}
           labelProps={{
             textAlign: TextAlign.Center,
           }}
-        />
+        >
+          {custodian?.iconUrl && (
+            <span className="button__icon">{custodian.iconUrl}</span>
+          )}
+        </Tag>
       </Box>
       <Box padding={4} className="page-container__content">
         <Text
@@ -128,8 +124,8 @@ const ConfirmAddCustodianToken = () => {
           <Box display={Display.Flex} gap={4}>
             <Button
               block
-              variant={BUTTON_VARIANT.SECONDARY}
-              size={BUTTON_SIZES.LG}
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
               data-testid="cancel-btn"
               onClick={async () => {
                 await dispatch(
@@ -156,7 +152,7 @@ const ConfirmAddCustodianToken = () => {
             <Button
               block
               data-testid="confirm-btn"
-              size={BUTTON_SIZES.LG}
+              size={ButtonSize.Lg}
               onClick={async () => {
                 setConnectError('');
                 setIsLoading(true);
@@ -168,6 +164,7 @@ const ConfirmAddCustodianToken = () => {
                         Number(BUILT_IN_NETWORKS[key].chainId).toString(10) ===
                         connectRequest.chainId.toString(),
                     );
+
                     await dispatch(setProviderType(networkType));
                   }
 
