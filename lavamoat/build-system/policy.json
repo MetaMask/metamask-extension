@@ -1049,6 +1049,7 @@
       "globals": {
         "__dirname": true,
         "__filename.slice": true,
+        "console.error": true,
         "console.warn": true,
         "process.cwd": true,
         "setTimeout": true
@@ -1059,6 +1060,7 @@
         "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
+        "eslint>espree": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
         "through2": true
@@ -6306,13 +6308,9 @@
     "lavamoat>@lavamoat/aa": {
       "builtin": {
         "fs.readFileSync": true,
-        "fs.statSync": true,
         "path.dirname": true,
         "path.join": true,
         "path.relative": true
-      },
-      "globals": {
-        "performantResolve": true
       },
       "packages": {
         "brfs>resolve": true

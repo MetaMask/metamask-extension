@@ -1600,9 +1600,6 @@
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
     "description": "Helps user import their account from a JSON file"
   },
-  "fileTooBig": {
-    "message": "Το υποβαλλόμενο αρχείο είναι πολύ μεγάλο."
-  },
   "flaskWelcomeUninstall": {
     "message": "θα πρέπει να απεγκαταστήσετε αυτή την επέκταση",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."

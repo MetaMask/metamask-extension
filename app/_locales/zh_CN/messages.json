@@ -1600,9 +1600,6 @@
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
   },
-  "fileTooBig": {
-    "message": "拖放的文件太大。"
-  },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."

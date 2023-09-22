@@ -10,7 +10,7 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import {
   Button,
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Text,
   Modal,
@@ -78,7 +78,7 @@ const ConfirmConnectCustodianModal = ({
             </Button>
             <Button
               paddingTop={3}
-              variant={BUTTON_VARIANT.LINK}
+              variant={ButtonVariant.Link}
               onClick={onModalClose}
             >
               {t('cancel')}
@@ -95,5 +95,5 @@ export default ConfirmConnectCustodianModal;
 ConfirmConnectCustodianModal.propTypes = {
   onModalClose: PropTypes.func.isRequired,
   custodianName: PropTypes.string.isRequired,
-  custodianURL: PropTypes.string.isRequired,
+  custodianURL: PropTypes.string,
 };
