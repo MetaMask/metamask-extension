@@ -95,9 +95,11 @@ const CustodyPage = () => {
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
 
-    const sortedCustodians = [...custodians].sort((a, b) =>
-      a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
-    );
+    const sortedCustodians = [...custodians]
+      .filter((item) => item.type !== 'Jupiter')
+      .sort((a, b) =>
+        a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
+      );
 
     function shouldShowInProduction(custodian) {
       return (
