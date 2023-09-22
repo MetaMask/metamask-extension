@@ -140,6 +140,7 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       parserOptions: {
+        sourceType: 'module',
         tsconfigRootDir: __dirname,
         project: ['tsconfig.test.json'],
       },
