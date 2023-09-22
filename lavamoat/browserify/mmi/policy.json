@@ -2921,6 +2921,11 @@
         "define": true
       }
     },
+    "blo": {
+      "globals": {
+        "btoa": true
+      }
+    },
     "bn.js": {
       "globals": {
         "Buffer": true
