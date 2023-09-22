@@ -56,9 +56,6 @@ export default function ConnectedSnaps({ connectedSubjects }) {
     }
   };
 
-  const settingsClick = (id) => {
-    history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(id)}`);
-  };
   const renderListItemOptions = (snapId) => {
     return (
       <ConnectedAccountsListOptions
@@ -77,7 +74,9 @@ export default function ConnectedSnaps({ connectedSubjects }) {
         </MenuItem>
         <MenuItem
           iconName={IconName.Setting}
-          onClick={() => settingsClick(snapId)}
+          onClick={() =>
+            history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`)
+          }
         >
           {t('snapsSettings')}
         </MenuItem>

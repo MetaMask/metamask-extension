@@ -28,22 +28,21 @@ export default function ConnectedAccounts({
 }) {
   const t = useI18nContext();
   const connectedSubjectsMetadata = subjectMetadata[originOfActiveTab];
-  const isPermissionSubject =
+  const subjectHasSnaps =
     permissionSubjects[originOfActiveTab]?.origin ===
       connectedSubjectsMetadata?.origin &&
     permissionSubjects[originOfActiveTab]?.permissions[
       WALLET_SNAP_PERMISSION_KEY
     ];
 
-  const connectedPermissionSubjects =
-    isPermissionSubject &&
+  const connectedSnaps =
+    subjectHasSnaps &&
     Object.keys(
       permissionSubjects[originOfActiveTab]?.permissions?.wallet_snap
         ?.caveats[0]?.value,
     );
-  const connectedPermissionSubjectsMetaData =
-    isPermissionSubject &&
-    connectedPermissionSubjects?.map((sub) => subjectMetadata[sub]);
+  const connectedSnapsMetaData =
+    subjectHasSnaps && connectedSnaps?.map((sub) => subjectMetadata[sub]);
 
   const connectedAccountsDescription =
     connectedAccounts.length > 0
@@ -51,15 +50,12 @@ export default function ConnectedAccounts({
       : t('connectedAccountsDescriptionSingular');
 
   let subtitle;
-  if (connectedAccounts.length && !isPermissionSubject) {
+  if (connectedAccounts.length && !subjectHasSnaps) {
     subtitle = connectedAccountsDescription;
-  } else if (isPermissionSubject && !connectedAccounts.length) {
+  } else if (subjectHasSnaps && !connectedAccounts.length) {
     subtitle = t('connectedSnapAndNoAccountDescription');
-  } else if (connectedAccounts && isPermissionSubject) {
-    subtitle = t('connectedAccountsAndSnapDescription', [
-      connectedAccounts.length,
-      connectedPermissionSubjects.length,
-    ]);
+  } else if (connectedAccounts && subjectHasSnaps) {
+    subtitle = null;
   } else {
     subtitle = t('connectedAccountsEmptyDescription');
   }
@@ -107,23 +103,19 @@ export default function ConnectedAccounts({
           shouldRenderListOptions
         />
       </Box>
-      {isPermissionSubject &&
-        connectedPermissionSubjectsMetaData.length > 0 && (
-          <Box>
-            <Box marginLeft={4}>
-              <Text
-                variant={TextVariant.bodyMdMedium}
-                color={TextColor.textAlternative}
-              >
-                {t('snapsConnected')}&nbsp;({connectedPermissionSubjects.length}
-                )
-              </Text>
-            </Box>
-            <ConnectedSnaps
-              connectedSubjects={connectedPermissionSubjectsMetaData}
-            />
+      {subjectHasSnaps && connectedSnapsMetaData.length > 0 && (
+        <Box>
+          <Box marginLeft={4}>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
+            >
+              {t('snapsConnected')}&nbsp;({connectedSnaps.length})
+            </Text>
           </Box>
-        )}
+          <ConnectedSnaps connectedSubjects={connectedSnapsMetaData} />
+        </Box>
+      )}
     </Popover>
   );
 }
