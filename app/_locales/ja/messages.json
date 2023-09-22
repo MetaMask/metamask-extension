@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "ENSにサポートされていない文字が使用されています。"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS名が現在のネットワーク上に見つかりませんでした。イーサリアムメインネットへの切り替えを試みてください。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "ネットワークがENSをサポートしていません"
-  },
   "ensRegistrationError": {
     "message": "ENS名の登録エラー"
   },

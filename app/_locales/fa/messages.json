@@ -232,9 +232,6 @@
   "editContact": {
     "message": "ویرایش تماس"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "نام ENS در شبکه کنونی دریافت نشد. به تبدیل آن به شبکه اصلی ایتریم تلاش نمایید."
-  },
   "ensRegistrationError": {
     "message": "خطا در ثبت نام ENS"
   },

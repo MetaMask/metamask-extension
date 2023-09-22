@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "Mga ilegal na character para sa ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nahanap ang pangalan ng ENS sa kasalukuyang network. Subukang lumipat sa Mainnet ng Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Hindi sinusuportahan ng network ang ENS"
-  },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
   },

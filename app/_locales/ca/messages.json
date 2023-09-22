@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Editar Contacte"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Error al registre de nom ENS"
   },

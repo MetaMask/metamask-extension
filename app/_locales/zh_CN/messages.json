@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "ENS 的非法字符。"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "未在当前网络找到 ENS 名称。请尝试切换至以太坊主网。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "网络不支持 ENS"
-  },
   "ensRegistrationError": {
     "message": "ENS 名称注册错误"
   },

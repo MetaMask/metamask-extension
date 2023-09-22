@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Редагувати контракт"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Ім'я ENS не знайдено у даній мережі. Спробуйте перейти у Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "Помилка у реєстрації ENS ім'я"
   },

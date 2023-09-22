@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "ENS için uygun olmayan karakter."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS adı geçerli ağda bulunamadı. Ethereum Ana Ağına geçmeyi deneyin."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Ağ ENS desteklemiyor"
-  },
   "ensRegistrationError": {
     "message": "ENS adı kaydında hata"
   },

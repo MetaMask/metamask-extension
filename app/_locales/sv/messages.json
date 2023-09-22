@@ -226,9 +226,6 @@
   "editContact": {
     "message": "Redigera kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-namnet hittades inte i det aktuella nätverket. Prova att byta till Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "Fel i ENS-namnregistrering"
   },

@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Redigér Kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-navn ikke fundet for det nuværende netværk. Prøv at skifte til Ethereums hovednetværk."
-  },
   "ensRegistrationError": {
     "message": "Fejl i ENS-navneregistrering"
   },

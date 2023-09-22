@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "Ký tự không hợp lệ đối với ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Không tìm thấy tên ENS trên mạng hiện tại. Đang chuyển sang Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Mạng không hỗ trợ ENS"
-  },
   "ensRegistrationError": {
     "message": "Lỗi khi đăng ký tên ENS"
   },

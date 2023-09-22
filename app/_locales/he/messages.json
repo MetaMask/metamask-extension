@@ -232,9 +232,6 @@
   "editContact": {
     "message": "ערוך איש קשר"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "שם ENS לא נמצא ברשת הנוכחית. נסה/י לעבור לרשת אתריום הראשית."
-  },
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
   },
