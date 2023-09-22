@@ -10,11 +10,6 @@
         "regeneratorRuntime": "write"
       }
     },
-    "@download/blockies": {
-      "globals": {
-        "document.createElement": true
-      }
-    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
