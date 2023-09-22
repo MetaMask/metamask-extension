@@ -327,10 +327,12 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
       >
         <div
           class="send__select-recipient-wrapper__group-item__title"
+        />
+        <div
+          class="send__select-recipient-wrapper__group-item__subtitle"
         >
           DNS Re...tion
         </div>
-        
       </div>
     </div>
   </div>
@@ -422,7 +424,7 @@ exports[`Add Recipient Component Send State should match snapshot 1`] = `
           u
           n
           t
-           
+
           2
         </div>
         <div
