@@ -158,7 +158,7 @@ describe('Test Snap Account', function () {
         );
 
         await driver.clickElement({
-          text: 'Remove snap',
+          text: 'Remove Snap',
           tag: 'button',
         });
 
