@@ -74,6 +74,8 @@ export function useNftsCollections() {
     prevChainId,
     selectedAddress,
     prevSelectedAddress,
+    previouslyOwnedText,
+    unknownCollectionText,
   ]);
 
   return { nftsLoading, collections, previouslyOwnedCollection };

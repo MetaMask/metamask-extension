@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -205,13 +205,16 @@ export default function TokenAllowance({
   const networkName =
     NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
 
-  const customNonceMerge = (transactionData) =>
-    customNonceValue
-      ? {
-          ...transactionData,
-          customNonceValue,
-        }
-      : transactionData;
+  const customNonceMerge = useCallback(
+    (transactionData) =>
+      customNonceValue
+        ? {
+            ...transactionData,
+            customNonceValue,
+          }
+        : transactionData,
+    [customNonceValue],
+  );
 
   const handleReject = () => {
     dispatch(updateCustomNonce(''));
@@ -282,17 +285,20 @@ export default function TokenAllowance({
     );
   };
 
-  const handleNextNonce = () => {
+  const handleNextNonce = useCallback(() => {
     dispatch(getNextNonce());
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     handleNextNonce();
-  }, [dispatch]);
+  }, [handleNextNonce]);
 
-  const handleUpdateCustomNonce = (value) => {
-    dispatch(updateCustomNonce(value));
-  };
+  const handleUpdateCustomNonce = useCallback(
+    (value) => {
+      dispatch(updateCustomNonce(value));
+    },
+    [dispatch],
+  );
 
   const handleCustomizeNonceModal = (
     /* eslint-disable no-shadow */

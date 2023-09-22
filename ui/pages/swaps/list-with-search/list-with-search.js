@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { filter } from 'lodash';
@@ -47,65 +53,76 @@ export default function ListWithSearch({
    *
    * @param {string} contractAddress
    */
-  const handleSearchTokenForImport = async (contractAddress) => {
-    try {
-      const token = await fetchToken(contractAddress, chainId);
-      if (token) {
-        token.primaryLabel = token.symbol;
-        token.secondaryLabel = token.name;
-        token.notImported = true;
-        setItems([token]);
-        return;
-      }
-    } catch (e) {
-      log.error('Token not found, show 0 results.', e);
-    }
-    setItems([]); // No token for import found.
-  };
-
-  const handleSearch = async (newSearchQuery) => {
-    setSearchQuery(newSearchQuery);
-    if (timeoutIdForSearch) {
-      clearTimeout(timeoutIdForSearch);
-    }
-    timeoutIdForSearch = setTimeout(async () => {
-      timeoutIdForSearch = null;
-      const trimmedNewSearchQuery = newSearchQuery.trim();
-      const trimmedNewSearchQueryUpperCase =
-        trimmedNewSearchQuery.toUpperCase();
-      const trimmedNewSearchQueryLowerCase =
-        trimmedNewSearchQuery.toLowerCase();
-      if (!trimmedNewSearchQuery) {
-        setItems(itemsToSearch);
-        return;
-      }
-      const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
-      let filteredItems = [];
-      if (validHexAddress) {
-        // E.g. DAI token: 0x6b175474e89094c44da98b954eedeac495271D0f
-        const foundItem = itemsToSearch.find((item) => {
-          return item.address === trimmedNewSearchQueryLowerCase;
-        });
-        if (foundItem) {
-          filteredItems.push(foundItem);
+  const handleSearchTokenForImport = useCallback(
+    async (contractAddress) => {
+      try {
+        const token = await fetchToken(contractAddress, chainId);
+        if (token) {
+          token.primaryLabel = token.symbol;
+          token.secondaryLabel = token.name;
+          token.notImported = true;
+          setItems([token]);
+          return;
         }
-      } else {
-        filteredItems = filter(itemsToSearch, function (item) {
-          return item.symbol.includes(trimmedNewSearchQueryUpperCase);
-        });
+      } catch (e) {
+        log.error('Token not found, show 0 results.', e);
       }
-      const results = newSearchQuery === '' ? itemsToSearch : filteredItems;
-      if (shouldSearchForImports && results.length === 0 && validHexAddress) {
-        await handleSearchTokenForImport(trimmedNewSearchQuery);
-        return;
+      setItems([]); // No token for import found.
+    },
+    [chainId],
+  );
+
+  const handleSearch = useCallback(
+    async (newSearchQuery) => {
+      setSearchQuery(newSearchQuery);
+      if (timeoutIdForSearch) {
+        clearTimeout(timeoutIdForSearch);
       }
-      setItems(results);
-    }, 350);
-  };
+      timeoutIdForSearch = setTimeout(async () => {
+        timeoutIdForSearch = null;
+        const trimmedNewSearchQuery = newSearchQuery.trim();
+        const trimmedNewSearchQueryUpperCase =
+          trimmedNewSearchQuery.toUpperCase();
+        const trimmedNewSearchQueryLowerCase =
+          trimmedNewSearchQuery.toLowerCase();
+        if (!trimmedNewSearchQuery) {
+          setItems(itemsToSearch);
+          return;
+        }
+        const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
+        let filteredItems = [];
+        if (validHexAddress) {
+          // E.g. DAI token: 0x6b175474e89094c44da98b954eedeac495271D0f
+          const foundItem = itemsToSearch.find((item) => {
+            return item.address === trimmedNewSearchQueryLowerCase;
+          });
+          if (foundItem) {
+            filteredItems.push(foundItem);
+          }
+        } else {
+          filteredItems = filter(itemsToSearch, function (item) {
+            return item.symbol.includes(trimmedNewSearchQueryUpperCase);
+          });
+        }
+        const results = newSearchQuery === '' ? itemsToSearch : filteredItems;
+        if (shouldSearchForImports && results.length === 0 && validHexAddress) {
+          await handleSearchTokenForImport(trimmedNewSearchQuery);
+          return;
+        }
+        setItems(results);
+      }, 350);
+    },
+    [
+      handleSearchTokenForImport,
+      itemsToSearch,
+      setSearchQuery,
+      shouldSearchForImports,
+    ],
+  );
 
   useEffect(() => {
     handleSearch(searchQuery);
-  }, [searchQuery]);
+  }, [handleSearch, searchQuery]);
 
   const handleOnClear = () => {
     setSearchQuery('');
