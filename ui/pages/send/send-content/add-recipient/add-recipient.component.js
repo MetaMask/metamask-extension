@@ -206,7 +206,7 @@ export default class AddRecipient extends Component {
         <Identicon address={address} diameter={28} />
         <div className="send__select-recipient-wrapper__group-item__content">
           <div className="send__select-recipient-wrapper__group-item__title">
-            <Confusable input={ellipsify(name)} />
+            <Confusable input={name} />
           </div>
           <div className="send__select-recipient-wrapper__group-item__subtitle">
             {ellipsify(address)}
