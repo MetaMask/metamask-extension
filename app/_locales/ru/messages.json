@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Показать NFT-носитель"
   },
-  "displayNftMediaDescription": {
-    "message": "Отображение носителя и данных NFT раскрывает ваш IP-адрес для OpenSea или других третьих лиц. Это может позволить злоумышленникам связать ваш IP-адрес с вашим адресом Ethereum. Автоопределение NFT зависит от этого параметра и будет недоступно, если он отключен."
-  },
   "domain": {
     "message": "Домен"
   },
@@ -1443,21 +1440,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Улучшенное определение токенов в настоящее время доступно на $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask позволяет вам видеть домены ENS, такие как https://metamask.eth, прямо в адресной строке вашего браузера. Вот как это работает:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Обычные браузеры обычно не работают с адресами ENS или IPFS, но MetaMask помогает с этим. При использовании этой функции ваш IP-адрес может быть передан сторонним службам IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask сверяется с контрактом ENS Ethereum, чтобы найти код, связанный с именем ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Если код связан с IPFS, он получает контент из сети IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Затем вы можете увидеть контент, обычно веб-сайт или что-то подобное."
   },
   "ensDomainsSettingTitle": {
     "message": "Показать домены ENS в адресной строке"
@@ -2473,12 +2455,6 @@
   },
   "newContract": {
     "message": "Новый контракт"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Разрешите MetaMask автоматически обнаруживать NFT из OpenSea и отображать их в вашем кошельке."
-  },
-  "newNFTsDetected": {
-    "message": "Новинка! Определение NFT"
   },
   "newNetworkAdded": {
     "message": "«$1» успешно добавлен!"
@@ -5238,21 +5214,6 @@
   },
   "useNftDetection": {
     "message": "Автоопределение NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "Отображение медиафайлов и данных NFT может раскрыть ваш IP-адрес централизованным серверам. Для обнаружения NFT в вашем кошельке используются сторонние API. При включении этой функции следует соблюдать осторожность."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Адрес вашего счета будет доступен для сторонних API."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Метаданные NFT могут содержать ссылки на мошеннические или фишинговые сайты."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Любой может аирдропнуть NFT на ваш счет. Это может включать оскорбительный контент, который может автоматически отображаться в вашем кошельке."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Не включайте эту функцию, если не хотите, чтобы приложение извлекало данные из этих сервисов."
   },
   "usePhishingDetection": {
     "message": "Использовать обнаружение фишинга"
