@@ -1600,9 +1600,6 @@
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
   },
-  "fileTooBig": {
-    "message": "Napakalaki ng na-drop na file."
-  },
   "flaskWelcomeUninstall": {
     "message": "dapat mong i-uninstall ang extension na ito",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."

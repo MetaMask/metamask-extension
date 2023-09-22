@@ -1600,9 +1600,6 @@
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
   },
-  "fileTooBig": {
-    "message": "File yang didrop terlalu besar."
-  },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."

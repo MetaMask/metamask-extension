@@ -1600,9 +1600,6 @@
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
   },
-  "fileTooBig": {
-    "message": "Bırakılan dosya çok büyük."
-  },
   "flaskWelcomeUninstall": {
     "message": "bu uzantıyı kaldırmalısın",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
