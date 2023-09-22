@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
-  "enableForAllNetworks": {
-    "message": "Paganahin para sa lahat ng network"
-  },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
   },
@@ -1599,9 +1596,6 @@
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Napakalaki ng na-drop na file."
   },
   "flaskWelcomeUninstall": {
     "message": "dapat mong i-uninstall ang extension na ito",

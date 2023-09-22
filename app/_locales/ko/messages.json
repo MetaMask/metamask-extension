@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " 자동 감지 활성화"
   },
-  "enableForAllNetworks": {
-    "message": "모든 네트워크에 활성화"
-  },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },
@@ -1599,9 +1596,6 @@
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "드롭한 파일 크기가 너무 큽니다."
   },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",

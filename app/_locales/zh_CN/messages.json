@@ -1414,9 +1414,6 @@
   "enableAutoDetect": {
     "message": " 启用自动检测"
   },
-  "enableForAllNetworks": {
-    "message": "为所有网络启用"
-  },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
   },
@@ -1599,9 +1596,6 @@
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "拖放的文件太大。"
   },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
