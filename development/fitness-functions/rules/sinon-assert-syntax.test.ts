@@ -1,4 +1,7 @@
-import { generateModifyFilesDiff } from '../common/test-data';
+import {
+  generateCreateFileDiff,
+  generateModifyFilesDiff,
+} from '../common/test-data';
 import { preventSinonAssertSyntax } from './sinon-assert-syntax';
 
 describe('preventSinonAssertSyntax()', (): void => {
@@ -10,7 +13,7 @@ describe('preventSinonAssertSyntax()', (): void => {
     expect(hasRulePassed).toBe(true);
   });
 
-  it('should not pass when receiving a diff with one of the blocked expressions', (): void => {
+  it('should pass when receiving a diff with an existing file with one of the blocked expressions', (): void => {
     const infringingExpression = 'assert.equal';
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
@@ -19,6 +22,22 @@ describe('preventSinonAssertSyntax()', (): void => {
         'test.js',
         `yada yada ${infringingExpression} yada yada`,
         undefined,
+      ),
+    ].join('');
+
+    const hasRulePassed = preventSinonAssertSyntax(testDiff);
+
+    expect(hasRulePassed).toBe(true);
+  });
+
+  it('should not pass when receiving a diff with a new file with one of the blocked expressions', (): void => {
+    const infringingExpression = 'assert.equal';
+    const testDiff = [
+      generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
+      generateCreateFileDiff('old-file.js', 'pong'),
+      generateCreateFileDiff(
+        'test.js',
+        `yada yada ${infringingExpression} yada yada`,
       ),
     ].join('');
 

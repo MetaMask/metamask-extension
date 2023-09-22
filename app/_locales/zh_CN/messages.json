@@ -371,9 +371,6 @@
   "amount": {
     "message": "数额"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "浏览器中的以太坊钱包",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "托管人"
-  },
-  "custodianAccount": {
-    "message": "托管账户"
   },
   "custodianAccountAddedDesc": {
     "message": "您现在可以在 MetaMask Institutional 使用您的托管账户。 "
@@ -2345,9 +2339,6 @@
   },
   "missingSettingRequest": {
     "message": "在这里请求"
-  },
-  "mmiAddToken": {
-    "message": "$1的页面想在 MetaMask Institutional 中授权以下托管代币"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional 面向全球各地设计并建立。"
@@ -3885,9 +3876,6 @@
   "showIncomingTransactionsDescription": {
     "message": "这取决于$1，即可以访问您的以太坊地址和 IP 地址的网络。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsInformation": {
-    "message": "这取决于每个可以访问您的以太坊地址和 IP 地址的网络。"
   },
   "showMore": {
     "message": "展开"
