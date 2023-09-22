@@ -499,7 +499,7 @@
     "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
   },
   "backupKeyringSnapReminder": {
-    "message": "Be sure you can access any accounts created by this snap on your own before removing it"
+    "message": "Be sure you can access any accounts created by this Snap on your own before removing it"
   },
   "backupNow": {
     "message": "Backup now"
@@ -3592,7 +3592,7 @@
     "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
   },
   "removeKeyringSnap": {
-    "message": "Removing this snap removes these accounts from MetaMask:"
+    "message": "Removing this Snap removes these accounts from MetaMask:"
   },
   "removeKeyringSnapToolTip": {
     "message": "The snap controls the accounts, and by removing it, the accounts will be removed from MetaMask, too, but they will remain in the blockchain."
