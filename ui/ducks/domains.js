@@ -269,7 +269,7 @@ export function lookupDomainName(domainName) {
       if (error || !address) {
         // TODO: allow for conflict resolution in future iterations, we don't have designs
         // for this currently, so just displaying the first result.
-        fetchedResolutions = fetchResolutions({
+        fetchedResolutions = await fetchResolutions({
           domain: domainName,
           chainId: `eip155:${parseInt(chainId, 10)}`,
           state,
