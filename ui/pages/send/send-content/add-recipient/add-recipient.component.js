@@ -9,16 +9,20 @@ import { ellipsify } from '../../send.utils';
 import Confusable from '../../../../components/ui/confusable';
 import {
   Text,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   AvatarIcon,
   AvatarIconSize,
   IconName,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../components/component-library';
 import Box from '../../../../components/ui/box';
 import {
   TextColor,
   TextVariant,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   IconColor,
   BackgroundColor,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../helpers/constants/design-system';
 
 export default class AddRecipient extends Component {
@@ -41,7 +45,9 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     resolvingSnap: PropTypes.string,
+    ///: END:ONLY_INCLUDE_IN
     updateRecipientUserInput: PropTypes.func,
   };
 
@@ -117,7 +123,6 @@ export default class AddRecipient extends Component {
       userInput,
       addressBookEntryName,
       ownedAccounts = [],
-      domainType,
     } = this.props;
 
     let content;
@@ -133,7 +138,6 @@ export default class AddRecipient extends Component {
         domainResolution,
         addressBookEntryName || userInput,
         'Domain resolution',
-        domainType,
       );
       // TODO: Domain lookup fails silently, maybe we allow for a generic error message from snaps in the future?
     }
@@ -150,9 +154,10 @@ export default class AddRecipient extends Component {
     );
   }
 
-  renderExplicitAddress(address, name, type, domainType) {
+  renderExplicitAddress(address, name, type) {
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     const { t } = this.context;
+    const { domainType } = this.props;
     if (domainType === 'Other') {
       // Snap provided resolution.
       // Pulling the proposed name from the manifest,
