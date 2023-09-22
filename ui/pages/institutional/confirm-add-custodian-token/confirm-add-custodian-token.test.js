@@ -123,10 +123,8 @@ describe('Confirm Add Custodian Token', () => {
   it('clicks the cancel button and removes the connect request', async () => {
     renderWithProvider(<ConfirmAddCustodianToken />, store);
 
-    await waitFor(() => {
-      const cancelButton = screen.getByTestId('cancel-btn');
-      fireEvent.click(cancelButton);
-    });
+    const cancelButton = screen.getByTestId('cancel-btn');
+    fireEvent.click(cancelButton);
 
     await waitFor(() => {
       expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
@@ -180,6 +178,8 @@ describe('Confirm Add Custodian Token', () => {
       fireEvent.click(confirmButton);
     });
 
+    expect(screen.getByTestId('pulse-loader')).toBeInTheDocument();
+
     await waitFor(() => {
       expect(mockedSetCustodianConnectRequest).toHaveBeenCalledWith({
         token: '',
@@ -188,51 +188,5 @@ describe('Confirm Add Custodian Token', () => {
         custodianType: 'JSONRPC',
       });
     });
-  });
-
-  it('shows a loading state when the confirm button is clicked', async () => {
-    const customMockedStore = {
-      metamask: {
-        providerConfig: {
-          type: 'test',
-        },
-        preferences: {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        },
-        institutionalFeatures: {
-          connectRequests: [
-            {
-              labels: [
-                {
-                  key: 'service',
-                  value: 'test',
-                },
-              ],
-              origin: 'origin',
-              token: '',
-              feature: 'custodian',
-              service: 'JSONRPC',
-              apiUrl: 'https://',
-              environment: 'jsonrpc',
-            },
-          ],
-        },
-      },
-      history: {
-        push: '/',
-        mostRecentOverviewPage: '/',
-      },
-    };
-
-    const customStore = configureMockStore()(customMockedStore);
-
-    renderWithProvider(<ConfirmAddCustodianToken />, customStore);
-
-    await waitFor(() => {
-      const confirmButton = screen.getByTestId('confirm-btn');
-      fireEvent.click(confirmButton);
-    });
-
-    expect(screen.getByTestId('pulse-loader')).toBeInTheDocument();
   });
 });

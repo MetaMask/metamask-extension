@@ -24,8 +24,8 @@ import {
   ButtonVariant,
   Box,
   Text,
-  Tag,
 } from '../../../components/component-library';
+import Chip from '../../../components/ui/chip';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -59,7 +59,7 @@ const ConfirmAddCustodianToken = () => {
   }, [connectRequest, history, mostRecentOverviewPage]);
 
   const handleButtonClick = useCallback(
-    async (isConfirm) => {
+    async ({ isConfirm }) => {
       try {
         if (isConfirm) {
           setConnectError('');
@@ -114,6 +114,8 @@ const ConfirmAddCustodianToken = () => {
         if (isConfirm) {
           history.push(CUSTODY_ACCOUNT_ROUTE);
         }
+
+        setIsLoading(false);
       } catch (e) {
         const errorMessage = e.message || 'Connection error';
         setConnectError(errorMessage);
@@ -145,17 +147,15 @@ const ConfirmAddCustodianToken = () => {
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
-        <Tag
+        <Chip
           borderColor={BorderColor.borderMuted}
           label={connectRequest.origin}
+          maxContent={false}
+          leftIconUrl={custodian?.iconUrl}
           labelProps={{
             textAlign: TextAlign.Center,
           }}
-        >
-          {custodian?.iconUrl && (
-            <span className="button__icon">{custodian.iconUrl}</span>
-          )}
-        </Tag>
+        />
       </Box>
       <Box padding={4} className="page-container__content">
         <Text
@@ -192,7 +192,7 @@ const ConfirmAddCustodianToken = () => {
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               data-testid="cancel-btn"
-              onClick={() => handleButtonClick(false)}
+              onClick={() => handleButtonClick({ isConfirm: false })}
             >
               {t('cancel')}
             </Button>
@@ -200,7 +200,7 @@ const ConfirmAddCustodianToken = () => {
               block
               data-testid="confirm-btn"
               size={ButtonSize.Lg}
-              onClick={() => handleButtonClick(true)}
+              onClick={() => handleButtonClick({ isConfirm: true })}
             >
               {t('allow')}
             </Button>
