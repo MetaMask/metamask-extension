@@ -102,6 +102,16 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-details.spec.js --browser=chrome --debug --leave-running`
 
+#### Running specific builds types e2e test
+
+Differnt build types have different e2e tests sets. In order to run them look in the `packaje.json` file. You will find:
+```console
+    "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
+    "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
+    "test:e2e:chrome:mv3": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mv3",
+```
+Note: MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
+
 ### Changing dependencies
 
 Whenever you change dependencies (adding, removing, or updating, either in `package.json` or `yarn.lock`), there are various files that must be kept up-to-date.
