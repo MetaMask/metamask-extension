@@ -1600,9 +1600,6 @@
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
   },
-  "fileTooBig": {
-    "message": "ड्रॉप की गई फाइल बहुत बड़ी है।"
-  },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
