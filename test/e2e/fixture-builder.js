@@ -381,7 +381,7 @@ function onboardingFixture() {
         featureFlags: {},
         forgottenPassword: false,
         identities: {},
-        ipfsGateway: 'dweb.link',
+        ipfsGateway: 'dweb.linkssssss',
         knownMethodData: {},
         ledgerTransportType: 'webhid',
         lostIdentities: {},

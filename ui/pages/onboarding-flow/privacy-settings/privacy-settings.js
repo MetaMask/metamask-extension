@@ -70,6 +70,7 @@ export default function PrivacySettings() {
     useState(useTokenDetection);
   const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] =
     useState(useCurrencyRateCheck);
+
   const [
     isMultiAccountBalanceCheckerEnabled,
     setMultiAccountBalanceCheckerEnabled,
