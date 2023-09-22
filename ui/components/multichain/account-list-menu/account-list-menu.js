@@ -29,6 +29,9 @@ import {
   getOriginOfCurrentTab,
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getIsAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
   toggleAccountMenu,
