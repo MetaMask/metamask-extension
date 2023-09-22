@@ -72,6 +72,7 @@ export const BalanceOverview = ({ balance, loading }) => {
   };
 
   ///: END:ONLY_INCLUDE_IN
+
   return (
     <Box
       className="token-balance-overview"
