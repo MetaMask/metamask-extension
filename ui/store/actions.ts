@@ -4447,7 +4447,7 @@ export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
 
 export function showKeyringSnapRemovalModal(payload: {
   snapName: string;
-  result: 'success' | 'error';
+  result: 'success' | 'failed';
 }) {
   return {
     type: actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT,
