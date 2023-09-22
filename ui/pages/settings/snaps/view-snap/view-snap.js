@@ -203,6 +203,7 @@ function ViewSnap() {
             onClick={() => setIsShowingRemoveWarning(true)}
           >
             <Text
+              data-testid="remove-snap-button"
               variant={TextVariant.bodyMd}
               color={TextColor.errorDefault}
               flexWrap={FLEX_WRAP.NO_WRAP}
