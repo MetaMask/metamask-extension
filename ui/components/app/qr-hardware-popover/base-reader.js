@@ -168,7 +168,9 @@ const BaseReader = ({
           <img src="images/webcam.svg" width="70" height="70" alt="" />
         </div>
         {title ? <div className="qr-scanner__title">{title}</div> : null}
-        <div className="qr-scanner__error">{msg}</div>
+        <div className="qr-scanner__error" data-testid="qr-scanner__error">
+          {msg}
+        </div>
         <PageContainerFooter
           onCancel={() => {
             setErrorTitle('');
@@ -203,6 +205,7 @@ const BaseReader = ({
         {progress > 0 && (
           <div
             className="qr-scanner__progress"
+            data-testid="qr-reader-progress-bar"
             style={{ '--progress': `${Math.floor(progress * 100)}%` }}
           ></div>
         )}
