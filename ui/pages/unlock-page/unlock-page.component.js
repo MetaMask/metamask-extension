@@ -12,8 +12,13 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isBeta } from '../../helpers/utils/build-types';
-import { Text } from '../../components/component-library/text';
-import { TextVariant, TextColor } from '../../helpers/constants/design-system';
+import { Text } from '../../components/component-library';
+import {
+  TextVariant,
+  TextColor,
+  FontWeight,
+  TextAlign,
+} from '../../helpers/constants/design-system';
 import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
@@ -180,14 +185,20 @@ export default class UnlockPage extends Component {
           </div>
           <Text
             as="h1"
+            data-testid="unlock-page-title"
             variant={TextVariant.displayMd}
             color={TextColor.textAlternative}
-            marginTop={1}
-            data-testid="unlock-page-title"
+            textAlign={TextAlign.Center}
           >
             {t('welcomeBack')}
           </Text>
-          <div>{t('unlockMessage')}</div>
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            fontWeight={FontWeight.Normal}
+            textAlign={TextAlign.Center}
+          >
+            {t('unlockMessage')}
+          </Text>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
