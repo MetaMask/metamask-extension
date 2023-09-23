@@ -270,7 +270,7 @@ export function lookupDomainName(domainName) {
         // TODO: allow for conflict resolution in future iterations, we don't have designs
         // for this currently, so just displaying the first result.
         fetchedResolutions = await fetchResolutions({
-          domain: domainName,
+          domain: trimmedDomainName,
           chainId: `eip155:${parseInt(chainId, 10)}`,
           state,
         });
