@@ -76,6 +76,42 @@ describe('Test Snap Account', function () {
     );
   });
 
+  it('can Personal Sign (sync flow)', async function () {
+    await withFixtures(
+      accountSnapFixtures(this.test.title),
+      async ({ driver }) => {
+        await signData(driver, '#personalSign', false);
+      },
+    );
+  });
+
+  it('can Personal Sign (async flow)', async function () {
+    await withFixtures(
+      accountSnapFixtures(this.test.title),
+      async ({ driver }) => {
+        await signData(driver, '#personalSign', true);
+      },
+    );
+  });
+
+  it('can Sign Typed Data V1 (sync flow)', async function () {
+    await withFixtures(
+      accountSnapFixtures(this.test.title),
+      async ({ driver }) => {
+        await signData(driver, '#signTypedData', false);
+      },
+    );
+  });
+
+  it('can Sign Typed Data V1 (async flow)', async function () {
+    await withFixtures(
+      accountSnapFixtures(this.test.title),
+      async ({ driver }) => {
+        await signData(driver, '#signTypedData', true);
+      },
+    );
+  });
+
   it('can Sign Typed Data V3 (sync flow)', async function () {
     await withFixtures(
       accountSnapFixtures(this.test.title),
@@ -112,6 +148,24 @@ describe('Test Snap Account', function () {
     );
   });
 
+  it('can Sign Permit (sync flow)', async function () {
+    await withFixtures(
+      accountSnapFixtures(this.test.title),
+      async ({ driver }) => {
+        await signData(driver, '#signPermit', false);
+      },
+    );
+  });
+
+  it('can Sign Permit (async flow)', async function () {
+    await withFixtures(
+      accountSnapFixtures(this.test.title),
+      async ({ driver }) => {
+        await signData(driver, '#signPermit', true);
+      },
+    );
+  });
+
   async function importPrivateKeyAndTransfer1ETH(driver, isAsyncFlow) {
     await installSnapSimpleKeyring(driver, isAsyncFlow);
     await importKeyAndSwitch(driver);
@@ -139,7 +193,12 @@ describe('Test Snap Account', function () {
     // creates a sign typed data signature request
     await driver.clickElement(locatorID);
     await switchToNotificationWindow(driver, 4);
-    await validateContractDetails(driver);
+
+    // these two don't have a contract details page
+    if (locatorID !== '#personalSign' && locatorID !== '#signTypedData') {
+      await validateContractDetails(driver);
+    }
+
     await clickSignOnSignatureConfirmation(driver, 3);
 
     await approveRequest(driver, isAsyncFlow);
@@ -148,9 +207,12 @@ describe('Test Snap Account', function () {
 
     await driver.clickElement(`${locatorID}Verify`);
 
-    const result = await (
-      await driver.findElement(`${locatorID}VerifyResult`)
-    ).getText();
+    const resultLocator =
+      locatorID === '#personalSign'
+        ? '#personalSignVerifyECRecoverResult' // the verify span IDs are different with Personal Sign
+        : `${locatorID}VerifyResult`;
+
+    const result = await (await driver.findElement(resultLocator)).getText();
 
     // assert that the Recovery result public key is the same as the one the Snap created
     assert.strictEqual(newPublicKey.toLowerCase(), result);
