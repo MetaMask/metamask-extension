@@ -142,7 +142,6 @@ const jsonData = JSON.stringify({
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     ipfsGateway: 'dweb.link',
-    infuraBlocked: false,
     ledgerTransportType: 'webhid',
     theme: 'light',
     customNetworkListEnabled: false,
