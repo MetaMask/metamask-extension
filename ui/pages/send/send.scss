@@ -119,7 +119,8 @@
         width: 0;
       }
 
-      &__title, &__subtitle {
+      &__title,
+      &__subtitle {
         display: flex;
         flex-direction: row;
       }
