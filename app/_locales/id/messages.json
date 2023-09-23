@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "Karakter tidak sah untuk ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nama ENS tidak ditemukan pada jaringan saat ini. Coba untuk beralih ke Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Jaringan tidak mendukung ENS"
-  },
   "ensRegistrationError": {
     "message": "Terjadi kesalahan pada pendaftaran nama ENS"
   },

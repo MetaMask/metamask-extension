@@ -6,6 +6,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  'endowment:name-lookup': 'endowment:name-lookup',
   'endowment:long-running': 'endowment:long-running',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
   ///: END:ONLY_INCLUDE_IN
@@ -31,6 +32,8 @@ export const ExcludedSnapEndowments = Object.freeze({
   'endowment:long-running':
     'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps/issues/945.',
   'endowment:lifecycle-hooks':
+    'This endowment is experimental and therefore not available.',
+  'endowment:name-lookup':
     'This endowment is experimental and therefore not available.',
   ///: END:ONLY_INCLUDE_IN
 });

@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "Μη έγκυρος χαρακτήρας για το ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Το όνομα ENS δεν βρέθηκε στο τρέχον δίκτυο. Δοκιμάστε να μεταβείτε στο Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Το δίκτυο δεν υποστηρίζει ENS"
-  },
   "ensRegistrationError": {
     "message": "Σφάλμα στην καταχώριση ονόματος ENS"
   },

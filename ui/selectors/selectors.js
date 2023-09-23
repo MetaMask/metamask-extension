@@ -956,6 +956,16 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
+export const getNameLookupSnapsIds = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps)
+      .filter(({ id }) => subjects[id]?.permissions['endowment:name-lookup'])
+      .map((snap) => snap.id);
+  },
+);
+
 export const getNotifySnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,

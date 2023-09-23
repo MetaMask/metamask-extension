@@ -118,6 +118,12 @@
         flex: 1 1 auto;
         width: 0;
       }
+
+      &__title,
+      &__subtitle {
+        display: flex;
+        flex-direction: row;
+      }
     }
 
     &__group-item--selected {

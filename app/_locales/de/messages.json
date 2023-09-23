@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "Unzulässiges Zeichen für ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-Name wurde im aktuellen Netzwerk nicht gefunden. Versuchen Sie, zum Ethereum Mainnet zu wechseln."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Netzwerk unterstützt kein ENS"
-  },
   "ensRegistrationError": {
     "message": "Fehler bei der ENS-Namensregistrierung"
   },

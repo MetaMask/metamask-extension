@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Uredi kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Naziv ENS nije pronađen na trenutačnoj mreži. Pokušajte prebaciti na glavnu mrežu Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Greška u registraciji naziva ENS"
   },

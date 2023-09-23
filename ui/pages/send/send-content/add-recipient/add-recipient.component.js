@@ -7,11 +7,22 @@ import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Confusable from '../../../../components/ui/confusable';
-import { Text } from '../../../../components/component-library';
+import {
+  Text,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  AvatarIcon,
+  AvatarIconSize,
+  IconName,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../../components/component-library';
 import Box from '../../../../components/ui/box';
 import {
   TextColor,
   TextVariant,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  IconColor,
+  BackgroundColor,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../helpers/constants/design-system';
 
 export default class AddRecipient extends Component {
@@ -33,6 +44,10 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    domainType: PropTypes.string,
+    resolvingSnap: PropTypes.string,
+    ///: END:ONLY_INCLUDE_IN
     updateRecipientUserInput: PropTypes.func,
   };
 
@@ -122,8 +137,9 @@ export default class AddRecipient extends Component {
       content = this.renderExplicitAddress(
         domainResolution,
         addressBookEntryName || userInput,
-        'ENS resolution',
+        'Domain resolution',
       );
+      // TODO: Domain lookup fails silently, maybe we allow for a generic error message from snaps in the future?
     }
 
     return (
@@ -139,6 +155,48 @@ export default class AddRecipient extends Component {
   }
 
   renderExplicitAddress(address, name, type) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    const { t } = this.context;
+    const { domainType } = this.props;
+    if (domainType === 'Other') {
+      // Snap provided resolution.
+      // Pulling the proposed name from the manifest,
+      // because domain resolution isn't in stable + no hardcoded metadata to pull from.
+      // TODO: If there are multiple resolutions (conflicts), we should render all of them
+      const { resolvingSnap } = this.props;
+      return (
+        <div
+          key={address}
+          className="send__select-recipient-wrapper__group-item"
+          onClick={() => this.selectRecipient(address, name, type)}
+        >
+          <Identicon address={address} diameter={28} />
+          <div className="send__select-recipient-wrapper__group-item__content">
+            <div className="send__select-recipient-wrapper__group-item__title">
+              <Confusable input={ellipsify(name)} />
+              <Text paddingLeft={2}>{ellipsify(address)}</Text>
+            </div>
+            <div className="send__select-recipient-wrapper__group-item__subtitle">
+              <Text paddingRight={1}>{t('suggestedBy')}</Text>
+              <AvatarIcon
+                iconName={IconName.Snaps}
+                size={AvatarIconSize.Xs}
+                backgroundColor={IconColor.infoDefault}
+                borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
+                iconProps={{
+                  color: IconColor.infoInverse,
+                }}
+              />
+              <Text color={TextColor.infoDefault}>
+                {ellipsify(resolvingSnap)}
+              </Text>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    ///: END:ONLY_INCLUDE_IN
     return (
       <div
         key={address}
@@ -148,13 +206,11 @@ export default class AddRecipient extends Component {
         <Identicon address={address} diameter={28} />
         <div className="send__select-recipient-wrapper__group-item__content">
           <div className="send__select-recipient-wrapper__group-item__title">
-            {name ? <Confusable input={name} /> : ellipsify(address)}
+            <Confusable input={name} />
           </div>
-          {name && (
-            <div className="send__select-recipient-wrapper__group-item__subtitle">
-              {ellipsify(address)}
-            </div>
-          )}
+          <div className="send__select-recipient-wrapper__group-item__subtitle">
+            {ellipsify(address)}
+          </div>
         </div>
       </div>
     );

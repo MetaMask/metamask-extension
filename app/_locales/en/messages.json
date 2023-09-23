@@ -1323,6 +1323,9 @@
   "domain": {
     "message": "Domain"
   },
+  "domainNotSupportedOnNetwork": {
+    "message": "Network does not support domain lookup"
+  },
   "done": {
     "message": "Done"
   },
@@ -1489,12 +1492,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Network does not support ENS"
   },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
@@ -4472,6 +4469,9 @@
   },
   "submitted": {
     "message": "Submitted"
+  },
+  "suggestedBy": {
+    "message": "Suggested by"
   },
   "support": {
     "message": "Support"

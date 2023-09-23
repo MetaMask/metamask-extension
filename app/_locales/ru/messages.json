@@ -1447,12 +1447,6 @@
   "ensIllegalCharacter": {
     "message": "Недопустимый символ для ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Имя ENS не найдено в текущей сети. Попробуйте переключиться на Мейн-нет Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Сеть не поддерживает ENS"
-  },
   "ensRegistrationError": {
     "message": "Ошибка при регистрации имени ENS"
   },

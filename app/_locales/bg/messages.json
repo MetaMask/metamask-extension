@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Редактиране на контакт"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Името на ENS не е намерено в текущата мрежа. Опитайте да преминете към основната мрежа на етереум."
-  },
   "ensRegistrationError": {
     "message": "Грешка при регистрацията на име на ENS"
   },
