@@ -6,6 +6,7 @@
  */
 export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
+export const NOTIFICATION_BUY_SELL_BUTTON = 27;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -156,15 +157,14 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
-  27: {
-    id: 27,
+  [NOTIFICATION_BUY_SELL_BUTTON]: {
+    id: Number(NOTIFICATION_BUY_SELL_BUTTON),
     date: null,
     image: {
       src: 'images/sell_button_whatsnew.png',
       width: '100%',
     },
   },
-
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -428,14 +428,14 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    27: {
-      ...UI_NOTIFICATIONS[27],
-      title: t('notifications27Title'),
-      description: t('notifications27Description'),
-      actionText: t('notifications27ActionText'),
-      date: UI_NOTIFICATIONS[27].date
+    [NOTIFICATION_BUY_SELL_BUTTON]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON],
+      title: t('notificationsBuySellTitle'),
+      description: t('notificationsBuySellDescription'),
+      actionText: t('notificationsBuySellActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[27].date),
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date),
           )
         : '',
     },
