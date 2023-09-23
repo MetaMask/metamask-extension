@@ -275,7 +275,7 @@ export function lookupDomainName(domainName) {
           chainId: `eip155:${parseInt(chainId, 10)}`,
           state,
         });
-        const resolvedAddress = fetchedResolutions[0]?.resolvedAddress
+        const resolvedAddress = fetchedResolutions[0]?.resolvedAddress;
         hasSnapResolution = Boolean(resolvedAddress);
         if (hasSnapResolution) {
           address = resolvedAddress;
