@@ -76,94 +76,30 @@ describe('Test Snap Account', function () {
     );
   });
 
-  it('can Personal Sign (sync flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#personalSign', false);
-      },
-    );
-  });
-
-  it('can Personal Sign (async flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#personalSign', true);
-      },
-    );
-  });
-
-  it('can Sign Typed Data V1 (sync flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#signTypedData', false);
-      },
-    );
-  });
-
-  it('can Sign Typed Data V1 (async flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#signTypedData', true);
-      },
-    );
-  });
-
-  it('can Sign Typed Data V3 (sync flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#signTypedDataV3', false);
-      },
-    );
-  });
-
-  it('can Sign Typed Data V3 (async flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#signTypedDataV3', true);
-      },
-    );
-  });
-
-  it('can Sign Typed Data V4 (sync flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#signTypedDataV4', false);
-      },
-    );
-  });
-
-  it('can Sign Typed Data V4 (async flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#signTypedDataV4', true);
-      },
-    );
-  });
-
-  it('can Sign Permit (sync flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#signPermit', false);
-      },
-    );
-  });
-
-  it('can Sign Permit (async flow)', async function () {
-    await withFixtures(
-      accountSnapFixtures(this.test.title),
-      async ({ driver }) => {
-        await signData(driver, '#signPermit', true);
-      },
-    );
+  // run the full matrix of sign types and sync/async flows
+  // (in Jest we could do this with test.each, but that does not exist here)
+  [
+    ['#personalSign', false],
+    ['#personalSign', true],
+    ['#signTypedData', false],
+    ['#signTypedData', true],
+    ['#signTypedDataV3', false],
+    ['#signTypedDataV3', true],
+    ['#signTypedDataV4', false],
+    ['#signTypedDataV4', true],
+    ['#signPermit', false],
+    ['#signPermit', true],
+  ].forEach((locatorID, isAsyncFlow) => {
+    it(`can ${locatorID} (${
+      isAsyncFlow ? 'async' : 'sync'
+    } flow)`, async function () {
+      await withFixtures(
+        accountSnapFixtures(this.test.title),
+        async ({ driver }) => {
+          await signData(driver, locatorID, isAsyncFlow);
+        },
+      );
+    });
   });
 
   async function importPrivateKeyAndTransfer1ETH(driver, isAsyncFlow) {
