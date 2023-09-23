@@ -66,6 +66,9 @@ export default class PreferencesController {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertsEnabled: false,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      addSnapAccountEnabled: false,
+      ///: END:ONLY_INCLUDE_IN
       advancedGasFee: {},
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -93,7 +96,6 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       useAddressBarEnsResolution: true,
-      infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
@@ -109,13 +111,12 @@ export default class PreferencesController {
 
     this.network = opts.network;
 
-    this._onInfuraIsBlocked = opts.onInfuraIsBlocked;
-    this._onInfuraIsUnblocked = opts.onInfuraIsUnblocked;
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
 
-    this._subscribeToInfuraAvailability();
+    // subscribe to account removal
+    opts.onAccountRemoved((address) => this.removeAddress(address));
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
@@ -233,6 +234,20 @@ export default class PreferencesController {
   setSecurityAlertsEnabled(securityAlertsEnabled) {
     this.store.updateState({
       securityAlertsEnabled,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  /**
+   * Setter for the `addSnapAccountEnabled` property.
+   *
+   * @param {boolean} addSnapAccountEnabled - Whether or not the user wants to
+   * enable the "Add Snap accounts" button.
+   */
+  setAddSnapAccountEnabled(addSnapAccountEnabled) {
+    this.store.updateState({
+      addSnapAccountEnabled,
     });
   }
   ///: END:ONLY_INCLUDE_IN
@@ -617,36 +632,6 @@ export default class PreferencesController {
   }
 
   ///: END:ONLY_INCLUDE_IN
-
-  //
-  // PRIVATE METHODS
-  //
-
-  _subscribeToInfuraAvailability() {
-    this._onInfuraIsBlocked(() => {
-      this._setInfuraBlocked(true);
-    });
-
-    this._onInfuraIsUnblocked(() => {
-      this._setInfuraBlocked(false);
-    });
-  }
-
-  /**
-   *
-   * A setter for the `infuraBlocked` property
-   *
-   * @param {boolean} isBlocked - Bool indicating whether Infura is blocked
-   */
-  _setInfuraBlocked(isBlocked) {
-    const { infuraBlocked } = this.store.getState();
-
-    if (infuraBlocked === isBlocked) {
-      return;
-    }
-
-    this.store.updateState({ infuraBlocked: isBlocked });
-  }
 
   /**
    * A method to check is the linea mainnet network should be displayed

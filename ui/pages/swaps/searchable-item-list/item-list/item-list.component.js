@@ -102,7 +102,7 @@ export default function ItemList({
               onClick={onClick}
               onKeyUp={(e) => e.key === 'Enter' && onClick()}
               key={`searchable-item-list-item-${i}`}
-              title={blocked && t('swapTokenNotAvailable')}
+              title={blocked ? t('swapTokenNotAvailable') : null}
             >
               {iconUrl || primaryLabel ? (
                 <UrlIcon url={iconUrl} name={primaryLabel} />

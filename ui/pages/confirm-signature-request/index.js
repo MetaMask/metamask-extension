@@ -18,6 +18,8 @@ import {
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
   getTargetSubjectMetadata,
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
@@ -53,9 +55,7 @@ const ConfirmTxScreen = ({ match }) => {
   );
   const sendTo = useSelector(getSendTo);
   const {
-    unapprovedTxs,
     identities,
-    currentNetworkTxList,
     currentCurrency,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
@@ -63,6 +63,8 @@ const ConfirmTxScreen = ({ match }) => {
     networkId,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const { chainId } = useSelector(getProviderConfig);
   const { txId: index } = useSelector((state) => state.appState);
 

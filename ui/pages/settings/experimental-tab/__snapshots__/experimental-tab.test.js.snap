@@ -25,23 +25,14 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
-            This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          >
-            Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature.
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--margin-bottom-1 mm-box--color-text-alternative"
-          >
-            Select providers:
+            This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
           </p>
           <div
-            class="settings-page__content-item-col settings-page__content-item-col-open-sea"
+            class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
+            data-testid="settings-toggle-security-alert-blockaid"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-0 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
               Blockaid
             </p>
@@ -87,11 +78,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               </div>
             </label>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-muted"
-          >
-            More providers coming soon
-          </p>
         </div>
       </div>
     </div>
@@ -117,13 +103,8 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           >
             We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language.
           </h6>
-          <h6
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--margin-bottom-1 mm-box--color-text-alternative"
-          >
-            Select providers:
-          </h6>
           <div
-            class="settings-page__content-item-col settings-page__content-item-col-open-sea"
+            class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
           >
             <h5
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-0 mm-box--color-text-default"
@@ -189,27 +170,110 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
                
             </span>
           </h6>
-          <h5
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--color-text-muted"
-          >
-            More providers coming soon
-          </h5>
         </div>
       </div>
     </div>
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-bold mm-box--margin-bottom-2 mm-box--color-text-alternative"
+    >
+      Snaps
+    </h4>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
-      data-testid="advanced-setting-desktop-pairing"
+      class="mm-box settings-page__content-row settings-page__content-row-experimental mm-box--margin-bottom-3"
     >
       <div
         class="settings-page__content-item"
       >
         <span>
-          Click to run all background processes in the desktop app.
+          Snap accounts
         </span>
+        <div
+          class="settings-page__content-description"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          >
+            Accounts controlled by third-party Snaps.
+          </h6>
+          <div
+            class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
+          >
+            <h5
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-0 mm-box--color-text-default"
+            >
+              Enable "Add Snap account"
+            </h5>
+            <div
+              class="mm-box"
+              data-testid="add-snap-account-toggle"
+            >
+              <label
+                class="toggle-button toggle-button--off"
+                tabindex="0"
+              >
+                <div
+                  style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                >
+                  <div
+                    style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  >
+                    <div
+                      style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                    />
+                    <div
+                      style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                    />
+                  </div>
+                  <div
+                    style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                  >
+                    <div
+                      style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                    />
+                  </div>
+                  <input
+                    style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                    type="checkbox"
+                    value="false"
+                  />
+                </div>
+                <div
+                  class="toggle-button__status"
+                >
+                  <span
+                    class="toggle-button__label-off"
+                  />
+                  <span
+                    class="toggle-button__label-on"
+                  />
+                </div>
+              </label>
+            </div>
+          </div>
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--color-text-alternative"
+          >
+            Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service.
+          </h6>
+        </div>
       </div>
+    </div>
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-box--margin-bottom-2 mm-box--color-text-alternative"
+    >
+      Desktop App
+    </h4>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center"
+      data-testid="advanced-setting-desktop-pairing"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-right-2 mm-box--color-text-default"
+      >
+        Click to run all background processes in the desktop app.
+      </p>
       <div
-        class="settings-page__content-item-col"
+        class="mm-box settings-page__content-item-col mm-box--padding-top-3"
       >
         <button
           class="button btn--rounded btn-primary btn--large"

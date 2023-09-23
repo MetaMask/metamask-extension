@@ -9,8 +9,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import NftsTab from '../../components/app/nfts-tab';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 ///: END:ONLY_INCLUDE_IN
@@ -931,11 +931,7 @@ export default class Home extends PureComponent {
                   name={this.context.t('nfts')}
                   tabKey="nfts"
                 >
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                    <NftsTab />
-                    ///: END:ONLY_INCLUDE_IN
-                  }
+                  <NftsTab />
                   {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-main)
                     <ButtonLink
