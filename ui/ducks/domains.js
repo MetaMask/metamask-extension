@@ -288,8 +288,8 @@ export function lookupDomainName(domainName) {
           domainType: hasSnapResolution ? 'Other' : ENS,
           domainName: trimmedDomainName,
           ...(hasSnapResolution
-            ? {}
-            : { resolvingSnap: getSnapName(fetchedResolutions[0].snapId) }),
+            ? { resolvingSnap: getSnapName(fetchedResolutions[0].snapId) }
+            : {}),
         }),
       );
     }
