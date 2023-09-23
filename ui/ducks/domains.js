@@ -266,7 +266,7 @@ export function lookupDomainName(domainName) {
       }
       const chainId = getCurrentChainId(state);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      if (error || !address) {
+      if (!address) {
         // TODO: allow for conflict resolution in future iterations, we don't have designs
         // for this currently, so just displaying the first result.
         fetchedResolutions = await fetchResolutions({
