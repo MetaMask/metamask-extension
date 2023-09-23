@@ -258,6 +258,7 @@ export function lookupDomainName(domainName) {
       log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
       let address;
       let fetchedResolutions;
+      let hasSnapResolution = false;
       let error;
       try {
         address = await web3Provider.resolveName(trimmedDomainName);
@@ -274,10 +275,12 @@ export function lookupDomainName(domainName) {
           chainId: `eip155:${parseInt(chainId, 10)}`,
           state,
         });
-        address = fetchedResolutions[0].resolvedAddress;
+        const resolvedAddress = fetchedResolutions[0]?.resolvedAddress
+        hasSnapResolution = Boolean(resolvedAddress);
+        if (hasSnapResolution) {
+          address = resolvedAddress;
+        }
       }
-
-      const hasSnapResolution = Boolean(address);
 
       await dispatch(
         domainLookup({
