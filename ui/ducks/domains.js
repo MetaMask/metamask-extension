@@ -274,10 +274,10 @@ export function lookupDomainName(domainName) {
           chainId: `eip155:${parseInt(chainId, 10)}`,
           state,
         });
-        address = fetchedResolutions[0].resolvedAddress;
+        address = fetchedResolutions[0]?.resolvedAddress;
       }
 
-      const hasSnapResolution = !error && address;
+      const hasSnapResolution = error && address;
 
       await dispatch(
         domainLookup({
