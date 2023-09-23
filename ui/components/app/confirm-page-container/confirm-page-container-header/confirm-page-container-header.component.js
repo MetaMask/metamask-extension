@@ -16,7 +16,10 @@ import {
   BorderColor,
   Display,
 } from '../../../../helpers/constants/design-system';
-import { getTestNetworkBackgroundColor } from '../../../../selectors';
+import {
+  getCurrentNetwork,
+  getTestNetworkBackgroundColor,
+} from '../../../../selectors';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import { NETWORK_TYPES } from '../../../../../shared/constants/network';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
@@ -31,6 +34,7 @@ export default function ConfirmPageContainerHeader({
   const t = useI18nContext();
   const windowType = getEnvironmentType();
   const { nickname, type: networkType } = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   const isFullScreen =
@@ -78,12 +82,13 @@ export default function ConfirmPageContainerHeader({
         )}
         {isFullScreen ? null : (
           <PickerNetwork
+            as="div"
+            src={currentNetwork?.rpcPrefs?.imageUrl}
             label={
               networkType === NETWORK_TYPES.RPC
                 ? nickname ?? t('privateNetwork')
                 : t(getNetworkLabelKey(networkType))
             }
-            as="div"
             backgroundColor={BackgroundColor.transparent}
             borderColor={BorderColor.borderMuted}
             iconProps={{ display: Display.None }}
