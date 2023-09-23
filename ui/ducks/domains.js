@@ -214,7 +214,7 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
         handler: 'onNameLookup',
         request: {
           jsonrpc: '2.0',
-          method: '',
+          method: ' ',
           params: { ...snapRequestArgs },
         },
       });
@@ -277,7 +277,7 @@ export function lookupDomainName(domainName) {
         address = fetchedResolutions[0]?.resolvedAddress;
       }
 
-      const hasSnapResolution = error && address;
+      const hasSnapResolution = Boolean(address);
 
       await dispatch(
         domainLookup({
