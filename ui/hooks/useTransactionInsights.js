@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { SeverityLevel } from '@metamask/snaps-utils-flask';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
@@ -91,7 +90,7 @@ const useTransactionInsights = ({ txData }) => {
   }
 
   const warnings = data?.reduce((warningsArr, promise) => {
-    if (promise.response?.severity === SeverityLevel.Critical) {
+    if (promise.response?.severity === 'critical') {
       const {
         snapId,
         response: { content },
