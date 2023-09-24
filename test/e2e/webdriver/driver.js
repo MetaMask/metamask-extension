@@ -36,6 +36,13 @@ function wrapElementWithAPI(element, driver) {
         throw new Error(`Provided state: '${state}' is not supported`);
     }
   };
+
+  element.nestedFindElement = async (rawLocator) => {
+    const locator = driver.buildLocator(rawLocator);
+    const newElement = await element.findElement(locator);
+    return wrapElementWithAPI(newElement, driver);
+  };
+
   return element;
 }
 
@@ -343,7 +350,13 @@ class Driver {
   // Navigation
 
   async navigate(page = Driver.PAGES.HOME) {
-    return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+    const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
+    // Wait for asyncronous JavaScript to load
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.metamask-loaded')),
+      10 * 1000,
+    );
+    return response;
   }
 
   async getCurrentUrl() {

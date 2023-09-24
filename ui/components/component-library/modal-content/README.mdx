@@ -61,11 +61,9 @@ If you do require a larger modal size you can use the `modalDialogProps` to add 
 </Canvas>
 
 ```jsx
-import { DISPLAY } from '../../../helpers/constants/design-system';
+import { Display } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
-
-import { Modal, ModalContent, Text, Button, ButtonVariant } from '../../component-library';
+import { Box, Modal, ModalContent, Text, Button, ButtonVariant } from '../../component-library';
 
 enum ModalContentSizeStoryOption {
   Sm = 'sm',
@@ -80,7 +78,7 @@ const handleOnClick = (size: ModalContentSizeStoryOption) => {
   setShow({ ...show, [size]: !show[size] });
 };
 
-<Box display={DISPLAY.FLEX} gap={4}>
+<Box display={Display.Flex} gap={4}>
   <Button
     variant={ButtonVariant.Secondary}
     onClick={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
