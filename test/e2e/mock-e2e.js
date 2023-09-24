@@ -388,7 +388,61 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
+  await mockLensNameProvider(server);
+  await mockTokenNameProvider(server, chainId);
+
   return mockedEndpoint;
+}
+
+async function mockLensNameProvider(server) {
+  const handlesByAddress = {
+    '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826': 'test.lens',
+    '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB': 'test2.lens',
+    '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC': 'test3.lens',
+  };
+
+  await server.forPost('https://api.lens.dev').thenCallback((request) => {
+    const address = request.body?.json?.variables?.address;
+    const handle = handlesByAddress[address];
+
+    return {
+      statusCode: 200,
+      json: {
+        data: {
+          profiles: {
+            items: [
+              {
+                handle,
+              },
+            ],
+          },
+        },
+      },
+    };
+  });
+}
+
+async function mockTokenNameProvider(server) {
+  const namesByAddress = {
+    '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF': 'Test Token',
+    '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57': 'Test Token 2',
+  };
+
+  for (const address of Object.keys(namesByAddress)) {
+    const name = namesByAddress[address];
+
+    await server
+      .forGet(/https:\/\/token-api\.metaswap\.codefi\.network\/token\/.*/gu)
+      .withQuery({ address })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            name,
+          },
+        };
+      });
+  }
 }
 
 module.exports = { setupMocking };
