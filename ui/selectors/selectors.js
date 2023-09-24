@@ -8,6 +8,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
 import { createSelector } from 'reselect';
+import { NameType } from '@metamask/name-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -31,6 +32,7 @@ import {
   LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -750,7 +752,10 @@ export function getIpfsGateway(state) {
 }
 
 export function getInfuraBlocked(state) {
-  return Boolean(state.metamask.infuraBlocked);
+  return (
+    state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
+      .status === NetworkStatus.Blocked
+  );
 }
 
 export function getUSDConversionRate(state) {
@@ -951,6 +956,16 @@ export const getInsightSnaps = createDeepEqualSelector(
   (snaps, subjects) => {
     return Object.values(snaps).filter(
       ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+    );
+  },
+);
+
+export const getNotifySnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions.snap_notify,
     );
   },
 );
@@ -1333,7 +1348,18 @@ export function getNonTestNetworks(state) {
     // Custom networks added by the user
     ...Object.values(networkConfigurations)
       .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
-      .map((network) => ({ ...network, removable: true })),
+      .map((network) => ({
+        ...network,
+        rpcPrefs: {
+          ...network.rpcPrefs,
+          // Provide an image based on chainID if a network
+          // has been added without an image
+          imageUrl:
+            network?.rpcPrefs?.imageUrl ??
+            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+        },
+        removable: true,
+      })),
   ];
 }
 
@@ -1532,6 +1558,18 @@ export function getIsSecurityAlertsEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+/**
+ * Get the state of the `addSnapAccountEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `addSnapAccountEnabled` flag.
+ */
+export function getIsAddSnapAccountEnabled(state) {
+  return state.metamask.addSnapAccountEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
@@ -1616,6 +1654,18 @@ export function getOnboardedInThisUISession(state) {
  */
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
+}
+
+export function getNames(state) {
+  return state.metamask.names || {};
+}
+
+export function getEthereumAddressNames(state) {
+  return state.metamask.names?.[NameType.ETHEREUM_ADDRESS] || {};
+}
+
+export function getNameSources(state) {
+  return state.metamask.nameSources || {};
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)

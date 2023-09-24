@@ -259,7 +259,6 @@ function defaultFixture() {
             name: 'Account 1',
           },
         },
-        infuraBlocked: false,
         ipfsGateway: 'dweb.link',
         knownMethodData: {},
         ledgerTransportType: 'webhid',
@@ -382,8 +381,7 @@ function onboardingFixture() {
         featureFlags: {},
         forgottenPassword: false,
         identities: {},
-        infuraBlocked: false,
-        ipfsGateway: 'dweb.link',
+        ipfsGateway: 'dweb.linkssssss',
         knownMethodData: {},
         ledgerTransportType: 'webhid',
         lostIdentities: {},
@@ -1403,6 +1401,20 @@ class FixtureBuilder {
         ...incomingTransaction,
       },
     });
+  }
+
+  withNameController(data) {
+    merge(
+      this.fixture.data.NameController
+        ? this.fixture.data.NameController
+        : (this.fixture.data.NameController = {}),
+      data,
+    );
+    return this;
+  }
+
+  withNoNames() {
+    return this.withNameController({ names: {} });
   }
 
   build() {

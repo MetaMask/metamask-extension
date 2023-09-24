@@ -9,7 +9,7 @@ const {
   changeExchangeRate,
 } = require('./shared');
 
-describe('Swap Eth for another Token', function () {
+describe('Swap Eth for another Token @no-mmi', function () {
   it('Completes second Swaps while first swap is processing', async function () {
     withFixturesOptions.ganacheOptions.blockTime = 10;
 
