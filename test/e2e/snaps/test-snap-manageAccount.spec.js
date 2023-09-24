@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const util = require('ethereumjs-util');
 const { retry } = require('../../../development/lib/retry');
 const FixtureBuilder = require('../fixture-builder');
@@ -62,64 +61,95 @@ describe('Test Snap Account', function () {
     await withFixtures(
       accountSnapFixtures(this.test.title),
       async ({ driver }) => {
-        await importPrivateKeyAndTransfer1ETH(driver, false);
+        await importPrivateKeyAndTransfer1ETH(driver, 'sync');
       },
     );
   });
 
-  it('can import a private key and transfer 1 ETH (async flow)', async function () {
+  it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
     await withFixtures(
       accountSnapFixtures(this.test.title),
       async ({ driver }) => {
-        await importPrivateKeyAndTransfer1ETH(driver, true);
+        await importPrivateKeyAndTransfer1ETH(driver, 'approve');
       },
     );
   });
 
-  // run the full matrix of sign types and sync/async flows
+  it('can import a private key and transfer 1 ETH (async flow reject)', async function () {
+    await withFixtures(
+      accountSnapFixtures(this.test.title),
+      async ({ driver }) => {
+        await importPrivateKeyAndTransfer1ETH(driver, 'reject');
+      },
+    );
+  });
+
+  // run the full matrix of sign types and sync/async approve/async reject flows
   // (in Jest we could do this with test.each, but that does not exist here)
   [
-    ['#personalSign', false],
-    ['#personalSign', true],
-    ['#signTypedData', false],
-    ['#signTypedData', true],
-    ['#signTypedDataV3', false],
-    ['#signTypedDataV3', true],
-    ['#signTypedDataV4', false],
-    ['#signTypedDataV4', true],
-    ['#signPermit', false],
-    ['#signPermit', true],
-  ].forEach((locatorID, isAsyncFlow) => {
-    it(`can ${locatorID} (${
-      isAsyncFlow ? 'async' : 'sync'
-    } flow)`, async function () {
+    ['#personalSign', 'sync'],
+    ['#personalSign', 'approve'],
+    ['#personalSign', 'reject'],
+    ['#signTypedData', 'sync'],
+    ['#signTypedData', 'approve'],
+    ['#signTypedData', 'reject'],
+    ['#signTypedDataV3', 'sync'],
+    ['#signTypedDataV3', 'approve'],
+    ['#signTypedDataV3', 'reject'],
+    ['#signTypedDataV4', 'sync'],
+    ['#signTypedDataV4', 'approve'],
+    ['#signTypedDataV4', 'reject'],
+    ['#signPermit', 'sync'],
+    ['#signPermit', 'approve'],
+    ['#signPermit', 'reject'],
+  ].forEach(([locatorID, flowType]) => {
+    let title = `can ${locatorID} (${
+      flowType === 'sync' ? 'sync' : 'async'
+    } flow`;
+
+    title += flowType === 'sync' ? ')' : ` ${flowType})`;
+
+    it(title, async function () {
       await withFixtures(
         accountSnapFixtures(this.test.title),
         async ({ driver }) => {
-          await signData(driver, locatorID, isAsyncFlow);
+          await signData(driver, locatorID, flowType);
         },
       );
     });
   });
 
-  async function importPrivateKeyAndTransfer1ETH(driver, isAsyncFlow) {
+  async function importPrivateKeyAndTransfer1ETH(driver, flowType) {
+    const isAsyncFlow = flowType !== 'sync';
+
     await installSnapSimpleKeyring(driver, isAsyncFlow);
     await importKeyAndSwitch(driver);
 
     // send 1 ETH from Account 2 to Account 1
     await sendTransaction(driver, PUBLIC_KEY, 1, isAsyncFlow);
 
-    await approveRequest(driver, isAsyncFlow);
+    if (isAsyncFlow) {
+      await approveOrRejectRequest(driver, flowType);
+    }
 
-    // click on Accounts
-    await driver.clickElement('[data-testid="account-menu-icon"]');
+    if (flowType === 'sync' || flowType === 'approve') {
+      // click on Accounts
+      await driver.clickElement('[data-testid="account-menu-icon"]');
 
-    // ensure one account has 26 ETH and the other has 24 ETH
-    await driver.findElement('[title="26 ETH"]');
-    await driver.findElement('[title="24 ETH"]');
+      // ensure one account has 26 ETH and the other has 24 ETH
+      await driver.findElement('[title="26 ETH"]');
+      await driver.findElement('[title="24 ETH"]');
+    } else if (flowType === 'reject') {
+      // ensure the transaction was rejected by the Snap
+      await driver.findElement(
+        '[data-original-title="Request rejected by user or snap."]',
+      );
+    }
   }
 
-  async function signData(driver, locatorID, isAsyncFlow) {
+  async function signData(driver, locatorID, flowType) {
+    const isAsyncFlow = flowType !== 'sync';
+
     await installSnapSimpleKeyring(driver, isAsyncFlow);
 
     const newPublicKey = await makeNewAccountAndSwitch(driver);
@@ -137,21 +167,30 @@ describe('Test Snap Account', function () {
 
     await clickSignOnSignatureConfirmation(driver, 3);
 
-    await approveRequest(driver, isAsyncFlow);
+    if (isAsyncFlow) {
+      await approveOrRejectRequest(driver, flowType);
+    }
 
     await driver.switchToWindowWithTitle('E2E Test Dapp');
 
-    await driver.clickElement(`${locatorID}Verify`);
+    if (flowType === 'sync' || flowType === 'approve') {
+      await driver.clickElement(`${locatorID}Verify`);
 
-    const resultLocator =
-      locatorID === '#personalSign'
-        ? '#personalSignVerifyECRecoverResult' // the verify span IDs are different with Personal Sign
-        : `${locatorID}VerifyResult`;
+      const resultLocator =
+        locatorID === '#personalSign'
+          ? '#personalSignVerifyECRecoverResult' // the verify span IDs are different with Personal Sign
+          : `${locatorID}VerifyResult`;
 
-    const result = await (await driver.findElement(resultLocator)).getText();
-
-    // assert that the Recovery result public key is the same as the one the Snap created
-    assert.strictEqual(newPublicKey.toLowerCase(), result);
+      await driver.findElement({
+        css: resultLocator,
+        text: newPublicKey.toLowerCase(),
+      });
+    } else if (flowType === 'reject') {
+      // ensure the transaction was rejected by the Snap
+      await driver.findElement({
+        text: 'Error: Request rejected by user or snap.',
+      });
+    }
   }
 
   async function installSnapSimpleKeyring(driver, isAsyncFlow) {
@@ -183,7 +222,7 @@ describe('Test Snap Account', function () {
       tag: 'button',
     });
 
-    await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+    await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 1000);
 
     await driver.waitForSelector({ text: 'Install' });
 
@@ -228,10 +267,7 @@ describe('Test Snap Account', function () {
       tag: 'div',
     });
 
-    await driver.fill(
-      "[placeholder='E.g. 0x0000000000000000000000000000000000000000000000000000000000000000']",
-      PRIVATE_KEY_TWO,
-    );
+    await driver.fill('#import-account-private-key', PRIVATE_KEY_TWO);
 
     await driver.clickElement({
       text: 'Import Account',
@@ -279,33 +315,31 @@ describe('Test Snap Account', function () {
     await driver.waitForElementNotPresent('.mm-tag');
   }
 
-  async function approveRequest(driver, isAsyncFlow) {
-    if (isAsyncFlow) {
-      await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
+  async function approveOrRejectRequest(driver, flowType) {
+    await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
 
-      // open the accordion
-      await driver.clickElement({
-        text: 'List requests',
+    await driver.clickElementUsingMouseMove({
+      text: 'List requests',
+      tag: 'div',
+    });
+
+    await driver.clickElement({
+      text: 'List Requests',
+      tag: 'button',
+    });
+
+    // get the JSON from the screen
+    const requestJSON = await (
+      await driver.findElement({
+        text: '"scope": "",',
         tag: 'div',
-      });
+      })
+    ).getText();
 
-      await driver.clickElement({
-        text: 'List Requests',
-        tag: 'button',
-      });
+    const requestID = JSON.parse(requestJSON)[0].id;
 
-      // get the JSON from the screen
-      const requestJSON = await (
-        await driver.findElement({
-          text: '"scope": "",',
-          tag: 'div',
-        })
-      ).getText();
-
-      const requestID = JSON.parse(requestJSON)[0].id;
-
-      // open the accordion
-      await driver.clickElement({
+    if (flowType === 'approve') {
+      await driver.clickElementUsingMouseMove({
         text: 'Approve request',
         tag: 'div',
       });
@@ -316,8 +350,20 @@ describe('Test Snap Account', function () {
         text: 'Approve Request',
         tag: 'button',
       });
+    } else if (flowType === 'reject') {
+      await driver.clickElementUsingMouseMove({
+        text: 'Reject request',
+        tag: 'div',
+      });
 
-      await driver.switchToWindowWithTitle('MetaMask');
+      await driver.fill('#reject-request-request-id', requestID);
+
+      await driver.clickElement({
+        text: 'Reject Request',
+        tag: 'button',
+      });
     }
+
+    await driver.switchToWindowWithTitle('MetaMask');
   }
 });
