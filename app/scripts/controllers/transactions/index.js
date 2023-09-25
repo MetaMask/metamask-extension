@@ -1,7 +1,7 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
-import EthQuery from 'ethjs-query';
+import EthQuery from '@metamask/ethjs-query';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
