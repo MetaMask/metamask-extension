@@ -273,7 +273,7 @@ describe('preferences controller', () => {
 
   describe('setUseTokenDetection', function () {
     it('should default to false', function () {
-      const state = preferencesController.store.getState().useTokenDetection;
+      const state = preferencesController.store.getState();
 
       expect(state.useTokenDetection).toStrictEqual(false);
     });
