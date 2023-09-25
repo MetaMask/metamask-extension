@@ -670,12 +670,4 @@ export default class PreferencesController {
   }
 
   ///: END:ONLY_INCLUDE_IN
-
-  /**
-   * A method to check is the linea mainnet network should be displayed
-   */
-  _showShouldLineaMainnetNetwork() {
-    const showLineaMainnet = shouldShowLineaMainnet();
-    this.store.updateState({ isLineaMainnetReleased: showLineaMainnet });
-  }
 }
