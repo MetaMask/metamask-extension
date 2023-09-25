@@ -17,17 +17,22 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 - Install [Node.js](https://nodejs.org) version 18
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
-- Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc`
-  - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
+- Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
+  - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.infura.io/networks/ethereum/how-to/secure-a-project/project-id).
+    - If you don't have an Infura account, you can create one for free on the [Infura website](https://app.infura.io/register).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
+- Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist`.
   - Optionally, you may run `yarn start` to run dev mode.
+  - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
+  - See the [build system readme](./development/build/README.md) for build system usage information.
 
-Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
+- Follow these instructions to verify that your local build runs correctly:
+  - [How to add custom build to Chrome](./docs/add-to-chrome.md)
+  - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 
-See the [build system readme](./development/build/README.md) for build system usage information.
 
 ## Git Hooks
 
@@ -36,6 +41,8 @@ To get quick feedback from our shared code quality fitness functions before comm
 `$ yarn githooks:install`
 
 You can read more about them in our [testing documentation](./docs/testing.md#fitness-functions-measuring-progress-in-code-quality-and-preventing-regressions-using-custom-git-hooks).
+
+If you are using VS Code and are unable to make commits from the source control sidebar due to a "command not found" error, try these steps from the [Husky docs](https://typicode.github.io/husky/troubleshooting.html#command-not-found).
 
 ## Contributing
 
@@ -148,8 +155,6 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 ## Other Docs
 
-- [How to add custom build to Chrome](./docs/add-to-chrome.md)
-- [How to add custom build to Firefox](./docs/add-to-firefox.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
