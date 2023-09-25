@@ -957,6 +957,12 @@
   "createPassword": {
     "message": "Create password"
   },
+  "createSnapAccountDescription": {
+    "message": "$1 wants to add a new Snap account to your wallet"
+  },
+  "createSnapAccountTitle": {
+    "message": "Create Snap account"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -3578,6 +3584,18 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
+  "removeSnapAccountBannerDescription": {
+    "message": "Be sure you can access this account on your own before removing it"
+  },
+  "removeSnapAccountDescription": {
+    "message": "$1 wants to remove this account from MetaMask:"
+  },
+  "removeSnapAccountTitle": {
+    "message": "Remove account"
+  },
+  "removeSnapAccountWarning": {
+    "message": "Be sure you can access this account on your own before removing it"
+  },
   "removeSnapConfirmation": {
     "message": "Are you sure you want to remove $1?",
     "description": "$1 represents the name of the snap"
@@ -4031,6 +4049,12 @@
   },
   "smartSwapsSubDescription": {
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  },
+  "snapAccountCreated": {
+    "message": "Your account is ready!"
+  },
+  "snapAccountRemoved": {
+    "message": "Account removed"
   },
   "snapAccounts": {
     "message": "Snap accounts"
@@ -5559,29 +5583,5 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
-  },
-  "createSnapAccountTitle": {
-    "message": "Create Snap account"
-  },
-  "createSnapAccountDescription": {
-    "message": "$1 wants to add a new Snap account to your wallet"
-  },
-  "snapAccountCreated": {
-      "message": "Your account is ready!"
-  },
-  "removeSnapAccountTitle": {
-    "message": "Remove account"
-  },
-  "removeSnapAccountDescription": {
-    "message": "$1 wants to remove this account from MetaMask:"
-  },
-  "removeSnapAccountWarning": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
-  "removeSnapAccountBannerDescription": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
-  "snapAccountRemoved": {
-      "message": "Account removed"
   }
 }

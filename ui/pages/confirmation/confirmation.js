@@ -219,9 +219,16 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogAlert,
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
-    ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
   ];
+  ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_DIALOG_TYPE.push(
+    ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
+  );
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
 
   // When pendingConfirmation is undefined, this will also be undefined
@@ -260,7 +267,7 @@ export default function ConfirmationPage({
     t,
     dispatch,
     history,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
     ///: END:ONLY_INCLUDE_IN
@@ -438,7 +445,7 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
-        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
         style={
           isSnapDialog
             ? {

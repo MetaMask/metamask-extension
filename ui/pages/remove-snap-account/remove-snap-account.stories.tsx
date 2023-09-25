@@ -1,6 +1,7 @@
 import React from 'react';
 import RemoveSnapAccount from './remove-snap-account';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Components/UI/RemoveSnapAccount', // title should follow the folder structure location of the component. Don't use spaces.
 };
