@@ -134,7 +134,7 @@ async function withFixtures(options, testSuite) {
               console.log(
                 `[driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
-                )}`,
+                ).slice(0, 200)}`, // limit the length of the log entry to 200 characters
               );
               return originalProperty.bind(target)(...args);
             };
