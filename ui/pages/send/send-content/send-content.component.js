@@ -108,6 +108,8 @@ export default class SendContent extends Component {
     const { t } = this.context;
     return (
       <BannerAlert
+        marginLeft={4}
+        marginRight={4}
         data-testid="send-warning"
         severity={Severity.Danger}
         description={t('sendingToTokenContractWarning', [
