@@ -17,6 +17,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   getIpfsGateway,
+  getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 
@@ -29,21 +30,47 @@ export const NftItem = ({
   tokenId,
   onClick,
   clickable,
-  nftImageURL,
 }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
-  const isIpfsURL = nftImageURL?.includes('ipfs:');
+  const isIpfsURL = src?.startsWith('ipfs:');
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
+
   const renderNftBasedonSrc = src ? (
-    <Box
-      className="nft-item__item nft-item__item-image"
-      data-testid="nft-image"
-      as="img"
-      src={src}
-      alt={alt}
-      display={Display.Block}
-      justifyContent={JustifyContent.center}
-    />
+    <>
+      {isIpfsURL ? (
+        <Box
+          className="nft-item__item nft-item__item-image"
+          data-testid="nft-image"
+          as="img"
+          src={src}
+          alt={alt}
+          display={Display.Block}
+          justifyContent={JustifyContent.center}
+        />
+      ) : (
+        <>
+          {openSeaEnabled ? (
+            <Box
+              className="nft-item__item nft-item__item-image"
+              data-testid="nft-image"
+              as="img"
+              src={src}
+              alt={alt}
+              display={Display.Block}
+              justifyContent={JustifyContent.center}
+            />
+          ) : (
+            <NftDefaultImage
+              className="nft-item__default-image"
+              data-testid="nft-default-image"
+              name={name}
+              tokenId={tokenId}
+            />
+          )}
+        </>
+      )}
+    </>
   ) : (
     <NftDefaultImage
       className="nft-item__default-image"
@@ -96,7 +123,26 @@ export const NftItem = ({
                 clickable={clickable}
               />
             ) : (
-              <>{renderNftBasedonSrc}</>
+              <>
+                {openSeaEnabled ? (
+                  <Box
+                    className="nft-item__item nft-item__item-image"
+                    data-testid="nft-image"
+                    as="img"
+                    src={src}
+                    alt={alt}
+                    display={Display.Block}
+                    justifyContent={JustifyContent.center}
+                  />
+                ) : (
+                  <NftDefaultImage
+                    className="nft-item__default-image"
+                    data-testid="nft-default-image"
+                    name={name}
+                    tokenId={tokenId}
+                  />
+                )}
+              </>
             )}
           </>
         )}
@@ -114,5 +160,4 @@ NftItem.propTypes = {
   tokenId: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   clickable: PropTypes.bool,
-  nftImageURL: PropTypes.string,
 };
