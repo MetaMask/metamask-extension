@@ -100,13 +100,6 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addCustomToken": {
-    "message": "Adicionar token personalizado"
-  },
-  "addCustomTokenByContractAddress": {
-    "message": "Não consegue encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contrato do token se encontram em $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
   },
@@ -139,6 +132,10 @@
   "addToken": {
     "message": "Adicionar token"
   },
+  "addTokenByContractAddress": {
+    "message": "Não consegue encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contrato do token se encontram em $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "address": {
     "message": "Endereço"
   },
@@ -147,12 +144,6 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Quando a sua transação for incluída no bloco, qualquer diferença entre a sua taxa de base máxima e a taxa de base real será reembolsada. O cálculo do valor total é feito da seguinte forma: taxa de base máxima (em GWEI) * limite de gás."
-  },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Salvar estes $1 como meu padrão para \"Avançado\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Sempre utilizar esses valores e a configuração avançada por padrão."
   },
   "advancedGasFeeModalTitle": {
     "message": "Taxa de gás avançada"
@@ -229,9 +220,6 @@
   "assetOptions": {
     "message": "Opções do ativo"
   },
-  "assets": {
-    "message": "Ativos"
-  },
   "attemptingConnect": {
     "message": "Tentando conexão com o blockchain."
   },
@@ -252,9 +240,6 @@
   },
   "back": {
     "message": "Voltar"
-  },
-  "backToAll": {
-    "message": "Voltar para todos"
   },
   "backupApprovalInfo": {
     "message": "Esse código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar a MetaMask ou queira acessar sua carteira em outro dispositivo."
@@ -392,9 +377,6 @@
   "connectAccountOrCreate": {
     "message": "Conectar conta ou criar nova"
   },
-  "connectHardwareWallet": {
-    "message": "Conectar carteira de hardware"
-  },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
   },
@@ -451,7 +433,7 @@
   "connectingToGoerli": {
     "message": "Conectando à rede de testes Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Conectando à rede de testes Linea Goerli"
   },
   "connectingToMainnet": {
@@ -487,9 +469,6 @@
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
-  "copyPrivateKey": {
-    "message": "Essa é a sua chave privada (clique para copiar)"
-  },
   "copyRawTransactionData": {
     "message": "Copiar dados brutos da transação"
   },
@@ -501,9 +480,6 @@
   },
   "create": {
     "message": "Criar"
-  },
-  "createAccount": {
-    "message": "Criar conta"
   },
   "createNewWallet": {
     "message": "Criar uma nova carteira"
@@ -593,14 +569,8 @@
   "delete": {
     "message": "Excluir"
   },
-  "deleteAccount": {
-    "message": "Excluir conta"
-  },
   "deleteNetwork": {
     "message": "Excluir rede?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Quer mesmo excluir essa rede?"
   },
   "description": {
     "message": "Descrição"
@@ -755,12 +725,6 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
-  "enableOpenSeaAPI": {
-    "message": "Ativar a API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
-  },
   "enableToken": {
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -793,9 +757,6 @@
   },
   "enterMaxSpendLimit": {
     "message": "Digite um limite máximo de gastos"
-  },
-  "enterPassword": {
-    "message": "Digite a senha"
   },
   "enterPasswordContinue": {
     "message": "Digite a senha para continuar"
@@ -852,9 +813,6 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar chave privada"
   },
   "externalExtension": {
     "message": "Extensão externa"
@@ -1085,17 +1043,11 @@
   "importMyWallet": {
     "message": "Importar minha carteira"
   },
-  "importNFTs": {
-    "message": "Importar NFTs"
-  },
   "importTokenQuestion": {
     "message": "Importar token?"
   },
   "importTokenWarning": {
     "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
-  },
-  "importTokens": {
-    "message": "importar tokens"
   },
   "importTokensCamelCase": {
     "message": "Importar tokens"
@@ -1260,7 +1212,7 @@
   "likeToImportTokens": {
     "message": "Você gostaria de importar esses tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rede de testes Linea Goerli"
   },
   "link": {
@@ -1283,9 +1235,6 @@
   },
   "lock": {
     "message": "Bloquear"
-  },
-  "lockTimeTooGreat": {
-    "message": "O tempo de bloqueio é longo demais"
   },
   "low": {
     "message": "Baixa"
@@ -1351,17 +1300,8 @@
     "message": "verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "missingNFT": {
-    "message": "Não está vendo o seu NFT?"
-  },
-  "missingToken": {
-    "message": "Não está vendo o seu token?"
-  },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."
-  },
-  "myAccounts": {
-    "message": "Minhas contas"
   },
   "name": {
     "message": "Nome"
@@ -1452,9 +1392,6 @@
   "newContract": {
     "message": "Novo contrato"
   },
-  "newNFTsDetected": {
-    "message": "Novidade! Detecção de NFT"
-  },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
   },
@@ -1463,9 +1400,6 @@
   },
   "newPassword": {
     "message": "Nova senha (no mínimo 8 caracteres)"
-  },
-  "newValues": {
-    "message": "novos valores"
   },
   "next": {
     "message": "Seguinte"
@@ -1491,9 +1425,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
-  },
-  "noNFTs": {
-    "message": "Ainda não há nenhum NFT"
   },
   "noTransactions": {
     "message": "Você não tem transações"
@@ -1671,10 +1602,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "A exibição de transações recebidas na sua carteira depende de comunicação com $1. O Etherscan terá acesso ao seu endereço Ethereum e ao seu endereço IP. Veja $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -1803,9 +1730,6 @@
   "publicAddress": {
     "message": "Endereço público"
   },
-  "queue": {
-    "message": "Fila"
-  },
   "queued": {
     "message": "Na fila"
   },
@@ -1814,9 +1738,6 @@
   },
   "receive": {
     "message": "Receber"
-  },
-  "recents": {
-    "message": "Recentes"
   },
   "recipientAddressPlaceholder": {
     "message": "Busca, endereço público (0x) ou ENS"
@@ -1932,9 +1853,6 @@
   },
   "searchResults": {
     "message": "Resultados da busca"
-  },
-  "searchTokens": {
-    "message": "Buscar tokens"
   },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
@@ -2067,9 +1985,6 @@
   "showHexDataDescription": {
     "message": "Selecione essa opção para mostrar o campo de dados hexadecimais na tela de envio"
   },
-  "showHide": {
-    "message": "Mostrar/ocultar"
-  },
   "showIncomingTransactions": {
     "message": "Mostrar transações recebidas"
   },
@@ -2079,9 +1994,6 @@
   },
   "showPermissions": {
     "message": "Mostrar permissões"
-  },
-  "showPrivateKeys": {
-    "message": "Mostrar chaves privadas"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
@@ -2115,9 +2027,6 @@
   },
   "somethingWentWrong": {
     "message": "Opa! Ocorreu algum erro."
-  },
-  "source": {
-    "message": "Fonte"
   },
   "speedUp": {
     "message": "Acelerar"
@@ -2170,9 +2079,6 @@
   },
   "stateLogsDescription": {
     "message": "Os registros de estado contêm os endereços da sua conta pública e as transações enviadas."
-  },
-  "statusConnected": {
-    "message": "Conectado"
   },
   "statusNotConnected": {
     "message": "Não conectado"
@@ -2240,10 +2146,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Você precisa de mais $1 $2 para concluir essa troca",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Melhores cotações de $1.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "Nenhum token disponível correspondente a $1",
@@ -2556,10 +2458,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleTestNetworks": {
-    "message": "$1 redes de teste",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -2689,19 +2587,12 @@
   "transfer": {
     "message": "Transferir"
   },
-  "transferBetweenAccounts": {
-    "message": "Transferência entre minhas contas"
-  },
   "transferFrom": {
     "message": "Transferir de"
   },
   "troubleConnectingToWallet": {
     "message": "Tivemos dificuldade para conectar-nos à sua $1. Revise $2 e tente novamente.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleTokenBalances": {
-    "message": "Tivemos dificuldade para carregar os saldos do seu token. Você pode vê-los ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Ao conceder permissão, você estará autorizando que o $1 a seguir acesse seus fundos"
@@ -2717,9 +2608,6 @@
   },
   "txInsightsNotSupported": {
     "message": "As informações sobre transações não são suportadas para esse contrato, por ora."
-  },
-  "typePassword": {
-    "message": "Digite sua senha da MetaMask"
   },
   "u2f": {
     "message": "U2F",
@@ -2774,9 +2662,6 @@
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
-  },
-  "useNftDetectionDescription": {
-    "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"

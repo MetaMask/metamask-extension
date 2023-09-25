@@ -73,14 +73,15 @@ const popoverContent = window.document.createElement('div');
 popoverContent.setAttribute('id', 'popover-content');
 window.document.body.appendChild(popoverContent);
 
-// fetch
+// Fetch
 // fetch is part of node js in future versions, thus triggering no-shadow
 // eslint-disable-next-line no-shadow
-const fetch = require('node-fetch');
+const { default: fetch, Headers, Request, Response } = require('node-fetch');
 
-/* eslint-disable-next-line no-shadow */
-const { Headers, Request, Response } = fetch;
 Object.assign(window, { fetch, Headers, Request, Response });
+// some of our libraries currently assume that `fetch` is globally available,
+// so we need to assign this for tests to run
+global.fetch = fetch;
 
 // localStorage
 window.localStorage = {

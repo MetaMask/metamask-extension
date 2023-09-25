@@ -30,9 +30,12 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { checkNetworkAndAccountSupports1559 } from '.';
+import {
+  checkNetworkAndAccountSupports1559,
+  getUnapprovedTransactions,
+} from '.';
 
-const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
+const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
@@ -141,51 +144,8 @@ export const unconfirmedMessagesHashSelector = createSelector(
     };
   },
 );
-
-const unapprovedMsgCountSelector = (state) => state.metamask.unapprovedMsgCount;
-const unapprovedPersonalMsgCountSelector = (state) =>
-  state.metamask.unapprovedPersonalMsgCount;
-const unapprovedDecryptMsgCountSelector = (state) =>
-  state.metamask.unapprovedDecryptMsgCount;
-const unapprovedEncryptionPublicKeyMsgCountSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgCount;
-const unapprovedTypedMessagesCountSelector = (state) =>
-  state.metamask.unapprovedTypedMessagesCount;
-
-export const unconfirmedTransactionsCountSelector = createSelector(
-  unapprovedTxsSelector,
-  unapprovedMsgCountSelector,
-  unapprovedPersonalMsgCountSelector,
-  unapprovedDecryptMsgCountSelector,
-  unapprovedEncryptionPublicKeyMsgCountSelector,
-  unapprovedTypedMessagesCountSelector,
-  deprecatedGetCurrentNetworkId,
-  getCurrentChainId,
-  (
-    unapprovedTxs = {},
-    unapprovedMsgCount = 0,
-    unapprovedPersonalMsgCount = 0,
-    unapprovedDecryptMsgCount = 0,
-    unapprovedEncryptionPublicKeyMsgCount = 0,
-    unapprovedTypedMessagesCount = 0,
-    network,
-    chainId,
-  ) => {
-    const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter((txId) =>
-      transactionMatchesNetwork(unapprovedTxs[txId], chainId, network),
-    );
-
-    return (
-      filteredUnapprovedTxIds.length +
-      unapprovedTypedMessagesCount +
-      unapprovedMsgCount +
-      unapprovedPersonalMsgCount +
-      unapprovedDecryptMsgCount +
-      unapprovedEncryptionPublicKeyMsgCount
-    );
-  },
-);
-
+export const use4ByteResolutionSelector = (state) =>
+  state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
   state.metamask.currentCurrency;
 export const conversionRateSelector = (state) => state.metamask.conversionRate;

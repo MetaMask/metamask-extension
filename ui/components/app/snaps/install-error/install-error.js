@@ -1,39 +1,66 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '../../../ui/box/box';
+
 import {
   AlignItems,
-  BLOCK_SIZES,
-  FLEX_DIRECTION,
-  FONT_WEIGHT,
+  BackgroundColor,
+  BlockSize,
+  IconColor,
   JustifyContent,
+  TextAlign,
   TextVariant,
+  FlexDirection,
+  Display,
+  Severity,
 } from '../../../../helpers/constants/design-system';
-import ActionableMessage from '../../../ui/actionable-message/actionable-message';
-import { Text } from '../../../component-library';
 
-const InstallError = ({ title, error }) => {
+import {
+  AvatarIcon,
+  AvatarIconSize,
+  Text,
+  Box,
+  BannerAlert,
+} from '../../../component-library';
+
+const InstallError = ({ title, error, description, iconName }) => {
   return (
     <Box
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
-      height={BLOCK_SIZES.FULL}
+      height={BlockSize.Full}
       padding={2}
     >
-      <Text fontWeight={FONT_WEIGHT.BOLD} variant={TextVariant.headingLg}>
-        {title}
-      </Text>
-      <Box padding={2}>
-        <ActionableMessage type="danger" message={error} />
-      </Box>
+      {iconName && (
+        <AvatarIcon
+          iconName={iconName}
+          size={AvatarIconSize.Xl}
+          color={IconColor.errorDefault}
+          backgroundColor={BackgroundColor.errorMuted}
+          marginBottom={4}
+        />
+      )}
+      <Text variant={TextVariant.headingLg}>{title}</Text>
+      {description && <Text textAlign={TextAlign.Center}>{description}</Text>}
+      {error && (
+        <BannerAlert
+          marginTop={4}
+          startAccessory={null}
+          severity={Severity.Danger}
+        >
+          <Text variant={TextVariant.bodySm}>{error}</Text>
+        </BannerAlert>
+      )}
     </Box>
   );
 };
 
 InstallError.propTypes = {
   title: PropTypes.node.isRequired,
-  error: PropTypes.string.isRequired,
+  error: PropTypes.string,
+  description: PropTypes.string,
+  iconName: PropTypes.string,
 };
 
 export default InstallError;

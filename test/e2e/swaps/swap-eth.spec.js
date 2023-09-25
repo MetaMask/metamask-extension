@@ -6,9 +6,10 @@ const {
   reviewQuote,
   waitForTransactionToComplete,
   checkActivityTransaction,
+  changeExchangeRate,
 } = require('./shared');
 
-describe('Swap Eth for another Token', function () {
+describe('Swap Eth for another Token @no-mmi', function () {
   it('Completes second Swaps while first swap is processing', async function () {
     withFixturesOptions.ganacheOptions.blockTime = 10;
 
@@ -25,7 +26,7 @@ describe('Swap Eth for another Token', function () {
           swapTo: 'USDC',
         });
         await reviewQuote(driver, {
-          amount: '0.001',
+          amount: 0.001,
           swapFrom: 'TESTETH',
           swapTo: 'USDC',
         });
@@ -36,12 +37,12 @@ describe('Swap Eth for another Token', function () {
           swapTo: 'DAI',
         });
         await reviewQuote(driver, {
-          amount: '0.003',
+          amount: 0.003,
           swapFrom: 'TESTETH',
           swapTo: 'DAI',
         });
         await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, 'DAI');
+        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {
           index: 0,
           amount: '0.003',
@@ -57,7 +58,7 @@ describe('Swap Eth for another Token', function () {
       },
     );
   });
-  it('Completes a Swap between Eth and Dai', async function () {
+  it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     await withFixtures(
       {
         ...withFixturesOptions,
@@ -70,12 +71,19 @@ describe('Swap Eth for another Token', function () {
           swapTo: 'DAI',
         });
         await reviewQuote(driver, {
-          amount: '2',
+          amount: 2,
           swapFrom: 'TESTETH',
           swapTo: 'DAI',
         });
+        await changeExchangeRate(driver);
+        await reviewQuote(driver, {
+          amount: 2,
+          swapFrom: 'TESTETH',
+          swapTo: 'DAI',
+          skipCounter: true,
+        });
         await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, 'DAI');
+        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {
           index: 0,
           amount: '2',

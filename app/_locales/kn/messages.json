@@ -93,9 +93,6 @@
   "back": {
     "message": "ಹಿಂದೆ"
   },
-  "backToAll": {
-    "message": "ಎಲ್ಲವನ್ನು ಹಿಂತಿರುಗಿಸಿ"
-  },
   "backupApprovalInfo": {
     "message": "ನಿಮ್ಮ ಸಾಧನವನ್ನು ನೀವು ಕಳೆದುಕೊಂಡಾಗ, ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರೆತರೆ, MetaMask ಅನ್ನು ಮರು-ಸ್ಥಾಪಿಸಲು ಅಥವಾ ಬೇರೊಂದು ಸಾಧನದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಬಯಸಿದ ಸಂದರ್ಭದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಮರುಪಡೆದುಕೊಳ್ಳಲು ಈ ರಹಸ್ಯ ಕೋಡ್ ಅಗತ್ಯವಿರುತ್ತದೆ."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "ಸಂಪರ್ಕಿಸು"
   },
-  "connectHardwareWallet": {
-    "message": "ಹಾರ್ಡ್‌ವೆರ್ ವ್ಯಾಲೆಟ್‌‌ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ"
-  },
   "connectingTo": {
     "message": "$1 ಗೆ ಸಂಪರ್ಕಪಡಿಸಲಾಗುತ್ತಿದೆ"
   },
   "connectingToGoerli": {
     "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "ವಿಳಾಸವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
   },
-  "copyPrivateKey": {
-    "message": "ಇದು ನಿಮ್ಮ ಖಾಸಗಿ ಕೀ ಆಗಿದೆ (ನಕಲಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ)"
-  },
   "copyToClipboard": {
     "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "ರಚಿಸಿ"
-  },
-  "createAccount": {
-    "message": "ಖಾತೆಯನ್ನು ರಚಿಸಿ"
   },
   "createPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "ಅಳಿಸಿ"
   },
-  "deleteAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಅಳಿಸಿ"
-  },
   "deleteNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
-  },
-  "deleteNetworkDescription": {
-    "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
   "details": {
     "message": "ವಿವರಗಳು"
@@ -256,9 +238,6 @@
   "ensRegistrationError": {
     "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
   },
-  "enterPassword": {
-    "message": "ಪಾಸ್‌ವರ್ಡ್‌ ಅನ್ನು ನಮೂದಿಸಿ"
-  },
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
   },
@@ -270,9 +249,6 @@
   },
   "expandView": {
     "message": "ವಿಸ್ತರಿಸಿದ ವೀಕ್ಷಣೆ"
-  },
-  "exportPrivateKey": {
-    "message": "ಖಾಸಗಿ ಕೀಲಿಯನ್ನು ರಫ್ತು ಮಾಡಿ"
   },
   "failed": {
     "message": "ವಿಫಲವಾಗಿದೆ"
@@ -415,7 +391,7 @@
   "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "links": {
@@ -453,9 +429,6 @@
   },
   "mustSelectOne": {
     "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
-  },
-  "myAccounts": {
-    "message": "ನನ್ನ ಖಾತೆಗಳು"
   },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
@@ -575,14 +548,8 @@
   "privateNetwork": {
     "message": "ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
   },
-  "queue": {
-    "message": "ಸರತಿ"
-  },
   "readdToken": {
     "message": "ನಿಮ್ಮ ಖಾತೆಗಳ ಆಯ್ಕೆಗಳ ಮೆನುವಿನಲ್ಲಿ \"ಟೋಕನ್ ಸೇರಿಸು\" ಗೆ ಹೋಗುವ ಮೂಲಕ ನೀವು ಈ ಟೋಕನ್ ಅನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ಮರಳಿ ಸೇರಿಸಬಹುದು."
-  },
-  "recents": {
-    "message": "ಇತ್ತೀಚಿನವುಗಳು"
   },
   "recipientAddressPlaceholder": {
     "message": "ಸಾರ್ವಜನಿಕ ವಿಳಾಸ (0x) ಅಥವಾ ENS ಹುಡುಕಿ"
@@ -648,9 +615,6 @@
   "searchResults": {
     "message": "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳು"
   },
-  "searchTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಹುಡುಕಿ"
-  },
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"
   },
@@ -689,9 +653,6 @@
   },
   "showHexDataDescription": {
     "message": "ಕಳುಹಿಸುವ ಪರದೆಯಲ್ಲಿ ಹೆಕ್ಸ್ ಡೇಟಾ ಕ್ಷೇತ್ರವನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "showPrivateKeys": {
-    "message": "ಖಾಸಗಿ ಕೀಗಳನ್ನು ತೋರಿಸಿ"
   },
   "sigRequest": {
     "message": "ಸಹಿಯ ವಿನಂತಿ"
@@ -807,21 +768,11 @@
   "transfer": {
     "message": "ವರ್ಗಾಯಿಸಿ"
   },
-  "transferBetweenAccounts": {
-    "message": "ನನ್ನ ಖಾತೆಗಳ ನಡುವೆ ವರ್ಗಾಯಿಸಿ"
-  },
   "transferFrom": {
     "message": "ಇದರಿಂದ ವರ್ಗಾಯಿಸಿ"
   },
-  "troubleTokenBalances": {
-    "message": "ನಿಮ್ಮ ಟೋಕನ್ ಬ್ಯಾಲೆನ್ಸ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ನಮಗೆ ಸಮಸ್ಯೆಯಾಗಿದೆ. ನೀವು ಅವುಗಳನ್ನು ನೋಡಬಹುದು",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "ಪುನಃ ಪ್ರಯತ್ನಿಸಿ"
-  },
-  "typePassword": {
-    "message": "ನಿಮ್ಮ MetaMask ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಟೈಪ್ ಮಾಡಿ"
   },
   "unapproved": {
     "message": "ಅನುಮೋದಿಸದಿರುವುದು"

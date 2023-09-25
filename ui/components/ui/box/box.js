@@ -4,26 +4,26 @@ import classnames from 'classnames';
 import { memoize } from 'lodash';
 import {
   AlignItems,
-  BLOCK_SIZES,
+  BlockSize,
   BorderStyle,
   BackgroundColor,
   BorderColor,
   TextColor,
   IconColor,
-  DISPLAY,
   JustifyContent,
-  TEXT_ALIGN,
-  FLEX_DIRECTION,
-  FLEX_WRAP,
+  TextAlign,
+  FlexDirection,
+  FlexWrap,
   BREAKPOINTS,
   BorderRadius,
+  Display,
 } from '../../../helpers/constants/design-system';
 
 const BASE_CLASS_NAME = 'box';
 const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const ValidSize = PropTypes.oneOf(Sizes);
-const ValidBlockSize = PropTypes.oneOf(Object.values(BLOCK_SIZES));
+const ValidBlockSize = PropTypes.oneOf(Object.values(BlockSize));
 const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
 export const ValidBackgroundColor = PropTypes.oneOf(
   Object.values(BackgroundColor),
@@ -184,9 +184,18 @@ const generateClassNames = memoize(
     }
     return classesObject;
   },
-  (type, value) => [type, value],
+  (type, value) => `${type}${value}`,
 );
 
+/**
+ * @deprecated The JS version of the <Box /> component has been deprecated in favor of the new TS version from the component-library.
+ * Please update your code to use the new <Box> component instead
+ * import { Box } from '../../component-library';
+ * The component API is the same so you should only have to update the import statement but you can find documentation for the new Box component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-box--docs}
+ * If you would like to help with the replacement of the old Button component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/19526}
+ */
 const Box = React.forwardRef(function Box(
   {
     padding,
@@ -212,7 +221,7 @@ const Box = React.forwardRef(function Box(
     alignItems,
     justifyContent,
     textAlign,
-    flexDirection = FLEX_DIRECTION.ROW,
+    flexDirection = FlexDirection.Row,
     flexWrap,
     gap,
     display,
@@ -329,12 +338,12 @@ function isCustomComponent(element) {
 Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   flexDirection: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(FLEX_DIRECTION)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FLEX_DIRECTION))),
+    PropTypes.oneOf(Object.values(FlexDirection)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FlexDirection))),
   ]),
   flexWrap: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(FLEX_WRAP)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FLEX_WRAP))),
+    PropTypes.oneOf(Object.values(FlexWrap)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(FlexWrap))),
   ]),
   gap: MultipleSizes,
   margin: MultipleSizesAndAuto,
@@ -369,12 +378,12 @@ Box.propTypes = {
   alignItems: MultipleAlignItems,
   justifyContent: MultipleJustifyContents,
   textAlign: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(TEXT_ALIGN)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(TEXT_ALIGN))),
+    PropTypes.oneOf(Object.values(TextAlign)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(TextAlign))),
   ]),
   display: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(DISPLAY)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(DISPLAY))),
+    PropTypes.oneOf(Object.values(Display)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(Display))),
   ]),
   width: MultipleBlockSizes,
   height: MultipleBlockSizes,

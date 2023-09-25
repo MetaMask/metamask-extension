@@ -8,9 +8,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionFunctionType } from '../../../hooks/useTransactionFunctionType';
 import {
   Color,
-  OVERFLOW_WRAP,
+  OverflowWrap,
   TextVariant,
-  TEXT_TRANSFORM,
+  TextTransform,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 import { Text } from '../../component-library';
@@ -42,7 +42,7 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
       <Box paddingBottom={3} paddingTop={2}>
         <Text
           as="span"
-          textTransform={TEXT_TRANSFORM.UPPERCASE}
+          textTransform={TextTransform.Uppercase}
           variant={TextVariant.bodySm}
         >
           {`${t('functionType')}:`}
@@ -51,7 +51,7 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
           as="span"
           color={Color.textDefault}
           paddingLeft={1}
-          textTransform={TEXT_TRANSFORM.CAPITALIZE}
+          textTransform={TextTransform.Capitalize}
           variant={TextVariant.bodySmBold}
         >
           {`${functionType} ${functionParams}`}
@@ -63,13 +63,13 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
             as="h3"
             paddingBottom={3}
             paddingTop={2}
-            textTransform={TEXT_TRANSFORM.UPPERCASE}
+            textTransform={TextTransform.Uppercase}
             variant={TextVariant.bodySm}
           >
             {`${t('parameters')}:`}
           </Text>
           <Text
-            overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+            overflowWrap={OverflowWrap.BreakWord}
             variant={TextVariant.bodySm}
           >
             <pre>{JSON.stringify(params, null, 2)}</pre>
@@ -80,14 +80,14 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
         as="h3"
         paddingBottom={3}
         paddingTop={2}
-        textTransform={TEXT_TRANSFORM.UPPERCASE}
+        textTransform={TextTransform.Uppercase}
         variant={TextVariant.bodySm}
       >
         {`${t('hexData')}: ${toBuffer(txParams?.data).length} bytes`}
       </Text>
       <Text
         backgroundColor={Color.backgroundAlternative}
-        overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+        overflowWrap={OverflowWrap.BreakWord}
         padding={4}
         variant={TextVariant.bodySm}
       >

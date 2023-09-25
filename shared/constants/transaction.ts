@@ -165,6 +165,18 @@ export const IN_PROGRESS_TRANSACTION_STATUSES = [
   TransactionStatus.pending,
 ];
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+/**
+ * Status for finalized transactions.
+ */
+export const FINALIZED_TRANSACTION_STATUSES = [
+  TransactionStatus.rejected,
+  TransactionStatus.failed,
+  TransactionStatus.dropped,
+  TransactionStatus.confirmed,
+];
+///: END:ONLY_INCLUDE_IN
+
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.
@@ -257,7 +269,7 @@ export interface TxParams {
   /** The amount of wei, in hexadecimal, to send */
   value: string;
   /** The transaction count for the current account/network */
-  nonce: number;
+  nonce: string;
   /** The amount of gwei, in hexadecimal, per unit of gas */
   gasPrice?: string;
   /** The max amount of gwei, in hexadecimal, the user is willing to pay */
@@ -317,6 +329,7 @@ export interface TransactionMeta {
    * on incoming transactions!
    */
   blockNumber?: string;
+  chainId: string;
   /** An internally unique tx identifier. */
   id: number;
   /** Time the transaction was first suggested, in unix epoch time (ms). */
@@ -368,11 +381,6 @@ export interface TransactionMeta {
   /** A boolean representing when the user manually edited the gas limit. */
   userEditedGasLimit: boolean;
   /**
-   * A metadata object containing information used to derive the suggested
-   * nonce, useful for debugging nonce issues.
-   */
-  nonceDetails: Record<string, any>;
-  /**
    * A hex string of the final signed transaction, ready to submit to the
    * network.
    */
@@ -392,6 +400,10 @@ export interface TransactionMeta {
   submittedTime?: number;
   /** The error encountered during the transaction */
   txErr?: TxError;
+  /**
+   * Whether the transaction is verified on the blockchain.
+   */
+  verifiedOnBlockchain?: boolean;
 }
 
 /**

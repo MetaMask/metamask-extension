@@ -176,20 +176,23 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      chrome.alarms.getAll((alarms) => {
+      this.extension.alarms.getAll((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
         );
 
         if (!hasAlarm) {
-          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
-            delayInMinutes: 1,
-            periodInMinutes: 1,
-          });
+          this.extension.alarms.create(
+            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+            {
+              delayInMinutes: 1,
+              periodInMinutes: 1,
+            },
+          );
         }
       });
-      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+      this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
           this.finalizeAbandonedFragments();
         }
@@ -419,14 +422,18 @@ export default class MetaMetricsController {
    *
    * @param {boolean} participateInMetaMetrics - Whether or not the user wants
    *  to participate in MetaMetrics
-   * @returns {string|null} the string of the new metametrics id, or null
+   * @returns {Promise<string|null>} the string of the new metametrics id, or null
    *  if not set
    */
-  setParticipateInMetaMetrics(participateInMetaMetrics) {
+  async setParticipateInMetaMetrics(participateInMetaMetrics) {
     let { metaMetricsId } = this.state;
     if (participateInMetaMetrics && !metaMetricsId) {
+      // We also need to start sentry automatic session tracking at this point
+      await globalThis.sentry?.startSession();
       metaMetricsId = this.generateMetaMetricsId();
     } else if (participateInMetaMetrics === false) {
+      // We also need to stop sentry automatic session tracking at this point
+      await globalThis.sentry?.endSession();
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
@@ -435,7 +442,10 @@ export default class MetaMetricsController {
       this.clearEventsAfterMetricsOptIn();
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    ///: END:ONLY_INCLUDE_IN
+
     return metaMetricsId;
   }
 
@@ -625,10 +635,21 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsContext}
    */
   _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IN
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -658,6 +679,15 @@ export default class MetaMetricsController {
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return {
       event,
       messageId: buildUniqueMessageId(rawPayload),
@@ -676,6 +706,9 @@ export default class MetaMetricsController {
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IN
       },
       context: this._buildContext(referrer, page),
     };
@@ -689,6 +722,13 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiAccountAddress =
+      metamaskState.custodyAccountDetails &&
+      Object.keys(metamaskState.custodyAccountDetails).length
+        ? Object.keys(metamaskState.custodyAccountDetails)[0]
+        : null;
+    ///: END:ONLY_INCLUDE_IN
     const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
@@ -727,6 +767,11 @@ export default class MetaMetricsController {
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       [MetaMetricsUserTrait.DesktopEnabled]:
         metamaskState.desktopEnabled || false,
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
+      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
+      [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IN
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],

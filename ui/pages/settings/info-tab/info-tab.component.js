@@ -20,11 +20,16 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CONSENSYS_PRIVACY_LINK,
+  ///: END:ONLY_INCLUDE_IN
+  SUPPORT_LINK,
+} from '../../../../shared/lib/ui-utils';
 
 export default class InfoTab extends PureComponent {
   state = {
-    version: global.platform.getVersion(),
+    version: global.platform?.getVersion() ?? '<unknown>',
   };
 
   static contextTypes = {
@@ -55,7 +60,7 @@ export default class InfoTab extends PureComponent {
     let privacyUrl, siteUrl;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    privacyUrl = 'https://consensys.net/codefi/about/privacy-policy/';
+    privacyUrl = CONSENSYS_PRIVACY_LINK;
     siteUrl = MMI_WEB_SITE;
     ///: END:ONLY_INCLUDE_IN
 
@@ -209,7 +214,18 @@ export default class InfoTab extends PureComponent {
                 ref={this.settingsRefs[0]}
                 className="info-tab__version-header"
               >
-                {isBeta() ? t('betaMetamaskVersion') : t('metamaskVersion')}
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  isBeta() ? t('betaMetamaskVersion') : t('metamaskVersion')
+                  ///: END:ONLY_INCLUDE_IN
+                }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                  isBeta()
+                    ? t('betaMetamaskInstitutionalVersion')
+                    : t('metamaskInstitutionalVersion')
+                  ///: END:ONLY_INCLUDE_IN
+                }
               </div>
               <div className="info-tab__version-number">
                 {this.state.version}

@@ -87,17 +87,11 @@
   "copiedExclamation": {
     "message": "நகலெடுக்கப்பட்டன!"
   },
-  "copyPrivateKey": {
-    "message": "இது உங்கள் தனிப்பட்ட விசை (நகலெடுக்க கிளிக் செய்யவும்)"
-  },
   "copyToClipboard": {
     "message": "கிளிப்போர்டுக்கு நகலெடு"
   },
   "create": {
     "message": "உருவாக்கு"
-  },
-  "createAccount": {
-    "message": "உங்கள் கணக்கை துவங்குங்கள்"
   },
   "custom": {
     "message": "மேம்பட்டவை"
@@ -129,14 +123,8 @@
   "edit": {
     "message": "திருத்து"
   },
-  "enterPassword": {
-    "message": "கடவுச்சொல்லை உள்ளிடவும்"
-  },
   "etherscanView": {
     "message": "Etherscan கணக்கைப் பார்க்கவும்"
-  },
-  "exportPrivateKey": {
-    "message": "தனியார் விசை ஐ ஏற்றுமதி செய்க"
   },
   "failed": {
     "message": "தோல்வி"
@@ -252,9 +240,6 @@
   "mustSelectOne": {
     "message": "குறைந்தது 1 டோக்கனை தேர்ந்தெடுக்க வேண்டும்."
   },
-  "myAccounts": {
-    "message": "எனது கணக்குகள்"
-  },
   "needImportFile": {
     "message": "இறக்குமதி செய்ய ஒரு கோப்பை நீங்கள் தேர்ந்தெடுக்க வேண்டும்.",
     "description": "User is important an account and needs to add a file to continue"
@@ -328,9 +313,6 @@
   "privateNetwork": {
     "message": "தனியார் நெட்வொர்க்"
   },
-  "queue": {
-    "message": "வரிசை"
-  },
   "readdToken": {
     "message": "உங்கள் கணக்கு விருப்பங்கள் மெனுவில் \"டோக்கனைச் சேர்\" என்பதன் மூலம் நீங்கள் எதிர்காலத்தில் இந்த டோக்கனை மீண்டும் சேர்க்கலாம்."
   },
@@ -368,9 +350,6 @@
   "search": {
     "message": "தேடல்"
   },
-  "searchTokens": {
-    "message": "தேடல் டோக்கன்ஸ்"
-  },
   "seedPhraseReq": {
     "message": "விதை வாக்கியங்கள் 12 வார்த்தைகள் நீண்டவை"
   },
@@ -385,9 +364,6 @@
   },
   "settings": {
     "message": "அமைப்புகள்"
-  },
-  "showPrivateKeys": {
-    "message": "தனிப்பட்ட விசைகளைக் காண்பி"
   },
   "sigRequest": {
     "message": "கையொப்பம் கோரிக்கை"
@@ -434,15 +410,8 @@
   "transactionError": {
     "message": "பரிவர்த்தனை பிழை. விதிமுறை ஒப்பந்தத்தில் விதிவிலக்கு."
   },
-  "troubleTokenBalances": {
-    "message": "உங்கள் டோக்கன் நிலுவைகளை ஏற்றுவதில் சிக்கல் ஏற்பட்டது. நீங்கள் அவர்களை பார்க்க முடியும்.",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "மீண்டும் முயல்க"
-  },
-  "typePassword": {
-    "message": "உங்கள் கடவுச்சொல்லை தட்டச்சு செய்யவும்"
   },
   "unapproved": {
     "message": "அங்கீகரிக்கப்படாத"

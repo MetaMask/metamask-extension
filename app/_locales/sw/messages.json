@@ -93,9 +93,6 @@
   "back": {
     "message": "Nyuma"
   },
-  "backToAll": {
-    "message": "Rudi kwenye Zote"
-  },
   "backupApprovalInfo": {
     "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha MetaMask, au unataka kufikia waleti yako kwenye kifaa kingine."
   },
@@ -148,16 +145,13 @@
   "connect": {
     "message": "Unganisha"
   },
-  "connectHardwareWallet": {
-    "message": "Unganisha Waleti ya Programu Maunzi"
-  },
   "connectingTo": {
     "message": "Inaunganisha kwenye $1"
   },
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
   },
   "connectingToMainnet": {
@@ -175,9 +169,6 @@
   "copyAddress": {
     "message": "Nakili anwani kwenye ubao wa kunakilia"
   },
-  "copyPrivateKey": {
-    "message": "Huu ni ufunguo wako wa kibinafsi (bofya ili unakili)"
-  },
   "copyToClipboard": {
     "message": "Nakili kwenye ubao wa kunakili"
   },
@@ -186,9 +177,6 @@
   },
   "create": {
     "message": "Unda"
-  },
-  "createAccount": {
-    "message": "Fungua Akaunti"
   },
   "createPassword": {
     "message": "Unda Nenosiri"
@@ -214,14 +202,8 @@
   "delete": {
     "message": "Futa"
   },
-  "deleteAccount": {
-    "message": "Futa Akaunti"
-  },
   "deleteNetwork": {
     "message": "Futa Mtandao?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Una uhakika unataka kufuta mtandao huu?"
   },
   "details": {
     "message": "Maelezo"
@@ -250,9 +232,6 @@
   "ensRegistrationError": {
     "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
   },
-  "enterPassword": {
-    "message": "Ingiza nenosiri"
-  },
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
   },
@@ -263,9 +242,6 @@
     "message": "Tazama akaunti kwenye Etherscan"
   },
   "expandView": {
-    "message": "Panua Mwonekano"
-  },
-  "exportPrivateKey": {
     "message": "Panua Mwonekano"
   },
   "failed": {
@@ -402,7 +378,7 @@
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {
@@ -431,9 +407,6 @@
   },
   "mustSelectOne": {
     "message": "Lazima uchague angalau kianzio 1."
-  },
-  "myAccounts": {
-    "message": "Akaunti zangu"
   },
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
@@ -553,14 +526,8 @@
   "privateNetwork": {
     "message": "Mtandao Binafsi"
   },
-  "queue": {
-    "message": "Foleni"
-  },
   "readdToken": {
     "message": "Unaweza kuongeza tena kianzio hiki hapo baadaye kwa kwenda kwenye \"Ongeza kianzio\" kwenye machaguo yako ya menyu ya akaunti."
-  },
-  "recents": {
-    "message": "Za hivi karibuni"
   },
   "recipientAddressPlaceholder": {
     "message": "Tafuta, anwani za umma (0x), au ENS"
@@ -626,9 +593,6 @@
   "searchResults": {
     "message": "Matokeo ya Utafutaji"
   },
-  "searchTokens": {
-    "message": "Tafuta Vianzio"
-  },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
   },
@@ -667,9 +631,6 @@
   },
   "showHexDataDescription": {
     "message": "Chagua hii ili uonyeshe sehemu ya data ya hex kwenye skrini ya tuma"
-  },
-  "showPrivateKeys": {
-    "message": "Onyesha Fungo Binafsi"
   },
   "sigRequest": {
     "message": "Ombi la Saini"
@@ -785,21 +746,11 @@
   "transfer": {
     "message": "Kutuma"
   },
-  "transferBetweenAccounts": {
-    "message": "Kutuma baina ya akaunti zangu"
-  },
   "transferFrom": {
     "message": "Tuma Kutoka"
   },
-  "troubleTokenBalances": {
-    "message": "Tulipata shida kupakia salio lako la kianzio. Unaweza kuliona",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Jaribu tena"
-  },
-  "typePassword": {
-    "message": "Andika nenosiri lako la MetaMask"
   },
   "unapproved": {
     "message": "Haijaidhinishwa"

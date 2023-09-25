@@ -4,7 +4,6 @@ import SignatureRequestMessage from './signature-request-message';
 
 export default {
   title: 'Components/App/SignatureRequestMessage',
-
   component: SignatureRequestMessage,
   argTypes: {
     data: { control: 'object' },

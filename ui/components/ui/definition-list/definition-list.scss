@@ -5,12 +5,6 @@
     display: flex;
     align-items: center;
 
-    & i {
-      color: var(--color-icon-default);
-      margin-left: 6px;
-      font-size: $font-size-h8;
-    }
-
     & #{$self}__tooltip-wrapper {
       display: flex !important;
       align-items: center;

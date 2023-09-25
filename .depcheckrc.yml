@@ -11,14 +11,6 @@ ignores:
   - 'punycode'
 
   #
-  # snaps flask deps
-  #
-  - '@metamask/rpc-methods-flask'
-  - '@metamask/snaps-controllers-flask'
-  - '@metamask/snaps-ui-flask'
-  - '@metamask/snaps-utils-flask'
-
-  #
   # dev deps
   #
 
@@ -45,14 +37,16 @@ ignores:
   - 'playwright'
   - 'wait-on'
   # development tool
-  - 'improved-yarn-audit'
   - 'nyc'
   # storybook
+  - '@storybook/cli'
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
+  - '@storybook/addon-mdx-gfm'
   - '@storybook/builder-webpack5'
   - '@storybook/manager-webpack5'
+  - '@storybook/react-webpack5'
   - 'storybook-dark-mode'
   - '@whitespace/storybook-addon-html'
   - 'react-syntax-highlighter'

@@ -1,13 +1,4 @@
 .edit-gas-display {
-  & .actionable-message--warning,
-  & .actionable-message--error {
-    margin-top: 0;
-
-    & .actionable-message__message {
-      text-align: start;
-    }
-  }
-
   &__top-tooltip {
     text-align: center;
 
@@ -19,10 +10,6 @@
         width: 10px;
       }
     }
-  }
-
-  &__dapp-acknowledgement-warning {
-    margin-bottom: 20px;
   }
 
   button.edit-gas-display__dapp-acknowledgement-button {
@@ -39,33 +26,8 @@
     margin: 20px auto;
   }
 
-  &__advanced-button {
-    display: block;
-    margin: 0 auto;
-    background: transparent;
-    color: var(--color-primary-default);
-    font-weight: bold;
-  }
-
   .advanced-gas-controls {
     margin-top: 20px;
-  }
-
-  &__education {
-    margin-top: 20px;
-
-    button {
-      display: block;
-      margin: 0 auto;
-      background: transparent;
-      color: var(--color-primary-default);
-    }
-  }
-
-  &__warning {
-    margin-bottom: 24px;
-    position: relative;
-    margin-top: 4px;
   }
 
   &__scroll-bottom {

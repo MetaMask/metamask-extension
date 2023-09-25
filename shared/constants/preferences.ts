@@ -3,3 +3,5 @@ export enum ThemeType {
   dark = 'dark',
   os = 'os',
 }
+
+export const DEFAULT_AUTO_LOCK_TIME_LIMIT = 0;

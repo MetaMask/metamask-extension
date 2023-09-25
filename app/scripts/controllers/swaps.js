@@ -1,10 +1,11 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
-import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
+import { captureException } from '@sentry/browser';
+
 import {
   decGWEIToHexWEI,
   sumHexes,
@@ -18,6 +19,11 @@ import {
 } from '../../../shared/constants/swaps';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventErrorType,
+} from '../../../shared/constants/metametrics';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_DEADLINE,
@@ -104,23 +110,35 @@ const initialState = {
 };
 
 export default class SwapsController {
-  constructor({
-    getBufferedGasLimit,
-    networkController,
-    provider,
-    getProviderConfig,
-    getTokenRatesState,
-    fetchTradesInfo = defaultFetchTradesInfo,
-    getCurrentChainId,
-    getEIP1559GasFeeEstimates,
-    onNetworkStateChange,
-  }) {
+  constructor(
+    {
+      getBufferedGasLimit,
+      networkController,
+      provider,
+      getProviderConfig,
+      getTokenRatesState,
+      fetchTradesInfo = defaultFetchTradesInfo,
+      getCurrentChainId,
+      getEIP1559GasFeeEstimates,
+      onNetworkStateChange,
+      trackMetaMetricsEvent,
+    },
+    state,
+  ) {
     this.store = new ObservableStore({
-      swapsState: { ...initialState.swapsState },
+      swapsState: {
+        ...initialState.swapsState,
+        swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
+      },
     });
 
     this.resetState = () => {
-      this.store.updateState({ swapsState: { ...initialState.swapsState } });
+      this.store.updateState({
+        swapsState: {
+          ...initialState.swapsState,
+          swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags,
+        },
+      });
     };
 
     this._fetchTradesInfo = fetchTradesInfo;
@@ -129,6 +147,7 @@ export default class SwapsController {
 
     this.getBufferedGasLimit = getBufferedGasLimit;
     this.getTokenRatesState = getTokenRatesState;
+    this.trackMetaMetricsEvent = trackMetaMetricsEvent;
 
     this.pollCount = 0;
     this.getProviderConfig = getProviderConfig;
@@ -136,11 +155,14 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = 0;
 
     this.ethersProvider = new Web3Provider(provider);
-    this._currentNetworkId = networkController.store.getState().networkId;
+    this._currentNetworkId = networkController.state.networkId;
     onNetworkStateChange(() => {
-      const { networkId, networkStatus } = networkController.store.getState();
+      const { networkId, networksMetadata, selectedNetworkClientId } =
+        networkController.state;
+      const selectedNetworkStatus =
+        networksMetadata[selectedNetworkClientId]?.status;
       if (
-        networkStatus === NetworkStatus.Available &&
+        selectedNetworkStatus === NetworkStatus.Available &&
         networkId !== this._currentNetworkId
       ) {
         this._currentNetworkId = networkId;
@@ -150,11 +172,12 @@ export default class SwapsController {
   }
 
   async fetchSwapsNetworkConfig(chainId) {
-    const response = await fetchWithCache(
-      getBaseApi('network', chainId),
-      { method: 'GET' },
-      { cacheRefreshTime: 600000 },
-    );
+    const response = await fetchWithCache({
+      url: getBaseApi('network', chainId),
+      fetchOptions: { method: 'GET' },
+      cacheOptions: { cacheRefreshTime: 600000 },
+      functionName: 'fetchSwapsNetworkConfig',
+    });
     const { refreshRates, parameters = {} } = response || {};
     if (
       !refreshRates ||
@@ -348,6 +371,7 @@ export default class SwapsController {
       } else if (!isPolledRequest) {
         const { gasLimit: approvalGas } = await this.timedoutGasReturn(
           firstQuote.approvalNeeded,
+          firstQuote.aggregator,
         );
 
         newQuotes = mapValues(newQuotes, (quote) => ({
@@ -449,6 +473,7 @@ export default class SwapsController {
       Object.values(quotes).map(async (quote) => {
         const { gasLimit, simulationFails } = await this.timedoutGasReturn(
           quote.trade,
+          quote.aggregator,
         );
         return [gasLimit, simulationFails, quote.aggregator];
       }),
@@ -478,13 +503,24 @@ export default class SwapsController {
     return newQuotes;
   }
 
-  timedoutGasReturn(tradeTxParams) {
+  timedoutGasReturn(tradeTxParams, aggregator = '') {
     return new Promise((resolve) => {
       let gasTimedOut = false;
 
       const gasTimeout = setTimeout(() => {
         gasTimedOut = true;
-        resolve({ gasLimit: null, simulationFails: true });
+        this.trackMetaMetricsEvent({
+          event: MetaMetricsEventName.QuoteError,
+          category: MetaMetricsEventCategory.Swaps,
+          properties: {
+            error_type: MetaMetricsEventErrorType.GasTimeout,
+            aggregator,
+          },
+        });
+        resolve({
+          gasLimit: null,
+          simulationFails: true,
+        });
       }, SECOND * 5);
 
       // Remove gas from params that will be passed to the `estimateGas` call
@@ -505,7 +541,11 @@ export default class SwapsController {
           }
         })
         .catch((e) => {
-          log.error(e);
+          captureException(e, {
+            extra: {
+              aggregator,
+            },
+          });
           if (!gasTimedOut) {
             clearTimeout(gasTimeout);
             resolve({ gasLimit: null, simulationFails: true });
@@ -520,7 +560,10 @@ export default class SwapsController {
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
 
     const { gasLimit: newGasEstimate, simulationFails } =
-      await this.timedoutGasReturn(quoteToUpdate.trade);
+      await this.timedoutGasReturn(
+        quoteToUpdate.trade,
+        quoteToUpdate.aggregator,
+      );
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(
@@ -662,6 +705,7 @@ export default class SwapsController {
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
           swapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: swapsState.swapsFeatureFlags,
       },
     });
     clearTimeout(this.pollingTimeout);

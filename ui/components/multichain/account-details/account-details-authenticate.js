@@ -1,24 +1,28 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
-  DISPLAY,
-  SEVERITIES,
-  TextColor,
+  Display,
+  FontWeight,
+  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { exportAccount, hideWarning } from '../../../store/actions';
 import {
   BannerAlert,
+  Box,
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
-  Text,
 } from '../../component-library';
-import Box from '../../ui/box/box';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { exportAccount, hideWarning } from '../../../store/actions';
 
-export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
+export const AccountDetailsAuthenticate = ({
+  address,
+  onCancel,
+  setPrivateKey,
+  setShowHoldToReveal,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -28,11 +32,17 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
   const warning = useSelector((state) => state.appState.warning);
 
   const onSubmit = useCallback(() => {
-    dispatch(exportAccount(password, address)).then((res) => {
-      dispatch(hideWarning());
-      return res;
-    });
-  }, [dispatch, password, address]);
+    dispatch(
+      exportAccount(password, address, setPrivateKey, setShowHoldToReveal),
+    )
+      .then((res) => {
+        dispatch(hideWarning());
+        return res;
+      })
+      .catch(() => {
+        // No need to do anything more with the caught error here, we already logged the error
+      });
+  }, [dispatch, password, address, setPrivateKey, setShowHoldToReveal]);
 
   const handleKeyPress = useCallback(
     (e) => {
@@ -50,29 +60,22 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         id="account-details-authenticate"
         label={t('enterYourPassword')}
         placeholder={t('password')}
-        error={warning}
+        error={Boolean(warning)}
         helpText={warning}
         onChange={(e) => setPassword(e.target.value)}
         value={password}
         variant={TextVariant.bodySm}
         type="password"
-        inputProps={{
-          onKeyPress: handleKeyPress,
-        }}
+        inputProps={{ onKeyPress: handleKeyPress }}
+        labelProps={{ fontWeight: FontWeight.Medium }}
+        autoFocus
       />
-      {warning ? (
-        <Text
-          marginTop={1}
-          color={TextColor.errorDefault}
-          variant={TextVariant.bodySm}
-        >
-          {warning}
-        </Text>
-      ) : null}
-      <BannerAlert marginTop={6} severity={SEVERITIES.DANGER}>
-        <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
-      </BannerAlert>
-      <Box display={DISPLAY.FLEX} marginTop={6} gap={2}>
+      <BannerAlert
+        marginTop={6}
+        severity={Severity.Danger}
+        description={t('privateKeyWarning')}
+      />
+      <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={onCancel} block>
           {t('cancel')}
         </ButtonSecondary>
@@ -87,4 +90,6 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
 AccountDetailsAuthenticate.propTypes = {
   address: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
+  setPrivateKey: PropTypes.func.isRequired,
+  setShowHoldToReveal: PropTypes.func.isRequired,
 };

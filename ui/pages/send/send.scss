@@ -5,7 +5,6 @@
     position: relative;
     display: flex;
     justify-content: center;
-    background-color: var(--color-background-alternative);
     border-bottom: none;
     padding: 14px 0 3px 0;
 
@@ -48,8 +47,6 @@
     margin: 0;
     padding: 0.5rem;
     flex: 0 0 auto;
-    background-color: var(--color-background-alternative);
-    border-bottom: 1px solid var(--color-border-muted);
   }
 
   &__select-recipient-wrapper {
@@ -59,15 +56,12 @@
     height: 0;
 
     &__list {
-      overflow-y: auto;
-
       &__link {
         @include Paragraph;
 
         @extend %row-nowrap;
 
         padding: 1rem;
-        border-bottom: 1px solid var(--color-border-muted);
         border-radius: 0;
         align-items: center;
         justify-content: flex-start;
@@ -102,26 +96,11 @@
       @extend %col-nowrap;
     }
 
-    &__group-label {
-      @include H8;
-
-      background-color: var(--color-background-alternative);
-      color: var(--color-text-alternative);
-      padding: 0.5rem 1rem;
-      border-bottom: 1px solid var(--color-border-muted);
-
-      &:first-of-type {
-        border-top: 1px solid var(--color-border-muted);
-      }
-    }
-
     &__group-item,
     &__group-item--selected {
       @extend %row-nowrap;
 
-      padding: 0.75rem 1rem;
       align-items: center;
-      border-bottom: 1px solid var(--color-border-muted);
       cursor: pointer;
 
       &:hover {
@@ -138,22 +117,6 @@
 
         flex: 1 1 auto;
         width: 0;
-      }
-
-      &__title {
-        @include H6;
-
-        max-width: 20em;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        color: var(--color-text-default);
-      }
-
-      &__subtitle {
-        @include H8;
-
-        color: var(--color-text-muted);
       }
     }
 

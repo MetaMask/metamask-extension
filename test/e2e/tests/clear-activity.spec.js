@@ -21,8 +21,7 @@ describe('Clear account activity', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withTransactionControllerCompletedTransaction()
-          .withIncomingTransactionsControllerOneTransaction()
+          .withTransactionControllerCompletedAndIncomingTransaction()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -35,21 +34,20 @@ describe('Clear account activity', function () {
         // Check send transaction and receive transaction history are all displayed
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Send',
         });
         await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Receive',
         });
 
         // Clear activity and nonce data
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({
-          css: '.tab-bar__tab__content__title',
-          text: 'Advanced',
-        });
+        await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
           text: 'Clear activity tab data',
           tag: 'button',
@@ -59,11 +57,11 @@ describe('Clear account activity', function () {
 
         // Check send transaction history is cleared and receive transaction history is kept
         const sendTransaction = await driver.isElementPresent({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Send',
         });
         const receiveTransaction = await driver.isElementPresent({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Receive',
         });
         assert.equal(sendTransaction, false);

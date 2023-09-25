@@ -90,9 +90,6 @@
   "back": {
     "message": "Zpět"
   },
-  "backToAll": {
-    "message": "Späť na všetko"
-  },
   "backupApprovalInfo": {
     "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
   },
@@ -148,16 +145,13 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "connectHardwareWallet": {
-    "message": "Pripojiť hardvérovú peňaženku"
-  },
   "connectingTo": {
     "message": "Pripája sa k $1"
   },
   "connectingToGoerli": {
     "message": "Pripája sa k testovacej sieti Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Pripája sa k testovacej sieti Linea Goerli"
   },
   "connectingToMainnet": {
@@ -175,9 +169,6 @@
   "copyAddress": {
     "message": "Kopírovať adresu do schránky"
   },
-  "copyPrivateKey": {
-    "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
-  },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
   },
@@ -186,9 +177,6 @@
   },
   "create": {
     "message": "Vytvořit"
-  },
-  "createAccount": {
-    "message": "Vytvořit účet"
   },
   "createPassword": {
     "message": "Vytvoriť heslo"
@@ -214,14 +202,8 @@
   "delete": {
     "message": "Odstrániť"
   },
-  "deleteAccount": {
-    "message": "Zmazať účet"
-  },
   "deleteNetwork": {
     "message": "Odstrániť sieť?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Naozaj chcete túto sieť odstrániť?"
   },
   "details": {
     "message": "Podrobnosti"
@@ -250,9 +232,6 @@
   "ensRegistrationError": {
     "message": "Chyba pri registrácii názvu ENS"
   },
-  "enterPassword": {
-    "message": "Zadejte heslo"
-  },
   "enterPasswordContinue": {
     "message": "Pokračujte zadaním hesla"
   },
@@ -264,9 +243,6 @@
   },
   "expandView": {
     "message": "Rozbaliť zobrazenie"
-  },
-  "exportPrivateKey": {
-    "message": "Exportovat privátní klíč"
   },
   "failed": {
     "message": "Neúspěšné"
@@ -402,7 +378,7 @@
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testovacia sieť Linea Goerli"
   },
   "links": {
@@ -428,9 +404,6 @@
   },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje účty"
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -547,14 +520,8 @@
   "privateNetwork": {
     "message": "Soukromá síť"
   },
-  "queue": {
-    "message": "Poradie"
-  },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
-  },
-  "recents": {
-    "message": "Posledné"
   },
   "recipientAddressPlaceholder": {
     "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"
@@ -620,9 +587,6 @@
   "searchResults": {
     "message": "Výsledky vyhľadávania"
   },
-  "searchTokens": {
-    "message": "Hledat tokeny"
-  },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
@@ -661,9 +625,6 @@
   },
   "showHexDataDescription": {
     "message": "Vyberte toto, ak chcete, aby sa na obrazovke odosielania zobrazilo hex dátové pole"
-  },
-  "showPrivateKeys": {
-    "message": "Zobrazit privátní klíče"
   },
   "sigRequest": {
     "message": "Požadavek podpisu"
@@ -773,21 +734,11 @@
   "transfer": {
     "message": "Prevod"
   },
-  "transferBetweenAccounts": {
-    "message": "Prevod medzi mojimi účtami"
-  },
   "transferFrom": {
     "message": "Presun z"
   },
-  "troubleTokenBalances": {
-    "message": "Měli jsme problém s načtením vašich tokenových zůstatků. Můžete je vidět ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Skúsiť znova"
-  },
-  "typePassword": {
-    "message": "Zadejte své heslo"
   },
   "unapproved": {
     "message": "Neschváleno"

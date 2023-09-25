@@ -23,14 +23,12 @@
   }
 
   &__pending-actions {
-    padding-top: 12px;
     display: flex;
 
     .button {
-      @include H8;
+      @include H6;
 
-      padding: 8px;
-      width: 75px;
+      width: 90px;
       white-space: nowrap;
     }
 
@@ -57,14 +55,18 @@
     text-overflow: initial;
   }
 
-  .transaction-status-label::after {
-    content: "·";
-    margin: 0 4px;
-  }
-
   &__address {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  &__icon-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    transform: scale(0.8);
+  }
+  ///: END:ONLY_INCLUDE_IN
 }

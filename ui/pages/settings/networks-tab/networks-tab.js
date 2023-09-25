@@ -18,25 +18,25 @@ import {
   getNetworkConfigurations,
   getNetworksTabSelectedNetworkConfigurationId,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
-  CHAIN_IDS,
+  getProviderConfig,
+  isLineaMainnetNetworkReleased,
+} from '../../../ducks/metamask/metamask';
+import {
   NETWORK_TYPES,
-  SHOULD_SHOW_LINEA_TESTNET_NETWORK,
   TEST_CHAINS,
+  BUILT_IN_NETWORKS,
 } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
 import NetworksFormSubheader from './networks-tab-subheader';
 
-const defaultNetworks = defaultNetworksData
-  .map((network) => ({
-    ...network,
-    viewOnly: true,
-    isATestNetwork: TEST_CHAINS.includes(network.chainId),
-  }))
-  .filter((network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET);
+const defaultNetworks = defaultNetworksData.map((network) => ({
+  ...network,
+  viewOnly: true,
+  isATestNetwork: TEST_CHAINS.includes(network.chainId),
+}));
 
 const NetworksTab = ({ addNewNetwork }) => {
   const t = useI18nContext();
@@ -56,6 +56,7 @@ const NetworksTab = ({ addNewNetwork }) => {
   const networksTabSelectedNetworkConfigurationId = useSelector(
     getNetworksTabSelectedNetworkConfigurationId,
   );
+  const isLineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
   const networkConfigurationsList = Object.entries(networkConfigurations).map(
     ([networkConfigurationId, networkConfiguration]) => {
@@ -74,9 +75,11 @@ const NetworksTab = ({ addNewNetwork }) => {
   );
 
   let networksToRender = [...defaultNetworks, ...networkConfigurationsList];
-  if (!SHOULD_SHOW_LINEA_TESTNET_NETWORK) {
+  if (!isLineaMainnetReleased) {
     networksToRender = networksToRender.filter(
-      (network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET,
+      (network) =>
+        network.chainId !==
+        BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].chainId,
     );
   }
   let selectedNetwork =

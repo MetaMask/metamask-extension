@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
+import { ApprovalType } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   CHAIN_ID_TO_TYPE_MAP,
@@ -19,6 +20,8 @@ const switchEthereumChain = {
   hookNames: {
     getCurrentChainId: true,
     findNetworkConfigurationBy: true,
+    findNetworkClientIdByChainId: true,
+    setNetworkClientIdForDomain: true,
     setProviderType: true,
     setActiveNetwork: true,
     requestUserApproval: true,
@@ -52,6 +55,8 @@ async function switchEthereumChainHandler(
   {
     getCurrentChainId,
     findNetworkConfigurationBy,
+    findNetworkClientIdByChainId,
+    setNetworkClientIdForDomain,
     setProviderType,
     setActiveNetwork,
     requestUserApproval,
@@ -98,7 +103,6 @@ async function switchEthereumChainHandler(
       }),
     );
   }
-
   const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
   if (requestData) {
     const currentChainId = getCurrentChainId();
@@ -109,18 +113,20 @@ async function switchEthereumChainHandler(
     try {
       const approvedRequestData = await requestUserApproval({
         origin,
-        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+        type: ApprovalType.SwitchEthereumChain,
         requestData,
       });
       if (
         Object.values(BUILT_IN_INFURA_NETWORKS)
           .map(({ chainId: id }) => id)
-          .includes(chainId)
+          .includes(_chainId)
       ) {
         await setProviderType(approvedRequestData.type);
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
+      const networkClientId = findNetworkClientIdByChainId(_chainId);
+      setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
     } catch (error) {
       return end(error);

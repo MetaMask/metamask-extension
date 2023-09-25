@@ -5,11 +5,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import AccountListItem from './account-list-item';
 
-jest.mock('../../../../shared/modules/hexstring-utils', () => ({
-  ...jest.requireActual('../../../../shared/modules/hexstring-utils'),
-  toChecksumHexAddress: jest.fn(() => 'mockCheckSumAddress'),
-}));
-
 describe('AccountListItem Component', () => {
   const store = configureStore()(mockState);
 
@@ -93,7 +88,7 @@ describe('AccountListItem Component', () => {
         <AccountListItem {...props} />,
         store,
       );
-      expect(queryByText('mockCheckSumAddress')).not.toBeInTheDocument();
+      expect(queryByText('0xmockAddress')).not.toBeInTheDocument();
 
       const displayAddressProps = {
         ...props,
@@ -101,7 +96,23 @@ describe('AccountListItem Component', () => {
       };
 
       rerender(<AccountListItem {...displayAddressProps} />);
-      expect(queryByText('mockCheckSumAddress')).toBeInTheDocument();
+
+      expect(queryByText('0xmockAddress')).toBeInTheDocument();
+    });
+
+    it('render without <AccountMismatchWarning /> if hideDefaultMismatchWarning is true', () => {
+      const { getByTestId, rerender } = renderWithProvider(
+        <AccountListItem {...props} />,
+        store,
+      );
+
+      const infoIcon = getByTestId('account-mismatch-warning-tooltip');
+
+      expect(infoIcon).toBeInTheDocument();
+
+      rerender(<AccountListItem {...props} hideDefaultMismatchWarning />);
+
+      expect(infoIcon).not.toBeInTheDocument();
     });
   });
 });

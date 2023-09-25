@@ -1,20 +1,23 @@
 .snap-install {
   box-shadow: none;
 
-  .content {
-    flex: 1;
-
-    .loader-container {
+  &__content {
+    &__loader-container {
       height: 100%;
     }
+  }
 
-    &__permission-description {
-      border-bottom: 1px solid var(--color-border-default);
-    }
+  &__scroll-button {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    right: 0;
+    left: 0;
+    bottom: 90px;
   }
 
   .page-container__footer {
     width: 100%;
-    margin-top: 12px;
+    border-top: 0;
   }
 }

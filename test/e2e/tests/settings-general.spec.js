@@ -26,7 +26,9 @@ describe('Settings', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // goes to the settings screen
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
 
         // finds the jazzicon toggle turned on

@@ -1,20 +1,17 @@
-import { ComponentMeta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   TextColor,
   BackgroundColor,
   BorderColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
-
-import { Icon, IconName } from '..';
+import { AvatarBase, Icon, IconName, Box } from '..';
+import { AvatarBaseSize } from './avatar-base.types';
 import README from './README.mdx';
-import { AvatarBase } from './avatar-base';
-import { AvatarBaseProps, AvatarBaseSize } from './avatar-base.types';
 
 const marginSizeKnobOptions = [
   0,
@@ -35,7 +32,6 @@ const marginSizeKnobOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/AvatarBase',
-
   component: AvatarBase,
   parameters: {
     docs: {
@@ -46,6 +42,9 @@ export default {
     size: {
       control: 'select',
       options: Object.values(AvatarBaseSize),
+    },
+    children: {
+      control: 'text',
     },
     color: {
       options: Object.values(TextColor),
@@ -60,7 +59,7 @@ export default {
       control: 'select',
     },
     display: {
-      options: Object.values(DISPLAY),
+      options: Object.values(Display),
       control: 'select',
       table: { category: 'box props' },
     },
@@ -92,14 +91,16 @@ export default {
     borderColor: BorderColor.borderDefault,
     children: 'B',
   },
-} as ComponentMeta<typeof AvatarBase>;
+} as Meta<typeof AvatarBase>;
 
-export const DefaultStory = (args: AvatarBaseProps) => <AvatarBase {...args} />;
+export const DefaultStory: StoryFn<typeof AvatarBase> = (args) => (
+  <AvatarBase {...args} />
+);
 
 DefaultStory.storyName = 'Default';
 
-export const Size = (args: AvatarBaseProps) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+export const Size: StoryFn<typeof AvatarBase> = (args) => (
+  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
     <AvatarBase {...args} size={AvatarBaseSize.Xs} />
     <AvatarBase {...args} size={AvatarBaseSize.Sm} />
     <AvatarBase {...args} size={AvatarBaseSize.Md} />
@@ -108,8 +109,8 @@ export const Size = (args: AvatarBaseProps) => (
   </Box>
 );
 
-export const Children = (args: AvatarBaseProps) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+export const Children: StoryFn<typeof AvatarBase> = (args) => (
+  <Box display={Display.Flex} gap={1}>
     <AvatarBase {...args}>
       <img src="./images/eth_logo.png" />
     </AvatarBase>
@@ -130,8 +131,10 @@ export const Children = (args: AvatarBaseProps) => (
   </Box>
 );
 
-export const ColorBackgroundColorAndBorderColor = (args: AvatarBaseProps) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+export const ColorBackgroundColorAndBorderColor: StoryFn<typeof AvatarBase> = (
+  args,
+) => (
+  <Box display={Display.Flex} gap={1}>
     <AvatarBase {...args}>B</AvatarBase>
     <AvatarBase
       {...args}

@@ -1,7 +1,5 @@
-import { CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionType } from '../../shared/constants/transaction';
 import {
-  unconfirmedTransactionsCountSelector,
   sendTokenTokenAmountAndToAddressSelector,
   contractExchangeRateSelector,
   conversionRateSelector,
@@ -17,32 +15,6 @@ const getEthersArrayLikeFromObj = (obj) => {
 };
 
 describe('Confirm Transaction Selector', () => {
-  describe('unconfirmedTransactionsCountSelector', () => {
-    const state = {
-      metamask: {
-        unapprovedTxs: {
-          1: {
-            metamaskNetworkId: '5',
-          },
-          2: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
-        },
-        unapprovedMsgCount: 1,
-        unapprovedPersonalMsgCount: 1,
-        unapprovedTypedMessagesCount: 1,
-        networkId: '5',
-        providerConfig: {
-          chainId: '0x5',
-        },
-      },
-    };
-
-    it('returns number of txs in unapprovedTxs state with the same network plus unapproved signing method counts', () => {
-      expect(unconfirmedTransactionsCountSelector(state)).toStrictEqual(4);
-    });
-  });
-
   describe('sendTokenTokenAmountAndToAddressSelector', () => {
     const state = {
       confirmTransaction: {

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
+import { NameType } from '@metamask/name-controller';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
@@ -12,7 +13,7 @@ import Popover from '../../../ui/popover';
 import {
   FontWeight,
   TextVariant,
-  DISPLAY,
+  Display,
   Size,
   BorderStyle,
   BorderColor,
@@ -25,6 +26,8 @@ import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
 import { ButtonIcon, IconName, Text } from '../../../component-library';
+import Name from '../../name/name';
+import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
 
 export default function ContractDetailsModal({
   onClose,
@@ -41,10 +44,12 @@ export default function ContractDetailsModal({
   const t = useI18nContext();
   const [copiedTokenAddress, handleCopyTokenAddress] = useCopyToClipboard();
   const [copiedToAddress, handleCopyToAddress] = useCopyToClipboard();
+  const petnamesEnabled = usePetnamesEnabled();
 
   const addressBookEntry = useSelector((state) => ({
     data: getAddressBookEntry(state, toAddress),
   }));
+
   const nft =
     assetStandard === TokenStandard.ERC721 ||
     assetStandard === TokenStandard.ERC1155 ||
@@ -65,17 +70,16 @@ export default function ContractDetailsModal({
           fontWeight={FontWeight.Bold}
           variant={TextVariant.bodyMd}
           as="h5"
-          display={DISPLAY.FLEX}
-          boxProps={{ marginTop: 0, marginBottom: 0 }}
+          display={Display.Flex}
         >
           {t('contractTitle')}
         </Text>
         <Text
           variant={TextVariant.bodySm}
           as="h6"
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           color={TextColor.textAlternative}
-          boxProps={{ marginTop: 2, marginBottom: 0 }}
+          marginTop={2}
         >
           {t('contractDescription')}
         </Text>
@@ -84,14 +88,14 @@ export default function ContractDetailsModal({
             <Text
               variant={TextVariant.bodySm}
               as="h6"
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               marginTop={4}
               marginBottom={2}
             >
               {nft ? t('contractNFT') : t('contractToken')}
             </Text>
             <Box
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               borderRadius={Size.SM}
               borderStyle={BorderStyle.solid}
               borderColor={BorderColor.borderDefault}
@@ -124,9 +128,8 @@ export default function ContractDetailsModal({
                   <Text
                     variant={TextVariant.bodySm}
                     as="h6"
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     color={TextColor.textAlternative}
-                    marginTop={0}
                     marginBottom={4}
                   >
                     {ellipsify(tokenAddress)}
@@ -148,7 +151,7 @@ export default function ContractDetailsModal({
                   }
                 >
                   <ButtonIcon
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     iconName={
                       copiedTokenAddress ? IconName.CopySuccess : IconName.Copy
                     }
@@ -163,7 +166,7 @@ export default function ContractDetailsModal({
                 </Tooltip>
                 <Tooltip position="top" title={t('openInBlockExplorer')}>
                   <ButtonIcon
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     iconName={IconName.Export}
                     color={Color.iconMuted}
                     onClick={() => {
@@ -189,7 +192,7 @@ export default function ContractDetailsModal({
         <Text
           variant={TextVariant.bodySm}
           as="h6"
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           marginTop={4}
           marginBottom={2}
         >
@@ -200,10 +203,11 @@ export default function ContractDetailsModal({
             t('contractRequestingSpendingCap')}
         </Text>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           borderRadius={Size.SM}
           borderStyle={BorderStyle.solid}
           borderColor={BorderColor.borderDefault}
+          alignItems={AlignItems.center}
           className="contract-details-modal__content__contract"
         >
           <Identicon
@@ -212,21 +216,29 @@ export default function ContractDetailsModal({
             address={toAddress}
           />
           <Box data-testid="recipient">
-            <Text
-              fontWeight={FontWeight.Bold}
-              variant={TextVariant.bodyMd}
-              as="h5"
-              marginTop={4}
-            >
-              {addressBookEntry?.data?.name || ellipsify(toAddress)}
-            </Text>
-            {addressBookEntry?.data?.name && (
+            {petnamesEnabled ? (
+              <Text variant={TextVariant.bodyMd} as="h5">
+                <Name
+                  value={toAddress}
+                  type={NameType.ETHEREUM_ADDRESS}
+                  sourcePriority={['ens', 'lens', 'token', 'etherscan']}
+                />
+              </Text>
+            ) : (
+              <Text
+                fontWeight={FontWeight.Bold}
+                variant={TextVariant.bodyMd}
+                as="h5"
+              >
+                {addressBookEntry?.data?.name || ellipsify(toAddress)}
+              </Text>
+            )}
+            {!petnamesEnabled && addressBookEntry?.data?.name && (
               <Text
                 variant={TextVariant.bodySm}
                 as="h6"
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 color={TextColor.textAlternative}
-                marginTop={0}
                 marginBottom={4}
               >
                 {ellipsify(toAddress)}
@@ -246,7 +258,7 @@ export default function ContractDetailsModal({
               }
             >
               <ButtonIcon
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 iconName={
                   copiedToAddress ? IconName.CopySuccess : IconName.Copy
                 }
@@ -261,7 +273,7 @@ export default function ContractDetailsModal({
             </Tooltip>
             <Tooltip position="top" title={t('openInBlockExplorer')}>
               <ButtonIcon
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 iconName={IconName.Export}
                 color={Color.iconMuted}
                 onClick={() => {
@@ -284,7 +296,7 @@ export default function ContractDetailsModal({
         </Box>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         paddingTop={6}
         paddingRight={4}
         paddingBottom={6}

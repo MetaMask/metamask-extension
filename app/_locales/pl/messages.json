@@ -93,9 +93,6 @@
   "back": {
     "message": "Wstecz"
   },
-  "backToAll": {
-    "message": "Wróć do wszystkich"
-  },
   "backupApprovalInfo": {
     "message": "Ten tajny kod jest wymagany do odzyskania portfela w przypadku zgubienia urządzenia, zapomnienia hasła, ponownego zainstalowania MetaMask lub potrzeby uzyskania dostępu do portfela na innym urządzeniu."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Połącz"
   },
-  "connectHardwareWallet": {
-    "message": "Podłącz portfel sprzętowy"
-  },
   "connectingTo": {
     "message": "Łączenie z $1"
   },
   "connectingToGoerli": {
     "message": "Łączenie z siecią testową Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Łączenie z siecią testową Linea Goerli"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "Skopiuj adres do schowka"
   },
-  "copyPrivateKey": {
-    "message": "To jest Twój prywatny klucz (kliknij żeby skopiować)"
-  },
   "copyToClipboard": {
     "message": "Skopiuj do schowka"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "Utwórz"
-  },
-  "createAccount": {
-    "message": "Utwórz konto"
   },
   "createPassword": {
     "message": "Utwórz hasło"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "Usuń"
   },
-  "deleteAccount": {
-    "message": "Usuń konto"
-  },
   "deleteNetwork": {
     "message": "Usunąć sieć?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Czy na pewno chcesz usunąć tę sieć?"
   },
   "details": {
     "message": "Szczegóły"
@@ -256,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Błąd w rejestracji nazwy ENS"
   },
-  "enterPassword": {
-    "message": "Wpisz hasło"
-  },
   "enterPasswordContinue": {
     "message": "Podaj hasło żeby kontynuować"
   },
@@ -270,9 +249,6 @@
   },
   "expandView": {
     "message": "Rozwiń widok"
-  },
-  "exportPrivateKey": {
-    "message": "Eksportuj klucz prywatny"
   },
   "failed": {
     "message": "Nie udało się"
@@ -415,7 +391,7 @@
   "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Sieć testowa Linea Goerli"
   },
   "links": {
@@ -450,9 +426,6 @@
   },
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje konta"
   },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
@@ -569,14 +542,8 @@
   "privateNetwork": {
     "message": "Sieć prywatna"
   },
-  "queue": {
-    "message": "Kolejka"
-  },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
-  },
-  "recents": {
-    "message": "Ostatnie"
   },
   "recipientAddressPlaceholder": {
     "message": "Szukaj, adres publiczny (0x) lub ENS"
@@ -642,9 +609,6 @@
   "searchResults": {
     "message": "Wyniki wyszukiwania"
   },
-  "searchTokens": {
-    "message": "Szukaj tokenów"
-  },
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
@@ -683,9 +647,6 @@
   },
   "showHexDataDescription": {
     "message": "Wybierz to żeby pokazać pole danych hex na ekranie wysyłania"
-  },
-  "showPrivateKeys": {
-    "message": "Pokaż prywatne klucze"
   },
   "sigRequest": {
     "message": "Prośba o podpis"
@@ -795,21 +756,11 @@
   "transfer": {
     "message": "Przelew"
   },
-  "transferBetweenAccounts": {
-    "message": "Przelew między moimi kontami"
-  },
   "transferFrom": {
     "message": "Przelew z"
   },
-  "troubleTokenBalances": {
-    "message": "Wystąpił problem z załadowaniem informacji o Twoich tokenach. Można je zobaczyć ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Spróbuj ponownie"
-  },
-  "typePassword": {
-    "message": "Wpisz hasło"
   },
   "unapproved": {
     "message": "Niezatwierdzone"

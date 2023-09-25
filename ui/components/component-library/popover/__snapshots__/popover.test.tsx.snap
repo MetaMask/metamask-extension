@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Popover should render popover element correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden mm-box--padding-4 mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+    data-testid="popover"
+    role="tooltip"
+    style="position: absolute; left: 0px; top: 0px; width: auto;"
+  >
+    Popover
+  </div>
+</div>
+`;

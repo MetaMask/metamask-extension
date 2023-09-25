@@ -201,6 +201,8 @@ export default function ViewQuote() {
   );
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
+  const isSmartTransaction =
+    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
 
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
@@ -210,8 +212,6 @@ export default function ViewQuote() {
       userFeeLevel: swapsUserFeeLevel || GasRecommendations.high,
     });
   }
-
-  const { isBestQuote } = usedQuote;
 
   const fetchParamsSourceToken = fetchParams?.sourceToken;
 
@@ -460,7 +460,7 @@ export default function ViewQuote() {
     : null;
 
   let ethBalanceNeededStx;
-  if (smartTransactionsError?.balanceNeededWei) {
+  if (isSmartTransaction && smartTransactionsError?.balanceNeededWei) {
     ethBalanceNeededStx = decWEIToDecETH(
       smartTransactionsError.balanceNeededWei -
         smartTransactionsError.currentBalanceWei,
@@ -469,7 +469,7 @@ export default function ViewQuote() {
 
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
-    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+    if (isSmartTransaction) {
       if (insufficientTokens) {
         dispatch(setBalanceError(true));
       } else if (balanceError && !insufficientTokens) {
@@ -485,8 +485,7 @@ export default function ViewQuote() {
     insufficientEth,
     balanceError,
     dispatch,
-    currentSmartTransactionsEnabled,
-    smartTransactionsOptInStatus,
+    isSmartTransaction,
   ]);
 
   useEffect(() => {
@@ -522,10 +521,7 @@ export default function ViewQuote() {
     ethBalanceNeeded;
 
   // If it's a Smart Transaction and ETH balance is needed, we want to show a warning.
-  const isStxAndEthBalanceIsNeeded =
-    currentSmartTransactionsEnabled &&
-    smartTransactionsOptInStatus &&
-    ethBalanceNeededStx;
+  const isStxAndEthBalanceIsNeeded = isSmartTransaction && ethBalanceNeededStx;
 
   // Indicates if we should show to a user a warning about insufficient funds for swapping.
   const showInsufficientWarning =
@@ -926,14 +922,14 @@ export default function ViewQuote() {
   ]);
 
   useEffect(() => {
-    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+    if (isSmartTransaction) {
       // Removes a smart transactions error when the component loads.
       dispatch({
         type: SET_SMART_TRANSACTIONS_ERROR,
         payload: null,
       });
     }
-  }, [currentSmartTransactionsEnabled, smartTransactionsOptInStatus, dispatch]);
+  }, [isSmartTransaction, dispatch]);
 
   return (
     <div className="view-quote">
@@ -1036,7 +1032,6 @@ export default function ViewQuote() {
                 }
               }
               chainId={chainId}
-              isBestQuote={isBestQuote}
               maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
                 maxPriorityFeePerGas,
               )}

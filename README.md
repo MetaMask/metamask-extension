@@ -14,22 +14,25 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 ## Building locally
 
-- Install [Node.js](https://nodejs.org) version 16
+- Install [Node.js](https://nodejs.org) version 18
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
-- Install [Yarn v3](https://yarnpkg.com/getting-started/install)
-    - ONLY follow the steps in the "Install Corepack" and "Updating the global Yarn version" sections
-    - DO NOT take any of the steps in the "Initializing your project", "Updating to the latest versions" or "Installing the latest build fresh from master" sections. These steps could result in your repo being reset or installing the wrong yarn version, which can break your build.
-- Copy the `.metamaskrc.dist` file to `.metamaskrc`
-  - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
+- Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
+- Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
+  - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.infura.io/networks/ethereum/how-to/secure-a-project/project-id).
+    - If you don't have an Infura account, you can create one for free on the [Infura website](https://app.infura.io/register).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
+- Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist`.
   - Optionally, you may run `yarn start` to run dev mode.
+  - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
+  - See the [build system readme](./development/build/README.md) for build system usage information.
 
-Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
+- Follow these instructions to verify that your local build runs correctly:
+  - [How to add custom build to Chrome](./docs/add-to-chrome.md)
+  - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 
-See the [build system readme](./development/build/README.md) for build system usage information.
 
 ## Git Hooks
 
@@ -38,6 +41,8 @@ To get quick feedback from our shared code quality fitness functions before comm
 `$ yarn githooks:install`
 
 You can read more about them in our [testing documentation](./docs/testing.md#fitness-functions-measuring-progress-in-code-quality-and-preventing-regressions-using-custom-git-hooks).
+
+If you are using VS Code and are unable to make commits from the source control sidebar due to a "command not found" error, try these steps from the [Husky docs](https://typicode.github.io/husky/troubleshooting.html#command-not-found).
 
 ## Contributing
 
@@ -88,19 +93,31 @@ These test scripts all support additional options, which might be helpful for de
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
-  --browser        Set the browser used; either 'chrome' or 'firefox'.
-                                         [string] [choices: "chrome", "firefox"]
-  --debug          Run tests in debug mode, logging each driver interaction
-                                                      [boolean] [default: false]
-  --retries        Set how many times the test should be retried upon failure.
-                                                           [number] [default: 0]
-  --leave-running  Leaves the browser running after a test fails, along with
-                   anything else that the test used (ganache, the test dapp,
-                   etc.)                              [boolean] [default: false]
+  --browser           Set the browser used; either 'chrome' or 'firefox'.
+                                            [string] [choices: "chrome", "firefox"]
+  --debug             Run tests in debug mode, logging each driver interaction
+                                                         [boolean] [default: false]
+  --retries           Set how many times the test should be retried upon failure.
+                                                              [number] [default: 0]
+  --leave-running     Leaves the browser running after a test fails, along with
+                      anything else that the test used (ganache, the test dapp,
+                      etc.)                              [boolean] [default: false]
+  --update-snapshot   Update E2E test snapshots
+                                             [alias: -u] [boolean] [default: false]
 ```
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-details.spec.js --browser=chrome --debug --leave-running`
+
+#### Running specific builds types e2e test
+
+Differnt build types have different e2e tests sets. In order to run them look in the `packaje.json` file. You will find:
+```console
+    "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
+    "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
+    "test:e2e:chrome:mv3": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mv3",
+```
+Note: MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
 
 ### Changing dependencies
 
@@ -112,19 +129,22 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - The `allow-scripts` configuration in `package.json`
   - Run `yarn allow-scripts auto` to update the `allow-scripts` configuration automatically. This config determines whether the package's install/postinstall scripts are allowed to run. Review each new package to determine whether the install script needs to run or not, testing if necessary.
   - Unfortunately, `yarn allow-scripts auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
-- The LavaMoat policy files. The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
-  - There are two sets of LavaMoat policy files:
-    - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`. Add `--help` for usage.
-      - These should be regenerated whenever the production dependencies for the background change.
-    - The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
-      - This should be regenerated whenever the dependencies used by the build system itself change.
-  - Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
-  - Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms.
-    macOS and Windows users may see extraneous changes relating to optional dependencies.
-  - If you keep getting policy failures even after regenerating the policy files, try regenerating the policies after a clean install by doing:
-    - `rm -rf node_modules/ && yarn && yarn lavamoat:auto`
-  - Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
-    Refer to the LavaMoat documentation or ask for help if you run into any issues.
+- The LavaMoat policy files
+  - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-policies` to ask the MetaMask bot to automatically update the policies for you.
+  - If your PR is from a fork, you can ask a MetaMask team member to help with updating the policy files.
+  - Manual update instructions: The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
+    - There are two sets of LavaMoat policy files:
+      - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`. Add `--help` for usage.
+        - These should be regenerated whenever the production dependencies for the background change.
+      - The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
+        - This should be regenerated whenever the dependencies used by the build system itself change.
+    - Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
+    - Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms.
+      macOS and Windows users may see extraneous changes relating to optional dependencies.
+    - If you keep getting policy failures even after regenerating the policy files, try regenerating the policies after a clean install by doing:
+      - `rm -rf node_modules/ && yarn && yarn lavamoat:auto`
+    - Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
+      Refer to the LavaMoat documentation or ask for help if you run into any issues.
 
 ## Architecture
 
@@ -135,8 +155,6 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 ## Other Docs
 
-- [How to add custom build to Chrome](./docs/add-to-chrome.md)
-- [How to add custom build to Firefox](./docs/add-to-firefox.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)

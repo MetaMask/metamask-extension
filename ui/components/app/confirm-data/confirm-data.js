@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import {
   Color,
   TextVariant,
-  TEXT_TRANSFORM,
+  TextTransform,
 } from '../../../helpers/constants/design-system';
 import { getKnownMethodData } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -42,7 +42,7 @@ const ConfirmData = ({ txData, dataComponent }) => {
       <Box paddingBottom={3} paddingTop={2}>
         <Text
           as="span"
-          textTransform={TEXT_TRANSFORM.UPPERCASE}
+          textTransform={TextTransform.Uppercase}
           variant={TextVariant.bodySm}
         >
           {`${t('functionType')}:`}
@@ -51,7 +51,7 @@ const ConfirmData = ({ txData, dataComponent }) => {
           as="span"
           color={Color.textDefault}
           paddingLeft={1}
-          textTransform={TEXT_TRANSFORM.CAPITALIZE}
+          textTransform={TextTransform.Capitalize}
           variant={TextVariant.bodySmBold}
         >
           {`${functionType} ${functionParams}`}

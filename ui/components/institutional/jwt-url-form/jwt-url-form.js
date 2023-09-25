@@ -1,106 +1,106 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  DISPLAY,
-  BLOCK_SIZES,
-  FLEX_DIRECTION,
+  Display,
+  BlockSize,
+  FlexDirection,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { ButtonVariant, Box, Button, Text } from '../../component-library';
 import JwtDropdown from '../jwt-dropdown';
-import Button from '../../ui/button';
-import Box from '../../ui/box';
 
 const JwtUrlForm = (props) => {
   const t = useI18nContext();
-  const inputRef = useRef();
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
-  const [fileTooBigError, setFileTooBigError] = useState();
+  const showJwtDropdown = props.jwtList.length >= 1;
 
-  const renderJWTInput = () => {
-    const showAddNewToken = addNewTokenClicked;
-    const showJwtDropdown = props.jwtList.length >= 1;
-
-    return (
+  return (
+    <Box
+      className="jwt-url-form"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.flexStart}
+      marginBottom={8}
+    >
       <Box
-        width={BLOCK_SIZES.FULL}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        width={BlockSize.Full}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         marginTop={4}
         alignItems={AlignItems.center}
         className="jwt-url-form__jwt-container"
-        marginBottom={6}
+        marginBottom={4}
       >
         {showJwtDropdown && (
           <JwtDropdown
+            key={props.currentJwt}
             data-testid="jwt-dropdown"
             currentJwt={props.currentJwt ? props.currentJwt : props.jwtList[0]}
             jwtList={props.jwtList}
             onChange={(value) => {
               props.onJwtChange(value);
-              setFileTooBigError(false);
             }}
           />
         )}
-        {showJwtDropdown && !showAddNewToken && (
+
+        {showJwtDropdown && !addNewTokenClicked && (
           <Box
-            width={BLOCK_SIZES.FULL}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            width={BlockSize.Full}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
             marginTop={2}
           >
             <Text>{t('or')}</Text>
             <Button
               data-testid="addNewToken-btn"
-              type="secondary"
-              medium="true"
+              variant={ButtonVariant.Secondary}
               onClick={() => {
                 props.onJwtChange('');
                 setAddNewTokenClicked(true);
               }}
             >
-              <Text>{t('addNewToken')}</Text>
+              {t('addNewToken')}
             </Button>
           </Box>
         )}
-        {(!showJwtDropdown || showAddNewToken) && (
-          <Box>
-            <Text className="jwt-url-form__instruction" display={DISPLAY.BLOCK}>
+        {(!showJwtDropdown || addNewTokenClicked) && (
+          <Box width={BlockSize.Full}>
+            <Text
+              className="jwt-url-form__instruction"
+              display={Display.Block}
+              variant={TextVariant.bodyMd}
+              marginBottom={4}
+            >
               {props.jwtInputText}
             </Text>
-            {fileTooBigError && (
-              <span className="error">
-                <Text>{t('fileTooBig')}</Text>
-              </span>
-            )}
+
             <textarea
               className="jwt-url-form__input-jwt"
               data-testid="jwt-input"
               id="jwt-box"
               onChange={(e) => {
                 props.onJwtChange(e.target.value);
-                setFileTooBigError(false);
               }}
-              ref={inputRef.current}
               value={props.currentJwt}
               autoFocus
             />
           </Box>
         )}
       </Box>
-    );
-  };
-
-  const renderAPIURLInput = () => {
-    return (
-      <Box width={BLOCK_SIZES.FULL}>
-        <Text className="jwt-url-form__instruction" display={DISPLAY.BLOCK}>
+      <Box width={BlockSize.Full}>
+        <Text
+          className="jwt-url-form__instruction"
+          display={Display.Block}
+          variant={TextVariant.bodyMd}
+        >
           {props.urlInputText}
         </Text>
-        <Box>
+        <Box marginTop={4}>
           <input
+            type="text"
             className="jwt-url-form__input"
             id="api-url-box"
             data-testid="jwt-api-url-input"
@@ -111,31 +111,18 @@ const JwtUrlForm = (props) => {
           />
         </Box>
       </Box>
-    );
-  };
-
-  return (
-    <Box
-      className="jwt-url-form"
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
-      alignItems={AlignItems.flexStart}
-      marginBottom={8}
-    >
-      {renderJWTInput()}
-      {renderAPIURLInput()}
     </Box>
   );
 };
 
 JwtUrlForm.propTypes = {
-  jwtList: PropTypes.array,
+  jwtList: PropTypes.array.isRequired,
+  onUrlChange: PropTypes.func.isRequired,
+  onJwtChange: PropTypes.func.isRequired,
   currentJwt: PropTypes.string,
-  onJwtChange: PropTypes.func,
   jwtInputText: PropTypes.string,
   apiUrl: PropTypes.string,
   urlInputText: PropTypes.string,
-  onUrlChange: PropTypes.func,
 };
 
 export default JwtUrlForm;

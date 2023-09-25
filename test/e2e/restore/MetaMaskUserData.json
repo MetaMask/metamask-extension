@@ -16,9 +16,7 @@
     "advancedGasFee": null,
     "currentLocale": "en",
     "dismissSeedBackUpReminder": true,
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
+    "featureFlags": {},
     "forgottenPassword": false,
     "frequentRpcListDetail": [
       {
@@ -29,7 +27,6 @@
         "ticker": "ETH"
       }
     ],
-    "infuraBlocked": false,
     "ipfsGateway": "dweb.link",
     "knownMethodData": {},
     "ledgerTransportType": "webhid",

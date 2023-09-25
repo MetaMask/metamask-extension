@@ -89,6 +89,7 @@ DefaultStory.storyName = 'personal_sign Type';
 DefaultStory.args = {
   txData: {
     msgParams: {
+      from: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
       data: MOCK_SIGN_DATA,
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
@@ -103,6 +104,7 @@ ETHSignStory.storyName = 'eth_sign Type';
 ETHSignStory.args = {
   txData: {
     msgParams: {
+      from: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
       data: MOCK_SIGN_DATA,
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
@@ -117,6 +119,7 @@ ETHSignTypedStory.storyName = 'eth_signTypedData Type';
 ETHSignTypedStory.args = {
   txData: {
     msgParams: {
+      from: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
       data: [
         {
           type: 'string',
@@ -142,6 +145,7 @@ AccountMismatchStory.storyName = 'Account Mismatch warning';
 AccountMismatchStory.args = {
   txData: {
     msgParams: {
+      from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
       data: MOCK_SIGN_DATA,
       origin: 'https://happydapp.website/governance?futarchy=true',
     },

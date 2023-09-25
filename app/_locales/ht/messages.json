@@ -96,9 +96,6 @@
   "connect": {
     "message": "Konekte"
   },
-  "connectHardwareWallet": {
-    "message": "Konekte Materyèl Wallet"
-  },
   "connectingToMainnet": {
     "message": "Konekte ak Prensipal Ethereum Rezo a"
   },
@@ -111,17 +108,11 @@
   "copyAddress": {
     "message": "Kopi adrès clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Sa a se kle prive ou (klike pou ou kopye)"
-  },
   "copyToClipboard": {
     "message": "Kopi clipboard"
   },
   "create": {
     "message": "Kreye"
-  },
-  "createAccount": {
-    "message": "Kreye Kont"
   },
   "currentLanguage": {
     "message": "Lang Aktyèl"
@@ -153,9 +144,6 @@
   "edit": {
     "message": "Korije"
   },
-  "enterPassword": {
-    "message": "Mete modpas"
-  },
   "enterPasswordContinue": {
     "message": "Mete modpas pou kontinye"
   },
@@ -164,9 +152,6 @@
   },
   "expandView": {
     "message": "Elaji Wè"
-  },
-  "exportPrivateKey": {
-    "message": "Voye Kòd Prive"
   },
   "failed": {
     "message": "Tonbe"
@@ -305,9 +290,6 @@
   },
   "mustSelectOne": {
     "message": "Ou dwe chwazi omwen 1 token."
-  },
-  "myAccounts": {
-    "message": "Kont mwen"
   },
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
@@ -461,9 +443,6 @@
   "searchResults": {
     "message": "Rezilta rechèch"
   },
-  "searchTokens": {
-    "message": "Rechèch Tokens"
-  },
   "seedPhraseReq": {
     "message": "Seed fraz yo se 12 long mo"
   },
@@ -493,9 +472,6 @@
   },
   "showHexDataDescription": {
     "message": "Pran sa pouw ka montre chan entèfas hex data a"
-  },
-  "showPrivateKeys": {
-    "message": "Montre Kle Prive"
   },
   "sigRequest": {
     "message": "Demann Siyati"
@@ -563,15 +539,8 @@
   "transfer": {
     "message": "Transfè"
   },
-  "troubleTokenBalances": {
-    "message": "Nou te gen pwoblèm chaje balans token ou. Ou ka wè yo ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Eseye anko"
-  },
-  "typePassword": {
-    "message": "Tape modpas ou"
   },
   "unapproved": {
     "message": "Pa apwouve"

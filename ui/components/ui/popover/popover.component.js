@@ -15,7 +15,7 @@ import {
   Size,
   BorderColor,
   IconColor,
-  TEXT_ALIGN,
+  TextAlign,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 
@@ -48,6 +48,15 @@ const defaultFooterProps = {
   justifyContent: JustifyContent.spaceBetween,
   padding: [4, 6, 6],
 };
+
+/**
+ * @deprecated The `<Popover>` component has been deprecated in favor of the new `<Modal>` component from the component-library.
+ * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
+ * You can find documentation for the new Modal component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
+ * If you would like to help with the replacement of the old Modal component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/19555}
+ */
 
 const Popover = ({
   title,
@@ -96,7 +105,7 @@ const Popover = ({
           />
         ) : null}
         <Text
-          textAlign={centerTitle ? TEXT_ALIGN.CENTER : TEXT_ALIGN.START}
+          textAlign={centerTitle ? TextAlign.Center : TextAlign.Start}
           ellipsis
           variant={TextVariant.headingSm}
           as="h2"
@@ -252,6 +261,14 @@ Popover.propTypes = {
   footerProps: PropTypes.shape({ ...Box.propTypes }),
 };
 
+/**
+ * @deprecated The `<Popover>` component has been deprecated in favor of the new `<Modal>` component from the component-library.
+ * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
+ * You can find documentation for the new Modal component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
+ * If you would like to help with the replacement of the old Modal component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/19555}
+ */
 export default class PopoverPortal extends PureComponent {
   static propTypes = Popover.propTypes;
 

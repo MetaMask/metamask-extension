@@ -39,6 +39,7 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.BSC:
     case CHAIN_IDS.POLYGON:
     case CHAIN_IDS.AVALANCHE:
+    case CHAIN_IDS.AURORA:
       return true;
     default:
       return false;
@@ -54,4 +55,8 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
  */
 function isSafeInteger(value: unknown): value is number {
   return Number.isSafeInteger(value);
+}
+
+export function shouldShowLineaMainnet(): boolean {
+  return new Date().getTime() > Date.UTC(2023, 6, 11, 18);
 }

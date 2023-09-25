@@ -13,22 +13,27 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarIcon,
-  Text,
+  AvatarIconSize,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
+import { PermissionCellOptions } from './permission-cell-options';
 
 const PermissionCell = ({
+  snapId,
+  permissionName,
   title,
   description,
   weight,
   avatarIcon,
   dateApproved,
   revoked,
+  showOptions,
 }) => {
   const t = useI18nContext();
 
@@ -73,7 +78,7 @@ const PermissionCell = ({
         {typeof permissionIcon === 'string' ? (
           <AvatarIcon
             iconName={permissionIcon}
-            size={IconSize.Md}
+            size={AvatarIconSize.Md}
             iconProps={{
               size: IconSize.Sm,
             }}
@@ -95,9 +100,8 @@ const PermissionCell = ({
           {title}
         </Text>
         <Text
-          size={Size.XS}
           className="permission-cell__status"
-          variant={TextVariant.bodyXs}
+          variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
         >
           {!revoked &&
@@ -108,15 +112,25 @@ const PermissionCell = ({
         </Text>
       </Box>
       <Box>
-        <Tooltip html={<div>{description}</div>} position="bottom">
-          <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
-        </Tooltip>
+        {showOptions && snapId ? (
+          <PermissionCellOptions
+            snapId={snapId}
+            permissionName={permissionName}
+            description={description}
+          />
+        ) : (
+          <Tooltip html={<div>{description}</div>} position="bottom">
+            <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
+          </Tooltip>
+        )}
       </Box>
     </Box>
   );
 };
 
 PermissionCell.propTypes = {
+  snapId: PropTypes.string,
+  permissionName: PropTypes.string.isRequired,
   title: PropTypes.oneOfType([
     PropTypes.string.isRequired,
     PropTypes.object.isRequired,
@@ -126,6 +140,7 @@ PermissionCell.propTypes = {
   avatarIcon: PropTypes.any.isRequired,
   dateApproved: PropTypes.number,
   revoked: PropTypes.bool,
+  showOptions: PropTypes.bool,
 };
 
 export default PermissionCell;

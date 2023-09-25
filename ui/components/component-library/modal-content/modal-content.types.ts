@@ -1,6 +1,8 @@
 import React from 'react';
-import type { BoxProps, BoxWidth, BoxWidthArray } from '../../ui/box/box.d';
-import { Size } from '../../../helpers/constants/design-system';
+import type {
+  PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
+} from '../box';
 
 /*
  * ModalContent sizes
@@ -9,10 +11,10 @@ import { Size } from '../../../helpers/constants/design-system';
  * Not to say there won't be more in the future, but to prevent redundant code there is only one for now
  */
 export enum ModalContentSize {
-  Sm = Size.SM,
+  Sm = 'sm',
 }
 
-export interface ModalContentProps extends BoxProps {
+export interface ModalContentStyleUtilityProps extends StyleUtilityProps {
   /**
    * The additional className of the ModalContent component
    */
@@ -20,7 +22,7 @@ export interface ModalContentProps extends BoxProps {
   /**
    * The content of the ModalContent component
    */
-  children?: React.ReactNode;
+  children: React.ReactNode;
   /**
    * The size of ModalContent
    * Currently only one size is supported ModalContentSize.Sm 360px
@@ -28,13 +30,14 @@ export interface ModalContentProps extends BoxProps {
    */
   size?: ModalContentSize;
   /**
-   * To override the default width of the ModalContent component
-   * Accepts all BLOCK_SIZES from design-system
+   * Additional props to pass to the dialog node inside of ModalContent component
    */
-  width?: BoxWidth | BoxWidthArray;
-  /**
-   * The ref of the ModalContent component
-   * Used with Modal and closeOnOutsideClick prop
-   */
-  modalContentRef?: React.RefObject<HTMLElement>;
+  modalDialogProps?: any;
 }
+
+export type ModalContentProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, ModalContentStyleUtilityProps>;
+
+export type ModalContentComponent = <C extends React.ElementType = 'div'>(
+  props: ModalContentProps<C>,
+) => React.ReactElement | null;

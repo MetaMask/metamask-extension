@@ -10,13 +10,14 @@ import {
   IconColor,
   TextVariant,
   TextColor,
+  Display,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box';
 import {
   AvatarIcon,
-  Text,
+  AvatarIconSize,
+  Box,
   IconName,
-  IconSize,
+  Text,
 } from '../../../component-library';
 import {
   DelineatorType,
@@ -42,24 +43,25 @@ export const SnapDelineator = ({
     >
       <Box
         className="snap-delineator__header"
+        display={Display.Flex}
         alignItems={AlignItems.center}
         padding={1}
       >
         <AvatarIcon
           iconName={IconName.Snaps}
-          size={IconSize.Xs}
+          size={AvatarIconSize.Sm}
           backgroundColor={
             isError ? IconColor.errorDefault : IconColor.infoDefault
           }
-          margin={1}
+          borderColor={BackgroundColor.backgroundDefault}
+          borderWidth={2}
           iconProps={{
-            size: IconSize.Xs,
             color: IconColor.infoInverse,
           }}
         />
         <Text
           variant={TextVariant.bodySm}
-          color={isError ? TextColor.errorDefault : TextColor.default}
+          color={isError ? TextColor.errorDefault : TextColor.textAlternative}
           className="snap-delineator__header__text"
           marginLeft={1}
           marginTop={0}

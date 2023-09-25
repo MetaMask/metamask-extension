@@ -4,13 +4,12 @@ import MaterialSlider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  Color,
-  FONT_WEIGHT,
-  TypographyVariant,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import Typography from '../typography/typography';
+import { Text } from '../../component-library';
 
 const styles = {
   root: {
@@ -68,34 +67,24 @@ const Slider = ({
     <div className="slider__heading">
       <div className="slider__heading-title">
         {titleText && (
-          <Typography
-            tag={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TypographyVariant.H6}
-          >
+          <Text variant={TextVariant.bodySmBold} as="h6">
             {titleText}
-          </Typography>
+          </Text>
         )}
         {tooltipText && (
           <InfoTooltip position="top" contentText={tooltipText} />
         )}
         {valueText && (
-          <Typography
-            tag={TypographyVariant.paragraph}
-            color={Color.textAlternative}
-          >
+          <Text tag={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {valueText}
-          </Typography>
+          </Text>
         )}
       </div>
       {titleDetail && (
         <div className="slider__heading-detail">
-          <Typography
-            tag={TypographyVariant.paragraph}
-            color={Color.textAlternative}
-          >
+          <Text tag={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {titleDetail}
-          </Typography>
+          </Text>
         </div>
       )}
     </div>
@@ -103,12 +92,9 @@ const Slider = ({
     <div className="slider__footer">
       <div className="slider__footer-info">
         {infoText && (
-          <Typography
-            tag={TypographyVariant.paragraph}
-            color={Color.textAlternative}
-          >
+          <Text tag={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {infoText}
-          </Typography>
+          </Text>
         )}
       </div>
       <div className="slider__footer-edit">

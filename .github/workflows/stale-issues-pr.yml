@@ -1,0 +1,29 @@
+name: 'Close stale issues and PRs'
+
+# run every 2 hours
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@72afbce2b0dbd1d903bb142cebe2d15dc307ae57
+        with:
+          stale-issue-label: 'stale'
+          only-issue-labels: 'type-bug'
+          exempt-issue-labels: 'type-security'
+          days-before-issue-stale: 90
+          stale-issue-message: 'This issue has been automatically marked as stale because it has not had recent activity in the last 90 days. It will be closed in 45 days if there is no further activity. The MetaMask team intends on reviewing this issue before close, and removing the stale label if it is still a bug. We welcome new comments on this issue. We do not intend on closing issues if they report bugs that are still reproducible. Thank you for your contributions.'
+          days-before-issue-close: 45
+          close-issue-message: 'This issue was closed because there has been no follow up activity in the last 45 days. If you feel this was closed in error, please reopen and provide evidence on the latest release of the extension. Thank you for your contributions.'
+          stale-pr-label: 'stale'
+          days-before-pr-stale: 60
+          stale-pr-message: 'This PR has been automatically marked as stale because it has not had recent activity in the last 60 days. It will be closed in 14 days. Thank you for your contributions.'
+          days-before-pr-close: 14
+          close-pr-message: 'This PR was closed because there has been no follow up activity in the last 14 days. Thank you for your contributions.'
+          operations-per-run: 600

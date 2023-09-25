@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
-import ActionableMessage from '../../ui/actionable-message';
+import { BannerAlert, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
-import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
-  FONT_WEIGHT,
-  TEXT_ALIGN,
-  TypographyVariant,
+  TextAlign,
+  TextVariant,
+  Severity,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
@@ -129,19 +128,15 @@ export default function SrpInput({ onChange, srpText }) {
   return (
     <div className="import-srp__container">
       <label className="import-srp__srp-label">
-        <Typography
-          align={TEXT_ALIGN.LEFT}
-          variant={TypographyVariant.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
-        >
+        <Text align={TextAlign.Left} variant={TextVariant.headingSm} as="h4">
           {srpText}
-        </Typography>
+        </Text>
       </label>
-      <ActionableMessage
+      <BannerAlert
         className="import-srp__paste-tip"
-        iconFillColor="var(--color-info-default)"
-        message={t('srpPasteTip')}
-        useIcon
+        severity={Severity.Info}
+        description={t('srpPasteTip')}
+        descriptionProps={{ className: 'import-srp__banner-alert-text' }}
       />
       <Dropdown
         className="import-srp__number-of-words-dropdown"
@@ -170,7 +165,7 @@ export default function SrpInput({ onChange, srpText }) {
           return (
             <div key={index} className="import-srp__srp-word">
               <label htmlFor={id} className="import-srp__srp-word-label">
-                <Typography>{`${index + 1}.`}</Typography>
+                <Text>{`${index + 1}.`}</Text>
               </label>
               <TextField
                 id={id}
@@ -205,25 +200,21 @@ export default function SrpInput({ onChange, srpText }) {
         })}
       </div>
       {srpError ? (
-        <ActionableMessage
+        <BannerAlert
           className="import-srp__srp-error"
-          iconFillColor="var(--color-error-default)"
-          message={srpError}
-          type="danger"
-          useIcon
+          severity={Severity.Danger}
+          description={srpError}
+          descriptionProps={{ className: 'import-srp__banner-alert-text' }}
         />
       ) : null}
       {pasteFailed ? (
-        <ActionableMessage
+        <BannerAlert
           className="import-srp__srp-too-many-words-error"
-          iconFillColor="var(--color-error-default)"
-          message={t('srpPasteFailedTooManyWords')}
-          primaryAction={{
-            label: t('dismiss'),
-            onClick: () => setPasteFailed(false),
-          }}
-          type="danger"
-          useIcon
+          severity={Severity.Danger}
+          actionButtonLabel={t('dismiss')}
+          actionButtonOnClick={() => setPasteFailed(false)}
+          description={t('srpPasteFailedTooManyWords')}
+          descriptionProps={{ className: 'import-srp__banner-alert-text' }}
         />
       ) : null}
     </div>

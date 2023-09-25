@@ -25,13 +25,13 @@ setBackgroundConnection({
 
 describe('Confirm Transaction', () => {
   const unapprovedTransactionId = Object.keys(
-    mockState.metamask.unapprovedTxs,
+    mockState.metamask.transactions,
   )[0];
   it('should render correct information for approve transaction with value', () => {
     const store = configureMockStore(middleware)({
       ...mockState,
       confirmTransaction: {
-        txData: mockState.metamask.unapprovedTxs[unapprovedTransactionId],
+        txData: mockState.metamask.transactions[0],
       },
     });
     const { getByText, getByRole } = renderWithProvider(

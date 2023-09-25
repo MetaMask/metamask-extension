@@ -93,9 +93,6 @@
   "back": {
     "message": "Atpakaļ"
   },
-  "backToAll": {
-    "message": "Atgriezties pie visiem"
-  },
   "backupApprovalInfo": {
     "message": "Šis slepenais kods ir nepieciešams, lai atjaunotu jūsu maku, ja pazaudējat ierīci, aizmirstat paroli, jāpārinstalē MetaMask vai vēlaties piekļūt makam no citas ierīces."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Pievienošana"
   },
-  "connectHardwareWallet": {
-    "message": "Pieslēgt aparatūras maku"
-  },
   "connectingTo": {
     "message": "Pieslēdzas $1"
   },
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Pieslēdzas Linea Goerli testa tīklam"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"
   },
-  "copyPrivateKey": {
-    "message": "Šī ir jūsu privātā atslēga (noklikšķiniet, lai nokopētu)"
-  },
   "copyToClipboard": {
     "message": "Kopēt starpliktuvē"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "Izveidot"
-  },
-  "createAccount": {
-    "message": "Izveidot kontu"
   },
   "createPassword": {
     "message": "Izveidot paroli"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "Dzēst"
   },
-  "deleteAccount": {
-    "message": "Dzēst kontu"
-  },
   "deleteNetwork": {
     "message": "Dzēst tīklu?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Vai tiešām vēlaties dzēst šo tīklu?"
   },
   "details": {
     "message": "Informācija"
@@ -256,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Kļūda ENS vārda reģistrācijā"
   },
-  "enterPassword": {
-    "message": "Ievadiet paroli"
-  },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
   },
@@ -270,9 +249,6 @@
   },
   "expandView": {
     "message": "Izvērst skatījumu"
-  },
-  "exportPrivateKey": {
-    "message": "Eksportēt privāto atslēgu"
   },
   "failed": {
     "message": "Neizdevās"
@@ -411,7 +387,7 @@
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testa tīkls"
   },
   "links": {
@@ -449,9 +425,6 @@
   },
   "mustSelectOne": {
     "message": "Jāatlasa vismaz 1 marķieris."
-  },
-  "myAccounts": {
-    "message": "Mani konti"
   },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
@@ -571,14 +544,8 @@
   "privateNetwork": {
     "message": "Privātais tīkls"
   },
-  "queue": {
-    "message": "Rinda"
-  },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
-  },
-  "recents": {
-    "message": "Nesenie"
   },
   "recipientAddressPlaceholder": {
     "message": "Meklēšana, publiskā adrese (0x) vai ENS"
@@ -644,9 +611,6 @@
   "searchResults": {
     "message": "Meklēšanas rezultāti"
   },
-  "searchTokens": {
-    "message": "Meklēt marķierus"
-  },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
@@ -685,9 +649,6 @@
   },
   "showHexDataDescription": {
     "message": "Atlasiet šo, lai atvērtu hex datus sūtīšanas ekrānā"
-  },
-  "showPrivateKeys": {
-    "message": "Rādīt privātās atslēgas"
   },
   "sigRequest": {
     "message": "Paraksta pieprasījums"
@@ -803,21 +764,11 @@
   "transfer": {
     "message": "Pārsūtīt"
   },
-  "transferBetweenAccounts": {
-    "message": "Pārsūtīt starp saviem kontiem"
-  },
   "transferFrom": {
     "message": "Nosūtīt no"
   },
-  "troubleTokenBalances": {
-    "message": "Mums neizdevās ielādēt marķieru bilanci. Varat tos skatīt",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Mēģināt vēlreiz"
-  },
-  "typePassword": {
-    "message": "Ievadiet savu MetaMask paroli"
   },
   "unapproved": {
     "message": "Nav apstiprināts"

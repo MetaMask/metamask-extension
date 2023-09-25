@@ -93,9 +93,6 @@
   "back": {
     "message": "Enrere"
   },
-  "backToAll": {
-    "message": "Torna a Tot"
-  },
   "backupApprovalInfo": {
     "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
   },
@@ -151,16 +148,13 @@
   "connect": {
     "message": "Connecta"
   },
-  "connectHardwareWallet": {
-    "message": "Connectar Moneder Hardaware"
-  },
   "connectingTo": {
     "message": "Connectant a $1 "
   },
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connectant a Xarxa de Prova Linea Goerli"
   },
   "connectingToMainnet": {
@@ -178,9 +172,6 @@
   "copyAddress": {
     "message": "Copiar adreça al porta-retalls"
   },
-  "copyPrivateKey": {
-    "message": "Aquesta és la teva clau privada (fes clic per a copiar)"
-  },
   "copyToClipboard": {
     "message": "Copia al porta-retalls"
   },
@@ -189,9 +180,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAccount": {
-    "message": "Crea "
   },
   "createPassword": {
     "message": "Crear Contrasenya"
@@ -217,14 +205,8 @@
   "delete": {
     "message": "Suprimeix"
   },
-  "deleteAccount": {
-    "message": "Elimina el compte"
-  },
   "deleteNetwork": {
     "message": "Esborrar Xarxa?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Estàs segur que vols eliminar aquesta xarxa?"
   },
   "details": {
     "message": "Detalls"
@@ -253,9 +235,6 @@
   "ensRegistrationError": {
     "message": "Error al registre de nom ENS"
   },
-  "enterPassword": {
-    "message": "Introdueix contrasenya"
-  },
   "enterPasswordContinue": {
     "message": "Introdueix la contrasenya per continuar"
   },
@@ -267,9 +246,6 @@
   },
   "expandView": {
     "message": "Eixamplar Vista"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar Clau Privada."
   },
   "failed": {
     "message": "Fallit"
@@ -402,7 +378,7 @@
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Xarxa de test Linea Goerli"
   },
   "links": {
@@ -437,9 +413,6 @@
   },
   "mustSelectOne": {
     "message": "Has de seleccionar "
-  },
-  "myAccounts": {
-    "message": "Els meus Comptes"
   },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
@@ -556,9 +529,6 @@
   "privateNetwork": {
     "message": "Xarxa privada"
   },
-  "queue": {
-    "message": "Cua"
-  },
   "readdToken": {
     "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
   },
@@ -626,9 +596,6 @@
   "searchResults": {
     "message": "Resultats de Cerca"
   },
-  "searchTokens": {
-    "message": "Tokens per cercar"
-  },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
@@ -667,9 +634,6 @@
   },
   "showHexDataDescription": {
     "message": "Selecciona això per a mostrar el camp de dades Hex a la pantalla d'enviament"
-  },
-  "showPrivateKeys": {
-    "message": "Mostrar Claus Privades"
   },
   "sigRequest": {
     "message": "Sol·licitud de Signatura"
@@ -779,21 +743,11 @@
   "transfer": {
     "message": "Transferència"
   },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre els meus comptes"
-  },
   "transferFrom": {
     "message": "Transferir Des de"
   },
-  "troubleTokenBalances": {
-    "message": "Hem tingut problemes en carregar el teu saldo de fitxes. Els pots veure",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Torna-ho a provar"
-  },
-  "typePassword": {
-    "message": "Tecleja la teva contrasenya de MetaMask"
   },
   "unapproved": {
     "message": "Pendent d'aprovació"

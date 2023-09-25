@@ -176,7 +176,14 @@ export default function ConfirmApprove({
   if (assetStandard === undefined) {
     return <ConfirmContractInteraction />;
   }
-  if (assetStandard === TokenStandard.ERC20) {
+
+  let tokenAllowanceImprovements = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  tokenAllowanceImprovements = false;
+  ///: END:ONLY_INCLUDE_IN
+
+  if (tokenAllowanceImprovements && assetStandard === TokenStandard.ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -205,6 +212,7 @@ export default function ConfirmApprove({
             tokenSymbol={tokenSymbol}
             decimals={decimals}
             fromAddressIsLedger={fromAddressIsLedger}
+            warning={submitWarning}
           />
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
@@ -223,6 +231,7 @@ export default function ConfirmApprove({
       </GasFeeContextProvider>
     );
   }
+
   return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
@@ -319,6 +328,7 @@ export default function ConfirmApprove({
         hideSenderToRecipient
         customTxParamsData={customData}
         assetStandard={assetStandard}
+        displayAccountBalanceHeader
       />
     </GasFeeContextProvider>
   );

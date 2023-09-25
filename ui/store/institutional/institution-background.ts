@@ -11,7 +11,7 @@ import {
   callBackgroundMethod,
   submitRequestToBackground,
 } from '../action-queue';
-import { MetaMaskReduxState } from '../store';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
 
 export function showInteractiveReplacementTokenBanner({
@@ -20,12 +20,14 @@ export function showInteractiveReplacementTokenBanner({
 }: {
   url: string;
   oldRefreshToken: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
+}) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
-        url,
-        oldRefreshToken,
+        {
+          url,
+          oldRefreshToken,
+        },
       ]);
     } catch (err: any) {
       if (err) {
@@ -35,6 +37,37 @@ export function showInteractiveReplacementTokenBanner({
     }
   };
 }
+
+export function setTypedMessageInProgress(msgId: string) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('setTypedMessageInProgress', [msgId]);
+    } catch (error: any) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function setPersonalMessageInProgress(msgId: string) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('setPersonalMessageInProgress', [msgId]);
+    } catch (error: any) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 /**
  * A factory that contains all MMI actions ready to use
  * Example usage:
@@ -49,7 +82,7 @@ export function mmiActionsFactory() {
     loadingText?: string,
   ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
     log.debug(`background.${name}`);
-    return async (dispatch) => {
+    return async (dispatch: any) => {
       if (loadingText) {
         dispatch(showLoadingIndication(loadingText));
       }
@@ -156,36 +189,27 @@ export function mmiActionsFactory() {
         'setWaitForConfirmDeepLinkDialog',
         waitForConfirmDeepLinkDialog,
       ),
-    setComplianceAuthData: (clientId: string, projectId: string) =>
-      createAsyncAction('setComplianceAuthData', [{ clientId, projectId }]),
-    deleteComplianceAuthData: () =>
-      createAsyncAction('deleteComplianceAuthData', []),
-    generateComplianceReport: (address: string) =>
-      createAction('generateComplianceReport', address),
-    getComplianceHistoricalReportsByAddress: (
-      address: string,
-      projectId: string,
-    ) =>
-      createAsyncAction('getComplianceHistoricalReportsByAddress', [
-        address,
-        projectId,
-      ]),
-    syncReportsInProgress: (address: string, historicalReports: []) =>
-      createAction('syncReportsInProgress', { address, historicalReports }),
-    removeConnectInstitutionalFeature: (origin: string, projectId: string) =>
-      createAction('removeConnectInstitutionalFeature', { origin, projectId }),
-    removeAddTokenConnectRequest: (
-      origin: string,
-      apiUrl: string,
-      token: string,
-    ) =>
+    removeAddTokenConnectRequest: ({
+      origin,
+      apiUrl,
+      token,
+    }: {
+      origin: string;
+      apiUrl: string;
+      token: string;
+    }) =>
       createAction('removeAddTokenConnectRequest', { origin, apiUrl, token }),
-    setCustodianConnectRequest: (
-      token: string,
-      apiUrl: string,
-      custodianType: string,
-      custodianName: string,
-    ) =>
+    setCustodianConnectRequest: ({
+      token,
+      apiUrl,
+      custodianType,
+      custodianName,
+    }: {
+      token: string;
+      apiUrl: string;
+      custodianType: string;
+      custodianName: string;
+    }) =>
       createAsyncAction('setCustodianConnectRequest', [
         { token, apiUrl, custodianType, custodianName },
       ]),
@@ -197,19 +221,21 @@ export function mmiActionsFactory() {
         custodyType,
         token,
       ]),
-    setCustodianNewRefreshToken: (
-      address: string,
-      oldAuthDetails: string,
-      oldApiUrl: string,
-      newAuthDetails: string,
-      newApiUrl: string,
-    ) =>
+    setCustodianNewRefreshToken: ({
+      address,
+      oldAuthDetails,
+      oldApiUrl,
+      newAuthDetails,
+      newApiUrl,
+    }: {
+      address: string;
+      oldAuthDetails: string;
+      oldApiUrl: string;
+      newAuthDetails: string;
+      newApiUrl: string;
+    }) =>
       createAsyncAction('setCustodianNewRefreshToken', [
-        address,
-        oldAuthDetails,
-        oldApiUrl,
-        newAuthDetails,
-        newApiUrl,
+        { address, oldAuthDetails, oldApiUrl, newAuthDetails, newApiUrl },
       ]),
   };
 }

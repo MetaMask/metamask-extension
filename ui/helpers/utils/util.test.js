@@ -918,4 +918,15 @@ describe('util', () => {
       expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
     });
   });
+
+  describe('getNetworkNameFromProviderType()', () => {
+    it('should return providerConfig.type if the type is not rpc', () => {
+      expect(util.getNetworkNameFromProviderType('mainnet')).toStrictEqual(
+        'mainnet',
+      );
+    });
+    it('should return empty string if teh providerConfig.type is rpc', () => {
+      expect(util.getNetworkNameFromProviderType('rpc')).toStrictEqual('');
+    });
+  });
 });

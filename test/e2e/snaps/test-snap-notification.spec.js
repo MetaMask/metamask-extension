@@ -33,10 +33,10 @@ describe('Test Snap Notification', function () {
         await driver.delay(1000);
 
         // find and scroll down to snapId5 and connect
-        const snapButton = await driver.findElement('#connectNotification');
+        const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectNotification');
+        await driver.clickElement('#connectnotifications');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -55,17 +55,17 @@ describe('Test Snap Notification', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
@@ -74,8 +74,8 @@ describe('Test Snap Notification', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectNotification',
-          text: 'Reconnect to Notification Snap',
+          css: '#connectnotifications',
+          text: 'Reconnect to Notifications Snap',
         });
 
         await driver.clickElement('#sendInAppNotification');
@@ -85,19 +85,25 @@ describe('Test Snap Notification', function () {
         await driver.delay(1000);
 
         // check to see that there is one notification
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         const notificationResult = await driver.findElement(
-          '.account-menu__icon__notification-count',
+          '[data-testid="global-menu-notification-count"]',
         );
         assert.equal(await notificationResult.getText(), '1');
+        await driver.clickElement('.menu__background');
 
         // try to click on the account menu icon (via xpath)
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.delay(500);
 
         // try to click on the notification item (via xpath)
         await driver.clickElement({
-          text: 'Notifications',
-          tag: 'div',
+          text: 'Notifications 1',
+          css: '.menu-item',
         });
         await driver.delay(500);
 
@@ -107,7 +113,7 @@ describe('Test Snap Notification', function () {
         );
         assert.equal(
           await notificationResultMessage.getText(),
-          'TEST INAPP NOTIFICATION',
+          'Hello from within MetaMask!',
         );
       },
     );

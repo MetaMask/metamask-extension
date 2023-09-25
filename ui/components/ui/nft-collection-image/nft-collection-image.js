@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import Box from '../box';
-import { Color, TEXT_ALIGN } from '../../../helpers/constants/design-system';
+import { Color, TextAlign } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
 import { getTokenList } from '../../../selectors';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
@@ -28,7 +28,7 @@ export default function NftCollectionImage({ assetName, tokenAddress }) {
     return (
       <Box
         color={Color.overlayInverse}
-        textAlign={TEXT_ALIGN.CENTER}
+        textAlign={TextAlign.Center}
         className="collection-image-alt"
       >
         {assetName?.[0]?.toUpperCase() ?? null}

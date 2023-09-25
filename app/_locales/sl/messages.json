@@ -93,9 +93,6 @@
   "back": {
     "message": "Nazaj"
   },
-  "backToAll": {
-    "message": "Nazaj na vse"
-  },
   "backupApprovalInfo": {
     "message": "Ta skrivna koda je potrebna za obnovitev denarnice, če izgubite napravo, pozabite geslo, ponovno namestite MetaMask ali želite dostopati do denarnice v drugi napravi."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Poveži"
   },
-  "connectHardwareWallet": {
-    "message": "Poveži strojno denarnico"
-  },
   "connectingTo": {
     "message": "Povezovanje na $1"
   },
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Povezovanje na testno omrežje Linea Goerli"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "Kopiraj naslov v odložišče"
   },
-  "copyPrivateKey": {
-    "message": "To je vaš zesebni ključ (kliknite za kopiranje)"
-  },
   "copyToClipboard": {
     "message": "Kopiraj v odložišče"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "Ustvari"
-  },
-  "createAccount": {
-    "message": "Ustvari račun"
   },
   "createPassword": {
     "message": "Ustvari geslo"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteAccount": {
-    "message": "Izbriši račun"
-  },
   "deleteNetwork": {
     "message": "Izbrišem to omrežje?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
   },
   "details": {
     "message": "Podrobnosti"
@@ -256,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Napaka pri registraciji imena ENS"
   },
-  "enterPassword": {
-    "message": "Vnesite geslo"
-  },
   "enterPasswordContinue": {
     "message": "Za nadaljevanje vnesite geslo"
   },
@@ -270,9 +249,6 @@
   },
   "expandView": {
     "message": "Razširi pogled"
-  },
-  "exportPrivateKey": {
-    "message": "Izvozi zasebni ključ"
   },
   "failed": {
     "message": "Ni uspelo"
@@ -409,7 +385,7 @@
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testno omrežje Linea Goerli"
   },
   "links": {
@@ -441,9 +417,6 @@
   },
   "mustSelectOne": {
     "message": "Izbran mora biti vsaj 1 žeton."
-  },
-  "myAccounts": {
-    "message": "Moji računi"
   },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
@@ -563,14 +536,8 @@
   "privateNetwork": {
     "message": "Zasebno omrežje"
   },
-  "queue": {
-    "message": "Čakalna vrsta"
-  },
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
-  },
-  "recents": {
-    "message": "Nedavno"
   },
   "recipientAddressPlaceholder": {
     "message": "Iskanje, javni naslov (0x) ali ENS"
@@ -636,9 +603,6 @@
   "searchResults": {
     "message": "Rezultati iskanja"
   },
-  "searchTokens": {
-    "message": "Iskanje žetonov"
-  },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
   },
@@ -677,9 +641,6 @@
   },
   "showHexDataDescription": {
     "message": "Izberite za prikaz hex podatkov na zaslonu za pošiljanje"
-  },
-  "showPrivateKeys": {
-    "message": "Pokaži zasebni ključ"
   },
   "sigRequest": {
     "message": "Zahteva za podpis"
@@ -795,21 +756,11 @@
   "transfer": {
     "message": "Prenesi"
   },
-  "transferBetweenAccounts": {
-    "message": "Prenos med mojimi računi"
-  },
   "transferFrom": {
     "message": "Prenesi od"
   },
-  "troubleTokenBalances": {
-    "message": "Če imate težave pri ogledu zneskov žetonov si jih lahko ogledate ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Poskusi znova"
-  },
-  "typePassword": {
-    "message": "Vnesite vaše MetaMask geslo"
   },
   "unapproved": {
     "message": "Neodobreno"

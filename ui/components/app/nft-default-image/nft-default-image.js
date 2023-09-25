@@ -1,40 +1,57 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { useDispatch } from 'react-redux';
+import {
+  Display,
+  AlignItems,
+  JustifyContent,
+  BorderRadius,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Text } from '../../component-library';
+import { ButtonLink, Box } from '../../component-library';
+import { showIpfsModal } from '../../../store/actions';
 
-export default function NftDefaultImage({ name, tokenId, handleImageClick }) {
+export default function NftDefaultImage({ className, clickable }) {
   const t = useI18nContext();
-  const Tag = handleImageClick ? 'button' : 'div';
+  const dispatch = useDispatch();
+
   return (
-    <Tag
+    <Box
       tabIndex={0}
       data-testid="nft-default-image"
-      className={classnames('nft-default', {
-        'nft-default--clickable': handleImageClick,
+      className={classnames(className, 'nft-default', {
+        'nft-default--clickable': clickable,
       })}
-      onClick={handleImageClick}
+      display={Display.Flex}
+      alignItems={AlignItems.Center}
+      justifyContent={JustifyContent.Center}
+      borderRadius={BorderRadius.LG}
     >
-      <Text variant={TextVariant.bodySm} as="h6" className="nft-default__text">
-        {name ?? t('unknownCollection')} <br /> #{tokenId}
-      </Text>
-    </Tag>
+      {clickable && (
+        <ButtonLink
+          block
+          className="nft-default__button"
+          onClick={(e) => {
+            e.stopPropagation();
+            dispatch(showIpfsModal());
+          }}
+        >
+          {t('show')}
+        </ButtonLink>
+      )}
+    </Box>
   );
 }
 
 NftDefaultImage.propTypes = {
   /**
-   * The name of the NFT collection if not supplied will default to "Unnamed collection"
+   * Controls the css class for the cursor hover
+   * It determines if we need to show the button on default image or not
    */
-  name: PropTypes.string,
+  clickable: PropTypes.bool,
   /**
-   * The token id of the nft
+   * An additional className to apply to the NFT default image
    */
-  tokenId: PropTypes.string,
-  /**
-   * The click handler for the NFT default image
-   */
-  handleImageClick: PropTypes.func,
+  className: PropTypes.string,
 };

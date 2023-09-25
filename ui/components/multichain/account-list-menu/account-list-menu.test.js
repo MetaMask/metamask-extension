@@ -1,27 +1,42 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import messages from '../../../../app/_locales/en/messages.json';
 import {
-  NEW_ACCOUNT_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  ADD_SNAP_ACCOUNT_ROUTE,
 } from '../../../helpers/constants/routes';
+///: END:ONLY_INCLUDE_IN
 import { AccountListMenu } from '.';
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+const mockToggleAccountMenu = jest.fn();
+const mockGetEnvironmentType = jest.fn();
+
+jest.mock('../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../store/actions.ts'),
+  toggleAccountMenu: () => mockToggleAccountMenu,
+}));
+
+jest.mock('../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../app/scripts/lib/util'),
+  getEnvironmentType: () => mockGetEnvironmentType,
+}));
+///: END:ONLY_INCLUDE_IN
 
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
+    ...mockState,
     activeTab: {
       id: 113,
       title: 'E2E Test Dapp',
       origin: 'https://metamask.github.io',
       protocol: 'https:',
       url: 'https://metamask.github.io/test-dapp/',
-    },
-    metamask: {
-      ...mockState.metamask,
     },
   });
   return renderWithProvider(<AccountListMenu {...props} />, store);
@@ -45,24 +60,32 @@ describe('AccountListMenu', () => {
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
     expect(getByText('Add account')).toBeInTheDocument();
     expect(getByText('Import account')).toBeInTheDocument();
-    expect(getByText('Hardware wallet')).toBeInTheDocument();
+    expect(getByText('Add hardware wallet')).toBeInTheDocument();
   });
 
-  it('navigates to new account screen when clicked', () => {
-    const { getByText } = render();
+  it('shows the account creation UI when Add Account is clicked', () => {
+    const { getByText, getByPlaceholderText } = render();
     fireEvent.click(getByText('Add account'));
-    expect(historyPushMock).toHaveBeenCalledWith(NEW_ACCOUNT_ROUTE);
+    expect(getByText('Create')).toBeInTheDocument();
+    expect(getByText('Cancel')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Cancel'));
+    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
   });
 
-  it('navigates to import account screen when clicked', () => {
-    const { getByText } = render();
+  it('shows the account import UI when Import Account is clicked', () => {
+    const { getByText, getByPlaceholderText } = render();
     fireEvent.click(getByText('Import account'));
-    expect(historyPushMock).toHaveBeenCalledWith(IMPORT_ACCOUNT_ROUTE);
+    expect(getByText('Import')).toBeInTheDocument();
+    expect(getByText('Cancel')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Cancel'));
+    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
   });
 
   it('navigates to hardware wallet connection screen when clicked', () => {
     const { getByText } = render();
-    fireEvent.click(getByText('Hardware wallet'));
+    fireEvent.click(getByText('Add hardware wallet'));
     expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
@@ -97,7 +120,7 @@ describe('AccountListMenu', () => {
     );
     expect(filteredListItems).toHaveLength(0);
     expect(
-      getByTestId('multichain-account-menu-no-results'),
+      getByTestId('multichain-account-menu-popover-no-results'),
     ).toBeInTheDocument();
   });
 
@@ -133,4 +156,61 @@ describe('AccountListMenu', () => {
     const searchBox = document.querySelector('input[type=search]');
     expect(searchBox).toBeInTheDocument();
   });
+
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  describe('addSnapAccountButton', () => {
+    const renderWithState = (state, props = { onClose: () => jest.fn() }) => {
+      const store = configureStore({
+        ...mockState,
+        ...{
+          metamask: {
+            ...mockState.metamask,
+            ...state,
+          },
+        },
+        activeTab: {
+          id: 113,
+          title: 'E2E Test Dapp',
+          origin: 'https://metamask.github.io',
+          protocol: 'https:',
+          url: 'https://metamask.github.io/test-dapp/',
+        },
+      });
+      return renderWithProvider(<AccountListMenu {...props} />, store);
+    };
+
+    it("doesn't render the add snap account button if it's disabled", async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: false });
+      expect(() => getByText(messages.settingAddSnapAccount.message)).toThrow(
+        `Unable to find an element with the text: ${messages.settingAddSnapAccount.message}`,
+      );
+    });
+
+    it("renders the add snap account button if it's enabled", async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: true });
+      const addSnapAccountButton = getByText(
+        messages.settingAddSnapAccount.message,
+      );
+      expect(addSnapAccountButton).toBeInTheDocument();
+
+      fireEvent.click(addSnapAccountButton);
+      await waitFor(() => {
+        expect(mockToggleAccountMenu).toHaveBeenCalled();
+      });
+    });
+
+    it('pushes history when clicking add snap account from extended view', async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: true });
+      mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
+      const addSnapAccountButton = getByText(
+        messages.settingAddSnapAccount.message,
+      );
+
+      fireEvent.click(addSnapAccountButton);
+      await waitFor(() => {
+        expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
+      });
+    });
+  });
+  ///: END:ONLY_INCLUDE_IN
 });

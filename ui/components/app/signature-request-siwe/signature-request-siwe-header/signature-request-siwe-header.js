@@ -48,6 +48,9 @@ export default function SignatureRequestSIWEHeader({
       {fromAccount && (
         <AccountListItem
           account={fromAccount}
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          hideDefaultMismatchWarning
+          ///: END:ONLY_INCLUDE_IN
           className="signature-request-siwe-header__account-list-item"
         />
       )}

@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
+import { NetworkType } from '@metamask/controller-utils';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { domainInitialState } from '../../ducks/domains';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -64,14 +65,14 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: 'activity' },
   metamask: {
-    unapprovedTxs: {
-      1: {
+    transactions: [
+      {
         id: 1,
         txParams: {
           value: 'oldTxValue',
         },
       },
-    },
+    ],
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
@@ -85,8 +86,12 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    networkDetails: {
-      EIPS: {},
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {},
+        status: 'available',
+      },
     },
     tokens: [],
     preferences: {
@@ -103,7 +108,6 @@ const baseStore = {
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },
-    currentNetworkTxList: [],
     cachedBalances: {
       [CHAIN_IDS.GOERLI]: {},
     },
@@ -182,7 +186,7 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(
-        getByPlaceholderText('Search, public address (0x), or ENS'),
+        getByPlaceholderText('Enter public address (0x) or ENS name'),
       ).toBeTruthy();
     });
 
@@ -205,7 +209,7 @@ describe('Send Page', () => {
       // Ensure that the send flow renders on the add recipient screen when
       // there is no draft transaction.
       expect(
-        getByPlaceholderText('Search, public address (0x), or ENS'),
+        getByPlaceholderText('Enter public address (0x) or ENS name'),
       ).toBeTruthy();
       // Ensure we start a new draft transaction when its missing.
       expect(startNewDraftTransaction).toHaveBeenCalledTimes(1);
@@ -247,7 +251,7 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(
-        getByPlaceholderText('Search, public address (0x), or ENS'),
+        getByPlaceholderText('Enter public address (0x) or ENS name'),
       ).toBeTruthy();
     });
 

@@ -4,6 +4,16 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import ConfirmAddCustodianToken from './confirm-add-custodian-token';
 
+const mockedRemoveAddTokenConnectRequest = jest
+  .fn()
+  .mockReturnValue({ type: 'TYPE' });
+
+jest.mock('../../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
+    removeAddTokenConnectRequest: mockedRemoveAddTokenConnectRequest,
+  }),
+}));
+
 describe('Confirm Add Custodian Token', () => {
   const mockStore = {
     metamask: {
@@ -14,7 +24,6 @@ describe('Confirm Add Custodian Token', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       institutionalFeatures: {
-        complianceProjectId: '',
         connectRequests: [
           {
             labels: [
@@ -41,23 +50,6 @@ describe('Confirm Add Custodian Token', () => {
 
   const store = configureMockStore()(mockStore);
 
-  it('opens confirm add custodian token with correct token', () => {
-    renderWithProvider(<ConfirmAddCustodianToken />, store);
-
-    const tokenContainer = screen.getByText('...testToken');
-    expect(tokenContainer).toBeInTheDocument();
-  });
-
-  it('shows the custodian on cancel click', () => {
-    renderWithProvider(<ConfirmAddCustodianToken />, store);
-
-    const cancelButton = screen.getByTestId('cancel-btn');
-
-    fireEvent.click(cancelButton);
-
-    expect(screen.getByText('Custodian')).toBeInTheDocument();
-  });
-
   it('tries to connect to custodian with empty token', async () => {
     const customMockedStore = {
       metamask: {
@@ -68,7 +60,6 @@ describe('Confirm Add Custodian Token', () => {
           useNativeCurrencyAsPrimaryCurrency: true,
         },
         institutionalFeatures: {
-          complianceProjectId: '',
           connectRequests: [
             {
               labels: [
@@ -111,7 +102,7 @@ describe('Confirm Add Custodian Token', () => {
     const confirmButton = screen.getByTestId('confirm-btn');
     fireEvent.click(confirmButton);
 
-    expect(screen.getByText('test')).toBeInTheDocument();
+    expect(screen.getByText('Confirm connection to test')).toBeInTheDocument();
   });
 
   it('shows the error area', () => {

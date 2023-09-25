@@ -2,7 +2,7 @@ import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
+import { getRpcCaveatOrigins } from '@metamask/snaps-controllers';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -16,20 +16,16 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
+  AvatarIconSize,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  Text,
   Icon,
+  Text,
   ///: END:ONLY_INCLUDE_IN
   IconName,
   IconSize,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import {
-  Color,
-  FONT_WEIGHT,
-  IconColor,
-  TextVariant,
-} from '../constants/design-system';
+import { Color, FontWeight, IconColor } from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -49,7 +45,7 @@ function getLeftIcon(iconName) {
   return (
     <AvatarIcon
       iconName={iconName}
-      size={IconSize.Sm}
+      size={AvatarIconSize.Sm}
       iconProps={{
         size: IconSize.Xs,
       }}
@@ -93,16 +89,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           <Text
             key="1"
             color={Color.primaryDefault}
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Medium}
             as="span"
           >
-            {getSnapName(targetSubjectMetadata?.origin)}
+            {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
           </Text>,
-          <b key="2">
+          <Text as="span" key="2" fontWeight={FontWeight.Medium}>
             {getSnapDerivationPathName(path, curve) ??
               `${path.join('/')} (${curve})`}
-          </b>,
+          </Text>,
         ]),
       };
 
@@ -163,16 +158,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           <Text
             key="1"
             color={Color.primaryDefault}
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Medium}
             as="span"
           >
-            {getSnapName(targetSubjectMetadata?.origin)}
+            {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
           </Text>,
-          <b key="2">
+          <Text as="span" key="2" fontWeight={FontWeight.Medium}>
             {getSnapDerivationPathName(path, curve) ??
               `${path.join('/')} (${curve})`}
-          </b>,
+          </Text>,
         ]),
       };
 
@@ -245,16 +239,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         <Text
           key="1"
           color={Color.primaryDefault}
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TextVariant.bodySm}
+          fontWeight={FontWeight.Medium}
           as="span"
         >
-          {getSnapName(targetSubjectMetadata?.origin)}
+          {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
         </Text>,
-        <b key="2">
+        <Text as="span" key="2" fontWeight={FontWeight.Medium}>
           {coinTypeToProtocolName(coinType) ||
             t('unrecognizedProtocol', [coinType])}
-        </b>,
+        </Text>,
       ]),
     })),
   [RestrictedMethods.snap_getEntropy]: ({ t }) => ({
@@ -263,13 +256,24 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.SecurityKey,
     weight: 3,
   }),
+
   [RestrictedMethods.snap_manageState]: ({ t }) => ({
     label: t('permission_manageState'),
     description: t('permission_manageStateDescription'),
     leftIcon: IconName.AddSquare,
     weight: 3,
   }),
-  [RestrictedMethods.wallet_snap]: ({ t, permissionValue }) => {
+  [RestrictedMethods.snap_getLocale]: ({ t }) => ({
+    label: t('permission_getLocale'),
+    description: t('permission_getLocaleDescription'),
+    leftIcon: IconName.Home,
+    weight: 3,
+  }),
+  [RestrictedMethods.wallet_snap]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
       leftIcon: getLeftIcon(IconName.Flash),
@@ -277,7 +281,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     };
 
     return Object.keys(snaps).map((snapId) => {
-      const friendlyName = getSnapName(snapId);
+      const friendlyName = getSnapName(snapId, targetSubjectMetadata);
       if (friendlyName) {
         return {
           ...baseDescription,
@@ -392,6 +396,21 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return results;
   },
+  [EndowmentPermissions['endowment:lifecycle-hooks']]: ({ t }) => ({
+    label: t('permission_lifecycleHooks'),
+    description: t('permission_lifecycleHooksDescription'),
+    leftIcon: IconName.Hierarchy,
+    weight: 3,
+  }),
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
+    label: t('permission_manageAccounts'),
+    description: t('permission_manageAccountsDescription'),
+    leftIcon: getLeftIcon(IconName.UserCircleAdd),
+    rightIcon: null,
+    weight: 3,
+  }),
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),

@@ -1,16 +1,16 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
 import {
   TextVariant,
   TextAlign,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   AlignItems,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { AvatarAccount, BUTTON_SIZES, Button, Text } from '..';
+import { AvatarAccount, ButtonSize, Button, Text } from '..';
 
 import { ModalHeader } from './modal-header';
 import README from './README.mdx';
@@ -32,16 +32,16 @@ export default {
   args: {
     children: 'ModalHeader',
   },
-} as ComponentMeta<typeof ModalHeader>;
+} as Meta<typeof ModalHeader>;
 
-const Template: ComponentStory<typeof ModalHeader> = (args) => {
+const Template: StoryFn<typeof ModalHeader> = (args) => {
   return <ModalHeader {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Children: ComponentStory<typeof ModalHeader> = (args) => (
+export const Children: StoryFn<typeof ModalHeader> = (args) => (
   <>
     <ModalHeader {...args} marginBottom={4}>
       Children as string
@@ -49,8 +49,8 @@ export const Children: ComponentStory<typeof ModalHeader> = (args) => (
     <ModalHeader
       {...args}
       childrenWrapperProps={{
-        display: DISPLAY.FLEX,
-        flexDirection: FLEX_DIRECTION.COLUMN,
+        display: Display.Flex,
+        flexDirection: FlexDirection.Column,
         alignItems: AlignItems.center,
         justifyContent: JustifyContent.center,
       }}
@@ -76,11 +76,11 @@ OnClose.args = {
 export const StartAccessory = Template.bind({});
 StartAccessory.args = {
   children: 'StartAccessory demo',
-  startAccessory: <Button size={BUTTON_SIZES.SM}>Demo</Button>,
+  startAccessory: <Button size={ButtonSize.Sm}>Demo</Button>,
 };
 
 export const EndAccessory = Template.bind({});
 EndAccessory.args = {
   children: 'EndAccessory demo',
-  endAccessory: <Button size={BUTTON_SIZES.SM}>Demo</Button>,
+  endAccessory: <Button size={ButtonSize.Sm}>Demo</Button>,
 };

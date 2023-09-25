@@ -93,9 +93,6 @@
   "back": {
     "message": "Grįžti"
   },
-  "backToAll": {
-    "message": "Atgal prie visų"
-  },
   "backupApprovalInfo": {
     "message": "Šis slaptas kodas reikalingas norint atkurti jūsų slaptažodinę, jeigu pamestumėte savo įrenginį, pamirštumėte savo slaptažodį, iš naujo įdiegtumėte „MetaMask“, taip pat norint pasiekti slaptažodinę iš kito įrenginio."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Prisijungti"
   },
-  "connectHardwareWallet": {
-    "message": "Susieti aparatinės įrangos slaptažodinę"
-  },
   "connectingTo": {
     "message": "Jungiamasi prie $1"
   },
   "connectingToGoerli": {
     "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Jungiamasi prie „Linea“ bandomojo tinklo"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "Kopijuoti adresą į iškarpinę"
   },
-  "copyPrivateKey": {
-    "message": "Tai yra jūsų asmeninis raktas (spustelėkite, kad nukopijuotumėte)"
-  },
   "copyToClipboard": {
     "message": "Kopijuoti į iškarpinę"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "Sukurti"
-  },
-  "createAccount": {
-    "message": "Sukurti paskyrą"
   },
   "createPassword": {
     "message": "Sukurti slaptažodį"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "Ištrinti"
   },
-  "deleteAccount": {
-    "message": "Šalinti paskyrą"
-  },
   "deleteNetwork": {
     "message": "Panaikinti tinklą?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Ar tikrai norite panaikinti šį tinklą?"
   },
   "details": {
     "message": "Išsami informacija"
@@ -256,9 +238,6 @@
   "ensRegistrationError": {
     "message": "ENS pavadinimo registracijos klaida"
   },
-  "enterPassword": {
-    "message": "Įveskite slaptažodį"
-  },
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
   },
@@ -270,9 +249,6 @@
   },
   "expandView": {
     "message": "Išskleisti rodinį"
-  },
-  "exportPrivateKey": {
-    "message": "Eksportuoti asmeninį raktą"
   },
   "failed": {
     "message": "Nepavyko"
@@ -415,7 +391,7 @@
   "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "„Linea“ bandomasis tinklas"
   },
   "links": {
@@ -453,9 +429,6 @@
   },
   "mustSelectOne": {
     "message": "Turite pasirinkti bent 1 žetoną."
-  },
-  "myAccounts": {
-    "message": "Mano paskyros"
   },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
@@ -575,14 +548,8 @@
   "privateNetwork": {
     "message": "Privatus tinklas"
   },
-  "queue": {
-    "message": "Eilė"
-  },
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
-  },
-  "recents": {
-    "message": "Naujausi"
   },
   "recipientAddressPlaceholder": {
     "message": "Ieška, viešieji adresai (0x) arba ENS"
@@ -648,9 +615,6 @@
   "searchResults": {
     "message": "Paieškos rezultatai"
   },
-  "searchTokens": {
-    "message": "Ieškoti žetonų"
-  },
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
   },
@@ -689,9 +653,6 @@
   },
   "showHexDataDescription": {
     "message": "Pasirinkite tai, kad siuntimo ekrane būtų rodomas šešioliktainių duomenų laukas"
-  },
-  "showPrivateKeys": {
-    "message": "Rodyti asmeninius raktus"
   },
   "sigRequest": {
     "message": "Parašo užklausa"
@@ -807,21 +768,11 @@
   "transfer": {
     "message": "Pervesti"
   },
-  "transferBetweenAccounts": {
-    "message": "Perkėlimas tarp savo paskyrų"
-  },
   "transferFrom": {
     "message": "Pervedimas iš"
   },
-  "troubleTokenBalances": {
-    "message": "Susidurta su sunkumais įkeliant jūsų žetonų likučius. Galite juos peržiūrėti ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Bandyti dar kartą"
-  },
-  "typePassword": {
-    "message": "Įveskite savo „MetaMask“ slaptažodį"
   },
   "unapproved": {
     "message": "Nepatvirtinta"

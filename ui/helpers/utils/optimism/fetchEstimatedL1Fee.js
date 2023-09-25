@@ -1,5 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 
 // Snippet of the ABI that we need
@@ -24,15 +25,15 @@ export default async function fetchEstimatedL1Fee(
   txMeta,
   ethersProvider,
 ) {
-  const networkId = Number(chainId);
+  const chainIdAsDecimalNumber = Number(hexToDecimal(chainId));
   const provider = global.ethereumProvider
-    ? new Web3Provider(global.ethereumProvider, networkId)
+    ? new Web3Provider(global.ethereumProvider, chainIdAsDecimalNumber)
     : ethersProvider;
 
   if (process.env.IN_TEST) {
     provider.detectNetwork = async () => ({
       name: 'optimism',
-      chainId: networkId,
+      chainId: chainIdAsDecimalNumber,
     });
   }
   const contract = new Contract(

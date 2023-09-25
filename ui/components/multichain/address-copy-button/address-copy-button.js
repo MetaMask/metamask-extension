@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { ButtonBase } from '../../component-library';
-// TODO: Replace ICON_NAMES with IconName when ButtonBase/Buttons have been updated
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
+import { ButtonBase, IconName } from '../../component-library';
 import {
   BackgroundColor,
   TextVariant,
@@ -16,6 +15,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MINUTE } from '../../../../shared/constants/time';
 
 export const AddressCopyButton = ({
   address,
@@ -23,8 +23,11 @@ export const AddressCopyButton = ({
   wrap = false,
   onClick,
 }) => {
-  const displayAddress = shorten ? shortenAddress(address) : address;
-  const [copied, handleCopy] = useCopyToClipboard();
+  const checksummedAddress = toChecksumHexAddress(address);
+  const displayAddress = shorten
+    ? shortenAddress(checksummedAddress)
+    : checksummedAddress;
+  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
 
   return (
@@ -32,7 +35,7 @@ export const AddressCopyButton = ({
       <ButtonBase
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={() => {
-          handleCopy(address);
+          handleCopy(checksummedAddress);
           onClick?.();
         }}
         paddingRight={4}
@@ -40,7 +43,7 @@ export const AddressCopyButton = ({
         size={Size.SM}
         variant={TextVariant.bodySm}
         color={TextColor.primaryDefault}
-        endIconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+        endIconName={copied ? IconName.CopySuccess : IconName.Copy}
         className={classnames('multichain-address-copy-button', {
           'multichain-address-copy-button__address--wrap': wrap,
         })}

@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Modal should match snapshot 1`] = `
+<div
+  class="mm-modal"
+  data-testid="test"
+>
+  <div>
+    modal content
+  </div>
+</div>
+`;

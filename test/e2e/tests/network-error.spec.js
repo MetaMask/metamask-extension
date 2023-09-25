@@ -1,12 +1,16 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  logInWithBalanceValidation,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Gas API fallback', function () {
   async function mockGasApiDown(mockServer) {
     await mockServer
       .forGet(
-        'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
+        'https://gas-api.metaswap.codefi.network/networks/1337/suggestedGasFees',
       )
       .always()
       .thenCallback(() => {
@@ -62,15 +66,13 @@ describe('Gas API fallback', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
+        await logInWithBalanceValidation(driver, ganacheServer);
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
@@ -78,6 +80,8 @@ describe('Gas API fallback', function () {
         await inputAmount.fill('1');
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        await driver.findElement('.transaction-alerts');
 
         const error = await driver.isElementPresent({
           text: 'Network is busy. Gas prices are high and estimates are less accurate.',

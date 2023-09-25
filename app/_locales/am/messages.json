@@ -87,9 +87,6 @@
   "back": {
     "message": "ተመለስ"
   },
-  "backToAll": {
-    "message": "ወደ ሁሉም ተመለስ"
-  },
   "backupApprovalInfo": {
     "message": "መሳሪያዎ ቢጠፋ፣ የይለፍ ቃልዎን ቢረሱ፣ MetaMask እንደገና መጫን ቢያስፈልግዎ ወይም በሌላ መሳሪያ ወደ ቋትዎ ለመድረስ ቢፈልጉ ይህ ሚስጥራዊ ኮድ ቋትዎን መልሶ ለማግኘት ያስፈልጋል።"
   },
@@ -148,16 +145,13 @@
   "connect": {
     "message": "ይገናኙ"
   },
-  "connectHardwareWallet": {
-    "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
   },
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "ከ Linea Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
   "connectingToMainnet": {
@@ -175,9 +169,6 @@
   "copyAddress": {
     "message": "አድራሻን ወደ ቅንጥብ ሰሌዳ ቅዳ"
   },
-  "copyPrivateKey": {
-    "message": "የግል ቁልፍዎ ይህ ነው (ለመቅዳት ጠቅ ያድርጉ)"
-  },
   "copyToClipboard": {
     "message": "ወደ ቅንጥብ ሰሌዳ ገልብጥ"
   },
@@ -186,9 +177,6 @@
   },
   "create": {
     "message": "ፍጠር"
-  },
-  "createAccount": {
-    "message": "መለያ ፍጠር"
   },
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"
@@ -211,14 +199,8 @@
   "delete": {
     "message": "ሰርዝ"
   },
-  "deleteAccount": {
-    "message": "መለያን ሰርዝ"
-  },
   "deleteNetwork": {
     "message": "አውታረ መረብ ይሰረዝ?"
-  },
-  "deleteNetworkDescription": {
-    "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
   "details": {
     "message": "ዝርዝሮች"
@@ -247,9 +229,6 @@
   "ensRegistrationError": {
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
   },
-  "enterPassword": {
-    "message": "የይለፍ ቃል ያስገቡ"
-  },
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
@@ -261,9 +240,6 @@
   },
   "expandView": {
     "message": "እይታን ዘርጋ"
-  },
-  "exportPrivateKey": {
-    "message": "የግል ቁልፍን ላክ"
   },
   "failed": {
     "message": "አልተሳካም"
@@ -403,7 +379,7 @@
   "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "የ Linea Goerli የሙከራ አውታረ መረብ"
   },
   "links": {
@@ -438,9 +414,6 @@
   },
   "mustSelectOne": {
     "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"
-  },
-  "myAccounts": {
-    "message": "የእኔ መለያዎች"
   },
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",
@@ -560,14 +533,8 @@
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
   },
-  "queue": {
-    "message": "ወረፋ"
-  },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
-  },
-  "recents": {
-    "message": "የቅርብ ጊዜያት"
   },
   "recipientAddressPlaceholder": {
     "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
@@ -633,9 +600,6 @@
   "searchResults": {
     "message": "ውጤቶችን ፈልግ"
   },
-  "searchTokens": {
-    "message": "ተለዋጭ ስሞችን ፈልግ"
-  },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
@@ -674,9 +638,6 @@
   },
   "showHexDataDescription": {
     "message": "በመላኪያ ማያ ላይ የ hex ውሂብ መስክን ለማሳየት ይህን ይምረጡ"
-  },
-  "showPrivateKeys": {
-    "message": "የግል ቁልፎችን አሳይ"
   },
   "sigRequest": {
     "message": "የፊርማ ጥያቄ"
@@ -792,21 +753,11 @@
   "transfer": {
     "message": "ያስተላልፉ"
   },
-  "transferBetweenAccounts": {
-    "message": "በመለያዎች መካከል አስተላልፍ"
-  },
   "transferFrom": {
     "message": "የማዛወሪያ ቅጽ"
   },
-  "troubleTokenBalances": {
-    "message": "የተለዋጭ ስም ቀሪ ሂሳብዎን ስንጭን ችግር አጋጥሞናል። ማየት ይችላሉ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "እንደገና ሞክር"
-  },
-  "typePassword": {
-    "message": "የ MetaMask የይለፍ ቃልዎን ይጻፉ"
   },
   "unapproved": {
     "message": "ያልተፈቀደ"

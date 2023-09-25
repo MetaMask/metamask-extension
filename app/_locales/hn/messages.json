@@ -60,17 +60,11 @@
   "copiedExclamation": {
     "message": "कॉपी कर दिया गया!"
   },
-  "copyPrivateKey": {
-    "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)।"
-  },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी करें"
   },
   "create": {
     "message": "बनाएं"
-  },
-  "createAccount": {
-    "message": "खाता बनाएं"
   },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
@@ -90,14 +84,8 @@
   "edit": {
     "message": "संपादित करें"
   },
-  "enterPassword": {
-    "message": "पासवर्ड दर्ज करें"
-  },
   "etherscanView": {
     "message": "ईथरस्कैन पर खाता देखें"
-  },
-  "exportPrivateKey": {
-    "message": "निजी कुंजी निर्यात करें"
   },
   "failed": {
     "message": "विफल"
@@ -192,9 +180,6 @@
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना आवश्यक है।"
   },
-  "myAccounts": {
-    "message": "मेरे खाते"
-  },
   "needImportFile": {
     "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",
     "description": "User is important an account and needs to add a file to continue"
@@ -287,9 +272,6 @@
   "settings": {
     "message": "सेटिंग्स"
   },
-  "showPrivateKeys": {
-    "message": "निजी कुंजी दिखाएँ"
-  },
   "sigRequest": {
     "message": "हस्ताक्षर अनुरोध"
   },
@@ -322,13 +304,6 @@
   },
   "total": {
     "message": "कुल"
-  },
-  "troubleTokenBalances": {
-    "message": "मुसीबत... आपके टोकन शेष राशि को लोड करने में हमें परेशानी हुई थी। आप उन्हें देख सकते हैं",
-    "description": "Followed by a link (here) to view token balances"
-  },
-  "typePassword": {
-    "message": "अपना पासवर्ड टाइप करें"
   },
   "unknown": {
     "message": "अज्ञात नेटवर्क"

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsMainnet } from '../../../../selectors';
 import Box from '../../../ui/box';
 import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
-import Typography from '../../../ui/typography/typography';
+import { Text } from '../../../component-library';
 
 const GasDetailsItemTitle = () => {
   const t = useI18nContext();
@@ -21,15 +21,15 @@ const GasDetailsItemTitle = () => {
       <InfoTooltip
         contentText={
           <>
-            <Typography variant={TypographyVariant.H7}>
+            <Text variant={TextVariant.bodySm} as="h6">
               {t('transactionDetailGasTooltipIntro', [
                 isMainnet ? t('networkNameEthereum') : '',
               ])}
-            </Typography>
-            <Typography variant={TypographyVariant.H7}>
+            </Text>
+            <Text variant={TextVariant.bodySm} as="h6">
               {t('transactionDetailGasTooltipExplanation')}
-            </Typography>
-            <Typography variant={TypographyVariant.H7}>
+            </Text>
+            <Text variant={TextVariant.bodySm} as="h6">
               <a
                 href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                 target="_blank"
@@ -37,7 +37,7 @@ const GasDetailsItemTitle = () => {
               >
                 {t('transactionDetailGasTooltipConversion')}
               </a>
-            </Typography>
+            </Text>
           </>
         }
         position="bottom"

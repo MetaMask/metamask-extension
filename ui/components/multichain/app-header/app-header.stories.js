@@ -11,9 +11,12 @@ export default {
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   component: AppHeader,
   argTypes: {
-    onClick: {
-      action: 'onClick',
+    location: {
+      control: 'object',
     },
+  },
+  args: {
+    location: { pathname: '' },
   },
 };
 const customNetworkUnlockedData = {

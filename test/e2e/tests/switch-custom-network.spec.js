@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 
-describe('Swtich ethereum chain', function () {
+describe('Switch ethereum chain', function () {
   const ganacheOptions = {
     accounts: [
       {
@@ -88,7 +88,7 @@ describe('Swtich ethereum chain', function () {
         await driver.switchToWindow(extension);
 
         const currentNetworkName = await driver.findElement({
-          tag: 'span',
+          tag: 'p',
           text: 'Localhost 8546',
         });
 

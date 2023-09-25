@@ -50,7 +50,11 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
       {...props}
     >
       {typeof children === 'string' ? (
-        <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+        <Text
+          as="header"
+          variant={TextVariant.headingSm}
+          textAlign={TextAlign.Center}
+        >
           {children}
         </Text>
       ) : (

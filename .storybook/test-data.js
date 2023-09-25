@@ -1,5 +1,8 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
+import { CHAIN_IDS } from '../shared/constants/network';
 
 const state = {
   invalidCustomNetwork: {
@@ -16,82 +19,16 @@ const state = {
     protocol: 'https:',
     url: 'https://metamask.github.io/test-dapp/',
   },
-  networkList: [
-    {
-      blockExplorerUrl: 'https://etherscan.io',
-      chainId: '0x1',
-      iconColor: 'var(--mainnet)',
-      isATestNetwork: false,
-      labelKey: 'mainnet',
-      providerType: 'mainnet',
-      rpcUrl: 'https://mainnet.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: 'https://goerli.etherscan.io',
-      chainId: '0x5',
-      iconColor: 'var(--color-network-goerli-default)',
-      isATestNetwork: true,
-      labelKey: 'goerli',
-      providerType: 'goerli',
-      rpcUrl: 'https://goerli.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: 'https://sepolia.etherscan.io',
-      chainId: '0xaa36a7',
-      iconColor: 'var(--color-network-sepolia-default)',
-      isATestNetwork: true,
-      labelKey: 'sepolia',
-      providerType: 'sepolia',
-      rpcUrl: 'https://sepolia.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: '',
-      chainId: '0x539',
-      iconColor: 'var(--color-network-localhost-default)',
-      isATestNetwork: true,
-      label: 'Localhost 8545',
-      providerType: 'rpc',
-      rpcUrl: 'http://localhost:8545',
-      ticker: 'ETH',
-    },
-    {
-      blockExplorerUrl: 'https://bscscan.com',
-      chainId: '0x38',
-      iconColor: 'var(--color-network-localhost-default)',
-      isATestNetwork: false,
-      label: 'Binance Smart Chain',
-      providerType: 'rpc',
-      rpcUrl: 'https://bsc-dataseed.binance.org/',
-      ticker: 'BNB',
-    },
-    {
-      blockExplorerUrl: 'https://cchain.explorer.avax.network/',
-      chainId: '0xa86a',
-      iconColor: 'var(--color-network-localhost-default)',
-      isATestNetwork: false,
-      label: 'Avalanche',
-      providerType: 'rpc',
-      rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
-      ticker: 'AVAX',
-    },
-    {
-      blockExplorerUrl: 'https://polygonscan.com',
-      chainId: '0x89',
-      iconColor: 'var(--color-network-localhost-default)',
-      isATestNetwork: false,
-      label: 'Polygon',
-      providerType: 'rpc',
-      rpcUrl: 'https://polygon-rpc.com',
-      ticker: 'MATIC',
-    },
-  ],
   metamask: {
+    announcements: {
+      22: {
+        id: 22,
+        date: null,
+        image: {
+          src: 'images/global-menu-block-explorer.svg',
+        },
+      },
+    },
     tokenList: {
       '0x514910771af9ca656af840dff83e8264ecf986ca': {
         address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -239,6 +176,15 @@ const state = {
         1559: true,
       },
     },
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {
+          1559: true,
+        },
+        status: NetworkStatus.Available,
+      },
+    },
     gasFeeEstimates: '0x5208',
     swapsState: {
       quotes: {},
@@ -368,8 +314,8 @@ const state = {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
       },
     },
-    unapprovedTxs: {
-      3111025347726181: {
+    transactions: [
+      {
         id: 3111025347726181,
         time: 1620710815484,
         status: 'unapproved',
@@ -419,7 +365,7 @@ const state = {
           ],
         ],
       },
-    },
+    ],
     addressBook: {
       undefined: {
         0: {
@@ -584,6 +530,12 @@ const state = {
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
     },
+    incomingTransactionsPreferences: {
+      [CHAIN_IDS.MAINNET]: true,
+      [CHAIN_IDS.GOERLI]: false,
+      [CHAIN_IDS.OPTIMISM_TESTNET]: false,
+      [CHAIN_IDS.AVALANCHE_TESTNET]: true,
+    },
     firstTimeFlowType: 'create',
     completedOnboarding: true,
     knownMethodData: {
@@ -598,7 +550,7 @@ const state = {
     nextNonce: 71,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
-    defaultHomeActiveTabName: 'Assets',
+    defaultHomeActiveTabName: 'Tokens',
     providerConfig: {
       type: 'goerli',
       ticker: 'ETH',
@@ -622,7 +574,7 @@ const state = {
       },
     },
     currentBlockGasLimit: '0x793af4',
-    currentNetworkTxList: [
+    transactions: [
       {
         chainId: '0x38',
         dappSuggestedGasFees: null,
@@ -674,34 +626,7 @@ const state = {
               path: '/txParams/nonce',
               timestamp: 1629582711220,
               value: '0x15b',
-            },
-            {
-              op: 'add',
-              path: '/nonceDetails',
-              value: {
-                local: {
-                  details: {
-                    highest: 347,
-                    startPoint: 347,
-                  },
-                  name: 'local',
-                  nonce: 347,
-                },
-                network: {
-                  details: {
-                    baseCount: 347,
-                    blockNumber: '0x9c2682',
-                  },
-                  name: 'network',
-                  nonce: 347,
-                },
-                params: {
-                  highestLocallyConfirmed: 327,
-                  highestSuggested: 347,
-                  nextNetworkNonce: 347,
-                },
-              },
-            },
+            }
           ],
           [
             {
@@ -949,29 +874,6 @@ const state = {
         id: 7900715443136469,
         loadingDefaults: false,
         metamaskNetworkId: '56',
-        nonceDetails: {
-          local: {
-            details: {
-              highest: 347,
-              startPoint: 347,
-            },
-            name: 'local',
-            nonce: 347,
-          },
-          network: {
-            details: {
-              baseCount: 347,
-              blockNumber: '0x9c2682',
-            },
-            name: 'network',
-            nonce: 347,
-          },
-          params: {
-            highestLocallyConfirmed: 327,
-            highestSuggested: 347,
-            nextNetworkNonce: 347,
-          },
-        },
         origin: 'metamask',
         r: '0x90a4dfb0646eef9815454d0ab543b5844acb8772101084565155c93ecce8ed69',
         rawTx:
@@ -1228,7 +1130,6 @@ const state = {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': './sai.svg',
     },
     hiddenTokens: [],
-    suggestedAssets: [],
     useNonceField: false,
     usePhishDetect: true,
     useTokenDetection: true,
@@ -1236,7 +1137,6 @@ const state = {
     lostIdentities: {},
     forgottenPassword: false,
     ipfsGateway: 'dweb.link',
-    infuraBlocked: false,
     migratedPrivacyMode: false,
     selectedAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     metaMetricsId:
@@ -1424,23 +1324,6 @@ const state = {
           },
         },
       },
-    },
-    swapsState: {
-      quotes: {},
-      fetchParams: null,
-      tokens: null,
-      tradeTxId: null,
-      approveTxId: null,
-      quotesLastFetched: null,
-      customMaxGas: '',
-      customGasPrice: null,
-      selectedAggId: null,
-      customApproveTxData: '',
-      errorKey: '',
-      topAggId: null,
-      routeState: '',
-      swapsFeatureIsLive: false,
-      swapsQuoteRefreshTime: 60000,
     },
     ensResolutionsByAddress: {},
     pendingApprovals: {},
@@ -1691,5 +1574,81 @@ const state = {
     basicEstimateIsLoading: false,
   },
 };
+
+export const networkList = [
+  {
+    blockExplorerUrl: 'https://etherscan.io',
+    chainId: '0x1',
+    iconColor: 'var(--mainnet)',
+    isATestNetwork: false,
+    labelKey: 'mainnet',
+    providerType: 'mainnet',
+    rpcUrl: 'https://mainnet.infura.io/v3/',
+    ticker: 'ETH',
+    viewOnly: true,
+  },
+  {
+    blockExplorerUrl: 'https://goerli.etherscan.io',
+    chainId: '0x5',
+    iconColor: 'var(--color-network-goerli-default)',
+    isATestNetwork: true,
+    labelKey: 'goerli',
+    providerType: 'goerli',
+    rpcUrl: 'https://goerli.infura.io/v3/',
+    ticker: 'ETH',
+    viewOnly: true,
+  },
+  {
+    blockExplorerUrl: 'https://sepolia.etherscan.io',
+    chainId: '0xaa36a7',
+    iconColor: 'var(--color-network-sepolia-default)',
+    isATestNetwork: true,
+    labelKey: 'sepolia',
+    providerType: 'sepolia',
+    rpcUrl: 'https://sepolia.infura.io/v3/',
+    ticker: 'ETH',
+    viewOnly: true,
+  },
+  {
+    blockExplorerUrl: '',
+    chainId: '0x539',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: true,
+    label: 'Localhost 8545',
+    providerType: 'rpc',
+    rpcUrl: 'http://localhost:8545',
+    ticker: 'ETH',
+  },
+  {
+    blockExplorerUrl: 'https://bscscan.com',
+    chainId: '0x38',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: false,
+    label: 'Binance Smart Chain',
+    providerType: 'rpc',
+    rpcUrl: 'https://bsc-dataseed.binance.org/',
+    ticker: 'BNB',
+  },
+  {
+    blockExplorerUrl: 'https://cchain.explorer.avax.network/',
+    chainId: '0xa86a',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: false,
+    label: 'Avalanche',
+    providerType: 'rpc',
+    rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+    ticker: 'AVAX',
+  },
+  {
+    blockExplorerUrl: 'https://polygonscan.com',
+    chainId: '0x89',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: false,
+    label: 'Polygon',
+    providerType: 'rpc',
+    rpcUrl: 'https://polygon-rpc.com',
+    ticker: 'MATIC',
+  },
+];
 
 export default state;
