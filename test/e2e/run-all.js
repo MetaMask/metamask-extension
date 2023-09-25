@@ -105,6 +105,7 @@ async function main() {
     if (buildType && buildType !== 'flask') {
       // These tests should only be ran on Flask for now
       const filteredTests = [
+        'confirm/security-alert-blockaid.spec.js',
         'ppom-toggle-settings.spec.js',
         'test-snap-lifecycle.spec.js',
         'test-snap-manageAccount.spec.js',
