@@ -212,7 +212,7 @@ export const ImportTokensModal = ({ onClose }) => {
     setCustomAddress(initialCustomToken.address);
     setCustomSymbol(initialCustomToken.symbol);
     setCustomDecimals(initialCustomToken.decimals);
-  }, [pendingTokens, selectedTokens]);
+  }, [pendingTokens]);
 
   const handleCustomSymbolChange = (value) => {
     const symbol = value.trim();
