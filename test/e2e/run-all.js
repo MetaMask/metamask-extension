@@ -131,7 +131,6 @@ async function main() {
     const filteredTests = [
       'settings-add-snap-account-toggle.spec.js',
       'test-snap-manageAccount.spec.js',
-      'test-snap-rpc.spec.js',
       'test-snap-lifecycle.spec.js',
       'ppom-toggle-settings.spec.js',
       'petnames.spec.js',
