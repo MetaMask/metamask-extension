@@ -107,24 +107,29 @@ export default class SendContent extends Component {
     const { acknowledgeRecipientWarning } = this.props;
     const { t } = this.context;
     return (
-      <div className="send__warning-container" data-testid="send-warning">
-        <BannerAlert
-          severity={Severity.Danger}
-          description={t('sendingToTokenContractWarning', [
-            <ButtonLink
-              key="contractWarningSupport"
-              className="send__warning-container__link"
-              href={CONTRACT_ADDRESS_LINK}
-              externalLink
-              size={ButtonLinkSize.Inherit}
-            >
-              {t('learnMoreUpperCase')}
-            </ButtonLink>,
-          ])}
-          actionButtonLabel={t('tooltipApproveButton')}
-          actionButtonOnClick={acknowledgeRecipientWarning}
-        />
-      </div>
+      <BannerAlert
+        data-testid="send-warning"
+        severity={Severity.Danger}
+        description={t('sendingToTokenContractWarning', [
+          <ButtonLink
+            key="contractWarningSupport"
+            className="send__warning-container__link"
+            href={CONTRACT_ADDRESS_LINK}
+            externalLink
+            size={ButtonLinkSize.Inherit}
+          >
+            {t('learnMoreUpperCase')}
+          </ButtonLink>,
+        ])}
+        descriptionProps={{
+          'data-testid': 'send-warning-description',
+        }}
+        actionButtonLabel={t('tooltipApproveButton')}
+        actionButtonOnClick={acknowledgeRecipientWarning}
+        actionButtonProps={{
+          'data-testid': 'send-warning-action-button',
+        }}
+      />
     );
   }
 
