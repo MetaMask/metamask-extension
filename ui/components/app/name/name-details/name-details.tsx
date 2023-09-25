@@ -192,7 +192,16 @@ export default function NameDetails({
 
   const handleSaveClick = useCallback(async () => {
     trackPetnamesSaveEvent();
-    await dispatch(saveName({ value, type, name, sourceId: selectedSourceId }));
+
+    await dispatch(
+      saveName({
+        value,
+        type,
+        name: name?.length ? name : null,
+        sourceId: selectedSourceId,
+      }),
+    );
+
     onClose();
   }, [name, selectedSourceId, onClose, trackPetnamesEvent]);
 

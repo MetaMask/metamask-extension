@@ -227,7 +227,7 @@ describe('NameDetails', () => {
     expect(setNameMock).toHaveBeenCalledWith({
       value: ADDRESS_SAVED_NAME_MOCK,
       type: NameType.ETHEREUM_ADDRESS,
-      name: '',
+      name: null,
       sourceId: undefined,
     });
   });
