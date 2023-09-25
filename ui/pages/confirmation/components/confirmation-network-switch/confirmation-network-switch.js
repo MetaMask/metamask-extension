@@ -18,7 +18,7 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 
-export default function ConfirmationNetworkSwitch({ newNetwork, fromNetwork }) {
+export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
   return (
     <Box
       className="confirmation-network-switch"
@@ -68,10 +68,10 @@ export default function ConfirmationNetworkSwitch({ newNetwork, fromNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {toNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
-            name={newNetwork.nickname}
+            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[toNetwork.chainId]}
+            name={toNetwork.nickname}
             size={64}
           />
         ) : (
@@ -89,7 +89,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork, fromNetwork }) {
             justifyContent: JustifyContent.center,
           }}
         >
-          {newNetwork.nickname}
+          {toNetwork.nickname}
         </Typography>
       </Box>
     </Box>
@@ -97,7 +97,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork, fromNetwork }) {
 }
 
 ConfirmationNetworkSwitch.propTypes = {
-  newNetwork: PropTypes.shape({
+  toNetwork: PropTypes.shape({
     chainId: PropTypes.string.isRequired,
     nickname: PropTypes.string.isRequired,
     type: PropTypes.string,
