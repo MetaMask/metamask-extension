@@ -2107,53 +2107,24 @@
         "eth-rpc-errors": true
       }
     },
-    "@metamask/rpc-methods-flask": {
+    "@metamask/rpc-methods": {
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/permission-controller": true,
-        "@metamask/rpc-methods-flask>@metamask/snaps-ui": true,
-        "@metamask/rpc-methods-flask>@metamask/snaps-utils": true,
-        "@metamask/rpc-methods-flask>@metamask/utils": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/snaps-ui": true,
+        "@metamask/snaps-utils": true,
         "eth-rpc-errors": true,
         "superstruct": true
       }
     },
-    "@metamask/rpc-methods-flask>@metamask/snaps-ui": {
-      "packages": {
-        "@metamask/rpc-methods-flask>@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/rpc-methods-flask>@metamask/snaps-utils": {
+    "@metamask/rpc-methods-flask>nanoid": {
       "globals": {
-        "TextDecoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true
-      },
-      "packages": {
-        "@metamask/key-tree": true,
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/rpc-methods-flask>@metamask/utils": true,
-        "@metamask/snaps-utils-flask>is-svg": true,
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true,
-        "browserify>buffer": true,
-        "browserify>path-browserify": true,
-        "browserify>process": true,
-        "chalk": true,
-        "semver": true,
-        "superstruct": true
+        "crypto.getRandomValues": true
       }
     },
-    "@metamask/rpc-methods-flask>@metamask/utils": {
+    "@metamask/rpc-methods>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2164,11 +2135,6 @@
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/rpc-methods-flask>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -2250,7 +2216,7 @@
         "define": true
       }
     },
-    "@metamask/snaps-controllers-flask": {
+    "@metamask/snaps-controllers": {
       "globals": {
         "URL": true,
         "chrome.offscreen.createDocument": true,
@@ -2264,24 +2230,29 @@
         "@metamask/base-controller": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/object-multiplex": true,
-        "@metamask/snaps-controllers-flask>@metamask/post-message-stream": true,
-        "@metamask/snaps-controllers-flask>@metamask/rpc-methods": true,
-        "@metamask/snaps-controllers-flask>@metamask/snaps-registry": true,
-        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
-        "@metamask/snaps-controllers-flask>@metamask/utils": true,
-        "@metamask/snaps-controllers-flask>concat-stream": true,
-        "@metamask/snaps-controllers-flask>nanoid": true,
+        "@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/post-message-stream": true,
+        "@metamask/snaps-controllers>@metamask/snaps-registry": true,
+        "@metamask/snaps-controllers>@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
+        "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>gunzip-maybe": true,
+        "@metamask/snaps-controllers>nanoid": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
+        "@metamask/snaps-utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
         "stream-browserify": true
       }
     },
-    "@metamask/snaps-controllers-flask>@metamask/post-message-stream": {
+    "@metamask/snaps-controllers-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
         "WorkerGlobalScope": true,
@@ -2293,11 +2264,11 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/snaps-controllers-flask>@metamask/post-message-stream>@metamask/utils": true,
-        "@metamask/snaps-controllers-flask>concat-stream>readable-stream": true
+        "@metamask/snaps-controllers>@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/snaps-controllers>concat-stream>readable-stream": true
       }
     },
-    "@metamask/snaps-controllers-flask>@metamask/post-message-stream>@metamask/utils": {
+    "@metamask/snaps-controllers>@metamask/post-message-stream>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2309,60 +2280,14 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-controllers-flask>@metamask/rpc-methods": {
-      "packages": {
-        "@metamask/key-tree": true,
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/permission-controller": true,
-        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": true,
-        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
-        "@metamask/snaps-controllers-flask>@metamask/utils": true,
-        "eth-rpc-errors": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": {
-      "packages": {
-        "@metamask/snaps-controllers-flask>@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-controllers-flask>@metamask/snaps-registry": {
+    "@metamask/snaps-controllers>@metamask/snaps-registry": {
       "packages": {
         "@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "@metamask/snaps-controllers>@metamask/utils": true,
         "superstruct": true
       }
     },
-    "@metamask/snaps-controllers-flask>@metamask/snaps-utils": {
-      "globals": {
-        "TextDecoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true
-      },
-      "packages": {
-        "@metamask/key-tree": true,
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/snaps-controllers-flask>@metamask/utils": true,
-        "@metamask/snaps-utils-flask>is-svg": true,
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true,
-        "browserify>buffer": true,
-        "browserify>path-browserify": true,
-        "browserify>process": true,
-        "chalk": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-controllers-flask>@metamask/utils": {
+    "@metamask/snaps-controllers>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2375,16 +2300,16 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-controllers-flask>concat-stream": {
+    "@metamask/snaps-controllers>concat-stream": {
       "packages": {
-        "@metamask/snaps-controllers-flask>concat-stream>readable-stream": true,
+        "@metamask/snaps-controllers>concat-stream>readable-stream": true,
         "browserify>buffer": true,
         "browserify>concat-stream>typedarray": true,
         "pumpify>inherits": true,
         "terser>source-map-support>buffer-from": true
       }
     },
-    "@metamask/snaps-controllers-flask>concat-stream>readable-stream": {
+    "@metamask/snaps-controllers>concat-stream>readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
@@ -2393,11 +2318,6 @@
         "pumpify>inherits": true,
         "readable-stream>util-deprecate": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/snaps-controllers-flask>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "@metamask/snaps-controllers>gunzip-maybe": {
@@ -2528,13 +2448,13 @@
         "webpack>events": true
       }
     },
-    "@metamask/snaps-ui-flask": {
+    "@metamask/snaps-ui": {
       "packages": {
-        "@metamask/snaps-ui-flask>@metamask/utils": true,
+        "@metamask/snaps-ui>@metamask/utils": true,
         "superstruct": true
       }
     },
-    "@metamask/snaps-ui-flask>@metamask/utils": {
+    "@metamask/snaps-ui>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2547,7 +2467,7 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-utils-flask": {
+    "@metamask/snaps-utils": {
       "globals": {
         "TextDecoder": true,
         "URL": true,
@@ -2561,10 +2481,10 @@
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true,
-        "@metamask/snaps-utils-flask>@metamask/utils": true,
-        "@metamask/snaps-utils-flask>is-svg": true,
+        "@metamask/snaps-utils>@metamask/utils": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>is-svg": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "browserify>buffer": true,
@@ -2575,7 +2495,7 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-utils-flask>@metamask/utils": {
+    "@metamask/snaps-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2588,24 +2508,24 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-utils-flask>is-svg": {
+    "@metamask/snaps-utils>cron-parser": {
       "packages": {
-        "@metamask/snaps-utils-flask>is-svg>fast-xml-parser": true
+        "browserify>browser-resolve": true,
+        "luxon": true
       }
     },
-    "@metamask/snaps-utils-flask>is-svg>fast-xml-parser": {
+    "@metamask/snaps-utils>is-svg": {
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser": true
+      }
+    },
+    "@metamask/snaps-utils>is-svg>fast-xml-parser": {
       "globals": {
         "entityName": true,
         "val": true
       },
       "packages": {
-        "@metamask/snaps-utils-flask>is-svg>fast-xml-parser>strnum": true
-      }
-    },
-    "@metamask/snaps-utils>cron-parser": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "luxon": true
+        "@metamask/snaps-utils>is-svg>fast-xml-parser>strnum": true
       }
     },
     "@metamask/snaps-utils>rfdc": {
