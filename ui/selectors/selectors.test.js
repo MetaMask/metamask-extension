@@ -760,4 +760,24 @@ describe('Selectors', () => {
     mockState.metamask.snapsInstallPrivacyWarningShown = null;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
   });
+
+  it('#getInfuraBlocked', () => {
+    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
+    expect(isInfuraBlocked).toBe(false);
+
+    const modifiedMockState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networksMetadata: {
+          ...mockState.metamask.networksMetadata,
+          goerli: {
+            status: 'blocked',
+          },
+        },
+      },
+    };
+    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
+    expect(isInfuraBlocked).toBe(true);
+  });
 });

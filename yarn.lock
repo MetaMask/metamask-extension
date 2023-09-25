@@ -3029,12 +3029,12 @@ __metadata:
   linkType: hard
 
 "@jest/expect@npm:^29.1.2":
-  version: 29.6.2
-  resolution: "@jest/expect@npm:29.6.2"
+  version: 29.1.2
+  resolution: "@jest/expect@npm:29.1.2"
   dependencies:
-    expect: "npm:^29.6.2"
-    jest-snapshot: "npm:^29.6.2"
-  checksum: 2beed96e3d24945a72aa2ae4843c99f4c631564569258fdde6746fae3efcbfbff96dbf92ed28d6531299bd12b2766075bacaaae88ebf84b99316e77151b43a9f
+    expect: "npm:^29.1.2"
+    jest-snapshot: "npm:^29.1.2"
+  checksum: 7bb80bf176f39becdbd2ef54be615c3e7010f3230ccc419f22c97fa5b66e0fa14bb6b05019840d01cd1892e42be8158bea4c94487f05da1dd2b85a4ac097dd15
   languageName: node
   linkType: hard
 
@@ -16720,7 +16720,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expect@npm:^29.0.0, expect@npm:^29.6.2":
+"expect@npm:^29.0.0, expect@npm:^29.1.2, expect@npm:^29.6.2":
   version: 29.6.2
   resolution: "expect@npm:29.6.2"
   dependencies:
@@ -21807,7 +21807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-snapshot@npm:^29.1.2, jest-snapshot@npm:^29.6.2":
+"jest-snapshot@npm:^29.1.2":
   version: 29.6.2
   resolution: "jest-snapshot@npm:29.6.2"
   dependencies:
