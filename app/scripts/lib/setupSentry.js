@@ -178,7 +178,6 @@ export const SENTRY_BACKGROUND_STATE = {
     featureFlags: true,
     forgottenPassword: true,
     incomingTransactionsPreferences: true,
-    infuraBlocked: true,
     ipfsGateway: false,
     isLineaMainnetReleased: true,
     knownMethodData: false,

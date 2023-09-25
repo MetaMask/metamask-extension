@@ -3484,13 +3484,34 @@ describe('Transaction Controller', function () {
       });
     });
 
-    it('ignores new transactions if hash matches existing transaction', async function () {
-      const existingTransaction = TRANSACTION_META_MOCK;
-      const incomingTransaction1 = { ...TRANSACTION_META_MOCK, id: 2 };
-      const incomingTransaction2 = { ...TRANSACTION_META_MOCK, id: 3 };
+    it('ignores new transactions if hash matches existing incoming transaction', async function () {
+      const existingTransaction = {
+        ...TRANSACTION_META_MOCK,
+        id: 1,
+        type: TransactionType.incoming,
+      };
+      const existingTransaction2 = {
+        ...TRANSACTION_META_MOCK,
+        id: 2,
+        hash: '0xNewHash',
+        type: TransactionType.simpleSend,
+      };
+
+      const incomingTransaction1 = {
+        ...TRANSACTION_META_MOCK,
+        id: 3,
+        type: TransactionType.incoming,
+      };
+      const incomingTransaction2 = {
+        ...TRANSACTION_META_MOCK,
+        id: 4,
+        hash: '0xNewHash',
+        type: TransactionType.incoming,
+      };
 
       txController.store.getState().transactions = {
         [existingTransaction.id]: existingTransaction,
+        [existingTransaction2.id]: existingTransaction2,
       };
 
       await incomingTransactionHelperEventMock.firstCall.args[1]({
@@ -3500,6 +3521,8 @@ describe('Transaction Controller', function () {
 
       assert.deepEqual(txController.store.getState().transactions, {
         [existingTransaction.id]: existingTransaction,
+        [existingTransaction2.id]: existingTransaction2,
+        [incomingTransaction2.id]: incomingTransaction2,
       });
     });
   });

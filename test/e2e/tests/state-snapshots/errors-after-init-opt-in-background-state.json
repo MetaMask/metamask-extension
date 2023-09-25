@@ -74,9 +74,7 @@
     "keyringTypes": "object",
     "keyrings": "object"
   },
-  "LoggingController": {
-    "logs": "object"
-  },
+  "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
@@ -151,7 +149,6 @@
     },
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
-    "infuraBlocked": false,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,

@@ -105,7 +105,6 @@
       "dismissSeedBackUpReminder": true,
       "featureFlags": {},
       "forgottenPassword": false,
-      "infuraBlocked": false,
       "ipfsGateway": "string",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",

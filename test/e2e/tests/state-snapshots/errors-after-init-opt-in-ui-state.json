@@ -98,7 +98,6 @@
     "forgottenPassword": false,
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
-    "infuraBlocked": false,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,
@@ -147,6 +146,7 @@
     "ignoredNfts": "object",
     "domains": {},
     "perDomainNetwork": "boolean",
+    "logs": "object",
     "snapErrors": "object",
     "snaps": "object",
     "snapStates": "object",
@@ -194,8 +194,7 @@
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
-    "approvalFlows": "object",
-    "logs": "object"
+    "approvalFlows": "object"
   },
   "send": "object",
   "swaps": "object",

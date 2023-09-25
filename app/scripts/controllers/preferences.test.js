@@ -46,8 +46,6 @@ describe('preferences controller', () => {
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
       tokenListController,
-      onInfuraIsBlocked: jest.fn(),
-      onInfuraIsUnblocked: jest.fn(),
       onAccountRemoved: jest.fn(),
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
       controllerMessenger: preferencesControllerMessenger,

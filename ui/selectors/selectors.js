@@ -32,6 +32,7 @@ import {
   LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -785,7 +786,10 @@ export function getIpfsGateway(state) {
 }
 
 export function getInfuraBlocked(state) {
-  return Boolean(state.metamask.infuraBlocked);
+  return (
+    state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
+      .status === NetworkStatus.Blocked
+  );
 }
 
 export function getUSDConversionRate(state) {
@@ -981,6 +985,16 @@ export const getInsightSnaps = createDeepEqualSelector(
   (snaps, subjects) => {
     return Object.values(snaps).filter(
       ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+    );
+  },
+);
+
+export const getNotifySnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions.snap_notify,
     );
   },
 );
@@ -1363,7 +1377,18 @@ export function getNonTestNetworks(state) {
     // Custom networks added by the user
     ...Object.values(networkConfigurations)
       .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
-      .map((network) => ({ ...network, removable: true })),
+      .map((network) => ({
+        ...network,
+        rpcPrefs: {
+          ...network.rpcPrefs,
+          // Provide an image based on chainID if a network
+          // has been added without an image
+          imageUrl:
+            network?.rpcPrefs?.imageUrl ??
+            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+        },
+        removable: true,
+      })),
   ];
 }
 
