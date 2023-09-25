@@ -73,6 +73,8 @@ export const ImportNftsModal = ({ onClose }) => {
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+  const [nftAddressValidationError, setNftAddressValidationError] =
+    useState(null);
 
   const handleAddNft = async () => {
     try {
@@ -129,6 +131,10 @@ export const ImportNftsModal = ({ onClose }) => {
   };
 
   const validateAndSetAddress = (val) => {
+    setNftAddressValidationError(null);
+    if (val && !isValidHexAddress(val)) {
+      setNftAddressValidationError(t('invalidAddress'));
+    }
     setDisabled(!isValidHexAddress(val) || !tokenId);
     setNftAddress(val);
   };
@@ -210,6 +216,8 @@ export const ImportNftsModal = ({ onClose }) => {
                   validateAndSetAddress(e.target.value);
                   setNftAddFailed(false);
                 }}
+                helpText={nftAddressValidationError}
+                error={nftAddressValidationError}
               />
             </Box>
             <Box>
