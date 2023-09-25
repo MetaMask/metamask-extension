@@ -208,6 +208,14 @@ async function withFixtures(options, testSuite) {
   }
 }
 
+const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  TestDApp: 'E2E Test Dapp',
+  Notification: 'MetaMask Notification',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  InstalledExtensions: 'Extensions',
+});
+
 /**
  * @param {*} driver - selinium driver
  * @param {*} handlesCount - total count of windows that should be loaded
@@ -222,7 +230,7 @@ const getWindowHandles = async (driver, handlesCount) => {
 
   const extension = windowHandles[0];
   const dapp = await driver.switchToWindowWithTitle(
-    'E2E Test Dapp',
+    WINDOW_TITLES.TestDApp,
     windowHandles,
   );
   const popup = windowHandles.find(
@@ -513,6 +521,18 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const switchToOrOpenDapp = async (
+  driver,
+  contract = null,
+  dappURL = DAPP_URL,
+) => {
+  try {
+    await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  } catch {
+    await openDapp(driver, contract, dappURL);
+  }
+};
+
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
@@ -588,14 +608,13 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
     text: `${balance} ETH`,
   });
 };
-const DEFAULT_PRIVATE_KEY =
-  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 const DEFAULT_GANACHE_OPTIONS = {
   accounts: [
     {
-      secretKey: DEFAULT_PRIVATE_KEY,
+      secretKey: PRIVATE_KEY,
       balance: convertETHToHexGwei(25),
     },
   ],
@@ -611,13 +630,6 @@ async function waitForAccountRendered(driver) {
     '[data-testid="eth-overview__primary-currency"]',
   );
 }
-const WINDOW_TITLES = Object.freeze({
-  ExtensionInFullScreenView: 'MetaMask',
-  TestDApp: 'E2E Test Dapp',
-  Notification: 'MetaMask Notification',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
-  InstalledExtensions: 'Extensions',
-});
 
 const unlockWallet = async (driver) => {
   await driver.fill('#password', 'correct horse battery staple');
@@ -728,7 +740,10 @@ async function validateContractDetails(driver) {
 async function switchToNotificationWindow(driver, numHandles = 3) {
   await driver.waitUntilXWindowHandles(numHandles);
   const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+  await driver.switchToWindowWithTitle(
+    WINDOW_TITLES.Notification,
+    windowHandles,
+  );
 }
 
 /**
@@ -816,6 +831,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  switchToOrOpenDapp,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,

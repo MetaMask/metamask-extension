@@ -1,18 +1,20 @@
 const util = require('ethereumjs-util');
-const { retry } = require('../../../development/lib/retry');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  withFixtures,
+  clickSignOnSignatureConfirmation,
   convertETHToHexGwei,
+  openDapp,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
   sendTransaction,
   switchToNotificationWindow,
+  switchToOrOpenDapp,
   unlockWallet,
-  openDapp,
-  clickSignOnSignatureConfirmation,
   validateContractDetails,
+  WINDOW_TITLES,
+  withFixtures,
 } = require('../helpers');
+const Driver = require('../webdriver/driver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Account', function () {
@@ -103,6 +105,7 @@ describe('Test Snap Account', function () {
     ['#signPermit', 'approve'],
     ['#signPermit', 'reject'],
   ].forEach(([locatorID, flowType]) => {
+    // generate title of the test from the locatorID and flowType
     let title = `can ${locatorID} (${
       flowType === 'sync' ? 'sync' : 'async'
     } flow`;
@@ -113,12 +116,59 @@ describe('Test Snap Account', function () {
       await withFixtures(
         accountSnapFixtures(this.test.title),
         async ({ driver }) => {
-          await signData(driver, locatorID, flowType);
+          const isAsyncFlow = flowType !== 'sync';
+
+          await installSnapSimpleKeyring(driver, isAsyncFlow);
+
+          const newPublicKey = await makeNewAccountAndSwitch(driver);
+
+          await openDapp(driver);
+
+          await signData(driver, locatorID, newPublicKey, flowType);
         },
       );
     });
   });
 
+  it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        failOnConsoleError: false,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        const flowType = 'approve';
+        const isAsyncFlow = flowType !== 'sync';
+
+        await installSnapSimpleKeyring(driver, isAsyncFlow);
+
+        const newPublicKey = await makeNewAccountAndSwitch(driver);
+
+        // open the Test Dapp and connect Account 2 to it
+        await connectAccountToTestDapp(driver);
+
+        // do #signTypedDataV3
+        await signData(driver, '#signTypedDataV3', newPublicKey, flowType);
+
+        // disconnect from the Test Dapp
+        await disconnectFromTestDapp(driver);
+
+        // reconnect Account 2 to the Test Dapp
+        await connectAccountToTestDapp(driver);
+
+        // do #signTypedDataV4
+        await signData(driver, '#signTypedDataV4', newPublicKey, flowType);
+      },
+    );
+  });
+
+  /**
+   * @param {Driver} driver
+   * @param {string} flowType
+   */
   async function importPrivateKeyAndTransfer1ETH(driver, flowType) {
     const isAsyncFlow = flowType !== 'sync';
 
@@ -147,16 +197,17 @@ describe('Test Snap Account', function () {
     }
   }
 
-  async function signData(driver, locatorID, flowType) {
+  /**
+   * @param {Driver} driver
+   * @param {string} locatorID
+   * @param {string} newPublicKey
+   * @param {string} flowType
+   */
+  async function signData(driver, locatorID, newPublicKey, flowType) {
     const isAsyncFlow = flowType !== 'sync';
 
-    await installSnapSimpleKeyring(driver, isAsyncFlow);
+    await switchToOrOpenDapp(driver);
 
-    const newPublicKey = await makeNewAccountAndSwitch(driver);
-
-    await openDapp(driver);
-
-    // creates a sign typed data signature request
     await driver.clickElement(locatorID);
     await switchToNotificationWindow(driver, 4);
 
@@ -171,7 +222,7 @@ describe('Test Snap Account', function () {
       await approveOrRejectRequest(driver, flowType);
     }
 
-    await driver.switchToWindowWithTitle('E2E Test Dapp');
+    await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
     if (flowType === 'sync' || flowType === 'approve') {
       await driver.clickElement(`${locatorID}Verify`);
@@ -193,19 +244,12 @@ describe('Test Snap Account', function () {
     }
   }
 
+  /**
+   * @param {Driver} driver
+   * @param {boolean} isAsyncFlow
+   */
   async function installSnapSimpleKeyring(driver, isAsyncFlow) {
     driver.navigate();
-
-    // this is flaky without the retry and refresh()
-    await retry({ retries: 5 }, async () => {
-      try {
-        await driver.findElement('#password');
-        return true;
-      } catch (err) {
-        driver.driver.navigate().refresh();
-        return false;
-      }
-    });
 
     await unlockWallet(driver);
 
@@ -215,7 +259,6 @@ describe('Test Snap Account', function () {
     await driver.scrollToElement(connectButton);
     await connectButton.click();
 
-    // switch to metamask extension and click connect
     await switchToNotificationWindow(driver);
     await driver.clickElement({
       text: 'Connect',
@@ -240,7 +283,6 @@ describe('Test Snap Account', function () {
 
     await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
 
-    // look for a span that says either `Connected` or `Reconnect`
     await driver.waitForSelector({
       text: 'Connected',
       tag: 'span',
@@ -251,17 +293,22 @@ describe('Test Snap Account', function () {
     }
   }
 
+  /**
+   * @param {Driver} driver
+   */
   async function toggleAsyncFlow(driver) {
-    // Click the parent of #use-sync-flow-toggle (trying to clicking the element itself gives "ElementNotInteractableError: could not be scrolled into view")
     await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
 
+    // click the parent of #use-sync-flow-toggle (trying to click the element itself gives "ElementNotInteractableError: could not be scrolled into view")
     await driver.clickElement({
       xpath: '//input[@id="use-sync-flow-toggle"]/..',
     });
   }
 
+  /**
+   * @param {Driver} driver
+   */
   async function importKeyAndSwitch(driver) {
-    // create new account on dapp
     await driver.clickElement({
       text: 'Import account',
       tag: 'div',
@@ -277,8 +324,10 @@ describe('Test Snap Account', function () {
     await switchToAccount2(driver);
   }
 
+  /**
+   * @param {Driver} driver
+   */
   async function makeNewAccountAndSwitch(driver) {
-    // create new account on dapp
     await driver.clickElement({
       text: 'Create account',
       tag: 'div',
@@ -301,11 +350,15 @@ describe('Test Snap Account', function () {
     return newPublicKey;
   }
 
+  /**
+   * @param {Driver} driver
+   */
   async function switchToAccount2(driver) {
-    // switch to metamask extension
-    await driver.switchToWindowWithTitle('MetaMask');
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.ExtensionInFullScreenView,
+    );
 
-    // click on accounts
+    // click on Accounts
     await driver.clickElement('[data-testid="account-menu-icon"]');
 
     const label = await driver.findElement({ css: '.mm-tag', text: 'Snaps' });
@@ -315,6 +368,34 @@ describe('Test Snap Account', function () {
     await driver.waitForElementNotPresent('.mm-tag');
   }
 
+  /**
+   * @param {Driver} driver
+   */
+  async function connectAccountToTestDapp(driver) {
+    await switchToOrOpenDapp(driver);
+    await driver.clickElement('#connectButton');
+    await switchToNotificationWindow(driver, 4);
+    await driver.clickElement('[data-testid="page-container-footer-next"]');
+    await driver.clickElement('[data-testid="page-container-footer-next"]');
+  }
+
+  /**
+   * @param {Driver} driver
+   */
+  async function disconnectFromTestDapp(driver) {
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.ExtensionInFullScreenView,
+    );
+    await driver.clickElement('[data-testid="account-options-menu-button"]');
+    await driver.clickElement('[data-testid="global-menu-connected-sites"]');
+    await driver.clickElement({ text: 'Disconnect', tag: 'a' });
+    await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+  }
+
+  /**
+   * @param {Driver} driver
+   * @param {string} flowType
+   */
   async function approveOrRejectRequest(driver, flowType) {
     await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
 
@@ -364,6 +445,8 @@ describe('Test Snap Account', function () {
       });
     }
 
-    await driver.switchToWindowWithTitle('MetaMask');
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.ExtensionInFullScreenView,
+    );
   }
 });
