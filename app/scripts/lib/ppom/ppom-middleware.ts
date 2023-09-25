@@ -51,12 +51,20 @@ export function createPPOMMiddleware(
         ConfirmationMethods.includes(req.method) &&
         chainId === CHAIN_IDS.MAINNET
       ) {
+        console.log('');
+        console.log('');
+        console.info('PPOM Request:', req);
+
         // eslint-disable-next-line require-atomic-updates
         req.securityAlertResponse = await ppomController.usePPOM(
           async (ppom: PPOM) => {
             return ppom.validateJsonRpc(req);
           },
         );
+
+        console.info('PPOM Response:', req.securityAlertResponse);
+        console.log('');
+        console.log('');
       }
     } catch (error: any) {
       sentry?.captureException(error);
@@ -64,7 +72,7 @@ export function createPPOMMiddleware(
       req.securityAlertResponse = {
         result_type: BlockaidResultType.Failed,
         reason: BlockaidReason.failed,
-        description: 'Validating the confirmation failed by throwing error.',
+        description: `Validating the confirmation failed by throwing error. ${error}`,
       };
     } finally {
       next();

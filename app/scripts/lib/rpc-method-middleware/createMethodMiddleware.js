@@ -56,6 +56,8 @@ export function createMethodMiddleware(hooks) {
     if (handler) {
       const { implementation, hookNames } = handler;
       try {
+        console.log('res:', res);
+        console.log('req:', req);
         // Implementations may or may not be async, so we must await them.
         return await implementation(
           req,

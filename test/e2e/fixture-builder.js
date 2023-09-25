@@ -548,6 +548,15 @@ class FixtureBuilder {
             },
           ],
         },
+        '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb': {
+          [toHex(1337)]: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
+              name: 'TestDapp Crypto Punk',
+              symbol: 'PUNKS',
+            },
+          ],
+        },
       },
       allNfts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
@@ -560,6 +569,21 @@ class FixtureBuilder {
                 'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==',
               isCurrentlyOwned: true,
               name: 'Test Dapp NFTs #1',
+              standard: 'ERC721',
+              tokenId: '1',
+            },
+          ],
+        },
+        '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb': {
+          [toHex(1337)]: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
+              description: 'Test Dapp NFTs for testing.',
+              favorite: false,
+              image:
+                'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==',
+              isCurrentlyOwned: true,
+              name: 'Test Dapp NFTs CryptoPunk #1',
               standard: 'ERC721',
               tokenId: '1',
             },
