@@ -744,37 +744,6 @@
         "fetch": true
       }
     },
-    "@metamask/post-message-stream": {
-      "globals": {
-        "MessageEvent.prototype": true,
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "browser": true,
-        "chrome": true,
-        "location.origin": true,
-        "postMessage": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "@metamask/post-message-stream>readable-stream": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/post-message-stream>readable-stream": {
-      "packages": {
-        "@metamask/post-message-stream>readable-stream>process-nextick-args": true,
-        "@metamask/post-message-stream>readable-stream>safe-buffer": true,
-        "@metamask/post-message-stream>readable-stream>string_decoder": true,
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
     "@metamask-institutional/extension": {
       "globals": {
         "console.log": true
@@ -2007,7 +1976,8 @@
         "pumpify>inherits": true,
         "readable-stream>core-util-is": true,
         "readable-stream>isarray": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/post-message-stream>readable-stream>process-nextick-args": {
