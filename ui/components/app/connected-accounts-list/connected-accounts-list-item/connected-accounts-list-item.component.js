@@ -81,11 +81,32 @@ export default function ConnectedAccountsListItem({
   );
 }
 ConnectedAccountsListItem.propTypes = {
+  /**
+   * Address for Avatar
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * An additional className to apply
+   */
   className: PropTypes.string,
+  /**
+   * Name of the account
+   */
   name: PropTypes.node.isRequired,
+  /**
+   * Status showing connected, not connected and active state
+   */
   status: PropTypes.string,
+  /**
+   * Action for account
+   */
   action: PropTypes.node,
+  /**
+   * Render Options button with actions
+   */
   options: PropTypes.node,
+  /**
+   * ContainerbackgroundColor showing highlighted state when not connected
+   */
   backgroundColor: PropTypes.string,
 };

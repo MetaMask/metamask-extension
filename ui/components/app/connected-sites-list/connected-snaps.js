@@ -122,9 +122,18 @@ export default function ConnectedSnaps({ connectedSubjects }) {
 }
 
 ConnectedSnaps.propTypes = {
+  /**
+   * Shape of ConnectedSnaps
+   */
   connectedSubjects: PropTypes.arrayOf(
     PropTypes.shape({
+      /**
+       * It should have a name for Snap
+       */
       name: PropTypes.string,
+      /**
+       * Origin of connected subject, in case of snaps it's snapId
+       */
       origin: PropTypes.string,
     }),
   ).isRequired,
