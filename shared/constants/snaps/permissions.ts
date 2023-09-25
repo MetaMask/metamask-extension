@@ -8,6 +8,7 @@ export const EndowmentPermissions = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   'endowment:long-running': 'endowment:long-running',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
+  'endowment:name-lookup': 'endowment:name-lookup',
   ///: END:ONLY_INCLUDE_IN
 } as const);
 
@@ -25,6 +26,9 @@ export const ExcludedSnapPermissions = Object.freeze({
 });
 
 export const ExcludedSnapEndowments = Object.freeze({
+  // Move to below fence once implemented
+  'endowment:name-lookup':
+    'This permission is still in development and therefore not available.',
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   'endowment:keyring':
     'This endowment is still in development therefore not available.',
