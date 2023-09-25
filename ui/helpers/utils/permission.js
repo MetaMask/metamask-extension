@@ -263,6 +263,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.AddSquare,
     weight: 3,
   }),
+  [RestrictedMethods.snap_getLocale]: ({ t }) => ({
+    label: t('permission_getLocale'),
+    description: t('permission_getLocaleDescription'),
+    leftIcon: IconName.Home,
+    weight: 3,
+  }),
   [RestrictedMethods.wallet_snap]: ({
     t,
     permissionValue,
@@ -400,6 +406,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
     label: t('permission_manageAccounts'),
+    description: t('permission_manageAccountsDescription'),
     leftIcon: getLeftIcon(IconName.UserCircleAdd),
     rightIcon: null,
     weight: 3,
