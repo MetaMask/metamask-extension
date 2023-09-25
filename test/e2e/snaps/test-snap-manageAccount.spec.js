@@ -81,15 +81,12 @@ describe('Test Snap Account', function () {
 
         // create new account on dapp
         await driver.clickElement({
-          text: 'Create Account',
+          text: 'Create account',
           tag: 'div',
         });
 
-        // create name for account
-        await driver.fill("[placeholder='Name']", 'snap account');
-
         await driver.clickElement({
-          text: 'Execute',
+          text: 'Create Account',
           tag: 'button',
         });
 
