@@ -103,12 +103,7 @@ export const DropdownTab = ({
         >
           {selectedOptionName}
         </Text>
-        <Box
-          marginLeft={2}
-          paddingLeft={1}
-          paddingRight={1}
-          onClick={openDropdown}
-        >
+        <Box paddingLeft={1} paddingRight={1} onClick={openDropdown}>
           <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
         </Box>
       </Box>
