@@ -152,12 +152,36 @@ export const NftItem = ({
 };
 
 NftItem.propTypes = {
+  /**
+   * Src of NFT
+   */
   src: PropTypes.string,
+  /**
+   * Description of NFT
+   */
   alt: PropTypes.string.isRequired,
+  /**
+   * Name of NFT
+   */
   name: PropTypes.string.isRequired,
+  /**
+   * Selected Network Name
+   */
   networkName: PropTypes.string.isRequired,
+  /**
+   * Logo of Selected Network
+   */
   networkSrc: PropTypes.string.isRequired,
+  /**
+   * TokenId of NFT
+   */
   tokenId: PropTypes.string.isRequired,
+  /**
+   * OnClick handler function for each NFT Item
+   */
   onClick: PropTypes.func,
+  /**
+   * To render show button for default NFT Image
+   */
   clickable: PropTypes.bool,
 };
