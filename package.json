@@ -594,7 +594,6 @@
       "eth-trezor-keyring>trezor-connect>@trezor/utxo-lib>blake-hash": false,
       "eth-trezor-keyring>trezor-connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "ethereumjs-util>ethereum-cryptography>keccak": false,
-      "ethjs-query>babel-runtime>core-js": false,
       "ganache>@trufflesuite/bigint-buffer": false,
       "ganache>bufferutil": false,
       "ganache>keccak": false,
@@ -629,7 +628,8 @@
       "@metamask/eth-trezor-keyring>hdkey>secp256k1": false,
       "@storybook/addon-knobs>core-js": false,
       "@storybook/manager-webpack5>core-js": false,
-      "@storybook/react-webpack5>@storybook/preset-react-webpack>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false
+      "@storybook/react-webpack5>@storybook/preset-react-webpack>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false,
+      "ethjs-contract>babel-runtime>core-js": false
     }
   },
   "packageManager": "yarn@4.0.0-rc.48"
