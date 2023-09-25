@@ -313,21 +313,21 @@ class ImportToken extends Component {
         });
 
         break;
-      case standard === 'ERC1155' || standard === 'ERC721':
-        this.setState({
-          nftAddressError: this.context.t('nftAddressError', [
-            <a
-              className="import-token__nft-address-error-link"
-              onClick={() => {
-                this.props.showImportNftsModal();
-              }}
-              key="nftAddressError"
-            >
-              {this.context.t('importNFTPage')}
-            </a>,
-          ]),
-        });
-        break;
+      // case standard === 'ERC1155' || standard === 'ERC721':
+      //   this.setState({
+      //     nftAddressError: this.context.t('nftAddressError', [
+      //       <a
+      //         className="import-token__nft-address-error-link"
+      //         onClick={() => {
+      //           this.props.showImportNftsModal();
+      //         }}
+      //         key="nftAddressError"
+      //       >
+      //         {this.context.t('importNFTPage')}
+      //       </a>,
+      //     ]),
+      //   });
+      //   break;
       case isMainnetToken && !isMainnetNetwork:
         this.setState({
           mainnetTokenWarning: this.context.t('mainnetToken'),
