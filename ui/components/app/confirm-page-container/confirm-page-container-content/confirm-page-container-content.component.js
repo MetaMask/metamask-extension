@@ -67,12 +67,15 @@ export default class ConfirmPageContainerContent extends Component {
   };
 
   renderContent() {
-    const { detailsComponent, dataComponent } = this.props;
+    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const { insightComponent } = this.props;
 
-    if (insightComponent && (detailsComponent || dataComponent)) {
+    if (
+      insightComponent &&
+      (detailsComponent || dataComponent || dataHexComponent)
+    ) {
       return this.renderTabs();
     }
     ///: END:ONLY_INCLUDE_IN
@@ -85,7 +88,7 @@ export default class ConfirmPageContainerContent extends Component {
     }
     ///: END:ONLY_INCLUDE_IN
 
-    if (detailsComponent && dataComponent) {
+    if (detailsComponent && (dataComponent || dataHexComponent)) {
       return this.renderTabs();
     }
 
