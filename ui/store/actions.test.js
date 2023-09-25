@@ -1829,9 +1829,9 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       store.dispatch(actions.setUseSafeChainsListValidation());
