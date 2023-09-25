@@ -963,6 +963,7 @@ export default class TransactionController extends EventEmitter {
       if (blockTimestamp) {
         txMeta.blockTimestamp = blockTimestamp;
       }
+      txMeta.verifiedOnBlockchain = true;
 
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
@@ -2790,7 +2791,9 @@ export default class TransactionController extends EventEmitter {
     const currentTransactions = this.store.getState().transactions || {};
 
     const incomingTransactions = transactions
-      .filter((tx) => !this._hasTransactionHash(tx.hash, currentTransactions))
+      .filter((tx) =>
+        this._hasNoDuplicateIncoming(tx.hash, currentTransactions),
+      )
       .reduce((result, tx) => {
         result[tx.id] = tx;
         return result;
@@ -2808,8 +2811,21 @@ export default class TransactionController extends EventEmitter {
     this.store.updateState({ lastFetchedBlockNumbers });
   }
 
-  _hasTransactionHash(hash, transactions) {
-    return Object.values(transactions).some((tx) => tx.hash === hash);
+  /**
+   * This function checks if there is not any transaction in the provided
+   * transactions object that has the same hash as the provided txHash and has a
+   * type of 'incoming'.
+   *
+   * @param {string} txHash - The transaction hash to compare with.
+   * @param {object} transactions - The transactions to check in.
+   * @returns {boolean} Returns false if there is a transaction that has the
+   * same hash as the provided txHash and has a type of 'incoming'. Otherwise,
+   * it returns true.
+   */
+  _hasNoDuplicateIncoming(txHash, transactions) {
+    return !Object.values(transactions).some(
+      (tx) => tx.hash === txHash && tx.type === TransactionType.incoming,
+    );
   }
 
   // Approvals

@@ -525,7 +525,6 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NftAdded = 'NFT Added',
-  OnboardingWelcome = 'App Installed',
   OnboardingWalletCreationStarted = 'Wallet Setup Selected',
   OnboardingWalletImportStarted = 'Wallet Import Started',
   OnboardingWalletCreationAttempted = 'Wallet Password Created',
@@ -631,6 +630,9 @@ export enum MetaMetricsEventName {
   SnapUninstalled = 'Snap Uninstalled',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  AddSnapAccountEnabled = 'Add Snap Account Enabled',
   ///: END:ONLY_INCLUDE_IN
 }
 

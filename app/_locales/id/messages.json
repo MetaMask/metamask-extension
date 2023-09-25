@@ -371,9 +371,6 @@
   "amount": {
     "message": "Jumlah"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Dompet Ethereum pada Browser Anda",
     "description": "The description of the application"
@@ -981,9 +978,6 @@
   "custodian": {
     "message": "Kustodian"
   },
-  "custodianAccount": {
-    "message": "Akun kustodian"
-  },
   "custodianAccountAddedDesc": {
     "message": "Saat ini Anda dapat menggunakan akun kustodian di MetaMask Institutional."
   },
@@ -1295,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Tampilkan media NFT"
   },
-  "displayNftMediaDescription": {
-    "message": "Alamat IP Anda dapat diketahui oleh OpenSea atau pihak ketiga lainnya saat Anda menampilkan media dan data NFT. Ini memungkinkan penyerang menghubungkan alamat IP dengan alamat Ethereum Anda. Deteksi otomatis NFT bergantung pada pengaturan ini, dan tidak akan tersedia saat dinonaktifkan."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1420,9 +1411,6 @@
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
-  "enableForAllNetworks": {
-    "message": "Aktifkan untuk semua jaringan"
-  },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
   },
@@ -1452,21 +1440,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Saat ini, deteksi token lanjutan tersedia di $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask memungkinkan Anda melihat domain ENS seperti \"https://metamask.eth\" tepat di bilah alamat browser Anda. Berikut cara kerjanya:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Browser biasa umumnya tidak menangani alamat ENS atau IPFS, tetapi MetaMask dapat menanganinya. Alamat IP Anda dapat dibagikan kepada layanan pihak ketiga IPFS saat menggunakan fitur ini."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask memeriksa kontrak ENS Ethereum untuk menemukan kode yang terhubung ke nama ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Jika kode ditautkan ke IPFS, maka kode tersebut mendapatkan konten dari jaringan IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Kemudian, Anda dapat melihat kontennya, umumnya dalam bentuk situs web atau yang serupa."
   },
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
@@ -1605,9 +1578,6 @@
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "File yang didrop terlalu besar."
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
@@ -2346,9 +2316,6 @@
   "missingSettingRequest": {
     "message": "Minta di sini"
   },
-  "mmiAddToken": {
-    "message": "Halaman di $1 ingin mengotorisasi token kustodian berikut di MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dirancang dan dibangun di seluruh dunia."
   },
@@ -2488,12 +2455,6 @@
   },
   "newContract": {
     "message": "Kontrak baru"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Izinkan MetaMask mendeteksi NFT dari Opensea secara otomatis dan menampilkannya di dompet Anda."
-  },
-  "newNFTsDetected": {
-    "message": "Baru! Deteksi NFT"
   },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
@@ -3886,9 +3847,6 @@
     "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Ini bergantung pada setiap jaringan yang akan memiliki akses ke alamat Ethereum dan alamat IP Anda."
-  },
   "showMore": {
     "message": "Tampilkan selengkapnya"
   },
@@ -5256,21 +5214,6 @@
   },
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi NFT di dompet Anda, yang berarti alamat IP Anda dapat terpapar ke server pusat. Ada beberapa hal yang perlu diwaspadai saat mengaktifkan fitur ini,."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Alamat akun Anda akan dapat dlihat oleh API pihak ketiga."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Metadata NFT dapat berisi tautan ke situs penipuan atau pencurian."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Biarkan fitur ini nonaktif jika Anda tidak ingin aplikasi mengambil data dari layanan tersebut."
   },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"
