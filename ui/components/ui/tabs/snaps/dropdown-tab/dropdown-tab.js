@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../../box';
 import {
   AlignItems,
   BlockSize,
@@ -14,7 +13,13 @@ import {
   FlexWrap,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, Text } from '../../../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../component-library';
 
 export const DropdownTab = ({
   activeClassName,
@@ -87,7 +92,7 @@ export const DropdownTab = ({
       style={{ cursor: 'pointer', overflow: 'hidden' }}
       title={selectedOptionName}
     >
-      <Box alignItems={AlignItems.center} padding={2}>
+      <Box display={Display.Flex} alignItems={AlignItems.center} padding={2}>
         <Text
           variant={TextVariant.inherit}
           style={{
