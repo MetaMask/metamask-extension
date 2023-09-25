@@ -16,9 +16,8 @@ import {
   ModalContent,
   ModalHeader,
   Button,
-  BUTTON_VARIANT,
-  Box,
-  BUTTON_SIZES,
+  ButtonVariant,
+  ButtonSize,
 } from '../../component-library';
 import EditGasDisplay from '../edit-gas-display';
 
@@ -178,13 +177,13 @@ export default function EditGasPopover({
 
   const footerButtonText = confirmButtonText || t('save');
   return (
-    <Modal isOpen onClose={closePopover} className="edit-gas-popover__wrapper">
+    <Modal isOpen onClose={closePopover}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent autoFocus={false} className="edit-gas-popover">
         <ModalHeader onClose={closePopover} marginBottom={4}>
           {title}
         </ModalHeader>
-        <div style={{ padding: '10px 20px 20px 20px', position: 'relative' }}>
+        <div className="edit-gas-popover__edit-gas-display">
           {process.env.IN_TEST ? null : <LoadingHeartBeat />}
           <EditGasDisplay
             dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}
@@ -207,19 +206,16 @@ export default function EditGasPopover({
             {...editGasDisplayProps}
           />
         </div>
-        <Box marginLeft={4} marginRight={4} marginTop={2} marginBottom={2}>
-          <Button
-            block
-            variant={BUTTON_VARIANT.PRIMARY}
-            size={BUTTON_SIZES.LG}
-            onClick={onSubmit}
-            disabled={
-              hasGasErrors || balanceError || !txParamsHaveBeenCustomized
-            }
-          >
-            {footerButtonText}
-          </Button>
-        </Box>
+        <Button
+          block
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.LG}
+          marginTop={4}
+          onClick={onSubmit}
+          disabled={hasGasErrors || balanceError || !txParamsHaveBeenCustomized}
+        >
+          {footerButtonText}
+        </Button>
       </ModalContent>
     </Modal>
   );
