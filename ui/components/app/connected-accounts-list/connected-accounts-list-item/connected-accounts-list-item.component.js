@@ -1,8 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-
 import { useSelector } from 'react-redux';
+import { shortenAddress } from '../../../../helpers/utils/util';
+
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -72,7 +73,7 @@ export default function ConnectedAccountsListItem({
             ) : null}
           </Box>
           <Text variant={TextVariant.bodySm} paddingTop={1}>
-            {address.substr(0, 7)}…{address.substr(-5, 5)}
+            {shortenAddress(address)}
           </Text>
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             {action}
