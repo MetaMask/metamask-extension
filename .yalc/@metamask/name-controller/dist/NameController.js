@@ -1,0 +1,328 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _NameController_instances, _NameController_getChainId, _NameController_providers, _NameController_updateProposedNameState, _NameController_updateSourceState, _NameController_getUpdateProposedNamesResult, _NameController_getProviderResponse, _NameController_updateEntry, _NameController_getTypeVariationKey, _NameController_getCurrentTimeSeconds, _NameController_validateSetNameRequest, _NameController_validateUpdateProposedNamesRequest, _NameController_validateValue, _NameController_validateType, _NameController_validateName, _NameController_validateSourceIds, _NameController_validateSourceId, _NameController_validateDuplicateSourceIds, _NameController_getAllSourceIds, _NameController_getSourceIds, _NameController_removeDormantProposedNames;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NameController = void 0;
+const base_controller_1 = require("@metamask/base-controller");
+const types_1 = require("./types");
+const DEFAULT_UPDATE_DELAY = 60 * 2; // 2 Minutes
+const controllerName = 'NameController';
+const stateMetadata = {
+    names: { persist: true, anonymous: false },
+    nameSources: { persist: true, anonymous: false },
+};
+const getDefaultState = () => ({
+    names: {
+        [types_1.NameType.ETHEREUM_ADDRESS]: {},
+    },
+    nameSources: {},
+});
+/**
+ * Controller for storing and deriving names for values such as Ethereum addresses.
+ */
+class NameController extends base_controller_1.BaseControllerV2 {
+    /**
+     * Construct a Name controller.
+     *
+     * @param options - Controller options.
+     * @param options.getChainId - Callback that returns the chain ID of the current network.
+     * @param options.messenger - Restricted controller messenger for the name controller.
+     * @param options.providers - Array of name provider instances to propose names.
+     * @param options.state - Initial state to set on the controller.
+     */
+    constructor({ getChainId, messenger, providers, state, }) {
+        super({
+            name: controllerName,
+            metadata: stateMetadata,
+            messenger,
+            state: Object.assign(Object.assign({}, getDefaultState()), state),
+        });
+        _NameController_instances.add(this);
+        _NameController_getChainId.set(this, void 0);
+        _NameController_providers.set(this, void 0);
+        __classPrivateFieldSet(this, _NameController_getChainId, getChainId, "f");
+        __classPrivateFieldSet(this, _NameController_providers, providers, "f");
+    }
+    /**
+     * Set the user specified name for a value.
+     *
+     * @param request - Request object.
+     * @param request.name - Name to set.
+     * @param request.sourceId - Optional ID of the source of the proposed name.
+     * @param request.type - Type of value to set the name for.
+     * @param request.value - Value to set the name for.
+     */
+    setName(request) {
+        __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateSetNameRequest).call(this, request);
+        const { value, type, name, sourceId: requestSourceId } = request;
+        const sourceId = requestSourceId !== null && requestSourceId !== void 0 ? requestSourceId : null;
+        __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_updateEntry).call(this, value, type, (entry) => {
+            entry.name = name;
+            entry.sourceId = sourceId;
+        });
+    }
+    /**
+     * Generate the proposed names for a value using the name providers and store them in the state.
+     *
+     * @param request - Request object.
+     * @param request.value - Value to update the proposed names for.
+     * @param request.type - Type of value to update the proposed names for.
+     * @param request.sourceIds - Optional array of source IDs to limit which sources are used by the providers. If not provided, all sources in all providers will be used.
+     * @returns The updated proposed names for the value.
+     */
+    updateProposedNames(request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateUpdateProposedNamesRequest).call(this, request);
+            const chainId = __classPrivateFieldGet(this, _NameController_getChainId, "f").call(this);
+            const providerResponses = (yield Promise.all(__classPrivateFieldGet(this, _NameController_providers, "f").map((provider) => __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getProviderResponse).call(this, request, chainId, provider)))).filter((response) => Boolean(response));
+            __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_updateProposedNameState).call(this, request, providerResponses);
+            __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_updateSourceState).call(this, __classPrivateFieldGet(this, _NameController_providers, "f"));
+            return __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getUpdateProposedNamesResult).call(this, providerResponses);
+        });
+    }
+}
+exports.NameController = NameController;
+_NameController_getChainId = new WeakMap(), _NameController_providers = new WeakMap(), _NameController_instances = new WeakSet(), _NameController_updateProposedNameState = function _NameController_updateProposedNameState(request, providerResponses) {
+    var _a;
+    const { value, type } = request;
+    const newProposedNames = {};
+    const currentTime = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getCurrentTimeSeconds).call(this);
+    for (const providerResponse of providerResponses) {
+        const { results } = providerResponse;
+        for (const sourceId of Object.keys(providerResponse.results)) {
+            const result = results[sourceId];
+            const { proposedNames } = result;
+            let finalProposedNames = result.error ? null : proposedNames !== null && proposedNames !== void 0 ? proposedNames : [];
+            if (finalProposedNames) {
+                finalProposedNames = finalProposedNames.filter((proposedName) => proposedName === null || proposedName === void 0 ? void 0 : proposedName.length);
+            }
+            newProposedNames[sourceId] = {
+                proposedNames: finalProposedNames,
+                lastRequestTime: currentTime,
+                retryDelay: (_a = result.retryDelay) !== null && _a !== void 0 ? _a : null,
+            };
+        }
+    }
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_updateEntry).call(this, value, type, (entry) => {
+        entry.proposedNames = Object.assign(Object.assign({}, __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_removeDormantProposedNames).call(this, entry.proposedNames, type)), newProposedNames);
+    });
+}, _NameController_updateSourceState = function _NameController_updateSourceState(providers) {
+    const newNameSources = Object.assign({}, this.state.nameSources);
+    for (const provider of providers) {
+        const { sourceLabels } = provider.getMetadata();
+        for (const sourceId of Object.keys(sourceLabels)) {
+            newNameSources[sourceId] = {
+                label: sourceLabels[sourceId],
+            };
+        }
+    }
+    this.update((state) => {
+        state.nameSources = newNameSources;
+    });
+}, _NameController_getUpdateProposedNamesResult = function _NameController_getUpdateProposedNamesResult(providerResponses) {
+    return providerResponses.reduce((acc, providerResponse) => {
+        const { results } = providerResponse;
+        for (const sourceId of Object.keys(results)) {
+            const { proposedNames: resultProposedNames, error: resultError } = results[sourceId];
+            let proposedNames = resultError
+                ? undefined
+                : resultProposedNames !== null && resultProposedNames !== void 0 ? resultProposedNames : [];
+            if (proposedNames) {
+                proposedNames = proposedNames.filter((proposedName) => proposedName === null || proposedName === void 0 ? void 0 : proposedName.length);
+            }
+            acc.results[sourceId] = {
+                proposedNames,
+                error: resultError,
+            };
+        }
+        return acc;
+    }, { results: {} });
+}, _NameController_getProviderResponse = function _NameController_getProviderResponse(request, chainId, provider) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { value, type, sourceIds: requestedSourceIds, onlyUpdateAfterDelay, } = request;
+        const variationKey = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getTypeVariationKey).call(this, type);
+        const supportedSourceIds = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getSourceIds).call(this, provider, type);
+        const currentTime = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getCurrentTimeSeconds).call(this);
+        const matchingSourceIds = supportedSourceIds.filter((sourceId) => {
+            var _a, _b, _c, _d, _e, _f, _g;
+            if (requestedSourceIds && !requestedSourceIds.includes(sourceId)) {
+                return false;
+            }
+            if (onlyUpdateAfterDelay) {
+                const entry = (_c = (_b = (_a = this.state.names[type]) === null || _a === void 0 ? void 0 : _a[value]) === null || _b === void 0 ? void 0 : _b[variationKey]) !== null && _c !== void 0 ? _c : {};
+                const proposedNamesEntry = (_e = (_d = entry.proposedNames) === null || _d === void 0 ? void 0 : _d[sourceId]) !== null && _e !== void 0 ? _e : {};
+                const lastRequestTime = (_f = proposedNamesEntry.lastRequestTime) !== null && _f !== void 0 ? _f : 0;
+                const retryDelay = (_g = proposedNamesEntry.retryDelay) !== null && _g !== void 0 ? _g : DEFAULT_UPDATE_DELAY;
+                if (currentTime - lastRequestTime < retryDelay) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        if (!matchingSourceIds.length) {
+            return undefined;
+        }
+        const providerRequest = {
+            chainId,
+            value,
+            type,
+            sourceIds: requestedSourceIds ? matchingSourceIds : undefined,
+        };
+        let responseError;
+        let response;
+        try {
+            response = yield provider.getProposedNames(providerRequest);
+            responseError = response.error;
+        }
+        catch (error) {
+            responseError = error;
+        }
+        let results = {};
+        if (response === null || response === void 0 ? void 0 : response.results) {
+            results = Object.keys(response.results).reduce((acc, sourceId) => {
+                if (!requestedSourceIds || requestedSourceIds.includes(sourceId)) {
+                    acc[sourceId] = response.results[sourceId];
+                }
+                return acc;
+            }, {});
+        }
+        if (responseError) {
+            results = supportedSourceIds.reduce((acc, sourceId) => {
+                acc[sourceId] = { proposedNames: [], error: responseError };
+                return acc;
+            }, {});
+        }
+        return { results, error: responseError };
+    });
+}, _NameController_updateEntry = function _NameController_updateEntry(value, type, callback) {
+    const variationKey = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getTypeVariationKey).call(this, type);
+    this.update((state) => {
+        var _a;
+        const typeEntries = state.names[type] || {};
+        state.names[type] = typeEntries;
+        const variationEntries = typeEntries[value] || {};
+        typeEntries[value] = variationEntries;
+        const entry = (_a = variationEntries[variationKey]) !== null && _a !== void 0 ? _a : {
+            proposedNames: {},
+            name: null,
+            sourceId: null,
+        };
+        variationEntries[variationKey] = entry;
+        callback(entry);
+    });
+}, _NameController_getTypeVariationKey = function _NameController_getTypeVariationKey(type) {
+    switch (type) {
+        default: {
+            return __classPrivateFieldGet(this, _NameController_getChainId, "f").call(this);
+        }
+    }
+}, _NameController_getCurrentTimeSeconds = function _NameController_getCurrentTimeSeconds() {
+    return Math.round(Date.now() / 1000);
+}, _NameController_validateSetNameRequest = function _NameController_validateSetNameRequest(request) {
+    const { name, value, type, sourceId } = request;
+    const errorMessages = [];
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateValue).call(this, value, errorMessages);
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateType).call(this, type, errorMessages);
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateName).call(this, name, errorMessages);
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateSourceId).call(this, sourceId, type, name, errorMessages);
+    if (errorMessages.length) {
+        throw new Error(errorMessages.join(' '));
+    }
+}, _NameController_validateUpdateProposedNamesRequest = function _NameController_validateUpdateProposedNamesRequest(request) {
+    const { value, type, sourceIds } = request;
+    const errorMessages = [];
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateValue).call(this, value, errorMessages);
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateType).call(this, type, errorMessages);
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateSourceIds).call(this, sourceIds, type, errorMessages);
+    __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_validateDuplicateSourceIds).call(this, type, errorMessages);
+    if (errorMessages.length) {
+        throw new Error(errorMessages.join(' '));
+    }
+}, _NameController_validateValue = function _NameController_validateValue(value, errorMessages) {
+    if (!(value === null || value === void 0 ? void 0 : value.length) || typeof value !== 'string') {
+        errorMessages.push('Must specify a non-empty string for value.');
+    }
+}, _NameController_validateType = function _NameController_validateType(type, errorMessages) {
+    if (!Object.values(types_1.NameType).includes(type)) {
+        errorMessages.push(`Must specify one of the following types: ${Object.values(types_1.NameType).join(', ')}`);
+    }
+}, _NameController_validateName = function _NameController_validateName(name, errorMessages) {
+    if (name === null) {
+        return;
+    }
+    if (!(name === null || name === void 0 ? void 0 : name.length) || typeof name !== 'string') {
+        errorMessages.push('Must specify a non-empty string or null for name.');
+    }
+}, _NameController_validateSourceIds = function _NameController_validateSourceIds(sourceIds, type, errorMessages) {
+    if (!sourceIds) {
+        return;
+    }
+    const allSourceIds = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getAllSourceIds).call(this, type);
+    const missingSourceIds = [];
+    for (const sourceId of sourceIds) {
+        if (!allSourceIds.includes(sourceId)) {
+            missingSourceIds.push(sourceId);
+            continue;
+        }
+    }
+    if (missingSourceIds.length) {
+        errorMessages.push(`Unknown source IDs for type '${type}': ${missingSourceIds.join(', ')}`);
+    }
+}, _NameController_validateSourceId = function _NameController_validateSourceId(sourceId, type, name, errorMessages) {
+    if (sourceId === null || sourceId === undefined) {
+        return;
+    }
+    if (name === null) {
+        errorMessages.push(`Cannot specify a source ID when clearing the saved name: ${sourceId}`);
+        return;
+    }
+    const allSourceIds = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getAllSourceIds).call(this, type);
+    if (!sourceId.length || typeof sourceId !== 'string') {
+        errorMessages.push('Must specify a non-empty string for sourceId.');
+        return;
+    }
+    if (!allSourceIds.includes(sourceId)) {
+        errorMessages.push(`Unknown source ID for type '${type}': ${sourceId}`);
+    }
+}, _NameController_validateDuplicateSourceIds = function _NameController_validateDuplicateSourceIds(type, errorMessages) {
+    const allSourceIds = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getAllSourceIds).call(this, type);
+    const duplicateSourceIds = allSourceIds.filter((sourceId, index) => allSourceIds.indexOf(sourceId) !== index);
+    if (duplicateSourceIds.length) {
+        errorMessages.push(`Duplicate source IDs found for type '${type}': ${duplicateSourceIds.join(', ')}`);
+    }
+}, _NameController_getAllSourceIds = function _NameController_getAllSourceIds(type) {
+    return (__classPrivateFieldGet(this, _NameController_providers, "f")
+        /* istanbul ignore next */
+        .map((provider) => __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getSourceIds).call(this, provider, type))
+        .flat());
+}, _NameController_getSourceIds = function _NameController_getSourceIds(provider, type) {
+    return provider.getMetadata().sourceIds[type];
+}, _NameController_removeDormantProposedNames = function _NameController_removeDormantProposedNames(proposedNames, type) {
+    if (!proposedNames || Object.keys(proposedNames).length === 0) {
+        return proposedNames;
+    }
+    const typeSourceIds = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getAllSourceIds).call(this, type);
+    return Object.keys(proposedNames)
+        .filter((sourceId) => typeSourceIds.includes(sourceId))
+        .reduce((acc, sourceId) => (Object.assign(Object.assign({}, acc), { [sourceId]: proposedNames[sourceId] })), {});
+};
+//# sourceMappingURL=NameController.js.map

@@ -4,7 +4,7 @@ import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { setName } from '../../../../store/actions';
+import { setName, updateProposedNames } from '../../../../store/actions';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -21,6 +21,8 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
 }));
+
+jest.useFakeTimers();
 
 const ADDRESS_NO_NAME_MOCK = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
 const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
@@ -42,8 +44,16 @@ const STATE_MOCK = {
         [ADDRESS_SAVED_NAME_MOCK]: {
           [CHAIN_ID_MOCK]: {
             proposedNames: {
-              [SOURCE_ID_MOCK]: [PROPOSED_NAME_MOCK],
-              [SOURCE_ID_2_MOCK]: [PROPOSED_NAME_2_MOCK],
+              [SOURCE_ID_MOCK]: {
+                proposedNames: [PROPOSED_NAME_MOCK],
+                lastRequestTime: null,
+                retryDelay: null,
+              },
+              [SOURCE_ID_2_MOCK]: {
+                proposedNames: [PROPOSED_NAME_2_MOCK],
+                lastRequestTime: null,
+                retryDelay: null,
+              },
             },
             name: SAVED_NAME_MOCK,
             sourceId: SOURCE_ID_MOCK,
@@ -52,8 +62,16 @@ const STATE_MOCK = {
         [ADDRESS_NO_NAME_MOCK]: {
           [CHAIN_ID_MOCK]: {
             proposedNames: {
-              [SOURCE_ID_MOCK]: [PROPOSED_NAME_MOCK],
-              [SOURCE_ID_2_MOCK]: [PROPOSED_NAME_2_MOCK],
+              [SOURCE_ID_MOCK]: {
+                proposedNames: [PROPOSED_NAME_MOCK],
+                lastRequestTime: null,
+                retryDelay: null,
+              },
+              [SOURCE_ID_2_MOCK]: {
+                proposedNames: [PROPOSED_NAME_2_MOCK],
+                lastRequestTime: null,
+                retryDelay: null,
+              },
             },
             name: null,
           },
@@ -99,6 +117,7 @@ async function saveName(
 describe('NameDetails', () => {
   const store = configureStore()(STATE_MOCK);
   const setNameMock = jest.mocked(setName);
+  const updateProposedNamesMock = jest.mocked(updateProposedNames);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -126,6 +145,26 @@ describe('NameDetails', () => {
       />,
       store,
     );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('renders proposed names', async () => {
+    const component = renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    const { getByPlaceholderText, baseElement } = component;
+    const nameInput = getByPlaceholderText('Set a personal display name...');
+
+    await act(async () => {
+      fireEvent.click(nameInput);
+    });
 
     expect(baseElement).toMatchSnapshot();
   });
@@ -212,6 +251,43 @@ describe('NameDetails', () => {
       name: SAVED_NAME_2_MOCK,
       sourceId: undefined,
     });
+  });
+
+  it('updates proposed names', () => {
+    renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_NO_NAME_MOCK}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+    expect(updateProposedNamesMock).toHaveBeenCalledWith({
+      value: ADDRESS_NO_NAME_MOCK,
+      type: NameType.ETHEREUM_ADDRESS,
+      onlyUpdateAfterDelay: true,
+    });
+  });
+
+  it('updates proposed names on regular interval', () => {
+    renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_NO_NAME_MOCK}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+    jest.advanceTimersByTime(1999);
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+    jest.advanceTimersByTime(1);
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
+    jest.advanceTimersByTime(2000);
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(3);
   });
 
   describe('metrics', () => {

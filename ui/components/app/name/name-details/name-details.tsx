@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { NameType } from '@metamask/name-controller';
@@ -36,7 +37,10 @@ import {
 import Name from '../name';
 import FormComboField from '../../../ui/form-combo-field/form-combo-field';
 import { getNameSources } from '../../../../selectors';
-import { setName as saveName } from '../../../../store/actions';
+import {
+  setName as saveName,
+  updateProposedNames,
+} from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { I18nContext } from '../../../../contexts/i18n';
@@ -45,6 +49,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+
+const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
 export interface NameDetailsProps {
   onClose: () => void;
@@ -66,10 +72,12 @@ export default function NameDetails({
   const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
+  const [selectedSourceName, setSelectedSourceName] = useState<string>();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const hasSavedName = Boolean(savedName);
+  const updateInterval = useRef<any>();
 
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
     boolean,
@@ -79,18 +87,40 @@ export default function NameDetails({
   useEffect(() => {
     setName(savedName ?? '');
     setSelectedSourceId(savedSourceId ?? undefined);
+    setSelectedSourceName(savedSourceId ? savedName ?? undefined : undefined);
   }, [savedName, savedSourceId, setName, setSelectedSourceId]);
+
+  useEffect(() => {
+    const reset = () => {
+      if (updateInterval.current) {
+        clearInterval(updateInterval.current);
+      }
+    };
+
+    const update = () => {
+      dispatch(
+        updateProposedNames({ value, type, onlyUpdateAfterDelay: true }),
+      );
+    };
+
+    reset();
+    update();
+
+    updateInterval.current = setInterval(update, UPDATE_DELAY);
+    return reset;
+  }, [value, type, dispatch]);
 
   const proposedNameOptions = useMemo(() => {
     const sourceIds = Object.keys(proposedNames);
 
     const sourceIdsWithProposedNames = sourceIds.filter(
-      (sourceId) => proposedNames[sourceId]?.length,
+      (sourceId) => proposedNames[sourceId]?.proposedNames?.length,
     );
 
     const options = sourceIdsWithProposedNames
       .map((sourceId: string) => {
-        const sourceProposedNames = proposedNames[sourceId] ?? [];
+        const sourceProposedNames =
+          proposedNames[sourceId]?.proposedNames ?? [];
 
         return sourceProposedNames.map((proposedName: any) => ({
           primaryLabel: proposedName,
@@ -101,7 +131,9 @@ export default function NameDetails({
       .flat();
 
     return options.sort((a, b) =>
-      a.primaryLabel.toLowerCase().localeCompare(b.primaryLabel.toLowerCase()),
+      a.secondaryLabel
+        .toLowerCase()
+        .localeCompare(b.secondaryLabel.toLowerCase()),
     );
   }, [proposedNames, nameSources]);
 
@@ -172,11 +204,9 @@ export default function NameDetails({
     (newName: string) => {
       setName(newName);
 
-      const selectedProposedName =
-        proposedNames?.[selectedSourceId as string]?.[0];
-
-      if (newName !== selectedProposedName) {
+      if (newName !== selectedSourceName) {
         setSelectedSourceId(undefined);
+        setSelectedSourceName(undefined);
       }
     },
     [setName, selectedSourceId],
@@ -185,8 +215,9 @@ export default function NameDetails({
   const handleProposedNameClick = useCallback(
     (option: any) => {
       setSelectedSourceId(option.sourceId);
+      setSelectedSourceName(option.primaryLabel);
     },
-    [setSelectedSourceId],
+    [setSelectedSourceId, setSelectedSourceName],
   );
 
   useEffect(() => {
@@ -202,12 +233,7 @@ export default function NameDetails({
             {hasSavedName ? t('nameModalTitleSaved') : t('nameModalTitleNew')}
           </ModalHeader>
           <div style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}>
-            <Name
-              value={value}
-              type={NameType.ETHEREUM_ADDRESS}
-              sourcePriority={['lens', 'token', 'ens', 'etherscan']}
-              disableEdit
-            />
+            <Name value={value} type={NameType.ETHEREUM_ADDRESS} disableEdit />
           </div>
           <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
             {hasSavedName

@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@metamask/name-controller": {
+      "signature": "58b0aeb79ae992c54589556b7fd854e1",
+      "file": true,
+      "replaced": "^1.0.0"
+    }
+  }
+}
