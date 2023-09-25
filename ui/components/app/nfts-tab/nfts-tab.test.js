@@ -201,14 +201,14 @@ describe('NFT Items', () => {
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
     it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
       render({
@@ -227,14 +227,14 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
   });
 

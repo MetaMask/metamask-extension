@@ -77,7 +77,7 @@ async function clickSignOnSignatureConfirmation(driver) {
   await driver.getAllWindowHandles();
 }
 
-describe('Signature Approved Event', function () {
+describe('Signature Approved Event @no-mmi', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
     await withFixtures(
       {

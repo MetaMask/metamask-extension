@@ -161,6 +161,7 @@ export const CHAIN_IDS = {
   MOONRIVER: '0x505',
   CRONOS: '0x19',
   GNOSIS: '0x64',
+  ZKSYNC_ERA: '0x144',
 } as const;
 
 /**
@@ -335,6 +336,14 @@ export const BUILT_IN_INFURA_NETWORKS = pick(
 
 export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 
+// type SupportedNetworksType = {
+//   [key: string]: {
+//     domain: string;
+//     subdomain: string;
+//     networkId: string;
+//   };
+// };
+
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
@@ -426,6 +435,7 @@ export const INFURA_BLOCKED_KEY = 'countryBlocked';
 
 const defaultEtherscanDomain = 'etherscan.io';
 const defaultEtherscanSubdomainPrefix = 'api';
+
 /**
  * Map of all Etherscan supported networks.
  */
@@ -631,6 +641,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.LINEA_MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'linea',
+  },
+  [CHAIN_IDS.ZKSYNC_ERA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'zksync',
   },
 };
 
