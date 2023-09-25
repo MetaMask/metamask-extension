@@ -98,12 +98,14 @@ export const DropdownTab = ({
         >
           {selectedOptionName}
         </Text>
-        <Icon
+        <Box
           marginLeft={2}
-          name={IconName.ArrowDown}
-          size={IconSize.Sm}
+          paddingLeft={1}
+          paddingRight={1}
           onClick={openDropdown}
-        />
+        >
+          <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
+        </Box>
       </Box>
       {isOpen && (
         <Box
