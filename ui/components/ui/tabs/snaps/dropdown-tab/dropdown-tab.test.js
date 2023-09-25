@@ -36,7 +36,7 @@ describe('DropdownTab', () => {
   it('registers selection', () => {
     const { container, getByText } = render(<DropdownTab {...args} />);
 
-    fireEvent.click(container.firstChild);
+    fireEvent.click(container.firstChild.firstChild.lastChild);
 
     const element = getByText(args.options[1].name);
 
