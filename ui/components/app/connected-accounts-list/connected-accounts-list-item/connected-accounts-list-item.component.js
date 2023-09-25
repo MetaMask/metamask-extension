@@ -71,6 +71,9 @@ export default function ConnectedAccountsListItem({
               </Text>
             ) : null}
           </Box>
+          <Text variant={TextVariant.bodySm} paddingTop={1}>
+            {address.substr(0, 7)}…{address.substr(-5, 5)}
+          </Text>
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             {action}
           </Box>
