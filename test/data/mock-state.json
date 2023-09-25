@@ -1380,6 +1380,7 @@
       }
     ],
     "desktopEnabled": false,
+    "addSnapAccountEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
