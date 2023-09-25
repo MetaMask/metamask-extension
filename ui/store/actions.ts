@@ -2413,9 +2413,14 @@ export function hideModal(): Action {
   };
 }
 
-export function showImportNftsModal(): Action {
+export function showImportNftsModal(payload: {
+  tokenAddress?: string;
+  tokenId?: string;
+  ignoreErc20Token?: boolean;
+}) {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
+    payload,
   };
 }
 
@@ -4425,6 +4430,16 @@ export function setTransactionSecurityCheckEnabled(
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
     submitRequestToBackground('setSecurityAlertsEnabled', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
+  try {
+    await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
   } catch (error) {
     logErrorWithMessage(error);
   }

@@ -115,6 +115,9 @@ export const SENTRY_BACKGROUND_STATE = {
     keyrings: false,
     keyringTypes: false,
   },
+  LoggingController: {
+    logs: false,
+  },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
     fragments: false,
@@ -170,7 +173,6 @@ export const SENTRY_BACKGROUND_STATE = {
     forgottenPassword: true,
     identities: false,
     incomingTransactionsPreferences: true,
-    infuraBlocked: true,
     ipfsGateway: false,
     isLineaMainnetReleased: true,
     knownMethodData: false,

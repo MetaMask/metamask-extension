@@ -53,6 +53,10 @@ async function main() {
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
+          .option('mmi', {
+            description: `Run only mmi related tests`,
+            type: 'boolean',
+          })
           .option('snaps', {
             description: `run snaps e2e tests`,
             type: 'boolean',
@@ -89,6 +93,7 @@ async function main() {
     browser,
     debug,
     retries,
+    mmi,
     snaps,
     mv3,
     rpc,
@@ -101,20 +106,6 @@ async function main() {
   if (snaps) {
     const testDir = path.join(__dirname, 'snaps');
     testPaths = await getTestPathsForTestDir(testDir);
-
-    if (buildType && buildType !== 'flask') {
-      // These tests should only be ran on Flask for now
-      const filteredTests = [
-        'confirm/security-alert-blockaid.spec.js',
-        'ppom-toggle-settings.spec.js',
-        'test-snap-lifecycle.spec.js',
-        'test-snap-manageAccount.spec.js',
-        'test-snap-rpc.spec.js',
-      ];
-      testPaths = testPaths.filter((p) =>
-        filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
-      );
-    }
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
@@ -135,6 +126,22 @@ async function main() {
     }
   }
 
+  // These tests should only be ran on Flask for now.
+  if (buildType !== 'flask') {
+    const filteredTests = [
+      'confirm/security-alert-blockaid.spec.js',
+      'settings-add-snap-account-toggle.spec.js',
+      'test-snap-manageAccount.spec.js',
+      'test-snap-rpc.spec.js',
+      'test-snap-lifecycle.spec.js',
+      'ppom-toggle-settings.spec.js',
+      'petnames.spec.js',
+    ];
+    testPaths = testPaths.filter((p) =>
+      filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
+    );
+  }
+
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
 
   const args = [runE2eTestPath];
@@ -149,6 +156,9 @@ async function main() {
   }
   if (updateSnapshot) {
     args.push('--update-snapshot');
+  }
+  if (mmi) {
+    args.push('--mmi');
   }
 
   // For running E2Es in parallel in CI

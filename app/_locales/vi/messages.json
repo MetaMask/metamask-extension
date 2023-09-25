@@ -371,9 +371,6 @@
   "amount": {
     "message": "Số tiền"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
     "description": "The description of the application"
@@ -981,9 +978,6 @@
   "custodian": {
     "message": "Lưu ký"
   },
-  "custodianAccount": {
-    "message": "Tài khoản lưu ký"
-  },
   "custodianAccountAddedDesc": {
     "message": "Giờ đây bạn có thể sử dụng tài khoản lưu ký của mình trong MetaMask Institutional."
   },
@@ -1295,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Hiển thị phương tiện NFT"
   },
-  "displayNftMediaDescription": {
-    "message": "Thao tác hiển thị dữ liệu và phương tiện NFT sẽ hiển thị địa chỉ IP của bạn với OpenSea hoặc các bên thứ ba khác. Điều này có thể cho phép kẻ tấn công liên kết địa chỉ IP với địa chỉ Ethereum của bạn. Tính năng tự động phát hiện NFT dựa trên chế độ cài đặt này và sẽ không khả dụng khi chế độ cài đặt này bị tắt."
-  },
   "domain": {
     "message": "Tên miền"
   },
@@ -1420,9 +1411,6 @@
   "enableAutoDetect": {
     "message": " Bật tự động phát hiện"
   },
-  "enableForAllNetworks": {
-    "message": "Bật cho tất cả các mạng"
-  },
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
@@ -1452,21 +1440,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Tính năng phát hiện token nâng cao hiện có sẵn trên $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask cho phép bạn xem các tên miền ENS như \"https://metamask.eth\" ngay trên thanh địa chỉ của trình duyệt. Sau đây là cách hoạt động:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Các trình duyệt thông thường thường không xử lý địa chỉ ENS hoặc IPFS, nhưng MetaMask sẽ hỗ trợ xử lý. Việc sử dụng tính năng này có thể chia sẻ địa chỉ IP của bạn với các dịch vụ IPFS bên thứ ba."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask sẽ kiểm tra hợp đồng ENS của Ethereum để tìm mã được kết nối với tên ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Nếu mã được liên kết với IPFS, nó sẽ lấy nội dung từ mạng IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Sau đó, bạn có thể xem nội dung, thường là một trang web hoặc một cái gì đó tương tự."
   },
   "ensDomainsSettingTitle": {
     "message": "Hiển thị tên miền ENS trong thanh địa chỉ"
@@ -1605,9 +1578,6 @@
   "fileImportFail": {
     "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Kích thước tập tin thả vào quá lớn."
   },
   "flaskWelcomeUninstall": {
     "message": "bạn nên gỡ cài đặt tiện ích mở rộng này",
@@ -2346,9 +2316,6 @@
   "missingSettingRequest": {
     "message": "Yêu cầu tại đây"
   },
-  "mmiAddToken": {
-    "message": "Trang tại $1 muốn ủy quyền token lưu ký sau trong MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional được thiết kế và xây dựng trên khắp thế giới."
   },
@@ -2488,12 +2455,6 @@
   },
   "newContract": {
     "message": "Hợp đồng mới"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Cho phép MetaMask tự động phát hiện NFT từ OpenSea và hiển thị trên ví MetaMask của bạn."
-  },
-  "newNFTsDetected": {
-    "message": "Mới! Phát hiện NFT"
   },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"
@@ -3886,9 +3847,6 @@
     "message": "Chọn tùy chọn này nếu bạn muốn dùng Etherscan để hiển thị các giao dịch đến trong danh sách giao dịch",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Điều này phụ thuộc vào từng mạng sẽ có quyền truy cập vào địa chỉ Ethereum và địa chỉ IP của bạn."
-  },
   "showMore": {
     "message": "Hiển thị thêm"
   },
@@ -5256,21 +5214,6 @@
   },
   "useNftDetection": {
     "message": "Tự động phát hiện NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện NFT trong ví của bạn, điều này có thể làm lộ địa chỉ IP của bạn cho các máy chủ tập trung. Có một vài điều cần thận trọng khi kích hoạt tính năng này."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Các API của bên thứ ba có thể xem được địa chỉ tài khoản của bạn."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Siêu dữ liệu NFT có thể chứa liên kết dẫn đến các trang web lừa đảo."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Bất kỳ ai cũng có thể gửi NFT vào tài khoản của bạn. Điều này có thể khiến nội dung xúc phạm tự động hiển thị trong ví của bạn."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Tắt tính năng này nếu bạn không muốn ứng dụng lấy dữ liệu từ các dịch vụ đó."
   },
   "usePhishingDetection": {
     "message": "Sử dụng tính năng phát hiện lừa đảo"
