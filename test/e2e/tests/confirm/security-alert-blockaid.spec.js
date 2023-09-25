@@ -51,6 +51,18 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
         const testBenignConfigs = [
           {
+            logExpectedDetail: 'Benign 1',
+            method: 'eth_sendTransaction',
+            params: [
+              {
+                from: selectedAddress,
+                data: '0x095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+                to: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                value: '0x0',
+              },
+            ],
+          },
+          {
             logExpectedDetail: 'blur',
             method: 'eth_signTypedData_v4',
             params: [
