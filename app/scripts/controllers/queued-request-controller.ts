@@ -26,10 +26,17 @@ export type QueuedRequestControllerState = {
   queue: Record<Domain, Request>;
 };
 
+export type QueuedRequestControllerCountChangedEvent = {
+  type: 'QueuedRequestController:countChanged';
+  payload: [number];
+};
+
+export type QueuedRequestControllerEvents = QueuedRequestControllerCountChangedEvent;
+
 export type QueuedRequestControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   never,
-  never,
+  QueuedRequestControllerEvents,
   never,
   never
 >;
@@ -70,12 +77,29 @@ export class QueuedRequestController extends BaseControllerV2<
     return Object.keys(this.requestQueue).length > 0;
   }
 
+  length(origin?: Domain) {
+    if (origin) {
+      return this.requestQueue[origin].length;
+    }
+    return Object.values(this.requestQueue).reduce((len, item) => item.length + len, 0);
+  }
+
   enqueueRequest(origin: Domain, requestNext: Promise<unknown>) {
+    console.log('Request being enqueued!!!');
     if (this.requestQueue[origin] === undefined) {
       this.requestQueue[origin] = [];
     }
 
     this.requestQueue[origin].push(requestNext);
+
+    this.messagingSystem.publish('QueuedRequestController:countChanged', this.length());
+    requestNext.finally(() => {
+      const index = this.requestQueue[origin].findIndex((p) => p === requestNext);
+      console.log('updating queue length from: ', this.length());
+      this.requestQueue[origin][index] = this.requestQueue[origin][this.requestQueue[origin].length - 1];
+      this.requestQueue[origin].pop();
+      console.log(' to: ', this.length());
+    });
 
     return this.requestQueue;
   }

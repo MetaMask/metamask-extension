@@ -6,6 +6,9 @@ import { JsonRpcEngine, createAsyncMiddleware } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
+  providerFromEngine,
+} from '@metamask/eth-json-rpc-provider';
+import {
   debounce,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   throttle,
@@ -15,7 +18,8 @@ import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
-import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
+import { errorCodes as rpcErrorCodes, EthereumRpcError, ethErrors } from 'eth-rpc-errors';
+
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -308,25 +312,6 @@ export default class MetamaskController extends EventEmitter {
     // next, we will initialize the controllers
     // controller initialization order matters
 
-    this.selectedNetworkController = new SelectedNetworkController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SelectedNetworkController',
-        allowedActions: [
-          'SelectedNetworkController:getState',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-          'SelectedNetworkController:setNetworkClientIdForDomain',
-        ],
-        allowedEvents: [
-          'SelectedNetworkController:stateChange',
-          'NetworkController:stateChange',
-        ],
-      }),
-    });
-
-    // turn on perDappSelectedNetwork feature flag
-    this.selectedNetworkController.update((state) => {
-      state.perDomainNetwork = true;
-    });
 
     this.queuedRequestController = new QueuedRequestController({
       messenger: this.controllerMessenger.getRestricted({
@@ -340,7 +325,9 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
       }),
-      showApprovalRequest: opts.showUserConfirmation,
+      showApprovalRequest: (...args) => {
+        opts.showUserConfirmation(...args);
+      },
       typesExcludedFromRateLimiting: [
         ApprovalType.EthSign,
         ApprovalType.PersonalSign,
@@ -368,6 +355,9 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:infuraIsBlocked',
         'NetworkController:infuraIsUnblocked',
       ],
+      allowedActions: [
+        'NetworkController:getNetworkClientById',
+      ]
     });
 
     let initialNetworkControllerState = {};
@@ -425,6 +415,27 @@ export default class MetamaskController extends EventEmitter {
         'TokenListController:stateChange',
         'NetworkController:stateChange',
       ],
+    });
+
+    this.selectedNetworkController = new SelectedNetworkController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SelectedNetworkController',
+        allowedActions: [
+          'SelectedNetworkController:getState',
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+          'SelectedNetworkController:setNetworkClientIdForDomain',
+          'NetworkController:getNetworkClientById',
+        ],
+        allowedEvents: [
+          'SelectedNetworkController:stateChange',
+          'NetworkController:stateChange',
+        ],
+      }),
+    });
+
+    // turn on perDappSelectedNetwork feature flag
+    this.selectedNetworkController.update((state) => {
+      state.perDomainNetwork = true;
     });
 
     this.tokenListController = new TokenListController({
@@ -1546,7 +1557,7 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController.clearUnapproved();
         this.decryptMessageController.clearUnapproved();
         this.signatureController.clearUnapproved();
-        this.approvalController.clear();
+        this.approvalController.clear(ethErrors.provider.userRejectedRequest());
       },
     );
 
@@ -4144,62 +4155,124 @@ export default class MetamaskController extends EventEmitter {
       } else if (selectedNetworkClientIdForDomain !== selectedNetworkClientId) {
         // handles switching chain when the provider is set up... not really the right spot to be doing this. We are using setupProvider as a 'proxy' for what we really want which is everytime the wallet 'pops up' - via api call or manually opening the wallet.
         // also worth noting that this calls methods which do async stuff, but we are not waiting for it to complete or handling any potential errors.
-        switchChain(selectedNetworkClientIdForDomain);
+        // switchChain(selectedNetworkClientIdForDomain);
       }
     }
+
+    // make this into a proxy that is updated same time as selectedNetworkClietnIdforDomain changes
+    const { provider: providerForDomain, blockTracker: blockTrackerForDomain } = this.selectedNetworkController.getProviderAndBlockTracker(origin);
 
     // add some middleware that will switch chain on each request (as needed)
     engine.push(
       createAsyncMiddleware(async (req, res, next) => {
+        // continue if feature flag for using queue is off
         if (this.preferencesController.getUseRequestQueue() === false) {
-          console.log('queue flag off: skipping queue middleware');
           await next();
           return;
         }
+
+        const confirmationMethods = [
+          'eth_sendTransaction',
+          'wallet_watchAsset',
+          'wallet_switchEthereumChain'
+        ];
+
+        // Allow per-dapp provider proxy to handle this request (added to engine last in setupProviderEngine)
+        if (confirmationMethods.includes(req.method) === false) {
+          await next();
+          return;
+        }
+
+        // if selected network is not already correct:
+        // switchEthereumChain (with an approval dialog)
+        // call next?? queue or not queue that is the question.
 
         const networkClientIdForRequest = req.networkClientId;
         const sameNetworkClientIdAsCurrent = () =>
           networkClientIdForRequest ===
           this.networkController.state.selectedNetworkClientId;
 
-        if (req.method === 'wallet_switchEthereumChain') {
-          // decide if we want to show a confirmation
-          // we can check the chainId in the request against the chainId for the domain-specific network configuration. If they are the same, then we dont show a confirmation. We dont need to switch because subsequent requests will cause the switching automatically. Later we can make this check for a permission instead.
-          if (
-            req.params[0].chainId ===
-            this.networkController.getNetworkClientById(
-              networkClientIdForRequest,
-            )?.configuration?.chainId
-          ) {
-            console.log(
-              'EARLY RETURNING BECAUSE SELECTED NETWORK IS ALREADY CORRECTLY SET TO THE RIGHT NETWORKID',
-            );
-            // possible adjustments that could be made to this:
-            //   - if the selectedNetworkClientIdForDomain is not the same
-            //  - maybe we want to broadcast a notification that the chain is changed for the domain
-            res.result = null;
-            return;
+        // NOTE: NOT SURE IF WE WANNA KEEP THIS SWITCHETHCHAIN HANDLING, COMMENTING OUT FOR NOW
+        // if (req.method === 'wallet_switchEthereumChain') {
+        //   // decide if we want to show a confirmation
+        //   // we can check the chainId in the request against the chainId for the domain-specific network configuration. If they are the same, then we dont show a confirmation. We dont need to switch because subsequent requests will cause the switching automatically. Later we can make this check for a permission instead.
+        //   if (
+        //     req.params[0].chainId ===
+        //     this.networkController.getNetworkClientById(
+        //       networkClientIdForRequest,
+        //     )?.configuration?.chainId
+        //   ) {
+        //     console.log(
+        //       'EARLY RETURNING BECAUSE SELECTED NETWORK IS ALREADY CORRECTLY SET TO THE RIGHT NETWORKID',
+        //     );
+        //     // possible adjustments that could be made to this:
+        //     //   - if the selectedNetworkClientIdForDomain is not the same
+        //     //  - maybe we want to broadcast a notification that the chain is changed for the domain
+        //     res.result = null;
+        //     return;
+        //   }
+
+        //   // otherwise, put up the confirmation dialog
+        //   console.log('Calling next on switchEthereumChain..');
+
+        //   // eslint-disable-next-line node/callback-return
+        //   await next();
+        //   console.log('switchEthereumChain middleware finished');
+        //   return;
+        // }
+
+        // if not on the correct network, switch to it.
+        // handle waiting for confirmations
+
+
+        if (!sameNetworkClientIdAsCurrent() && req.method !== 'wallet_switchEthereumChain') {
+          console.log('not on the correct network & requires confirmation: switch time');
+          if (this.queuedRequestController.hasQueuedRequests()) {
+            await this.queuedRequestController.waitForRequestQueue();
           }
 
-          // otherwise, put up the confirmation dialog
-          console.log('Calling next on switchEthereumChain..');
+          const selfProvider = providerFromEngine(engine);
+          try {
 
-          // eslint-disable-next-line node/callback-return
-          await next();
-          console.log('switchEthereumChain middleware finished');
-          return;
+            // not awaited. Instead we wait for the request queue to empty after the call.
+            // this is because the queue may already have items in it when this request happens
+            const switchEthereumChainApprovalPromise = new Promise((resolve, reject) => {
+              const isBuiltIn =
+                    BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
+                    BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
+              const chainId = isBuiltIn ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId : this.networkController.getNetworkClientById(networkClientIdForRequest).configuration.chainId;
+
+              selfProvider.sendAsync(
+                {
+                  id: Math.floor(Math.random() * 1000000),
+                  jsonrpc: '2.0',
+                  method: 'wallet_switchEthereumChain',
+                  params: [ { chainId } ]
+                },
+                (err, result) => {
+                  if (err) {
+                    console.error('per-dapp-network:: switch ethereum chain errored: ', error);
+                    reject(err);
+                  } else {
+                    resolve(result);
+                  }
+                }
+              );
+            });
+            this.queuedRequestController.enqueueRequest(
+              networkClientIdForRequest,
+              switchEthereumChainApprovalPromise
+            );
+          } catch (e) {
+            console.error(e);
+            res.error = e;
+            return;
+          }
         }
 
         // check against a fresh copy every time
-        if (
-          this.queuedRequestController.hasQueuedRequests() &&
-          !sameNetworkClientIdAsCurrent()
-        ) {
+        if (!sameNetworkClientIdAsCurrent() && this.queuedRequestController.hasQueuedRequests() && req.method !== 'wallet_switchEthereumChain') {
           await this.queuedRequestController.waitForRequestQueue();
-        }
-
-        if (sameNetworkClientIdAsCurrent() === false) {
-          switchChain(networkClientIdForRequest);
         }
 
         // eslint-disable-next-line node/callback-return
@@ -4446,8 +4519,16 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
+    // if useRequestQueue feature flag is enabled
+    // use provider fetched from registry for the particular domain
+
+    // otherwise do the same old thing
     // forward to metamask primary provider
-    engine.push(providerAsMiddleware(provider));
+    if (this.preferencesController.getUseRequestQueue() === true) {
+      engine.push(providerAsMiddleware(providerForDomain));
+    } else {
+      engine.push(providerAsMiddleware(provider));
+    }
 
     return engine;
   }

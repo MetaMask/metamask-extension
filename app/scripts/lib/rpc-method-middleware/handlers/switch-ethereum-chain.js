@@ -147,18 +147,16 @@ async function switchEthereumChainHandler(
     requestData.fromNetworkConfiguration = getProviderConfig();
   }
 
-  debugger;
   if (requestData.toNetworkConfiguration) {
     const currentChainId = getCurrentChainId();
 
     // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
 
-    if (useRequestQueue === false) {
-      if (currentChainId === _chainId) {
-        res.result = null;
-        return end();
-      }
+    if (currentChainId === _chainId) {
+      res.result = null;
+      return end();
     }
+
     try {
       const approvedRequestData = await requestUserApproval({
         origin,
