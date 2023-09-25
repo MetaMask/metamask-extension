@@ -4,14 +4,14 @@ import classnames from 'classnames';
 import Box from '../../../box';
 import {
   AlignItems,
-  BLOCK_SIZES,
+  BlockSize,
   BackgroundColor,
   BorderColor,
   BorderRadius,
   BorderStyle,
-  DISPLAY,
-  FLEX_DIRECTION,
-  FLEX_WRAP,
+  Display,
+  FlexDirection,
+  FlexWrap,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize, Text } from '../../../../component-library';
@@ -43,6 +43,10 @@ export const DropdownTab = ({
   const openDropdown = (event) => {
     event.preventDefault();
     setIsOpen(true);
+  };
+
+  const onTabClick = (event) => {
+    event.preventDefault();
     onClick(tabIndex);
   };
 
@@ -75,11 +79,11 @@ export const DropdownTab = ({
         [activeClassName]: activeClassName && isActive,
       })}
       data-testid={dataTestId}
-      onClick={openDropdown}
+      onClick={onTabClick}
       dataTestId={dataTestId}
-      flexDirection={FLEX_DIRECTION.ROW}
-      flexWrap={FLEX_WRAP.NO_WRAP}
-      height={BLOCK_SIZES.FULL}
+      flexDirection={FlexDirection.Row}
+      flexWrap={FlexWrap.NoWrap}
+      height={BlockSize.Full}
       style={{ cursor: 'pointer', overflow: 'hidden' }}
       title={selectedOptionName}
     >
@@ -94,7 +98,12 @@ export const DropdownTab = ({
         >
           {selectedOptionName}
         </Text>
-        <Icon marginLeft={2} name={IconName.ArrowDown} size={IconSize.Sm} />
+        <Icon
+          marginLeft={2}
+          name={IconName.ArrowDown}
+          size={IconSize.Sm}
+          onClick={openDropdown}
+        />
       </Box>
       {isOpen && (
         <Box
@@ -104,9 +113,9 @@ export const DropdownTab = ({
           borderRadius={BorderRadius.SM}
           paddingLeft={2}
           paddingRight={2}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          flexWrap={FLEX_WRAP.NO_WRAP}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          flexWrap={FlexWrap.NoWrap}
           style={{ position: 'absolute', maxWidth: '170px' }}
           ref={dropdownRef}
         >
