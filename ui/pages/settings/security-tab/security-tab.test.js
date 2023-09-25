@@ -101,7 +101,7 @@ describe('Security Tab', () => {
   });
 
   it('toggles network details validation', async () => {
-    expect(await toggleCheckbox('useSafeChainsListValidation', true)).toBe(
+    expect(await toggleCheckbox('useSafeChainsListValidation', false)).toBe(
       true,
     );
   });
