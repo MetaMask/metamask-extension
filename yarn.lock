@@ -11562,13 +11562,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-util-inspect@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "browser-util-inspect@npm:0.2.0"
-  checksum: 03d6be273041ab6d13411af4a1eb8a42a6c542cd2a3ec8e877a8df8f75c5eeaadd841cbfdb3d3766f340d9af325a08bda33a7c4007f6c797aeb283fa04df0fb4
-  languageName: node
-  linkType: hard
-
 "browserify-aes@npm:^1.0.0, browserify-aes@npm:^1.0.4, browserify-aes@npm:^1.0.6, browserify-aes@npm:^1.2.0":
   version: 1.2.0
   resolution: "browserify-aes@npm:1.2.0"
@@ -24110,7 +24103,6 @@ __metadata:
     bn.js: "npm:^5.2.1"
     bowser: "npm:^2.11.0"
     brfs: "npm:^2.0.2"
-    browser-util-inspect: "npm:^0.2.0"
     browserify: "npm:^17.0.0"
     chalk: "npm:^4.1.2"
     chokidar: "npm:^3.5.3"
