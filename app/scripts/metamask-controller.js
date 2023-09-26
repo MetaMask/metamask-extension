@@ -833,6 +833,10 @@ export default class MetamaskController extends EventEmitter {
             removeAccount: async (address) => {
               await this.removeAccount(address);
             },
+            addressExists: async (address) => {
+              const addresses = await this.coreKeyringController.getAccounts();
+              return addresses.includes(address.toLowerCase());
+            },
           });
         builder.type = SnapKeyring.type;
         return builder;
