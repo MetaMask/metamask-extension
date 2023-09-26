@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -60,6 +61,17 @@ export const AccountListMenu = ({ onClose }) => {
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [items, setItems] = useState(accounts);
+
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+    const newItems = [...items];
+    const [removed] = newItems.splice(result.source.index, 1);
+    newItems.splice(result.destination.index, 0, removed);
+    setItems(newItems);
+  };
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IN
@@ -67,9 +79,9 @@ export const AccountListMenu = ({ onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState('');
 
-  let searchResults = accounts;
+  let searchResults = items;
   if (searchQuery) {
-    const fuse = new Fuse(accounts, {
+    const fuse = new Fuse(items, {
       threshold: 0.2,
       location: 0,
       distance: 100,
@@ -77,7 +89,7 @@ export const AccountListMenu = ({ onClose }) => {
       minMatchCharLength: 1,
       keys: ['name', 'address'],
     });
-    fuse.setCollection(accounts);
+    fuse.setCollection(items);
     searchResults = fuse.search(searchQuery);
   }
 
@@ -141,7 +153,7 @@ export const AccountListMenu = ({ onClose }) => {
         {actionMode === '' ? (
           <>
             {/* Search box */}
-            {accounts.length > 1 ? (
+            {items.length > 1 ? (
               <Box
                 paddingLeft={4}
                 paddingRight={4}
@@ -174,33 +186,66 @@ export const AccountListMenu = ({ onClose }) => {
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
-                const connectedSite = connectedSites[account.address]?.find(
-                  ({ origin }) => origin === currentTabOrigin,
-                );
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="account-list">
+                  {(provided) => {
+                    return (
+                      <Box ref={provided.innerRef} {...provided.droppableProps}>
+                        {searchResults.map((account, index) => {
+                          const connectedSite = connectedSites[
+                            account.address
+                          ]?.find(({ origin }) => origin === currentTabOrigin);
 
-                return (
-                  <AccountListItem
-                    onClick={() => {
-                      dispatch(toggleAccountMenu());
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.NavAccountSwitched,
-                        properties: {
-                          location: 'Main Menu',
-                        },
-                      });
-                      dispatch(setSelectedAccount(account.address));
-                    }}
-                    identity={account}
-                    key={account.address}
-                    selected={selectedAccount.address === account.address}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    connectedAvatarName={connectedSite?.name}
-                  />
-                );
-              })}
+                          return (
+                            <Draggable
+                              key={account.address}
+                              draggableId={account.address}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <Box
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <AccountListItem
+                                    ref={provided.innerRef}
+                                    {...provided.dragHandleProps}
+                                    onClick={() => {
+                                      dispatch(toggleAccountMenu());
+                                      trackEvent({
+                                        category:
+                                          MetaMetricsEventCategory.Navigation,
+                                        event:
+                                          MetaMetricsEventName.NavAccountSwitched,
+                                        properties: {
+                                          location: 'Main Menu',
+                                        },
+                                      });
+                                      dispatch(
+                                        setSelectedAccount(account.address),
+                                      );
+                                    }}
+                                    identity={account}
+                                    key={account.address}
+                                    selected={
+                                      selectedAccount.address ===
+                                      account.address
+                                    }
+                                    closeMenu={onClose}
+                                    connectedAvatar={connectedSite?.iconUrl}
+                                    connectedAvatarName={connectedSite?.name}
+                                  />
+                                </Box>
+                              )}
+                            </Draggable>
+                          );
+                        })}
+                      </Box>
+                    );
+                  }}
+                </Droppable>
+              </DragDropContext>
             </Box>
             {/* Add / Import / Hardware */}
             <Box padding={4}>
