@@ -30,10 +30,10 @@ export const NftItem = ({
   tokenId,
   onClick,
   clickable,
+  isIpfsURL,
 }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
-  const isIpfsURL = src?.startsWith('ipfs:');
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
   const renderNftBasedonSrc = src ? (
@@ -184,4 +184,8 @@ NftItem.propTypes = {
    * To render show button for default NFT Image
    */
   clickable: PropTypes.bool,
+  /**
+   * Whether the src url resolve to ipfs
+   */
+  isIpfsURL: PropTypes.bool,
 };
