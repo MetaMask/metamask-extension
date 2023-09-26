@@ -42,16 +42,14 @@ describe('CreateNewVault', () => {
       includeTerms: true,
     };
 
-    const { queryByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <CreateNewVault {...props} />,
       store,
     );
-
-    const terms = queryByTestId('create-new-vault__terms-checkbox');
-
+    const terms = getByTestId('create-new-vault-terms-checkbox');
     fireEvent.click(terms);
-
-    expect(terms).toBeChecked();
+    const checkboxInput = terms.querySelector('input');
+    expect(checkboxInput).toBeChecked();
   });
 
   it('should error with password length is less than 8', () => {
