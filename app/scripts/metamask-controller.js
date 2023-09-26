@@ -468,8 +468,7 @@ export default class MetamaskController extends EventEmitter {
     this.tokensController = new TokensController({
       messenger: tokensControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      // TODO: The tokens controller is not updated to the latest version, it currently does not support internalAccounts.
-      // This is a temporary fix to prevent the tokens controller from breaking.
+      // TODO: The tokens controller currently does not support internalAccounts. This is done to match the behavior of the previous tokens controller subscription.
       onPreferencesStateChange: (listener) =>
         this.controllerMessenger.subscribe(
           `AccountsController:selectedAccountChange`,
@@ -858,6 +857,8 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
       messenger: keyringControllerMessenger,
+      // TO BE REMOVED START //
+      // These call backs will be removed when the keyring controller is updated to use internal accounts
       removeIdentity: async () =>
         await this.accountsController.updateAccounts(),
       setAccountLabel: (address, label) => {
@@ -888,6 +889,7 @@ export default class MetamaskController extends EventEmitter {
       // TODO: This will be removed, the accounts controller listens to the keyring controller state changes.
       // eslint-disable-next-line no-empty-function
       updateIdentities: () => {},
+      // TO BE REMOVED END //
     });
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
