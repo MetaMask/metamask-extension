@@ -36,47 +36,29 @@ export const NftItem = ({
   const isIpfsEnabled = useSelector(getIpfsGateway);
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
-  const renderNftBasedonSrc = src ? (
-    <>
-      {isIpfsURL ? (
-        <Box
-          className="nft-item__item nft-item__item-image"
-          data-testid="nft-image"
-          as="img"
-          src={src}
-          alt={alt}
-          display={Display.Block}
-          justifyContent={JustifyContent.center}
-        />
-      ) : (
-        {openSeaEnabled ? (
-          <Box
-            className="nft-item__item nft-item__item-image"
-            data-testid="nft-image"
-            as="img"
-            src={src}
-            alt={alt}
-            display={Display.Block}
-            justifyContent={JustifyContent.center}
-          />
-        ) : (
-          <NftDefaultImage
-            className="nft-item__default-image"
-            data-testid="nft-default-image"
-            name={name}
-            tokenId={tokenId}
-          />
-        )}
-      )}
-    </>
-  ) : (
-    <NftDefaultImage
-      className="nft-item__default-image"
-      data-testid="nft-default-image"
-      name={name}
-      tokenId={tokenId}
-    />
-  );
+  const ipfsImageIsRenderable = isIpfsEnabled && isIpfsURL && src;
+  const openseaImageIsRenderable = openSeaEnabled && src && !isIpfsURL;
+
+  const nftImageComponentToRender =
+    ipfsImageIsRenderable || openseaImageIsRenderable ? (
+      <Box
+        className="nft-item__item nft-item__item-image"
+        data-testid="nft-image"
+        as="img"
+        src={src}
+        alt={alt}
+        display={Display.Block}
+        justifyContent={JustifyContent.center}
+      />
+    ) : (
+      <NftDefaultImage
+        className="nft-item__default-image"
+        data-testid="nft-default-image"
+        name={name}
+        tokenId={tokenId}
+        clickable={clickable && isIpfsURL}
+      />
+    );
 
   return (
     <Box
@@ -108,42 +90,7 @@ export const NftItem = ({
           />
         }
       >
-        {isIpfsEnabled ? (
-          <>{renderNftBasedonSrc}</>
-        ) : (
-          <>
-            {isIpfsURL ? (
-              <NftDefaultImage
-                className="nft-item__default-image"
-                data-testid="nft-default-image"
-                name={name}
-                tokenId={tokenId}
-                clickable={clickable}
-              />
-            ) : (
-              <>
-                {openSeaEnabled ? (
-                  <Box
-                    className="nft-item__item nft-item__item-image"
-                    data-testid="nft-image"
-                    as="img"
-                    src={src}
-                    alt={alt}
-                    display={Display.Block}
-                    justifyContent={JustifyContent.center}
-                  />
-                ) : (
-                  <NftDefaultImage
-                    className="nft-item__default-image"
-                    data-testid="nft-default-image"
-                    name={name}
-                    tokenId={tokenId}
-                  />
-                )}
-              </>
-            )}
-          </>
-        )}
+        {nftImageComponentToRender}
       </BadgeWrapper>
     </Box>
   );
