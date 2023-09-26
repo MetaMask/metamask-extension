@@ -31,7 +31,7 @@ const ASSET_LIST_CONVERSION_BUTTON_VARIANTS = {
   },
 };
 
-export const AssetListConversionButton = ({ onClick, onClose, variant }) => {
+export const AssetListConversionButton = ({ onClick, variant }) => {
   const t = useI18nContext();
   const { color, backgroundImage, text, icon } =
     ASSET_LIST_CONVERSION_BUTTON_VARIANTS[variant];
@@ -48,7 +48,6 @@ export const AssetListConversionButton = ({ onClick, onClose, variant }) => {
     >
       <Box
         display={Display.Flex}
-        gap={2}
         className="asset-list-conversion-button__contents"
       >
         <Box
@@ -61,31 +60,11 @@ export const AssetListConversionButton = ({ onClick, onClose, variant }) => {
         </Box>
         <Text
           className="asset-list-conversion-button__contents__text"
-          paddingInlineStart={1}
+          paddingInlineStart={2}
         >
           {t(text)}
         </Text>
       </Box>
-      {onClose ? (
-        <Box
-          paddingInlineEnd={2}
-          paddingTop={2}
-          tabIndex="0"
-          title={t('close')}
-          className="asset-list-conversion-button__close"
-        >
-          <Icon
-            name={IconName.Close}
-            size={IconSize.Xs}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onClose();
-            }}
-            className="asset-list-conversion-button__close-icon"
-          />
-        </Box>
-      ) : null}
     </Box>
   );
 };
@@ -95,10 +74,6 @@ AssetListConversionButton.propTypes = {
    * Executes when the button is clicked
    */
   onClick: PropTypes.func.isRequired,
-  /**
-   * Executes when the close button is clicked
-   */
-  onClose: PropTypes.func,
   /**
    * Text within the button body
    */
