@@ -167,7 +167,12 @@ const AssetList = ({ onClickAsset }) => {
           />
         )}
       {shouldShowBuy || shouldShowReceive ? (
-        <Box paddingLeft={4} paddingRight={4} display={Display.Flex} gap={2}>
+        <Box
+          paddingInlineStart={4}
+          paddingInlineEnd={4}
+          display={Display.Flex}
+          gap={2}
+        >
           {shouldShowBuy ? (
             <AssetListConversionButton
               variant="buy"

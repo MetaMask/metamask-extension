@@ -24,6 +24,7 @@ import {
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
+import { AssetListConversionButton } from '../../multichain';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -65,6 +66,21 @@ export default function NftsTab() {
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
+          <Box
+            paddingInlineStart={4}
+            paddingInlineEnd={4}
+            display={Display.Flex}
+          >
+            <AssetListConversionButton
+              variant="nft"
+              onClick={() => {
+                // TODO
+              }}
+              onClose={() => {
+                // TODO: What happens when this is clicked?
+              }}
+            />
+          </Box>
           <Box
             padding={12}
             display={Display.Flex}

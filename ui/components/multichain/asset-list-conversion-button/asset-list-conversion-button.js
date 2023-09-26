@@ -23,6 +23,12 @@ const ASSET_LIST_CONVERSION_BUTTON_VARIANTS = {
     text: 'receive',
     icon: IconName.Arrow2Down,
   },
+  nft: {
+    color: 'var(--color-error-alternative)',
+    backgroundImage: 'url(/images/token-list-receive-background.png)',
+    text: 'nftLearnMore',
+    icon: IconName.Book,
+  },
 };
 
 export const AssetListConversionButton = ({ onClick, onClose, variant }) => {
