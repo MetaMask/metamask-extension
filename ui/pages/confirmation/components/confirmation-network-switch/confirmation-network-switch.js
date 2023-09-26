@@ -8,14 +8,12 @@ import {
   Text,
 } from '../../../../components/component-library';
 import {
-  TypographyVariant,
   FontWeight,
   Display,
   JustifyContent,
   BlockSize,
   AlignItems,
   TextAlign,
-  TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -51,8 +49,6 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
           </div>
         )}
         <Text
-          color={TextColor.textDefault}
-          variant={TypographyVariant.H6}
           fontWeight={FontWeight.Normal}
           align={TextAlign.Center}
           boxProps={{
@@ -88,12 +84,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
             <i className="fa fa-question fa-2x" />
           </div>
         )}
-        <Text
-          color={TextColor.textDefault}
-          variant={TypographyVariant.H6}
-          fontWeight={FontWeight.Normal}
-          align={TextAlign.Center}
-        >
+        <Text fontWeight={FontWeight.Normal} align={TextAlign.Center}>
           {newNetwork.nickname}
         </Text>
       </Box>
