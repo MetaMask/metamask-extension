@@ -14,15 +14,19 @@ import { produce } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
+import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
+import { getNetworkLabelKey } from '../../helpers/utils/i18n-helper';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderColor,
+  Display,
   FLEX_DIRECTION,
-  Size,
-  TextColor,
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
@@ -34,22 +38,27 @@ import {
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
+  getCurrentNetwork,
+  getTestNetworkBackgroundColor,
 } from '../../selectors';
-import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
-import { Icon, IconName } from '../../components/component-library';
+import {
+  Icon,
+  IconName,
+  PickerNetwork,
+} from '../../components/component-library';
 import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
-import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
+import ConfirmationFooter from './components/confirmation-footer';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -178,6 +187,9 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
+  const networkProviderConfig = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
@@ -362,9 +374,20 @@ export default function ConfirmationPage({
       <div className="confirmation-page__content">
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
-            <NetworkDisplay
-              indicatorSize={Size.XS}
-              labelProps={{ color: TextColor.textDefault }}
+            <PickerNetwork
+              as="div"
+              src={currentNetwork?.rpcPrefs?.imageUrl}
+              label={
+                networkProviderConfig?.type === NETWORK_TYPES.RPC
+                  ? networkProviderConfig?.nickname ?? t('privateNetwork')
+                  : t(getNetworkLabelKey(networkProviderConfig?.type))
+              }
+              backgroundColor={BackgroundColor.transparent}
+              borderColor={BorderColor.borderMuted}
+              iconProps={{ display: Display.None }}
+              avatarNetworkProps={{
+                backgroundColor: testNetworkBackgroundColor,
+              }}
             />
           </Box>
         ) : null}
