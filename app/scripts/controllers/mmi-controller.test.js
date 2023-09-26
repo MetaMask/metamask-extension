@@ -19,6 +19,7 @@ describe('MMIController', function () {
       })),
       registerActionHandler: jest.fn(),
       publish: jest.fn(),
+      subscribe: jest.fn(),
     };
 
     mmiController = new MMIController({
