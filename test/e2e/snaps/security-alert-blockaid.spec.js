@@ -1,16 +1,16 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../fixture-builder');
 const {
   withFixtures,
   openDapp,
   unlockWallet,
   getWindowHandles,
-} = require('../../helpers');
+} = require('../helpers');
 
 const {
   CHAIN_IDS,
   NETWORK_TYPES,
-} = require('../../../../shared/constants/network');
+} = require('../../../shared/constants/network');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
