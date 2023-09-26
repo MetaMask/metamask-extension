@@ -11,9 +11,15 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+<<<<<<< HEAD
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getCurrentCurrency,
+=======
+  getIsBuyableChain,
+  getCurrentChainId,
+  getSwapsDefaultToken,
+>>>>>>> 61a38efefe (Fix #19371 - Provide conversion buttons for empty accounts)
 } from '../../../selectors';
 import {
   getConversionRate,
@@ -33,7 +39,9 @@ import {
   TokenListItem,
   ImportTokenLink,
   BalanceOverview,
+  AssetListConversionButton,
 } from '../../multichain';
+<<<<<<< HEAD
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
@@ -42,6 +50,10 @@ import {
   sumDecimals,
 } from '../../../../shared/modules/conversion.utils';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
+=======
+import useRamps from '../../../hooks/experiences/useRamps';
+import { Display } from '../../../helpers/constants/design-system';
+>>>>>>> 61a38efefe (Fix #19371 - Provide conversion buttons for empty accounts)
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -135,6 +147,12 @@ const AssetList = ({ onClickAsset }) => {
     sumDecimals(nativeFiat, ...dollarBalances).toString(10),
     currentCurrency,
   );
+  // Hardcoded for the sake of dev
+  const shouldShowBuy = useSelector(getIsBuyableChain);
+  const shouldShowReceive = true;
+  const { openBuyCryptoInPdapp } = useRamps();
+  const chainId = useSelector(getCurrentChainId);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
   return (
     <>
@@ -148,31 +166,71 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      <TokenListItem
-        onClick={() => onClickAsset(nativeCurrency)}
-        title={nativeCurrency}
-        primary={
-          primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
-        }
-        tokenSymbol={primaryCurrencyProperties.suffix}
-        secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-        tokenImage={balanceIsLoading ? null : primaryTokenImage}
-      />
-      <TokenList
-        tokens={tokensWithBalances}
-        loading={loading}
-        onTokenClick={(tokenAddress) => {
-          onClickAsset(tokenAddress);
-          trackEvent({
-            event: MetaMetricsEventName.TokenScreenOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
-              location: 'Home',
-            },
-          });
-        }}
-      />
+      {shouldShowBuy || shouldShowReceive ? (
+        <Box paddingLeft={4} paddingRight={4} display={Display.Flex} gap={2}>
+          {shouldShowBuy ? (
+            <AssetListConversionButton
+              variant="buy"
+              onClick={() => {
+                openBuyCryptoInPdapp();
+                trackEvent({
+                  event: MetaMetricsEventName.NavBuyButtonClicked,
+                  category: MetaMetricsEventCategory.Navigation,
+                  properties: {
+                    location: 'Home',
+                    text: 'Buy',
+                    chain_id: chainId,
+                    token_symbol: defaultSwapsToken,
+                  },
+                });
+              }}
+              onClose={() => {
+                // TODO: What happens when this is clicked?
+              }}
+            />
+          ) : null}
+          {shouldShowReceive ? (
+            <AssetListConversionButton
+              variant="receive"
+              onClick={() => {
+                // TODO
+              }}
+              onClose={() => {
+                // TODO: What happens when this is clicked?
+              }}
+            />
+          ) : null}
+        </Box>
+      ) : (
+        <>
+          <TokenListItem
+            onClick={() => onClickAsset(nativeCurrency)}
+            title={nativeCurrency}
+            primary={
+              primaryCurrencyProperties.value ??
+              secondaryCurrencyProperties.value
+            }
+            tokenSymbol={primaryCurrencyProperties.suffix}
+            secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+            tokenImage={balanceIsLoading ? null : primaryTokenImage}
+          />
+          <TokenList
+            tokens={tokensWithBalances}
+            loading={loading}
+            onTokenClick={(tokenAddress) => {
+              onClickAsset(tokenAddress);
+              trackEvent({
+                event: MetaMetricsEventName.TokenScreenOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  token_symbol: primaryCurrencyProperties.suffix,
+                  location: 'Home',
+                },
+              });
+            }}
+          />
+        </>
+      )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <ImportTokenLink margin={4} marginBottom={2} />
       </Box>
