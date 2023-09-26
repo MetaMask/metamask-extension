@@ -6,10 +6,10 @@ const {
   veryLargeDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./enums');
+const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./utils');
 
 describe('Create Snap Account', function () {
-  it('create snap account popup contains correct snap name and snapId', async function () {
+  it('create Snap account popup contains correct Snap name and snapId', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -22,7 +22,7 @@ describe('Create Snap Account', function () {
 
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect
+        // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         await driver.clickElementSafe('#connectButton');
 
@@ -32,10 +32,7 @@ describe('Create Snap Account', function () {
           largeDelayMs,
           veryLargeDelayMs,
         );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle('MetaMask Notification');
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -57,10 +54,7 @@ describe('Create Snap Account', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle(
-          'SSK - Snap Simple Keyring',
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
 
         // check the dapp connection status
         await driver.waitForSelector({
@@ -104,7 +98,8 @@ describe('Create Snap Account', function () {
       },
     );
   });
-  it('create snap account confirmation flow ends in approval success', async function () {
+
+  it('create Snap account confirmation flow ends in approval success', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -117,7 +112,7 @@ describe('Create Snap Account', function () {
 
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect
+        // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         await driver.clickElement('#connectButton');
 
@@ -127,10 +122,7 @@ describe('Create Snap Account', function () {
           largeDelayMs,
           veryLargeDelayMs,
         );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle('MetaMask Notification');
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -152,10 +144,7 @@ describe('Create Snap Account', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle(
-          'SSK - Snap Simple Keyring',
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
 
         // check the dapp connection status
         await driver.waitForSelector({
@@ -187,11 +176,8 @@ describe('Create Snap Account', function () {
         // click the okay button
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
-        // switch back to the test dapp/snap window
-        await driver.switchToWindowWithTitle(
-          'SSK - Snap Simple Keyring',
-          windowHandles,
-        );
+        // switch back to the test dapp/Snap window
+        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
 
         await driver.findElement({
           tag: 'p',
@@ -201,7 +187,7 @@ describe('Create Snap Account', function () {
     );
   });
 
-  it('create snap account confirmation cancelation results in error in snap', async function () {
+  it('create Snap account confirmation cancelation results in error in Snap', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -213,7 +199,7 @@ describe('Create Snap Account', function () {
         await driver.navigate();
 
         await unlockWallet(driver);
-        // navigate to test snaps page and connect
+        // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         await driver.clickElementSafe('#connectButton');
 
@@ -223,10 +209,7 @@ describe('Create Snap Account', function () {
           largeDelayMs,
           veryLargeDelayMs,
         );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle('MetaMask Notification');
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -248,10 +231,7 @@ describe('Create Snap Account', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle(
-          'SSK - Snap Simple Keyring',
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
 
         // check the dapp connection status
         await driver.waitForSelector({
@@ -276,11 +256,8 @@ describe('Create Snap Account', function () {
         // cancel account creation
         await driver.clickElement('[data-testid="confirmation-cancel-button"]');
 
-        // switch back to the test dapp/snap window
-        await driver.switchToWindowWithTitle(
-          'SSK - Snap Simple Keyring',
-          windowHandles,
-        );
+        // switch back to the test dapp/Snap window
+        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
 
         await driver.findElement({
           tag: 'p',
