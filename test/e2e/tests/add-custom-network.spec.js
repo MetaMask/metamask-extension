@@ -8,7 +8,6 @@ const {
   regularDelayMs,
   unlockWallet,
   sleepSeconds,
-  WINDOW_TITLES,
 } = require('../helpers');
 
 const TEST_CHAIN_ID = toHex(100);
