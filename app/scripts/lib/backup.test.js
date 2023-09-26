@@ -1,11 +1,11 @@
-import { strict as assert } from 'assert';
+/**
+ * @jest-environment node
+ */
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import sinon from 'sinon';
 import Backup from './backup';
 
 function getMockPreferencesController() {
   const mcState = {
-    getSelectedAddress: sinon.stub().returns('0x01'),
     lostIdentities: {
       '0xfd59bbe569376e3d3e4430297c3c69ea93f77435': {
         address: '0xfd59bbe569376e3d3e4430297c3c69ea93f77435',
@@ -17,7 +17,7 @@ function getMockPreferencesController() {
   };
 
   mcState.store = {
-    getState: sinon.stub().returns(mcState),
+    getState: jest.fn().mockReturnValue(mcState),
     updateState: (store) => (mcState.store = store),
   };
 
@@ -42,7 +42,7 @@ function getMockAddressBookController() {
   };
 
   mcState.store = {
-    getState: sinon.stub().returns(mcState),
+    getState: jest.fn().mockReturnValue(mcState),
     updateState: (store) => (mcState.store = store),
   };
 
@@ -73,7 +73,11 @@ function getMockAccountsController() {
     Object.assign(state, { internalAccounts });
   };
 
-  return { state, loadBackup };
+  return {
+    state,
+    loadBackup,
+    getSelectedAccount: () => 'mock-id',
+  };
 }
 
 const jsonData = JSON.stringify({
@@ -183,109 +187,102 @@ describe('Backup', function () {
       addressBookController: getMockAddressBookController(),
       networkController: getMockNetworkController(),
       accountsController: getMockAccountsController(),
-      trackMetaMetricsEvent: sinon.stub(),
+      trackMetaMetricsEvent: jest.fn(),
     });
   };
 
   describe('constructor', function () {
     it('should setup correctly', async function () {
       const backup = getBackup();
-      const selectedAddress = backup.preferencesController.getSelectedAddress();
-      assert.equal(selectedAddress, '0x01');
+      const selectedAccount = backup.accountsController.getSelectedAccount();
+      expect(selectedAccount).toStrictEqual('mock-id');
     });
 
     it('should restore backup', async function () {
       const backup = getBackup();
       await backup.restoreUserData(jsonData);
       // check networks backup
-      assert.equal(
+      expect(
         backup.networkController.state.networkConfigurations[
           'network-configuration-id-1'
         ].chainId,
-        '0x539',
-      );
-      assert.equal(
+      ).toStrictEqual('0x539');
+      expect(
         backup.networkController.state.networkConfigurations[
           'network-configuration-id-2'
         ].chainId,
-        '0x38',
-      );
-      assert.equal(
+      ).toStrictEqual('0x38');
+      expect(
         backup.networkController.state.networkConfigurations[
           'network-configuration-id-3'
         ].chainId,
-        '0x61',
-      );
-      assert.equal(
+      ).toStrictEqual('0x61');
+      expect(
         backup.networkController.state.networkConfigurations[
           'network-configuration-id-4'
         ].chainId,
-        '0x89',
-      );
-      // make sure identities are not lost after restore
-      assert.equal(
+      ).toStrictEqual('0x89');
+
+      expect(
         backup.preferencesController.store.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].lastSelected,
-        1655379648197,
-      );
-      assert.equal(
+      ).toStrictEqual(1655379648197);
+
+      expect(
         backup.preferencesController.store.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].name,
-        'Ledger 1',
-      );
+      ).toStrictEqual('Ledger 1');
+
       // check address book backup
-      assert.equal(
+      expect(
         backup.addressBookController.store.addressBook['0x61'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].chainId,
-        '0x61',
-      );
-      assert.equal(
+      ).toStrictEqual('0x61');
+
+      expect(
         backup.addressBookController.store.addressBook['0x61'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].address,
-        '0x42EB768f2244C8811C63729A21A3569731535f06',
-      );
-      assert.equal(
+      ).toStrictEqual('0x42EB768f2244C8811C63729A21A3569731535f06');
+
+      expect(
         backup.addressBookController.store.addressBook['0x61'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].isEns,
-        false,
-      );
+      ).toBeFalsy();
 
       // make sure the internal accounts are restored
-      assert.deepStrictEqual(
+      expect(
         backup.accountsController.state.internalAccounts.accounts[
           'fcbcdca4-cc47-4bc8-b455-b14421e9277e'
         ],
-        {
-          address: '0x129af01f4b770b30615f049790e1e206ebaa7b10',
-          id: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
-          metadata: {
-            keyring: { type: 'HD Key Tree' },
-            lastSelected: 1693289751176,
-            name: 'Account 1',
-          },
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          options: {},
-          type: 'eip155:eoa',
+      ).toStrictEqual({
+        address: '0x129af01f4b770b30615f049790e1e206ebaa7b10',
+        id: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
+        metadata: {
+          keyring: { type: 'HD Key Tree' },
+          lastSelected: 1693289751176,
+          name: 'Account 1',
         },
-      );
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        options: {},
+        type: 'eip155:eoa',
+      });
 
       // make sure selected account is restored
-      assert.equal(
+      expect(
         backup.accountsController.state.internalAccounts.selectedAccount,
-        'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
-      );
+      ).toBe('fcbcdca4-cc47-4bc8-b455-b14421e9277e');
     });
   });
 });
