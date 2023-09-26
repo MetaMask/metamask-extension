@@ -2302,6 +2302,18 @@
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
   },
+  "ledgerErrorConnectionIssue": {
+    "message": "Reconnect your ledger, open the ETH app and try again."
+  },
+  "ledgerErrorDevicedLocked": {
+    "message": "Ledger device is locked."
+  },
+  "ledgerErrorEthAppNotOpen": {
+    "message": "To solve the issue, open the ETH application on your device and retry."
+  },
+  "ledgerErrorTransactionDataNotPadded": {
+    "message": "Ethereum transaction's input data isn't sufficiently padded."
+  },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
   },
