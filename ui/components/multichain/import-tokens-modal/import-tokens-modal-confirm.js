@@ -103,6 +103,12 @@ export const ImportTokensModalConfirm = ({ onBackClick, onImportClick }) => {
 };
 
 ImportTokensModalConfirm.propTypes = {
+  /**
+   * Executes when the Back button is clicked
+   */
   onBackClick: PropTypes.func.isRequired,
+  /**
+   * Executes when the Import button is clicked
+   */
   onImportClick: PropTypes.func.isRequired,
 };
