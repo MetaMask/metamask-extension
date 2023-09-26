@@ -52,17 +52,19 @@ function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   return findNetworkConfigurationBy({ chainId });
 }
 
-function findExistingNetworkByNetworkClientId(networkClientId, getNetworkConfigurations) {
-  if (
-    BUILT_IN_INFURA_NETWORKS[networkClientId]
-  ) {
-    const {chainId, ticker, rpcUrl } = BUILT_IN_INFURA_NETWORKS[networkClientId];
+function findExistingNetworkByNetworkClientId(
+  networkClientId,
+  getNetworkConfigurations,
+) {
+  if (BUILT_IN_INFURA_NETWORKS[networkClientId]) {
+    const { chainId, ticker, rpcUrl } =
+      BUILT_IN_INFURA_NETWORKS[networkClientId];
     return {
       chainId,
       ticker,
       rpcUrl,
       type: networkClientId,
-      nickname: NETWORK_TO_NAME_MAP[networkClientId]
+      nickname: NETWORK_TO_NAME_MAP[networkClientId],
     };
   }
 
@@ -139,8 +141,8 @@ async function switchEthereumChainHandler(
     ),
     fromNetworkConfiguration: findExistingNetworkByNetworkClientId(
       getNetworkClientIdForDomain(origin),
-      getNetworkConfigurations
-    )
+      getNetworkConfigurations,
+    ),
   };
 
   if (useRequestQueue === false) {
