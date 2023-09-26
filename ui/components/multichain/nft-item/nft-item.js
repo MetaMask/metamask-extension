@@ -185,10 +185,6 @@ NftItem.propTypes = {
    */
   clickable: PropTypes.bool,
   /**
-   * The NFT image URL
-   */
-  nftImageURL: PropTypes.string,
-  /**
    * Whether the src url resolve to ipfs
    */
   isIpfsURL: PropTypes.bool,
