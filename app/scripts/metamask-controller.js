@@ -2552,8 +2552,7 @@ export default class MetamaskController extends EventEmitter {
       // PreferencesController
       addToken: tokensController.addToken.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
-      setAccountLabel:
-        accountsController.setAccountName.bind(accountsController),
+
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
@@ -2596,6 +2595,9 @@ export default class MetamaskController extends EventEmitter {
         accountsController.setSelectedAccount.bind(accountsController),
 
       setAccountName:
+        accountsController.setAccountName.bind(accountsController),
+
+      setAccountLabel:
         accountsController.setAccountName.bind(accountsController),
 
       // AssetsContractController
