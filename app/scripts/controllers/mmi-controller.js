@@ -240,7 +240,8 @@ export default class MMIController extends EventEmitter {
     if (
       newAccounts.some((address) =>
         existingInternalAccounts.find(
-          (internalAccount) => internalAccount.address.toLowerCase === address,
+          (internalAccount) =>
+            internalAccount.address.toLowerCase() === address,
         ),
       )
     ) {
@@ -652,7 +653,6 @@ export default class MMIController extends EventEmitter {
 
   async setAccountAndNetwork(origin, address, chainId) {
     await this.appStateController.getUnlockPromise(true);
-    console.log(address);
     const addressToLowerCase = address.toLowerCase();
     const { address: selectedAddress } =
       this.accountsController.getSelectedAccount();
