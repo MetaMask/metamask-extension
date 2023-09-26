@@ -18,9 +18,6 @@ const getDefaultState = () => ({
 });
 
 type Domain = string;
-type RequestQueue = Record<Domain, Promise<unknown>[]>;
-type RequestQueue2 = Array<Promise<unknown>>;
-
 type Request = any;
 
 export type QueuedRequestControllerState = {
@@ -32,7 +29,8 @@ export type QueuedRequestControllerCountChangedEvent = {
   payload: [number];
 };
 
-export type QueuedRequestControllerEvents = QueuedRequestControllerCountChangedEvent;
+export type QueuedRequestControllerEvents =
+  QueuedRequestControllerCountChangedEvent;
 
 export type QueuedRequestControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -56,7 +54,8 @@ export class QueuedRequestController extends BaseControllerV2<
 > {
   private currentRequest: Promise<unknown> = Promise.resolve();
 
-  private count: number = 0;
+  private count = 0;
+
   /**
    * Construct a EncryptionPublicKey controller.
    *
@@ -64,7 +63,6 @@ export class QueuedRequestController extends BaseControllerV2<
    * @param options.messenger - The restricted controller messenger for the QueuedRequestController
    */
   constructor({ messenger }: QueuedRequestControllerOptions) {
-
     super({
       name: controllerName,
       metadata: stateMetadata,
@@ -77,10 +75,13 @@ export class QueuedRequestController extends BaseControllerV2<
     return this.count;
   }
 
-  async enqueueRequest(requestNext: (...arg: Array<unknown>) => Promise<unknown>) {
+  async enqueueRequest(requestNext: (...arg: unknown[]) => Promise<unknown>) {
     console.log('Request being enqueued!!!');
     this.count += 1;
-    this.messagingSystem.publish('QueuedRequestController:countChanged', this.count);
+    this.messagingSystem.publish(
+      'QueuedRequestController:countChanged',
+      this.count,
+    );
     await this.currentRequest;
     console.log('Running next Item in queue');
     this.currentRequest = requestNext();
@@ -88,11 +89,17 @@ export class QueuedRequestController extends BaseControllerV2<
       await this.currentRequest;
       console.log('finished queue item');
       this.count -= 1;
-      this.messagingSystem.publish('QueuedRequestController:countChanged', this.count);
+      this.messagingSystem.publish(
+        'QueuedRequestController:countChanged',
+        this.count,
+      );
     } catch (e) {
       console.log('finished queue item');
       this.count -= 1;
-      this.messagingSystem.publish('QueuedRequestController:countChanged', this.count);
+      this.messagingSystem.publish(
+        'QueuedRequestController:countChanged',
+        this.count,
+      );
       throw e;
     }
     // return this.currentRequest;

@@ -370,10 +370,7 @@ export default class ExperimentalTab extends PureComponent {
   ///: END:ONLY_INCLUDE_IN
   renderToggleRequestQueue() {
     const { t } = this.context;
-    const {
-      useRequestQueue,
-      setUseRequestQueue,
-    } = this.props;
+    const { useRequestQueue, setUseRequestQueue } = this.props;
     return (
       <Box
         ref={this.settingsRefs[7]}
