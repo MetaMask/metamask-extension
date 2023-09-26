@@ -96,8 +96,20 @@ export const AccountDetailsDisplay = ({
 };
 
 AccountDetailsDisplay.propTypes = {
+  /**
+   * Array of user accounts
+   */
   accounts: PropTypes.array.isRequired,
+  /**
+   * Name of the current account
+   */
   accountName: PropTypes.string.isRequired,
+  /**
+   * Current address
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Executes upon Export button click
+   */
   onExportClick: PropTypes.func.isRequired,
 };

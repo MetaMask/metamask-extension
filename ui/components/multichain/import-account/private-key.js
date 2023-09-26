@@ -9,11 +9,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
 
-PrivateKeyImportView.propTypes = {
-  importAccountFunc: PropTypes.func.isRequired,
-  onActionComplete: PropTypes.func.isRequired,
-};
-
 export default function PrivateKeyImportView({
   importAccountFunc,
   onActionComplete,
@@ -60,3 +55,14 @@ export default function PrivateKeyImportView({
     </>
   );
 }
+
+PrivateKeyImportView.propTypes = {
+  /**
+   * Function to import the account
+   */
+  importAccountFunc: PropTypes.func.isRequired,
+  /**
+   * Executes when the key is imported
+   */
+  onActionComplete: PropTypes.func.isRequired,
+};
