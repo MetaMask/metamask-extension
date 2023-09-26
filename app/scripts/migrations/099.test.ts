@@ -4,6 +4,7 @@ import { EthMethod, InternalAccount } from '@metamask/keyring-api';
 import { migrate } from './099';
 
 const MOCK_ADDRESS = '0x0';
+const MOCK_ADDRESS_2 = '0x1';
 
 function addressToUUID(address: string): string {
   return uuid({
@@ -17,19 +18,19 @@ interface Identity {
   lastSelected?: number;
 }
 
+interface Identities {
+  [key: string]: Identity;
+}
+
 function createMockPreferenceControllerState(
   identities: Identity[] = [{ name: 'Account 1', address: MOCK_ADDRESS }],
   selectedAddress: string = MOCK_ADDRESS,
 ): {
-  identities: {
-    [key: string]: { name: string; lastSelected?: number; address: string };
-  };
+  identities: Identities;
   selectedAddress: string;
 } {
   const state: {
-    identities: {
-      [key: string]: { name: string; lastSelected?: number; address: string };
-    };
+    identities: Identities;
     selectedAddress: string;
   } = {
     identities: {},
@@ -60,7 +61,7 @@ function expectedInternalAccount(
       keyring: {
         type: 'HD Key Tree',
       },
-      lastSelected: lastSelected ? expect.any(Number) : null,
+      lastSelected: lastSelected ? expect.any(Number) : undefined,
     },
     options: {},
     methods: [...Object.values(EthMethod)],
@@ -70,23 +71,15 @@ function expectedInternalAccount(
 
 function createMockState(
   preferenceState: {
-    identities: {
-      [key: string]: {
-        lastSelected?: number;
-        name: string;
-        address: string;
-      };
-    };
+    identities: Identities;
     selectedAddress: string;
   } = createMockPreferenceControllerState(),
 ) {
-  const data = {
+  return {
     PreferencesController: {
       ...preferenceState,
     },
   };
-
-  return data;
 }
 
 describe('migration #99', () => {
@@ -131,6 +124,8 @@ describe('migration #99', () => {
 
   describe('moveIdentitiesToAccountsController', () => {
     const expectedUUID = addressToUUID(MOCK_ADDRESS);
+    const expectedUUID2 = addressToUUID(MOCK_ADDRESS_2);
+
     it('should move the identities into AccountsController as internal accounts', async () => {
       const oldData = createMockState();
 
@@ -181,6 +176,42 @@ describe('migration #99', () => {
             selectedAccount: expectedUUID,
           },
         },
+      });
+    });
+
+    it('should be able to handle multiple identities', async () => {
+      const oldData = createMockState({
+        identities: {
+          [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
+          [MOCK_ADDRESS_2]: { name: 'Account 2', address: MOCK_ADDRESS_2 },
+        },
+        selectedAddress: MOCK_ADDRESS,
+      });
+
+      const oldStorage = {
+        meta: { version: 98 },
+        data: oldData,
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              [expectedUUID]: expectedInternalAccount(
+                MOCK_ADDRESS,
+                `Account 1`,
+              ),
+              [expectedUUID2]: expectedInternalAccount(
+                MOCK_ADDRESS_2,
+                `Account 2`,
+              ),
+            },
+            selectedAccount: expectedUUID,
+          },
+        },
+        PreferencesController: expect.any(Object),
       });
     });
   });

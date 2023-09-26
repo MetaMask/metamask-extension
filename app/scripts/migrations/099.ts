@@ -12,6 +12,12 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
+interface Identity {
+  name: string;
+  address: string;
+  lastSelected?: number;
+}
+
 export const version = 99;
 
 /**
@@ -54,11 +60,7 @@ function createDefaultAccountsController(state: Record<string, any>) {
 
 function moveIdentitiesToAccountsController(state: Record<string, any>) {
   const identities: {
-    [key: string]: {
-      name: string;
-      address: string;
-      lastSelected: number;
-    };
+    [key: string]: Identity;
   } = state.PreferencesController?.identities || {};
 
   if (Object.keys(identities).length === 0) {
@@ -78,7 +80,7 @@ function moveIdentitiesToAccountsController(state: Record<string, any>) {
       options: {},
       metadata: {
         name: identity.name,
-        lastSelected: identity.lastSelected ?? null,
+        lastSelected: identity.lastSelected ?? undefined,
         keyring: {
           type: 'HD Key Tree',
         },
