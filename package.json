@@ -218,7 +218,7 @@
     "@ethereumjs/common": "^3.1.1",
     "@ethereumjs/tx": "^4.1.1",
     "@ethersproject/abi": "^5.6.4",
-    "@ethersproject/bignumber": "^5.6.2",
+    "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/hdnode": "^5.6.2",
     "@ethersproject/providers": "^5.7.2",
