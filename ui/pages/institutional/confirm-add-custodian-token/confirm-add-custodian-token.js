@@ -11,6 +11,7 @@ import {
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
+import Chip from '../../../components/ui/chip';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -25,7 +26,6 @@ import {
   Box,
   Text,
 } from '../../../components/component-library';
-import Chip from '../../../components/ui/chip';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
