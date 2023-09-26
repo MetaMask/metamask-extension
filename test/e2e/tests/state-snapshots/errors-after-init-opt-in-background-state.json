@@ -71,6 +71,9 @@
     "keyringTypes": "object",
     "keyrings": "object"
   },
+  "LoggingController": {
+    "logs": "object"
+  },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
@@ -145,13 +148,16 @@
     },
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
-    "infuraBlocked": false,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
     "isLineaMainnetReleased": true,
     "selectedAddress": "string"
+  },
+  "SelectedNetworkController": {
+    "domains": {},
+    "perDomainNetwork": "boolean"
   },
   "SignatureController": {
     "unapprovedMsgs": "object",

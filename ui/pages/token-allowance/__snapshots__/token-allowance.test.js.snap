@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TokenAllowancePage should match snapshot 1`] = `
+exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
 <div>
   <div
     class="box token-allowance-container page-container box--flex-direction-row"
@@ -376,6 +376,11 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
               </div>
             </div>
           </div>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-auto mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            Use site suggestion
+          </button>
         </div>
         <div
           class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
@@ -388,7 +393,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
             id="custom-spending-cap"
             placeholder="Enter a number"
             type="text"
-            value="7"
+            value="1"
           />
           <button
             class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -406,7 +411,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
             <span
               class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
             >
-              7
+              1
                
               TST
             </span>

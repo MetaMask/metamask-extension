@@ -34,6 +34,25 @@ export const NftItem = ({
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
   const isIpfsURL = nftImageURL?.includes('ipfs:');
+  const renderNftBasedonSrc = src ? (
+    <Box
+      className="nft-item__item nft-item__item-image"
+      data-testid="nft-image"
+      as="img"
+      src={src}
+      alt={alt}
+      display={Display.Block}
+      justifyContent={JustifyContent.center}
+    />
+  ) : (
+    <NftDefaultImage
+      className="nft-item__default-image"
+      data-testid="nft-default-image"
+      name={name}
+      tokenId={tokenId}
+    />
+  );
+
   return (
     <Box
       className="nft-item__container"
@@ -65,15 +84,7 @@ export const NftItem = ({
         }
       >
         {isIpfsEnabled ? (
-          <Box
-            className="nft-item__item nft-item__item-image"
-            data-testid="nft-image"
-            as="img"
-            src={src}
-            alt={alt}
-            display={Display.Block}
-            justifyContent={JustifyContent.center}
-          />
+          <>{renderNftBasedonSrc}</>
         ) : (
           <>
             {isIpfsURL ? (
@@ -85,15 +96,7 @@ export const NftItem = ({
                 clickable={clickable}
               />
             ) : (
-              <Box
-                className="nft-item__item nft-item__item-image"
-                data-testid="nft-image"
-                as="img"
-                src={src}
-                alt={alt}
-                display={Display.Block}
-                justifyContent={JustifyContent.center}
-              />
+              <>{renderNftBasedonSrc}</>
             )}
           </>
         )}
@@ -103,13 +106,40 @@ export const NftItem = ({
 };
 
 NftItem.propTypes = {
+  /**
+   * NFT media source
+   */
   src: PropTypes.string,
+  /**
+   * Alt text for the NFT
+   */
   alt: PropTypes.string.isRequired,
+  /**
+   * The NFT's name
+   */
   name: PropTypes.string.isRequired,
+  /**
+   * Name of the network the NFT lives on
+   */
   networkName: PropTypes.string.isRequired,
+  /**
+   * Image that represents the network
+   */
   networkSrc: PropTypes.string.isRequired,
+  /**
+   * Token ID of the NFT
+   */
   tokenId: PropTypes.string.isRequired,
+  /**
+   * Executes when the NFT is clicked
+   */
   onClick: PropTypes.func,
+  /**
+   * Represents if the NFT is clickable for larger image
+   */
   clickable: PropTypes.bool,
+  /**
+   * The NFT image URL
+   */
   nftImageURL: PropTypes.string,
 };

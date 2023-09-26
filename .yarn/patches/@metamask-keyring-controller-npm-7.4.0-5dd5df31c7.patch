@@ -1,5 +1,5 @@
 diff --git a/dist/KeyringController.d.ts b/dist/KeyringController.d.ts
-index ccfd5ca9accf782b0a612ab1666501898cf2abb9..f772552156491b308f2aa29a734a5138237d951e 100644
+index d6d70eea2de56310b49fa9dcf1e90afae3ddb202..4518aed8e03376d76e5ab6ef0971529e65563fd3 100644
 --- a/dist/KeyringController.d.ts
 +++ b/dist/KeyringController.d.ts
 @@ -1,10 +1,11 @@
@@ -10,13 +10,12 @@ index ccfd5ca9accf782b0a612ab1666501898cf2abb9..f772552156491b308f2aa29a734a5138
  import { BaseControllerV2 } from '@metamask/base-controller';
  import type { PersonalMessageParams, TypedMessageParams } from '@metamask/message-manager';
  import type { PreferencesController } from '@metamask/preferences-controller';
--import { type Hex, type Keyring, type Json } from '@metamask/utils';
-+import type { Hex, Keyring, Json } from '@metamask/utils';
+ import type { Eip1024EncryptedData, Hex, Keyring, Json } from '@metamask/utils';
 +import type { KeyringController as EthKeyringController } from '@metamask/eth-keyring-controller';
  import type { Patch } from 'immer';
  declare const name = "KeyringController";
  /**
-@@ -135,6 +136,10 @@ export declare class KeyringController extends BaseControllerV2<typeof name, Key
+@@ -155,6 +156,10 @@ export declare class KeyringController extends BaseControllerV2<typeof name, Key
       * @param opts.state - Initial state to set on this controller.
       */
      constructor({ removeIdentity, syncIdentities, updateIdentities, setSelectedAddress, setAccountLabel, encryptor, keyringBuilders, cacheEncryptionKey, messenger, state, }: KeyringControllerOptions);
@@ -28,12 +27,12 @@ index ccfd5ca9accf782b0a612ab1666501898cf2abb9..f772552156491b308f2aa29a734a5138
       * Adds a new account to the default (first) HD seed phrase keyring.
       *
 diff --git a/dist/KeyringController.js b/dist/KeyringController.js
-index 9e241ba3b5445a053e3b20ee70a579118b7b2934..eb1f7bce9d3607017b39e087db227e8a7dadd849 100644
+index bce9884ea54bf8e24274dee3876db95ed862abf0..471a06b30f2275de821c33b7d94cb1de85b074c7 100644
 --- a/dist/KeyringController.js
 +++ b/dist/KeyringController.js
-@@ -153,6 +153,12 @@ class KeyringController extends base_controller_1.BaseControllerV2 {
-         this.setSelectedAddress = setSelectedAddress;
+@@ -154,6 +154,12 @@ class KeyringController extends base_controller_1.BaseControllerV2 {
          this.setAccountLabel = setAccountLabel;
+         __classPrivateFieldGet(this, _KeyringController_instances, "m", _KeyringController_registerMessageHandlers).call(this);
      }
 +    /**
 +     * Gets the internal keyring controller.

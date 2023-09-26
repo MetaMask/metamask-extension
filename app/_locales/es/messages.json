@@ -371,9 +371,6 @@
   "amount": {
     "message": "Importe"
   },
-  "apiUrl": {
-    "message": "URL de la API"
-  },
   "appDescription": {
     "message": "Un monedero de Ethereum en el explorador",
     "description": "The description of the application"
@@ -981,9 +978,6 @@
   "custodian": {
     "message": "Custodio"
   },
-  "custodianAccount": {
-    "message": "Cuenta custodiada"
-  },
   "custodianAccountAddedDesc": {
     "message": "Ahora ya puede usar sus cuentas custodiadas en MetaMask Institutional."
   },
@@ -1295,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Mostrar medios NFT"
   },
-  "displayNftMediaDescription": {
-    "message": "Mostrar los medios y datos NFT expone su dirección IP a OpenSea u otros terceros. Esto puede permitir que los atacantes asocien su dirección IP con su dirección Ethereum. La detección automática de NFT se basa en esta configuración y no estará disponible cuando esté desactivada."
-  },
   "domain": {
     "message": "Dominio"
   },
@@ -1420,9 +1411,6 @@
   "enableAutoDetect": {
     "message": " Activar autodetección"
   },
-  "enableForAllNetworks": {
-    "message": "Habilitar para todas las redes"
-  },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },
@@ -1452,21 +1440,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Actualmente, la detección mejorada de token se encuentra disponible en $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask le permite ver dominios ENS como \"https://metamask.eth\" directamente en la barra de direcciones de su navegador. Así es como funciona:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Los navegadores normales no suelen manejar direcciones ENS o IPFS, pero MetaMask ayuda con esto. El uso de esta función podría compartir su dirección IP con servicios de terceros de IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask verifica con el contrato ENS de Ethereum para encontrar el código conectado al nombre ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Si el código está vinculado a IPFS, obtiene el contenido de la red IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Después, puede ver el contenido, generalmente un sitio web o algo similar."
   },
   "ensDomainsSettingTitle": {
     "message": "Mostrar dominios ENS en la barra de direcciones"
@@ -1605,9 +1578,6 @@
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "El archivo arrastrado es demasiado grande."
   },
   "flaskWelcomeUninstall": {
     "message": "le recomendamos que desinstale esta extensión",
@@ -2346,9 +2316,6 @@
   "missingSettingRequest": {
     "message": "Solicítelo aquí"
   },
-  "mmiAddToken": {
-    "message": "A la página de $1 le gustaría autorizar el siguiente token custodiado en MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional está diseñado y construido en todo el mundo."
   },
@@ -2488,12 +2455,6 @@
   },
   "newContract": {
     "message": "Contrato nuevo"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Permita que MetaMask detecte de forma automática los NFT de Opensea y los muestre en su monedero."
-  },
-  "newNFTsDetected": {
-    "message": "¡Nuevo! Detección NFT"
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
@@ -2899,6 +2860,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Marcar todo como leído"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Conozca más"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 ¡Nos complace anunciar la versión Beta abierta de MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "¡Personalice su monedero con snaps creados por la comunidad de desarrolladores!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Los snaps lo ayudan a hacer más con MetaMask, como conectarlo a más redes, ver información sobre transacciones y recibir notificaciones personalizadas."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Presentamos MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nuevos tokens encontrados en esta cuenta",
@@ -3871,9 +3847,6 @@
     "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Esto depende de cada red que tendrá acceso a su dirección Ethereum y su dirección IP."
-  },
   "showMore": {
     "message": "Mostrar más"
   },
@@ -4083,6 +4056,10 @@
   },
   "snapsNoInsight": {
     "message": "El snap no devolvió ninguna información"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Cualquier información que comparta con Servicios de terceros será recopilada directamente por dichos Servicios de terceros de acuerdo con sus políticas de privacidad. Consulte sus políticas de privacidad para obtener más información.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Administre sus snaps"
@@ -5237,21 +5214,6 @@
   },
   "useNftDetection": {
     "message": "Detección automática de NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "Usamos API de terceros para detectar NFT en su monedero, lo que significa que su dirección IP puede estar expuesta a servidores centralizados. Hay algunas cosas que debe tener cuidado al habilitar esta función."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "La dirección de su cuenta será visible para las API de terceros."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "La metadata de un NFT puede contener enlaces a sitios fraudulentos o de phishing."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Cualquiera puede enviar un NFT no solicitado a su cuenta. Esto puede incluir contenido ofensivo que podría mostrarse automáticamente en su monedero."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Deje esta función desactivada si no desea que la aplicación extraiga datos de esos servicios."
   },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"

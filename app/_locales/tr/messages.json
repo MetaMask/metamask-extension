@@ -371,9 +371,6 @@
   "amount": {
     "message": "Tutar"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Tarayıcında bir Ethereum Cüzdanı",
     "description": "The description of the application"
@@ -981,9 +978,6 @@
   "custodian": {
     "message": "Saklayıcı Kurum"
   },
-  "custodianAccount": {
-    "message": "Saklayıcı kurum hesabı"
-  },
   "custodianAccountAddedDesc": {
     "message": "Artık saklayıcı kurum hesaplarınızı MetaMask Institutional'da kullanabilirsiniz."
   },
@@ -1295,9 +1289,6 @@
   "displayNftMedia": {
     "message": "NFT medyasını göster"
   },
-  "displayNftMediaDescription": {
-    "message": "NFT medyasının ve verilerin gösterilmesi IP adresinizin OpenSea'ye veya diğer üçüncü taraflara aktarılmasına neden olur. Bu durum, saldırganların IP adresinizi Ethereum adresinizle ilişkilendirmesini sağlayabilir. NFT otomatik algılama bu ayara dayalıdır ve bu ayar kapatıldığında kullanılamaz olur."
-  },
   "domain": {
     "message": "Alan"
   },
@@ -1420,9 +1411,6 @@
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
-  "enableForAllNetworks": {
-    "message": "Tüm ağlar için etkinleştir"
-  },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
@@ -1452,21 +1440,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Gelişmiş token algılama şu anda $1 üzerinden kullanılabilir. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask, \"https://metamask.eth\" gibi ENS alanlarını tarayıcınızın adres çubuğunda görmenizi sağlar. Şöyle çalışır:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Normal tarayıcılar genellikle ENS veya IPFS adreslerini kullanmaz, ancak MetaMask bu konuda yardımcı olur. Bu özelliği kullandığınızda IP adresiniz IPFS üçüncü taraf hizmetleri ile paylaşılabilir."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask, ENS adına bağlı kodu bulmak için Ethereum'un ENS sözleşmesi ile kontrol gerçekleştirir."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Kod IPFS'ye bağlı ise içeriği IPFS ağından alır."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Ardından, genellikle bir web sitesi veya benzeri olan içeriği görebilirsiniz."
   },
   "ensDomainsSettingTitle": {
     "message": "ENS alanlarını adres çubuğunda göster"
@@ -1605,9 +1578,6 @@
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Bırakılan dosya çok büyük."
   },
   "flaskWelcomeUninstall": {
     "message": "bu uzantıyı kaldırmalısın",
@@ -2346,9 +2316,6 @@
   "missingSettingRequest": {
     "message": "Buradan talep et"
   },
-  "mmiAddToken": {
-    "message": "$1 alanındaki sayfa MetaMask Institutional'daki aşağıdaki saklayıcı kurum tokenine yetki vermek istiyor"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dünya çapında tasarlanmış ve yapılmıştır."
   },
@@ -2488,12 +2455,6 @@
   },
   "newContract": {
     "message": "Yeni sözleşme"
-  },
-  "newNFTDetectedMessage": {
-    "message": "MetaMask'in Opensea'den NFT'leri otomatik olarak algılamasına ve cüzdanında görüntülemesine izin ver."
-  },
-  "newNFTsDetected": {
-    "message": "Yeni! NFT algılama"
   },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
@@ -2899,6 +2860,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Tümünü okundu olarak işaretle"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Daha fazla bilgi edinin"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "MetaMask Snaps'in Açık Beta sürümünü duyurmaktan heyecan duyuyoruz!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Geliştirici topluluğu tarafından oluşturulan snap'lerle cüzdanınızı kişiselleştirin!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snap'ler MetaMask ile daha fazla ağa bağlanma, işlem içgörülerini görme ve kişisel bildirimler alma gibi daha çok şey yapmanıza yardımcı olur."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "MetaMask Snaps tanıtımı"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "Bu hesapta $1 yeni token bulundu",
@@ -3871,9 +3847,6 @@
     "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Bu, Ethereum adresinize ve IP adresinize erişimi olacak olan her bir ağa dayalıdır."
-  },
   "showMore": {
     "message": "Daha fazlasını göster"
   },
@@ -4083,6 +4056,10 @@
   },
   "snapsNoInsight": {
     "message": "Snap herhangi bir ayrıntıya ulaşamadı"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Üçüncü Taraf Hizmetleri ile paylaştığınız tüm bilgiler söz konusu Üçüncü Taraf Hizmetlerinin gizlilik politikalarına göre doğrudan üçüncü taraflar tarafından toplanacaktır. Daha fazla bilgi için lütfen üçüncü tarafların gizlilik politikalarına bakın.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Snaplerini yönet"
@@ -5237,21 +5214,6 @@
   },
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
-  },
-  "useNftDetectionDescription": {
-    "message": "Cüzdanınızdaki NFT'leri algılamak için üçüncü taraf API'leri kullanırız, yani IP adresinizin merkezi sunuculara açıklanmasına neden olabilir. Bu özelliği etkinleştirirken dikkat edilmesi gereken birkaç konu vardır."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Hesap adresiniz üçüncü taraf API'lerinde görüntülenebilir."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT meta verileri dolandırıcılık veya kimlik avı sitelerine bağlantılar içerebilir."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Hesabınıza herkes NFT airdrop'u gerçekleştirebilir. Cüzdanınızda otomatik olarak gösterilebilen saldırgan içerik de buna dahil olabilir."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Uygulamanın bu hizmetlerden veri çekmesini istemiyorsanız bu özelliği kapalı bırakın."
   },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"

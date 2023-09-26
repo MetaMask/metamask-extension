@@ -17,6 +17,30 @@ body {
 
 html {
   min-height: 500px;
+
+  @include screen-sm-max {
+    &:not([data-theme]) {
+      background-color: var(--color-background-default);
+    }
+  }
+
+  /*
+    Until we get the user's preference from React state,
+    assume the user is in dark mode, because the default
+    theme is system preference
+  */
+  @media (prefers-color-scheme: dark) {
+    &:not([data-theme]) {
+      color: var(--brand-colors-white-white000);
+      background-color: var(--brand-colors-grey-grey900);
+    }
+
+    @include screen-sm-max {
+      &:not([data-theme]) {
+        background-color: var(--brand-colors-grey-grey800);
+      }
+    }
+  }
 }
 
 .mouse-user-styles {
@@ -47,10 +71,15 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--color-background-alternative);
+
+  html[data-theme] & {
+    background: var(--color-background-alternative);
+  }
 
   @include screen-sm-max {
-    background-color: var(--color-background-default);
+    html[data-theme] & {
+      background-color: var(--color-background-default);
+    }
   }
 }
 /* stylelint-enable */

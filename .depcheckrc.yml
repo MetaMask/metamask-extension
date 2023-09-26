@@ -11,14 +11,6 @@ ignores:
   - 'punycode'
 
   #
-  # snaps flask deps
-  #
-  - '@metamask/rpc-methods-flask'
-  - '@metamask/snaps-controllers-flask'
-  - '@metamask/snaps-ui-flask'
-  - '@metamask/snaps-utils-flask'
-
-  #
   # dev deps
   #
 

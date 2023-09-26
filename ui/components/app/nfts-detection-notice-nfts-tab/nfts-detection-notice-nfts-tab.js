@@ -4,21 +4,30 @@ import { BannerAlert } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 
-export default function NftsDetectionNotice() {
+export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
   const history = useHistory();
 
   return (
     <BannerAlert
       className="nfts-detection-notice"
-      title={t('newNFTsDetected')}
+      title={t('newNFTsAutodetected')}
       actionButtonLabel={t('selectNFTPrivacyPreference')}
       actionButtonOnClick={(e) => {
         e.preventDefault();
         history.push(`${SECURITY_ROUTE}#autodetect-nfts`);
       }}
     >
-      {t('newNFTDetectedMessage')}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        t('newNFTDetectedInNFTsTabMessage')
+        ///: END:ONLY_INCLUDE_IN
+      }
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        t('mmiNewNFTDetectedInNFTsTabMessage')
+        ///: END:ONLY_INCLUDE_IN
+      }
     </BannerAlert>
   );
 }
