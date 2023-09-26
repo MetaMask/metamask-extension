@@ -11,15 +11,13 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-<<<<<<< HEAD
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getCurrentCurrency,
-=======
   getIsBuyableChain,
   getCurrentChainId,
   getSwapsDefaultToken,
->>>>>>> 61a38efefe (Fix #19371 - Provide conversion buttons for empty accounts)
+  getSelectedAddress,
 } from '../../../selectors';
 import {
   getConversionRate,
@@ -41,7 +39,7 @@ import {
   BalanceOverview,
   AssetListConversionButton,
 } from '../../multichain';
-<<<<<<< HEAD
+
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
@@ -50,20 +48,23 @@ import {
   sumDecimals,
 } from '../../../../shared/modules/conversion.utils';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-=======
+
 import useRamps from '../../../hooks/experiences/useRamps';
 import { Display } from '../../../helpers/constants/design-system';
->>>>>>> 61a38efefe (Fix #19371 - Provide conversion buttons for empty accounts)
+
+import { ReceiveModal } from '../../multichain/receive-modal';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
-
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
+  const selectedAddress = useSelector(getSelectedAddress);
+
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const {
     currency: primaryCurrency,
@@ -149,6 +150,7 @@ const AssetList = ({ onClickAsset }) => {
   );
   // Hardcoded for the sake of dev
   const shouldShowBuy = useSelector(getIsBuyableChain);
+  // TODO:  Update this variable depending on total value
   const shouldShowReceive = true;
   const { openBuyCryptoInPdapp } = useRamps();
   const chainId = useSelector(getCurrentChainId);
@@ -166,7 +168,7 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      {shouldShowBuy || shouldShowReceive ? (
+      {process.env.MULTICHAIN && (shouldShowBuy || shouldShowReceive) ? (
         <Box
           paddingInlineStart={4}
           paddingInlineEnd={4}
@@ -189,20 +191,18 @@ const AssetList = ({ onClickAsset }) => {
                   },
                 });
               }}
-              onClose={() => {
-                // TODO: What happens when this is clicked?
-              }}
             />
           ) : null}
           {shouldShowReceive ? (
             <AssetListConversionButton
               variant="receive"
-              onClick={() => {
-                // TODO
-              }}
-              onClose={() => {
-                // TODO: What happens when this is clicked?
-              }}
+              onClick={() => setShowReceiveModal(true)}
+            />
+          ) : null}
+          {showReceiveModal ? (
+            <ReceiveModal
+              address={selectedAddress}
+              onClose={() => setShowReceiveModal(false)}
             />
           ) : null}
         </Box>

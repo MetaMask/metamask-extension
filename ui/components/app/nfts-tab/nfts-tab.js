@@ -73,12 +73,11 @@ export default function NftsTab() {
           >
             <AssetListConversionButton
               variant="nft"
-              onClick={() => {
-                // TODO
-              }}
-              onClose={() => {
-                // TODO: What happens when this is clicked?
-              }}
+              onClick={() =>
+                global.platform.openTab({
+                  url: 'https://support.metamask.io/hc/en-us/articles/360058238591-NFT-tokens-in-your-MetaMask-wallet',
+                })
+              }
             />
           </Box>
           <Box

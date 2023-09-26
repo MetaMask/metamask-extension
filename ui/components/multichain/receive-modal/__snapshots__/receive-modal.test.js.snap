@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReceiveModal should show the correct account address and name 1`] = `<div />`;
