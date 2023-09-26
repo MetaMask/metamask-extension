@@ -94,7 +94,6 @@ export default function ConfirmPageContainerHeader({
             iconProps={{ display: Display.None }}
             avatarNetworkProps={{
               backgroundColor: testNetworkBackgroundColor,
-              className: 'confirm-page-container-header-avatar-network-base',
             }}
           />
         )}
