@@ -33,7 +33,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   useEffect(() => {
     async function getAndSetAssetDetails() {
       dispatch(showLoadingIndication());
-      const assetDetails = await getAssetDetails(
+      let assetDetails = await getAssetDetails(
         tokenAddress,
         userAddress,
         transactionData,
@@ -41,17 +41,25 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       );
       const token = util.getContractAtAddress(tokenAddress);
 
-      const symbol = await token.symbol();
-      const name = await token.name();
+      const [name, symbol] = await Promise.allSettled([
+        await token.name(),
+        await token.symbol(),
+      ]);
 
       if (!assetDetails.symbol) {
-        setCurrentAsset({
-          ...assetDetails,
-          symbol: symbol[0],
-          name: name[0],
-        });
-        dispatch(hideLoadingIndication());
-        return;
+        if (name.status === 'fulfilled') {
+          assetDetails = {
+            ...assetDetails,
+            name: name.value[0],
+          };
+        }
+
+        if (symbol.status === 'fulfilled') {
+          assetDetails = {
+            ...assetDetails,
+            symbol: symbol.value[0],
+          };
+        }
       }
 
       setCurrentAsset(assetDetails);
