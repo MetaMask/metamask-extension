@@ -6,6 +6,7 @@ import { waitFor } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import Confirmation from '../confirmation';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 jest.mock('../../../../shared/lib/fetch-with-cache');
 
@@ -45,6 +46,10 @@ describe('error template', () => {
     const testStore = {
       metamask: {
         ...mockBaseStore.metamask,
+        providerConfig: {
+          type: 'test',
+          id: CHAIN_IDS.LOCALHOST
+        },
         pendingApprovals: {
           [mockApprovalId]: {
             ...mockApproval,
