@@ -79,7 +79,10 @@ export default class AppStateController extends EventEmitter {
 
     messenger.subscribe(
       'KeyringController:qrKeyringStateChange',
-      this.updateQRHardware.bind(this),
+      (qrHardware) =>
+        this.store.updateState({
+          qrHardware,
+        }),
     );
 
     const { preferences } = preferencesStore.getState();
@@ -378,18 +381,6 @@ export default class AppStateController extends EventEmitter {
   updateNftDropDownState(nftsDropdownState) {
     this.store.updateState({
       nftsDropdownState,
-    });
-  }
-
-  /**
-   * Update the state of the QR hardware popover
-   *
-   * @param qrHardware
-   * @returns {void}
-   */
-  updateQRHardware(qrHardware) {
-    this.store.updateState({
-      qrHardware,
     });
   }
 

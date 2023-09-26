@@ -16,7 +16,8 @@ import QRHardwareSignRequest from './qr-hardware-sign-request';
 const QRHardwarePopover = () => {
   const t = useI18nContext();
 
-  const { sync, sign } = useSelector(getCurrentQRHardwareState);
+  const qrHardware = useSelector(getCurrentQRHardwareState);
+  const { sync, sign } = qrHardware;
   const showWalletImporter = sync?.reading;
   const showSignRequest = sign?.request;
   const showPopover = showWalletImporter || showSignRequest;
