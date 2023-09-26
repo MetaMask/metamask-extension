@@ -34,8 +34,8 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AccountsController: {
     internalAccounts: {
-      accounts: true,
-      selectedAccount: true,
+      accounts: false,
+      selectedAccount: false,
     },
   },
   AddressBookController: {
@@ -183,7 +183,7 @@ export const SENTRY_BACKGROUND_STATE = {
     knownMethodData: false,
     ledgerTransportType: true,
     lostIdentities: false,
-    selectedAddress: true,
+    selectedAddress: false,
     openSeaEnabled: true,
     preferences: {
       autoLockTimeLimit: true,

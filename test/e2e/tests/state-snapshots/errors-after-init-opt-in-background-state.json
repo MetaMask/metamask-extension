@@ -1,7 +1,7 @@
 {
   "AccountTracker": { "accounts": "object" },
   "AccountsController": {
-    "internalAccounts": { "accounts": {}, "selectedAccount": "" }
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
   "AddressBookController": { "addressBook": "object" },
   "AlertController": {
@@ -138,7 +138,7 @@
     "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
-    "selectedAddress": "",
+    "selectedAddress": "string",
     "lostIdentities": "object",
     "forgottenPassword": false,
     "preferences": {
