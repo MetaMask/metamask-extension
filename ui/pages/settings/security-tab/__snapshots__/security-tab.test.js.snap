@@ -1113,7 +1113,7 @@ exports[`Security Tab should match snapshot 1`] = `
           <div
             class="settings-page__content-description"
           >
-            Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off.
+            Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off. If NFT media is fully located on IPFS, it can still be displayed even when this feature is turned off.
           </div>
         </div>
         <div
