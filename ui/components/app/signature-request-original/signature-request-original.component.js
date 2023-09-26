@@ -17,7 +17,6 @@ import {
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-import SiteOrigin from '../../ui/site-origin';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
@@ -39,6 +38,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
+  TagUrl,
   Text,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
@@ -205,16 +205,17 @@ export default class SignatureRequestOriginal extends Component {
               />
             ) : (
               ///: END:ONLY_INCLUDE_IN
-              <SiteOrigin
-                title={txData.msgParams.origin}
-                siteOrigin={txData.msgParams.origin}
-                iconSrc={targetSubjectMetadata?.iconUrl}
-                iconName={
-                  getURLHostName(targetSubjectMetadata?.origin) ||
-                  targetSubjectMetadata?.origin
-                }
-                chip
-              />
+                <TagUrl
+                  label={txData.msgParams.origin}
+                  title={txData.msgParams.origin}
+                  src={targetSubjectMetadata?.iconUrl}
+                  lockIconProps={{
+                    name:
+                      getURLHostName(targetSubjectMetadata?.origin) ||
+                      targetSubjectMetadata?.origin
+                  }}
+                  chip
+                />
               ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             )
             ///: END:ONLY_INCLUDE_IN

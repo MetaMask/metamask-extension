@@ -37,8 +37,7 @@ import {
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
-import SiteOrigin from '../../components/ui/site-origin';
-import { Icon, IconName } from '../../components/component-library';
+import { Icon, IconName, TagUrl } from '../../components/component-library';
 import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
@@ -381,13 +380,13 @@ export default function ConfirmationPage({
                 paddingBottom={4}
                 flexDirection={FLEX_DIRECTION.COLUMN}
               >
-                <SiteOrigin
-                  chip
-                  siteOrigin={originMetadata.origin}
-                  title={originMetadata.origin}
-                  iconSrc={originMetadata.iconUrl}
-                  iconName={originMetadata.hostname}
-                />
+              <TagUrl
+                chip
+                label={originMetadata.origin}
+                title={originMetadata.origin}
+                src={originMetadata.iconUrl}
+                lockIconProps={{ name: originMetadata.hostname }}
+              />
               </Box>
             )
         }
