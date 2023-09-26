@@ -39,7 +39,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         {chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <AvatarNetwork
             src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-            margin={'auto'}
+            margin="auto"
             name={nickname}
             size={AvatarNetworkSize.Xl}
           />
@@ -75,7 +75,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <AvatarNetwork
             src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
-            margin={'auto'}
+            margin="auto"
             name={newNetwork.nickname}
             size={AvatarNetworkSize.Xl}
           />
