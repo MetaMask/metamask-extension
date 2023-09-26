@@ -130,11 +130,11 @@ const EthSignModal = ({ hideModal }) => {
           gap={2}
         >
           <Checkbox
-            id="eth-sign__checkbox"
+            id="eth-sign-checkbox"
             className="eth-sign__checkbox"
-            dataTestId="eth-sign__checkbox"
+            data-testid="eth-sign-checkbox"
             isChecked={isEthSignChecked}
-            onClick={() => {
+            onChange={() => {
               setIsEthSignChecked(!isEthSignChecked);
             }}
             label={t('toggleEthSignModalCheckBox')}
