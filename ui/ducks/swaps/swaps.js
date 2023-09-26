@@ -659,6 +659,7 @@ export const fetchQuotesAndSetQuoteState = (
 
     const fetchParams = getFetchParams(state);
     const selectedAccount = getSelectedAccount(state);
+    const networkClientId = getSelectedNetworkClientId(state);
     const balanceError = getBalanceError(state);
     const swapsDefaultToken = getSwapsDefaultToken(state);
     const fetchParamsFromToken =
@@ -700,10 +701,13 @@ export const fetchQuotesAndSetQuoteState = (
     ) {
       await dispatch(
         addToken(
-          toTokenAddress,
-          toTokenSymbol,
-          toTokenDecimals,
-          toTokenIconUrl,
+          {
+            address: toTokenAddress,
+            symbol: toTokenSymbol,
+            decimals: toTokenDecimals,
+            image: toTokenIconUrl,
+            networkClientId,
+          },
           true,
         ),
       );
@@ -725,10 +729,13 @@ export const fetchQuotesAndSetQuoteState = (
     ) {
       dispatch(
         addToken(
-          fromTokenAddress,
-          fromTokenSymbol,
-          fromTokenDecimals,
-          fromTokenIconUrl,
+          {
+            address: fromTokenAddress,
+            symbol: fromTokenSymbol,
+            decimals: fromTokenDecimals,
+            image: fromTokenIconUrl,
+            networkClientId,
+          },
           true,
         ),
       );
