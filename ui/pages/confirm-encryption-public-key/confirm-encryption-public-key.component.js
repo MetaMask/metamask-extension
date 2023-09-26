@@ -7,11 +7,11 @@ import Identicon from '../../components/ui/identicon';
 import { PageContainerFooter } from '../../components/ui/page-container';
 
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import SiteOrigin from '../../components/ui/site-origin';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
+import { TagUrl } from '../../components/component-library';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -82,21 +82,21 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
     const nativeCurrencyBalance = conversionRate
       ? formatCurrency(
-          getValueFromWeiHex({
-            value: balance,
-            fromCurrency: nativeCurrency,
-            toCurrency: currentCurrency,
-            conversionRate,
-            numberOfDecimals: 6,
-            toDenomination: EtherDenomination.ETH,
-          }),
-          currentCurrency,
-        )
+        getValueFromWeiHex({
+          value: balance,
+          fromCurrency: nativeCurrency,
+          toCurrency: currentCurrency,
+          conversionRate,
+          numberOfDecimals: 6,
+          toDenomination: EtherDenomination.ETH,
+        }),
+        currentCurrency,
+      )
       : new Numeric(balance, 16, EtherDenomination.WEI)
-          .toDenomination(EtherDenomination.ETH)
-          .round(6)
-          .toBase(10)
-          .toString();
+        .toDenomination(EtherDenomination.ETH)
+        .round(6)
+        .toBase(10)
+        .toString();
 
     return (
       <div className="request-encryption-public-key__balance">
@@ -104,9 +104,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
           {`${t('balance')}:`}
         </div>
         <div className="request-encryption-public-key__balance-value">
-          {`${nativeCurrencyBalance} ${
-            conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
-          }`}
+          {`${nativeCurrencyBalance} ${conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+            }`}
         </div>
       </div>
     );
@@ -138,7 +137,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
     const targetSubjectMetadata = subjectMetadata[txData.origin];
     const notice = t('encryptionPublicKeyNotice', [
-      <SiteOrigin siteOrigin={txData.origin} key={txData.origin} />,
+      <TagUrl label={txData.origin} key={txData.origin} />,
     ]);
     const name = targetSubjectMetadata?.hostname || txData.origin;
 

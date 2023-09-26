@@ -17,7 +17,6 @@ import {
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-import SiteOrigin from '../../ui/site-origin';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
@@ -41,6 +40,7 @@ import {
   IconName,
   Text,
   ///: END:ONLY_INCLUDE_IN
+  TagUrl
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
@@ -169,7 +169,7 @@ export default class SignatureRequestOriginal extends Component {
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           this.props.selectedAccount.address ===
-          this.props.fromAccount.address ? null : (
+            this.props.fromAccount.address ? null : (
             <Box
               className="request-signature__mismatch-info"
               display={DISPLAY.FLEX}
@@ -205,16 +205,18 @@ export default class SignatureRequestOriginal extends Component {
               />
             ) : (
               ///: END:ONLY_INCLUDE_IN
-              <SiteOrigin
+              <TagUrl
                 title={txData.msgParams.origin}
-                siteOrigin={txData.msgParams.origin}
-                iconSrc={targetSubjectMetadata?.iconUrl}
-                iconName={
-                  getURLHostName(targetSubjectMetadata?.origin) ||
-                  targetSubjectMetadata?.origin
-                }
+                label={txData.msgParams.origin}
+                src={targetSubjectMetadata?.iconUrl}
+                lockIconProps={{
+                  name:
+                    getURLHostName(targetSubjectMetadata?.origin) ||
+                    targetSubjectMetadata?.origin
+                }}
                 chip
               />
+
               ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             )
             ///: END:ONLY_INCLUDE_IN

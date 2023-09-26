@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../ui/button';
-import { AvatarFavicon } from '../../component-library';
+import { AvatarFavicon, TagUrl } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
-import SiteOrigin from '../../ui/site-origin';
 import { Size } from '../../../helpers/constants/design-system';
 
 export default class ConnectedSitesList extends Component {
@@ -40,10 +39,10 @@ export default class ConnectedSitesList extends Component {
                 size={Size.MD}
                 src={subject.iconUrl}
               />
-              <SiteOrigin
+              <TagUrl
                 className="connected-sites-list__subject-name"
+                label={this.getSubjectDisplayName(subject)}
                 title={subject.extensionId || subject.origin}
-                siteOrigin={this.getSubjectDisplayName(subject)}
               />
             </div>
             <Button

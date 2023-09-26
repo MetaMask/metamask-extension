@@ -4,12 +4,12 @@ import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
-import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';
 import {
   FLEX_DIRECTION,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { TagUrl } from '../../component-library';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
@@ -53,12 +53,12 @@ export default class PermissionsConnectHeader extends Component {
 
     return (
       <div className="permissions-connect-header__icon">
-        <SiteOrigin
+        <TagUrl
           chip
-          siteOrigin={siteOrigin}
+          label={siteOrigin}
           title={siteOrigin}
-          iconSrc={iconUrl}
-          name={iconName}
+          src={iconUrl}
+          lockIconProps={{ name: iconName }}
           leftIcon={leftIcon}
           rightIcon={rightIcon}
         />
