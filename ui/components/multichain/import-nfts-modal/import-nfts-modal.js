@@ -217,7 +217,7 @@ export const ImportNftsModal = ({ onClose }) => {
                   setNftAddFailed(false);
                 }}
                 helpText={nftAddressValidationError}
-                error={nftAddressValidationError}
+                error={Boolean(nftAddressValidationError)}
               />
             </Box>
             <Box>
