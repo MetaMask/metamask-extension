@@ -214,7 +214,6 @@ export default function CreatePassword({
       )}
       <Text
         variant={TextVariant.headingLg}
-        fontWeight={FontWeight.Bold}
         marginBottom={3}
       >
         {t('createPassword')}
