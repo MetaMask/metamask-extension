@@ -1,5 +1,5 @@
 import { cloneDeep, isEmpty } from 'lodash';
-import { v4 as uuid } from 'uuid';
+import { v1 as uuid } from 'uuid';
 
 type VersionedData = {
   meta: { version: number };

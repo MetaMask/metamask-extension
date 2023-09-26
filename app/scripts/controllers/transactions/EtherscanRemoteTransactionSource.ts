@@ -1,7 +1,7 @@
 import { BNToHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { BN } from 'ethereumjs-util';
-import { v4 as uuid } from 'uuid';
+import { v1 as uuid } from 'uuid';
 
 import {
   TransactionMeta,

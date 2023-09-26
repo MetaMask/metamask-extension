@@ -26,7 +26,7 @@ jest.mock('uuid', () => {
 
   return {
     ...actual,
-    v4: () => ID_MOCK,
+    v1: () => ID_MOCK,
   };
 });
 

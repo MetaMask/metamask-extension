@@ -2,7 +2,7 @@ import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
-import { v4 as uuid } from 'uuid';
+import { v1 as uuid } from 'uuid';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
