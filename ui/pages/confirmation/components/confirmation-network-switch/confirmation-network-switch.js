@@ -1,8 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import SiteIcon from '../../../../components/ui/site-icon';
-import { Box, Text } from '../../../../components/component-library';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  Text,
+} from '../../../../components/component-library';
 import {
   TypographyVariant,
   FontWeight,
@@ -35,10 +39,11 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         display={Display.Block}
       >
         {chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
-          <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+          <AvatarNetwork
+            src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+            margin={'auto'}
             name={nickname}
-            size={64}
+            size={AvatarNetworkSize.Xl}
           />
         ) : (
           <div className="confirmation-network-switch__unknown-icon">
@@ -72,10 +77,11 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         display={Display.Block}
       >
         {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
-          <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
+          <AvatarNetwork
+            src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
+            margin={'auto'}
             name={newNetwork.nickname}
-            size={64}
+            size={AvatarNetworkSize.Xl}
           />
         ) : (
           <div className="confirmation-network-switch__unknown-icon">
