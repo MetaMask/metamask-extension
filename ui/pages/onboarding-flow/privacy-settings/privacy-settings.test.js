@@ -77,13 +77,13 @@ describe('Privacy Settings Onboarding View', () => {
     const toggles = container.querySelectorAll('input[type=checkbox]');
     const submitButton = getByText('Done');
     // toggle to false
-    fireEvent.click(toggles[1]);
+    fireEvent.click(toggles[0]);
+    fireEvent.click(toggles[5]);
     fireEvent.click(toggles[6]);
     fireEvent.click(toggles[7]);
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
     fireEvent.click(toggles[10]);
-    fireEvent.click(toggles[11]);
 
     fireEvent.click(submitButton);
 

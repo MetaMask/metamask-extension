@@ -4436,6 +4436,16 @@ export function setSecurityAlertsEnabled(val: boolean): void {
 }
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
+  try {
+    await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
+
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }

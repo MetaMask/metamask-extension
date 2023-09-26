@@ -125,6 +125,9 @@ workflows:
       - prep-build-test-flask:
           requires:
             - prep-deps
+      - prep-build-test-mmi:
+          requires:
+            - prep-deps
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -162,6 +165,12 @@ workflows:
       - test-e2e-firefox-snaps-flask:
           requires:
             - prep-build-test-flask
+      - test-e2e-chrome-mmi:
+          requires:
+            - prep-build-test-mmi
+      - test-e2e-chrome-rpc-mmi:
+          requires:
+            - prep-build-test-mmi
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
@@ -248,6 +257,8 @@ workflows:
             - test-e2e-firefox-snaps
             - test-e2e-chrome-snaps-flask
             - test-e2e-firefox-snaps-flask
+            - test-e2e-chrome-mmi
+            - test-e2e-chrome-rpc-mmi
             - test-storybook
       - benchmark:
           requires:
@@ -579,6 +590,27 @@ jobs:
             - dist-test-flask
             - builds-test-flask
 
+  prep-build-test-mmi:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:mmi
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-mmi
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-mmi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-mmi
+            - builds-test-mmi
+
   prep-build-test-mv3:
     executor: node-browsers-medium-plus
     steps:
@@ -855,6 +887,42 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e.xml
 
+  test-e2e-chrome-rpc-mmi:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mmi ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mmi ./builds
+      - run:
+          name: test:e2e:chrome:rpc
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
+            fi
+          no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+          when: always
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
+
   test-e2e-firefox-snaps:
     executor: node-browsers
     parallelism: 4
@@ -950,7 +1018,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2 --debug
+              yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=flask
             fi
           no_output_timeout: 20m
       - run:
@@ -987,7 +1055,44 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2 --debug
+              yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=flask
+            fi
+          no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+          when: always
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
+
+  test-e2e-chrome-mmi:
+    executor: node-browsers
+    parallelism: 4
+    steps:
+      - run: *shallow-git-clone
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mmi ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mmi ./builds
+      - run:
+          name: test:e2e:chrome:mmi
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
             fi
           no_output_timeout: 20m
       - run:

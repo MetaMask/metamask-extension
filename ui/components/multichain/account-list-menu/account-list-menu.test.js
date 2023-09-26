@@ -158,29 +158,58 @@ describe('AccountListMenu', () => {
   });
 
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  it('renders the add snap account button', async () => {
-    const { getByText } = render();
-    const addSnapAccountButton = getByText(
-      messages.settingAddSnapAccount.message,
-    );
-    expect(addSnapAccountButton).toBeInTheDocument();
+  describe('addSnapAccountButton', () => {
+    const renderWithState = (state, props = { onClose: () => jest.fn() }) => {
+      const store = configureStore({
+        ...mockState,
+        ...{
+          metamask: {
+            ...mockState.metamask,
+            ...state,
+          },
+        },
+        activeTab: {
+          id: 113,
+          title: 'E2E Test Dapp',
+          origin: 'https://metamask.github.io',
+          protocol: 'https:',
+          url: 'https://metamask.github.io/test-dapp/',
+        },
+      });
+      return renderWithProvider(<AccountListMenu {...props} />, store);
+    };
 
-    fireEvent.click(addSnapAccountButton);
-
-    await waitFor(() => {
-      expect(mockToggleAccountMenu).toHaveBeenCalled();
+    it("doesn't render the add snap account button if it's disabled", async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: false });
+      expect(() => getByText(messages.settingAddSnapAccount.message)).toThrow(
+        `Unable to find an element with the text: ${messages.settingAddSnapAccount.message}`,
+      );
     });
-  });
 
-  it('pushes history when clicking add snap account from extended view', async () => {
-    const { getByText } = render();
-    mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
-    const addSnapAccountButton = getByText(
-      messages.settingAddSnapAccount.message,
-    );
-    fireEvent.click(addSnapAccountButton);
-    await waitFor(() => {
-      expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
+    it("renders the add snap account button if it's enabled", async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: true });
+      const addSnapAccountButton = getByText(
+        messages.settingAddSnapAccount.message,
+      );
+      expect(addSnapAccountButton).toBeInTheDocument();
+
+      fireEvent.click(addSnapAccountButton);
+      await waitFor(() => {
+        expect(mockToggleAccountMenu).toHaveBeenCalled();
+      });
+    });
+
+    it('pushes history when clicking add snap account from extended view', async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: true });
+      mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
+      const addSnapAccountButton = getByText(
+        messages.settingAddSnapAccount.message,
+      );
+
+      fireEvent.click(addSnapAccountButton);
+      await waitFor(() => {
+        expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
+      });
     });
   });
   ///: END:ONLY_INCLUDE_IN
