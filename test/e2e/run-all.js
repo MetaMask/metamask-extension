@@ -130,6 +130,7 @@ async function main() {
   if (buildType !== 'flask') {
     const filteredTests = [
       'settings-add-snap-account-toggle.spec.js',
+      'test-snap-accounts.spec.js',
       'test-snap-manageAccount.spec.js',
       'test-snap-lifecycle.spec.js',
       'ppom-toggle-settings.spec.js',
