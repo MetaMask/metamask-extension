@@ -15,8 +15,8 @@ import Identicon from '../../../../ui/identicon';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
-import SiteOrigin from '../../../../ui/site-origin';
 import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import { TagUrl } from '../../../../component-library';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -87,9 +87,9 @@ const ConfirmPageContainerSummary = (props) => {
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
       {origin === ORIGIN_METAMASK ? null : (
-        <SiteOrigin
+        <TagUrl
           className="confirm-page-container-summary__origin"
-          siteOrigin={origin}
+          label={origin}
         />
       )}
       <div className="confirm-page-container-summary__action-row">
