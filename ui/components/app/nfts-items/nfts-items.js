@@ -192,7 +192,7 @@ export default function NftsItems({
                 ipfsGateway,
               );
               const nftImageAlt = getNftImageAlt(nft);
-              const isImageHosted = image.startsWith('https:');
+              const isImageHosted = image?.startsWith('https:');
               const nftImageURL = imageOriginal?.startsWith('ipfs')
                 ? nftImage
                 : image;
