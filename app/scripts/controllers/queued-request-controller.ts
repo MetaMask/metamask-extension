@@ -19,6 +19,7 @@ const getDefaultState = () => ({
 
 type Domain = string;
 type RequestQueue = Record<Domain, Promise<unknown>[]>;
+type RequestQueue2 = Array<Promise<unknown>>;
 
 type Request = any;
 
@@ -53,8 +54,9 @@ export class QueuedRequestController extends BaseControllerV2<
   QueuedRequestControllerState,
   QueuedRequestControllerMessenger
 > {
-  private requestQueue: RequestQueue = {};
+  private currentRequest: Promise<unknown> = Promise.resolve();
 
+  private count: number = 0;
   /**
    * Construct a EncryptionPublicKey controller.
    *
@@ -62,6 +64,7 @@ export class QueuedRequestController extends BaseControllerV2<
    * @param options.messenger - The restricted controller messenger for the QueuedRequestController
    */
   constructor({ messenger }: QueuedRequestControllerOptions) {
+
     super({
       name: controllerName,
       metadata: stateMetadata,
@@ -70,46 +73,28 @@ export class QueuedRequestController extends BaseControllerV2<
     });
   }
 
-  hasQueuedRequests(origin?: Domain) {
-    if (origin) {
-      return this.requestQueue[origin].length > 0;
-    }
-    return Object.keys(this.requestQueue).length > 0;
+  length() {
+    return this.count;
   }
 
-  length(origin?: Domain) {
-    if (origin) {
-      return this.requestQueue[origin].length;
-    }
-    return Object.values(this.requestQueue).reduce((len, item) => item.length + len, 0);
-  }
-
-  enqueueRequest(origin: Domain, requestNext: Promise<unknown>) {
+  async enqueueRequest(requestNext: (...arg: Array<unknown>) => Promise<unknown>) {
     console.log('Request being enqueued!!!');
-    if (this.requestQueue[origin] === undefined) {
-      this.requestQueue[origin] = [];
+    this.count += 1;
+    this.messagingSystem.publish('QueuedRequestController:countChanged', this.count);
+    await this.currentRequest;
+    console.log('Running next Item in queue');
+    this.currentRequest = requestNext();
+    try {
+      await this.currentRequest;
+      console.log('finished queue item');
+      this.count -= 1;
+      this.messagingSystem.publish('QueuedRequestController:countChanged', this.count);
+    } catch (e) {
+      console.log('finished queue item');
+      this.count -= 1;
+      this.messagingSystem.publish('QueuedRequestController:countChanged', this.count);
+      throw e;
     }
-
-    this.requestQueue[origin].push(requestNext);
-
-    this.messagingSystem.publish('QueuedRequestController:countChanged', this.length());
-    requestNext.finally(() => {
-      const index = this.requestQueue[origin].findIndex((p) => p === requestNext);
-      console.log('updating queue length from: ', this.length());
-      this.requestQueue[origin][index] = this.requestQueue[origin][this.requestQueue[origin].length - 1];
-      this.requestQueue[origin].pop();
-      console.log(' to: ', this.length());
-    });
-
-    return this.requestQueue;
-  }
-
-  async waitForRequestQueue() {
-    const domainQueues = Object.values(this.requestQueue).map((domainQueue) =>
-      Promise.all(domainQueue),
-    );
-    await Promise.all(domainQueues);
-    this.requestQueue = {};
-    return true;
+    // return this.currentRequest;
   }
 }

@@ -4165,7 +4165,6 @@ export default class MetamaskController extends EventEmitter {
     // add some middleware that will switch chain on each request (as needed)
     engine.push(
       createAsyncMiddleware(async (req, res, next) => {
-        // continue if feature flag for using queue is off
         if (this.preferencesController.getUseRequestQueue() === false) {
           await next();
           return;
@@ -4177,112 +4176,62 @@ export default class MetamaskController extends EventEmitter {
           'wallet_switchEthereumChain'
         ];
 
-        // Allow per-dapp provider proxy to handle this request (added to engine last in setupProviderEngine)
         if (confirmationMethods.includes(req.method) === false) {
           await next();
           return;
         }
 
-        // if selected network is not already correct:
-        // switchEthereumChain (with an approval dialog)
-        // call next?? queue or not queue that is the question.
-
         const networkClientIdForRequest = req.networkClientId;
         const sameNetworkClientIdAsCurrent = () =>
           networkClientIdForRequest ===
           this.networkController.state.selectedNetworkClientId;
+        const isSwitchEthChainCall = req.method === 'wallet_switchEthereumChain';
 
-        // NOTE: NOT SURE IF WE WANNA KEEP THIS SWITCHETHCHAIN HANDLING, COMMENTING OUT FOR NOW
-        // if (req.method === 'wallet_switchEthereumChain') {
-        //   // decide if we want to show a confirmation
-        //   // we can check the chainId in the request against the chainId for the domain-specific network configuration. If they are the same, then we dont show a confirmation. We dont need to switch because subsequent requests will cause the switching automatically. Later we can make this check for a permission instead.
-        //   if (
-        //     req.params[0].chainId ===
-        //     this.networkController.getNetworkClientById(
-        //       networkClientIdForRequest,
-        //     )?.configuration?.chainId
-        //   ) {
-        //     console.log(
-        //       'EARLY RETURNING BECAUSE SELECTED NETWORK IS ALREADY CORRECTLY SET TO THE RIGHT NETWORKID',
-        //     );
-        //     // possible adjustments that could be made to this:
-        //     //   - if the selectedNetworkClientIdForDomain is not the same
-        //     //  - maybe we want to broadcast a notification that the chain is changed for the domain
-        //     res.result = null;
-        //     return;
-        //   }
-
-        //   // otherwise, put up the confirmation dialog
-        //   console.log('Calling next on switchEthereumChain..');
-
-        //   // eslint-disable-next-line node/callback-return
-        //   await next();
-        //   console.log('switchEthereumChain middleware finished');
-        //   return;
-        // }
-
-        // if not on the correct network, switch to it.
-        // handle waiting for confirmations
-
-
-        if (!sameNetworkClientIdAsCurrent() && req.method !== 'wallet_switchEthereumChain') {
-          console.log('not on the correct network & requires confirmation: switch time');
-          if (this.queuedRequestController.hasQueuedRequests()) {
-            await this.queuedRequestController.waitForRequestQueue();
-          }
-
+        if (isSwitchEthChainCall) {
+          await next();
+          return;
+        }
+        if (!isSwitchEthChainCall) {
           const selfProvider = providerFromEngine(engine);
           try {
+            this.queuedRequestController.enqueueRequest(() => {
+              return new Promise((resolve, reject) => {
+                const isBuiltIn =
+                      BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
+                      BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
+                const chainId = isBuiltIn ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId : this.networkController.getNetworkClientById(networkClientIdForRequest).configuration.chainId;
 
-            // not awaited. Instead we wait for the request queue to empty after the call.
-            // this is because the queue may already have items in it when this request happens
-            const switchEthereumChainApprovalPromise = new Promise((resolve, reject) => {
-              const isBuiltIn =
-                    BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
-                    BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
-              const chainId = isBuiltIn ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId : this.networkController.getNetworkClientById(networkClientIdForRequest).configuration.chainId;
-
-              selfProvider.sendAsync(
-                {
-                  id: Math.floor(Math.random() * 1000000),
-                  jsonrpc: '2.0',
-                  method: 'wallet_switchEthereumChain',
-                  params: [ { chainId } ]
-                },
-                (err, result) => {
-                  if (err) {
-                    console.error('per-dapp-network:: switch ethereum chain errored: ', error);
-                    reject(err);
-                  } else {
-                    resolve(result);
+                selfProvider.sendAsync(
+                  {
+                    id: Math.floor(Math.random() * 1000000),
+                    jsonrpc: '2.0',
+                    method: 'wallet_switchEthereumChain',
+                    params: [ { chainId } ]
+                  },
+                  (err, result) => {
+                    if (err) {
+                      console.error('per-dapp-network:: switch ethereum chain errored: ', err);
+                      reject(err);
+                    } else {
+                      resolve(result);
+                    }
                   }
-                }
-              );
+                );
+              });
             });
-            this.queuedRequestController.enqueueRequest(
-              networkClientIdForRequest,
-              switchEthereumChainApprovalPromise
-            );
           } catch (e) {
             console.error(e);
             res.error = e;
             return;
           }
-        }
 
-        // check against a fresh copy every time
-        if (!sameNetworkClientIdAsCurrent() && this.queuedRequestController.hasQueuedRequests() && req.method !== 'wallet_switchEthereumChain') {
-          await this.queuedRequestController.waitForRequestQueue();
+          // i may never forgive myself for this
+          await new Promise((resolve, reject) => {
+            setTimeout(() => {
+              const completed = this.queuedRequestController.enqueueRequest(next).then(resolve).catch(reject);
+            },10);
+          });
         }
-
-        // eslint-disable-next-line node/callback-return
-        const reqPromise = next();
-        this.queuedRequestController.enqueueRequest(
-          networkClientIdForRequest,
-          // eslint-disable-next-line node/callback-return
-          reqPromise,
-        );
-        await reqPromise;
       }),
     );
 
