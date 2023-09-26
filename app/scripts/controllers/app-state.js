@@ -77,6 +77,11 @@ export default class AppStateController extends EventEmitter {
       }
     });
 
+    messenger.subscribe(
+      'KeyringController:qrKeyringStateChange',
+      this.updateQRHardware.bind(this),
+    );
+
     const { preferences } = preferencesStore.getState();
     this._setInactiveTimeout(preferences.autoLockTimeLimit);
 

@@ -647,6 +647,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
         ],
+        allowedEvents: [`KeyringController:qrKeyringStateChange`],
       }),
       extension: this.extension,
     });
@@ -869,13 +870,24 @@ export default class MetamaskController extends EventEmitter {
 
     const keyringControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'KeyringController',
-      allowedEvents: [
-        'KeyringController:accountRemoved',
-        'KeyringController:lock',
-        'KeyringController:stateChange',
-        'KeyringController:unlock',
+      allowedActions: [
+        'KeyringController:getState',
+        'KeyringController:signMessage',
+        'KeyringController:signPersonalMessage',
+        'KeyringController:signTypedMessage',
+        'KeyringController:decryptMessage',
+        'KeyringController:getEncryptionPublicKey',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+        'KeyringController:getAccounts',
       ],
-      allowedActions: ['KeyringController:getState'],
+      allowedEvents: [
+        'KeyringController:stateChange',
+        'KeyringController:lock',
+        'KeyringController:unlock',
+        'KeyringController:accountRemoved',
+        'KeyringController:qrKeyringStateChange',
+      ],
     });
 
     this.coreKeyringController = new KeyringController({
@@ -3381,16 +3393,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async connectHardware(deviceName, page, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-
-    if (deviceName === HardwareDeviceNames.qr) {
-      keyring
-        .getMemStore()
-        .subscribe(
-          this.appStateController.updateQRHardware.bind(
-            this.appStateController,
-          ),
-        );
-    }
 
     let accounts = [];
     switch (page) {
