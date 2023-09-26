@@ -33,9 +33,11 @@ const snapKeyringBuilder = (
         const addresses = await getCoreKeyringController().getAccounts();
         return addresses.includes(address.toLowerCase());
       },
+
       saveState: async () => {
         await getKeyringController().persistAllKeyrings();
       },
+
       addAccount: async (
         _address: string,
         origin: string,
@@ -86,6 +88,7 @@ const snapKeyringBuilder = (
           });
         }
       },
+
       removeAccount: async (
         address: string,
         snapId: string,
