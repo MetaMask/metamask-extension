@@ -114,8 +114,6 @@ const ConfirmAddCustodianToken = () => {
         if (isConfirm) {
           history.push(CUSTODY_ACCOUNT_ROUTE);
         }
-
-        setIsLoading(false);
       } catch (e) {
         const errorMessage = e.message || 'Connection error';
         setConnectError(errorMessage);
