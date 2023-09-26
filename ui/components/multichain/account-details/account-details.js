@@ -163,5 +163,8 @@ export const AccountDetails = ({ accountId }) => {
 };
 
 AccountDetails.propTypes = {
+  /**
+   * The account id of the account to show details for
+   */
   accountId: PropTypes.string,
 };

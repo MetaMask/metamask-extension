@@ -10,7 +10,6 @@ import {
   getCurrentChainId,
   getHardwareWalletType,
   getInternalAccount,
-  getInternalAccounts,
 } from '../../../selectors';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
@@ -34,6 +33,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const AccountDetailsDisplay = ({
   accountName,
+  accounts,
   accountId,
   onExportClick,
 }) => {
@@ -46,7 +46,6 @@ export const AccountDetailsDisplay = ({
   );
   const { keyring } = displayedAccount.metadata;
   const { address } = displayedAccount;
-  const accounts = useSelector(getInternalAccounts);
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
   const chainId = useSelector(getCurrentChainId);
@@ -100,7 +99,20 @@ export const AccountDetailsDisplay = ({
 };
 
 AccountDetailsDisplay.propTypes = {
+  /**
+   * Array of user accounts
+   */
+  accounts: PropTypes.array.isRequired,
+  /**
+   * Name of the current account
+   */
   accountName: PropTypes.string.isRequired,
+  /**
+   * Current account id
+   */
   accountId: PropTypes.string.isRequired,
+  /**
+   * Executes upon Export button click
+   */
   onExportClick: PropTypes.func.isRequired,
 };

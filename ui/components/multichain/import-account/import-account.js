@@ -164,5 +164,8 @@ export const ImportAccount = ({ onActionComplete }) => {
 };
 
 ImportAccount.propTypes = {
+  /**
+   * Executes when the key is imported
+   */
   onActionComplete: PropTypes.func.isRequired,
 };
