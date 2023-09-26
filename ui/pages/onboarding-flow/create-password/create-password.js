@@ -39,6 +39,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   Box,
+  ButtonLink,
   Icon,
   IconName,
   Text,
@@ -212,10 +213,7 @@ export default function CreatePassword({
           marginBottom={4}
         />
       )}
-      <Text
-        variant={TextVariant.headingLg}
-        marginBottom={3}
-      >
+      <Text variant={TextVariant.headingLg} marginBottom={3}>
         {t('createPassword')}
       </Text>
       <Text
@@ -237,19 +235,18 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <Text variant={TextVariant.bodyXs}>
-                <a
-                  href=""
-                  data-testid="show-password"
-                  className="create-password__form--password-button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setShowPassword(!showPassword);
-                  }}
-                >
-                  {showPassword ? t('hide') : t('show')}
-                </a>
-              </Text>
+              <ButtonLink
+                variant={TextVariant.bodySm}
+                data-testid="show-password"
+                className="create-password__form--password-button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowPassword(!showPassword);
+                }}
+                marginBottom={1}
+              >
+                {showPassword ? t('hide') : t('show')}
+              </ButtonLink>
             }
           />
           <FormField
