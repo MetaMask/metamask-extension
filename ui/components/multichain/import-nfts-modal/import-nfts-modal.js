@@ -278,5 +278,8 @@ export const ImportNftsModal = ({ onClose }) => {
 };
 
 ImportNftsModal.propTypes = {
+  /**
+   * Executes when the modal closes
+   */
   onClose: PropTypes.func.isRequired,
 };
