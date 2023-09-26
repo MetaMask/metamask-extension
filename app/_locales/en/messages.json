@@ -499,7 +499,7 @@
     "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
   },
   "backupKeyringSnapReminder": {
-    "message": "Be sure you can access any accounts created by this snap on your own before removing it"
+    "message": "Be sure you can access any accounts created by this snap on your own before removing it."
   },
   "backupNow": {
     "message": "Backup now"
