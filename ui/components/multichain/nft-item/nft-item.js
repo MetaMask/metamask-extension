@@ -38,7 +38,7 @@ export const NftItem = ({
 
   const renderNftBasedonSrc = src ? (
     <>
-      {openSeaEnabled && isIpfsURL ? (
+      {isIpfsURL ? (
         <Box
           className="nft-item__item nft-item__item-image"
           data-testid="nft-image"
