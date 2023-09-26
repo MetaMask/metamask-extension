@@ -232,8 +232,6 @@ describe('DetectTokensController', function () {
       network,
       provider,
       tokenListController,
-      onInfuraIsBlocked: sinon.stub(),
-      onInfuraIsUnblocked: sinon.stub(),
       networkConfigurations: {},
       onAccountRemoved: sinon.stub(),
     });
