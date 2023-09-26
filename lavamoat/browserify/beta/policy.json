@@ -1181,7 +1181,7 @@
         "@metamask/eth-token-tracker>human-standard-token-abi": true,
         "@metamask/eth-token-tracker>safe-event-emitter": true,
         "ethjs-contract": true,
-        "ethjs-query": true
+        "ethjs>ethjs-query": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal": {
@@ -1242,7 +1242,7 @@
       "packages": {
         "@metamask/eth-token-tracker>ethjs>ethjs-contract>ethjs-abi": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-util": true,
-        "ethjs-query>babel-runtime": true,
+        "ethjs-contract>babel-runtime": true,
         "ethjs>ethjs-filter": true,
         "ethjs>js-sha3": true,
         "promise-to-callback": true
@@ -1261,9 +1261,9 @@
         "console": true
       },
       "packages": {
-        "ethjs-query>babel-runtime": true,
-        "ethjs-query>ethjs-format": true,
-        "ethjs-query>ethjs-rpc": true,
+        "@metamask/ethjs-query>ethjs-format": true,
+        "@metamask/ethjs-query>ethjs-rpc": true,
+        "ethjs-contract>babel-runtime": true,
         "promise-to-callback": true
       }
     },
@@ -1480,6 +1480,36 @@
     "@metamask/etherscan-link": {
       "globals": {
         "URL": true
+      }
+    },
+    "@metamask/ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/ethjs-query>ethjs-format": true,
+        "@metamask/ethjs-query>ethjs-rpc": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/ethjs-query>ethjs-format": {
+      "packages": {
+        "@metamask/ethjs-query>ethjs-format>ethjs-schema": true,
+        "@metamask/ethjs-query>ethjs-format>ethjs-util": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/ethjs-query>ethjs-format>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "@metamask/ethjs-query>ethjs-rpc": {
+      "packages": {
+        "promise-to-callback": true
       }
     },
     "@metamask/gas-fee-controller": {
@@ -1727,13 +1757,30 @@
     "@metamask/message-manager": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/message-manager>@metamask/controller-utils": true,
         "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
         "browserify>buffer": true,
         "ethereumjs-util": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/message-manager>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/message-manager>@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/message-manager>@metamask/eth-sig-util": {
@@ -1797,6 +1844,19 @@
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/message-manager>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -3904,10 +3964,10 @@
         "bn.js": true,
         "browserify>buffer": true,
         "ethjs-contract": true,
-        "ethjs-query": true,
         "ethjs>ethjs-abi": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
+        "ethjs>ethjs-query": true,
         "ethjs>ethjs-unit": true,
         "ethjs>ethjs-util": true,
         "ethjs>js-sha3": true,
@@ -3916,12 +3976,28 @@
     },
     "ethjs-contract": {
       "packages": {
+        "ethjs-contract>babel-runtime": true,
         "ethjs-contract>ethjs-abi": true,
         "ethjs-contract>ethjs-util": true,
-        "ethjs-query>babel-runtime": true,
         "ethjs>ethjs-filter": true,
         "ethjs>js-sha3": true,
         "promise-to-callback": true
+      }
+    },
+    "ethjs-contract>babel-runtime": {
+      "packages": {
+        "@babel/runtime>regenerator-runtime": true,
+        "ethjs-contract>babel-runtime>core-js": true
+      }
+    },
+    "ethjs-contract>babel-runtime>core-js": {
+      "globals": {
+        "PromiseRejectionEvent": true,
+        "__e": "write",
+        "__g": "write",
+        "document.createTextNode": true,
+        "postMessage": true,
+        "setTimeout": true
       }
     },
     "ethjs-contract>ethjs-abi": {
@@ -3939,51 +4015,9 @@
         "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
-    "ethjs-query": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "ethjs-query>ethjs-format": true,
-        "ethjs-query>ethjs-rpc": true,
-        "promise-to-callback": true
-      }
-    },
     "ethjs-query>babel-runtime": {
       "packages": {
-        "@babel/runtime": true,
-        "@babel/runtime>regenerator-runtime": true,
-        "ethjs-query>babel-runtime>core-js": true
-      }
-    },
-    "ethjs-query>babel-runtime>core-js": {
-      "globals": {
-        "PromiseRejectionEvent": true,
-        "__e": "write",
-        "__g": "write",
-        "document.createTextNode": true,
-        "postMessage": true,
-        "setTimeout": true
-      }
-    },
-    "ethjs-query>ethjs-format": {
-      "packages": {
-        "ethjs-query>ethjs-format>ethjs-schema": true,
-        "ethjs-query>ethjs-format>ethjs-util": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true,
-        "ethjs>number-to-bn": true
-      }
-    },
-    "ethjs-query>ethjs-format>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
-      }
-    },
-    "ethjs-query>ethjs-rpc": {
-      "packages": {
-        "promise-to-callback": true
+        "@babel/runtime": true
       }
     },
     "ethjs>ethjs-abi": {
@@ -4008,6 +4042,16 @@
     "ethjs>ethjs-provider-http>xhr2": {
       "globals": {
         "XMLHttpRequest": true
+      }
+    },
+    "ethjs>ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/ethjs-query>ethjs-format": true,
+        "@metamask/ethjs-query>ethjs-rpc": true,
+        "promise-to-callback": true
       }
     },
     "ethjs>ethjs-unit": {
@@ -4203,7 +4247,7 @@
       "packages": {
         "await-semaphore": true,
         "browserify>assert": true,
-        "ethjs-query": true
+        "ethjs>ethjs-query": true
       }
     },
     "obj-multiplex": {

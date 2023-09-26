@@ -76,6 +76,7 @@ describe('MMIController', function () {
       })),
       registerActionHandler: jest.fn(),
       publish: jest.fn(),
+      subscribe: jest.fn(),
     };
 
     networkController = new NetworkController({
@@ -194,9 +195,6 @@ describe('MMIController', function () {
               autoLockTimeLimit: 0,
             },
           })),
-        },
-        qrHardwareStore: {
-          subscribe: jest.fn(),
         },
         messenger: mockMessenger,
       }),
