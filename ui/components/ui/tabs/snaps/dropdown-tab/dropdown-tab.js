@@ -92,7 +92,7 @@ export const DropdownTab = ({
       style={{ cursor: 'pointer', overflow: 'hidden' }}
       title={selectedOptionName}
     >
-      <Box display={Display.Flex} alignItems={AlignItems.center} padding={2}>
+      <Box display={Display.Flex} alignItems={AlignItems.flexStart} padding={2}>
         <Text
           variant={TextVariant.inherit}
           style={{
@@ -103,7 +103,13 @@ export const DropdownTab = ({
         >
           {selectedOptionName}
         </Text>
-        <Box paddingLeft={1} paddingRight={1} onClick={openDropdown}>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.flexStart}
+          paddingLeft={1}
+          paddingRight={1}
+          onClick={openDropdown}
+        >
           <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
         </Box>
       </Box>
