@@ -2,8 +2,6 @@ const {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
-  largeDelayMs,
-  veryLargeDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./utils');
@@ -26,34 +24,29 @@ describe('Create Snap Account', function () {
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         await driver.clickElementSafe('#connectButton');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          largeDelayMs,
-          veryLargeDelayMs,
-        );
+        // switch to metamask extension and click connect to start installing the snap
         await driver.switchToWindowWithTitle('MetaMask Notification');
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // scroll to the bottom of the page
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click the install button to install the snap
         await driver.waitForSelector({ text: 'Install' });
-
         await driver.clickElement({
           text: 'Install',
           tag: 'button',
         });
-
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
 
+        // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
 
         // check the dapp connection status
@@ -116,34 +109,29 @@ describe('Create Snap Account', function () {
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         await driver.clickElement('#connectButton');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          largeDelayMs,
-          veryLargeDelayMs,
-        );
+        // switch to metamask extension and click connect to start installing the snap
         await driver.switchToWindowWithTitle('MetaMask Notification');
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // scroll to the bottom of the page
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click the install button to install the snap
         await driver.waitForSelector({ text: 'Install' });
-
         await driver.clickElement({
           text: 'Install',
           tag: 'button',
         });
-
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
 
+        // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
 
         // check the dapp connection status
@@ -203,34 +191,29 @@ describe('Create Snap Account', function () {
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         await driver.clickElementSafe('#connectButton');
 
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          largeDelayMs,
-          veryLargeDelayMs,
-        );
+        // switch to metamask extension and click connect to start installing the snap
         await driver.switchToWindowWithTitle('MetaMask Notification');
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // scroll to the bottom of the page
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click the install button to install the snap
         await driver.waitForSelector({ text: 'Install' });
-
         await driver.clickElement({
           text: 'Install',
           tag: 'button',
         });
-
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
 
+        // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
 
         // check the dapp connection status
