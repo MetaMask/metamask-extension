@@ -17,6 +17,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   getIpfsGateway,
+  getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 
@@ -29,29 +30,35 @@ export const NftItem = ({
   tokenId,
   onClick,
   clickable,
-  nftImageURL,
+  isIpfsURL,
 }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
-  const isIpfsURL = nftImageURL?.includes('ipfs:');
-  const renderNftBasedonSrc = src ? (
-    <Box
-      className="nft-item__item nft-item__item-image"
-      data-testid="nft-image"
-      as="img"
-      src={src}
-      alt={alt}
-      display={Display.Block}
-      justifyContent={JustifyContent.center}
-    />
-  ) : (
-    <NftDefaultImage
-      className="nft-item__default-image"
-      data-testid="nft-default-image"
-      name={name}
-      tokenId={tokenId}
-    />
-  );
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
+
+  const ipfsImageIsRenderable = isIpfsEnabled && isIpfsURL && src;
+  const openseaImageIsRenderable = openSeaEnabled && src && !isIpfsURL;
+
+  const nftImageComponentToRender =
+    ipfsImageIsRenderable || openseaImageIsRenderable ? (
+      <Box
+        className="nft-item__item nft-item__item-image"
+        data-testid="nft-image"
+        as="img"
+        src={src}
+        alt={alt}
+        display={Display.Block}
+        justifyContent={JustifyContent.center}
+      />
+    ) : (
+      <NftDefaultImage
+        className="nft-item__default-image"
+        data-testid="nft-default-image"
+        name={name}
+        tokenId={tokenId}
+        clickable={clickable && isIpfsURL}
+      />
+    );
 
   return (
     <Box
@@ -83,23 +90,7 @@ export const NftItem = ({
           />
         }
       >
-        {isIpfsEnabled ? (
-          <>{renderNftBasedonSrc}</>
-        ) : (
-          <>
-            {isIpfsURL ? (
-              <NftDefaultImage
-                className="nft-item__default-image"
-                data-testid="nft-default-image"
-                name={name}
-                tokenId={tokenId}
-                clickable={clickable}
-              />
-            ) : (
-              <>{renderNftBasedonSrc}</>
-            )}
-          </>
-        )}
+        {nftImageComponentToRender}
       </BadgeWrapper>
     </Box>
   );
@@ -114,5 +105,5 @@ NftItem.propTypes = {
   tokenId: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   clickable: PropTypes.bool,
-  nftImageURL: PropTypes.string,
+  isIpfsURL: PropTypes.bool,
 };

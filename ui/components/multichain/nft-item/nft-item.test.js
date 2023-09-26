@@ -12,10 +12,11 @@ const store = configureStore({
   },
 });
 
-const noIpfsStore = configureStore({
+const noDisplayMediaStore = configureStore({
   metamask: {
     ...mockState.metamask,
     ipfsGateway: '',
+    openSeaEnabled: false,
   },
 });
 
@@ -45,13 +46,10 @@ describe('NftItem component', () => {
       expect(getByTestId('nft-image')).toHaveAttribute('src', 'test-src');
     });
 
-    it('renders correctly with default image when no ipfs is off and no image is provided', () => {
+    it('renders correctly with default image when both ipfs and display Media is off and no image is provided', () => {
       const { getByTestId, queryByTestId } = renderWithProvider(
-        <NftItem
-          {...props}
-          nftImageURL="ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL"
-        />,
-        noIpfsStore,
+        <NftItem {...props} />,
+        noDisplayMediaStore,
       );
 
       expect(queryByTestId('nft-image')).not.toBeInTheDocument();

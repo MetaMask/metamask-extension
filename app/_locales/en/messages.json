@@ -1295,8 +1295,8 @@
   "displayNftMedia": {
     "message": "Display NFT media"
   },
-  "displayNftMediaDescription": {
-    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  "displayNftMediaDesc": {
+    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off. If NFT media is fully located on IPFS, it can still be displayed even when this feature is turned off."
   },
   "domain": {
     "message": "Domain"
