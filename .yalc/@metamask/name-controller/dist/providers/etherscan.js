@@ -29,7 +29,8 @@ const types_1 = require("../types");
 const util_1 = require("../util");
 const ID = 'etherscan';
 const LABEL = 'Etherscan (Verified Contract Name)';
-const RATE_LIMIT_INTERVAL = 5; // 5 seconds
+const RATE_LIMIT_UPDATE_DELAY = 5; // 5 Seconds
+const RATE_LIMIT_INTERVAL = RATE_LIMIT_UPDATE_DELAY * 1000;
 const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'etherscan');
 class EtherscanNameProvider {
     constructor({ isEnabled } = {}) {
@@ -68,7 +69,7 @@ class EtherscanNameProvider {
                     return {
                         results: {
                             [ID]: {
-                                updateDelay: RATE_LIMIT_INTERVAL,
+                                updateDelay: RATE_LIMIT_UPDATE_DELAY,
                             },
                         },
                     };
@@ -88,7 +89,7 @@ class EtherscanNameProvider {
                     return {
                         results: {
                             [ID]: {
-                                updateDelay: RATE_LIMIT_INTERVAL,
+                                updateDelay: RATE_LIMIT_UPDATE_DELAY,
                             },
                         },
                     };
