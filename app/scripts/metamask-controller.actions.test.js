@@ -244,8 +244,8 @@ describe('MetaMaskController', function () {
         );
 
       const [token1, token2] = await Promise.all([
-        metamaskController.getApi().addToken({ address, symbol, decimals }),
-        metamaskController.getApi().addToken({ address, symbol, decimals }),
+        metamaskController.getApi().addToken({ address, symbol, decimals }), //
+        metamaskController.getApi().addToken({ address, symbol, decimals }), //
       ]);
       assert.deepEqual(token1, token2);
     });

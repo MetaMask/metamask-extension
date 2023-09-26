@@ -61,6 +61,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
+  getSelectedNetworkClientId,
 } from '../../selectors';
 
 import {
