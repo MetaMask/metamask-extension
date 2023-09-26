@@ -25,4 +25,4 @@ setTimeout(() => {
       document.documentElement.classList.add('metamask-loaded');
     }
   }
-}, 0);
+}, 10);

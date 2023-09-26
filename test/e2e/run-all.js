@@ -126,13 +126,12 @@ async function main() {
     }
   }
 
-  // These tests should only be ran on Flask for now.
+  // These tests should only be run on Flask for now.
   if (buildType !== 'flask') {
     const filteredTests = [
       'confirm/security-alert-blockaid.spec.js',
       'settings-add-snap-account-toggle.spec.js',
       'test-snap-manageAccount.spec.js',
-      'test-snap-rpc.spec.js',
       'test-snap-lifecycle.spec.js',
       'ppom-toggle-settings.spec.js',
       'petnames.spec.js',
