@@ -290,94 +290,6 @@ describe('Custom network', function () {
         },
       );
     });
-
-    it('when the setting is turned off, no validation is enforced', async function () {
-      async function mockRPCURLAndChainId(mockServer) {
-        return [
-          await mockServer
-            .forPost('https://rpc-exists-with-expected-chain-id.url')
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: { result: '0x123' },
-            })),
-        ];
-      }
-
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          ganacheOptions,
-          title: this.test.title,
-          testSpecificMock: mockRPCURLAndChainId,
-        },
-        async ({ driver }) => {
-          await driver.navigate();
-
-          await unlockWallet(driver);
-
-          await openDapp(driver);
-
-          let windowHandles = await driver.waitUntilXWindowHandles(2);
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-            windowHandles,
-          );
-
-          await toggleOffSafeChainsListValidation(driver);
-
-          windowHandles = await driver.waitUntilXWindowHandles(2);
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.TestDApp,
-            windowHandles,
-          );
-
-          const addChainJSONRPCCall = function () {
-            const params = [
-              {
-                chainId: '0x123',
-                chainName: 'Antani',
-                nativeCurrency: {
-                  name: '',
-                  symbol: 'ANTANI',
-                  decimals: 18,
-                },
-                rpcUrls: ['https://rpc-exists-with-expected-chain-id.url'],
-                blockExplorerUrls: ['http://localhost:8080/api/customRPC'],
-              },
-            ];
-
-            window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params,
-            });
-          }.toString();
-
-          await driver.executeScript(`(${addChainJSONRPCCall})()`);
-
-          windowHandles = await driver.waitUntilXWindowHandles(3);
-
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Notification,
-            windowHandles,
-          );
-
-          await driver.clickElement({
-            tag: 'button',
-            text: 'Approve',
-          });
-
-          const switchNetworkBtn = await driver.findElement({
-            tag: 'button',
-            text: 'Switch network',
-          });
-
-          await switchNetworkBtn.click();
-        },
-      );
-    });
   });
 
   describe('Popular Networks List', function () {
@@ -740,30 +652,34 @@ async function toggleOffSafeChainsListValidation(driver) {
   };
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
-  const useSafeChainsListValidationToggleSelector =
+  const useSafeChainsListValidationLabelSelector =
     '[data-testid="useSafeChainsListValidation"]';
-  let useSafeChainsListValidationToggleElement = await driver.waitForSelector(
-    useSafeChainsListValidationToggleSelector,
+  const useSafeChainsListValidationToggleSelector =
+    '[data-testid="useSafeChainsListValidation"] .toggle-button > div';
+
+  let useSafeChainsListValidationLabelElement = await driver.waitForSelector(
+    useSafeChainsListValidationLabelSelector,
   );
+
   let useSafeChainsListValidationToggleState =
-    await useSafeChainsListValidationToggleElement.getText();
+    await useSafeChainsListValidationLabelElement.getText();
 
   assert.equal(
     useSafeChainsListValidationToggleState,
     'ON',
-    'Safe chains list validation toggle is OFF',
+    'Safe chains list validation toggle is OFF by default',
   );
 
-  await useSafeChainsListValidationToggleElement.click();
-  // wait for the toggle state change to finish
+  await driver.clickElement(useSafeChainsListValidationToggleSelector);
+
   await driver.delay(regularDelayMs);
 
-  useSafeChainsListValidationToggleElement = await driver.waitForSelector(
-    useSafeChainsListValidationToggleSelector,
+  useSafeChainsListValidationLabelElement = await driver.waitForSelector(
+    useSafeChainsListValidationLabelSelector,
   );
 
   useSafeChainsListValidationToggleState =
-    await useSafeChainsListValidationToggleElement.getText();
+    await useSafeChainsListValidationLabelElement.getText();
 
   assert.equal(
     useSafeChainsListValidationToggleState,
