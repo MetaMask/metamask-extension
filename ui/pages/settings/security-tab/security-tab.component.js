@@ -75,6 +75,10 @@ export default class SecurityTab extends PureComponent {
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useAddressBarEnsResolution: PropTypes.bool.isRequired,
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    useExternalNameSources: PropTypes.bool.isRequired,
+    setUseExternalNameSources: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
@@ -777,6 +781,54 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  renderExternalNameSourcesToggle() {
+    const { t } = this.context;
+    const { useExternalNameSources, setUseExternalNameSources } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[13]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('externalNameSourcesSetting')}</span>
+          <div className="settings-page__content-description">
+            <Text color={TextColor.textAlternative}>
+              {t('externalNameSourcesSettingDescriptionStart')}
+            </Text>
+            <ul className="settings-page__content-unordered-list">
+              <li>{t('externalNameSourcesSettingENS')}</li>
+              <li>{t('externalNameSourcesSettingEtherscan')}</li>
+              <li>{t('externalNameSourcesSettingInfura')}</li>
+              <li>{t('externalNameSourcesSettingLensProtocol')}</li>
+            </ul>
+            <Text color={TextColor.textAlternative} paddingTop={4}>
+              {t('externalNameSourcesSettingDescriptionEnd')}
+            </Text>
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useExternalNameSources"
+        >
+          <ToggleButton
+            value={useExternalNameSources}
+            onToggle={(value) => setUseExternalNameSources(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   render() {
     const { warning } = this.props;
 
@@ -829,6 +881,18 @@ export default class SecurityTab extends PureComponent {
           {this.renderDisplayNftMediaToggle()}
           {this.renderNftDetectionToggle()}
         </div>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        }
+        <span className="settings-page__security-tab-sub-header">
+          {this.context.t('settingsSubHeadingSignatures')}
+        </span>
+        <div className="settings-page__content-padded">
+          {this.renderExternalNameSourcesToggle()}
+        </div>
+        {
+          ///: END:ONLY_INCLUDE_IN
+        }
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}
         </span>
