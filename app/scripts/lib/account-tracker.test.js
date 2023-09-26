@@ -33,11 +33,6 @@ const mockAccounts = {
   },
 };
 
-const mockKeyringController = jest.fn();
-const mockSnapController = jest.fn();
-const mockSnapChange = jest.fn();
-const mockKeyringChange = jest.fn();
-
 describe('Account Tracker', () => {
   let provider,
     blockTrackerStub,
@@ -76,10 +71,6 @@ describe('Account Tracker', () => {
     accountsController = new AccountsController({
       state: {},
       messenger: accountsControllerMessenger,
-      keyringController: () => mockKeyringController,
-      snapController: () => mockSnapController,
-      onSnapStateChange: () => mockSnapChange,
-      onKeyringStateChange: () => mockKeyringChange,
     });
 
     accountTracker = new AccountTracker({
