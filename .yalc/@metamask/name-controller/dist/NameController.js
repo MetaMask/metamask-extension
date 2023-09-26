@@ -19,7 +19,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _NameController_instances, _NameController_getChainId, _NameController_providers, _NameController_updateProposedNameState, _NameController_updateSourceState, _NameController_getUpdateProposedNamesResult, _NameController_getProviderResponse, _NameController_updateEntry, _NameController_getTypeVariationKey, _NameController_getCurrentTimeSeconds, _NameController_validateSetNameRequest, _NameController_validateUpdateProposedNamesRequest, _NameController_validateValue, _NameController_validateType, _NameController_validateName, _NameController_validateSourceIds, _NameController_validateSourceId, _NameController_validateDuplicateSourceIds, _NameController_getAllSourceIds, _NameController_getSourceIds, _NameController_removeDormantProposedNames;
+var _NameController_instances, _NameController_getChainId, _NameController_providers, _NameController_updateDelay, _NameController_updateProposedNameState, _NameController_updateSourceState, _NameController_getUpdateProposedNamesResult, _NameController_getProviderResponse, _NameController_normalizeProviderResult, _NameController_normalizeProviderSourceResult, _NameController_updateEntry, _NameController_getTypeVariationKey, _NameController_getCurrentTimeSeconds, _NameController_validateSetNameRequest, _NameController_validateUpdateProposedNamesRequest, _NameController_validateValue, _NameController_validateType, _NameController_validateName, _NameController_validateSourceIds, _NameController_validateSourceId, _NameController_validateDuplicateSourceIds, _NameController_getAllSourceIds, _NameController_getSourceIds, _NameController_removeDormantProposedNames;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NameController = void 0;
 const base_controller_1 = require("@metamask/base-controller");
@@ -48,8 +48,9 @@ class NameController extends base_controller_1.BaseControllerV2 {
      * @param options.messenger - Restricted controller messenger for the name controller.
      * @param options.providers - Array of name provider instances to propose names.
      * @param options.state - Initial state to set on the controller.
+     * @param options.updateDelay - The delay in seconds before a new request to a source should be made.
      */
-    constructor({ getChainId, messenger, providers, state, }) {
+    constructor({ getChainId, messenger, providers, state, updateDelay, }) {
         super({
             name: controllerName,
             metadata: stateMetadata,
@@ -59,8 +60,10 @@ class NameController extends base_controller_1.BaseControllerV2 {
         _NameController_instances.add(this);
         _NameController_getChainId.set(this, void 0);
         _NameController_providers.set(this, void 0);
+        _NameController_updateDelay.set(this, void 0);
         __classPrivateFieldSet(this, _NameController_getChainId, getChainId, "f");
         __classPrivateFieldSet(this, _NameController_providers, providers, "f");
+        __classPrivateFieldSet(this, _NameController_updateDelay, updateDelay !== null && updateDelay !== void 0 ? updateDelay : DEFAULT_UPDATE_DELAY, "f");
     }
     /**
      * Set the user specified name for a value.
@@ -101,29 +104,30 @@ class NameController extends base_controller_1.BaseControllerV2 {
     }
 }
 exports.NameController = NameController;
-_NameController_getChainId = new WeakMap(), _NameController_providers = new WeakMap(), _NameController_instances = new WeakSet(), _NameController_updateProposedNameState = function _NameController_updateProposedNameState(request, providerResponses) {
-    var _a;
+_NameController_getChainId = new WeakMap(), _NameController_providers = new WeakMap(), _NameController_updateDelay = new WeakMap(), _NameController_instances = new WeakSet(), _NameController_updateProposedNameState = function _NameController_updateProposedNameState(request, providerResponses) {
     const { value, type } = request;
-    const newProposedNames = {};
     const currentTime = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getCurrentTimeSeconds).call(this);
-    for (const providerResponse of providerResponses) {
-        const { results } = providerResponse;
-        for (const sourceId of Object.keys(providerResponse.results)) {
-            const result = results[sourceId];
-            const { proposedNames } = result;
-            let finalProposedNames = result.error ? null : proposedNames !== null && proposedNames !== void 0 ? proposedNames : [];
-            if (finalProposedNames) {
-                finalProposedNames = finalProposedNames.filter((proposedName) => proposedName === null || proposedName === void 0 ? void 0 : proposedName.length);
-            }
-            newProposedNames[sourceId] = {
-                proposedNames: finalProposedNames,
-                lastRequestTime: currentTime,
-                retryDelay: (_a = result.retryDelay) !== null && _a !== void 0 ? _a : null,
-            };
-        }
-    }
     __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_updateEntry).call(this, value, type, (entry) => {
-        entry.proposedNames = Object.assign(Object.assign({}, __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_removeDormantProposedNames).call(this, entry.proposedNames, type)), newProposedNames);
+        var _a;
+        __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_removeDormantProposedNames).call(this, entry.proposedNames, type);
+        for (const providerResponse of providerResponses) {
+            const { results } = providerResponse;
+            for (const sourceId of Object.keys(providerResponse.results)) {
+                const result = results[sourceId];
+                const { proposedNames, updateDelay } = result;
+                const proposedNameEntry = (_a = entry.proposedNames[sourceId]) !== null && _a !== void 0 ? _a : {
+                    proposedNames: [],
+                    lastRequestTime: null,
+                    updateDelay: null,
+                };
+                entry.proposedNames[sourceId] = proposedNameEntry;
+                if (proposedNames) {
+                    proposedNameEntry.proposedNames = proposedNames;
+                }
+                proposedNameEntry.lastRequestTime = currentTime;
+                proposedNameEntry.updateDelay = updateDelay !== null && updateDelay !== void 0 ? updateDelay : null;
+            }
+        }
     });
 }, _NameController_updateSourceState = function _NameController_updateSourceState(providers) {
     const newNameSources = Object.assign({}, this.state.nameSources);
@@ -142,16 +146,10 @@ _NameController_getChainId = new WeakMap(), _NameController_providers = new Weak
     return providerResponses.reduce((acc, providerResponse) => {
         const { results } = providerResponse;
         for (const sourceId of Object.keys(results)) {
-            const { proposedNames: resultProposedNames, error: resultError } = results[sourceId];
-            let proposedNames = resultError
-                ? undefined
-                : resultProposedNames !== null && resultProposedNames !== void 0 ? resultProposedNames : [];
-            if (proposedNames) {
-                proposedNames = proposedNames.filter((proposedName) => proposedName === null || proposedName === void 0 ? void 0 : proposedName.length);
-            }
+            const { proposedNames, error } = results[sourceId];
             acc.results[sourceId] = {
                 proposedNames,
-                error: resultError,
+                error,
             };
         }
         return acc;
@@ -171,8 +169,8 @@ _NameController_getChainId = new WeakMap(), _NameController_providers = new Weak
                 const entry = (_c = (_b = (_a = this.state.names[type]) === null || _a === void 0 ? void 0 : _a[value]) === null || _b === void 0 ? void 0 : _b[variationKey]) !== null && _c !== void 0 ? _c : {};
                 const proposedNamesEntry = (_e = (_d = entry.proposedNames) === null || _d === void 0 ? void 0 : _d[sourceId]) !== null && _e !== void 0 ? _e : {};
                 const lastRequestTime = (_f = proposedNamesEntry.lastRequestTime) !== null && _f !== void 0 ? _f : 0;
-                const retryDelay = (_g = proposedNamesEntry.retryDelay) !== null && _g !== void 0 ? _g : DEFAULT_UPDATE_DELAY;
-                if (currentTime - lastRequestTime < retryDelay) {
+                const updateDelay = (_g = proposedNamesEntry.updateDelay) !== null && _g !== void 0 ? _g : __classPrivateFieldGet(this, _NameController_updateDelay, "f");
+                if (currentTime - lastRequestTime < updateDelay) {
                     return false;
                 }
             }
@@ -196,23 +194,30 @@ _NameController_getChainId = new WeakMap(), _NameController_providers = new Weak
         catch (error) {
             responseError = error;
         }
-        let results = {};
-        if (response === null || response === void 0 ? void 0 : response.results) {
-            results = Object.keys(response.results).reduce((acc, sourceId) => {
-                if (!requestedSourceIds || requestedSourceIds.includes(sourceId)) {
-                    acc[sourceId] = response.results[sourceId];
-                }
-                return acc;
-            }, {});
-        }
-        if (responseError) {
-            results = supportedSourceIds.reduce((acc, sourceId) => {
-                acc[sourceId] = { proposedNames: [], error: responseError };
-                return acc;
-            }, {});
-        }
-        return { results, error: responseError };
+        return __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_normalizeProviderResult).call(this, response, responseError, matchingSourceIds);
     });
+}, _NameController_normalizeProviderResult = function _NameController_normalizeProviderResult(result, responseError, matchingSourceIds) {
+    const error = responseError !== null && responseError !== void 0 ? responseError : undefined;
+    const results = matchingSourceIds.reduce((acc, sourceId) => {
+        var _a;
+        const sourceResult = (_a = result === null || result === void 0 ? void 0 : result.results) === null || _a === void 0 ? void 0 : _a[sourceId];
+        const normalizedSourceResult = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_normalizeProviderSourceResult).call(this, sourceResult, responseError);
+        return Object.assign(Object.assign({}, acc), { [sourceId]: normalizedSourceResult });
+    }, {});
+    return { results, error };
+}, _NameController_normalizeProviderSourceResult = function _NameController_normalizeProviderSourceResult(result, responseError) {
+    var _a, _b, _c, _d;
+    const error = (_b = (_a = result === null || result === void 0 ? void 0 : result.error) !== null && _a !== void 0 ? _a : responseError) !== null && _b !== void 0 ? _b : undefined;
+    const updateDelay = (_c = result === null || result === void 0 ? void 0 : result.updateDelay) !== null && _c !== void 0 ? _c : undefined;
+    let proposedNames = error ? undefined : (_d = result === null || result === void 0 ? void 0 : result.proposedNames) !== null && _d !== void 0 ? _d : undefined;
+    if (proposedNames) {
+        proposedNames = proposedNames.filter((proposedName) => proposedName === null || proposedName === void 0 ? void 0 : proposedName.length);
+    }
+    return {
+        proposedNames,
+        error,
+        updateDelay,
+    };
 }, _NameController_updateEntry = function _NameController_updateEntry(value, type, callback) {
     const variationKey = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getTypeVariationKey).call(this, type);
     this.update((state) => {
@@ -317,12 +322,13 @@ _NameController_getChainId = new WeakMap(), _NameController_providers = new Weak
 }, _NameController_getSourceIds = function _NameController_getSourceIds(provider, type) {
     return provider.getMetadata().sourceIds[type];
 }, _NameController_removeDormantProposedNames = function _NameController_removeDormantProposedNames(proposedNames, type) {
-    if (!proposedNames || Object.keys(proposedNames).length === 0) {
-        return proposedNames;
+    if (Object.keys(proposedNames).length === 0) {
+        return;
     }
     const typeSourceIds = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getAllSourceIds).call(this, type);
-    return Object.keys(proposedNames)
-        .filter((sourceId) => typeSourceIds.includes(sourceId))
-        .reduce((acc, sourceId) => (Object.assign(Object.assign({}, acc), { [sourceId]: proposedNames[sourceId] })), {});
+    const dormantSourceIds = Object.keys(proposedNames).filter((sourceId) => !typeSourceIds.includes(sourceId));
+    for (const dormantSourceId of dormantSourceIds) {
+        delete proposedNames[dormantSourceId];
+    }
 };
 //# sourceMappingURL=NameController.js.map

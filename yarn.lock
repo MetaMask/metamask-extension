@@ -4371,13 +4371,13 @@ __metadata:
 
 "@metamask/name-controller@file:.yalc/@metamask/name-controller::locator=metamask-crx%40workspace%3A.":
   version: 1.0.0
-  resolution: "@metamask/name-controller@file:.yalc/@metamask/name-controller#.yalc/@metamask/name-controller::hash=54197d&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/name-controller@file:.yalc/@metamask/name-controller#.yalc/@metamask/name-controller::hash=1714db&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^3.2.1"
     "@metamask/utils": "npm:^6.2.0"
     async-mutex: "npm:^0.2.6"
     immer: "npm:^9.0.6"
-  checksum: c09ba4504ec484d2ecb8389020b594f01e5f12e4c5bb9564a3d237c544b874cbdba024be83ad2f0d414390ad0dca130d22708ff7df81722a75c75db94f11bcd3
+  checksum: 1b856759d1c1bd3eb57a5539301e6e3fef62091311df004cb2b23393ec7570d1d230ce03cee3d4a348775f53702f1fb1dee4e958b2b03198fd978adf47dd2b18
   languageName: node
   linkType: hard
 

@@ -35,10 +35,10 @@ export declare type NameProviderSourceResult = {
      */
     proposedNames?: string[];
     /**
-     * The delay in milliseconds before the next request to the source should be made.
+     * The delay in seconds before the next request to the source should be made.
      * Can be used to avoid rate limiting for example.
      */
-    retryDelay?: number;
+    updateDelay?: number;
     /**
      * An error that occurred while fetching the proposed names from the source.
      * Undefined if there was no error.

@@ -5,9 +5,9 @@ import type { NameProvider } from './types';
 import { NameType } from './types';
 declare const controllerName = "NameController";
 export declare type ProposedNamesEntry = {
-    proposedNames: string[] | null;
+    proposedNames: string[];
     lastRequestTime: number | null;
-    retryDelay: number | null;
+    updateDelay: number | null;
 };
 export declare type NameEntry = {
     name: string | null;
@@ -37,6 +37,7 @@ export declare type NameControllerOptions = {
     messenger: NameControllerMessenger;
     providers: NameProvider[];
     state?: Partial<NameControllerState>;
+    updateDelay?: number;
 };
 export declare type UpdateProposedNamesRequest = {
     value: string;
@@ -69,8 +70,9 @@ export declare class NameController extends BaseControllerV2<typeof controllerNa
      * @param options.messenger - Restricted controller messenger for the name controller.
      * @param options.providers - Array of name provider instances to propose names.
      * @param options.state - Initial state to set on the controller.
+     * @param options.updateDelay - The delay in seconds before a new request to a source should be made.
      */
-    constructor({ getChainId, messenger, providers, state, }: NameControllerOptions);
+    constructor({ getChainId, messenger, providers, state, updateDelay, }: NameControllerOptions);
     /**
      * Set the user specified name for a value.
      *

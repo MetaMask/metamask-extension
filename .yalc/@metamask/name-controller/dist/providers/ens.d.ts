@@ -2,7 +2,8 @@ import type { NameProvider, NameProviderMetadata, NameProviderRequest, NameProvi
 export declare type ReverseLookupCallback = (address: string, chainId: string) => Promise<string>;
 export declare class ENSNameProvider implements NameProvider {
     #private;
-    constructor({ reverseLookup }: {
+    constructor({ isEnabled, reverseLookup, }: {
+        isEnabled?: () => boolean;
         reverseLookup: ReverseLookupCallback;
     });
     getMetadata(): NameProviderMetadata;

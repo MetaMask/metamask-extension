@@ -19,7 +19,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _ENSNameProvider_reverseLookup;
+var _ENSNameProvider_isEnabled, _ENSNameProvider_reverseLookup;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ENSNameProvider = void 0;
 const logger_1 = require("../logger");
@@ -28,8 +28,10 @@ const ID = 'ens';
 const LABEL = 'Ethereum Name Service (ENS)';
 const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'ens');
 class ENSNameProvider {
-    constructor({ reverseLookup }) {
+    constructor({ isEnabled, reverseLookup, }) {
+        _ENSNameProvider_isEnabled.set(this, void 0);
         _ENSNameProvider_reverseLookup.set(this, void 0);
+        __classPrivateFieldSet(this, _ENSNameProvider_isEnabled, isEnabled || (() => true), "f");
         __classPrivateFieldSet(this, _ENSNameProvider_reverseLookup, reverseLookup, "f");
     }
     getMetadata() {
@@ -40,6 +42,16 @@ class ENSNameProvider {
     }
     getProposedNames(request) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!__classPrivateFieldGet(this, _ENSNameProvider_isEnabled, "f").call(this)) {
+                log('Skipping request as disabled');
+                return {
+                    results: {
+                        [ID]: {
+                            proposedNames: [],
+                        },
+                    },
+                };
+            }
             const { value, chainId } = request;
             log('Invoking callback', { value, chainId });
             try {
@@ -60,5 +72,5 @@ class ENSNameProvider {
     }
 }
 exports.ENSNameProvider = ENSNameProvider;
-_ENSNameProvider_reverseLookup = new WeakMap();
+_ENSNameProvider_isEnabled = new WeakMap(), _ENSNameProvider_reverseLookup = new WeakMap();
 //# sourceMappingURL=ens.js.map

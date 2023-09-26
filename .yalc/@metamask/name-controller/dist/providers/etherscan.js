@@ -19,7 +19,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _EtherscanNameProvider_instances, _EtherscanNameProvider_apiKey, _EtherscanNameProvider_lastRequestTime, _EtherscanNameProvider_mutex, _EtherscanNameProvider_sendRequest, _EtherscanNameProvider_buildResult, _EtherscanNameProvider_getUrl;
+var _EtherscanNameProvider_instances, _EtherscanNameProvider_isEnabled, _EtherscanNameProvider_lastRequestTime, _EtherscanNameProvider_mutex, _EtherscanNameProvider_sendRequest, _EtherscanNameProvider_getUrl;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EtherscanNameProvider = void 0;
 const async_mutex_1 = require("async-mutex");
@@ -32,12 +32,12 @@ const LABEL = 'Etherscan (Verified Contract Name)';
 const RATE_LIMIT_INTERVAL = 5; // 5 seconds
 const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'etherscan');
 class EtherscanNameProvider {
-    constructor({ apiKey } = {}) {
+    constructor({ isEnabled } = {}) {
         _EtherscanNameProvider_instances.add(this);
-        _EtherscanNameProvider_apiKey.set(this, void 0);
+        _EtherscanNameProvider_isEnabled.set(this, void 0);
         _EtherscanNameProvider_lastRequestTime.set(this, 0);
         _EtherscanNameProvider_mutex.set(this, new async_mutex_1.Mutex());
-        __classPrivateFieldSet(this, _EtherscanNameProvider_apiKey, apiKey, "f");
+        __classPrivateFieldSet(this, _EtherscanNameProvider_isEnabled, isEnabled || (() => true), "f");
     }
     getMetadata() {
         return {
@@ -48,6 +48,16 @@ class EtherscanNameProvider {
     getProposedNames(request) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            if (!__classPrivateFieldGet(this, _EtherscanNameProvider_isEnabled, "f").call(this)) {
+                log('Skipping request as disabled');
+                return {
+                    results: {
+                        [ID]: {
+                            proposedNames: [],
+                        },
+                    },
+                };
+            }
             const releaseLock = yield __classPrivateFieldGet(this, _EtherscanNameProvider_mutex, "f").acquire();
             try {
                 const { value, chainId } = request;
@@ -55,13 +65,18 @@ class EtherscanNameProvider {
                 const timeSinceLastRequest = time - __classPrivateFieldGet(this, _EtherscanNameProvider_lastRequestTime, "f");
                 if (timeSinceLastRequest < RATE_LIMIT_INTERVAL) {
                     log('Skipping request to avoid rate limit');
-                    return __classPrivateFieldGet(this, _EtherscanNameProvider_instances, "m", _EtherscanNameProvider_buildResult).call(this, [], RATE_LIMIT_INTERVAL);
+                    return {
+                        results: {
+                            [ID]: {
+                                updateDelay: RATE_LIMIT_INTERVAL,
+                            },
+                        },
+                    };
                 }
                 const url = __classPrivateFieldGet(this, _EtherscanNameProvider_instances, "m", _EtherscanNameProvider_getUrl).call(this, chainId, {
                     module: 'contract',
                     action: 'getsourcecode',
                     address: value,
-                    apikey: __classPrivateFieldGet(this, _EtherscanNameProvider_apiKey, "f"),
                 });
                 const { responseData, error } = yield __classPrivateFieldGet(this, _EtherscanNameProvider_instances, "m", _EtherscanNameProvider_sendRequest).call(this, url);
                 if (error) {
@@ -70,12 +85,24 @@ class EtherscanNameProvider {
                 }
                 if ((responseData === null || responseData === void 0 ? void 0 : responseData.message) === 'NOTOK') {
                     log('Request warning', responseData.result);
-                    return __classPrivateFieldGet(this, _EtherscanNameProvider_instances, "m", _EtherscanNameProvider_buildResult).call(this, [], RATE_LIMIT_INTERVAL);
+                    return {
+                        results: {
+                            [ID]: {
+                                updateDelay: RATE_LIMIT_INTERVAL,
+                            },
+                        },
+                    };
                 }
                 const results = (_a = responseData === null || responseData === void 0 ? void 0 : responseData.result) !== null && _a !== void 0 ? _a : [];
                 const proposedNames = results.map((result) => result.ContractName);
                 log('New proposed names', proposedNames);
-                return __classPrivateFieldGet(this, _EtherscanNameProvider_instances, "m", _EtherscanNameProvider_buildResult).call(this, proposedNames);
+                return {
+                    results: {
+                        [ID]: {
+                            proposedNames,
+                        },
+                    },
+                };
             }
             finally {
                 releaseLock();
@@ -84,7 +111,7 @@ class EtherscanNameProvider {
     }
 }
 exports.EtherscanNameProvider = EtherscanNameProvider;
-_EtherscanNameProvider_apiKey = new WeakMap(), _EtherscanNameProvider_lastRequestTime = new WeakMap(), _EtherscanNameProvider_mutex = new WeakMap(), _EtherscanNameProvider_instances = new WeakSet(), _EtherscanNameProvider_sendRequest = function _EtherscanNameProvider_sendRequest(url) {
+_EtherscanNameProvider_isEnabled = new WeakMap(), _EtherscanNameProvider_lastRequestTime = new WeakMap(), _EtherscanNameProvider_mutex = new WeakMap(), _EtherscanNameProvider_instances = new WeakSet(), _EtherscanNameProvider_sendRequest = function _EtherscanNameProvider_sendRequest(url) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             log('Sending request', url);
@@ -98,15 +125,6 @@ _EtherscanNameProvider_apiKey = new WeakMap(), _EtherscanNameProvider_lastReques
             __classPrivateFieldSet(this, _EtherscanNameProvider_lastRequestTime, Date.now(), "f");
         }
     });
-}, _EtherscanNameProvider_buildResult = function _EtherscanNameProvider_buildResult(proposedNames, retryDelay) {
-    return {
-        results: {
-            [ID]: {
-                proposedNames,
-                retryDelay,
-            },
-        },
-    };
 }, _EtherscanNameProvider_getUrl = function _EtherscanNameProvider_getUrl(chainId, params) {
     const networkInfo = constants_1.ETHERSCAN_SUPPORTED_NETWORKS[chainId];
     if (!networkInfo) {
@@ -115,9 +133,6 @@ _EtherscanNameProvider_apiKey = new WeakMap(), _EtherscanNameProvider_lastReques
     let url = `https://${networkInfo.subdomain}.${networkInfo.domain}/api`;
     Object.keys(params).forEach((key, index) => {
         const value = params[key];
-        if (!value) {
-            return;
-        }
         url += `${index === 0 ? '?' : '&'}${key}=${value}`;
     });
     return url;

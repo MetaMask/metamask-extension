@@ -1,8 +1,8 @@
 import type { NameProvider, NameProviderMetadata, NameProviderRequest, NameProviderResult } from '../types';
 export declare class EtherscanNameProvider implements NameProvider {
     #private;
-    constructor({ apiKey }?: {
-        apiKey?: string;
+    constructor({ isEnabled }?: {
+        isEnabled?: () => boolean;
     });
     getMetadata(): NameProviderMetadata;
     getProposedNames(request: NameProviderRequest): Promise<NameProviderResult>;
