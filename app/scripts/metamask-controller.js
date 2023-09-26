@@ -3643,15 +3643,6 @@ export default class MetamaskController extends EventEmitter {
     const keyState = await this.keyringController.addNewAccount(keyring);
     await this.accountsController.updateAccounts();
     const newlyAddedAccount = this.accountsController.getSelectedAccount();
-    console.log(
-      this.getAccountLabel(
-        deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName,
-        index,
-        hdPathDescription,
-      ),
-      index,
-      hdPathDescription,
-    );
     await this.accountsController.setAccountName(
       newlyAddedAccount.id,
       this.getAccountLabel(
