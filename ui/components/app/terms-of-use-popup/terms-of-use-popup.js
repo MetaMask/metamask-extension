@@ -1172,7 +1172,7 @@ export default function TermsOfUsePopup({ onAccept }) {
               className="terms-of-use__checkbox"
               data-testid="terms-of-use-checkbox"
               isChecked={isTermsOfUseChecked}
-              onClick={() => {
+              onChange={() => {
                 setIsTermsOfUseChecked(!isTermsOfUseChecked);
               }}
               label={t('termsOfUseAgreeText')}
