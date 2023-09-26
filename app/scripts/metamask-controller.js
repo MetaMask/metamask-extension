@@ -449,6 +449,37 @@ export default class MetamaskController extends EventEmitter {
       networkConfigurations: this.networkController.state.networkConfigurations,
     });
 
+    this.assetsContractController = new AssetsContractController(
+      {
+        chainId: this.networkController.state.providerConfig.chainId,
+        onPreferencesStateChange: (listener) =>
+          this.preferencesController.store.subscribe(listener),
+        // This handler is misnamed, and is a known issue that will be resolved
+        // by planned refactors. It should be onNetworkDidChange which happens
+        // AFTER the provider in the network controller is updated to reflect
+        // the new state of the network controller. In #18041 we changed this
+        // handler to be triggered by the change in the network state because
+        // that is what the handler name implies, but this triggers too soon
+        // causing the provider of the AssetsContractController to trail the
+        // network provider by one update.
+        onNetworkStateChange: (cb) =>
+          networkControllerMessenger.subscribe(
+            'NetworkController:networkDidChange',
+            () => {
+              const networkState = this.networkController.state;
+              return cb(networkState);
+            },
+          ),
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
+      },
+      {
+        provider: this.provider,
+      },
+      initState.AssetsContractController,
+    );
+
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'TokensController',
       allowedActions: ['ApprovalController:addRequest'],
@@ -472,37 +503,12 @@ export default class MetamaskController extends EventEmitter {
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
       ),
+      getERC20TokenName: this.assetsContractController.getERC20TokenName.bind(
+        this.assetsContractController,
+      ),
       config: { provider: this.provider },
       state: initState.TokensController,
     });
-
-    this.assetsContractController = new AssetsContractController(
-      {
-        chainId: this.networkController.state.providerConfig.chainId,
-        onPreferencesStateChange: (listener) =>
-          this.preferencesController.store.subscribe(listener),
-        // This handler is misnamed, and is a known issue that will be resolved
-        // by planned refactors. It should be onNetworkDidChange which happens
-        // AFTER the provider in the network controller is updated to reflect
-        // the new state of the network controller. In #18041 we changed this
-        // handler to be triggered by the change in the network state because
-        // that is what the handler name implies, but this triggers too soon
-        // causing the provider of the AssetsContractController to trail the
-        // network provider by one update.
-        onNetworkStateChange: (cb) =>
-          networkControllerMessenger.subscribe(
-            'NetworkController:networkDidChange',
-            () => {
-              const networkState = this.networkController.state;
-              return cb(networkState);
-            },
-          ),
-      },
-      {
-        provider: this.provider,
-      },
-      initState.AssetsContractController,
-    );
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
@@ -728,13 +734,10 @@ export default class MetamaskController extends EventEmitter {
     this.tokenRatesController = new TokenRatesController(
       {
         chainId: this.networkController.state.providerConfig.chainId,
+        ticker: this.networkController.state.providerConfig.ticker,
+        selectedAddress: this.preferencesController.getSelectedAddress(),
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
-        onCurrencyRateStateChange: (listener) =>
-          this.controllerMessenger.subscribe(
-            `${this.currencyRateController.name}:stateChange`,
-            listener,
-          ),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
