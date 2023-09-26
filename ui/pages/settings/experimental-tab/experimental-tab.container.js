@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setTransactionSecurityCheckEnabled: (val) =>
-    dispatch(setTransactionSecurityCheckEnabled(val)),
+      dispatch(setTransactionSecurityCheckEnabled(val)),
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     setSecurityAlertsEnabled: (val) => setSecurityAlertsEnabled(val),
     ///: END:ONLY_INCLUDE_IN

@@ -5,9 +5,7 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine, createAsyncMiddleware } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import {
-  providerFromEngine,
-} from '@metamask/eth-json-rpc-provider';
+import { providerFromEngine } from '@metamask/eth-json-rpc-provider';
 import {
   debounce,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -18,7 +16,11 @@ import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
-import { errorCodes as rpcErrorCodes, EthereumRpcError, ethErrors } from 'eth-rpc-errors';
+import {
+  errorCodes as rpcErrorCodes,
+  EthereumRpcError,
+  ethErrors,
+} from 'eth-rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -312,7 +314,6 @@ export default class MetamaskController extends EventEmitter {
     // next, we will initialize the controllers
     // controller initialization order matters
 
-
     this.queuedRequestController = new QueuedRequestController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'QueuedRequestController',
@@ -355,9 +356,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:infuraIsBlocked',
         'NetworkController:infuraIsUnblocked',
       ],
-      allowedActions: [
-        'NetworkController:getNetworkClientById',
-      ]
+      allowedActions: ['NetworkController:getNetworkClientById'],
     });
 
     let initialNetworkControllerState = {};
@@ -2342,7 +2341,9 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
-      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(this.preferencesController),
+      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+        this.preferencesController,
+      ),
       getProviderConfig: () => this.networkController.state.providerConfig,
 
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -2351,10 +2352,9 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
-      setUseRequestQueue:
-        preferencesController.setUseRequestQueue.bind(
-          preferencesController,
-        ),
+      setUseRequestQueue: preferencesController.setUseRequestQueue.bind(
+        preferencesController,
+      ),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -4128,18 +4128,6 @@ export default class MetamaskController extends EventEmitter {
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    const switchChain = (networkClientId) => {
-      const isBuiltIn =
-        BUILT_IN_NETWORKS[networkClientId] !== undefined &&
-        BUILT_IN_NETWORKS[networkClientId].chainId;
-      if (isBuiltIn) {
-        // for builtin networks, the networkClientId happens to the be same as the 'type'
-        this.networkController.setProviderType(networkClientId);
-      } else {
-        this.networkController.setActiveNetwork(networkClientId);
-      }
-    };
-
     const { selectedNetworkClientId } = this.networkController.state;
 
     const selectedNetworkClientIdForDomain =
@@ -4160,12 +4148,14 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // make this into a proxy that is updated same time as selectedNetworkClietnIdforDomain changes
-    const { provider: providerForDomain, blockTracker: blockTrackerForDomain } = this.selectedNetworkController.getProviderAndBlockTracker(origin);
+    const { provider: providerForDomain } =
+      this.selectedNetworkController.getProviderAndBlockTracker(origin);
 
     // add some middleware that will switch chain on each request (as needed)
     engine.push(
       createAsyncMiddleware(async (req, res, next) => {
         if (this.preferencesController.getUseRequestQueue() === false) {
+          // eslint-disable-next-line node/callback-return
           await next();
           return;
         }
@@ -4173,21 +4163,24 @@ export default class MetamaskController extends EventEmitter {
         const confirmationMethods = [
           'eth_sendTransaction',
           'wallet_watchAsset',
-          'wallet_switchEthereumChain'
+          'wallet_switchEthereumChain',
         ];
 
         if (confirmationMethods.includes(req.method) === false) {
+          // eslint-disable-next-line node/callback-return
           await next();
           return;
         }
 
         const networkClientIdForRequest = req.networkClientId;
-        const sameNetworkClientIdAsCurrent = () =>
-          networkClientIdForRequest ===
-          this.networkController.state.selectedNetworkClientId;
-        const isSwitchEthChainCall = req.method === 'wallet_switchEthereumChain';
+        // const sameNetworkClientIdAsCurrent = () =>
+        //   networkClientIdForRequest ===
+        //   this.networkController.state.selectedNetworkClientId;
+        const isSwitchEthChainCall =
+          req.method === 'wallet_switchEthereumChain';
 
         if (isSwitchEthChainCall) {
+          // eslint-disable-next-line node/callback-return
           await next();
           return;
         }
@@ -4197,25 +4190,32 @@ export default class MetamaskController extends EventEmitter {
             this.queuedRequestController.enqueueRequest(() => {
               return new Promise((resolve, reject) => {
                 const isBuiltIn =
-                      BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
-                      BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
-                const chainId = isBuiltIn ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId : this.networkController.getNetworkClientById(networkClientIdForRequest).configuration.chainId;
+                  BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
+                  BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
+                const chainId = isBuiltIn
+                  ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId
+                  : this.networkController.getNetworkClientById(
+                      networkClientIdForRequest,
+                    ).configuration.chainId;
 
                 selfProvider.sendAsync(
                   {
                     id: Math.floor(Math.random() * 1000000),
                     jsonrpc: '2.0',
                     method: 'wallet_switchEthereumChain',
-                    params: [ { chainId } ]
+                    params: [{ chainId }],
                   },
                   (err, result) => {
                     if (err) {
-                      console.error('per-dapp-network:: switch ethereum chain errored: ', err);
+                      console.error(
+                        'per-dapp-network:: switch ethereum chain errored: ',
+                        err,
+                      );
                       reject(err);
                     } else {
                       resolve(result);
                     }
-                  }
+                  },
                 );
               });
             });
@@ -4228,8 +4228,11 @@ export default class MetamaskController extends EventEmitter {
           // i may never forgive myself for this
           await new Promise((resolve, reject) => {
             setTimeout(() => {
-              const completed = this.queuedRequestController.enqueueRequest(next).then(resolve).catch(reject);
-            },10);
+              this.queuedRequestController
+                .enqueueRequest(next)
+                .then(resolve)
+                .catch(reject);
+            }, 10);
           });
         }
       }),
@@ -4362,27 +4365,29 @@ export default class MetamaskController extends EventEmitter {
         getNetworkConfigurations: () =>
           this.networkController.state.networkConfigurations,
         upsertNetworkConfiguration:
-        this.networkController.upsertNetworkConfiguration.bind(
-          this.networkController,
-        ),
+          this.networkController.upsertNetworkConfiguration.bind(
+            this.networkController,
+          ),
         setActiveNetwork: this.networkController.setActiveNetwork.bind(
           this.networkController,
         ),
         findNetworkClientIdByChainId:
-        this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController,
-        ),
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         getNetworkClientIdForDomain:
-        this.selectedNetworkController.getNetworkClientIdForDomain.bind(
-          this.selectedNetworkController,
-        ),
+          this.selectedNetworkController.getNetworkClientIdForDomain.bind(
+            this.selectedNetworkController,
+          ),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
 
-        getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(this.preferencesController),
+        getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+          this.preferencesController,
+        ),
         getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
           // when using this format, type happens to be the same as the networkClientId...

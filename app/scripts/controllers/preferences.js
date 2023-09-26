@@ -458,7 +458,6 @@ export default class PreferencesController {
     return this.store.getState().useRequestQueue;
   }
 
-
   /**
    * Sets a custom label for an account
    *

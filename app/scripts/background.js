@@ -761,17 +761,23 @@ export function setupController(
   function getUnapprovedTransactionCount() {
     console.log('getUnapprovedTransactionCount called');
     const waitingForUnlockCount =
-          controller.appStateController.waitingForUnlock.length;
+      controller.appStateController.waitingForUnlock.length;
     const queuedRequestsCount = controller.queuedRequestController.length();
 
-    console.log('getUnapprovedTransactionCount called: ', waitingForUnlockCount + queuedRequestsCount);
+    console.log(
+      'getUnapprovedTransactionCount called: ',
+      waitingForUnlockCount + queuedRequestsCount,
+    );
     return waitingForUnlockCount + queuedRequestsCount;
   }
 
-  controller.controllerMessenger.subscribe('QueuedRequestController:countChanged', () => {
-    console.log('QUEUE COUNT CHANGED!');
-    updateBadge();
-  });
+  controller.controllerMessenger.subscribe(
+    'QueuedRequestController:countChanged',
+    () => {
+      console.log('QUEUE COUNT CHANGED!');
+      updateBadge();
+    },
+  );
 
   notificationManager.on(
     NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
