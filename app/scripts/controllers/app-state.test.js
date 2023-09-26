@@ -25,6 +25,7 @@ describe('AppStateController', () => {
         call: jest.fn(() => ({
           catch: jest.fn(),
         })),
+        subscribe: jest.fn(),
       },
     });
   };
