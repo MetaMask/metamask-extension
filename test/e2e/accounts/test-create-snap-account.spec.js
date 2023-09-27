@@ -48,7 +48,9 @@ describe('Create Snap Account', function () {
         });
 
         // move back to the Snap window to test the create account flow
-        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
 
         // check the dapp connection status
         await driver.waitForSelector({
@@ -133,7 +135,9 @@ describe('Create Snap Account', function () {
         });
 
         // move back to the Snap window to test the create account flow
-        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
 
         // check the dapp connection status
         await driver.waitForSelector({
@@ -166,7 +170,9 @@ describe('Create Snap Account', function () {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         // switch back to the test dapp/Snap window
-        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
 
         await driver.findElement({
           tag: 'p',
@@ -215,7 +221,9 @@ describe('Create Snap Account', function () {
         });
 
         // move back to the Snap window to test the create account flow
-        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
 
         // check the dapp connection status
         await driver.waitForSelector({
@@ -241,7 +249,9 @@ describe('Create Snap Account', function () {
         await driver.clickElement('[data-testid="confirmation-cancel-button"]');
 
         // switch back to the test dapp/Snap window
-        await driver.switchToWindowWithTitle('SSK - Snap Simple Keyring');
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.SnapSimpleKeyringDapp,
+        );
 
         await driver.findElement({
           tag: 'p',
