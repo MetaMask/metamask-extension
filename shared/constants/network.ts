@@ -162,6 +162,8 @@ export const CHAIN_IDS = {
   CRONOS: '0x19',
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
+  BAHAMUT: '0x142d',
+  BAHAMUT_TESTNET: '0xffa',
 } as const;
 
 /**
@@ -188,6 +190,8 @@ export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
+export const BAHAMUT_DISPLAY_NAME = 'Bahamut Mainnet';
+export const BAHAMUT_TESTNET_DISPLAY_NAME = 'Oasis Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -240,6 +244,7 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  FTN: 'FTN',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
@@ -257,6 +262,7 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
+export const BAHAMUT_TOKEN_IMAGE_URL = './images/ftn.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -400,6 +406,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BAHAMUT]: BAHAMUT_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -429,6 +436,8 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.BAHAMUT]: BAHAMUT_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.BAHAMUT_TESTNET]: BAHAMUT_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -539,6 +548,11 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
     networkId: parseInt(CHAIN_IDS.GNOSIS, 16).toString(),
   },
+  [CHAIN_IDS.BAHAMUT]: {
+    domain: 'ftnscan.com',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(CHAIN_IDS.BAHAMUT, 16).toString(),
+  },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
@@ -580,6 +594,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.BAHAMUT
+    | typeof CHAIN_IDS.BAHAMUT_TESTNET
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -757,6 +773,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://gnosisscan.io',
       imageUrl: GNOSIS_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.BAHAMUT,
+    nickname: BAHAMUT_DISPLAY_NAME,
+    rpcUrl: `https://rpc1.sahara.bahamutchain.com`,
+    ticker: CURRENCY_SYMBOLS.BAHAMUT,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://ftnscan.com',
+      imageUrl: BAHAMUT_TOKEN_IMAGE_URL,
     },
   },
 ];
