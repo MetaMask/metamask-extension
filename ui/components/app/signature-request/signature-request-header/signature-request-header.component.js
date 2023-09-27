@@ -60,6 +60,7 @@ class SignatureRequestHeader extends PureComponent {
             avatarNetworkProps={{
               backgroundColor: testNetworkBackgroundColor,
             }}
+            dataTestId="network-display"
           />
         </div>
       </div>
