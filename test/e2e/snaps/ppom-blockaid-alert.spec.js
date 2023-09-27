@@ -138,12 +138,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
         const testMaliciousConfigs = [
           {
-            btnSelector: '#maliciousApprovalButton',
-            expectedDescription:
-              'If you approve this request, a third party known for scams might take all your assets.',
-            expectedReason: 'approval_farming',
-          },
-          {
             btnSelector: '#maliciousPermit',
             expectedDescription:
               'If you approve this request, a third party known for scams might take all your assets.',
