@@ -1539,7 +1539,8 @@
     "message": "एक्सपेरिमेंटल"
   },
   "extendWalletWithSnaps": {
-    "message": "वॉलेट एक्सपीरियंस को कस्टमाइज़ करें।"
+    "message": "वॉलेट एक्सपीरियंस को कस्टमाइज़ करें।",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "बाहरी एक्स्टेन्शन"

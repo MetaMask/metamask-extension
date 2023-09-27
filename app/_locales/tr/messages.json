@@ -1539,7 +1539,8 @@
     "message": "Deneysel"
   },
   "extendWalletWithSnaps": {
-    "message": "Cüzdan deneyimini kişiselleştirin."
+    "message": "Cüzdan deneyimini kişiselleştirin.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Harici uzantı"

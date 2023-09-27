@@ -1539,7 +1539,8 @@
     "message": "Eksperimental"
   },
   "extendWalletWithSnaps": {
-    "message": "I-customize ang iyong karanasan sa wallet."
+    "message": "I-customize ang iyong karanasan sa wallet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "External Extension"

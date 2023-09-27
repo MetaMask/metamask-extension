@@ -1539,7 +1539,8 @@
     "message": "Experimental"
   },
   "extendWalletWithSnaps": {
-    "message": "Personalize sua experiência com a carteira."
+    "message": "Personalize sua experiência com a carteira.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Extensão externa"

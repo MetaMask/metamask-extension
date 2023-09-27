@@ -1539,7 +1539,8 @@
     "message": "試験運用"
   },
   "extendWalletWithSnaps": {
-    "message": "ウォレットのユーザー体験をカスタマイズします。"
+    "message": "ウォレットのユーザー体験をカスタマイズします。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部拡張機能"

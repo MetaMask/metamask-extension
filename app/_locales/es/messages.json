@@ -1539,7 +1539,8 @@
     "message": "Experimental"
   },
   "extendWalletWithSnaps": {
-    "message": "Amplíe la experiencia de uso de su monedero."
+    "message": "Amplíe la experiencia de uso de su monedero.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Extensión externa"

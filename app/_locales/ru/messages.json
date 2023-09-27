@@ -1539,7 +1539,8 @@
     "message": "Экспериментальные"
   },
   "extendWalletWithSnaps": {
-    "message": "Настройте кошелек под себя."
+    "message": "Настройте кошелек под себя.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Внешнее расширение"

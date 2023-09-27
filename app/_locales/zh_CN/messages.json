@@ -1539,7 +1539,8 @@
     "message": "实验性"
   },
   "extendWalletWithSnaps": {
-    "message": "扩展钱包体验。"
+    "message": "扩展钱包体验。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部扩展程序"

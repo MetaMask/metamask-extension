@@ -1539,7 +1539,8 @@
     "message": "Πειραματικά"
   },
   "extendWalletWithSnaps": {
-    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας."
+    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Εξωτερική επέκταση"

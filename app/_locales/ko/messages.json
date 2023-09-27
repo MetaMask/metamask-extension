@@ -1539,7 +1539,8 @@
     "message": "실험적"
   },
   "extendWalletWithSnaps": {
-    "message": "지갑 경험을 개인 맞춤하세요."
+    "message": "지갑 경험을 개인 맞춤하세요.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "외부 확장"
