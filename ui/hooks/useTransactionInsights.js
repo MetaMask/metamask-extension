@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { SeverityLevel } from '@metamask/snaps-utils-flask';
+import { SeverityLevel } from '@metamask/snaps-utils';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
