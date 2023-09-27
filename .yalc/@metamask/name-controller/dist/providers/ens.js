@@ -52,7 +52,7 @@ class ENSNameProvider {
                     },
                 };
             }
-            const { value, chainId } = request;
+            const { value, variation: chainId } = request;
             log('Invoking callback', { value, chainId });
             try {
                 const proposedName = yield __classPrivateFieldGet(this, _ENSNameProvider_reverseLookup, "f").call(this, value, chainId);

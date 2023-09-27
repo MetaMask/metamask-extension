@@ -43,7 +43,7 @@ import Name from '../name';
 import FormComboField, {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
-import { getNameSources } from '../../../../selectors';
+import { getCurrentChainId, getNameSources } from '../../../../selectors';
 import {
   setName as saveName,
   updateProposedNames,
@@ -117,6 +117,7 @@ export default function NameDetails({
   } = useName(value, type);
 
   const nameSources = useSelector(getNameSources, isEqual);
+  const chainId = useSelector(getCurrentChainId);
   const [name, setName] = useState('');
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
@@ -147,7 +148,12 @@ export default function NameDetails({
 
     const update = () => {
       dispatch(
-        updateProposedNames({ value, type, onlyUpdateAfterDelay: true }),
+        updateProposedNames({
+          value,
+          type,
+          onlyUpdateAfterDelay: true,
+          variation: chainId,
+        }),
       );
     };
 
@@ -156,7 +162,7 @@ export default function NameDetails({
 
     updateInterval.current = setInterval(update, UPDATE_DELAY);
     return reset;
-  }, [value, type, dispatch]);
+  }, [value, type, chainId, dispatch]);
 
   const proposedNameOptions = useMemo(
     () => generateComboOptions(proposedNames, nameSources),
@@ -169,7 +175,7 @@ export default function NameDetails({
       additionalProperties: Record<string, any>,
     ) => {
       const suggestedNameSources = [
-        ...new Set(proposedNameOptions.map((option) => option.sourceId)),
+        ...new Set(proposedNameOptions.map((option: any) => option.sourceId)),
       ];
 
       const properties: Record<string, any> = {
@@ -229,11 +235,12 @@ export default function NameDetails({
         type,
         name: name?.length ? name : null,
         sourceId: selectedSourceId,
+        variation: chainId,
       }),
     );
 
     onClose();
-  }, [name, selectedSourceId, onClose, trackPetnamesEvent]);
+  }, [name, selectedSourceId, onClose, trackPetnamesEvent, chainId]);
 
   const handleClose = useCallback(() => {
     onClose();

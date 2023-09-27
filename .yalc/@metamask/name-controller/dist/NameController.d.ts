@@ -33,7 +33,6 @@ export declare type NameControllerActions = GetNameState;
 export declare type NameControllerEvents = NameStateChange;
 export declare type NameControllerMessenger = RestrictedControllerMessenger<typeof controllerName, NameControllerActions, NameControllerEvents, never, never>;
 export declare type NameControllerOptions = {
-    getChainId: () => string;
     messenger: NameControllerMessenger;
     providers: NameProvider[];
     state?: Partial<NameControllerState>;
@@ -44,6 +43,7 @@ export declare type UpdateProposedNamesRequest = {
     type: NameType;
     sourceIds?: string[];
     onlyUpdateAfterDelay?: boolean;
+    variation?: string;
 };
 export declare type UpdateProposedNamesResult = {
     results: Record<string, {
@@ -56,6 +56,7 @@ export declare type SetNameRequest = {
     type: NameType;
     name: string | null;
     sourceId?: string;
+    variation?: string;
 };
 /**
  * Controller for storing and deriving names for values such as Ethereum addresses.
@@ -66,13 +67,12 @@ export declare class NameController extends BaseControllerV2<typeof controllerNa
      * Construct a Name controller.
      *
      * @param options - Controller options.
-     * @param options.getChainId - Callback that returns the chain ID of the current network.
      * @param options.messenger - Restricted controller messenger for the name controller.
      * @param options.providers - Array of name provider instances to propose names.
      * @param options.state - Initial state to set on the controller.
      * @param options.updateDelay - The delay in seconds before a new request to a source should be made.
      */
-    constructor({ getChainId, messenger, providers, state, updateDelay, }: NameControllerOptions);
+    constructor({ messenger, providers, state, updateDelay, }: NameControllerOptions);
     /**
      * Set the user specified name for a value.
      *

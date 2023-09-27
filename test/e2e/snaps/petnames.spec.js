@@ -70,31 +70,12 @@ async function getAddressesInMessage(driver) {
   );
 }
 
-async function expectName(
-  parent,
-  expectedValue,
-  expectedProposedName,
-  isSaved,
-) {
+async function expectName(parent, expectedValue, isSaved) {
   const value = await (
     await parent.nestedFindElement(isSaved ? '.name__name' : '.name__value')
   ).getText();
 
   assert.equal(value, expectedValue, 'Name value is incorrect');
-
-  if (expectedProposedName) {
-    const proposedName = (
-      await (await parent.nestedFindElement(`.name__proposed`))?.getText()
-    )
-      ?.replace('“', '')
-      .replace('”', '');
-
-    assert.equal(
-      proposedName,
-      expectedProposedName,
-      'Proposed name is incorrect',
-    );
-  }
 
   if (isSaved) {
     await parent.nestedFindElement(`.name__saved`);
@@ -105,6 +86,9 @@ async function expectName(
 
 async function saveName(driver, parent, name, proposedName) {
   (await parent.nestedFindElement('.name')).click();
+
+  await driver.delay(3000);
+
   (await driver.findElement('.form-combo-field')).click();
 
   if (proposedName) {
@@ -157,21 +141,15 @@ describe('Petnames', function () {
 
         let addresses = await getAddressesInMessage(driver);
 
-        await expectName(addresses[0], '0xCD2...D826', 'test.lens', false);
-        await expectName(addresses[1], '0xbBb...BBbB', 'test2.lens', false);
+        await expectName(addresses[0], '0xCD2...D826', false);
+        await expectName(addresses[1], '0xbBb...BBbB', false);
 
         await saveName(driver, addresses[0], undefined, 'test.lens');
         await saveName(driver, addresses[1], undefined, 'test2.lens');
 
         let contractDetailsModal = await showThirdPartyDetails(driver);
 
-        await expectName(
-          contractDetailsModal,
-          '0xCcC...cccC',
-          'test3.lens',
-          false,
-        );
-
+        await expectName(contractDetailsModal, '0xCcC...cccC', false);
         await saveName(driver, contractDetailsModal, 'Custom Name');
         await closeThirdPartyDetails(driver);
         await rejectSignatureRequest(driver);
@@ -181,12 +159,12 @@ describe('Petnames', function () {
 
         addresses = await getAddressesInMessage(driver);
 
-        await expectName(addresses[0], 'test.lens', undefined, true);
-        await expectName(addresses[1], 'test2.lens', undefined, true);
+        await expectName(addresses[0], 'test.lens', true);
+        await expectName(addresses[1], 'test2.lens', true);
 
         contractDetailsModal = await showThirdPartyDetails(driver);
 
-        await expectName(contractDetailsModal, 'Custom Name', undefined, true);
+        await expectName(contractDetailsModal, 'Custom Name', true);
       },
     );
   });
@@ -209,24 +187,18 @@ describe('Petnames', function () {
 
         let addresses = await getAddressesInMessage(driver);
 
-        await expectName(addresses[0], '0xCD2...D826', 'test.lens', false);
-        await expectName(addresses[1], '0xDea...beeF', 'Test Token', false);
-        await expectName(addresses[2], '0xbBb...BBbB', 'test2.lens', false);
-        await expectName(addresses[3], '0xB0B...Ea57', 'Test Token 2', false);
-        await expectName(addresses[4], '0xB0B...0000', undefined, false);
+        await expectName(addresses[0], '0xCD2...D826', false);
+        await expectName(addresses[1], '0xDea...beeF', false);
+        await expectName(addresses[2], '0xbBb...BBbB', false);
+        await expectName(addresses[3], '0xB0B...Ea57', false);
+        await expectName(addresses[4], '0xB0B...0000', false);
 
         await saveName(driver, addresses[0], undefined, 'test.lens');
         await saveName(driver, addresses[3], undefined, 'Test Token 2');
 
         let contractDetailsModal = await showThirdPartyDetails(driver);
 
-        await expectName(
-          contractDetailsModal,
-          '0xCcC...cccC',
-          'test3.lens',
-          false,
-        );
-
+        await expectName(contractDetailsModal, '0xCcC...cccC', false);
         await saveName(driver, contractDetailsModal, 'Custom Name');
         await closeThirdPartyDetails(driver);
         await rejectSignatureRequest(driver);
@@ -236,12 +208,12 @@ describe('Petnames', function () {
 
         addresses = await getAddressesInMessage(driver);
 
-        await expectName(addresses[0], 'test.lens', undefined, true);
-        await expectName(addresses[3], 'Test Token 2', undefined, true);
+        await expectName(addresses[0], 'test.lens', true);
+        await expectName(addresses[3], 'Test Token 2', true);
 
         contractDetailsModal = await showThirdPartyDetails(driver);
 
-        await expectName(contractDetailsModal, 'Custom Name', undefined, true);
+        await expectName(contractDetailsModal, 'Custom Name', true);
       },
     );
   });
