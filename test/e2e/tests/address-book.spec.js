@@ -131,7 +131,7 @@ describe('Address Book', function () {
         );
         assert.equal(
           await recipientAddress.getText(),
-          '0x74cE9...46f74',
+          '0x74cE...6f74',
           'Recipient address is not edited correctly',
         );
       },
