@@ -15,7 +15,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
     ],
   };
 
-  it('should prompt users to add their NFTs to their wallet (one by one)', async function () {
+  it('should prompt users to add their NFTs to their wallet (one by one) @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -58,7 +58,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const transactionItem = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
         assert.equal(await transactionItem.isDisplayed(), true);
@@ -72,9 +72,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
         assert.equal(await nftsMintStatus.isDisplayed(), true);
 
         // watch 3 of the nfts
-        await driver.clickElement({ text: 'Watch NFT 1', tag: 'button' });
-        await driver.clickElement({ text: 'Watch NFT 2', tag: 'button' });
-        await driver.clickElement({ text: 'Watch NFT 3', tag: 'button' });
+        await driver.fill('#watchNFTInput', '1');
+        await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
+        await driver.fill('#watchNFTInput', '2');
+        await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
+        await driver.fill('#watchNFTInput', '3');
+        await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
@@ -82,6 +85,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
           'MetaMask Notification',
           windowHandles,
         );
+
+        // avoid race condition
+        await driver.waitForSelector({
+          css: '.confirm-add-suggested-nft__nft-tokenId',
+          text: '#3',
+        });
 
         // confirm watchNFT
         await driver.waitForSelector({
@@ -93,14 +102,17 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'NFTs', tag: 'button' });
         await driver.findElement({ text: 'TestDappNFTs (3)' });
         const nftsListItemsFirstCheck = await driver.findElements(
-          '.nft-item__item',
+          '.nft-item__container',
         );
         assert.equal(nftsListItemsFirstCheck.length, 3);
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-        await driver.clickElement({ text: 'Watch NFT 4', tag: 'button' });
-        await driver.clickElement({ text: 'Watch NFT 5', tag: 'button' });
-        await driver.clickElement({ text: 'Watch NFT 6', tag: 'button' });
+        await driver.fill('#watchNFTInput', '4');
+        await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
+        await driver.fill('#watchNFTInput', '5');
+        await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
+        await driver.fill('#watchNFTInput', '6');
+        await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
@@ -119,7 +131,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'NFTs', tag: 'button' });
         await driver.findElement({ text: 'TestDappNFTs (6)' });
         const nftsListItemsSecondCheck = await driver.findElements(
-          '.nft-item__item',
+          '.nft-item__container',
         );
         assert.equal(nftsListItemsSecondCheck.length, 6);
       },
@@ -169,7 +181,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const transactionItem = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
         assert.equal(await transactionItem.isDisplayed(), true);
@@ -215,7 +227,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'NFTs', tag: 'button' });
         await driver.findElement({ text: 'TestDappNFTs (5)' });
         const nftsListItemsSecondCheck = await driver.findElements(
-          '.nft-item__item',
+          '.nft-item__container',
         );
 
         assert.equal(nftsListItemsSecondCheck.length, 5);
@@ -266,7 +278,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
         // Verify transaction
@@ -339,7 +351,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         // Verify transaction
         const completedTx = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN spending cap',
         });
         assert.equal(await completedTx.isDisplayed(), true);
@@ -347,7 +359,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should enable approval for a third party address to manage all ERC721 NFTs', async function () {
+  it('should enable approval for a third party address to manage all ERC721 NFTs @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -405,12 +417,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
         // Verify transaction
         const completedTx = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN with no spend limit',
         });
         assert.equal(await completedTx.isDisplayed(), true);
@@ -418,7 +430,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should disable approval for a third party address to manage all ERC721 NFTs', async function () {
+  it('should disable approval for a third party address to manage all ERC721 NFTs @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -484,7 +496,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         // Verify transaction
         const completedTx = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN with no spend limit',
         });
         assert.equal(await completedTx.isDisplayed(), true);

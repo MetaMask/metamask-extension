@@ -1,70 +1,62 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
+import configureStore from '../../../store/store';
 import '@testing-library/jest-dom/extend-expect';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { NftItem } from '.';
 
+const store = configureStore(mockState);
+
+const noDisplayMediaStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    ipfsGateway: '',
+    openSeaEnabled: false,
+  },
+});
+
 describe('NftItem component', () => {
-  const mockOnClick = jest.fn();
+  jest.mock('../../../store/actions.ts', () => ({
+    getTokenStandardAndDetails: jest.fn().mockResolvedValue(),
+  }));
+  describe('render', () => {
+    const props = {
+      alt: 'Test Alt',
+      backgroundColor: 'red',
+      name: 'Test NFT',
+      src: 'test-src',
+      networkName: 'Test Network',
+      networkSrc: 'test-network-src',
+      tokenId: '1',
+      onClick: jest.fn(),
+      nftImageURL: '',
+    };
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+    it('renders correctly with an image source', () => {
+      const { getByTestId } = renderWithProvider(<NftItem {...props} />, store);
 
-  it('renders correctly with an image source', () => {
-    const { getByTestId } = render(
-      <NftItem
-        alt="Test Alt"
-        backgroundColor="red"
-        name="Test NFT"
-        src="test-src"
-        networkName="Test Network"
-        networkSrc="test-network-src"
-        tokenId="1"
-        onClick={mockOnClick}
-      />,
-    );
+      expect(getByTestId('nft-item')).toBeInTheDocument();
+      expect(getByTestId('nft-network-badge')).toBeInTheDocument();
+      expect(getByTestId('nft-image')).toBeInTheDocument();
+      expect(getByTestId('nft-image')).toHaveAttribute('src', 'test-src');
+    });
 
-    expect(getByTestId('nft-item')).toBeInTheDocument();
-    expect(getByTestId('nft-network-badge')).toBeInTheDocument();
-    expect(getByTestId('nft-image')).toBeInTheDocument();
-    expect(getByTestId('nft-image')).toHaveAttribute('src', 'test-src');
-  });
+    it('renders correctly with default image when both ipfs and display Media is off and no image is provided', () => {
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <NftItem {...props} />,
+        noDisplayMediaStore,
+      );
 
-  it('renders correctly with default image when no image source is provided', () => {
-    const { getByTestId, queryByTestId } = render(
-      <NftItem
-        alt="Test Alt"
-        backgroundColor="red"
-        name="Test NFT"
-        src=""
-        networkName="Test Network"
-        networkSrc="test-network-src"
-        tokenId="1"
-        onClick={mockOnClick}
-      />,
-    );
+      expect(queryByTestId('nft-image')).not.toBeInTheDocument();
+      expect(getByTestId('nft-default-image')).toBeInTheDocument();
+    });
 
-    expect(getByTestId('nft-item')).toBeInTheDocument();
-    expect(getByTestId('nft-network-badge')).toBeInTheDocument();
-    expect(queryByTestId('nft-image')).not.toBeInTheDocument();
-    expect(getByTestId('nft-default-image')).toBeInTheDocument();
-  });
+    it('calls onClick when the NFT image is clicked', () => {
+      const { getByTestId } = renderWithProvider(<NftItem {...props} />, store);
 
-  it('calls onClick when the NFT image is clicked', () => {
-    const { getByTestId } = render(
-      <NftItem
-        alt="Test Alt"
-        backgroundColor="red"
-        name="Test NFT"
-        src="test-src"
-        networkName="Test Network"
-        networkSrc="test-network-src"
-        tokenId="1"
-        onClick={mockOnClick}
-      />,
-    );
-
-    fireEvent.click(getByTestId('nft-image'));
-    expect(mockOnClick).toHaveBeenCalled();
+      fireEvent.click(getByTestId('nft-image'));
+      expect(props.onClick).toHaveBeenCalled();
+    });
   });
 });

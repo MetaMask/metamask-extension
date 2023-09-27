@@ -33,7 +33,7 @@ import {
   getTargetSubjectMetadata,
 } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
-import { Text, BUTTON_VARIANT } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -87,7 +87,7 @@ function ViewSnap() {
         .caveats[0].value;
     const newCaveatValue = { ...caveatValue };
     delete newCaveatValue[snapId];
-    if (Object.keys(newCaveatValue) > 0) {
+    if (Object.keys(newCaveatValue).length > 0) {
       dispatch(
         updateCaveat(
           connectedOrigin,
@@ -137,7 +137,7 @@ function ViewSnap() {
             {shouldDisplayMoreButton && (
               <Button
                 className="view-snap__description__more-button"
-                type={BUTTON_VARIANT.LINK}
+                type="link"
                 onClick={handleMoreClick}
               >
                 <Text color={Color.infoDefault}>{t('more')}</Text>
@@ -156,7 +156,7 @@ function ViewSnap() {
         />
       </Box>
       <Box className="view-snap__connected-sites" marginTop={12}>
-        <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+        <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
           {t('connectedSites')}
         </Text>
         <ConnectedSitesList
@@ -189,15 +189,14 @@ function ViewSnap() {
               {`${t('remove')} ${snapName}`}
             </Text>
           </Button>
-          {isShowingRemoveWarning && (
-            <SnapRemoveWarning
-              onCancel={() => setIsShowingRemoveWarning(false)}
-              onSubmit={async () => {
-                await dispatch(removeSnap(snap.id));
-              }}
-              snapName={snapName}
-            />
-          )}
+          <SnapRemoveWarning
+            isOpen={isShowingRemoveWarning}
+            onCancel={() => setIsShowingRemoveWarning(false)}
+            onSubmit={async () => {
+              await dispatch(removeSnap(snap.id));
+            }}
+            snapName={snapName}
+          />
         </Box>
       </Box>
     </Box>

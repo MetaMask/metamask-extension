@@ -13,10 +13,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarIcon,
-  Text,
+  AvatarIconSize,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -77,7 +78,7 @@ const PermissionCell = ({
         {typeof permissionIcon === 'string' ? (
           <AvatarIcon
             iconName={permissionIcon}
-            size={IconSize.Md}
+            size={AvatarIconSize.Md}
             iconProps={{
               size: IconSize.Sm,
             }}

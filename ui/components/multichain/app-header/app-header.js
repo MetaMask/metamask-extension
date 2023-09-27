@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, matchPath } from 'react-router-dom';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -30,6 +31,7 @@ import {
   IconName,
   PickerNetwork,
   Box,
+  IconSize,
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -41,8 +43,11 @@ import {
   getOriginOfCurrentTab,
   getSelectedIdentity,
   getShowProductTour,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getTestNetworkBackgroundColor,
+  getUnapprovedTransactions,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getTheme,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
@@ -60,6 +65,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getSendStage, SEND_STAGES } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { MINUTE } from '../../../../shared/constants/time';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -68,6 +75,7 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(false);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
+  const isHomePage = location.pathname === DEFAULT_ROUTE;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
@@ -77,6 +85,7 @@ export const AppHeader = ({ location }) => {
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, selectedAddress),
   );
+  const theme = useSelector((state) => getTheme(state));
   ///: END:ONLY_INCLUDE_IN
 
   // Used for account picker
@@ -88,13 +97,19 @@ export const AppHeader = ({ location }) => {
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
-  // Used to get the environment and connection status
+  // Used for copy button
+  const currentAddress = useSelector(getSelectedAddress);
+  const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
+  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-  const showStatus =
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-    origin &&
-    origin !== browser.runtime.id;
+  const showConnectedStatus =
+    process.env.MULTICHAIN ||
+    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+      origin &&
+      origin !== browser.runtime.id);
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
   const productTourDirection = document
@@ -122,9 +137,10 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
   );
 
-  const hasUnapprovedTransactions = useSelector(
-    (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
-  );
+  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
+
+  const hasUnapprovedTransactions =
+    Object.keys(unapprovedTransactions).length > 0;
 
   const disableAccountPicker =
     isConfirmationPage || (isSwapsPage && !isSwapsBuildQuotePage);
@@ -169,6 +185,7 @@ export const AppHeader = ({ location }) => {
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             custodyImgSrc={custodianIcon}
             isUnlocked={isUnlocked}
+            theme={theme}
             ///: END:ONLY_INCLUDE_IN
           />
         </Box>
@@ -205,6 +222,9 @@ export const AppHeader = ({ location }) => {
                 <Box className="multichain-app-header__contents__container">
                   <Tooltip title={currentNetwork?.nickname} position="right">
                     <PickerNetwork
+                      avatarNetworkProps={{
+                        backgroundColor: testNetworkBackgroundColor,
+                      }}
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
@@ -224,6 +244,9 @@ export const AppHeader = ({ location }) => {
               ) : (
                 <div>
                   <PickerNetwork
+                    avatarNetworkProps={{
+                      backgroundColor: testNetworkBackgroundColor,
+                    }}
                     margin={2}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
@@ -241,6 +264,7 @@ export const AppHeader = ({ location }) => {
               )}
               {showProductTour &&
               popupStatus &&
+              isHomePage &&
               multichainProductTourStep === 1 ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"
@@ -273,6 +297,7 @@ export const AppHeader = ({ location }) => {
                     });
                   }}
                   disabled={disableAccountPicker}
+                  showAddress={Boolean(process.env.MULTICHAIN)}
                 />
               ) : null}
               <Box
@@ -281,19 +306,35 @@ export const AppHeader = ({ location }) => {
                 justifyContent={JustifyContent.flexEnd}
               >
                 <Box display={Display.Flex} gap={4}>
-                  {showStatus ? (
-                    <Box ref={menuRef}>
-                      <ConnectedStatusIndicator
-                        onClick={() => {
-                          history.push(CONNECTED_ACCOUNTS_ROUTE);
-                          trackEvent({
-                            event: MetaMetricsEventName.NavConnectedSitesOpened,
-                            category: MetaMetricsEventCategory.Navigation,
-                          });
-                        }}
-                      />
-                    </Box>
-                  ) : null}{' '}
+                  {showConnectedStatus &&
+                    (process.env.MULTICHAIN ? (
+                      <Tooltip
+                        position="left"
+                        title={copied ? t('addressCopied') : null}
+                      >
+                        <ButtonIcon
+                          onClick={() => handleCopy(checksummedCurrentAddress)}
+                          iconName={
+                            copied ? IconName.CopySuccess : IconName.Copy
+                          }
+                          size={IconSize.Sm}
+                          data-testid="app-header-copy-button"
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Box ref={menuRef}>
+                        <ConnectedStatusIndicator
+                          onClick={() => {
+                            history.push(CONNECTED_ACCOUNTS_ROUTE);
+                            trackEvent({
+                              event:
+                                MetaMetricsEventName.NavConnectedSitesOpened,
+                              category: MetaMetricsEventCategory.Navigation,
+                            });
+                          }}
+                        />
+                      </Box>
+                    ))}{' '}
                   {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                     custodianIcon && (
@@ -350,7 +391,7 @@ export const AppHeader = ({ location }) => {
                       ariaLabel={t('accountOptions')}
                       onClick={() => {
                         trackEvent({
-                          event: MetaMetricsEventName.NavAccountMenuOpened,
+                          event: MetaMetricsEventName.NavMainMenuOpened,
                           category: MetaMetricsEventCategory.Navigation,
                           properties: {
                             location: 'Home',
@@ -409,6 +450,9 @@ export const AppHeader = ({ location }) => {
             >
               <div>
                 <PickerNetwork
+                  avatarNetworkProps={{
+                    backgroundColor: testNetworkBackgroundColor,
+                  }}
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   onClick={(e) => {

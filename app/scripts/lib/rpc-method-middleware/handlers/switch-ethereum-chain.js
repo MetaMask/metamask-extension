@@ -20,6 +20,8 @@ const switchEthereumChain = {
   hookNames: {
     getCurrentChainId: true,
     findNetworkConfigurationBy: true,
+    findNetworkClientIdByChainId: true,
+    setNetworkClientIdForDomain: true,
     setProviderType: true,
     setActiveNetwork: true,
     requestUserApproval: true,
@@ -53,6 +55,8 @@ async function switchEthereumChainHandler(
   {
     getCurrentChainId,
     findNetworkConfigurationBy,
+    findNetworkClientIdByChainId,
+    setNetworkClientIdForDomain,
     setProviderType,
     setActiveNetwork,
     requestUserApproval,
@@ -99,7 +103,6 @@ async function switchEthereumChainHandler(
       }),
     );
   }
-
   const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
   if (requestData) {
     const currentChainId = getCurrentChainId();
@@ -116,12 +119,14 @@ async function switchEthereumChainHandler(
       if (
         Object.values(BUILT_IN_INFURA_NETWORKS)
           .map(({ chainId: id }) => id)
-          .includes(chainId)
+          .includes(_chainId)
       ) {
         await setProviderType(approvedRequestData.type);
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
+      const networkClientId = findNetworkClientIdByChainId(_chainId);
+      setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
     } catch (error) {
       return end(error);

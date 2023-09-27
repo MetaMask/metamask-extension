@@ -26,11 +26,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  Text,
   Box,
   Button,
   BUTTON_VARIANT,
   BUTTON_SIZES,
+  Text,
 } from '../../../components/component-library';
 import SkipSRPBackup from './skip-srp-backup-popover';
 

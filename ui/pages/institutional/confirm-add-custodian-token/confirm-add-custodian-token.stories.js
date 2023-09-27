@@ -9,7 +9,6 @@ const customData = {
   metamask: {
     ...testData.metamask,
     institutionalFeatures: {
-      complianceProjectId: '',
       connectRequests: [
         {
           labels: [

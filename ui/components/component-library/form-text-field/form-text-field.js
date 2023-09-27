@@ -5,14 +5,13 @@ import classnames from 'classnames';
 import {
   Display,
   FlexDirection,
-  Severity,
   Size,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
 
 import { TextField } from '../text-field';
-import { HelpText } from '../help-text';
+import { HelpText, HelpTextSeverity } from '../help-text';
 import { Label } from '../label';
 
 export const FormTextField = ({
@@ -102,7 +101,7 @@ export const FormTextField = ({
     />
     {helpText && (
       <HelpText
-        severity={error && Severity.Danger}
+        severity={error && HelpTextSeverity.Danger}
         marginTop={1}
         {...helpTextProps}
         className={classnames(

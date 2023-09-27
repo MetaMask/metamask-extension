@@ -14,9 +14,6 @@ export default {
     closeMenu: {
       action: 'closeMenu',
     },
-    blockExplorerUrlSubTitle: {
-      control: 'text',
-    },
     isRemovable: {
       control: 'boolean',
     },
@@ -36,7 +33,6 @@ export default {
       tokenBalance: '32.09 ETH',
     },
     isRemovable: true,
-    blockExplorerUrlSubTitle: 'etherscan.io',
     isOpen: true,
   },
 };

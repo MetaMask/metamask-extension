@@ -23,14 +23,12 @@
   }
 
   &__pending-actions {
-    padding-top: 12px;
     display: flex;
 
     .button {
-      @include H8;
+      @include H6;
 
-      padding: 8px;
-      width: 75px;
+      width: 90px;
       white-space: nowrap;
     }
 
@@ -55,11 +53,6 @@
     display: flex;
     white-space: nowrap;
     text-overflow: initial;
-  }
-
-  .transaction-status-label::after {
-    content: "·";
-    margin: 0 4px;
   }
 
   &__address {

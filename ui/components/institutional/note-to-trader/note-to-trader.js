@@ -5,8 +5,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Label, Text } from '../../component-library';
-import Box from '../../ui/box';
+import { Label, Box, Text } from '../../component-library';
 
 const NoteToTrader = (props) => {
   const { placeholder, maxLength, onChange, noteText, labelText } = props;

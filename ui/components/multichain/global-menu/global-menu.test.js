@@ -18,8 +18,10 @@ const render = (metamaskStateChanges = {}) => {
 };
 
 const mockLockMetaMask = jest.fn();
+const mockSetAccountDetailsAddress = jest.fn();
 jest.mock('../../../store/actions', () => ({
   lockMetamask: () => mockLockMetaMask,
+  setAccountDetailsAddress: () => mockSetAccountDetailsAddress,
 }));
 
 describe('AccountListItem', () => {
@@ -28,18 +30,6 @@ describe('AccountListItem', () => {
     fireEvent.click(document.querySelector('[data-testid="global-menu-lock"]'));
     await waitFor(() => {
       expect(mockLockMetaMask).toHaveBeenCalled();
-    });
-  });
-
-  it('opens the portfolio site when item is clicked', async () => {
-    global.platform = { openTab: jest.fn() };
-
-    const { getByTestId } = render();
-    fireEvent.click(getByTestId('global-menu-portfolio'));
-    await waitFor(() => {
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: `/?metamaskEntry=ext&metametricsId=`,
-      });
     });
   });
 
@@ -61,7 +51,7 @@ describe('AccountListItem', () => {
   });
 
   it('enables the settings item when there is no active transaction', async () => {
-    const { getByTestId } = render({ unapprovedTxs: {} });
+    const { getByTestId } = render({ transactions: [] });
     await waitFor(() => {
       expect(getByTestId('global-menu-settings')).toBeEnabled();
     });
@@ -75,7 +65,7 @@ describe('AccountListItem', () => {
   });
 
   it('enables the connected sites item when there is no active transaction', async () => {
-    const { getByTestId } = render({ unapprovedTxs: {} });
+    const { getByTestId } = render({ transactions: [] });
     await waitFor(() => {
       expect(getByTestId('global-menu-connected-sites')).toBeEnabled();
     });

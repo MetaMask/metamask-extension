@@ -5,9 +5,9 @@ import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
   FormTextField,
-  Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
+  Text,
 } from '../../component-library';
 import {
   Size,
@@ -18,11 +18,6 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { displayWarning } from '../../../store/actions';
 import BottomButtons from './bottom-buttons';
-
-JsonImportSubview.propTypes = {
-  importAccountFunc: PropTypes.func.isRequired,
-  onActionComplete: PropTypes.func.isRequired,
-};
 
 export default function JsonImportSubview({
   importAccountFunc,
@@ -46,7 +41,7 @@ export default function JsonImportSubview({
     if (isPrimaryDisabled) {
       displayWarning(t('needImportFile'));
     } else {
-      importAccountFunc('JSON File', [fileContents, password]);
+      importAccountFunc('json', [fileContents, password]);
     }
   }
 
@@ -104,3 +99,14 @@ export default function JsonImportSubview({
     </>
   );
 }
+
+JsonImportSubview.propTypes = {
+  /**
+   * Function to import the account
+   */
+  importAccountFunc: PropTypes.func.isRequired,
+  /**
+   * Executes when the key is imported
+   */
+  onActionComplete: PropTypes.func.isRequired,
+};

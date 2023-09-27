@@ -17,7 +17,7 @@ import {
   setPersonalMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { checkForUnapprovedMessages } from '../../../store/institutional/institution-actions';
+import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -27,7 +27,6 @@ import {
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  unapprovedPersonalMsgsSelector,
   getAccountType,
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
@@ -68,58 +67,11 @@ function mapStateToProps(state, ownProps) {
     accountType: getAccountType(state),
     isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
     selectedAccount: getSelectedAccount(state),
-    unapprovedPersonalMessages: unapprovedPersonalMsgsSelector(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
 
 let mapDispatchToProps = null;
-
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-function mmiMapDispatchToProps(dispatch) {
-  const mmiActions = mmiActionsFactory();
-  return {
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
-    showCustodianDeepLink: ({
-      custodyId,
-      fromAddress,
-      closeNotification,
-      onDeepLinkFetched,
-      onDeepLinkShown,
-    }) =>
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId: undefined,
-        fromAddress,
-        custodyId,
-        isSignature: true,
-        closeNotification,
-        onDeepLinkFetched,
-        onDeepLinkShown,
-      }),
-    showTransactionsFailedModal: ({
-      errorMessage,
-      closeNotification,
-      operationFailed,
-    }) =>
-      dispatch(
-        showModal({
-          name: 'TRANSACTION_FAILED',
-          errorMessage,
-          closeNotification,
-          operationFailed,
-        }),
-      ),
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    goHome: () => dispatch(goHome()),
-  };
-}
-
-mapDispatchToProps = mmiMapDispatchToProps;
-///: END:ONLY_INCLUDE_IN
 
 mapDispatchToProps = function (dispatch) {
   return {
@@ -150,6 +102,74 @@ mapDispatchToProps = function (dispatch) {
   };
 };
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+function mmiMapDispatchToProps(dispatch) {
+  const mmiActions = mmiActionsFactory();
+  return {
+    setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
+    showCustodianDeepLink: ({
+      custodyId,
+      fromAddress,
+      closeNotification,
+      onDeepLinkFetched,
+      onDeepLinkShown,
+    }) =>
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId: undefined,
+        fromAddress,
+        custodyId,
+        isSignature: true,
+        closeNotification,
+        onDeepLinkFetched,
+        onDeepLinkShown,
+        showCustodyConfirmLink,
+      }),
+    showTransactionsFailedModal: ({
+      errorMessage,
+      closeNotification,
+      operationFailed,
+    }) =>
+      dispatch(
+        showModal({
+          name: 'TRANSACTION_FAILED',
+          errorMessage,
+          closeNotification,
+          operationFailed,
+        }),
+      ),
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount: messagesCount,
+    }) => {
+      return dispatch(
+        showModal({
+          name: 'REJECT_TRANSACTIONS',
+          onSubmit,
+          unapprovedTxCount: messagesCount,
+          isRequestType: true,
+        }),
+      );
+    },
+    completedTx: (txId) => dispatch(completedTx(txId)),
+    resolvePendingApproval: (id) => {
+      dispatch(resolvePendingApproval(id));
+    },
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    cancelAllApprovals: (messagesList) => {
+      dispatch(rejectAllMessages(messagesList));
+    },
+  };
+}
+
+mapDispatchToProps = mmiMapDispatchToProps;
+///: END:ONLY_INCLUDE_IN
+
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const { txData } = ownProps;
 
@@ -159,7 +179,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     isNotification,
-    unapprovedPersonalMessages,
     ///: END:ONLY_INCLUDE_IN
     ...otherStateProps
   } = stateProps;
@@ -176,25 +195,17 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   const mmiOnSignCallback = async (_msgData) => {
     if (accountType === 'custody') {
       try {
-        let msgData = _msgData;
-        let id = _msgData.custodyId;
-        if (!_msgData.custodyId) {
-          msgData = checkForUnapprovedMessages(
-            _msgData,
-            unapprovedPersonalMessages,
-          );
-          id = msgData.custodyId;
-        }
+        await dispatchProps.resolvePendingApproval(_msgData.id);
+        dispatchProps.completedTx(_msgData.id);
+
         dispatchProps.showCustodianDeepLink({
-          custodyId: id,
+          custodyId: null,
           fromAddress: fromAccount.address,
           closeNotification: isNotification,
           onDeepLinkFetched: () => undefined,
           onDeepLinkShown: () => undefined,
         });
-        await dispatchProps.setMsgInProgress(msgData.metamaskId);
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
-        await goHome();
       } catch (err) {
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await dispatchProps.showTransactionsFailedModal({
@@ -203,6 +214,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
           operationFailed: true,
         });
       }
+    } else {
+      // Non Custody accounts follow normal flow
+      await dispatchProps.resolvePendingApproval(_msgData.id);
+      dispatchProps.completedTx(_msgData.id);
     }
   };
   ///: END:ONLY_INCLUDE_IN

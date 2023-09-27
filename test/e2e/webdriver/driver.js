@@ -36,6 +36,13 @@ function wrapElementWithAPI(element, driver) {
         throw new Error(`Provided state: '${state}' is not supported`);
     }
   };
+
+  element.nestedFindElement = async (rawLocator) => {
+    const locator = driver.buildLocator(rawLocator);
+    const newElement = await element.findElement(locator);
+    return wrapElementWithAPI(newElement, driver);
+  };
+
   return element;
 }
 
@@ -58,7 +65,7 @@ class Driver {
    * @param extensionUrl
    * @param {number} timeout
    */
-  constructor(driver, browser, extensionUrl, timeout = 10000) {
+  constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
     this.driver = driver;
     this.browser = browser;
     this.extensionUrl = extensionUrl;
@@ -161,16 +168,18 @@ class Driver {
     // replacement for the implementation below. It takes an option options
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
-    const selector = this.buildLocator(rawLocator);
     let element;
     if (!['visible', 'detached'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
-      element = await this.driver.wait(until.elementLocated(selector), timeout);
+      element = await this.driver.wait(
+        until.elementLocated(this.buildLocator(rawLocator)),
+        timeout,
+      );
     } else if (state === 'detached') {
       element = await this.driver.wait(
-        until.stalenessOf(await this.findElement(selector)),
+        until.stalenessOf(await this.findElement(rawLocator)),
         timeout,
       );
     }
@@ -205,15 +214,13 @@ class Driver {
   }
 
   async findVisibleElement(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findElement(locator);
+    const element = await this.findElement(rawLocator);
     await this.driver.wait(until.elementIsVisible(element), this.timeout);
     return wrapElementWithAPI(element, this);
   }
 
   async findClickableElement(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findElement(locator);
+    const element = await this.findElement(rawLocator);
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), this.timeout),
       this.driver.wait(until.elementIsEnabled(element), this.timeout),
@@ -231,8 +238,7 @@ class Driver {
   }
 
   async findClickableElements(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
-    const elements = await this.findElements(locator);
+    const elements = await this.findElements(rawLocator);
     await Promise.all(
       elements.reduce((acc, element) => {
         acc.push(
@@ -246,14 +252,43 @@ class Driver {
   }
 
   async clickElement(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findClickableElement(locator);
+    const element = await this.findClickableElement(rawLocator);
     await element.click();
   }
 
+  /**
+   * for instances where an element such as a scroll button does not
+   * show up because of render differences, proceed to the next step
+   * without causing a test failure, but provide a console log of why.
+   *
+   * @param rawLocator
+   */
+  async clickElementSafe(rawLocator) {
+    try {
+      const element = await this.findClickableElement(rawLocator);
+      await element.click();
+    } catch (e) {
+      console.log(`Element ${rawLocator} not found (${e})`);
+    }
+  }
+
+  /**
+   * Can fix instances where a normal click produces ElementClickInterceptedError
+   *
+   * @param rawLocator
+   */
+  async clickElementUsingMouseMove(rawLocator) {
+    const element = await this.findClickableElement(rawLocator);
+    await this.scrollToElement(element);
+    await this.driver
+      .actions()
+      .move({ origin: element, x: 1, y: 1 })
+      .click()
+      .perform();
+  }
+
   async clickPoint(rawLocator, x, y) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findElement(locator);
+    const element = await this.findElement(rawLocator);
     await this.driver
       .actions()
       .move({ origin: element, x, y })
@@ -281,10 +316,9 @@ class Driver {
   }
 
   async assertElementNotPresent(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
     let dataTab;
     try {
-      dataTab = await this.findElement(locator);
+      dataTab = await this.findElement(rawLocator);
     } catch (err) {
       assert(
         err instanceof webdriverError.NoSuchElementError ||
@@ -335,7 +369,13 @@ class Driver {
   // Navigation
 
   async navigate(page = Driver.PAGES.HOME) {
-    return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+    const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
+    // Wait for asyncronous JavaScript to load
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.metamask-loaded')),
+      10 * 1000,
+    );
+    return response;
   }
 
   async getCurrentUrl() {
@@ -375,11 +415,12 @@ class Driver {
     return await this.driver.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = 5000) {
+  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
       windowHandles = await this.driver.getAllWindowHandles();
+
       if (windowHandles.length === x) {
         return windowHandles;
       }
@@ -393,7 +434,7 @@ class Driver {
     title,
     initialWindowHandles,
     delayStep = 1000,
-    timeout = 5000,
+    timeout = this.timeout,
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
@@ -401,6 +442,7 @@ class Driver {
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
+
         const handleTitle = await this.driver.getTitle();
         if (handleTitle === title) {
           return handle;

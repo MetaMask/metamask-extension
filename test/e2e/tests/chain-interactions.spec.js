@@ -15,7 +15,7 @@ describe('Chain Interactions', function () {
     ],
     concurrent: { port, chainId },
   };
-  it('should add the Ganache test chain and not switch the network', async function () {
+  it('should add the Ganache test chain and not switch the network @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -63,7 +63,7 @@ describe('Chain Interactions', function () {
         await driver.clickElement('[data-testid="network-display"]');
         const ganacheChain = await driver.findElements({
           text: `Localhost ${port}`,
-          tag: 'span',
+          tag: 'button',
         });
         assert.ok(ganacheChain.length, 1);
       },

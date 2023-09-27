@@ -1,32 +1,18 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Box from '../../components/ui/box';
-
-import {
-  CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import CustodyPage from '../institutional/custody';
-///: END:ONLY_INCLUDE_IN
+import { Box } from '../../components/component-library';
+import { CONNECT_HARDWARE_ROUTE } from '../../helpers/constants/routes';
 import ConnectHardwareForm from './connect-hardware';
 
 export default function CreateAccountPage() {
   return (
-    <Box className="new-account">
+    <Box className="new-account-wrapper">
       <Switch>
         <Route
           exact
           path={CONNECT_HARDWARE_ROUTE}
           component={ConnectHardwareForm}
         />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-          <Route exact path={CUSTODY_ACCOUNT_ROUTE} component={CustodyPage} />
-          ///: END:ONLY_INCLUDE_IN
-        }
       </Switch>
     </Box>
   );

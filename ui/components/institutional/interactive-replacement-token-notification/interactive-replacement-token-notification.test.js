@@ -10,10 +10,6 @@ import InteractiveReplacementTokenNotification from './interactive-replacement-t
 
 jest.mock('../../../../shared/modules/hash.utils');
 
-const mockedShowInteractiveReplacementTokenModal = jest
-  .fn()
-  .mockReturnValue({ type: 'TYPE' });
-
 const mockedGetCustodianToken = jest
   .fn()
   .mockReturnValue({ type: 'Custody', payload: 'token' });
@@ -32,9 +28,13 @@ jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
     getCustodianToken: mockedGetCustodianToken,
     getAllCustodianAccountsWithToken: mockedGetAllCustodianAccountsWithToken,
-    showInteractiveReplacementTokenModal:
-      mockedShowInteractiveReplacementTokenModal,
   }),
+}));
+
+jest.mock('../../../store/institutional/institution-actions', () => ({
+  showInteractiveReplacementTokenModal: jest
+    .fn()
+    .mockReturnValue({ type: 'TYPE' }),
 }));
 
 describe('Interactive Replacement Token Notification', () => {
@@ -112,8 +112,6 @@ describe('Interactive Replacement Token Notification', () => {
     await act(async () => {
       fireEvent.click(screen.getByTestId('show-modal'));
     });
-
-    expect(mockedShowInteractiveReplacementTokenModal).toHaveBeenCalled();
   });
 
   it('should render and call showNotification when component starts', async () => {

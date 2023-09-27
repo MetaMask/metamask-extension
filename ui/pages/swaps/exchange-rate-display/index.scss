@@ -19,4 +19,8 @@
   &__quote-rate {
     cursor: pointer;
   }
+
+  &__quote-rate--no-link {
+    cursor: text;
+  }
 }

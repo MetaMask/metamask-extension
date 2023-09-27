@@ -363,7 +363,7 @@ describe('Custom network', function () {
 
         const arbitrumNetwork = await driver.findElements({
           text: 'Arbitrum One',
-          tag: 'span',
+          tag: 'button',
         });
         assert.ok(arbitrumNetwork.length, 1);
       },
