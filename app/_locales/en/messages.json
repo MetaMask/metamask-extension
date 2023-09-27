@@ -590,6 +590,9 @@
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
+  "blockaidMessage": {
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
+  },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
   },
@@ -3133,14 +3136,14 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
-  "preferredProvider": {
-    "message": "Select your preferred provider"
+  "openSea": {
+    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaLabel": {
     "message": "OpenSea + Blockaid"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
+  "openSeaMessage": {
+    "message": "Data is shared with third paties. Security providers will receive your unsigned transactions and signature requests."
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3442,6 +3445,9 @@
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
+  },
+  "preferredProvider": {
+    "message": "Select your preferred provider"
   },
   "preparingSwap": {
     "message": "Preparing swap..."
@@ -4990,12 +4996,6 @@
   "thisServiceIsExperimental": {
     "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
     "description": "$1 is link to open sea terms of use"
-  },
-  "openSeaMessage": {
-    "message": "Data is shared with third paties. Security providers will receive your unsigned transactions and signature requests."
-  },
-  "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
   },
   "time": {
     "message": "Time"
