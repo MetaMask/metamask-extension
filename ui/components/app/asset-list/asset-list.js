@@ -122,6 +122,7 @@ const AssetList = ({ onClickAsset }) => {
     shouldHideZeroBalanceTokens,
   );
 
+  // An array of string balances (ex: ["1.90", "22290.01", ...])
   const dollarBalances = tokensWithBalances.map((token) => {
     const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
       (key) => isEqualCaseInsensitive(key, token.address),
@@ -144,14 +145,21 @@ const AssetList = ({ onClickAsset }) => {
     return fiat;
   });
 
-  const totalFiat = formatCurrency(
-    sumDecimals(nativeFiat, ...dollarBalances).toString(10),
+  // Total native and token fiat balance as a string (ex: "8.90")
+  const totalFiatBalance = sumDecimals(nativeFiat, ...dollarBalances).toString(
+    10,
+  );
+
+  // Fiat balance formatted in user's desired currency (ex: "$8.90")
+  const formattedTotalFiatBalance = formatCurrency(
+    totalFiatBalance,
     currentCurrency,
   );
-  // Hardcoded for the sake of dev
-  const shouldShowBuy = useSelector(getIsBuyableChain);
-  // TODO:  Update this variable depending on total value
-  const shouldShowReceive = true;
+
+  const balanceIsZero = Number(totalFiatBalance) === 0;
+  const isBuyableChain = useSelector(getIsBuyableChain);
+  const shouldShowBuy = isBuyableChain && balanceIsZero;
+  const shouldShowReceive = balanceIsZero;
   const { openBuyCryptoInPdapp } = useRamps();
   const chainId = useSelector(getCurrentChainId);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
@@ -159,7 +167,10 @@ const AssetList = ({ onClickAsset }) => {
   return (
     <>
       {process.env.MULTICHAIN ? (
-        <BalanceOverview balance={totalFiat} loading={loading} />
+        <BalanceOverview
+          balance={formattedTotalFiatBalance}
+          loading={loading}
+        />
       ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
