@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Tampilkan media NFT"
   },
-  "displayNftMediaDescription": {
-    "message": "Alamat IP Anda dapat diketahui oleh OpenSea atau pihak ketiga lainnya saat Anda menampilkan media dan data NFT. Ini memungkinkan penyerang menghubungkan alamat IP dengan alamat Ethereum Anda. Deteksi otomatis NFT bergantung pada pengaturan ini, dan tidak akan tersedia saat dinonaktifkan."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1414,9 +1411,6 @@
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
-  "enableForAllNetworks": {
-    "message": "Aktifkan untuk semua jaringan"
-  },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
   },
@@ -1446,21 +1440,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Saat ini, deteksi token lanjutan tersedia di $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask memungkinkan Anda melihat domain ENS seperti \"https://metamask.eth\" tepat di bilah alamat browser Anda. Berikut cara kerjanya:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Browser biasa umumnya tidak menangani alamat ENS atau IPFS, tetapi MetaMask dapat menanganinya. Alamat IP Anda dapat dibagikan kepada layanan pihak ketiga IPFS saat menggunakan fitur ini."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask memeriksa kontrak ENS Ethereum untuk menemukan kode yang terhubung ke nama ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Jika kode ditautkan ke IPFS, maka kode tersebut mendapatkan konten dari jaringan IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Kemudian, Anda dapat melihat kontennya, umumnya dalam bentuk situs web atau yang serupa."
   },
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
@@ -1599,9 +1578,6 @@
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "File yang didrop terlalu besar."
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
@@ -2480,12 +2456,6 @@
   "newContract": {
     "message": "Kontrak baru"
   },
-  "newNFTDetectedMessage": {
-    "message": "Izinkan MetaMask mendeteksi NFT dari Opensea secara otomatis dan menampilkannya di dompet Anda."
-  },
-  "newNFTsDetected": {
-    "message": "Baru! Deteksi NFT"
-  },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
   },
@@ -3223,14 +3193,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Izinkan snap menggunakan lifecycle hook untuk menjalankan kode pada waktu tertentu selama siklus hidupnya.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Operasikan sepanjang waktu.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Izinkan snap beroperasi sepanjang waktu saat, sebagai contoh, memproses data dalam jumlah besar.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",
@@ -5244,21 +5206,6 @@
   },
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi NFT di dompet Anda, yang berarti alamat IP Anda dapat terpapar ke server pusat. Ada beberapa hal yang perlu diwaspadai saat mengaktifkan fitur ini,."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Alamat akun Anda akan dapat dlihat oleh API pihak ketiga."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Metadata NFT dapat berisi tautan ke situs penipuan atau pencurian."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Biarkan fitur ini nonaktif jika Anda tidak ingin aplikasi mengambil data dari layanan tersebut."
   },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"

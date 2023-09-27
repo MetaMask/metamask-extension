@@ -27,8 +27,8 @@ describe('PermissionController specifications', () => {
       expect(caveatSpecifications.permittedCoinTypes.type).toStrictEqual(
         SnapCaveatType.PermittedCoinTypes,
       );
-      expect(caveatSpecifications.snapKeyring.type).toStrictEqual(
-        SnapCaveatType.SnapKeyring,
+      expect(caveatSpecifications.chainIds.type).toStrictEqual(
+        SnapCaveatType.ChainIds,
       );
       expect(caveatSpecifications.snapCronjob.type).toStrictEqual(
         SnapCaveatType.SnapCronjob,

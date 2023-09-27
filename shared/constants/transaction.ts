@@ -331,7 +331,7 @@ export interface TransactionMeta {
   blockNumber?: string;
   chainId: string;
   /** An internally unique tx identifier. */
-  id: number;
+  id: string;
   /** Time the transaction was first suggested, in unix epoch time (ms). */
   time: number;
   /** A string representing a name of transaction contract method. */
