@@ -61,7 +61,9 @@ describe('Settings', function () {
           tag: 'button',
         });
         // should render image now
-        const nftImage = await driver.findElement('[data-testid="nft-image"]');
+        const nftImage = await driver.findVisibleElement(
+          '[data-testid="nft-image"]',
+        );
         assert.equal(await nftImage.isDisplayed(), true);
 
         await driver.clickElement('[data-testid="asset__back"]');

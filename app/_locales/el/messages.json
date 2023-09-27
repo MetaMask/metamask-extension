@@ -371,9 +371,6 @@
   "amount": {
     "message": "Ποσό"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Ένα Πορτοφόλι Ethereum στο Πρόγραμμα Περιήγησής σας",
     "description": "The description of the application"
@@ -981,9 +978,6 @@
   "custodian": {
     "message": "Θεματοφύλακας"
   },
-  "custodianAccount": {
-    "message": "Λογαριασμός θεματοφύλακα"
-  },
   "custodianAccountAddedDesc": {
     "message": "Μπορείτε τώρα να χρησιμοποιήσετε τους λογαριασμούς θεματοφύλακά σας στο MetaMask Institutional."
   },
@@ -1417,9 +1411,6 @@
   "enableAutoDetect": {
     "message": " Ενεργοποίηση αυτόματου εντοπισμού"
   },
-  "enableForAllNetworks": {
-    "message": "Ενεργοποίηση σε όλα τα δίκτυα"
-  },
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
   },
@@ -1587,9 +1578,6 @@
   "fileImportFail": {
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Το υποβαλλόμενο αρχείο είναι πολύ μεγάλο."
   },
   "flaskWelcomeUninstall": {
     "message": "θα πρέπει να απεγκαταστήσετε αυτή την επέκταση",
@@ -2328,9 +2316,6 @@
   "missingSettingRequest": {
     "message": "Υποβάλετε αίτημα εδώ"
   },
-  "mmiAddToken": {
-    "message": "Η σελίδα στο $1 θα ήθελε να εξουσιοδοτήσει το ακόλουθο token θεματοφύλακα στο MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "Το MetaMask Institutional έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
   },
@@ -2875,6 +2860,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Επισήμανση όλων ως αναγνωσμένων"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Μάθετε περισσότερα"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Είμαστε ενθουσιασμένοι που ανακοινώνουμε την δοκιμαστική έναρξη του MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Εξατομικεύστε το πορτοφόλι σας με snaps που δημιουργήθηκαν από την κοινότητα προγραμματιστών!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Τα Snaps σάς βοηθούν να κάνετε περισσότερα με το MetaMask — όπως τη σύνδεση σε περισσότερα δίκτυα, τη προβολή πληροφοριών συναλλαγών και τη λήψη προσαρμοσμένων ειδοποιήσεων."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Παρουσιάζουμε τα MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 νέα tokens βρέθηκαν σε αυτόν τον λογαριασμό",
@@ -4056,6 +4056,10 @@
   },
   "snapsNoInsight": {
     "message": "Το snap δεν επέστρεψε καμία πληροφορία"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Οποιεσδήποτε πληροφορίες μοιράζεστε με τις Υπηρεσίες Τρίτων θα συλλέγονται απευθείας από τις εν λόγω Υπηρεσίες Τρίτων σύμφωνα με τις πολιτικές απορρήτου τους. Ανατρέξτε στις πολιτικές απορρήτου τους για περισσότερες πληροφορίες.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Διαχειριστείτε τα Snaps σας"

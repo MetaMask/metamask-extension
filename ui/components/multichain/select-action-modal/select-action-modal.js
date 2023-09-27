@@ -49,13 +49,14 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { I18nContext } from '../../../contexts/i18n';
 import { AssetType } from '../../../../shared/constants/transaction';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
-import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
+import { getMmiPortfolioUrl } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 ///: END:ONLY_INCLUDE_IN
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 export const SelectActionModal = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -78,6 +79,8 @@ export const SelectActionModal = ({ onClose }) => {
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
+
   const stakingEvent = () => {
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -94,8 +97,10 @@ export const SelectActionModal = ({ onClose }) => {
       data-testid="select-action-modal"
     >
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader onClose={onClose}>{t('selectAnAction')}</ModalHeader>
+      <ModalContent modalDialogProps={{ paddingLeft: 0, paddingRight: 0 }}>
+        <ModalHeader onClose={onClose} paddingRight={4}>
+          {t('selectAnAction')}
+        </ModalHeader>
         <Box className="select-action-modal__container" marginTop={6}>
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -133,7 +138,7 @@ export const SelectActionModal = ({ onClose }) => {
               onClick={() => {
                 stakingEvent();
                 global.platform.openTab({
-                  url: MMI_STAKE_WEBSITE,
+                  url: `${mmiPortfolioUrl}/stake`,
                 });
                 onClose();
               }}
@@ -149,7 +154,7 @@ export const SelectActionModal = ({ onClose }) => {
             onClick={() => {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               global.platform.openTab({
-                url: MMI_SWAPS_URL,
+                url: `${mmiPortfolioUrl}/swap`,
               });
               ///: END:ONLY_INCLUDE_IN
 
@@ -159,7 +164,7 @@ export const SelectActionModal = ({ onClose }) => {
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
                   properties: {
-                    token_symbol: 'ETH',
+                    token_symbol: CURRENCY_SYMBOLS.ETH,
                     location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
                     chain_id: chainId,
@@ -185,7 +190,7 @@ export const SelectActionModal = ({ onClose }) => {
                 event: MetaMetricsEventName.NavSendButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
-                  token_symbol: 'ETH',
+                  token_symbol: CURRENCY_SYMBOLS.ETH,
                   location: 'Home',
                   text: 'Send',
                   chain_id: chainId,
@@ -226,7 +231,7 @@ export const SelectActionModal = ({ onClose }) => {
                       location: 'Home',
                       text: 'Bridge',
                       chain_id: chainId,
-                      token_symbol: 'ETH',
+                      token_symbol: CURRENCY_SYMBOLS.ETH,
                     },
                   });
                 }
