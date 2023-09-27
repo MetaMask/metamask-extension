@@ -13,8 +13,8 @@ import {
   ModalHeader,
   Text,
   ButtonVariant,
-  ButtonBase,
   ButtonLink,
+  ButtonSecondary,
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -340,7 +340,7 @@ export const AccountListMenu = ({ onClose }) => {
               alignItems={AlignItems.center}
               display={Display.Flex}
             >
-              <ButtonBase
+              <ButtonSecondary
                 startIconName={IconName.Add}
                 variant={ButtonVariant.Secondary}
                 style={{ margin: '0 auto' }}
@@ -348,7 +348,7 @@ export const AccountListMenu = ({ onClose }) => {
                 data-testid="multichain-account-menu-popover-action-button"
               >
                 Add account or hardware wallet
-              </ButtonBase>
+              </ButtonSecondary>
             </Box>
           </>
         ) : null}
