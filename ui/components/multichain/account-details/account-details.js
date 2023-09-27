@@ -155,5 +155,8 @@ export const AccountDetails = ({ address }) => {
 };
 
 AccountDetails.propTypes = {
+  /**
+   * The address to show account details for
+   */
   address: PropTypes.string,
 };

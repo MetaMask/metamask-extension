@@ -30,7 +30,6 @@ The specified token is shown.
 The estimated gas details are shown.
 The total amount is shown.",
 17,Confirm the transaction.,,"The transaction appears in the activity list.
-The recipient's hexadecimal address is shown in the activity list item.
 The amount is shown in the activity list item.",
 18,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
 19,Expand the Activity log.,,"The created, submitted and confirmed activity is shown in the activity log.",
