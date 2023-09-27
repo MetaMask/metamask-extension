@@ -2,6 +2,7 @@ const {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./utils');
@@ -25,7 +26,7 @@ describe('Create Snap Account', function () {
         await driver.clickElementSafe('#connectButton');
 
         // switch to metamask extension and click connect to start installing the snap
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -67,7 +68,7 @@ describe('Create Snap Account', function () {
         });
 
         // switch to metamask extension
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
         await driver.findElement({
           css: '[data-testid="confirmation-submit-button"]',
@@ -110,7 +111,7 @@ describe('Create Snap Account', function () {
         await driver.clickElement('#connectButton');
 
         // switch to metamask extension and click connect to start installing the snap
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -152,7 +153,7 @@ describe('Create Snap Account', function () {
         });
 
         // switch to metamask extension
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
@@ -192,7 +193,7 @@ describe('Create Snap Account', function () {
         await driver.clickElementSafe('#connectButton');
 
         // switch to metamask extension and click connect to start installing the snap
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -234,7 +235,7 @@ describe('Create Snap Account', function () {
         });
 
         // switch to metamask extension
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
         // cancel account creation
         await driver.clickElement('[data-testid="confirmation-cancel-button"]');
