@@ -1249,6 +1249,7 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
           () => listener(),
+          (state) => state.providerConfig.chainId,
         );
       },
       getCurrentChainId: () =>
@@ -3267,7 +3268,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _startUISync() {
-    // Message startUISync is used in MV3 to start syncing state with UI
+    // Message startUISync is used to start syncing state with UI
     // Sending this message after login is completed helps to ensure that incomplete state without
     // account details are not flushed to UI.
     this.emit('startUISync');
@@ -4654,7 +4655,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param newState
    */
-  async _onStateUpdate(newState) {
+  _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
     this._notifyChainChange();
   }
