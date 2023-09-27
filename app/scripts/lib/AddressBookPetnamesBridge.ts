@@ -28,7 +28,7 @@ export type AddressBookPetnamesBridgeMessenger = RestrictedControllerMessenger<
   AllowedEvents['type']
 >;
 
-export default class AddressBookPetnamesBridge {
+export class AddressBookPetnamesBridge {
   #addressBookController: AddressBookController;
 
   #addressBookState: AddressBookState;
@@ -147,20 +147,29 @@ export default class AddressBookPetnamesBridge {
   #groupEntries(oldEntries: Entry[], newEntries: Entry[]) {
     const added = newEntries.filter(
       (newEntry) =>
-        !oldEntries.some((oldEntry) => oldEntry.address === newEntry.address),
+        !oldEntries.some(
+          (oldEntry) =>
+            oldEntry.address === newEntry.address &&
+            oldEntry.chainId === newEntry.chainId,
+        ),
     );
 
     const updated = newEntries.filter((newEntry) =>
       oldEntries.some(
         (oldEntry) =>
           oldEntry.address === newEntry.address &&
+          oldEntry.chainId === newEntry.chainId &&
           oldEntry.name !== newEntry.name,
       ),
     );
 
     const deleted = oldEntries.filter(
       (oldEntry) =>
-        !newEntries.some((newEntry) => newEntry.address === oldEntry.address),
+        !newEntries.some(
+          (newEntry) =>
+            newEntry.address === oldEntry.address &&
+            newEntry.chainId === oldEntry.chainId,
+        ),
     );
 
     return { added, updated, deleted };

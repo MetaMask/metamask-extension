@@ -171,7 +171,9 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
-
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import * as PPOMModule from './lib/ppom/ppom';
@@ -238,7 +240,6 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
-import AddressBookPetnamesBridge from './lib/address-book-petnames-bridge';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
