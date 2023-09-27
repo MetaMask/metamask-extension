@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   Box,
-  Button,
   AvatarAccount,
   AvatarAccountVariant,
   Icon,
   IconName,
   Text,
+  ButtonBase,
 } from '../../component-library';
 import {
   AlignItems,
@@ -24,6 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AccountPicker = ({
@@ -33,11 +34,11 @@ export const AccountPicker = ({
   disabled,
   showAddress = false,
 }) => {
-  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+  const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
-    <Button
+    <ButtonBase
       className="multichain-account-picker"
       data-testid="account-menu-icon"
       onClick={onClick}
@@ -86,7 +87,7 @@ export const AccountPicker = ({
           </Text>
         ) : null}
       </Box>
-    </Button>
+    </ButtonBase>
   );
 };
 

@@ -55,7 +55,7 @@ describe('Add account', function () {
     );
   });
 
-  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
+  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -161,7 +161,7 @@ describe('Add account', function () {
     );
   });
 
-  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding', async function () {
+  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding @no-mmi', async function () {
     const testPrivateKey =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 

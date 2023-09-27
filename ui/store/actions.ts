@@ -22,6 +22,11 @@ import { NonEmptyArray } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
+import {
+  SetNameRequest,
+  UpdateProposedNamesRequest,
+  UpdateProposedNamesResult,
+} from '@metamask/name-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -36,6 +41,7 @@ import {
   getSelectedAddress,
   hasTransactionPendingApprovals,
   getApprovalFlows,
+  getCurrentNetworkTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
@@ -773,7 +779,7 @@ const updateMetamaskStateFromBackground = (): Promise<
  * @param previousGasParams - Object of gas params to set as previous
  */
 export function updatePreviousGasParams(
-  txId: number,
+  txId: string,
   previousGasParams: Record<string, any>,
 ): ThunkAction<
   Promise<TransactionMeta>,
@@ -798,7 +804,7 @@ export function updatePreviousGasParams(
 }
 
 export function updateEditableParams(
-  txId: number,
+  txId: string,
   editableParams: Partial<TxParams>,
 ): ThunkAction<
   Promise<TransactionMeta>,
@@ -833,7 +839,7 @@ export function updateEditableParams(
  * @returns
  */
 export function updateTransactionSendFlowHistory(
-  txId: number,
+  txId: string,
   currentSendFlowHistoryLength: number,
   sendFlowHistory: DraftTransaction['history'],
 ): ThunkAction<
@@ -889,7 +895,7 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
 
 // TODO: codeword: NOT_A_THUNK @brad-decker
 export function updateTransactionGasFees(
-  txId: number,
+  txId: string,
   txGasFees: Partial<TxGasFees>,
 ): ThunkAction<
   Promise<TransactionMeta>,
@@ -1097,7 +1103,7 @@ export async function getTransactions(
 }
 
 export function completedTx(
-  txId: number,
+  txId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch({
@@ -1109,7 +1115,7 @@ export function completedTx(
   };
 }
 
-export function updateTransactionParams(txId: number, txParams: TxParams) {
+export function updateTransactionParams(txId: string, txParams: TxParams) {
   return {
     type: actionConstants.UPDATE_TRANSACTION_PARAMS,
     id: txId,
@@ -2046,12 +2052,12 @@ export function clearPendingTokens(): Action {
 }
 
 export function createCancelTransaction(
-  txId: number,
+  txId: string,
   customGasSettings: CustomGasSettings,
   options: { estimatedBaseFee?: string } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.cancelTransaction');
-  let newTxId: number;
+  let newTxId: string;
 
   return (dispatch: MetaMaskReduxDispatch) => {
     const actionId = generateActionId();
@@ -2066,7 +2072,8 @@ export function createCancelTransaction(
             return;
           }
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
@@ -2103,7 +2110,8 @@ export function createSpeedUpTransaction(
           }
 
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
             resolve(newState);
           }
@@ -2135,7 +2143,8 @@ export function createRetryTransaction(
             return;
           }
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
             resolve(newState);
           }
@@ -2404,9 +2413,14 @@ export function hideModal(): Action {
   };
 }
 
-export function showImportNftsModal(): Action {
+export function showImportNftsModal(payload: {
+  tokenAddress?: string;
+  tokenId?: string;
+  ignoreErc20Token?: boolean;
+}) {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
+    payload,
   };
 }
 
@@ -4422,6 +4436,16 @@ export function setSecurityAlertsEnabled(val: boolean): void {
 }
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
+  try {
+    await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
+
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }
@@ -4503,6 +4527,32 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
     console.error(error);
   }
   return networkEIP1559Compatibility;
+}
+
+export function updateProposedNames(
+  request: UpdateProposedNamesRequest,
+): ThunkAction<
+  UpdateProposedNamesResult,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (async () => {
+    const data = await submitRequestToBackground<UpdateProposedNamesResult>(
+      'updateProposedNames',
+      [request],
+    );
+
+    return data;
+  }) as any;
+}
+
+export function setName(
+  request: SetNameRequest,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (async () => {
+    await submitRequestToBackground<void>('setName', [request]);
+  }) as any;
 }
 
 /**

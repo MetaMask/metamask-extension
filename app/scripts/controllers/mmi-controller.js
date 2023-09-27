@@ -293,7 +293,7 @@ export default class MMIController extends EventEmitter {
     );
 
     for (let i = 0; i < newAccounts.length; i++) {
-      await this.keyringController.addNewAccount(keyring);
+      await this.keyringController.addNewAccountForKeyring(keyring);
     }
 
     const allAccounts = await this.keyringController.getAccounts();
@@ -345,7 +345,7 @@ export default class MMIController extends EventEmitter {
 
     // FIXME: status maps are not a thing anymore
     this.custodyController.storeCustodyStatusMap(
-      custodian.name,
+      custodian.envName,
       keyring.getStatusMap(),
     );
 
@@ -641,9 +641,10 @@ export default class MMIController extends EventEmitter {
 
   async setAccountAndNetwork(origin, address, chainId) {
     await this.appStateController.getUnlockPromise(true);
+    const addressToLowerCase = address.toLowerCase();
     const selectedAddress = this.preferencesController.getSelectedAddress();
-    if (selectedAddress.toLowerCase() !== address.toLowerCase()) {
-      this.preferencesController.setSelectedAddress(address);
+    if (selectedAddress.toLowerCase() !== addressToLowerCase) {
+      this.preferencesController.setSelectedAddress(addressToLowerCase);
     }
     const selectedChainId = parseInt(
       this.networkController.state.providerConfig.chainId,
@@ -667,7 +668,7 @@ export default class MMIController extends EventEmitter {
 
     getPermissionBackgroundApiMethods(
       this.permissionController,
-    ).addPermittedAccount(origin, address);
+    ).addPermittedAccount(origin, addressToLowerCase);
 
     return true;
   }
