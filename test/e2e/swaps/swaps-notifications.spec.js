@@ -8,7 +8,7 @@ const {
   checkNotification,
 } = require('./shared');
 
-describe('Swaps - notifications', function () {
+describe('Swaps - notifications @no-mmi', function () {
   async function mockTradesApiPriceSlippageError(mockServer) {
     await mockServer
       .forGet('https://swap.metaswap.codefi.network/networks/1/trades')

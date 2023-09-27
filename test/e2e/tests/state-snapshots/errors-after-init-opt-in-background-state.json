@@ -147,7 +147,6 @@
     },
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
-    "infuraBlocked": false,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,

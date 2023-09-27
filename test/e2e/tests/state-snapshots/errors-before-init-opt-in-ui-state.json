@@ -79,7 +79,6 @@
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
-      "infuraBlocked": false,
       "ipfsGateway": "string",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",
