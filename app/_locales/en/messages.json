@@ -177,6 +177,9 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addNewAccount": {
+    "message": "Add a new account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
