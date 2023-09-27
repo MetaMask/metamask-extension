@@ -3875,7 +3875,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-passworder@npm:^4.0.2, @metamask/browser-passworder@npm:^4.1.0":
+"@metamask/browser-passworder@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/browser-passworder@npm:4.1.0"
   checksum: c09db69dd80ed020e017e70bc0589348343e659c8f402810a5c950ca42a16340a43998a0651ec0747cf4b2e2c0ce16dadd8511d2760ecb958e0a0a09fa95016e
@@ -4073,19 +4073,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-keyring-controller@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "@metamask/eth-keyring-controller@npm:10.0.1"
-  dependencies:
-    "@metamask/browser-passworder": "npm:^4.0.2"
-    "@metamask/eth-hd-keyring": "npm:^6.0.0"
-    "@metamask/eth-sig-util": "npm:5.0.2"
-    "@metamask/eth-simple-keyring": "npm:^5.0.0"
-    obs-store: "npm:^4.0.3"
-  checksum: b739eca06665ab384a33fb1c82b1c9e52de69223ff950a99676d1a542b1b1acaa21d3a1ed07cd7fda23fd3b70510706f2ab65bc7631bfd8902bab8bcf41ace0f
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-keyring-controller@npm:^13.0.1":
   version: 13.0.1
   resolution: "@metamask/eth-keyring-controller@npm:13.0.1"
@@ -4120,20 +4107,6 @@ __metadata:
     json-rpc-random-id: "npm:^1.0.0"
     xtend: "npm:^4.0.1"
   checksum: d463aff018ae3f1229331177e9efa0eb62958c6fcc30039c22d151ee64da17d55153ef4861060aecec674f764aa9074341bef53fdf86c2258d3cb2682976e835
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-sig-util@npm:5.0.2":
-  version: 5.0.2
-  resolution: "@metamask/eth-sig-util@npm:5.0.2"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.0.0"
-    bn.js: "npm:^4.11.8"
-    ethereum-cryptography: "npm:^1.1.2"
-    ethjs-util: "npm:^0.1.6"
-    tweetnacl: "npm:^1.0.3"
-    tweetnacl-util: "npm:^0.15.1"
-  checksum: 37489528d8e987bae00d9c5b2025b86e9ca6914cc9f3b98bae2eb39c3a890959d15cb09fad9c761f88ce0ae49e2a91f0237425f5771b1e3f0be62f2965e46a38
   languageName: node
   linkType: hard
 
@@ -4358,7 +4331,7 @@ __metadata:
 
 "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A8.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.0-806630ae4e.patch":
   version: 8.0.0
-  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A8.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.0-806630ae4e.patch::version=8.0.0&hash=65339a"
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A8.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.0-806630ae4e.patch::version=8.0.0&hash=f1c901"
   dependencies:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@metamask/base-controller": "npm:^3.2.1"
@@ -4372,7 +4345,7 @@ __metadata:
     immer: "npm:^9.0.6"
   peerDependencies:
     "@metamask/preferences-controller": ^4.4.1
-  checksum: f9a4f8eaec927b5c2fdc91f12066254a90b4358e79dcf01ff4c380414cdb53f37914cb9e5dd71a9758fd67ffe7346fcb181f2124e6d6f1fca8c21af5bb5b1920
+  checksum: 51904e7364cce9bbebd933e2ef0f39131c7f78f0d96e99ee1ec5871a0f8befbdd99206332db872e702cbe10d9e542f3c0c4f885cddf9185682e8aaa44369c01b
   languageName: node
   linkType: hard
 
@@ -4397,7 +4370,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.2.0, @metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.3":
+"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.2, @metamask/message-manager@npm:^7.3.3":
   version: 7.3.3
   resolution: "@metamask/message-manager@npm:7.3.3"
   dependencies:
@@ -4765,41 +4738,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:5.3.0":
-  version: 5.3.0
-  resolution: "@metamask/signature-controller@npm:5.3.0"
+"@metamask/signature-controller@npm:6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/signature-controller@npm:6.0.0"
   dependencies:
-    "@metamask/approval-controller": "npm:^3.5.0"
-    "@metamask/base-controller": "npm:^3.2.0"
-    "@metamask/controller-utils": "npm:^4.3.0"
-    "@metamask/message-manager": "npm:^7.2.0"
+    "@metamask/approval-controller": "npm:^3.5.1"
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^4.3.2"
+    "@metamask/message-manager": "npm:^7.3.2"
     "@metamask/utils": "npm:^6.2.0"
     eth-rpc-errors: "npm:^4.0.2"
     ethereumjs-util: "npm:^7.0.10"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/approval-controller": ^3.5.0
-  checksum: d5b5aad5ed4c97032f3fd3d1dc7f260d700ae8b630f50b30019519b79b760bdaa4ad368721db5b24719062bd650193f23b9410a51e34c3d363f33f9ad83528d6
+    "@metamask/approval-controller": ^3.5.1
+  checksum: 4d2b6e47d721905e8e0fde981a492f3bcb498893b7892a0a649389ef957cbdcbe00238144c37dad189c5da4121606ffe0f1c061f8bc473c073ce84e4fbe24965
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch::locator=metamask-crx%40workspace%3A.":
-  version: 5.3.0
-  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch::version=5.3.0&hash=b8da18&locator=metamask-crx%40workspace%3A."
+"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-signature-controller-npm-6.0.0-90e8e479a9.patch":
+  version: 6.0.0
+  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-signature-controller-npm-6.0.0-90e8e479a9.patch::version=6.0.0&hash=ae5433"
   dependencies:
-    "@metamask/approval-controller": "npm:^3.5.0"
-    "@metamask/base-controller": "npm:^3.2.0"
-    "@metamask/controller-utils": "npm:^4.3.0"
-    "@metamask/message-manager": "npm:^7.2.0"
+    "@metamask/approval-controller": "npm:^3.5.1"
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^4.3.2"
+    "@metamask/message-manager": "npm:^7.3.2"
     "@metamask/utils": "npm:^6.2.0"
     eth-rpc-errors: "npm:^4.0.2"
     ethereumjs-util: "npm:^7.0.10"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/approval-controller": ^3.5.0
-  checksum: 973259698560a21b8f7d5436f4e4c198202781d7b796012b2d6336bd1738eeedfe1bd405e352c468b46958889f12a709f1b3247ec6e9e8f388984fa25ae0eff3
+    "@metamask/approval-controller": ^3.5.1
+  checksum: f178e2aacfe031930eb68018571e7531bb91b742a2d4beacb51d5ff8d35e609d0dd601c7cd8ae734c9f8a1f7c41d3ca4d59b3fd48261fb691223f0e6b85ba7d9
   languageName: node
   linkType: hard
 
@@ -23908,7 +23881,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
-    "@metamask/eth-keyring-controller": "npm:^10.0.1"
+    "@metamask/eth-keyring-controller": "npm:^13.0.1"
     "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
     "@metamask/eth-snap-keyring": "npm:0.3.0"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
@@ -23939,7 +23912,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^1.0.0"
-    "@metamask/signature-controller": "npm:^5.3.0"
+    "@metamask/signature-controller": "npm:^6.0.0"
     "@metamask/slip44": "npm:^3.0.0"
     "@metamask/smart-transactions-controller": "npm:^4.0.0"
     "@metamask/snaps-controllers": "npm:^2.0.1"
@@ -26193,18 +26166,6 @@ __metadata:
   version: 1.0.5
   resolution: "objectorarray@npm:1.0.5"
   checksum: 8fd776aa495d113e217837f4adc1d53e63f656498237094d25f84c3e2c038b34b71d6fd85c4b60c7ae5f558790e5042426a400fae3eac35f297e11be12643a78
-  languageName: node
-  linkType: hard
-
-"obs-store@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "obs-store@npm:4.0.3"
-  dependencies:
-    readable-stream: "npm:^2.2.2"
-    safe-event-emitter: "npm:^1.0.1"
-    through2: "npm:^2.0.3"
-    xtend: "npm:^4.0.1"
-  checksum: d56da17699a00fc16d9485aa668cf8d27a6cbf9ae38905cd0bfd75eb37f32bbfed9e976a257371d969b18d627c0c8a6f7b13c5e3f277aa36c740f2bc90ae2a11
   languageName: node
   linkType: hard
 

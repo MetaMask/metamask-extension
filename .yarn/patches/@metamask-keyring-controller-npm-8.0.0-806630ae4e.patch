@@ -1,40 +1,23 @@
-diff --git a/dist/KeyringController.d.ts b/dist/KeyringController.d.ts
-index 44c6427ec774475b87f60995738f736611875194..d359269ad413a0a626d06e44a84eb0cbbdb8c7b0 100644
---- a/dist/KeyringController.d.ts
-+++ b/dist/KeyringController.d.ts
-@@ -5,6 +5,7 @@ import { BaseControllerV2 } from '@metamask/base-controller';
- import type { PersonalMessageParams, TypedMessageParams } from '@metamask/message-manager';
- import type { PreferencesController } from '@metamask/preferences-controller';
- import type { Eip1024EncryptedData, Hex, Keyring, Json } from '@metamask/utils';
-+import type { KeyringController as EthKeyringController } from '@metamask/eth-keyring-controller';
- import type { Patch } from 'immer';
- declare const name = "KeyringController";
- /**
-@@ -171,6 +172,10 @@ export declare class KeyringController extends BaseControllerV2<typeof name, Key
-      * @param opts.state - Initial state to set on this controller.
-      */
-     constructor({ removeIdentity, syncIdentities, updateIdentities, setSelectedAddress, setAccountLabel, encryptor, keyringBuilders, cacheEncryptionKey, messenger, state, }: KeyringControllerOptions);
-+    /**
-+     * Gets the internal keyring controller.
-+     */
-+    getEthKeyringController(): EthKeyringController;
-     /**
-      * Adds a new account to the default (first) HD seed phrase keyring.
-      *
 diff --git a/dist/KeyringController.js b/dist/KeyringController.js
-index d8b1e1b8da74d1647e6fbe50cf94f63bf9fd28cf..e3790cef6f1a93c6624db5f49cf53e54d4d1c702 100644
+index d8b1e1b8da74d1647e6fbe50cf94f63bf9fd28cf..6d6d7e590d27be0a9807154dfaac3ce3d1059a75 100644
 --- a/dist/KeyringController.js
 +++ b/dist/KeyringController.js
-@@ -155,6 +155,12 @@ class KeyringController extends base_controller_1.BaseControllerV2 {
-         this.setAccountLabel = setAccountLabel;
-         __classPrivateFieldGet(this, _KeyringController_instances, "m", _KeyringController_registerMessageHandlers).call(this);
-     }
-+    /**
-+     * Gets the internal keyring controller.
-+     */
-+    getEthKeyringController() {
-+        return __classPrivateFieldGet(this, _KeyringController_keyring, "f");
-+    }
-     /**
-      * Adds a new account to the default (first) HD seed phrase keyring.
-      *
+@@ -812,7 +812,17 @@ _KeyringController_keyring = new WeakMap(), _KeyringController_qrKeyringStateLis
+         }
+     });
+ }, _KeyringController_fullUpdate = function _KeyringController_fullUpdate() {
+-    this.update(() => (Object.assign(Object.assign({}, __classPrivateFieldGet(this, _KeyringController_keyring, "f").store.getState()), __classPrivateFieldGet(this, _KeyringController_keyring, "f").memStore.getState())));
++    const { vault } = __classPrivateFieldGet(this, _KeyringController_keyring, "f").store.getState();
++    const { isUnlocked, keyrings, encryptionKey, encryptionSalt } = 
++        __classPrivateFieldGet(this, _KeyringController_keyring, "f").memStore.getState();
++
++    this.update(() => ({
++        vault,
++        keyrings,
++        isUnlocked,
++        encryptionKey,
++        encryptionSalt,
++    }));
+ }, _KeyringController_handleLock = function _KeyringController_handleLock() {
+     this.messagingSystem.publish(`${name}:lock`);
+ }, _KeyringController_handleUnlock = function _KeyringController_handleUnlock() {
