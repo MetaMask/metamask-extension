@@ -104,7 +104,7 @@ export default function ConnectedAccounts({
         />
       </Box>
       {subjectHasSnaps && connectedSnapsMetaData.length > 0 && (
-        <Box>
+        <>
           <Box marginLeft={4}>
             <Text
               variant={TextVariant.bodyMdMedium}
@@ -114,7 +114,7 @@ export default function ConnectedAccounts({
             </Text>
           </Box>
           <ConnectedSnaps connectedSubjects={connectedSnapsMetaData} />
-        </Box>
+        </>
       )}
     </Popover>
   );

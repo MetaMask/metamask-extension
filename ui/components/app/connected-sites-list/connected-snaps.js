@@ -29,7 +29,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const subjects = useSelector((state) => getPermissionSubjects(state));
+  const subjects = useSelector(getPermissionSubjects);
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
 
   const onDisconnect = (snapId) => {

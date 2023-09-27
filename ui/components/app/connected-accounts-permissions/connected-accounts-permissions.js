@@ -70,14 +70,10 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
           ariaLabel={t('showPermissions')}
         />
       </Box>
-      {expanded && (
+      {expanded ? (
         <Box
           className={classnames(
-            'connected-accounts-permissions__list-container',
-            {
-              'connected-accounts-permissions__list-container--expanded':
-                expanded,
-            },
+            'connected-accounts-permissions__list-container-expanded',
           )}
           marginTop={4}
         >
@@ -100,7 +96,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
             ))}
           </ul>
         </Box>
-      )}
+      ) : null}
     </Box>
   );
 };

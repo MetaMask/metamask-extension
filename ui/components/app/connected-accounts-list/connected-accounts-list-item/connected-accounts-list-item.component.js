@@ -32,7 +32,7 @@ export default function ConnectedAccountsListItem({
 }) {
   const useBlockie = useSelector(getUseBlockie);
   const containerbackgroundColor =
-    backgroundColor || BackgroundColor.backgroundDefault;
+    backgroundColor ?? BackgroundColor.backgroundDefault;
   return (
     <Box
       className={classnames('connected-accounts-list__row', className)}
