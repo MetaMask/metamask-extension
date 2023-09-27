@@ -41,6 +41,8 @@ const {
   logError,
   wrapAgainstScuttling,
   getBuildName,
+  getBuildAppId,
+  getBuildIcon,
 } = require('./utils');
 
 const {
@@ -542,7 +544,7 @@ async function createManifestV3AppInitializationBundle({
     shouldLintFenceFiles,
     version,
     applyLavaMoat,
-    shouldIncludeSnow,
+    shouldIncludeSnow: false, // is this right?
   })();
 
   // Code below is used to set statsMode to true when testing in MV3
@@ -1210,6 +1212,12 @@ async function setEnvironmentVariables({
       buildType,
       applyLavaMoat,
       shouldIncludeSnow,
+    }),
+    METAMASK_BUILD_APP_ID: getBuildAppId({
+      buildType,
+    }),
+    METAMASK_BUILD_ICON: getBuildIcon({
+      buildType,
     }),
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,

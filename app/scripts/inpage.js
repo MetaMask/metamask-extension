@@ -37,10 +37,6 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
-// provider constants
-const iconUrl =
-  'https://raw.githubusercontent.com/MetaMask/brand-resources/cb6fd847f3a9cc5e231c749383c3898935e62eab/SVG/metamask-fox.svg'; // TODO: Find a shorter URL
-
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
@@ -67,8 +63,8 @@ if (shouldInjectProvider()) {
     shouldAnnounceProviderInfo: {
       uuid: uuid(),
       name: process.env.METAMASK_BUILD_NAME,
-      icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>", // update this
-      rdns: "io.consensys.metamask" // update this
+      icon: process.env.METAMASK_BUILD_ICON,
+      rdns: process.env.METAMASK_BUILD_APP_ID,
     },
   });
 }
