@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "NFT मीडिया को दिखाएं"
   },
-  "displayNftMediaDescription": {
-    "message": "NFT मीडिया और डेटा दिखाने से आपका IP एड्रेस OpenSea या अन्य थर्ड पार्टियों के सामने आ जाता है। ऐसा होने पर, हमला करने वाले आपके IP एड्रेस को आपके Ethereum एड्रेस के साथ जोड़ पाते हैं। NFT ऑटोडिटेक्शन की सुविधा इस सेटिंग पर निर्भर करती है, और इस सेटिंग को बंद किए जाने पर उपलब्ध नहीं रहेगी।"
-  },
   "domain": {
     "message": "डोमेन"
   },
@@ -1446,21 +1443,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "एडवांस्ड टोकन डिटेक्शन वर्तमान में $1 पर उपलब्ध है। $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask आपको सीधे आपके ब्राउज़़र के एड्रेस बार में \"https://metamask.eth\" जैसे ENS डोमेन देखने की सुविधा देता है। यह ऐसे काम करता है:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "आमतौर पर इस्तेमाल किए जाने वाले ब्राउज़़र यूं तो ENS या IPFS एड्रेसों को हैंडल नहीं करते हैं, लेकिन MetaMask इसमें मदद करता है। इस फीचर का इस्तेमाल करके आपके IP एड्रेस को IPFS थर्ड-पार्टी सेवाओं के साथ शेयर किया जा सकता है।"
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "ENS नाम से जुड़े कोड को खोजने के लिए MetaMask, Ethereum के ENS कॉन्ट्रैक्ट की जांच करता है।"
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "अगर कोड IPFS से लिंक्ड है, तो उसे IPFS नेटवर्क से कॉन्टेंट प्राप्त होता है।"
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "इसके बाद, आप कॉन्टेंट देख सकते हैं, आमतौर पर एक वेबसाइट या कुछ इसी तरह का।"
   },
   "ensDomainsSettingTitle": {
     "message": "एड्रेस बार में ENS डोमेन दिखाएँ"
@@ -2479,12 +2461,6 @@
   },
   "newContract": {
     "message": "नया कॉन्ट्रैक्ट"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Opensea से ऑटोमेटिक तरीके से NFT का पता लगाने और अपने वॉलेट में दिखाने के लिए MetaMask को अनुमति दें।"
-  },
-  "newNFTsDetected": {
-    "message": "नया! NFT डिटेक्शन"
   },
   "newNetworkAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
@@ -3877,9 +3853,6 @@
     "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "यह हर उस नेटवर्क पर निर्भर करता है जिसे आपके Ethereum एड्रेस और आपके IP एड्रेस का एक्सेस होगा।"
-  },
   "showMore": {
     "message": "अधिक दिखाएं"
   },
@@ -5247,21 +5220,6 @@
   },
   "useNftDetection": {
     "message": "NFT को ऑटो-डिटेक्ट करें"
-  },
-  "useNftDetectionDescription": {
-    "message": "आपके वॉलेट में NFT को डिटेक्ट करने के लिए हम थर्ड-पार्टी API का इस्तेमाल करते हैं, जिसका मतलब है आपका IP एड्रेस केंद्रीकृत सर्वर्स को उजागर किया जा सकता है। ये कुछ ऐसी चीजें हैं जिस पर इस फीचर को एनेबल करते समय सतर्क रहना होगा।"
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "आपका अकाउंट एड्रेस थर्ड-पार्टी API देख सकते हैं।"
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT मेटाडेटा में धोखाधड़ी या फिशिंग साइटों के लिंक हो सकते हैं।"
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "कोई भी आपके अकाउंट में NFT को एयरड्रॉप कर सकता है। इसमें आपत्तिजनक कंटेंट शामिल हो सकती है जो आपके वॉलेट में ऑटोमेटिक तरीके से प्रदर्शित हो सकती है।"
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "यदि आप नहीं चाहते कि ऐप उन सेवाओं से डेटा खींचे तो इस सुविधा को बंद कर दें।"
   },
   "usePhishingDetection": {
     "message": "फिशिंग डिटेक्शन का इस्तेमाल करें"

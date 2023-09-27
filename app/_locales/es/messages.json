@@ -1289,9 +1289,6 @@
   "displayNftMedia": {
     "message": "Mostrar medios NFT"
   },
-  "displayNftMediaDescription": {
-    "message": "Mostrar los medios y datos NFT expone su dirección IP a OpenSea u otros terceros. Esto puede permitir que los atacantes asocien su dirección IP con su dirección Ethereum. La detección automática de NFT se basa en esta configuración y no estará disponible cuando esté desactivada."
-  },
   "domain": {
     "message": "Dominio"
   },
@@ -1446,21 +1443,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Actualmente, la detección mejorada de token se encuentra disponible en $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask le permite ver dominios ENS como \"https://metamask.eth\" directamente en la barra de direcciones de su navegador. Así es como funciona:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Los navegadores normales no suelen manejar direcciones ENS o IPFS, pero MetaMask ayuda con esto. El uso de esta función podría compartir su dirección IP con servicios de terceros de IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask verifica con el contrato ENS de Ethereum para encontrar el código conectado al nombre ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Si el código está vinculado a IPFS, obtiene el contenido de la red IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Después, puede ver el contenido, generalmente un sitio web o algo similar."
   },
   "ensDomainsSettingTitle": {
     "message": "Mostrar dominios ENS en la barra de direcciones"
@@ -2479,12 +2461,6 @@
   },
   "newContract": {
     "message": "Contrato nuevo"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Permita que MetaMask detecte de forma automática los NFT de Opensea y los muestre en su monedero."
-  },
-  "newNFTsDetected": {
-    "message": "¡Nuevo! Detección NFT"
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
@@ -3877,9 +3853,6 @@
     "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Esto depende de cada red que tendrá acceso a su dirección Ethereum y su dirección IP."
-  },
   "showMore": {
     "message": "Mostrar más"
   },
@@ -5247,21 +5220,6 @@
   },
   "useNftDetection": {
     "message": "Detección automática de NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "Usamos API de terceros para detectar NFT en su monedero, lo que significa que su dirección IP puede estar expuesta a servidores centralizados. Hay algunas cosas que debe tener cuidado al habilitar esta función."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "La dirección de su cuenta será visible para las API de terceros."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "La metadata de un NFT puede contener enlaces a sitios fraudulentos o de phishing."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Cualquiera puede enviar un NFT no solicitado a su cuenta. Esto puede incluir contenido ofensivo que podría mostrarse automáticamente en su monedero."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Deje esta función desactivada si no desea que la aplicación extraiga datos de esos servicios."
   },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"
