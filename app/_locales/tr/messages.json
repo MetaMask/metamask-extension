@@ -3194,14 +3194,6 @@
     "message": "Bu yaşam döngüsü sırasında belirli zamanlarda kod çalıştırmak için snapin yaşam döngüsü kancalarını kullanmasına izin verin.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "Süresiz çalıştır.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Snapin örneğin büyük miktarda veri işlerken belirsiz süreyle çalışmasına izin verin.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Ethereum hesaplarını ekle ve kontrol et",
     "description": "The description for `snap_manageAccounts` permission"

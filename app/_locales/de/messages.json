@@ -3194,14 +3194,6 @@
     "message": "Erlauben Sie dem Snap Lebenszyklus-Hooks zu verwenden, um den Code während seines Lebenszyklus zu bestimmten Zeiten auszuführen.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "Für unbestimmte Zeit ausführen.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Gestatten Sie dem Snap, unbegrenzt ausgeführt zu werden, während es zum Beispiel große Datenmengen verarbeitet.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Ethereum-Konten hinzufügen und kontrollieren",
     "description": "The description for `snap_manageAccounts` permission"
