@@ -3593,9 +3593,6 @@
   "removeSnapAccountTitle": {
     "message": "Remove account"
   },
-  "removeSnapAccountWarning": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
   "removeSnapConfirmation": {
     "message": "Are you sure you want to remove $1?",
     "description": "$1 represents the name of the snap"
