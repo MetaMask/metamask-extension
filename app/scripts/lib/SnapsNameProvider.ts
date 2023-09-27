@@ -12,13 +12,13 @@ import {
   HandlerType,
   OnNameLookupResponse,
   TruncatedSnap,
-} from '@metamask/snaps-utils-flask';
+} from '@metamask/snaps-utils';
 import log from 'loglevel';
 import {
   GetAllSnaps,
   GetSnap,
   HandleSnapRequest,
-} from '@metamask/snaps-controllers-flask';
+} from '@metamask/snaps-controllers';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 
 type AllowedActions =
