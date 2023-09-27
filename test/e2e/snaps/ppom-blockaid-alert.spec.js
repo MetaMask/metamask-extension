@@ -14,7 +14,6 @@ const {
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-// const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
 const mainnetProviderConfig = {
   providerConfig: {
@@ -63,27 +62,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
               },
             ],
           },
-          // {
-          //   logExpectedDetail: 'Benign 2',
-          //   method: 'eth_sendTransaction',
-          //   params: [
-          //     {
-          //       from: selectedAddress,
-          //       to: '0xf977814e90da44bfa03b6295a0616a897441acec',
-          //       value: '0x9184e72a000',
-          //     },
-          //   ],
-          //   block: '16000000',
-          // },
-          // {
-          //   logExpectedDetail: 'eth_signTypedData',
-          //   method: 'eth_signTypedData',
-          //   params: [
-          //     selectedAddress,
-          //     '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"holder","type":"address"},{"name":"spender","type":"address"},{"name":"nonce","type":"uint256"},{"name":"expiry","type":"uint256"},{"name":"allowed","type":"bool"}]},"primaryType":"Permit","domain":{"name":"Dai Stablecoin","verifyingContract":"0x6b175474e89094c44da98b954eedeac495271d0f","chainId":1,"version":"1"},"message":{"expiry":1683011683,"nonce":3,"spender":"0x1111111254eeb25477b68fb85ed929f73a960582","holder":"0x3bbec29ab82db1f0be3f67261cc902c4e35ab70d","allowed":true}}',
-          //   ],
-          //   block: '17181852',
-          // },
           {
             logExpectedDetail: 'blur',
             method: 'eth_signTypedData_v4',
@@ -165,50 +143,18 @@ describe('Confirmation Security Alert - Blockaid', function () {
               'If you approve this request, a third party known for scams might take all your assets.',
             expectedReason: 'approval_farming',
           },
-
-          // PPOM Error: block does not exist
-          // Sending ETH - Contract at 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 could not be found in the project information
-          // {
-          //   expectedDescription:
-          //     'If you approve this request, a third party known for scams will take all your assets.',
-          //   expectedReason: 'transfer_farming of ERC20',
-          //   btnSelector: 'maliciousERC20TransferButton',
-          // },
-
-          // Error from PPOM: block does not exist
-          // Sending ETH - Contract at 0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB could not be found in the project information
-          // transferPunk(address _to, uint _tokenId)
-          // {
-          //   btnSelector: 'maliciousERC721Transfer',
-          //   expectedDescription:
-          //     'If you approve this request, a third party known for scams will take all your assets.',
-          //   expectedReason: 'transfer_farming of ERC721',
-          // },
           {
             btnSelector: 'maliciousPermit',
             expectedDescription:
               'If you approve this request, a third party known for scams might take all your assets.',
             expectedReason: 'permit_farming',
           },
-          // PPOM Error: block does not exist
-          // {
-          //   btnSelector: 'maliciousRawEthButton',
-          //   expectedDescription:
-          //     'If you approve this request, you might lose your assets.',
-          //   expectedReason: 'raw_ether_transfer',
-          // },
           {
             btnSelector: 'maliciousSeaport',
             expectedDescription:
               'If you approve this request, someone can steal your assets listed on OpenSea.',
             expectedReason: 'seaport_farming',
           },
-          // {
-          //   btnSelector: 'maliciousSetApprovalForAll',
-          //   expectedDescription:
-          //     'If you approve this request, someone can steal your assets listed on OpenSea.',
-          //   expectedReason: 'set_approval_for_all'
-          // },
           {
             btnSelector: 'maliciousTradeOrder',
             expectedDescription:
