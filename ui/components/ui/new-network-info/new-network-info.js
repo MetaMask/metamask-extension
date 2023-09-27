@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { I18nContext } from '../../../contexts/i18n';
-import Popover from '../popover';
-import Button from '../button';
-import Identicon from '../identicon';
-import Box from '../box';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
   AlignItems,
   Color,
@@ -14,29 +13,23 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import {
-  getNativeCurrencyImage,
-  getUseTokenDetection,
-} from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
-import Chip from '../chip/chip';
+import { getCurrentNetwork, getUseTokenDetection } from '../../../selectors';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { Icon, IconName, Text } from '../../component-library';
-import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
+import { PickerNetwork, Text } from '../../component-library';
+import Box from '../box';
+import Button from '../button';
+import Popover from '../popover';
 
-const NewNetworkInfo = () => {
+export default function NewNetworkInfo() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const [tokenDetectionSupported, setTokenDetectionSupported] = useState(false);
   const [showPopup, setShowPopup] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const autoDetectToken = useSelector(getUseTokenDetection);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const providerConfig = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   const onCloseClick = () => {
     setShowPopup(false);
@@ -95,29 +88,15 @@ const NewNetworkInfo = () => {
           >
             {t('switchedTo')}
           </Text>
-          <Chip
-            className="new-network-info__token-box"
-            backgroundColor={Color.backgroundAlternative}
-            maxContent={false}
-            label={
-              providerConfig.type === NETWORK_TYPES.RPC
-                ? providerConfig.nickname ?? t('privateNetwork')
-                : t(getNetworkLabelKey(providerConfig.type))
-            }
-            labelProps={{
-              color: Color.textDefault,
-            }}
-            leftIcon={
-              primaryTokenImage ? (
-                <Identicon image={primaryTokenImage} diameter={14} />
-              ) : (
-                <Icon
-                  className="question"
-                  name={IconName.Question}
-                  color={Color.iconDefault}
-                />
-              )
-            }
+          <PickerNetwork
+            label={currentNetwork?.nickname}
+            src={currentNetwork?.rpcPrefs?.imageUrl}
+            marginLeft="auto"
+            marginRight="auto"
+            marginTop={4}
+            marginBottom={4}
+            iconProps={{ display: 'none' }} // do not show the dropdown icon
+            as="div" // do not render as a button
           />
           <Text
             variant={TextVariant.bodySmBold}
@@ -129,7 +108,7 @@ const NewNetworkInfo = () => {
             {t('thingsToKeep')}
           </Text>
           <Box marginRight={4} marginLeft={5} marginTop={6}>
-            {providerConfig.ticker ? (
+            {providerConfig.ticker && (
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}
@@ -160,7 +139,7 @@ const NewNetworkInfo = () => {
                   ])}
                 </Text>
               </Box>
-            ) : null}
+            )}
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
@@ -241,6 +220,4 @@ const NewNetworkInfo = () => {
       </Popover>
     )
   );
-};
-
-export default NewNetworkInfo;
+}
