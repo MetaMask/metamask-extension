@@ -17,6 +17,7 @@ import {
 } from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
 import {
+  NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
   getTranslatedUINotifications,
@@ -123,6 +124,12 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
       global.platform.openTab({
         url: 'https://metamask.io/snaps/',
+      });
+    },
+    [NOTIFICATION_BUY_SELL_BUTTON]: () => {
+      updateViewedNotifications({ [NOTIFICATION_BUY_SELL_BUTTON]: true });
+      global.platform.openTab({
+        url: 'https://portfolio.metamask.io/sell/build-quote',
       });
     },
   };
@@ -411,6 +418,7 @@ export default function WhatsNewPopup({
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
+    [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
   };
 
   return (

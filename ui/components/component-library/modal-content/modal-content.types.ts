@@ -1,5 +1,8 @@
 import React from 'react';
-import type { StyleUtilityProps } from '../box';
+import type {
+  PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
+} from '../box';
 
 /*
  * ModalContent sizes
@@ -11,7 +14,7 @@ export enum ModalContentSize {
   Sm = 'sm',
 }
 
-export interface ModalContentProps extends StyleUtilityProps {
+export interface ModalContentStyleUtilityProps extends StyleUtilityProps {
   /**
    * The additional className of the ModalContent component
    */
@@ -31,3 +34,10 @@ export interface ModalContentProps extends StyleUtilityProps {
    */
   modalDialogProps?: any;
 }
+
+export type ModalContentProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, ModalContentStyleUtilityProps>;
+
+export type ModalContentComponent = <C extends React.ElementType = 'div'>(
+  props: ModalContentProps<C>,
+) => React.ReactElement | null;
