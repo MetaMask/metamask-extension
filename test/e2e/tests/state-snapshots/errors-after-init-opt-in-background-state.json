@@ -68,7 +68,6 @@
   },
   "KeyringController": {
     "isUnlocked": false,
-    "keyringTypes": "object",
     "keyrings": "object"
   },
   "LoggingController": { "logs": "object" },

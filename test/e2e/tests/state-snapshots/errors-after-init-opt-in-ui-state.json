@@ -80,7 +80,6 @@
       }
     },
     "cachedBalances": "object",
-    "keyringTypes": "object",
     "keyrings": "object",
     "useNonceField": false,
     "usePhishDetect": true,
