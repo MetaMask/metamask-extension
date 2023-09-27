@@ -325,6 +325,9 @@ describe('MetaMaskController', () => {
         metamaskController.coreKeyringController,
         'createNewVaultAndRestore',
       );
+      jest
+        .spyOn(metamaskController.preferencesController, 'removeAddress')
+        .mockImplementation((address) => address);
     });
 
     describe('should reset states on first time profile load', () => {
