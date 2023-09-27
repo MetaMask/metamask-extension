@@ -1538,9 +1538,6 @@
   "experimental": {
     "message": "Thử nghiệm"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Khám phá MetaMask Snap"
-  },
   "extendWalletWithSnaps": {
     "message": "Tuỳ biến trải nghiệm sử dụng ví."
   },

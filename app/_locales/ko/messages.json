@@ -1538,9 +1538,6 @@
   "experimental": {
     "message": "실험적"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask 스냅 탐색"
-  },
   "extendWalletWithSnaps": {
     "message": "지갑 경험을 개인 맞춤하세요."
   },

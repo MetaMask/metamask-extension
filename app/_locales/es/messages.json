@@ -1538,9 +1538,6 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explore MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
     "message": "Amplíe la experiencia de uso de su monedero."
   },

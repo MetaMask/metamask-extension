@@ -1599,11 +1599,11 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explore MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Customize your wallet experience."
+    "message": "Explore community-built Snaps to customize your web3 experience"
+  },
+  "discoverSnaps": {
+    "message": "Discover Snaps"
   },
   "externalExtension": {
     "message": "External extension"

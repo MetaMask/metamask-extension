@@ -1538,9 +1538,6 @@
   "experimental": {
     "message": "एक्सपेरिमेंटल"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaps को एक्सप्लोर करें"
-  },
   "extendWalletWithSnaps": {
     "message": "वॉलेट एक्सपीरियंस को कस्टमाइज़ करें।"
   },

@@ -1538,9 +1538,6 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explorar os snaps da MetaMask"
-  },
   "extendWalletWithSnaps": {
     "message": "Personalize sua experiência com a carteira."
   },

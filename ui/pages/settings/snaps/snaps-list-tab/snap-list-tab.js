@@ -8,15 +8,19 @@ import {
   AlignItems,
   IconColor,
   Color,
-  TEXT_ALIGN,
-  FLEX_DIRECTION,
+  TextAlign,
+  FlexDirection,
   Size,
+  Display,
+  BlockSize,
+  FlexWrap,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../../../components/ui/box';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import { getSnapsList } from '../../../../selectors';
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
+  Box,
   BannerTip,
   BannerTipLogoType,
   ButtonLink,
@@ -41,8 +45,13 @@ const SnapListTab = () => {
   const snapsList = useSelector((state) => getSnapsList(state));
 
   return (
-    <div className="snap-list-tab" ref={settingsRef}>
-      {snapsList.length ? (
+    <Box
+      className="snap-list-tab"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      height={BlockSize.Full}
+    >
+      {snapsList.length > 0 && (
         <div className="snap-list-tab__body">
           <div className="snap-list-tab__wrapper">
             {snapsList.map((snap) => {
@@ -61,62 +70,69 @@ const SnapListTab = () => {
             })}
           </div>
         </div>
-      ) : (
+      )}
+      {snapsList.length <= 5 && (
         <Box
-          className="snap-list-tab__container--no-snaps"
-          width="full"
-          height="full"
-          alignItems={AlignItems.center}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={Display.Flex}
+          height={BlockSize.Full}
+          flexDirection={FlexDirection.Row}
+          flexWrap={FlexWrap.Wrap}
+          justifyContent={JustifyContent.center}
         >
-          <Box
-            className="snap-list-tab__container--no-snaps_inner"
-            width="full"
-            height="full"
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-          >
-            <Icon
-              name={IconName.Snaps}
-              color={IconColor.iconMuted}
-              className="snap-list-tab__no-snaps_icon"
-              size={IconSize.Inherit}
-            />
-            <Text
-              color={Color.textMuted}
-              align={TEXT_ALIGN.CENTER}
-              marginTop={4}
+          {snapsList.length < 1 && (
+            <Box
+              className="snap-list-tab__container--no-snaps_inner"
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
             >
-              {t('noSnaps')}
-            </Text>
-          </Box>
+              <Icon
+                name={IconName.Snaps}
+                color={IconColor.iconMuted}
+                className="snap-list-tab__no-snaps_icon"
+                size={IconSize.Inherit}
+              />
+              <Text
+                color={Color.textMuted}
+                align={TextAlign.Center}
+                marginTop={4}
+              >
+                {t('noSnaps')}
+              </Text>
+            </Box>
+          )}
+          <Box
+            display={Display.Flex}
+            width={BlockSize.Full}
+            height={BlockSize.Min}
+          ></Box>
           <Box
             className="snap-list-tab__container--no-snaps_banner-tip"
-            width="full"
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.flexEnd}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.flexEnd}
             paddingLeft={4}
             paddingRight={4}
             paddingBottom={4}
           >
             <BannerTip
               logoType={BannerTipLogoType.Greeting}
-              title={t('exploreMetaMaskSnaps')}
               description={t('extendWalletWithSnaps')}
+              descriptionProps={{ variant: TextVariant.bodyMd }}
             >
               <ButtonLink
                 size={Size.auto}
                 href="https://metamask.io/snaps/"
                 target="_blank"
               >
-                {`${t('learnMoreUpperCase')}`}
+                {`${t('discoverSnaps')}`}
               </ButtonLink>
             </BannerTip>
           </Box>
         </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

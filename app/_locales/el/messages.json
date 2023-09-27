@@ -1538,9 +1538,6 @@
   "experimental": {
     "message": "Πειραματικά"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Εξερευνήστε το MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
     "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας."
   },
