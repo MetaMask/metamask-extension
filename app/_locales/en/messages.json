@@ -268,6 +268,12 @@
   "addSnapAccountModalDescription": {
     "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
+  "addSnapAccountToggle": {
+    "message": "Enable \"Add Snap account\""
+  },
+  "addSnapAccountsDescription": {
+    "message": "Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service."
+  },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
   },
@@ -1311,8 +1317,8 @@
   "displayNftMedia": {
     "message": "Display NFT media"
   },
-  "displayNftMediaDescription": {
-    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  "displayNftMediaDesc": {
+    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off. If NFT media is fully located on IPFS, it can still be displayed even when this feature is turned off."
   },
   "domain": {
     "message": "Domain"
@@ -1436,9 +1442,6 @@
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
-  "enableForAllNetworks": {
-    "message": "Enable for all networks"
-  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
@@ -1469,20 +1472,17 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Enhanced token detection is currently available on $1. $2"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask lets you see ENS domains like \"https://metamask.eth\" right in your browser's address bar. Here's how it works:"
+  "ensDomainsSettingDescriptionIntroduction": {
+    "message": "MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:"
   },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services."
+  "ensDomainsSettingDescriptionOutroduction": {
+    "message": "Keep in mind that using this feature exposes your IP address to IPFS third-party services."
   },
-  "ensDomainsSettingDescriptionPoint1": {
+  "ensDomainsSettingDescriptionPart1": {
     "message": "MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name."
   },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "If the code is linked to IPFS, it gets the content from the IPFS network."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Then, you can see the content, usually a website or something similar."
+  "ensDomainsSettingDescriptionPart2": {
+    "message": "If the code links to IPFS, you can see the content associated with it (usually a website)."
   },
   "ensDomainsSettingTitle": {
     "message": "Show ENS domains in address bar"
@@ -1642,9 +1642,6 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "The dropped file is too big."
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
@@ -2386,8 +2383,8 @@
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."
   },
-  "mmiNewNFTDetectedMessage": {
-    "message": "Allow MetaMask Institutional to automatically detect NFTs from OpenSea and display in your wallet."
+  "mmiNewNFTDetectedInNFTsTabMessage": {
+    "message": "Let MetaMask Institutional automatically detect and display NFTs in your wallet."
   },
   "more": {
     "message": "more"
@@ -2561,11 +2558,18 @@
   "newContract": {
     "message": "New contract"
   },
-  "newNFTDetectedMessage": {
-    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your wallet."
+  "newNFTDetectedInImportNFTsMessage": {
+    "message": "To see your NFT, turn on Display NFT media in $1.",
+    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
-  "newNFTsDetected": {
-    "message": "New! NFT detection"
+  "newNFTDetectedInImportNFTsMessageStrongText": {
+    "message": "Settings > Security and privacy"
+  },
+  "newNFTDetectedInNFTsTabMessage": {
+    "message": "Let MetaMask automatically detect and display NFTs in your wallet."
+  },
+  "newNFTsAutodetected": {
+    "message": "NFT autodetection"
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -2950,6 +2954,15 @@
   },
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
+  },
+  "notificationsBuySellActionText": {
+    "message": "Try it on MetaMask Portfolio"
+  },
+  "notificationsBuySellDescription": {
+    "message": "Introducing the ‘Buy & Sell’ button, giving you easy access to our latest feature: Sell. When clicked, you’ll be redirected to MetaMask Portfolio, where you’ll be able to convert your crypto to cash in a flash. Initially available for ETH on mainnet in the US (state restrictions apply), UK, and parts of Europe."
+  },
+  "notificationsBuySellTitle": {
+    "message": "Sell your crypto, get cash"
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
@@ -3878,6 +3891,9 @@
   "selectAnAction": {
     "message": "Select an action"
   },
+  "selectDisplayMediaPrivacyPreference": {
+    "message": "Turn on Display NFT media"
+  },
   "selectHdPath": {
     "message": "Select HD path"
   },
@@ -4047,6 +4063,12 @@
   },
   "smartSwapsSubDescription": {
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  },
+  "snapAccounts": {
+    "message": "Snap accounts"
+  },
+  "snapAccountsDescription": {
+    "message": "Accounts controlled by third-party Snaps."
   },
   "snapConfigure": {
     "message": "Configure"
@@ -5352,20 +5374,8 @@
   "useNftDetection": {
     "message": "Autodetect NFTs"
   },
-  "useNftDetectionDescription": {
-    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Your account address will be viewable to third-party APIs."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT metadata may contain links to scams or phishing sites."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Leave this feature off if you don't want the app to pull data from those services."
+  "useNftDetectionDescriptionText": {
+    "message": "Let MetaMask add NFTs you own using third-party services (like OpenSea). Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"

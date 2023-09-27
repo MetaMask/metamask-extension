@@ -61,7 +61,7 @@ class EtherscanNameProvider {
             }
             const releaseLock = yield __classPrivateFieldGet(this, _EtherscanNameProvider_mutex, "f").acquire();
             try {
-                const { value, chainId } = request;
+                const { value, variation: chainId } = request;
                 const time = Date.now();
                 const timeSinceLastRequest = time - __classPrivateFieldGet(this, _EtherscanNameProvider_lastRequestTime, "f");
                 if (timeSinceLastRequest < RATE_LIMIT_INTERVAL) {

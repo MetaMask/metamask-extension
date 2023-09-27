@@ -40,8 +40,6 @@ describe('preferences controller', () => {
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
       tokenListController,
-      onInfuraIsBlocked: jest.fn(),
-      onInfuraIsUnblocked: jest.fn(),
       onAccountRemoved: jest.fn(),
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
     });
@@ -120,8 +118,6 @@ describe('preferences controller', () => {
       preferencesController = new PreferencesController({
         initLangCode: 'en_US',
         tokenListController,
-        onInfuraIsBlocked: jest.fn(),
-        onInfuraIsUnblocked: jest.fn(),
         initState: {
           identities: {
             [testAddress]: {
@@ -150,8 +146,6 @@ describe('preferences controller', () => {
       preferencesController = new PreferencesController({
         initLangCode: 'en_US',
         tokenListController,
-        onInfuraIsBlocked: jest.fn(),
-        onInfuraIsUnblocked: jest.fn(),
         initState: {
           identities: {
             '0x7e57e2': {

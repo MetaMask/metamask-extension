@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useName } from '../../../hooks/useName';
@@ -22,19 +23,21 @@ export interface NameProps {
   value: string;
 }
 
+function formatValue(value: string, type: NameType): string {
+  switch (type) {
+    case NameType.ETHEREUM_ADDRESS:
+      return shortenAddress(toChecksumAddress(value));
+
+    default:
+      return value;
+  }
+}
+
 export default function Name({ value, type, disableEdit }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
   const { name } = useName(value, type);
-
-  const handleClick = useCallback(() => {
-    setModalOpen(true);
-  }, [setModalOpen]);
-
-  const handleModalClose = useCallback(() => {
-    setModalOpen(false);
-  }, [setModalOpen]);
 
   useEffect(() => {
     trackEvent({
@@ -47,9 +50,15 @@ export default function Name({ value, type, disableEdit }: NameProps) {
     });
   }, []);
 
-  const formattedValue =
-    type === NameType.ETHEREUM_ADDRESS ? shortenAddress(value) : value;
+  const handleClick = useCallback(() => {
+    setModalOpen(true);
+  }, [setModalOpen]);
 
+  const handleModalClose = useCallback(() => {
+    setModalOpen(false);
+  }, [setModalOpen]);
+
+  const formattedValue = formatValue(value, type);
   const hasName = Boolean(name);
   const iconName = hasName ? IconName.Save : IconName.Warning;
 

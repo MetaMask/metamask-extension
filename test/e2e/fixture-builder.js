@@ -259,7 +259,6 @@ function defaultFixture() {
             name: 'Account 1',
           },
         },
-        infuraBlocked: false,
         ipfsGateway: 'dweb.link',
         knownMethodData: {},
         ledgerTransportType: 'webhid',
@@ -382,8 +381,7 @@ function onboardingFixture() {
         featureFlags: {},
         forgottenPassword: false,
         identities: {},
-        infuraBlocked: false,
-        ipfsGateway: 'dweb.link',
+        ipfsGateway: 'dweb.linkssssss',
         knownMethodData: {},
         ledgerTransportType: 'webhid',
         lostIdentities: {},
@@ -582,7 +580,7 @@ class FixtureBuilder {
     return this;
   }
 
-  withPermissionControllerConnectedToTestDapp() {
+  withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -592,7 +590,7 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: [
+              caveats: restrictReturnedAccounts && [
                 {
                   type: 'restrictReturnedAccounts',
                   value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
