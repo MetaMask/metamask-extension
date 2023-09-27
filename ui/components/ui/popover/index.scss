@@ -90,4 +90,8 @@
     transform: rotate(45deg);
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   }
+
+  &-container .page-container {
+    width: auto;
+  }
 }

@@ -8,7 +8,7 @@ import browser from 'webextension-polyfill';
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
-import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
+import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -17,6 +17,7 @@ import configureStore from './store/store';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getUnapprovedTransactions,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -27,7 +28,7 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { _setBackgroundConnection } from './store/action-queue';
 
-log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
+log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
 let reduxStore;
 
@@ -81,7 +82,7 @@ export default function launchMetamaskUi(opts, cb) {
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
-      setupDebuggingHelpers(store);
+      setupStateHooks(store);
       cb(
         null,
         store,
@@ -152,9 +153,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   const store = configureStore(draftInitialState);
   reduxStore = store;
 
+  const unapprovedTxs = getUnapprovedTransactions(metamaskState);
+
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
-    metamaskState.unapprovedTxs,
+    unapprovedTxs,
     metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,
@@ -191,18 +194,39 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   return store;
 }
 
-function setupDebuggingHelpers(store) {
-  /**
-   * The following stateHook is a method intended to throw an error, used in
-   * our E2E test to ensure that errors are attempted to be sent to sentry.
-   *
-   * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
-   */
-  window.stateHooks.throwTestError = async function (msg = 'Test Error') {
-    const error = new Error(msg);
-    error.name = 'TestError';
-    throw error;
-  };
+/**
+ * Setup functions on `window.stateHooks`. Some of these support
+ * application features, and some are just for debugging or testing.
+ *
+ * @param {object} store - The Redux store.
+ */
+function setupStateHooks(store) {
+  if (process.env.METAMASK_DEBUG || process.env.IN_TEST) {
+    /**
+     * The following stateHook is a method intended to throw an error, used in
+     * our E2E test to ensure that errors are attempted to be sent to sentry.
+     *
+     * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
+     */
+    window.stateHooks.throwTestError = async function (msg = 'Test Error') {
+      const error = new Error(msg);
+      error.name = 'TestError';
+      throw error;
+    };
+    /**
+     * The following stateHook is a method intended to throw an error in the
+     * background, used in our E2E test to ensure that errors are attempted to be
+     * sent to sentry.
+     *
+     * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
+     */
+    window.stateHooks.throwTestBackgroundError = async function (
+      msg = 'Test Error',
+    ) {
+      store.dispatch(actions.throwTestBackgroundError(msg));
+    };
+  }
+
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();
@@ -212,14 +236,9 @@ function setupDebuggingHelpers(store) {
     });
     return state;
   };
-  window.stateHooks.getSentryState = function () {
-    const fullState = store.getState();
-    const debugState = maskObject(fullState, SENTRY_STATE);
-    return {
-      browser: window.navigator.userAgent,
-      store: debugState,
-      version: global.platform.getVersion(),
-    };
+  window.stateHooks.getSentryAppState = function () {
+    const reduxState = store.getState();
+    return maskObject(reduxState, SENTRY_UI_STATE);
   };
 }
 

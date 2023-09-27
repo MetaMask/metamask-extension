@@ -13,6 +13,7 @@ import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import PriorityfeeInput from './priority-fee-input';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -34,7 +35,7 @@ const render = (txProps, contextProps) => {
           balance: '0x1F4',
         },
       },
-      advancedGasFee: { priorityFee: 100 },
+      advancedGasFee: { [CHAIN_IDS.GOERLI]: { priorityFee: 100 } },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,

@@ -1,31 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '../../ui/box';
 import Tooltip from '../../ui/tooltip';
 import {
   TextColor,
   TextVariant,
   Display,
+  AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { Icon, IconName, IconSize, Text, Box } from '../../component-library';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
   tooltipIcon,
 }) => (
-  <Box display={Display.InlineBlock}>
+  <Box display={Display.InlineFlex} alignItems={AlignItems.center}>
     <Tooltip
       interactive
       position="top"
       html={
-        <Text
-          variant={TextVariant.bodySm}
-          as="h6"
-          margin={3}
-          color={TextColor.textAlternative}
-          className="form-field__heading-title__tooltip"
-        >
+        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
           {tooltipContentText}
         </Text>
       }
@@ -33,13 +28,16 @@ export const CustomSpendingCapTooltip = ({
       {tooltipIcon ? (
         <Icon
           name={IconName.Danger}
-          className="form-field__heading-title__tooltip__warning-icon"
           size={IconSize.Inherit}
-          style={{ 'vertical-align': 'bottom' }}
+          color={IconColor.errorDefault}
         />
       ) : (
         tooltipIcon !== '' && (
-          <Icon name={IconName.Question} size={IconSize.Inherit} />
+          <Icon
+            name={IconName.Question}
+            size={IconSize.Inherit}
+            color={IconColor.iconAlternative}
+          />
         )
       )}
     </Tooltip>

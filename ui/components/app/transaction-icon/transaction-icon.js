@@ -7,11 +7,10 @@ import {
   TransactionStatus,
 } from '../../../../shared/constants/transaction';
 import { captureSingleException } from '../../../store/actions';
-import { AvatarIcon, IconName } from '../../component-library';
+import { AvatarIcon, AvatarIconSize, IconName } from '../../component-library';
 import {
   BackgroundColor,
   IconColor,
-  Size,
 } from '../../../helpers/constants/design-system';
 
 const ICON_MAP = {
@@ -62,7 +61,7 @@ export default function TransactionIcon({ status, category }) {
     return (
       <AvatarIcon
         backgroundColor={BackgroundColor.backgroundAlternative}
-        size={Size.MD}
+        size={AvatarIconSize.Md}
       />
     );
   }
@@ -71,7 +70,7 @@ export default function TransactionIcon({ status, category }) {
     <AvatarIcon
       backgroundColor={backgroundColor}
       iconName={Icon}
-      size={Size.MD}
+      size={AvatarIconSize.Md}
       color={color}
     />
   );

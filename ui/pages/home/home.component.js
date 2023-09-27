@@ -9,8 +9,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import NftsTab from '../../components/app/nfts-tab';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 ///: END:ONLY_INCLUDE_IN
@@ -378,6 +378,23 @@ export default class Home extends PureComponent {
     });
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  onSupportLinkClick = () => {
+    this.context.trackEvent(
+      {
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: SUPPORT_LINK,
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+  };
+  ///: END:ONLY_INCLUDE_IN
+
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
     setOutdatedBrowserWarningLastShown(new Date().getTime());
@@ -637,7 +654,10 @@ export default class Home extends PureComponent {
           />
         ) : null}
         {newNetworkAddedConfigurationId && (
-          <Popover className="home__new-network-added">
+          <Popover
+            className="home__new-network-added"
+            onClose={() => clearNewNetworkAdded()}
+          >
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
             <Text
               variant={TextVariant.headingSm}
@@ -761,6 +781,7 @@ export default class Home extends PureComponent {
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
+    const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
     const showWhatsNew =
       completedOnboarding &&
@@ -775,7 +796,7 @@ export default class Home extends PureComponent {
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // The style in activity screen for support is different
     const activitySupportDisplayStyle =
       defaultHomeActiveTabName === 'activity'
@@ -828,23 +849,25 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IN
           }
           <div className="home__main-view">
-            <div className="home__balance-wrapper">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                <EthOverview showAddress />
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <EthOverview
-                  showAddress
-                  mmiPortfolioEnabled={mmiPortfolioEnabled}
-                  mmiPortfolioUrl={mmiPortfolioUrl}
-                />
-                ///: END:ONLY_INCLUDE_IN
-              }
-            </div>
-            <Box style={{ flexGrow: '1' }}>
+            {process.env.MULTICHAIN ? null : (
+              <div className="home__balance-wrapper">
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  <EthOverview showAddress />
+                  ///: END:ONLY_INCLUDE_IN
+                }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                  <EthOverview
+                    showAddress
+                    mmiPortfolioEnabled={mmiPortfolioEnabled}
+                    mmiPortfolioUrl={mmiPortfolioUrl}
+                  />
+                  ///: END:ONLY_INCLUDE_IN
+                }
+              </div>
+            )}
+            <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
               <Tabs
                 t={this.context.t}
                 defaultActiveTabKey={defaultHomeActiveTabName}
@@ -881,21 +904,53 @@ export default class Home extends PureComponent {
                         history.push(`${ASSET_ROUTE}/${asset}`)
                       }
                     />
+                    {
+                      ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+                      <ButtonLink
+                        size={Size.MD}
+                        startIconName={IconName.MessageQuestion}
+                        data-testid="need-help-link"
+                        href={SUPPORT_LINK}
+                        display={Display.Flex}
+                        justifyContent={JustifyContent.flexStart}
+                        paddingLeft={4}
+                        marginBottom={4}
+                        onClick={this.onSupportLinkClick}
+                        externalLink
+                      >
+                        {t('needHelpLinkText')}
+                      </ButtonLink>
+                      ///: END:ONLY_INCLUDE_IN
+                    }
                   </Box>
                 </Tab>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                  <Tab
-                    activeClassName="home__tab--active"
-                    className="home__tab"
-                    data-testid="home__nfts-tab"
-                    name={this.context.t('nfts')}
-                    tabKey="nfts"
-                  >
-                    <NftsTab />
-                  </Tab>
-                  ///: END:ONLY_INCLUDE_IN
-                }
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__nfts-tab"
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
+                >
+                  <NftsTab />
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+                    <ButtonLink
+                      size={Size.MD}
+                      startIconName={IconName.MessageQuestion}
+                      data-testid="need-help-link"
+                      href={SUPPORT_LINK}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.flexStart}
+                      paddingLeft={4}
+                      marginBottom={4}
+                      onClick={this.onSupportLinkClick}
+                      externalLink
+                    >
+                      {t('needHelpLinkText')}
+                    </ButtonLink>
+                    ///: END:ONLY_INCLUDE_IN
+                  }
+                </Tab>
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"
@@ -904,42 +959,26 @@ export default class Home extends PureComponent {
                   tabKey="activity"
                 >
                   <TransactionList />
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+                    <ButtonLink
+                      size={Size.MD}
+                      startIconName={IconName.MessageQuestion}
+                      data-testid="need-help-link"
+                      href={SUPPORT_LINK}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.center}
+                      marginBottom={4}
+                      marginTop={4}
+                      onClick={this.onSupportLinkClick}
+                      externalLink
+                    >
+                      {t('needHelpLinkText')}
+                    </ButtonLink>
+                    ///: END:ONLY_INCLUDE_IN
+                  }
                 </Tab>
               </Tabs>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-                <ButtonLink
-                  size={Size.MD}
-                  startIconName={IconName.MessageQuestion}
-                  data-testid="need-help-link"
-                  href={SUPPORT_LINK}
-                  display={Display.Flex}
-                  justifyContent={activitySupportDisplayStyle.justifyContent}
-                  paddingLeft={activitySupportDisplayStyle.paddingLeft}
-                  marginBottom={activitySupportDisplayStyle.marginBottom}
-                  marginTop={activitySupportDisplayStyle.marginTop}
-                  onClick={() => {
-                    this.context.trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Home,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
-                          url: SUPPORT_LINK,
-                        },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                  externalLink
-                >
-                  {t('needHelpLinkText')}
-                </ButtonLink>
-                ///: END:ONLY_INCLUDE_IN
-              }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 <InstitutionalHomeFooter
@@ -948,20 +987,21 @@ export default class Home extends PureComponent {
                 ///: END:ONLY_INCLUDE_IN
               }
             </Box>
-            <div className="home__support">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
+              <div className="home__support">
                 <BetaHomeFooter />
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+              </div>
+              ///: END:ONLY_INCLUDE_IN
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+              <div className="home__support">
                 <FlaskHomeFooter />
-                ///: END:ONLY_INCLUDE_IN
-              }
-            </div>
+              </div>
+              ///: END:ONLY_INCLUDE_IN
+            }
           </div>
-
           {this.renderNotifications()}
         </div>
       </div>

@@ -1,7 +1,6 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
@@ -51,13 +50,6 @@ describe('Confirm Page Container Content', () => {
       disabled: true,
       origin: 'http://localhost:4200',
       hideTitle: false,
-      txData: {
-        securityProviderResponse: {
-          flagAsDangerous: '?',
-          reason: 'Some reason...',
-          reason_header: 'Some reason header...',
-        },
-      },
     };
   });
 
@@ -136,40 +128,6 @@ describe('Confirm Page Container Content', () => {
     );
 
     expect(queryByText('Address Book Account 1')).not.toBeInTheDocument();
-  });
-
-  it('should render SecurityProviderBannerMessage component properly', () => {
-    const { queryByText } = renderWithProvider(
-      <ConfirmPageContainerContent {...props} />,
-      store,
-    );
-
-    expect(queryByText('Request not verified')).toBeInTheDocument();
-    expect(
-      queryByText(
-        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
-      ),
-    ).toBeInTheDocument();
-    expect(queryByText('OpenSea')).toBeInTheDocument();
-  });
-
-  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
-    props.txData.securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
-    };
-
-    const { queryByText } = renderWithProvider(
-      <ConfirmPageContainerContent {...props} />,
-      store,
-    );
-
-    expect(queryByText('Request not verified')).toBeNull();
-    expect(
-      queryByText(
-        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
-      ),
-    ).toBeNull();
-    expect(queryByText('OpenSea')).toBeNull();
   });
 
   it('should show insufficient funds error for EIP-1559 network', () => {
