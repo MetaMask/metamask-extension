@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import AccountListItem from '../../account-list-item';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import {
@@ -7,7 +8,6 @@ import {
   BorderColor,
   Display,
 } from '../../../../helpers/constants/design-system';
-import { connect } from 'react-redux';
 import {
   getCurrentNetwork,
   getTestNetworkBackgroundColor,
@@ -22,7 +22,7 @@ class SignatureRequestHeader extends PureComponent {
     fromAccount: PropTypes.object,
     providerConfig: PropTypes.object,
     currentNetwork: PropTypes.object,
-    testNetworkBackgroundColor: BackgroundColor | undefined,
+    testNetworkBackgroundColor: BackgroundColor || undefined,
   };
 
   render() {
