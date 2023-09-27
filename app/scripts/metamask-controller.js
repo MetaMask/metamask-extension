@@ -191,6 +191,10 @@ import {
   createSnapMethodMiddleware,
   ///: END:ONLY_INCLUDE_IN
 } from './lib/rpc-method-middleware';
+import {
+  findExistingNetwork,
+  findExistingNetworkByNetworkClientId,
+} from './lib/rpc-method-middleware/handlers/switch-ethereum-chain';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -2221,7 +2225,7 @@ export default class MetamaskController extends EventEmitter {
   async getProviderState(origin) {
     return {
       isUnlocked: this.isUnlocked(),
-      ...this.getProviderNetworkState(),
+      ...this.getProviderNetworkState(undefined, origin),
       accounts: await this.getPermittedAccounts(origin),
     };
   }
@@ -2233,10 +2237,19 @@ export default class MetamaskController extends EventEmitter {
    * this function will retrieve the most recent state.
    * @returns {object} An object with relevant network state properties.
    */
-  getProviderNetworkState(memState) {
+  getProviderNetworkState(memState, origin = 'metamask') {
     const { networkId } = memState || this.getState();
+    let chainId;
+    if (this.preferencesController.getUseRequestQueue()) {
+      const networkClientId = this.controllerMessenger.call('SelectedNetworkController:getNetworkClientIdForDomain', origin);
+      const networkClient = this.controllerMessenger.call('NetworkController:getNetworkClientById', networkClientId);
+      chainId = networkClient.configuration.chainId;
+    } else {
+      chainId = this.networkController.state.providerConfig.chainId;
+    }
+
     return {
-      chainId: this.networkController.state.providerConfig.chainId, // change this to selectedNetworkController value (needs origin)
+      chainId: chainId,
       networkVersion: networkId ?? 'loading',
     };
   }
@@ -4147,9 +4160,11 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    // make this into a proxy that is updated same time as selectedNetworkClietnIdforDomain changes
-    const { provider: providerForDomain } =
-      this.selectedNetworkController.getProviderAndBlockTracker(origin);
+
+    let providerForDomain = provider;
+    if (this.preferencesController.getUseRequestQueue() === true) {
+      providerForDomain = this.selectedNetworkController.getProviderAndBlockTracker(origin).provider;
+    }
 
     // add some middleware that will switch chain on each request (as needed)
     engine.push(
@@ -4179,62 +4194,108 @@ export default class MetamaskController extends EventEmitter {
         const isSwitchEthChainCall =
           req.method === 'wallet_switchEthereumChain';
 
-        if (isSwitchEthChainCall) {
-          // eslint-disable-next-line node/callback-return
-          await next();
-          return;
-        }
-        if (!isSwitchEthChainCall) {
-          const selfProvider = providerFromEngine(engine);
-          try {
-            this.queuedRequestController.enqueueRequest(() => {
-              return new Promise((resolve, reject) => {
+        // if (isSwitchEthChainCall) {// need to queue these, remove this code
+        //   // eslint-disable-next-line node/callback-return
+        //   await next();
+        //   return;
+        // }
+        // if (!isSwitchEthChainCall) {
+        //   const selfProvider = providerFromEngine(engine);
+        //   try {
+        //     // check if we need to switch ethereum chain or not..
+        //     // if we do, queue request to switch
+        //      this.queuedRequestController.enqueueRequest(() => {
+        //       return new Promise((resolve, reject) => {
+        //         const isBuiltIn =
+        //           BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
+        //           BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
+        //         const chainId = isBuiltIn
+        //           ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId
+        //           : this.networkController.getNetworkClientById(
+        //               networkClientIdForRequest,
+        //             ).configuration.chainId;
+
+        //         selfProvider.sendAsync(
+        //           {
+        //             id: Math.floor(Math.random() * 1000000),
+        //             jsonrpc: '2.0',
+        //             method: 'wallet_switchEthereumChain',
+        //             params: [{ chainId }],
+        //           },
+        //           (err, result) => {
+        //             if (err) {
+        //               console.error(
+        //                 'per-dapp-network:: switch ethereum chain errored: ',
+        //                 err,
+        //               );
+        //               reject(err);
+        //             } else {
+        //               resolve(result);
+        //             }
+        //           },
+        //         );
+        //       });
+        //     });
+        //   } catch (e) {
+        //     console.error(e);
+        //     res.error = e;
+        //     return;
+        //   }
+
+          await this.queuedRequestController
+            .enqueueRequest(async () => {
                 const isBuiltIn =
-                  BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
-                  BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
-                const chainId = isBuiltIn
-                  ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId
-                  : this.networkController.getNetworkClientById(
+                    BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
+                    BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
+              const chainIdForOrigin = isBuiltIn
+                    ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId
+                    : this.networkController.getNetworkClientById(
                       networkClientIdForRequest,
                     ).configuration.chainId;
 
-                selfProvider.sendAsync(
-                  {
-                    id: Math.floor(Math.random() * 1000000),
-                    jsonrpc: '2.0',
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId }],
-                  },
-                  (err, result) => {
-                    if (err) {
-                      console.error(
-                        'per-dapp-network:: switch ethereum chain errored: ',
-                        err,
-                      );
-                      reject(err);
-                    } else {
-                      resolve(result);
-                    }
-                  },
-                );
-              });
-            });
-          } catch (e) {
-            console.error(e);
-            res.error = e;
-            return;
-          }
+              const requestData = {
+                toNetworkConfiguration: findExistingNetwork(
+                  chainIdForOrigin,
+                  this.networkController.findNetworkConfigurationBy,
+                ),
+                fromNetworkConfiguration: this.networkController.state.providerConfig
+              };
+              const currentChainId = this.networkController.state.providerConfig.chainId;
 
-          // i may never forgive myself for this
-          await new Promise((resolve, reject) => {
-            setTimeout(() => {
-              this.queuedRequestController
-                .enqueueRequest(next)
-                .then(resolve)
-                .catch(reject);
-            }, 10);
-          });
-        }
+              // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
+
+              const networkClientId = this.networkController.state.selectedNetworkClientId;
+
+              if (currentChainId !== chainIdForOrigin && !isSwitchEthChainCall) {
+                try {
+                  const approvedRequestData = await this.approvalController.addAndShowApprovalRequest({
+                    origin,
+                    type: ApprovalType.SwitchEthereumChain,
+                    requestData,
+                  });
+                  if (
+                    Object.values(BUILT_IN_NETWORKS)
+                      .map(({ chainId: id }) => id)
+                      .includes(chainIdForOrigin)
+                  ) {
+                    await this.networkController.setProviderType(approvedRequestData.type);
+                  } else {
+                    await this.networkController.setActiveNetwork(approvedRequestData.id);
+                  }
+                  this.selectedNetworkController.setNetworkClientIdForDomain(req.origin, networkClientIdForRequest);
+                } catch (error) {
+                  res.error = error;
+                  return;
+                }
+              }
+
+              console.log('calling next');
+              await next();
+              console.log('finished approval');
+              return;
+            });
+
+          return;
       }),
     );
 
@@ -4368,9 +4429,10 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
           ),
-        setActiveNetwork: this.networkController.setActiveNetwork.bind(
-          this.networkController,
-        ),
+        setActiveNetwork: (networkClientId) => {
+          this.selectedNetworkController.setNetworkClientIdForMetamask(networkClientId);
+          this.networkController.setActiveNetwork(networkClientId);
+        },
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
@@ -4391,7 +4453,7 @@ export default class MetamaskController extends EventEmitter {
         getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
           // when using this format, type happens to be the same as the networkClientId...
-          // this.selectedNetworkController.setNetworkClientIdForMetamask(type);
+          this.selectedNetworkController.setNetworkClientIdForMetamask(type);
           return this.networkController.setProviderType(type);
         },
 
@@ -4711,10 +4773,11 @@ export default class MetamaskController extends EventEmitter {
    */
   _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
-    this.notifyAllConnections({
+    // can check queue enabled feature flag, if disabled, dont use the 'function' payload
+    this.notifyAllConnections((origin) => ({
       method: NOTIFICATION_NAMES.chainChanged,
-      params: this.getProviderNetworkState(newState),
-    });
+      params: this.getProviderNetworkState(newState, origin),
+    }));
   }
 
   // misc

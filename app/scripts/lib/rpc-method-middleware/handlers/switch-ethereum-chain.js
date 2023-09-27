@@ -34,7 +34,7 @@ const switchEthereumChain = {
 
 export default switchEthereumChain;
 
-function findExistingNetwork(chainId, findNetworkConfigurationBy) {
+export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
     Object.values(BUILT_IN_INFURA_NETWORKS)
       .map(({ chainId: id }) => id)
@@ -52,7 +52,7 @@ function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   return findNetworkConfigurationBy({ chainId });
 }
 
-function findExistingNetworkByNetworkClientId(
+export function findExistingNetworkByNetworkClientId(
   networkClientId,
   getNetworkConfigurations,
 ) {
@@ -139,22 +139,25 @@ async function switchEthereumChainHandler(
       _chainId,
       findNetworkConfigurationBy,
     ),
-    fromNetworkConfiguration: findExistingNetworkByNetworkClientId(
-      getNetworkClientIdForDomain(origin),
-      getNetworkConfigurations,
-    ),
+    // fromNetworkConfiguration: findExistingNetworkByNetworkClientId(
+    //   getNetworkClientIdForDomain(origin),
+    //   getNetworkConfigurations,
+    // ),
   };
 
-  if (useRequestQueue === false) {
-    requestData.fromNetworkConfiguration = getProviderConfig();
-  }
+  // if (useRequestQueue === false) {
+  requestData.fromNetworkConfiguration = getProviderConfig();
+  // }
 
   if (requestData.toNetworkConfiguration) {
     const currentChainId = getCurrentChainId();
 
     // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
 
+    const networkClientId = findNetworkClientIdByChainId(_chainId);
+
     if (currentChainId === _chainId) {
+      setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
       return end();
     }
@@ -174,7 +177,6 @@ async function switchEthereumChainHandler(
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
-      const networkClientId = findNetworkClientIdByChainId(_chainId);
       setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
     } catch (error) {
