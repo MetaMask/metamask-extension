@@ -235,9 +235,6 @@ AccountListItemMenu.propTypes = {
   /**
    * Identity of the account
    */
-  /**
-   * Identity of the account
-   */
   identity: PropTypes.shape({
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,

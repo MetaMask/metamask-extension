@@ -53,6 +53,10 @@ async function main() {
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
+          .option('mmi', {
+            description: `Run only mmi related tests`,
+            type: 'boolean',
+          })
           .option('snaps', {
             description: `run snaps e2e tests`,
             type: 'boolean',
@@ -89,6 +93,7 @@ async function main() {
     browser,
     debug,
     retries,
+    mmi,
     snaps,
     mv3,
     rpc,
@@ -99,8 +104,10 @@ async function main() {
   let testPaths;
 
   if (snaps) {
-    const testDir = path.join(__dirname, 'snaps');
-    testPaths = await getTestPathsForTestDir(testDir);
+    testPaths = [
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+    ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
@@ -121,13 +128,14 @@ async function main() {
     }
   }
 
-  // These tests should only be ran on Flask for now.
+  // These tests should only be run on Flask for now.
   if (buildType !== 'flask') {
     const filteredTests = [
       'settings-add-snap-account-toggle.spec.js',
+      'test-snap-accounts.spec.js',
       'test-snap-manageAccount.spec.js',
-      'test-snap-rpc.spec.js',
       'test-snap-lifecycle.spec.js',
+      'test-snap-get-locale.spec.js',
       'ppom-toggle-settings.spec.js',
       'petnames.spec.js',
     ];
@@ -150,6 +158,9 @@ async function main() {
   }
   if (updateSnapshot) {
     args.push('--update-snapshot');
+  }
+  if (mmi) {
+    args.push('--mmi');
   }
 
   // For running E2Es in parallel in CI

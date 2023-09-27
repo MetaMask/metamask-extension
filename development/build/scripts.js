@@ -27,7 +27,6 @@ const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
-const moduleResolver = require('babel-plugin-module-resolver');
 
 const bifyModuleGroups = require('bify-module-groups');
 
@@ -714,26 +713,27 @@ function createFactoredBuild({
           case 'ui': {
             renderHtmlFile({
               htmlName: 'popup',
-              groupSet,
-              commonSet,
               browserPlatforms,
               applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'notification',
-              groupSet,
-              commonSet,
               browserPlatforms,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
             });
             renderHtmlFile({
               htmlName: 'home',
+              browserPlatforms,
+              applyLavaMoat,
+              isMMI: buildType === 'mmi',
+            });
+            renderJavaScriptLoader({
               groupSet,
               commonSet,
               browserPlatforms,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
+              destinationFileName: 'load-app.js',
             });
             break;
           }
@@ -744,6 +744,13 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+            });
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-background.js',
             });
             if (process.env.ENABLE_MV3) {
               const jsBundles = [
@@ -923,9 +930,6 @@ function setupBundlerDefaults(
   const { bundlerOpts } = buildConfiguration;
   const extensions = ['.js', '.ts', '.tsx'];
 
-  const isSnapsFlask =
-    features.active.has('snaps') && features.active.has('build-flask');
-
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
@@ -937,22 +941,6 @@ function setupBundlerDefaults(
         // Run TypeScript files through Babel
         {
           extensions,
-          plugins: isSnapsFlask
-            ? [
-                [
-                  moduleResolver,
-                  {
-                    alias: {
-                      '@metamask/snaps-controllers':
-                        '@metamask/snaps-controllers-flask',
-                      '@metamask/snaps-ui': '@metamask/snaps-ui-flask',
-                      '@metamask/snaps-utils': '@metamask/snaps-utils-flask',
-                      '@metamask/rpc-methods': '@metamask/rpc-methods-flask',
-                    },
-                  },
-                ],
-              ]
-            : [],
         },
       ],
       // Inline `fs.readFileSync` files
@@ -1210,14 +1198,56 @@ async function setEnvironmentVariables({
   });
 }
 
-function renderHtmlFile({
-  htmlName,
+function renderJavaScriptLoader({
   groupSet,
   commonSet,
   browserPlatforms,
   applyLavaMoat,
-  isMMI,
+  destinationFileName,
 }) {
+  if (applyLavaMoat === undefined) {
+    throw new Error(
+      'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
+    );
+  }
+
+  const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
+    (label) => `./${label}.js`,
+  );
+
+  const securityScripts = applyLavaMoat
+    ? ['./runtime-lavamoat.js', './lockdown-more.js', './policy-load.js']
+    : [
+        './lockdown-install.js',
+        './lockdown-run.js',
+        './lockdown-more.js',
+        './runtime-cjs.js',
+      ];
+
+  const requiredScripts = [
+    './snow.js',
+    './use-snow.js',
+    './globalthis.js',
+    './sentry-install.js',
+    ...securityScripts,
+    ...jsBundles,
+  ];
+
+  browserPlatforms.forEach((platform) => {
+    const appLoadFilePath = './app/scripts/load-app.js';
+    const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
+
+    const scriptDest = `./dist/${platform}/${destinationFileName}`;
+    const scriptOutput = appLoadContents.replace(
+      '/* SCRIPTS */',
+      `...${JSON.stringify(requiredScripts)}`,
+    );
+
+    writeFileSync(scriptDest, scriptOutput);
+  });
+}
+
+function renderHtmlFile({ htmlName, browserPlatforms, applyLavaMoat, isMMI }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
       'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
@@ -1225,14 +1255,8 @@ function renderHtmlFile({
   }
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
-  const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
-    (label) => `./${label}.js`,
-  );
-  const htmlOutput = Sqrl.render(htmlTemplate, {
-    jsBundles,
-    applyLavaMoat,
-    isMMI,
-  });
+
+  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
