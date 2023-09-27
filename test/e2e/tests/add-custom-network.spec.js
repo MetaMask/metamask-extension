@@ -7,7 +7,6 @@ const {
   openDapp,
   regularDelayMs,
   unlockWallet,
-  sleepSeconds,
 } = require('../helpers');
 
 const TEST_CHAIN_ID = toHex(100);
@@ -597,7 +596,8 @@ async function failCandidateNetworkValidation(driver) {
   const addNetworkManuallyButtonSelector =
     '[data-testid="add-network-manually"]';
   await driver.waitForSelector(addNetworkManuallyButtonSelector);
-  await driver.clickElement(addNetworkManuallyButtonSelector);
+
+  await driver.clickElement(`${addNetworkManuallyButtonSelector} > h6`);
 
   const [
     ,
@@ -686,7 +686,7 @@ async function toggleOffSafeChainsListValidation(driver) {
     'Safe chains list validation toggle is ON',
   );
 
-  await sleepSeconds(1);
+  driver.delay(regularDelayMs);
 
   // return to the home screen
   const appHeaderSelector = '[data-testid="app-header-logo"]';
@@ -704,7 +704,7 @@ async function candidateNetworkIsNotValidated(driver) {
   const addNetworkManuallyButtonSelector =
     '[data-testid="add-network-manually"]';
   await driver.waitForSelector(addNetworkManuallyButtonSelector);
-  await driver.clickElement(addNetworkManuallyButtonSelector);
+  await driver.clickElement(`${addNetworkManuallyButtonSelector} > h6`);
 
   const [
     ,
