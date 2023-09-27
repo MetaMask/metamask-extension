@@ -3596,7 +3596,7 @@
     "message": "NFT was successfully removed!"
   },
   "removeSnap": {
-    "message": "Remove snap"
+    "message": "Remove Snap"
   },
   "removeSnapConfirmation": {
     "message": "Are you sure you want to remove $1?",
