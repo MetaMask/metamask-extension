@@ -138,25 +138,25 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
         const testMaliciousConfigs = [
           {
-            btnSelector: 'maliciousApprovalButton',
+            btnSelector: '#maliciousApprovalButton',
             expectedDescription:
               'If you approve this request, a third party known for scams might take all your assets.',
             expectedReason: 'approval_farming',
           },
           {
-            btnSelector: 'maliciousPermit',
+            btnSelector: '#maliciousPermit',
             expectedDescription:
               'If you approve this request, a third party known for scams might take all your assets.',
             expectedReason: 'permit_farming',
           },
           {
-            btnSelector: 'maliciousSeaport',
+            btnSelector: '#maliciousSeaport',
             expectedDescription:
               'If you approve this request, someone can steal your assets listed on OpenSea.',
             expectedReason: 'seaport_farming',
           },
           {
-            btnSelector: 'maliciousTradeOrder',
+            btnSelector: '#maliciousTradeOrder',
             expectedDescription:
               'If you approve this request, you might lose your assets.',
             expectedReason: 'trade_order_farming',
