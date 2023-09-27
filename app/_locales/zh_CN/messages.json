@@ -3194,14 +3194,6 @@
     "message": "允许snap使用生命周期挂钩在其生命周期的特定时间运行代码。",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "无限期运行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "允许snap无限期运行，例如在处理大量数据时。",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "添加并控制以太坊账户",
     "description": "The description for `snap_manageAccounts` permission"
