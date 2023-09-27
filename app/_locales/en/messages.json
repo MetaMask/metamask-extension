@@ -623,9 +623,6 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Buy"
-  },
   "buyAndSell": {
     "message": "Buy & Sell"
   },
@@ -638,12 +635,6 @@
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Hold up your crypto and earn potential profits"
-  },
-  "buyDisabled": {
-    "message": "Buy is not available in this network"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",

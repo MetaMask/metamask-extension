@@ -611,18 +611,9 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buy": {
-    "message": "Satın Al"
-  },
   "buyAsset": {
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
-  "buyDisabled": {
-    "message": "Satın al bu ağda kullanılamaz"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
