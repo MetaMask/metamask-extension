@@ -1876,6 +1876,18 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
   }
 
+  captureExceptionWithControllerContext(error, extra) {
+    captureException(error, (scope) => {
+      scope.setTag('ControllerName', this.controllerName);
+      if (extra) {
+        Object.keys(extra).forEach((key) => {
+          scope.setExtra(key, extra[key]);
+        });
+      }
+      return scope;
+    });
+  }
+
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
