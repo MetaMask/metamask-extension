@@ -1439,9 +1439,13 @@ export default class MetamaskController extends EventEmitter {
     this.signatureController = new SignatureController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SignatureController',
-        allowedActions: [`${this.approvalController.name}:addRequest`],
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.coreKeyringController.name}:signMessage`,
+          `${this.coreKeyringController.name}:signPersonalMessage`,
+          `${this.coreKeyringController.name}:signTypedMessage`,
+        ],
       }),
-      keyringController: this.keyringController,
       isEthSignEnabled: () =>
         this.preferencesController.store.getState()
           ?.disabledRpcMethodPreferences?.eth_sign,
