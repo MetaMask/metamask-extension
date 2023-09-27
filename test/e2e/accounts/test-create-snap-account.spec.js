@@ -3,6 +3,7 @@ const {
   defaultGanacheOptions,
   unlockWallet,
   WINDOW_TITLES,
+  switchToNotificationWindow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./utils');
@@ -23,10 +24,10 @@ describe('Create Snap Account', function () {
 
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-        await driver.clickElementSafe('#connectButton');
+        await driver.clickElement('#connectButton');
 
         // switch to metamask extension and click connect to start installing the snap
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -69,8 +70,7 @@ describe('Create Snap Account', function () {
           tag: 'button',
         });
 
-        // switch to metamask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await switchToNotificationWindow(driver);
 
         await driver.findElement({
           css: '[data-testid="confirmation-submit-button"]',
@@ -84,7 +84,7 @@ describe('Create Snap Account', function () {
 
         await driver.findElement({
           css: '[data-testid="create-snap-account-content-description"]',
-          text: 'MetaMask Snap Simple Keyring wants to add a new Snap account to your wallet',
+          text: 'MetaMask Simple Snap Keyring wants to add a new Snap account to your wallet',
         });
 
         await driver.findElement({
@@ -113,7 +113,7 @@ describe('Create Snap Account', function () {
         await driver.clickElement('#connectButton');
 
         // switch to metamask extension and click connect to start installing the snap
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -156,8 +156,7 @@ describe('Create Snap Account', function () {
           tag: 'button',
         });
 
-        // switch to metamask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await switchToNotificationWindow(driver);
 
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
@@ -196,10 +195,10 @@ describe('Create Snap Account', function () {
         await unlockWallet(driver);
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-        await driver.clickElementSafe('#connectButton');
+        await driver.clickElement('#connectButton');
 
         // switch to metamask extension and click connect to start installing the snap
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -243,7 +242,7 @@ describe('Create Snap Account', function () {
         });
 
         // switch to metamask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await switchToNotificationWindow(driver);
 
         // cancel account creation
         await driver.clickElement('[data-testid="confirmation-cancel-button"]');
