@@ -104,7 +104,6 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
 }));
 
 const currentChainId = '0x5';
-const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -824,44 +823,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('#resetAccount', () => {
-      it('wipes transactions from only the correct network id and with the selected address', async () => {
-        jest
-          .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
-          .mockReturnValue('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-
-        metamaskController.txController.txStateManager._addTransactionsToState([
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 2,
-            status: TransactionStatus.rejected,
-            metamaskNetworkId: '32',
-          }),
-          createTxMeta({
-            id: 3,
-            status: TransactionStatus.submitted,
-            metamaskNetworkId: currentNetworkId,
-            txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
-          }),
-        ]);
-
-        await metamaskController.resetAccount();
-
-        expect(
-          metamaskController.txController.txStateManager.getTransaction(1),
-        ).toBeUndefined();
-      });
-
       it('wipes transactions from only the correct chain id and with the selected address', async function () {
         jest
           .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
