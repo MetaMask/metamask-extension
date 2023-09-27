@@ -3133,6 +3133,12 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
+  "preferredProvider": {
+    "message": "Select your preferred provider"
+  },
+  "openSeaLabel": {
+    "message": "OpenSea + Blockaid"
+  },
   "openSea": {
     "message": "OpenSea + Blockaid (Beta)"
   },
@@ -3777,7 +3783,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -4984,6 +4990,12 @@
   "thisServiceIsExperimental": {
     "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
     "description": "$1 is link to open sea terms of use"
+  },
+  "openSeaMessage": {
+    "message": "Data is shared with third paties. Security providers will receive your unsigned transactions and signature requests."
+  },
+  "blockaidMessage": {
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
   },
   "time": {
     "message": "Time"

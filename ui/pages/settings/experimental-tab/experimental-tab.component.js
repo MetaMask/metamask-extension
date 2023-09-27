@@ -12,7 +12,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 
-import { Text, Box } from '../../../components/component-library';
+import { Text, Box, Tag } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
@@ -73,7 +73,12 @@ export default class ExperimentalTab extends PureComponent {
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
-    const { securityAlertsEnabled, setSecurityAlertsEnabled } = this.props;
+    const {
+      securityAlertsEnabled,
+      setSecurityAlertsEnabled,
+      transactionSecurityCheckEnabled,
+      setTransactionSecurityCheckEnabled,
+    } = this.props;
 
     return (
       <>
@@ -89,24 +94,47 @@ export default class ExperimentalTab extends PureComponent {
           className="settings-page__content-row settings-page__content-row-experimental"
         >
           <div className="settings-page__content-item">
-            <span>{t('securityAlerts')}</span>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('securityAlerts')}
+            </Text>
             <div className="settings-page__content-description">
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
+              <Text variant={TextVariant.bodySm}>
                 {t('securityAlertsDescription')}
+              </Text>
+              <Text
+                variant={TextVariant.bodySmBold}
+                color={TextColor.textAlternative}
+                marginTop={4}
+              >
+                {t('preferredProvider')}
               </Text>
               <div
                 data-testid="settings-toggle-security-alert-blockaid"
                 className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
               >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textDefault}
-                >
-                  {t('blockaid')}
-                </Text>
+                <div>
+                  <Box display={Display.Flex}>
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.textDefault}
+                    >
+                      {t('blockaid')}
+                    </Text>
+                    <Tag marginLeft={2} label="Recommended" />
+                  </Box>
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    color={TextColor.textAlternative}
+                    marginTop={0}
+                    marginRight={1}
+                  >
+                    {t('blockaidMessage')}
+                  </Text>
+                </div>
                 <ToggleButton
                   value={securityAlertsEnabled}
                   onToggle={(value) => {
@@ -122,6 +150,42 @@ export default class ExperimentalTab extends PureComponent {
                   }}
                 />
               </div>
+              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
+                <div>
+                  <Box display={Display.Flex}>
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.textDefault}
+                    >
+                      {t('openSeaLabel')}
+                    </Text>
+                    <Tag marginLeft={2} label="Beta" />
+                  </Box>
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    color={TextColor.textAlternative}
+                    marginTop={0}
+                    marginRight={1}
+                  >
+                    {t('openSeaMessage')}
+                  </Text>
+                </div>
+                <ToggleButton
+                  value={transactionSecurityCheckEnabled}
+                  onToggle={(value) => {
+                    this.context.trackEvent({
+                      category: MetaMetricsEventCategory.Settings,
+                      event: 'Enabled/Disable TransactionSecurityCheck',
+                      properties: {
+                        action: 'Enabled/Disable TransactionSecurityCheck',
+                        legacy_event: true,
+                      },
+                    });
+                    setTransactionSecurityCheckEnabled(!value);
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -130,6 +194,7 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
   renderTransactionSecurityCheckToggle() {
     const { t } = this.context;
 
@@ -212,6 +277,7 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
+  ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   renderDesktopEnableButton() {
@@ -329,7 +395,11 @@ export default class ExperimentalTab extends PureComponent {
           this.renderSecurityAlertsToggle()
           ///: END:ONLY_INCLUDE_IN
         }
-        {this.renderTransactionSecurityCheckToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
+          this.renderTransactionSecurityCheckToggle()
+          ///: END:ONLY_INCLUDE_IN
+        }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
           this.renderKeyringSnapsToggle()
