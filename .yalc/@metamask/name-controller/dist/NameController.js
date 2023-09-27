@@ -19,7 +19,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _NameController_instances, _NameController_getChainId, _NameController_providers, _NameController_updateDelay, _NameController_updateProposedNameState, _NameController_updateSourceState, _NameController_getUpdateProposedNamesResult, _NameController_getProviderResponse, _NameController_normalizeProviderResult, _NameController_normalizeProviderSourceResult, _NameController_updateEntry, _NameController_getTypeVariationKey, _NameController_getCurrentTimeSeconds, _NameController_validateSetNameRequest, _NameController_validateUpdateProposedNamesRequest, _NameController_validateValue, _NameController_validateType, _NameController_validateName, _NameController_validateSourceIds, _NameController_validateSourceId, _NameController_validateDuplicateSourceIds, _NameController_getAllSourceIds, _NameController_getSourceIds, _NameController_removeDormantProposedNames;
+var _NameController_instances, _NameController_getChainId, _NameController_providers, _NameController_updateDelay, _NameController_updateProposedNameState, _NameController_updateSourceState, _NameController_getUpdateProposedNamesResult, _NameController_getProviderResponse, _NameController_normalizeProviderResult, _NameController_normalizeProviderSourceResult, _NameController_normalizeValue, _NameController_updateEntry, _NameController_getTypeVariationKey, _NameController_getCurrentTimeSeconds, _NameController_validateSetNameRequest, _NameController_validateUpdateProposedNamesRequest, _NameController_validateValue, _NameController_validateType, _NameController_validateName, _NameController_validateSourceIds, _NameController_validateSourceId, _NameController_validateDuplicateSourceIds, _NameController_getAllSourceIds, _NameController_getSourceIds, _NameController_removeDormantProposedNames;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NameController = void 0;
 const base_controller_1 = require("@metamask/base-controller");
@@ -218,14 +218,25 @@ _NameController_getChainId = new WeakMap(), _NameController_providers = new Weak
         error,
         updateDelay,
     };
+}, _NameController_normalizeValue = function _NameController_normalizeValue(value, type) {
+    /* istanbul ignore next */
+    switch (type) {
+        case types_1.NameType.ETHEREUM_ADDRESS: {
+            return value.toLowerCase();
+        }
+        default: {
+            return value;
+        }
+    }
 }, _NameController_updateEntry = function _NameController_updateEntry(value, type, callback) {
     const variationKey = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getTypeVariationKey).call(this, type);
+    const normalizedValue = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_normalizeValue).call(this, value, type);
     this.update((state) => {
         var _a;
         const typeEntries = state.names[type] || {};
         state.names[type] = typeEntries;
-        const variationEntries = typeEntries[value] || {};
-        typeEntries[value] = variationEntries;
+        const variationEntries = typeEntries[normalizedValue] || {};
+        typeEntries[normalizedValue] = variationEntries;
         const entry = (_a = variationEntries[variationKey]) !== null && _a !== void 0 ? _a : {
             proposedNames: {},
             name: null,
