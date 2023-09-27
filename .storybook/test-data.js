@@ -1,5 +1,8 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
+import { CHAIN_IDS } from '../shared/constants/network';
 
 const state = {
   invalidCustomNetwork: {
@@ -17,6 +20,15 @@ const state = {
     url: 'https://metamask.github.io/test-dapp/',
   },
   metamask: {
+    announcements: {
+      22: {
+        id: 22,
+        date: null,
+        image: {
+          src: 'images/global-menu-block-explorer.svg',
+        },
+      },
+    },
     tokenList: {
       '0x514910771af9ca656af840dff83e8264ecf986ca': {
         address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -164,6 +176,15 @@ const state = {
         1559: true,
       },
     },
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {
+          1559: true,
+        },
+        status: NetworkStatus.Available,
+      },
+    },
     gasFeeEstimates: '0x5208',
     swapsState: {
       quotes: {},
@@ -293,8 +314,8 @@ const state = {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
       },
     },
-    unapprovedTxs: {
-      3111025347726181: {
+    transactions: [
+      {
         id: 3111025347726181,
         time: 1620710815484,
         status: 'unapproved',
@@ -344,7 +365,7 @@ const state = {
           ],
         ],
       },
-    },
+    ],
     addressBook: {
       undefined: {
         0: {
@@ -509,6 +530,12 @@ const state = {
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
     },
+    incomingTransactionsPreferences: {
+      [CHAIN_IDS.MAINNET]: true,
+      [CHAIN_IDS.GOERLI]: false,
+      [CHAIN_IDS.OPTIMISM_TESTNET]: false,
+      [CHAIN_IDS.AVALANCHE_TESTNET]: true,
+    },
     firstTimeFlowType: 'create',
     completedOnboarding: true,
     knownMethodData: {
@@ -547,7 +574,7 @@ const state = {
       },
     },
     currentBlockGasLimit: '0x793af4',
-    currentNetworkTxList: [
+    transactions: [
       {
         chainId: '0x38',
         dappSuggestedGasFees: null,
@@ -1599,7 +1626,7 @@ const state = {
   },
 };
 
-export const networkList =  [
+export const networkList = [
   {
     blockExplorerUrl: 'https://etherscan.io',
     chainId: '0x1',
@@ -1673,6 +1700,6 @@ export const networkList =  [
     rpcUrl: 'https://polygon-rpc.com',
     ticker: 'MATIC',
   },
-]
+];
 
 export default state;

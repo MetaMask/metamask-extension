@@ -61,6 +61,10 @@ async function main() {
             description: `run mv3 specific e2e tests`,
             type: 'boolean',
           })
+          .option('rpc', {
+            description: `run json-rpc specific e2e tests`,
+            type: 'boolean',
+          })
           .option('build-type', {
             description: `Sets the build-type to test for. This may filter out tests.`,
             type: 'string',
@@ -70,12 +74,27 @@ async function main() {
             description:
               'Set how many times the test should be retried upon failure.',
             type: 'number',
+          })
+          .option('update-snapshot', {
+            alias: 'u',
+            default: false,
+            description: 'Update E2E snapshots',
+            type: 'boolean',
           }),
     )
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3, buildType } = argv;
+  const {
+    browser,
+    debug,
+    retries,
+    snaps,
+    mv3,
+    rpc,
+    buildType,
+    updateSnapshot,
+  } = argv;
 
   let testPaths;
 
@@ -94,6 +113,9 @@ async function main() {
         filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
       );
     }
+  } else if (rpc) {
+    const testDir = path.join(__dirname, 'json-rpc');
+    testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
@@ -122,6 +144,9 @@ async function main() {
   }
   if (debug) {
     args.push('--debug');
+  }
+  if (updateSnapshot) {
+    args.push('--update-snapshot');
   }
 
   // For running E2Es in parallel in CI

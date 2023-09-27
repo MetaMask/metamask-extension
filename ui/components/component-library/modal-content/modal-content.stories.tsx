@@ -5,7 +5,7 @@ import Box from '../../ui/box';
 
 import { DISPLAY } from '../../../helpers/constants/design-system';
 
-import { BUTTON_VARIANT, Button, Text, Modal, ModalHeader } from '..';
+import { ButtonVariant, Button, Text, Modal, ModalHeader } from '..';
 
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
@@ -48,14 +48,14 @@ export const DefaultStory: ComponentStory<typeof ModalContent> = (args) => {
   };
   return (
     <>
-      <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+      <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
         Open
       </Button>
       <Modal isOpen={show} onClose={handleOnClick}>
         <ModalContent {...args}>
           <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
           <Text marginBottom={4}>Modal Content</Text>
-          <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+          <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
             Close
           </Button>
         </ModalContent>
@@ -73,7 +73,7 @@ export const Children: ComponentStory<typeof ModalContent> = (args) => {
   };
   return (
     <>
-      <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+      <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
         Open
       </Button>
       <Modal isOpen={show} onClose={handleOnClick}>
@@ -84,7 +84,7 @@ export const Children: ComponentStory<typeof ModalContent> = (args) => {
           </Text>
           <Button
             marginBottom={4}
-            variant={BUTTON_VARIANT.PRIMARY}
+            variant={ButtonVariant.Primary}
             onClick={handleOnClick}
           >
             Close
@@ -118,13 +118,13 @@ export const Size: ComponentStory<typeof ModalContent> = (args) => {
     <>
       <Box display={DISPLAY.FLEX} gap={4}>
         <Button
-          variant={BUTTON_VARIANT.SECONDARY}
+          variant={ButtonVariant.Secondary}
           onClick={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
         >
           Show sm size
         </Button>
         <Button
-          variant={BUTTON_VARIANT.SECONDARY}
+          variant={ButtonVariant.Secondary}
           onClick={() => handleOnClick(ModalContentSizeStoryOption.ClassName)}
         >
           Show className

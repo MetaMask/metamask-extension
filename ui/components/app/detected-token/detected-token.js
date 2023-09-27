@@ -73,7 +73,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
-          source_connection_method: MetaMetricsTokenEventSource.Detected,
+          source: MetaMetricsTokenEventSource.Detected,
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
           token_added_type: 'detected',
@@ -161,6 +161,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     <>
       {showDetectedTokenIgnoredPopover && (
         <DetectedTokenIgnoredPopover
+          isOpen
           onCancelIgnore={onCancelIgnore}
           handleClearTokensSelection={handleClearTokensSelection}
           partiallyIgnoreDetectedTokens={partiallyIgnoreDetectedTokens}

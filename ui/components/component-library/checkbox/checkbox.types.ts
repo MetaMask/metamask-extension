@@ -63,7 +63,7 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   /*
    * iconProps - additional props to be spread to the Icon component used for the Checkbox
    */
-  iconProps?: IconProps;
+  iconProps?: IconProps<'span'>;
 }
 
 export type CheckboxProps<C extends React.ElementType> =

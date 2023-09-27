@@ -33,7 +33,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
               for="address-0"
             >
               <span
-                class="box mm-text custody-account-list__item__name mm-text--inherit box--padding-right-1 box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text custody-account-list__item__name mm-text--inherit mm-box--padding-right-1 mm-box--color-text-default"
               >
                 Test Account 1
               </span>
@@ -43,10 +43,10 @@ exports[`CustodyAccountList renders accounts 1`] = `
               for="address-0"
             >
               <span
-                class="box mm-text custody-account-list__item mm-text--body-md box--display-flex box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex mm-box--color-text-default"
               >
                 <a
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                   href="https://etherscan.io/address/0x1234567890123456789012345678901234567890"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -56,7 +56,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
                   >
                     0x123...7890
                     <span
-                      class="box mm-icon mm-icon--size-md box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
+                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
                       style="mask-image: url('./images/icons/undefined.svg');"
                     />
                   </span>
@@ -74,7 +74,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
                       class="custody-account-list__item__clipboard"
                     >
                       <span
-                        class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
                         style="mask-image: url('./images/icons/undefined.svg');"
                       />
                     </button>
@@ -108,7 +108,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
               for="address-1"
             >
               <span
-                class="box mm-text custody-account-list__item__name mm-text--inherit box--padding-right-1 box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text custody-account-list__item__name mm-text--inherit mm-box--padding-right-1 mm-box--color-text-default"
               >
                 Test Account 2
               </span>
@@ -118,10 +118,10 @@ exports[`CustodyAccountList renders accounts 1`] = `
               for="address-1"
             >
               <span
-                class="box mm-text custody-account-list__item mm-text--body-md box--display-flex box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex mm-box--color-text-default"
               >
                 <a
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                   href="https://etherscan.io/address/0x0987654321098765432109876543210987654321"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -131,7 +131,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
                   >
                     0x098...4321
                     <span
-                      class="box mm-icon mm-icon--size-md box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
+                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
                       style="mask-image: url('./images/icons/undefined.svg');"
                     />
                   </span>
@@ -149,7 +149,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
                       class="custody-account-list__item__clipboard"
                     >
                       <span
-                        class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
                         style="mask-image: url('./images/icons/undefined.svg');"
                       />
                     </button>
@@ -171,13 +171,13 @@ exports[`CustodyAccountList renders accounts 1`] = `
         class="mm-box mm-box--display-flex mm-box--gap-4"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block custody-account-list__button mm-button-secondary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block custody-account-list__button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
           data-testid="custody-account-cancel-button"
         >
           [cancel]
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block custody-account-list__button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block custody-account-list__button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-testid="custody-account-connect-button"
           disabled=""
         >

@@ -23,8 +23,8 @@ import {
   AvatarIcon,
   IconName,
   ValidTag,
+  Text,
 } from '../../../../components/component-library';
-import { Text } from '../../../../components/component-library/text/deprecated';
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
@@ -120,7 +120,7 @@ export default function SnapInstall({
         <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       )}
       <Box
-        ref={ref}
+        ref={!isLoading && !hasError ? ref : undefined}
         onScroll={onScroll}
         className="snap-install__content"
         style={{

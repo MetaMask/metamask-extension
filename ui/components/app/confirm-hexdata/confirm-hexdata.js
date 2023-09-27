@@ -13,7 +13,7 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 import CopyRawData from '../transaction-decoding/components/ui/copy-raw-data';
 
 const ConfirmHexData = ({ txData, dataHexComponent }) => {

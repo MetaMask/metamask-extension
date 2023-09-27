@@ -160,7 +160,7 @@ describe('Sign Typed Data Signature Request', function () {
 
           await driver.waitForSelector({
             text: 'Reject 2 requests',
-            tag: 'a',
+            tag: 'button',
           });
 
           await verifyAndAssertSignTypedData(

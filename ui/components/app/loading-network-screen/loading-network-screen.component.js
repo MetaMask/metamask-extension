@@ -10,8 +10,8 @@ import {
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import {
   DISPLAY,
   IconColor,

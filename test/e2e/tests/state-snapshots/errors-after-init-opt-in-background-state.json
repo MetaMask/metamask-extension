@@ -28,12 +28,12 @@
     "showBetaHeader": false,
     "showProductTour": true,
     "trezorModel": null,
-    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
+    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "serviceWorkerLastActiveTime": 0
   },
   "ApprovalController": {
@@ -41,7 +41,6 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "BackupController": "undefined",
   "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
@@ -67,21 +66,10 @@
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
-  "IncomingTransactionsController": {
-    "incomingTransactions": "object",
-    "incomingTxLastFetchedBlockByChainId": {
-      "0x1": null,
-      "0xe708": null,
-      "0x5": null,
-      "0xaa36a7": null,
-      "0xe704": null
-    }
-  },
   "KeyringController": {
     "isUnlocked": false,
     "keyringTypes": "object",
-    "keyrings": "object",
-    "encryptionKey": "object"
+    "keyrings": "object"
   },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
@@ -93,8 +81,8 @@
     "previousUserTraits": "object"
   },
   "NetworkController": {
+    "selectedNetworkClientId": "string",
     "networkId": "1337",
-    "networkStatus": "available",
     "providerConfig": {
       "chainId": "0x539",
       "nickname": "Localhost 8545",
@@ -104,7 +92,12 @@
       "type": "rpc",
       "id": "networkConfigurationId"
     },
-    "networkDetails": "object",
+    "networksMetadata": {
+      "networkConfigurationId": {
+        "EIPS": { "1559": false },
+        "status": "available"
+      }
+    },
     "networkConfigurations": "object"
   },
   "NftController": {
@@ -133,10 +126,12 @@
     "useMultiAccountBalanceChecker": true,
     "useTokenDetection": false,
     "useNftDetection": false,
+    "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
     "openSeaEnabled": false,
     "advancedGasFee": {},
-    "featureFlags": { "showIncomingTransactions": true },
+    "featureFlags": {},
+    "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
     "identities": "object",
@@ -149,6 +144,7 @@
       "useNativeCurrencyAsPrimaryCurrency": true
     },
     "ipfsGateway": "string",
+    "useAddressBarEnsResolution": true,
     "infuraBlocked": false,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
@@ -222,7 +218,6 @@
     "allDetectedTokens": {}
   },
   "TxController": {
-    "unapprovedTxs": "object",
-    "currentNetworkTxList": "object"
+    "transactions": "object"
   }
 }

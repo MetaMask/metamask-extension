@@ -9,7 +9,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
       class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
     >
       <p
-        class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-alternative"
       >
         Your accounts
       </p>
@@ -73,12 +73,12 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             data-testid="recipient"
           >
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
               Test Account
             </p>
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0x0dcd...e7bc
             </p>
@@ -136,12 +136,12 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             data-testid="recipient"
           >
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
               Test Account 2
             </p>
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xec1a...251b
             </p>
@@ -199,12 +199,12 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             data-testid="recipient"
           >
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
               Test Ledger 1
             </p>
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xc42e...8813
             </p>
@@ -262,12 +262,12 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             data-testid="recipient"
           >
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
               Test Account 3
             </p>
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xeb9e...4823
             </p>
@@ -445,7 +445,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
       class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
     >
       <p
-        class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-alternative"
       >
         Your accounts
       </p>
@@ -509,12 +509,12 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             data-testid="recipient"
           >
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
               Test Account
             </p>
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0x0dcd...e7bc
             </p>
@@ -572,12 +572,12 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             data-testid="recipient"
           >
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
               Test Account 2
             </p>
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xec1a...251b
             </p>
@@ -635,12 +635,12 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             data-testid="recipient"
           >
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
               Test Ledger 1
             </p>
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xc42e...8813
             </p>
@@ -698,12 +698,12 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             data-testid="recipient"
           >
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
               Test Account 3
             </p>
             <p
-              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xeb9e...4823
             </p>
@@ -718,7 +718,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
         class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
       >
         <p
-          class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-alternative"
         >
           Contacts
         </p>
@@ -737,7 +737,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             class="box send__select-recipient-wrapper__group-label box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
           >
             <p
-              class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
               A
             </p>
@@ -794,12 +794,12 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
               data-testid="recipient"
             >
               <p
-                class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
               >
                 Address Book Account 1
               </p>
               <p
-                class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+                class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
               >
                 0xc42e...8813
               </p>

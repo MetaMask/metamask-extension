@@ -12,7 +12,7 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../../shared/constants/transaction';
-import { Text } from '../../../../components/component-library/text/deprecated';
+import { Text } from '../../../../components/component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 
 export default class SendAssetRow extends Component {

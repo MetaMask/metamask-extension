@@ -14,7 +14,7 @@ const render = () => {
   });
 
   const props = {
-    selectedPath: TREZOR_HD_PATHS[0].path,
+    selectedPath: TREZOR_HD_PATHS[0].value,
     device: 'trezor',
     accounts: [
       {

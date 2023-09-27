@@ -5,8 +5,7 @@ import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { BannerAlert } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
 import Button from '../../ui/button';
@@ -39,6 +38,9 @@ import {
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
@@ -51,7 +53,6 @@ export default function SignatureRequestSIWE({ txData }) {
   const t = useContext(I18nContext);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
-
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -129,19 +130,27 @@ export default function SignatureRequestSIWE({ txData }) {
         <ConfirmPageContainerNavigation />
       </div>
       <SignatureRequestHeader txData={txData} />
-      <Header
-        fromAccount={fromAccount}
-        domain={origin}
-        isSIWEDomainValid={isSIWEDomainValid}
-        subjectMetadata={targetSubjectMetadata}
-      />
 
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+          margin={4}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
       {showSecurityProviderBanner && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
         />
       )}
 
+      <Header
+        fromAccount={fromAccount}
+        domain={origin}
+        isSIWEDomainValid={isSIWEDomainValid}
+        subjectMetadata={targetSubjectMetadata}
+      />
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <BannerAlert
@@ -156,13 +165,11 @@ export default function SignatureRequestSIWE({ txData }) {
           ])}
         </BannerAlert>
       )}
-
       {isLedgerWallet && (
         <div className="confirm-approve-content__ledger-instruction-wrapper">
           <LedgerInstructionField showDataInstruction />
         </div>
       )}
-
       {!isSIWEDomainValid && (
         <BannerAlert
           severity={SEVERITIES.DANGER}

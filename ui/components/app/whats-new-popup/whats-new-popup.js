@@ -9,14 +9,15 @@ import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Popover from '../../ui/popover';
 import {
-  Button,
+  Text,
+  ButtonPrimary,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import { updateViewedNotifications } from '../../../store/actions';
 import {
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
   getTranslatedUINotifications,
 } from '../../../../shared/notifications';
@@ -106,8 +107,17 @@ function getActionFunctionById(id, history) {
     22: () => {
       updateViewedNotifications({ 22: true });
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: () => {
+      updateViewedNotifications({ 23: true });
+      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+    },
+    ///: END:ONLY_INCLUDE_IN
     24: () => {
       updateViewedNotifications({ 24: true });
+    },
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: () => {
+      updateViewedNotifications({ [NOTIFICATION_DROP_LEDGER_FIREFOX]: true });
     },
     [NOTIFICATION_OPEN_BETA_SNAPS]: () => {
       updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
@@ -131,6 +141,7 @@ const renderDescription = (description) => {
         const isLast = index === description.length - 1;
         return (
           <Text
+            data-testid={`whats-new-description-item-${index}`}
             key={`item-${index}`}
             variant={TextVariant.bodyMd}
             marginBottom={isLast ? 0 : 4}
@@ -207,8 +218,7 @@ const renderFirstNotification = ({
       </div>
       {placeImageBelowDescription && imageComponent}
       {actionText && (
-        <Button
-          type="primary"
+        <ButtonPrimary
           className="whats-new-popup__button"
           onClick={() => {
             actionFunction();
@@ -217,14 +227,15 @@ const renderFirstNotification = ({
               event: MetaMetricsEventName.WhatsNewClicked,
             });
           }}
+          block
         >
           {actionText}
-        </Button>
+        </ButtonPrimary>
       )}
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         customButton && customButton.name === 'mmi-portfolio' && (
-          <Button
+          <ButtonPrimary
             className="whats-new-popup__button"
             data-testid="view-mmi-portfolio"
             size={Size.SM}
@@ -234,9 +245,10 @@ const renderFirstNotification = ({
               onClose();
               window.open(mmiPortfolioUrl, '_blank');
             }}
+            block
           >
             {customButton.text}
-          </Button>
+          </ButtonPrimary>
         )
         ///: END:ONLY_INCLUDE_IN
       }
@@ -362,10 +374,26 @@ export default function WhatsNewPopup({
       observer.observe(ref.current);
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent({
+      category: MetaMetricsEventCategory.MMI,
+      event: MetaMetricsEventName.MMIPortfolioDashboardModalOpen,
+      properties: {
+        action: 'Modal was opened',
+      },
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     return () => {
       observer.disconnect();
     };
-  }, [idRefMap, setSeenNotifications]);
+  }, [
+    idRefMap,
+    setSeenNotifications,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent,
+    ///: END:ONLY_INCLUDE_IN
+  ]);
 
   // Display the swaps notification with full image
   // Displays the NFTs & OpenSea notifications 18,19 with full image
@@ -376,7 +404,12 @@ export default function WhatsNewPopup({
     19: renderFirstNotification,
     21: renderFirstNotification,
     22: renderFirstNotification,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: renderFirstNotification,
+    ///: END:ONLY_INCLUDE_IN
     24: renderFirstNotification,
+    // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
   };
 
@@ -395,6 +428,15 @@ export default function WhatsNewPopup({
             completed_all: true,
           },
         });
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        trackEvent({
+          category: MetaMetricsEventCategory.MMI,
+          event: MetaMetricsEventName.MMIPortfolioDashboardModalButton,
+          properties: {
+            action: 'Button was clicked',
+          },
+        });
+        ///: END:ONLY_INCLUDE_IN
         onClose();
       }}
       popoverRef={popoverRef}

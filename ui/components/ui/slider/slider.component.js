@@ -9,7 +9,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 
 const styles = {
   root: {

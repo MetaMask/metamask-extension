@@ -25,8 +25,7 @@ import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { Icon, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Icon, IconName, Text } from '../../component-library';
 import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
 
 const NewNetworkInfo = () => {

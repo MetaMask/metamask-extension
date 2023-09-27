@@ -1,12 +1,11 @@
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Box from '../../ui/box/box';
 import {
   TextVariant,
   Color,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   AlignItems,
   IconColor,
   TextColor,
@@ -14,16 +13,22 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import { Text } from '../../component-library/text/deprecated';
-import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
+
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+  Box,
+} from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      width={BLOCK_SIZES.FULL}
+      display={Display.Flex}
+      width={BlockSize.Full}
       backgroundColor={Color.warningDefault}
       padding={2}
       className="beta-header"

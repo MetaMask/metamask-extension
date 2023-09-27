@@ -1,30 +1,29 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import NftsItems from '../nfts-items';
 import {
-  JustifyContent,
-  FlexDirection,
   AlignItems,
-  Size,
   Display,
+  FlexDirection,
+  JustifyContent,
+  Size,
   TextAlign,
-  TextVariant,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { getIsMainnet, getUseNftDetection } from '../../../selectors';
-import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   showImportNftsModal,
 } from '../../../store/actions';
-import { useNftsCollections } from '../../../hooks/useNftsCollections';
-import { Box, ButtonLink, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
-import NftsDetectionNotice from '../nfts-detection-notice';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { Box, ButtonLink, IconName, Text } from '../../component-library';
+import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
+import NftsItems from '../nfts-items';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -37,7 +36,7 @@ export default function NftsTab() {
     useNftsCollections();
 
   const onEnableAutoDetect = () => {
-    history.push(EXPERIMENTAL_ROUTE);
+    history.push(SECURITY_ROUTE);
   };
 
   const onRefresh = () => {
@@ -63,7 +62,7 @@ export default function NftsTab() {
         <>
           {isMainnet && !useNftDetection ? (
             <Box padding={4}>
-              <NftsDetectionNotice />
+              <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
           <Box

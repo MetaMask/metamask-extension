@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../test/jest';
 import NftsTab from '.';
 
@@ -201,14 +201,14 @@ describe('NFT Items', () => {
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
     it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
       render({
@@ -218,7 +218,7 @@ describe('NFT Items', () => {
       fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(
-        `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
+        `${SECURITY_ROUTE}#autodetect-nfts`,
       );
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
@@ -227,14 +227,14 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
   });
 
@@ -292,7 +292,7 @@ describe('NFT Items', () => {
       expect(historyPushMock).toHaveBeenCalledTimes(0);
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
+      expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
     });
   });
 });
