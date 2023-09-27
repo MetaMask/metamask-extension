@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
-import Box from '../../ui/box';
+import { Display } from '../../../helpers/constants/design-system';
 
-import { DISPLAY } from '../../../helpers/constants/design-system';
-
-import { BUTTON_VARIANT, Button, Text, Modal, ModalHeader } from '..';
+import { Box, ButtonVariant, Button, Text, Modal, ModalHeader } from '..';
 
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
@@ -26,7 +24,7 @@ export default {
       options: Object.values(ModalContentSize),
     },
   },
-} as ComponentMeta<typeof ModalContent>;
+} as Meta<typeof ModalContent>;
 
 const LoremIpsum = () => (
   <Text marginBottom={4}>
@@ -41,21 +39,21 @@ const LoremIpsum = () => (
   </Text>
 );
 
-export const DefaultStory: ComponentStory<typeof ModalContent> = (args) => {
+export const DefaultStory: StoryFn<typeof ModalContent> = (args) => {
   const [show, setShow] = useState(false);
   const handleOnClick = () => {
     setShow(!show);
   };
   return (
     <>
-      <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+      <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
         Open
       </Button>
       <Modal isOpen={show} onClose={handleOnClick}>
         <ModalContent {...args}>
           <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
           <Text marginBottom={4}>Modal Content</Text>
-          <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+          <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
             Close
           </Button>
         </ModalContent>
@@ -66,14 +64,14 @@ export const DefaultStory: ComponentStory<typeof ModalContent> = (args) => {
 
 DefaultStory.storyName = 'Default';
 
-export const Children: ComponentStory<typeof ModalContent> = (args) => {
+export const Children: StoryFn<typeof ModalContent> = (args) => {
   const [show, setShow] = useState(false);
   const handleOnClick = () => {
     setShow(!show);
   };
   return (
     <>
-      <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+      <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
         Open
       </Button>
       <Modal isOpen={show} onClose={handleOnClick}>
@@ -84,7 +82,7 @@ export const Children: ComponentStory<typeof ModalContent> = (args) => {
           </Text>
           <Button
             marginBottom={4}
-            variant={BUTTON_VARIANT.PRIMARY}
+            variant={ButtonVariant.Primary}
             onClick={handleOnClick}
           >
             Close
@@ -105,7 +103,7 @@ enum ModalContentSizeStoryOption {
   ClassName = 'className',
 }
 
-export const Size: ComponentStory<typeof ModalContent> = (args) => {
+export const Size: StoryFn<typeof ModalContent> = (args) => {
   const [show, setShow] = useState({
     sm: false,
     className: false,
@@ -116,15 +114,15 @@ export const Size: ComponentStory<typeof ModalContent> = (args) => {
 
   return (
     <>
-      <Box display={DISPLAY.FLEX} gap={4}>
+      <Box display={Display.Flex} gap={4}>
         <Button
-          variant={BUTTON_VARIANT.SECONDARY}
+          variant={ButtonVariant.Secondary}
           onClick={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
         >
           Show sm size
         </Button>
         <Button
-          variant={BUTTON_VARIANT.SECONDARY}
+          variant={ButtonVariant.Secondary}
           onClick={() => handleOnClick(ModalContentSizeStoryOption.ClassName)}
         >
           Show className

@@ -87,7 +87,12 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
   },
   {
     path: ['m', `44'`, `501'`],
-    curve: 'secp256k1',
+    curve: 'ed25519',
+    name: 'Solana',
+  },
+  {
+    path: ['m', `44'`, `501'`, "0'", "0'"],
+    curve: 'ed25519',
     name: 'Solana',
   },
   {
@@ -116,9 +121,19 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     name: 'Bitcoin Cash',
   },
   {
+    path: ['m', `44'`, `637'`],
+    curve: 'ed25519',
+    name: 'Aptos',
+  },
+  {
     path: ['m', `44'`, `714'`],
     curve: 'secp256k1',
     name: 'Binance (BNB)',
+  },
+  {
+    path: ['m', `44'`, `784'`],
+    curve: 'ed25519',
+    name: 'Sui',
   },
   {
     path: ['m', `44'`, `931'`],

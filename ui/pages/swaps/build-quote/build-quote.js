@@ -81,6 +81,7 @@ import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   TokenBucketPriority,
+  MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
 
 import {
@@ -109,8 +110,6 @@ const fuseSearchKeys = [
   { name: 'symbol', weight: 0.499 },
   { name: 'address', weight: 0.002 },
 ];
-
-const MAX_ALLOWED_SLIPPAGE = 15;
 
 let timeoutIdForQuotesPrefetching;
 

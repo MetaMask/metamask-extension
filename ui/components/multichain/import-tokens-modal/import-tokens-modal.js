@@ -363,7 +363,7 @@ export const ImportTokensModal = ({ onClose }) => {
             <ButtonLink
               className="import-tokens-modal__nft-address-error-link"
               onClick={() => {
-                dispatch(showImportNftsModal());
+                dispatch(showImportNftsModal({ tokenAddress: address }));
                 onClose();
               }}
               color={TextColor.primaryDefault}
@@ -452,7 +452,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                 className="import-tokens-modal__autodetect"
                                 onClick={() => {
                                   history.push(
-                                    `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
+                                    `${SECURITY_ROUTE}#auto-detect-tokens`,
                                   );
                                   onClose();
                                 }}
@@ -485,7 +485,8 @@ export const ImportTokensModal = ({ onClose }) => {
                 ) : null}
                 <Tab tabKey="customToken" name={t('customToken')}>
                   <Box
-                    padding={[2, 4, 4, 4]}
+                    paddingTop={4}
+                    paddingBottom={4}
                     className="import-tokens-modal__custom-token-form"
                   >
                     {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
@@ -504,11 +505,12 @@ export const ImportTokensModal = ({ onClose }) => {
                             <ButtonLink
                               type="link"
                               key="import-token-token-detection-announcement"
-                              onClick={() =>
+                              onClick={() => {
                                 history.push(
-                                  `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
-                                )
-                              }
+                                  `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                );
+                                onClose();
+                              }}
                             >
                               {t('inYourSettings')}
                             </ButtonLink>,

@@ -145,12 +145,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Guarda estos 1$ como mi valor predeterminado para \"Avanzado\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Usar siempre estos valores y la configuración avanzada como valores predeterminados."
-  },
   "advancedGasFeeModalTitle": {
     "message": "Tarifa de gas avanzada"
   },
@@ -475,9 +469,6 @@
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },
-  "copyPrivateKey": {
-    "message": "Esta es su clave privada (haga clic para copiarla)"
-  },
   "copyRawTransactionData": {
     "message": "Copiar los datos de las transacciones en bruto"
   },
@@ -767,9 +758,6 @@
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
   },
-  "enterPassword": {
-    "message": "Escribir contraseña"
-  },
   "enterPasswordContinue": {
     "message": "Escribir contraseña para continuar"
   },
@@ -825,9 +813,6 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar clave privada"
   },
   "externalExtension": {
     "message": "Extensión externa"
@@ -1407,9 +1392,6 @@
   "newContract": {
     "message": "Contrato nuevo"
   },
-  "newNFTsDetected": {
-    "message": "¡Nuevo! Detección NFT"
-  },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
   },
@@ -1418,9 +1400,6 @@
   },
   "newPassword": {
     "message": "Contraseña nueva (mín. de 8 caracteres)"
-  },
-  "newValues": {
-    "message": "nuevos valores"
   },
   "next": {
     "message": "Siguiente"
@@ -2011,9 +1990,6 @@
   },
   "showPermissions": {
     "message": "Mostrar permisos"
-  },
-  "showPrivateKeys": {
-    "message": "Mostrar claves privadas"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"
@@ -2629,9 +2605,6 @@
   "txInsightsNotSupported": {
     "message": "En este momento no se admiten informaciones sobre las transacciones para este contrato."
   },
-  "typePassword": {
-    "message": "Escriba su contraseña de MetaMask"
-  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
@@ -2685,9 +2658,6 @@
   },
   "useNftDetection": {
     "message": "Autodetectar NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "La visualización de medios y datos de NFT puede exponer su dirección IP a servidores centralizados. Las API de terceros (como OpenSea) se utilizan para detectar NFT en su cartera. Esto expone la dirección de su cuenta con esos servicios. Deje esta opción desactivada si no quiere que la aplicación extraiga datos de esos servicios."
   },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"

@@ -5,6 +5,7 @@ import {
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
   NETWORK_TYPES,
+  OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
 
@@ -342,6 +343,28 @@ describe('Selectors', () => {
       );
       expect(customNetwork.removable).toBe(true);
     });
+
+    it('properly proposes a known network image when not provided by adding function', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.OPTIMISM,
+              nickname: OPTIMISM_DISPLAY_NAME,
+              id: 'some-config-name',
+            },
+          },
+        },
+      });
+
+      const optimismConfig = networks.find(
+        ({ chainId }) => chainId === CHAIN_IDS.OPTIMISM,
+      );
+      expect(optimismConfig.rpcPrefs.imageUrl).toBe('./images/optimism.svg');
+    });
   });
 
   describe('#getCurrentNetwork', () => {
@@ -632,11 +655,6 @@ describe('Selectors', () => {
       priorityFee: '2',
     });
   });
-  it('#getIsAdvancedGasFeeDefault', () => {
-    const isAdvancedGasFeeDefault =
-      selectors.getIsAdvancedGasFeeDefault(mockState);
-    expect(isAdvancedGasFeeDefault).toStrictEqual(true);
-  });
   it('#getAppIsLoading', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
@@ -741,5 +759,25 @@ describe('Selectors', () => {
 
     mockState.metamask.snapsInstallPrivacyWarningShown = null;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+  });
+
+  it('#getInfuraBlocked', () => {
+    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
+    expect(isInfuraBlocked).toBe(false);
+
+    const modifiedMockState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networksMetadata: {
+          ...mockState.metamask.networksMetadata,
+          goerli: {
+            status: 'blocked',
+          },
+        },
+      },
+    };
+    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
+    expect(isInfuraBlocked).toBe(true);
   });
 });

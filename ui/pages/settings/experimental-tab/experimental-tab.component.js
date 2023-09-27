@@ -5,7 +5,12 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  MetaMetricsEventName,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../../shared/constants/metametrics';
 
 import { Text, Box } from '../../../components/component-library';
 import {
@@ -13,8 +18,10 @@ import {
   TextVariant,
   FontWeight,
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  AlignItems,
   Display,
   FlexDirection,
+  FlexWrap,
   JustifyContent,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
@@ -34,6 +41,10 @@ export default class ExperimentalTab extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertsEnabled: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    addSnapAccountEnabled: PropTypes.bool,
+    setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -84,28 +95,15 @@ export default class ExperimentalTab extends PureComponent {
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {t('securityAlertsDescription1')}
+                {t('securityAlertsDescription')}
               </Text>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+              <div
+                data-testid="settings-toggle-security-alert-blockaid"
+                className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
               >
-                {t('securityAlertsDescription2')}
-              </Text>
-
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                marginTop={3}
-                marginBottom={1}
-              >
-                {t('selectProvider')}
-              </Text>
-              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
                 <Text
                   variant={TextVariant.bodyMd}
                   color={TextColor.textDefault}
-                  marginBottom={0}
                 >
                   {t('blockaid')}
                 </Text>
@@ -124,13 +122,6 @@ export default class ExperimentalTab extends PureComponent {
                   }}
                 />
               </div>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textMuted}
-                marginTop={2}
-              >
-                {t('moreComingSoon')}
-              </Text>
             </div>
           </div>
         </div>
@@ -173,16 +164,7 @@ export default class ExperimentalTab extends PureComponent {
               >
                 {t('transactionSecurityCheckDescription')}
               </Text>
-              <Text
-                marginTop={3}
-                marginBottom={1}
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={TextColor.textAlternative}
-              >
-                {t('selectProvider')}
-              </Text>
-              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
                 <Text
                   variant={TextVariant.bodyMd}
                   as="h5"
@@ -224,15 +206,6 @@ export default class ExperimentalTab extends PureComponent {
                   </a>,
                 ])}
               </Text>
-              <Text
-                variant={TextVariant.bodyMd}
-                as="h5"
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textMuted}
-                marginTop={2}
-              >
-                {t('moreComingSoon')}
-              </Text>
             </div>
           </div>
         </Box>
@@ -245,22 +218,105 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     return (
-      <Box
-        ref={this.settingsRefs[6]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-desktop-pairing"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('desktopEnableButtonDescription')}</span>
-        </div>
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          color={TextColor.textAlternative}
+          marginBottom={2}
+        >
+          {t('desktopApp')}
+        </Text>
+        <Box
+          ref={this.settingsRefs[6]}
+          data-testid="advanced-setting-desktop-pairing"
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          flexDirection={FlexDirection.Row}
+          flexWrap={FlexWrap.Wrap}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Text marginTop={3} paddingRight={2}>
+            {t('desktopEnableButtonDescription')}
+          </Text>
+          <Box className="settings-page__content-item-col" paddingTop={3}>
+            <DesktopEnableButton />
+          </Box>
+        </Box>
+      </>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
 
-        <div className="settings-page__content-item-col">
-          <DesktopEnableButton />
-        </div>
-      </Box>
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  renderKeyringSnapsToggle() {
+    const { t, trackEvent } = this.context;
+    const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
+
+    return (
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
+          color={TextColor.textAlternative}
+          marginBottom={2}
+          fontWeight={FontWeight.Bold}
+        >
+          {t('snaps')}
+        </Text>
+        <Box
+          ref={this.settingsRefs[1]}
+          className="settings-page__content-row settings-page__content-row-experimental"
+          marginBottom={3}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('snapAccounts')}</span>
+            <div className="settings-page__content-description">
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textAlternative}
+              >
+                {t('snapAccountsDescription')}
+              </Text>
+
+              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h5"
+                  color={TextColor.textDefault}
+                  fontWeight={FontWeight.Medium}
+                  marginBottom={0}
+                >
+                  {t('addSnapAccountToggle')}
+                </Text>
+                <Box data-testid="add-snap-account-toggle">
+                  <ToggleButton
+                    value={addSnapAccountEnabled}
+                    onToggle={(value) => {
+                      trackEvent({
+                        event: MetaMetricsEventName.AddSnapAccountEnabled,
+                        category: MetaMetricsEventCategory.Settings,
+                        properties: {
+                          enabled: !value,
+                        },
+                      });
+                      setAddSnapAccountEnabled(!value);
+                    }}
+                  />
+                </Box>
+              </div>
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textAlternative}
+                marginTop={0}
+              >
+                {t('addSnapAccountsDescription')}
+              </Text>
+            </div>
+          </div>
+        </Box>
+      </>
     );
   }
   ///: END:ONLY_INCLUDE_IN
@@ -274,6 +330,11 @@ export default class ExperimentalTab extends PureComponent {
           ///: END:ONLY_INCLUDE_IN
         }
         {this.renderTransactionSecurityCheckToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          this.renderKeyringSnapsToggle()
+          ///: END:ONLY_INCLUDE_IN
+        }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           this.renderDesktopEnableButton()

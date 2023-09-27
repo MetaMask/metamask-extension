@@ -21,9 +21,9 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
+  Button,
   BUTTON_SIZES,
   Box,
-  Button,
   Text,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
@@ -449,7 +449,7 @@ export default class SecurityTab extends PureComponent {
             {t('ensDomainsSettingTitle')}
             <div className="settings-page__content-description">
               <Text color={TextColor.inherit} variant={TextVariant.inherit}>
-                {t('ensDomainsSettingDescriptionIntro')}
+                {t('ensDomainsSettingDescriptionIntroduction')}
               </Text>
               <Box
                 as="ul"
@@ -463,25 +463,18 @@ export default class SecurityTab extends PureComponent {
                   color={TextColor.inherit}
                   variant={TextVariant.inherit}
                 >
-                  {t('ensDomainsSettingDescriptionPoint1')}
+                  {t('ensDomainsSettingDescriptionPart1')}
                 </Text>
                 <Text
                   as="li"
                   color={TextColor.inherit}
                   variant={TextVariant.inherit}
                 >
-                  {t('ensDomainsSettingDescriptionPoint2')}
-                </Text>
-                <Text
-                  as="li"
-                  color={TextColor.inherit}
-                  variant={TextVariant.inherit}
-                >
-                  {t('ensDomainsSettingDescriptionPoint3')}
+                  {t('ensDomainsSettingDescriptionPart2')}
                 </Text>
               </Box>
               <Text color={TextColor.inherit} variant={TextVariant.inherit}>
-                {t('ensDomainsSettingDescriptionOutro')}
+                {t('ensDomainsSettingDescriptionOutroduction')}
               </Text>
             </div>
           </div>
@@ -682,7 +675,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('displayNftMedia')}</span>
           <div className="settings-page__content-description">
-            {t('displayNftMediaDescription')}
+            {t('displayNftMediaDesc')}
           </div>
         </div>
 
@@ -735,17 +728,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('useNftDetection')}</span>
           <div className="settings-page__content-description">
-            <Text color={TextColor.textAlternative}>
-              {t('useNftDetectionDescription')}
-            </Text>
-            <ul className="settings-page__content-unordered-list">
-              <li>{t('useNftDetectionDescriptionLine2')}</li>
-              <li>{t('useNftDetectionDescriptionLine3')}</li>
-              <li>{t('useNftDetectionDescriptionLine4')}</li>
-            </ul>
-            <Text color={TextColor.textAlternative} paddingTop={4}>
-              {t('useNftDetectionDescriptionLine5')}
-            </Text>
+            {t('useNftDetectionDescriptionText')}
           </div>
         </div>
 

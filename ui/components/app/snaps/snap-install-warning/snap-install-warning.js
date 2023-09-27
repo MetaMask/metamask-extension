@@ -27,6 +27,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  IconName,
   Text,
 } from '../../../component-library';
 
