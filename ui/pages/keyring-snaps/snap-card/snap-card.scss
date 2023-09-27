@@ -1,0 +1,7 @@
+.configure-button {
+  &:hover {
+    & > * {
+      color: var(--color-primary-inverse);
+    }
+  }
+}
