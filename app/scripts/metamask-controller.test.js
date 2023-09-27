@@ -730,6 +730,10 @@ describe('MetaMaskController', () => {
     describe('unlockHardwareWalletAccount', () => {
       const accountToUnlock = 10;
       beforeEach(async () => {
+        await metamaskController.coreKeyringController.createNewVaultAndRestore(
+          'password',
+          TEST_SEED,
+        );
         jest.spyOn(window, 'open').mockReturnValue();
         jest
           .spyOn(
@@ -753,9 +757,6 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.preferencesController, 'setAccountLabel')
           .mockReturnValue();
 
-        await metamaskController
-          .connectHardware(HardwareDeviceNames.trezor, 0, `m/44'/1'/0'/0`)
-          .catch(() => null);
         await metamaskController.unlockHardwareWalletAccount(
           accountToUnlock,
           HardwareDeviceNames.trezor,
@@ -780,7 +781,7 @@ describe('MetaMaskController', () => {
       it('should call keyringController.getAccounts', async () => {
         expect(
           metamaskController.coreKeyringController.getAccounts,
-        ).toHaveBeenCalledTimes(3);
+        ).toHaveBeenCalledTimes(2);
       });
 
       it('should call preferencesController.setAddresses', async () => {
