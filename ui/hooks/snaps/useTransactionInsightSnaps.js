@@ -12,6 +12,7 @@ export function useTransactionInsightSnaps({
   origin,
   insightSnaps,
   insightSnapId = '',
+  hasFetchedV2Insight = false,
 }) {
   const subjects = useSelector(getPermissionSubjects);
 
@@ -22,6 +23,10 @@ export function useTransactionInsightSnaps({
     let cancelled = false;
 
     async function fetchInsight() {
+      if (hasFetchedV2Insight) {
+        return;
+      }
+
       setLoading(true);
 
       let snapIds = insightSnaps.map((snap) => snap.id);

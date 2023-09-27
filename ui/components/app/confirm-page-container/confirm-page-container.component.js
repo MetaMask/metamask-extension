@@ -125,6 +125,7 @@ const ConfirmPageContainer = (props) => {
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
     useState(false);
+  const [hasFetchedV2Insight, setHasFetchedV2Insight] = useState(false);
   ///: END:ONLY_INCLUDE_IN
   const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
@@ -168,8 +169,15 @@ const ConfirmPageContainer = (props) => {
   // this code can bemoved to it.
   const insightObject = useTransactionInsights({
     txData,
+    hasFetchedV2Insight,
   });
   const insightComponent = insightObject?.insightComponent;
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  if (!hasFetchedV2Insight) {
+    setHasFetchedV2Insight(true);
+  }
   ///: END:ONLY_INCLUDE_IN
 
   const handleSubmit = () => {
