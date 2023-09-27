@@ -68,7 +68,8 @@
   },
   "KeyringController": {
     "isUnlocked": false,
-    "keyrings": "object"
+    "keyrings": "object",
+    "vault": "string"
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
