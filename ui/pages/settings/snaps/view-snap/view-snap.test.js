@@ -62,7 +62,7 @@ describe('ViewSnap', () => {
         ?.length,
     ).toBe(1);
     // Remove snap
-    expect(getByText('Remove snap')).toBeDefined();
+    expect(getByText('Remove Snap')).toBeDefined();
     expect(
       getByText(
         'This action will delete the snap, its data and revoke your given permissions.',
