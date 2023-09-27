@@ -746,22 +746,6 @@ async function switchToNotificationWindow(driver, numHandles = 3) {
   );
 }
 
-async function getMockedRequests(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(async () => {
-    let isPending = true;
-    for (const mockedEndpoint of mockedEndpoints) {
-      isPending = await mockedEndpoint.isPending();
-    }
-
-    return isPending === !hasRequest;
-  }, driver.timeout);
-
-  const mockedRequests = [];
-  for (const mockedEndpoint of mockedEndpoints) {
-    mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
-  }
-}
-
 /**
  * When mocking the segment server and returning an array of mocks from the
  * mockServer method, this method will allow getting all of the seen requests
@@ -773,7 +757,18 @@ async function getMockedRequests(driver, mockedEndpoints, hasRequest = true) {
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  const mockedRequests = getMockedRequests(driver, mockedEndpoints, hasRequest);
+  await driver.wait(async () => {
+    let isPending = true;
+    for (const mockedEndpoint of mockedEndpoints) {
+      isPending = await mockedEndpoint.isPending();
+    }
+
+    return isPending === !hasRequest;
+  }, driver.timeout);
+  const mockedRequests = [];
+  for (const mockedEndpoint of mockedEndpoints) {
+    mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
+  }
 
   return mockedRequests.map((req) => req.body.json?.batch).flat();
 }
@@ -857,7 +852,6 @@ module.exports = {
   clickSignOnSignatureConfirmation,
   validateContractDetails,
   switchToNotificationWindow,
-  getMockedRequests,
   getEventPayloads,
   onboardingBeginCreateNewWallet,
   onboardingChooseMetametricsOption,
