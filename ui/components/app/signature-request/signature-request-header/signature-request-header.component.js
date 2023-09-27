@@ -1,15 +1,37 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import AccountListItem from '../../account-list-item';
-import NetworkDisplay from '../../network-display';
+import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
+import {
+  BackgroundColor,
+  BorderColor,
+  Display,
+} from '../../../../helpers/constants/design-system';
+import { connect } from 'react-redux';
+import {
+  getCurrentNetwork,
+  getTestNetworkBackgroundColor,
+} from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { PickerNetwork } from '../../../component-library';
+import { NETWORK_TYPES } from '../../../../../shared/constants/network';
+import { t } from '../../../../../app/scripts/translate';
 
-export default class SignatureRequestHeader extends PureComponent {
+class SignatureRequestHeader extends PureComponent {
   static propTypes = {
     fromAccount: PropTypes.object,
+    providerConfig: PropTypes.object,
+    currentNetwork: PropTypes.object,
+    testNetworkBackgroundColor: BackgroundColor | undefined,
   };
 
   render() {
-    const { fromAccount } = this.props;
+    const {
+      fromAccount,
+      providerConfig,
+      currentNetwork,
+      testNetworkBackgroundColor,
+    } = this.props;
 
     return (
       <div className="signature-request-header">
@@ -24,9 +46,31 @@ export default class SignatureRequestHeader extends PureComponent {
           ) : null}
         </div>
         <div className="signature-request-header--network">
-          <NetworkDisplay />
+          <PickerNetwork
+            as="div"
+            src={currentNetwork?.rpcPrefs?.imageUrl}
+            label={
+              providerConfig?.type === NETWORK_TYPES.RPC
+                ? providerConfig?.nickname ?? t('privateNetwork')
+                : t(getNetworkLabelKey(providerConfig?.type))
+            }
+            backgroundColor={BackgroundColor.transparent}
+            borderColor={BorderColor.borderMuted}
+            iconProps={{ display: Display.None }}
+            avatarNetworkProps={{
+              backgroundColor: testNetworkBackgroundColor,
+            }}
+          />
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  providerConfig: getProviderConfig(state),
+  currentNetwork: getCurrentNetwork(state),
+  testNetworkBackgroundColor: getTestNetworkBackgroundColor(state),
+});
+
+export default connect(mapStateToProps)(SignatureRequestHeader);
