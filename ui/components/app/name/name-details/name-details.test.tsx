@@ -187,6 +187,7 @@ describe('NameDetails', () => {
       type: NameType.ETHEREUM_ADDRESS,
       name: SAVED_NAME_MOCK,
       sourceId: undefined,
+      variation: CHAIN_ID_MOCK,
     });
   });
 
@@ -208,6 +209,7 @@ describe('NameDetails', () => {
       type: NameType.ETHEREUM_ADDRESS,
       name: PROPOSED_NAME_MOCK,
       sourceId: SOURCE_ID_MOCK,
+      variation: CHAIN_ID_MOCK,
     });
   });
 
@@ -229,6 +231,7 @@ describe('NameDetails', () => {
       type: NameType.ETHEREUM_ADDRESS,
       name: null,
       sourceId: undefined,
+      variation: CHAIN_ID_MOCK,
     });
   });
 
@@ -250,6 +253,7 @@ describe('NameDetails', () => {
       type: NameType.ETHEREUM_ADDRESS,
       name: SAVED_NAME_2_MOCK,
       sourceId: undefined,
+      variation: CHAIN_ID_MOCK,
     });
   });
 
@@ -268,6 +272,7 @@ describe('NameDetails', () => {
       value: ADDRESS_NO_NAME_MOCK,
       type: NameType.ETHEREUM_ADDRESS,
       onlyUpdateAfterDelay: true,
+      variation: CHAIN_ID_MOCK,
     });
   });
 
