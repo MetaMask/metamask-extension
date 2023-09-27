@@ -3194,14 +3194,6 @@
     "message": "snapがライフサイクルフックを使用して、ライフサイクルの特定のタイミングでコードを実行することを許可します。",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "無期限で実行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "大きなデータの処理中など、snapが無期限で実行されることを許可します。",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "イーサリアムアカウントを追加して管理します",
     "description": "The description for `snap_manageAccounts` permission"

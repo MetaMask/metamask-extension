@@ -104,8 +104,10 @@ async function main() {
   let testPaths;
 
   if (snaps) {
-    const testDir = path.join(__dirname, 'snaps');
-    testPaths = await getTestPathsForTestDir(testDir);
+    testPaths = [
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+    ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
@@ -130,8 +132,9 @@ async function main() {
   if (buildType !== 'flask') {
     const filteredTests = [
       'settings-add-snap-account-toggle.spec.js',
-      'test-snap-manageAccount.spec.js',
+      'test-snap-accounts.spec.js',
       'test-snap-lifecycle.spec.js',
+      'test-snap-get-locale.spec.js',
       'ppom-toggle-settings.spec.js',
       'petnames.spec.js',
     ];
