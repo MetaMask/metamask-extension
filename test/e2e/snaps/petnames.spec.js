@@ -2,6 +2,8 @@ const { strict: assert } = require('assert');
 const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
+const TEST_SNAPS_URL = 'https://metamask.github.io/snaps/test-snaps/1.1.0';
+
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
   TYPED_V4: 'v4',
@@ -24,7 +26,7 @@ async function login(driver) {
 }
 
 async function openTestSnaps(driver) {
-  const handle = await driver.openNewPage('http://localhost:9000');
+  const handle = await driver.openNewPage(TEST_SNAPS_URL);
   await driver.delay(1000);
   return handle;
 }
@@ -310,9 +312,7 @@ describe('Petnames', function () {
     );
   });
 
-  // Pending release of new example snap
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can propose names using installed snaps', async function () {
+  it('can propose names using installed snaps', async function () {
     await withFixtures(
       {
         dapp: true,
