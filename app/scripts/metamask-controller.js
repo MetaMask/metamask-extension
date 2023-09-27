@@ -238,6 +238,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
+import AddressBookPetnamesBridge from './lib/address-book-petnames-bridge';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1535,7 +1536,6 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(petnames)
     this.nameController = new NameController({
-      getChainId: () => this.networkController.state.providerConfig.chainId,
       messenger: this.controllerMessenger.getRestricted({
         name: 'NameController',
         allowedActions: [],
@@ -1552,6 +1552,15 @@ export default class MetamaskController extends EventEmitter {
       ],
       state: initState.NameController,
     });
+
+    new AddressBookPetnamesBridge({
+      addressBookController: this.addressBookController,
+      nameController: this.nameController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'AddressBookPetnamesBridge',
+        allowedEvents: ['NameController:stateChange'],
+      }),
+    }).init();
     ///: END:ONLY_INCLUDE_IN
 
     this.txController.on('newSwapApproval', (txMeta) => {
