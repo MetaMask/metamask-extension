@@ -23,7 +23,8 @@
     color: var(--color-info-default);
   }
 
-  &__value, &__name {
+  &__value,
+  &__name {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

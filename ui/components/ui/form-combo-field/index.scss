@@ -55,7 +55,8 @@
     font-size: 12px;
   }
 
-  &__option-primary, &__option-secondary {
+  &__option-primary,
+  &__option-secondary {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
