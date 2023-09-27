@@ -5,7 +5,6 @@ import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   IconName,
-  ButtonLink,
   TextFieldSearch,
   Box,
   Modal,
@@ -13,6 +12,11 @@ import {
   ModalOverlay,
   ModalHeader,
   Text,
+  Button,
+  Icon,
+  ButtonVariant,
+  ButtonBase,
+  ButtonBaseSize,
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -21,6 +25,7 @@ import {
   TextColor,
   Display,
   FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -203,8 +208,20 @@ export const AccountListMenu = ({ onClose }) => {
               })}
             </Box>
             {/* Add / Import / Hardware */}
-            <Box padding={4}>
-              <Box>
+            <Box
+              paddingTop={4}
+              paddingBottom={4}
+              alignItems={AlignItems.center}
+              display={Display.Flex}
+            >
+              <ButtonBase
+                startIconName={IconName.Add}
+                variant={ButtonVariant.Secondary}
+                style={{ margin: '0 auto' }}
+              >
+                Add account or hardware wallet
+              </ButtonBase>
+              {/* <Box>
                 <ButtonLink
                   size={Size.SM}
                   startIconName={IconName.Add}
@@ -319,7 +336,7 @@ export const AccountListMenu = ({ onClose }) => {
                   </ButtonLink>
                 </Box>
                 ///: END:ONLY_INCLUDE_IN
-              }
+                */}
             </Box>
           </>
         ) : null}
