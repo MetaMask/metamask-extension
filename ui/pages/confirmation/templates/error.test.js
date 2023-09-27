@@ -48,7 +48,7 @@ describe('error template', () => {
         ...mockBaseStore.metamask,
         providerConfig: {
           type: 'test',
-          id: CHAIN_IDS.LOCALHOST
+          id: CHAIN_IDS.LOCALHOST,
         },
         pendingApprovals: {
           [mockApprovalId]: {
