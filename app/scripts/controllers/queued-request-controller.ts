@@ -75,6 +75,13 @@ export class QueuedRequestController extends BaseControllerV2<
     return this.count;
   }
 
+
+  // [ current batch ] - [ batch n ] - [ last batch ]
+  // for new request
+  // if origin is not the same as last batch origin
+  // make new batch / enqueueRequest
+  // otherwise, add request to the last batch
+
   async enqueueRequest(requestNext: (...arg: unknown[]) => Promise<unknown>) {
     console.log('Request being enqueued!!!');
     this.count += 1;
@@ -86,13 +93,13 @@ export class QueuedRequestController extends BaseControllerV2<
     console.log('Running next Item in queue');
     this.currentRequest = requestNext();
     try {
-      await this.currentRequest;
-      console.log('finished queue item');
       this.count -= 1;
       this.messagingSystem.publish(
         'QueuedRequestController:countChanged',
         this.count,
       );
+      await this.currentRequest;
+      console.log('finished queue item');
     } catch (e) {
       console.log('finished queue item');
       this.count -= 1;
