@@ -1291,6 +1291,8 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
         ],
       }),
+      captureExceptionWithControllerContext:
+        this.captureExceptionWithControllerContext,
     });
 
     this.txController.on(`tx:status-update`, async (txId, status) => {

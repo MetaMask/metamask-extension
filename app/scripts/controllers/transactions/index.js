@@ -142,6 +142,8 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  */
 
 export default class TransactionController extends EventEmitter {
+  controllerName = 'TransactionController';
+
   constructor(opts) {
     super();
     this.getNetworkId = opts.getNetworkId;
@@ -172,6 +174,9 @@ export default class TransactionController extends EventEmitter {
     this.securityProviderRequest = opts.securityProviderRequest;
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
+
+    this.captureExceptionWithControllerContext =
+      opts?.captureExceptionWithControllerContext.bind(this);
 
     this.memStore = new ObservableStore({});
 
@@ -348,6 +353,9 @@ export default class TransactionController extends EventEmitter {
         if (error.code === errorCodes.provider.userRejectedRequest) {
           return;
         }
+        this.captureExceptionWithControllerContext(error, {
+          message: 'Error during persisted transaction approval',
+        });
         log.error('Error during persisted transaction approval', error);
       });
     });
@@ -686,6 +694,7 @@ export default class TransactionController extends EventEmitter {
         }),
       );
     } catch (err) {
+      this.captureExceptionWithControllerContext(err);
       log.error(err);
       // must set transaction to submitted/failed before releasing lock
       // continue with error chain
@@ -756,6 +765,7 @@ export default class TransactionController extends EventEmitter {
         });
       }
     } catch (err) {
+      this.captureExceptionWithControllerContext(err);
       log.error(err);
     }
   }
@@ -1000,6 +1010,7 @@ export default class TransactionController extends EventEmitter {
         });
       }
     } catch (err) {
+      this.captureExceptionWithControllerContext(err);
       log.error(err);
     }
   }
@@ -1880,6 +1891,9 @@ export default class TransactionController extends EventEmitter {
       try {
         this._failTransaction(txId, err, actionId);
       } catch (err2) {
+        this.captureExceptionWithControllerContext(err2, {
+          message: 'Error while failing tx.',
+        });
         log.error(err2);
       }
       // must set transaction to submitted/failed before releasing lock
@@ -2121,11 +2135,13 @@ export default class TransactionController extends EventEmitter {
     try {
       await this.pendingTxTracker.updatePendingTxs();
     } catch (err) {
+      this.captureExceptionWithControllerContext(err);
       log.error(err);
     }
     try {
       await this.pendingTxTracker.resubmitPendingTxs(blockNumber);
     } catch (err) {
+      this.captureExceptionWithControllerContext(err);
       log.error(err);
     }
   }
