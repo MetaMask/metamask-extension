@@ -4179,6 +4179,7 @@ export default class MetamaskController extends EventEmitter {
           'eth_sendTransaction',
           'wallet_watchAsset',
           'wallet_switchEthereumChain',
+          'eth_signTypedData_v4'
         ];
 
         if (confirmationMethods.includes(req.method) === false) {
@@ -4266,6 +4267,13 @@ export default class MetamaskController extends EventEmitter {
 
               const networkClientId = this.networkController.state.selectedNetworkClientId;
 
+              // if is switch eth chain call
+              // clear request queue when the switch ethereum chain call completes (success or fail)
+              // This is because a dapp-requested switch ethereum chain invalidates any requests they've made after this switch, since we dont know if they were expecting the chain after the switch or before.
+
+              // with the queue batching approach, this would mean clearing any batch for that origin (batches being per-origin.)
+
+              // refetch chainIdForOrigin
               if (currentChainId !== chainIdForOrigin && !isSwitchEthChainCall) {
                 try {
                   const approvedRequestData = await this.approvalController.addAndShowApprovalRequest({
@@ -4288,7 +4296,6 @@ export default class MetamaskController extends EventEmitter {
                   return;
                 }
               }
-
               console.log('calling next');
               await next();
               console.log('finished approval');
