@@ -25,7 +25,7 @@ const ASSET_LIST_CONVERSION_BUTTON_VARIANTS = {
   },
   nft: {
     color: 'var(--color-error-alternative)',
-    backgroundImage: 'url(/images/token-list-receive-background.png)',
+    backgroundImage: 'url(/images/token-list-nfts-background.png)',
     text: 'nftLearnMore',
     icon: IconName.Book,
   },
