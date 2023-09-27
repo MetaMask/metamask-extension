@@ -3194,14 +3194,6 @@
     "message": "Cho phép Snap sử dụng hook vòng đời để chạy mã vào những thời điểm cụ thể trong vòng đời của nó.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "Chạy không giới hạn.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Ví dụ: cho phép Snap chạy vô thời hạn trong quá trình xử lý lượng lớn dữ liệu.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Thêm và kiểm soát các tài khoản Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
