@@ -2299,6 +2299,9 @@ export default class MetamaskController extends EventEmitter {
 
     const flatState = this.memStore.getFlatState();
 
+    // The vault should not be exposed to the UI
+    delete flatState.vault;
+
     return {
       isInitialized,
       ...flatState,
