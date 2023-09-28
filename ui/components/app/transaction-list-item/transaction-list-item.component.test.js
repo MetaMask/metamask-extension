@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { fireEvent, screen, prettyDOM } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
@@ -231,14 +231,14 @@ describe('TransactionListItem', () => {
         ...(transactionGroup.primaryTransaction.custodyId = '1'),
       };
 
-      const { queryByTestId, getByTestId } = renderWithProvider(
+      const { getByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={newTransactionGroup} />,
       );
       const custodyIcon = getByTestId('custody-icon');
+      const custodyIconBadge = getByTestId('custody-icon-badge');
 
-      expect(queryByTestId('custody-icon')).toBeInTheDocument();
-
-      expect(prettyDOM(custodyIcon)).toMatchSnapshot();
+      expect(custodyIcon).toBeInTheDocument();
+      expect(custodyIconBadge).toHaveClass('mm-box--color-primary-default');
     });
 
     it('should display correctly the custody icon if status is signed', () => {
@@ -259,9 +259,9 @@ describe('TransactionListItem', () => {
         <TransactionListItem transactionGroup={newTransactionGroup} />,
       );
 
-      const custodyIcon = getByTestId('custody-icon');
+      const custodyIconBadge = getByTestId('custody-icon-badge');
 
-      expect(prettyDOM(custodyIcon)).toMatchSnapshot();
+      expect(custodyIconBadge).toHaveClass('mm-box--color-icon-alternative');
     });
 
     it('should display correctly the custody icon if status is rejected', () => {
@@ -282,9 +282,9 @@ describe('TransactionListItem', () => {
         <TransactionListItem transactionGroup={newTransactionGroup} />,
       );
 
-      const custodyIcon = getByTestId('custody-icon');
+      const custodyIconBadge = getByTestId('custody-icon-badge');
 
-      expect(prettyDOM(custodyIcon)).toMatchSnapshot();
+      expect(custodyIconBadge).toHaveClass('mm-box--color-error-default');
     });
 
     it('should click the custody list item and view the send screen', () => {
