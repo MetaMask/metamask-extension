@@ -12,7 +12,13 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 
-import { Text, Box, Tag } from '../../../components/component-library';
+import {
+  Text,
+  Box,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  Tag,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
