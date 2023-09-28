@@ -4420,6 +4420,17 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        hasPermission: this.permissionController.hasPermission.bind(
+          this.permissionController,
+        ),
+        getSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:get',
+        ),
+        handleSnapRpcRequest: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:handleRequest',
+        ),
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         installSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
