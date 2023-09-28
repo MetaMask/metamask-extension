@@ -79,7 +79,6 @@ export type StylePropValueType =
   | TextAlignArray
   | TextColor
   | TextColorArray
-  | IconColor
   | IconColorArray
   | undefined;
 
