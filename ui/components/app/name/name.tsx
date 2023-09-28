@@ -93,7 +93,12 @@ export default function Name({
   return (
     <div>
       {!disableEdit && modalOpen && (
-        <NameDetails value={value} type={type} onClose={handleModalClose} />
+        <NameDetails
+          value={value}
+          type={type}
+          sourcePriority={sourcePriority}
+          onClose={handleModalClose}
+        />
       )}
       <div
         className={classnames({

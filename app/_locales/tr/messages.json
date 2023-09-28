@@ -611,18 +611,9 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buy": {
-    "message": "Satın Al"
-  },
   "buyAsset": {
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
-  "buyDisabled": {
-    "message": "Satın al bu ağda kullanılamaz"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -3187,14 +3178,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Bu yaşam döngüsü sırasında belirli zamanlarda kod çalıştırmak için snapin yaşam döngüsü kancalarını kullanmasına izin verin.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Süresiz çalıştır.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Snapin örneğin büyük miktarda veri işlerken belirsiz süreyle çalışmasına izin verin.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum hesaplarını ekle ve kontrol et",

@@ -26,27 +26,9 @@ describe('useRamps', () => {
     });
   });
 
-  it('should open the buy crypto URL for SEPOLIA chain ID', () => {
-    const mockChainId = '10';
-    const mockBuyURI = 'https://faucet.sepolia.dev/';
-
-    useSelector.mockReturnValue(mockChainId);
-    const openTabSpy = jest.spyOn(global.platform, 'openTab');
-
-    const { result } = renderHook(() => useRamps());
-
-    expect(typeof result.current.openBuyCryptoInPdapp).toBe('function');
-
-    result.current.openBuyCryptoInPdapp();
-
-    expect(openTabSpy).toHaveBeenCalledWith({
-      url: mockBuyURI,
-    });
-  });
-
   it('should open the buy crypto URL for MAINNET chain ID', () => {
     const mockChainId = '1';
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_button&metametricsId=1`;
+    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&metametricsId=1`;
 
     useSelector.mockReturnValue(mockChainId);
     const openTabSpy = jest.spyOn(global.platform, 'openTab');

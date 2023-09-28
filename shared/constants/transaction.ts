@@ -331,7 +331,7 @@ export interface TransactionMeta {
   blockNumber?: string;
   chainId: string;
   /** An internally unique tx identifier. */
-  id: number;
+  id: string;
   /** Time the transaction was first suggested, in unix epoch time (ms). */
   time: number;
   /** A string representing a name of transaction contract method. */
@@ -443,6 +443,14 @@ export enum TransactionMetaMetricsEvent {
    * transaction at the user's request.
    */
   submitted = 'Transaction Submitted',
+}
+
+export enum AnonymousTransactionMetaMetricsEvent {
+  added = 'Transaction Added Anon',
+  approved = 'Transaction Approved Anon',
+  finalized = 'Transaction Finalized Anon',
+  rejected = 'Transaction Rejected Anon',
+  submitted = 'Transaction Submitted Anon',
 }
 
 /**
