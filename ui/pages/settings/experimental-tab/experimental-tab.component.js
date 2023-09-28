@@ -42,8 +42,10 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,blockaid)
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertsEnabled: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
