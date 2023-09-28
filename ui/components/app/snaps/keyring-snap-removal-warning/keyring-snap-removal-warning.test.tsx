@@ -106,7 +106,7 @@ describe('Keyring Snap Remove Warning', () => {
     });
 
     await waitFor(() => {
-      const removeSnapButton = getAllByText('Remove snap')[1];
+      const removeSnapButton = getAllByText('Remove Snap')[1];
       expect(removeSnapButton).not.toBeDisabled();
       fireEvent.click(removeSnapButton);
       expect(mockOnSubmit).toBeCalled();

@@ -50,6 +50,10 @@ jest.mock('../../../hooks/useTokenTracker', () => {
 });
 
 const render = () => {
+  const selectedAddress =
+    mockState.metamask.internalAccounts.accounts[
+      mockState.metamask.internalAccounts.selectedAccount
+    ].address;
   const state = {
     ...mockState,
     metamask: {
@@ -58,7 +62,7 @@ const render = () => {
       conversionRate: CONVERSION_RATE,
       cachedBalances: {
         [CHAIN_IDS.MAINNET]: {
-          [mockState.metamask.selectedAddress]: ETH_BALANCE,
+          [selectedAddress]: ETH_BALANCE,
         },
       },
       contractExchangeRates: {

@@ -27,7 +27,7 @@ describe('Snap Remove Warning', () => {
       ).toBeInTheDocument();
 
       await waitFor(() => {
-        const removeSnapButton = getByText('Remove snap');
+        const removeSnapButton = getByText('Remove Snap');
         fireEvent.click(removeSnapButton);
         expect(mockOnSubmit).toBeCalled();
       });

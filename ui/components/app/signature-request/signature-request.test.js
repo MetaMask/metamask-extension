@@ -22,6 +22,7 @@ import {
   getTotalUnapprovedMessagesCount,
   getInternalAccounts,
   unconfirmedTransactionsHashSelector,
+  getAccountType,
 } from '../../../selectors';
 import SignatureRequest from './signature-request';
 
@@ -143,6 +144,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
           };
         },
       );
+    case getAccountType:
+      return 'custody';
     case unconfirmedTransactionsHashSelector:
       return {};
     default:

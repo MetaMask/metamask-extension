@@ -139,15 +139,25 @@ describe('MetaMaskController', function () {
   });
 
   describe('#addNewAccount', function () {
+    const getAccountsAfterRemovingLastSelected = (internalAccounts) => {
+      internalAccounts.map((account) => {
+        return {
+          ...account,
+          lastSelected: undefined,
+        };
+      });
+    };
     it('two parallel calls with same accountCount give same result', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const [addNewAccountResult1, addNewAccountResult2] = await Promise.all([
         metamaskController.addNewAccount(1),
         metamaskController.addNewAccount(1),
       ]);
+
+      // Ignore the lastSelected property
       assert.deepEqual(
-        addNewAccountResult1.accounts,
-        addNewAccountResult2.accounts,
+        getAccountsAfterRemovingLastSelected(addNewAccountResult1.accounts),
+        getAccountsAfterRemovingLastSelected(addNewAccountResult2.accounts),
       );
     });
 
@@ -155,9 +165,11 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(1);
+
+      // Ignore the lastSelected property
       assert.deepEqual(
-        addNewAccountResult1.accounts,
-        addNewAccountResult2.accounts,
+        getAccountsAfterRemovingLastSelected(addNewAccountResult1.accounts),
+        getAccountsAfterRemovingLastSelected(addNewAccountResult2.accounts),
       );
     });
 

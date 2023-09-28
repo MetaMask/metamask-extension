@@ -21,9 +21,6 @@ const ganacheOptions = {
     },
   ],
 };
-
-const SMALL_DELAY = 2000;
-
 describe('Import flow', function () {
   it('Import wallet using Secret Recovery Phrase', async function () {
     const testPassword = 'correct horse battery staple';
@@ -253,7 +250,6 @@ describe('Import flow', function () {
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
-        await driver.delay(SMALL_DELAY);
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountListItemsAfterRemoval = await driver.findElements(
           '.multichain-account-list-item',
