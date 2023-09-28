@@ -28,12 +28,12 @@
     "showBetaHeader": false,
     "showProductTour": true,
     "trezorModel": null,
+    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
-    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "serviceWorkerLastActiveTime": 0
   },
   "ApprovalController": {
@@ -71,6 +71,7 @@
     "keyringTypes": "object",
     "keyrings": "object"
   },
+  "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
@@ -124,6 +125,7 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
+    "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
     "use4ByteResolution": true,
@@ -145,7 +147,6 @@
     },
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
-    "infuraBlocked": false,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,
@@ -153,6 +154,7 @@
     "isLineaMainnetReleased": true,
     "selectedAddress": "string"
   },
+  "SelectedNetworkController": { "domains": {}, "perDomainNetwork": "boolean" },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
@@ -217,7 +219,5 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
-  "TxController": {
-    "transactions": "object"
-  }
+  "TxController": { "transactions": "object" }
 }

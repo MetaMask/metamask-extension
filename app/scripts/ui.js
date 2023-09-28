@@ -265,7 +265,13 @@ async function start() {
     extensionPort.onMessage.addListener(messageListener);
     extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
   } else {
-    initializeUiWithTab(activeTab);
+    const messageListener = async (message) => {
+      if (message?.data?.method === 'startUISync') {
+        initializeUiWithTab(activeTab);
+        extensionPort.onMessage.removeListener(messageListener);
+      }
+    };
+    extensionPort.onMessage.addListener(messageListener);
   }
 
   function initializeUiWithTab(tab) {

@@ -53,11 +53,16 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import {
+  SelectedNetworkController,
+  createSelectedNetworkMiddleware,
+} from '@metamask/selected-network-controller';
+import { LoggingController } from '@metamask/logging-controller';
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
-
 import {
   CronjobController,
   JsonSnapsRegistry,
@@ -95,6 +100,16 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+import {
+  NameController,
+  ENSNameProvider,
+  EtherscanNameProvider,
+  TokenNameProvider,
+  LensNameProvider,
+} from '@metamask/name-controller';
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -156,6 +171,10 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+import { SnapsNameProvider } from './lib/SnapsNameProvider';
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -302,6 +321,21 @@ export default class MetamaskController extends EventEmitter {
     // next, we will initialize the controllers
     // controller initialization order matters
 
+    this.selectedNetworkController = new SelectedNetworkController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SelectedNetworkController',
+        allowedActions: [
+          'SelectedNetworkController:getState',
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+          'SelectedNetworkController:setNetworkClientIdForDomain',
+        ],
+        allowedEvents: [
+          'SelectedNetworkController:stateChange',
+          'NetworkController:stateChange',
+        ],
+      }),
+    });
+
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
@@ -316,6 +350,13 @@ export default class MetamaskController extends EventEmitter {
         ApprovalType.EthGetEncryptionPublicKey,
         ApprovalType.EthDecrypt,
       ],
+    });
+
+    this.loggingController = new LoggingController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'LoggingController',
+      }),
+      state: initState.LoggingController,
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -340,23 +381,22 @@ export default class MetamaskController extends EventEmitter {
     if (initState.NetworkController) {
       initialNetworkControllerState = initState.NetworkController;
     } else if (process.env.IN_TEST) {
+      const networkConfig = {
+        chainId: CHAIN_IDS.LOCALHOST,
+        nickname: 'Localhost 8545',
+        rpcPrefs: {},
+        rpcUrl: 'http://localhost:8545',
+        ticker: 'ETH',
+        id: 'networkConfigurationId',
+      };
       initialNetworkControllerState = {
         providerConfig: {
-          chainId: CHAIN_IDS.LOCALHOST,
-          nickname: 'Localhost 8545',
-          rpcPrefs: {},
-          rpcUrl: 'http://localhost:8545',
-          ticker: 'ETH',
+          ...networkConfig,
           type: 'rpc',
         },
         networkConfigurations: {
           networkConfigurationId: {
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-            networkConfigurationId: 'networkConfigurationId',
+            ...networkConfig,
           },
         },
       };
@@ -405,14 +445,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      onInfuraIsBlocked: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:infuraIsBlocked',
-      ),
-      onInfuraIsUnblocked: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:infuraIsUnblocked',
-      ),
       onAccountRemoved: this.controllerMessenger.subscribe.bind(
         this.controllerMessenger,
         'KeyringController:accountRemoved',
@@ -608,22 +640,21 @@ export default class MetamaskController extends EventEmitter {
       getChainId: () => this.networkController.state.providerConfig.chainId,
     });
 
-    this.qrHardwareKeyring = new QRHardwareKeyring();
-
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
       preferencesStore: this.preferencesController.store,
-      qrHardwareStore: this.qrHardwareKeyring.getMemStore(),
       messenger: this.controllerMessenger.getRestricted({
         name: 'AppStateController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
         ],
+        allowedEvents: [`KeyringController:qrKeyringStateChange`],
       }),
+      extension: this.extension,
     });
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
@@ -827,7 +858,15 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     additionalKeyrings.push(
       (() => {
-        const builder = () => new SnapKeyring(this.snapController);
+        const builder = () =>
+          new SnapKeyring(this.snapController, {
+            saveState: async () => {
+              await this.keyringController.persistAllKeyrings();
+            },
+            removeAccount: async (address) => {
+              await this.removeAccount(address);
+            },
+          });
         builder.type = SnapKeyring.type;
         return builder;
       })(),
@@ -836,13 +875,24 @@ export default class MetamaskController extends EventEmitter {
 
     const keyringControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'KeyringController',
-      allowedEvents: [
-        'KeyringController:accountRemoved',
-        'KeyringController:lock',
-        'KeyringController:stateChange',
-        'KeyringController:unlock',
+      allowedActions: [
+        'KeyringController:getState',
+        'KeyringController:signMessage',
+        'KeyringController:signPersonalMessage',
+        'KeyringController:signTypedMessage',
+        'KeyringController:decryptMessage',
+        'KeyringController:getEncryptionPublicKey',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+        'KeyringController:getAccounts',
       ],
-      allowedActions: ['KeyringController:getState'],
+      allowedEvents: [
+        'KeyringController:stateChange',
+        'KeyringController:lock',
+        'KeyringController:unlock',
+        'KeyringController:accountRemoved',
+        'KeyringController:qrKeyringStateChange',
+      ],
     });
 
     this.coreKeyringController = new KeyringController({
@@ -1076,6 +1126,8 @@ export default class MetamaskController extends EventEmitter {
         'SnapController:snapInstalled',
         'SnapController:snapUpdated',
         'SnapController:snapRemoved',
+        'SnapController:snapEnabled',
+        'SnapController:snapDisabled',
       ],
       allowedActions: [
         `${this.permissionController.name}:getPermissions`,
@@ -1117,7 +1169,12 @@ export default class MetamaskController extends EventEmitter {
     const detectTokensControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'DetectTokensController',
-        allowedEvents: ['NetworkController:stateChange'],
+        allowedActions: ['KeyringController:getState'],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
+        ],
       });
     this.detectTokensController = new DetectTokensController({
       messenger: detectTokensControllerMessenger,
@@ -1125,7 +1182,6 @@ export default class MetamaskController extends EventEmitter {
       tokensController: this.tokensController,
       assetsContractController: this.assetsContractController,
       network: this.networkController,
-      keyringMemStore: this.keyringController.memStore,
       tokenList: this.tokenListController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1344,13 +1400,13 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork();
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
-      keyringController: this.keyringController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'DecryptMessageController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
+          `${this.coreKeyringController.name}:decryptMessage`,
         ],
       }),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1413,7 +1469,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
-      keyringController: this.keyringController,
+      keyringController: this.coreKeyringController,
       txController: this.txController,
       securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
@@ -1481,6 +1537,38 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SmartTransactionsController,
     );
+
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    this.nameController = new NameController({
+      getChainId: () => this.networkController.state.providerConfig.chainId,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'NameController',
+        allowedActions: [],
+      }),
+      providers: [
+        new ENSNameProvider({
+          reverseLookup: this.ensController.reverseResolveAddress.bind(
+            this.ensController,
+          ),
+        }),
+        new EtherscanNameProvider({}),
+        new TokenNameProvider({}),
+        new LensNameProvider(),
+        new SnapsNameProvider({
+          messenger: this.controllerMessenger.getRestricted({
+            name: 'SnapsNameProvider',
+            allowedActions: [
+              'SnapController:getAll',
+              'SnapController:get',
+              'SnapController:handleRequest',
+              'PermissionController:getState',
+            ],
+          }),
+        }),
+      ],
+      state: initState.NameController,
+    });
+    ///: END:ONLY_INCLUDE_IN
 
     this.txController.on('newSwapApproval', (txMeta) => {
       this.swapsController.setApproveTxId(txMeta.id);
@@ -1667,6 +1755,8 @@ export default class MetamaskController extends EventEmitter {
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
+      SelectedNetworkController: this.selectedNetworkController,
+      LoggingController: this.loggingController,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -1685,6 +1775,9 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       PPOMController: this.ppomController,
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      NameController: this.nameController,
       ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
     });
@@ -1711,6 +1804,8 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
+        SelectedNetworkController: this.selectedNetworkController,
+        LoggingController: this.loggingController,
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -1720,12 +1815,14 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
-
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         CustodyController: this.custodyController.store,
         InstitutionalFeaturesController:
           this.institutionalFeaturesController.store,
         MmiConfigurationController: this.mmiConfigurationController.store,
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        NameController: this.nameController,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
       },
@@ -1836,18 +1933,15 @@ export default class MetamaskController extends EventEmitter {
    * Initialize the snap keyring if it is not present.
    */
   async getSnapKeyring() {
-    if (!this.snapKeyring) {
-      let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
+    let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
+      KeyringType.snap,
+    );
+    if (!snapKeyring) {
+      snapKeyring = await this.coreKeyringController.addNewKeyring(
         KeyringType.snap,
       );
-      if (!snapKeyring) {
-        snapKeyring = await this.keyringController.addNewKeyring(
-          KeyringType.snap,
-        );
-      }
-      this.snapKeyring = snapKeyring;
     }
-    return this.snapKeyring;
+    return snapKeyring;
   }
   ///: END:ONLY_INCLUDE_IN
 
@@ -1889,6 +1983,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Gets the currently selected locale from the PreferencesController.
+   *
+   * @returns The currently selected locale.
+   */
+  getLocale() {
+    const { currentLocale } = this.preferencesController.store.getState();
+
+    return currentLocale;
+  }
+
+  /**
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
@@ -1897,6 +2002,7 @@ export default class MetamaskController extends EventEmitter {
       ...buildSnapRestrictedMethodSpecifications({
         encrypt,
         decrypt,
+        getLocale: this.getLocale.bind(this),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',
@@ -1943,9 +2049,6 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
-        saveSnapKeyring: async () => {
-          await this.keyringController.persistAllKeyrings();
-        },
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
@@ -2226,6 +2329,7 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
+      coreKeyringController,
       nftController,
       nftDetectionController,
       currencyRateController,
@@ -2238,7 +2342,6 @@ export default class MetamaskController extends EventEmitter {
       onboardingController,
       permissionController,
       preferencesController,
-      qrHardwareKeyring,
       swapsController,
       tokensController,
       smartTransactionsController,
@@ -2267,6 +2370,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseMultiAccountBalanceChecker.bind(
           preferencesController,
         ),
+      setUseSafeChainsListValidation:
+        preferencesController.setUseSafeChainsListValidation.bind(
+          preferencesController,
+        ),
       setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
         preferencesController,
       ),
@@ -2286,6 +2393,12 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       setSecurityAlertsEnabled:
         preferencesController.setSecurityAlertsEnabled.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      setAddSnapAccountEnabled:
+        preferencesController.setAddSnapAccountEnabled.bind(
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
@@ -2339,15 +2452,17 @@ export default class MetamaskController extends EventEmitter {
 
       // qr hardware devices
       submitQRHardwareCryptoHDKey:
-        qrHardwareKeyring.submitCryptoHDKey.bind(qrHardwareKeyring),
+        coreKeyringController.submitQRCryptoHDKey.bind(coreKeyringController),
       submitQRHardwareCryptoAccount:
-        qrHardwareKeyring.submitCryptoAccount.bind(qrHardwareKeyring),
-      cancelSyncQRHardware:
-        qrHardwareKeyring.cancelSync.bind(qrHardwareKeyring),
-      submitQRHardwareSignature:
-        qrHardwareKeyring.submitSignature.bind(qrHardwareKeyring),
+        coreKeyringController.submitQRCryptoAccount.bind(coreKeyringController),
+      cancelSyncQRHardware: coreKeyringController.cancelQRSynchronization.bind(
+        coreKeyringController,
+      ),
+      submitQRHardwareSignature: coreKeyringController.submitQRSignature.bind(
+        coreKeyringController,
+      ),
       cancelQRHardwareSignRequest:
-        qrHardwareKeyring.cancelSignRequest.bind(qrHardwareKeyring),
+        coreKeyringController.cancelQRSignRequest.bind(coreKeyringController),
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
@@ -2651,6 +2766,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
+      updateCaveat: this.updateCaveat.bind(this),
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
@@ -2817,6 +2933,13 @@ export default class MetamaskController extends EventEmitter {
 
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
+
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      updateProposedNames: this.nameController.updateProposedNames.bind(
+        this.nameController,
+      ),
+      setName: this.nameController.setName.bind(this.nameController),
+      ///: END:ONLY_INCLUDE_IN
     };
   }
 
@@ -3120,7 +3243,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _startUISync() {
-    // Message startUISync is used in MV3 to start syncing state with UI
+    // Message startUISync is used to start syncing state with UI
     // Sending this message after login is completed helps to ensure that incomplete state without
     // account details are not flushed to UI.
     this.emit('startUISync');
@@ -3281,7 +3404,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Fetch account list from a trezor device.
+   * Fetch account list from a hardware device.
    *
    * @param deviceName
    * @param page
@@ -3290,6 +3413,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async connectHardware(deviceName, page, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
+
     let accounts = [];
     switch (page) {
       case -1:
@@ -4045,7 +4169,14 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
+
     const { blockTracker, provider } = this;
+
+    // append origin to each request
+    engine.push(createOriginMiddleware({ origin }));
+
+    // append selectedNetworkClientId to each request
+    engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
@@ -4062,9 +4193,6 @@ export default class MetamaskController extends EventEmitter {
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
     }
-
-    // append origin to each request
-    engine.push(createOriginMiddleware({ origin }));
 
     // append tabId to each request if it exists
     if (tabId) {
@@ -4183,7 +4311,15 @@ export default class MetamaskController extends EventEmitter {
         setActiveNetwork: this.networkController.setActiveNetwork.bind(
           this.networkController,
         ),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        setNetworkClientIdForDomain:
+          this.selectedNetworkController.setNetworkClientIdForDomain.bind(
+            this.selectedNetworkController,
+          ),
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
@@ -4268,6 +4404,7 @@ export default class MetamaskController extends EventEmitter {
 
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider));
+
     return engine;
   }
 
