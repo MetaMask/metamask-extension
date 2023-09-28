@@ -1,7 +1,7 @@
 import { BNToHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { BN } from 'ethereumjs-util';
-import createId from '../../../../shared/modules/random-id';
+import { v1 as uuid } from 'uuid';
 
 import {
   TransactionMeta,
@@ -138,7 +138,7 @@ export class EtherscanRemoteTransactionSource
       blockNumber: txMeta.blockNumber,
       chainId: currentChainId,
       hash: txMeta.hash,
-      id: createId(),
+      id: uuid(),
       metamaskNetworkId: currentNetworkId,
       status: TransactionStatus.confirmed,
       time,

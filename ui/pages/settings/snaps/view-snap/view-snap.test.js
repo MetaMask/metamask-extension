@@ -61,7 +61,7 @@ describe('ViewSnap', () => {
       container.getElementsByClassName('connected-sites-list__content-rows')
         ?.length,
     ).toBe(1);
-    // Remove Snap
+    // Remove snap
     expect(getByText('Remove Snap')).toBeDefined();
     expect(
       getByText(
