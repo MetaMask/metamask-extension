@@ -49,7 +49,7 @@ jest.mock('../../../hooks/useTokenTracker', () => {
   };
 });
 
-const render = () => {
+const render = (selectedAddress = mockState.metamask.selectedAddress) => {
   const state = {
     ...mockState,
     metamask: {
@@ -66,6 +66,7 @@ const render = () => {
         [LINK_CONTRACT]: 0.00423239,
         [WBTC_CONTRACT]: 16.66575,
       },
+      selectedAddress,
     },
   };
   const store = configureStore(state);
@@ -86,5 +87,26 @@ describe('AssetList', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
     expect(screen.getByText('$63,356.88 USD')).toBeInTheDocument();
+  });
+
+  describe('buy and receive buttons', () => {
+    jest.mock('../../../helpers/utils/token-util', () => ({
+      ...jest.requireActual('../../../helpers/utils/token-util'),
+      getTokenFiatAmount: () => '0.00',
+    }));
+
+    jest.mock('../../../../shared/modules/conversion.utils', () => ({
+      ...jest.requireActual('../../../../shared/modules/conversion.utils'),
+      sumDecimals: () => '0.00',
+    }));
+
+    it.only('shows Buy and Receive when the account is empty', () => {
+      process.env.MULTICHAIN = 1;
+      const { getByText } = render(
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+      );
+      expect(getByText('Buy')).toBeInTheDocument();
+      expect(getByText('Receive')).toBeInTheDocument();
+    });
   });
 });

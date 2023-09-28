@@ -164,6 +164,11 @@ const AssetList = ({ onClickAsset }) => {
   const chainId = useSelector(getCurrentChainId);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
+  console.log("totalFiatBalance", totalFiatBalance);
+  console.log("balanceIsZero: ", balanceIsZero);
+  console.log("shouldShowBuy: ", shouldShowBuy);
+  console.log("formattedTotalFiatBalance: ", formattedTotalFiatBalance);
+
   return (
     <>
       {process.env.MULTICHAIN ? (
