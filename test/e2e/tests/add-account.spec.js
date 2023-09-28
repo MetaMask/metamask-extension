@@ -42,6 +42,9 @@ describe('Add account', function () {
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
 
@@ -82,6 +85,9 @@ describe('Add account', function () {
 
         // Create 2nd account
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
@@ -176,7 +182,9 @@ describe('Add account', function () {
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
-
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
@@ -191,7 +199,6 @@ describe('Add account', function () {
         });
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
-
         const menuItems = await driver.findElements(
           '.multichain-account-list-item',
         );
@@ -207,6 +214,9 @@ describe('Add account', function () {
 
         // Create 3rd account with private key
         await driver.clickElement('.mm-text-field');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement({ text: 'Import account', tag: 'button' });
         await driver.fill('#private-key-box', testPrivateKey);
 
