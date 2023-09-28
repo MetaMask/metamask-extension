@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
@@ -17,11 +18,48 @@ const ganacheOptions = {
   ],
 };
 
-async function loginAndOpenTestDapp(driver) {
+async function login(driver) {
   await driver.navigate();
   await driver.fill('#password', 'correct horse battery staple');
   await driver.press('#password', driver.Key.ENTER);
-  await openDapp(driver);
+}
+
+async function openTestSnaps(driver) {
+  const handle = await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+  await driver.delay(1000);
+  return handle;
+}
+
+async function installNameLookupSnap(driver) {
+  // Click Connect Button
+  const connectButton = await driver.findElement(
+    '[data-testid="name-lookup"] button',
+  );
+  await driver.scrollToElement(connectButton);
+  await driver.delay(1000);
+  await connectButton.click();
+  await driver.delay(1000);
+
+  // Confirm Connect Modal
+  focusNotification(driver);
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
+
+  // Confirm Install Modal
+  await driver.waitForSelector({ text: 'Install' });
+  await driver.clickElement({
+    text: 'Install',
+    tag: 'button',
+  });
+
+  // Success Modal
+  await driver.waitForSelector({ text: 'OK' });
+  await driver.clickElement({
+    text: 'OK',
+    tag: 'button',
+  });
 }
 
 async function createSignatureRequest(driver, type) {
@@ -29,12 +67,12 @@ async function createSignatureRequest(driver, type) {
     type === SIGNATURE_TYPE.TYPED_V3 ? '#signTypedDataV3' : '#signTypedDataV4';
 
   await driver.clickElement(buttonId);
-  await driver.waitUntilXWindowHandles(3);
+  await driver.delay(3000);
 }
 
 async function rejectSignatureRequest(driver) {
   await driver.clickElement({ text: 'Reject', tag: 'button' });
-  await driver.waitUntilXWindowHandles(2);
+  await driver.delay(3000);
 }
 
 async function focusNotification(driver) {
@@ -46,6 +84,7 @@ async function focusNotification(driver) {
 async function focusTestDapp(driver) {
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+  await driver.delay(3000);
 }
 
 async function showThirdPartyDetails(driver) {
@@ -138,6 +177,30 @@ async function saveName(driver, parent, name, proposedName) {
   await driver.clickElement({ text: 'Save', tag: 'button' });
 }
 
+async function getProposedNames(driver, parent) {
+  (await parent.nestedFindElement('.name')).click();
+  (await driver.findElement('.form-combo-field')).click();
+
+  const primaryTextElements = await driver.findElements(
+    '.form-combo-field__option-primary',
+  );
+
+  const secondaryTextElements = await driver.findElements(
+    '.form-combo-field__option-secondary',
+  );
+
+  const proposedNames = [];
+
+  for (let i = 0; i < primaryTextElements.length; i++) {
+    const primaryText = await primaryTextElements[i].getText();
+    const secondaryText = await secondaryTextElements[i].getText();
+
+    proposedNames.push([primaryText, secondaryText]);
+  }
+
+  return proposedNames;
+}
+
 describe('Petnames', function () {
   it('can save names for addresses in type 3 signatures', async function () {
     await withFixtures(
@@ -151,7 +214,8 @@ describe('Petnames', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await loginAndOpenTestDapp(driver);
+        await login(driver);
+        await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await focusNotification(driver);
 
@@ -203,7 +267,8 @@ describe('Petnames', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await loginAndOpenTestDapp(driver);
+        await login(driver);
+        await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await focusNotification(driver);
 
@@ -242,6 +307,36 @@ describe('Petnames', function () {
         contractDetailsModal = await showThirdPartyDetails(driver);
 
         await expectName(contractDetailsModal, 'Custom Name', undefined, true);
+      },
+    );
+  });
+
+  it('can propose names using installed snaps', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withNoNames()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await login(driver);
+        await openDapp(driver);
+        await openTestSnaps(driver);
+        await installNameLookupSnap(driver);
+        await focusTestDapp(driver);
+        await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
+        await focusNotification(driver);
+
+        const addresses = await getAddressesInMessage(driver);
+
+        assert.deepEqual(await getProposedNames(driver, addresses[0]), [
+          ['example.domain - 0xCD2 / 0x539', 'Name Lookup Example Snap'],
+          ['test.lens', 'Lens Protocol'],
+        ]);
       },
     );
   });
