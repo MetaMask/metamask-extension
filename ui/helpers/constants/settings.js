@@ -371,6 +371,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
   },
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('transactionSecurityCheck'),
@@ -378,4 +379,14 @@ export const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#transaction-security-check`,
     icon: 'fa fa-flask',
   },
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('securityAlerts'),
+    descriptionMessage: (t) => t('securityAlertsDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#security-alerts`,
+    icon: 'fa fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IN
 ];
