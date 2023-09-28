@@ -22,7 +22,6 @@ import {
   getTotalUnapprovedMessagesCount,
   getInternalAccounts,
   unconfirmedTransactionsHashSelector,
-  getAccountType,
 } from '../../../selectors';
 import SignatureRequest from './signature-request';
 
