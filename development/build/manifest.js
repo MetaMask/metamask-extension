@@ -136,6 +136,7 @@ function createManifestTasks({
       buildType,
       applyLavaMoat,
       shouldIncludeSnow,
+      shouldIncludeMV3: process.env.ENABLE_MV3,
     });
 
     manifest.description = `${environment} build from git id: ${gitRevisionStr}`;

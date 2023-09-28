@@ -244,7 +244,7 @@ function getBuildName({
   buildType,
   applyLavaMoat,
   shouldIncludeSnow,
-  shouldIncludeMV3 = process.env.ENABLE_MV3,
+  shouldIncludeMV3,
 }) {
   if (environment === ENVIRONMENT.PRODUCTION) {
     return 'MetaMask';

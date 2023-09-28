@@ -1187,7 +1187,6 @@ async function setEnvironmentVariables({
     METAMASK_BUILD_NAME: getBuildName({
       environment,
       buildType,
-      shouldIncludeMV3: false,
     }),
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
