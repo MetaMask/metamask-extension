@@ -86,12 +86,10 @@ export const AccountListMenu = ({ onClose }) => {
   }
 
   let title = t('selectAnAccount');
-  if (actionMode === 'add') {
+  if (actionMode === 'add' || actionMode === 'menu') {
     title = t('addAccount');
   } else if (actionMode === 'import') {
     title = t('importAccount');
-  } else if (actionMode === 'menu') {
-    title = t('addAccount');
   }
 
   let onBack = null;
