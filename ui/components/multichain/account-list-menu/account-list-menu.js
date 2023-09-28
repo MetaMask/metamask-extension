@@ -15,6 +15,7 @@ import {
   ButtonVariant,
   ButtonLink,
   ButtonSecondary,
+  ButtonSecondarySize,
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -335,19 +336,22 @@ export const AccountListMenu = ({ onClose }) => {
             </Box>
             {/* Add / Import / Hardware button */}
             <Box
-              paddingTop={4}
+              paddingTop={2}
               paddingBottom={4}
+              paddingLeft={4}
+              paddingRight={4}
               alignItems={AlignItems.center}
               display={Display.Flex}
             >
               <ButtonSecondary
                 startIconName={IconName.Add}
                 variant={ButtonVariant.Secondary}
-                style={{ margin: '0 auto' }}
+                size={ButtonSecondarySize.Lg}
+                block
                 onClick={() => setActionMode('menu')}
                 data-testid="multichain-account-menu-popover-action-button"
               >
-                Add account or hardware wallet
+                {t('addImportAccount')}
               </ButtonSecondary>
             </Box>
           </>
