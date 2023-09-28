@@ -3194,14 +3194,6 @@
     "message": "Izinkan snap menggunakan lifecycle hook untuk menjalankan kode pada waktu tertentu selama siklus hidupnya.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "Operasikan sepanjang waktu.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Izinkan snap beroperasi sepanjang waktu saat, sebagai contoh, memproses data dalam jumlah besar.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
