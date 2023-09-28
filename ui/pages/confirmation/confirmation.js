@@ -180,10 +180,6 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
-  // State variable to hold the previous snapName
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  const [prevSnapInfo, setPrevSnapInfo] = useState(null);
-  ///: END:ONLY_INCLUDE_IN
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
@@ -272,21 +268,6 @@ export default function ConfirmationPage({
     snapName,
     ///: END:ONLY_INCLUDE_IN
   ]);
-
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  useEffect(() => {
-    // Check if the current pendingConfirmation.type is 'snap_manageAccounts:confirmation' to store the snap info for the success/error screen
-    if (
-      Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES).includes(
-        pendingConfirmation?.type,
-      )
-    ) {
-      setPrevSnapInfo({
-        origin: pendingConfirmation.origin,
-      });
-    }
-  }, [pendingConfirmation]);
-  ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
@@ -405,13 +386,6 @@ export default function ConfirmationPage({
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           isSnapDialog && (
             <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
-          )
-          ///: END:ONLY_INCLUDE_IN
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-          prevSnapInfo && pendingConfirmation?.origin === 'metamask' && (
-            <SnapAuthorshipHeader snapId={prevSnapInfo.origin} />
           )
           ///: END:ONLY_INCLUDE_IN
         }

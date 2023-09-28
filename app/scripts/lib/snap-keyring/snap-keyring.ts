@@ -1,6 +1,9 @@
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import type { SnapController } from '@metamask/snaps-controllers';
-import type { ApprovalController } from '@metamask/approval-controller';
+import type {
+  ApprovalController,
+  ResultComponent,
+} from '@metamask/approval-controller';
 import type { KeyringController } from '@metamask/keyring-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
@@ -41,6 +44,12 @@ const snapKeyringBuilder = (
         const { id: addAccountApprovalId } =
           getApprovalController().startFlow();
 
+        const snapAuthorshipHeader: ResultComponent = {
+          name: 'SnapAuthorshipHeader',
+          key: 'snapHeader',
+          properties: { snapId: origin },
+        };
+
         try {
           const confirmationResult: boolean =
             (await getApprovalController().addAndShowApprovalRequest({
@@ -54,10 +63,12 @@ const snapKeyringBuilder = (
               await getKeyringController().persistAllKeyrings();
               await getApprovalController().success({
                 message: t('snapAccountCreated') ?? 'Your account is ready!',
+                header: [snapAuthorshipHeader],
               });
             } catch (error) {
               await getApprovalController().error({
                 error: (error as Error).message,
+                header: [snapAuthorshipHeader],
               });
               throw new Error(
                 `Error occurred while creating snap account: ${
@@ -83,6 +94,12 @@ const snapKeyringBuilder = (
         const { id: removeAccountApprovalId } =
           getApprovalController().startFlow();
 
+        const snapAuthorshipHeader: ResultComponent = {
+          name: 'SnapAuthorshipHeader',
+          key: 'snapHeader',
+          properties: { snapId },
+        };
+
         try {
           const confirmationResult: boolean =
             (await getApprovalController().addAndShowApprovalRequest({
@@ -98,10 +115,12 @@ const snapKeyringBuilder = (
               await getKeyringController().persistAllKeyrings();
               await getApprovalController().success({
                 message: t('snapAccountRemoved') ?? 'Account removed',
+                header: [snapAuthorshipHeader],
               });
             } catch (error) {
               await getApprovalController().error({
                 error: (error as Error).message,
+                header: [snapAuthorshipHeader],
               });
               throw new Error(
                 `Error occurred while removing snap account: ${
