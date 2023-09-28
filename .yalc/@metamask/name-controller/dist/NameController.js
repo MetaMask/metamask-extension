@@ -158,13 +158,14 @@ _NameController_providers = new WeakMap(), _NameController_updateDelay = new Wea
         const variationKey = variation !== null && variation !== void 0 ? variation : DEFAULT_VARIATION;
         const supportedSourceIds = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getSourceIds).call(this, provider, type);
         const currentTime = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_getCurrentTimeSeconds).call(this);
+        const normalizedValue = __classPrivateFieldGet(this, _NameController_instances, "m", _NameController_normalizeValue).call(this, value, type);
         const matchingSourceIds = supportedSourceIds.filter((sourceId) => {
             var _a, _b, _c, _d, _e, _f, _g;
             if (requestedSourceIds && !requestedSourceIds.includes(sourceId)) {
                 return false;
             }
             if (onlyUpdateAfterDelay) {
-                const entry = (_c = (_b = (_a = this.state.names[type]) === null || _a === void 0 ? void 0 : _a[value]) === null || _b === void 0 ? void 0 : _b[variationKey]) !== null && _c !== void 0 ? _c : {};
+                const entry = (_c = (_b = (_a = this.state.names[type]) === null || _a === void 0 ? void 0 : _a[normalizedValue]) === null || _b === void 0 ? void 0 : _b[variationKey]) !== null && _c !== void 0 ? _c : {};
                 const proposedNamesEntry = (_e = (_d = entry.proposedNames) === null || _d === void 0 ? void 0 : _d[sourceId]) !== null && _e !== void 0 ? _e : {};
                 const lastRequestTime = (_f = proposedNamesEntry.lastRequestTime) !== null && _f !== void 0 ? _f : 0;
                 const updateDelay = (_g = proposedNamesEntry.updateDelay) !== null && _g !== void 0 ? _g : __classPrivateFieldGet(this, _NameController_updateDelay, "f");

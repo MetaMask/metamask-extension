@@ -9,6 +9,7 @@ import {
   NameStateChange,
   NameType,
 } from '@metamask/name-controller';
+import { cloneDeep } from 'lodash';
 import log from 'loglevel';
 
 type Entry = {
@@ -98,7 +99,8 @@ export class AddressBookPetnamesBridge {
       log.debug('Removed address book entry following petname removal', entry);
     }
 
-    this.#nameState = newState;
+    this.#addressBookState = cloneDeep(this.#addressBookController.state);
+    this.#nameState = cloneDeep(newState);
     this.#updating = false;
   }
 
@@ -140,7 +142,8 @@ export class AddressBookPetnamesBridge {
       log.debug('Removed petname following address book removal', entry);
     }
 
-    this.#addressBookState = newState;
+    this.#addressBookState = cloneDeep(newState);
+    this.#nameState = cloneDeep(this.#nameController.state);
     this.#updating = false;
   }
 
