@@ -325,6 +325,7 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    useSafeChainsListValidation: true,
   },
   unconnectedAccount: true,
 };

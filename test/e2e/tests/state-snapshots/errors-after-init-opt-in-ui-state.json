@@ -87,6 +87,7 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
+    "useSafeChainsListValidation": true,
     "useTokenDetection": false,
     "useNftDetection": false,
     "useCurrencyRateCheck": true,

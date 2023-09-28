@@ -1808,7 +1808,47 @@ describe('Actions', () => {
       ];
 
       await store.dispatch(actions.setUse4ByteResolution());
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
 
+  describe('#setUseSafeChainsListValidation', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setUseSafeChainsListValidation in background', () => {
+      const store = mockStore();
+      const setUseSafeChainsListValidationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      _setBackgroundConnection({
+        setUseSafeChainsListValidation: setUseSafeChainsListValidationStub,
+      });
+
+      store.dispatch(actions.setUseSafeChainsListValidation());
+      expect(setUseSafeChainsListValidationStub.callCount).toStrictEqual(1);
+    });
+
+    it('errors when setUseSafeChainsListValidation in background throws', () => {
+      const store = mockStore();
+      const setUseSafeChainsListValidationStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          cb(new Error('error'));
+        });
+
+      _setBackgroundConnection({
+        setUseSafeChainsListValidation: setUseSafeChainsListValidationStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+      ];
+
+      store.dispatch(actions.setUseSafeChainsListValidation());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
