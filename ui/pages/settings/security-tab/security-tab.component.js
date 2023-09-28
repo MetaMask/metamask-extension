@@ -71,6 +71,8 @@ export default class SecurityTab extends PureComponent {
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
+    useSafeChainsListValidation: PropTypes.bool.isRequired,
+    setUseSafeChainsListValidation: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useAddressBarEnsResolution: PropTypes.bool.isRequired,
@@ -336,6 +338,58 @@ export default class SecurityTab extends PureComponent {
             {t('addCustomNetwork')}
           </Button>
         </div>
+      </Box>
+    );
+  }
+
+  renderSafeChainsListValidationToggle() {
+    const { t } = this.context;
+    const { useSafeChainsListValidation, setUseSafeChainsListValidation } =
+      this.props;
+
+    const useSafeChainsListValidationWebsite = t(
+      'useSafeChainsListValidationWebsite',
+    );
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="setting-safe-chains-validation"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <Box
+          className="settings-page__content-row"
+          gap={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('useSafeChainsListValidation')}</span>
+            <div className="settings-page__content-description">
+              {t('useSafeChainsListValidationDescription', [
+                <b key="safechain-list-validation-website">
+                  {useSafeChainsListValidationWebsite}
+                </b>,
+              ])}
+            </div>
+          </div>
+
+          <div
+            className="settings-page__content-item-col"
+            data-testid="useSafeChainsListValidation"
+          >
+            <ToggleButton
+              value={useSafeChainsListValidation}
+              onToggle={(value) => setUseSafeChainsListValidation(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </Box>
       </Box>
     );
   }
@@ -773,6 +827,7 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
+
         <div>
           <span className="settings-page__security-tab-sub-header">
             {this.context.t('alerts')}
@@ -796,13 +851,16 @@ export default class SecurityTab extends PureComponent {
           {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('networkProvider')}
         </span>
         <div className="settings-page__content-padded">
           {this.renderChooseYourNetworkButton()}
+          {this.renderSafeChainsListValidationToggle()}
           {this.renderIpfsGatewayControl()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('tokenAutoDetection')}
         </span>
@@ -812,6 +870,7 @@ export default class SecurityTab extends PureComponent {
           {this.renderDisplayNftMediaToggle()}
           {this.renderNftDetectionToggle()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}
         </span>
