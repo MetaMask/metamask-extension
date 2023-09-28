@@ -33,9 +33,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
-///: END:ONLY_INCLUDE_IN
 
 export const BalanceOverview = ({ balance, loading }) => {
   const trackEvent = useContext(MetaMetricsContext);
