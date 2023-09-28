@@ -18,14 +18,8 @@ import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import {
-  AlignItems,
-  FLEX_DIRECTION,
-  Size,
-  TextColor,
-} from '../../helpers/constants/design-system';
+import { Size, TextColor } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getTargetSubjectMetadata,
@@ -38,7 +32,6 @@ import {
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
-import SiteOrigin from '../../components/ui/site-origin';
 import { Icon, IconName } from '../../components/component-library';
 import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -194,7 +187,6 @@ export default function ConfirmationPage({
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
-  const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
     unapprovedTxsCount,
     useSafeChainsListValidation,
@@ -378,29 +370,6 @@ export default function ConfirmationPage({
             />
           </Box>
         ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          !isSnapDialog &&
-            ///: END:ONLY_INCLUDE_IN
-            pendingConfirmation.origin === 'metamask' && (
-              <Box
-                alignItems={AlignItems.center}
-                paddingTop={2}
-                paddingRight={4}
-                paddingLeft={4}
-                paddingBottom={4}
-                flexDirection={FLEX_DIRECTION.COLUMN}
-              >
-                <SiteOrigin
-                  chip
-                  siteOrigin={originMetadata.origin}
-                  title={originMetadata.origin}
-                  iconSrc={originMetadata.iconUrl}
-                  iconName={originMetadata.hostname}
-                />
-              </Box>
-            )
-        }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           isSnapDialog && (
