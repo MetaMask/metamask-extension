@@ -231,8 +231,6 @@ module.exports = createScriptTasks;
  * @param {object} options - Build options.
  * @param {boolean} options.applyLavaMoat - Whether the build should use
  * LavaMoat at runtime or not.
- * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included
- * in the build name.
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build bundles for.
  * @param {string} options.buildType - The current build type (e.g. "main",
@@ -252,7 +250,6 @@ module.exports = createScriptTasks;
  */
 function createScriptTasks({
   applyLavaMoat,
-  shouldIncludeSnow,
   browserPlatforms,
   buildType,
   ignoredFiles,
@@ -308,7 +305,6 @@ function createScriptTasks({
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
         applyLavaMoat,
-        shouldIncludeSnow,
         browserPlatforms,
         buildTarget,
         buildType,
@@ -400,7 +396,6 @@ function createScriptTasks({
       shouldLintFenceFiles,
       version,
       applyLavaMoat,
-      shouldIncludeSnow,
     });
   }
 
@@ -425,7 +420,6 @@ function createScriptTasks({
       shouldLintFenceFiles,
       version,
       applyLavaMoat,
-      shouldIncludeSnow,
     });
   }
 
@@ -454,7 +448,6 @@ function createScriptTasks({
         shouldLintFenceFiles,
         version,
         applyLavaMoat,
-        shouldIncludeSnow,
       }),
       createNormalBundle({
         buildTarget,
@@ -468,7 +461,6 @@ function createScriptTasks({
         shouldLintFenceFiles,
         version,
         applyLavaMoat,
-        shouldIncludeSnow,
       }),
     );
   }
@@ -544,7 +536,6 @@ async function createManifestV3AppInitializationBundle({
     shouldLintFenceFiles,
     version,
     applyLavaMoat,
-    shouldIncludeSnow: false, // is this right?
   })();
 
   // Code below is used to set statsMode to true when testing in MV3
@@ -571,8 +562,6 @@ async function createManifestV3AppInitializationBundle({
  * @param {object} options - Build options.
  * @param {boolean} options.applyLavaMoat - Whether the build should use
  * LavaMoat at runtime or not.
- * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included
- * in the build name.
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build bundles for.
  * @param {BUILD_TARGETS} options.buildTarget - The current build target.
@@ -592,7 +581,6 @@ async function createManifestV3AppInitializationBundle({
  */
 function createFactoredBuild({
   applyLavaMoat,
-  shouldIncludeSnow,
   browserPlatforms,
   buildTarget,
   buildType,
@@ -622,8 +610,6 @@ function createFactoredBuild({
       variables,
       activeBuild,
       version,
-      applyLavaMoat,
-      shouldIncludeSnow,
     });
     const features = {
       active: new Set(activeBuild.features ?? []),
@@ -837,8 +823,6 @@ function createFactoredBuild({
  * fences should be linted after fences have been removed.
  * @param {string} options.version - The current version of the extension.
  * @param {boolean} options.applyLavaMoat - Whether to apply LavaMoat or not
- * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included
- * in the build name.
  * @returns {Function} A function that creates the bundle.
  */
 function createNormalBundle({
@@ -854,7 +838,6 @@ function createNormalBundle({
   shouldLintFenceFiles,
   version,
   applyLavaMoat,
-  shouldIncludeSnow,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -877,8 +860,6 @@ function createNormalBundle({
       environment,
       activeBuild,
       version,
-      applyLavaMoat,
-      shouldIncludeSnow,
     });
     Object.entries(extraEnvironmentVariables ?? {}).forEach(([key, value]) =>
       variables.set(key, value),
@@ -1181,8 +1162,6 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
  * @param options.activeBuild
  * @param options.variables
  * @param options.environment
- * @param options.applyLavaMoat
- * @param options.shouldIncludeSnow
  */
 async function setEnvironmentVariables({
   buildTarget,
@@ -1191,8 +1170,6 @@ async function setEnvironmentVariables({
   environment,
   variables,
   version,
-  applyLavaMoat,
-  shouldIncludeSnow,
 }) {
   const devMode = isDevBuild(buildTarget);
   const testing = isTestBuild(buildTarget);
@@ -1210,8 +1187,7 @@ async function setEnvironmentVariables({
     METAMASK_BUILD_NAME: getBuildName({
       environment,
       buildType,
-      applyLavaMoat,
-      shouldIncludeSnow,
+      shouldIncludeMV3: false,
     }),
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,

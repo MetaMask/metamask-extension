@@ -184,7 +184,6 @@ async function defineAndRunBuildTasks() {
 
   const scriptTasks = createScriptTasks({
     applyLavaMoat,
-    shouldIncludeSnow,
     browserPlatforms,
     buildType,
     ignoredFiles,
