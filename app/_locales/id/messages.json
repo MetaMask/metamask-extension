@@ -611,18 +611,9 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buy": {
-    "message": "Beli"
-  },
   "buyAsset": {
     "message": "Beli $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Pertahankan kripto Anda dan dapatkan potensi keuntungan"
-  },
-  "buyDisabled": {
-    "message": "Beli tidak tersedia di jaringan ini"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",
@@ -3193,14 +3184,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Izinkan snap menggunakan lifecycle hook untuk menjalankan kode pada waktu tertentu selama siklus hidupnya.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Operasikan sepanjang waktu.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Izinkan snap beroperasi sepanjang waktu saat, sebagai contoh, memproses data dalam jumlah besar.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",

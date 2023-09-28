@@ -1,7 +1,7 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
-import EthQuery from 'ethjs-query';
+import EthQuery from '@metamask/ethjs-query';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
@@ -2425,7 +2425,10 @@ export default class TransactionController extends EventEmitter {
       ) {
         if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
           transactionApprovalAmountType = TransactionApprovalAmountType.revoke;
-        } else if (customTokenAmount) {
+        } else if (
+          customTokenAmount &&
+          customTokenAmount !== dappProposedTokenAmount
+        ) {
           transactionApprovalAmountType = TransactionApprovalAmountType.custom;
         } else if (dappProposedTokenAmount) {
           transactionApprovalAmountType =
@@ -2841,7 +2844,7 @@ export default class TransactionController extends EventEmitter {
       const { origin } = txMeta;
 
       const approvalResult = await this._requestApproval(
-        String(txId),
+        txId,
         origin,
         { txId },
         {
