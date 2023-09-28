@@ -1,8 +1,7 @@
 const { strict: assert } = require('assert');
 const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-
-const TEST_SNAPS_URL = 'https://metamask.github.io/snaps/test-snaps/1.1.0';
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
@@ -26,7 +25,7 @@ async function login(driver) {
 }
 
 async function openTestSnaps(driver) {
-  const handle = await driver.openNewPage(TEST_SNAPS_URL);
+  const handle = await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
   await driver.delay(1000);
   return handle;
 }
