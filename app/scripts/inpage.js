@@ -60,7 +60,7 @@ if (shouldInjectProvider()) {
     connectionStream: metamaskStream,
     logger: log,
     shouldShimWeb3: true,
-    shouldAnnounceProviderInfo: {
+    providerInfo: {
       uuid: uuid(),
       name: process.env.METAMASK_BUILD_NAME,
       icon: process.env.METAMASK_BUILD_ICON,
