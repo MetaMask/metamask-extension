@@ -45,13 +45,8 @@ import { Text } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-const KeyringSnapRemovalResultStatus = {
-  Success: 'success',
-  Failed: 'failed',
-  None: 'none',
-};
+import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IN
 
 function ViewSnap() {
