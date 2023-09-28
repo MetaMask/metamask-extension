@@ -781,18 +781,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('externalNameSourcesSetting')}</span>
           <div className="settings-page__content-description">
-            <Text color={TextColor.textAlternative}>
-              {t('externalNameSourcesSettingDescriptionStart')}
-            </Text>
-            <ul className="settings-page__content-unordered-list">
-              <li>{t('externalNameSourcesSettingENS')}</li>
-              <li>{t('externalNameSourcesSettingEtherscan')}</li>
-              <li>{t('externalNameSourcesSettingInfura')}</li>
-              <li>{t('externalNameSourcesSettingLensProtocol')}</li>
-            </ul>
-            <Text color={TextColor.textAlternative} paddingTop={4}>
-              {t('externalNameSourcesSettingDescriptionEnd')}
-            </Text>
+            {t('externalNameSourcesSettingDescription')}
           </div>
         </div>
 

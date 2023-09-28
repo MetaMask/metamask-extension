@@ -1599,23 +1599,8 @@
   "externalNameSourcesSetting": {
     "message": "Suggest address names"
   },
-  "externalNameSourcesSettingDescriptionEnd": {
-    "message": "Turn this feature off if you don't want to automatically pull data from those services."
-  },
-  "externalNameSourcesSettingDescriptionStart": {
-    "message": "We use the following external sources to suggest names for any addresses inside signature requests."
-  },
-  "externalNameSourcesSettingENS": {
-    "message": "Ethereum Name Service (ENS)"
-  },
-  "externalNameSourcesSettingEtherscan": {
-    "message": "Etherscan"
-  },
-  "externalNameSourcesSettingInfura": {
-    "message": "Infura"
-  },
-  "externalNameSourcesSettingLensProtocol": {
-    "message": "Lens Protocol"
+  "externalNameSourcesSettingDescription": {
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"

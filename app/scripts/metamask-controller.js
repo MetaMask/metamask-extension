@@ -1547,7 +1547,6 @@ export default class MetamaskController extends EventEmitter {
           reverseLookup: this.ensController.reverseResolveAddress.bind(
             this.ensController,
           ),
-          isEnabled: isExternalNameSourcesEnabled,
         }),
         new EtherscanNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
         new TokenNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
