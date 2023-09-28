@@ -4073,6 +4073,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-provider@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/eth-json-rpc-provider@npm:2.1.0"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^7.1.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.1.0"
+  checksum: 4627a9e64eab102238c7b25c2b200fc418734f469890c596149c199e6ef459a1f650c5ced6b73b55b14d0f29dc9e14363de86972ae2605552f0be03ee7719feb
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-keyring-controller@npm:^10.0.1":
   version: 10.0.1
   resolution: "@metamask/eth-keyring-controller@npm:10.0.1"
@@ -4295,7 +4306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^7.1.1":
+"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/json-rpc-engine@npm:7.1.1"
   dependencies:
@@ -4770,16 +4781,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/selected-network-controller@npm:1.0.0"
+"@metamask/selected-network-controller@npm:@metamask-previews/selected-network-controller@1.0.1-preview.dbee2e4":
+  version: 1.0.1-preview.dbee2e4
+  resolution: "@metamask-previews/selected-network-controller@npm:1.0.1-preview.dbee2e4"
   dependencies:
     "@metamask/base-controller": "npm:^3.2.1"
     "@metamask/network-controller": "npm:^12.1.2"
+    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
     json-rpc-engine: "npm:^6.1.0"
   peerDependencies:
     "@metamask/network-controller": ^12.1.2
-  checksum: 4a004ccf426603a111e9c5d490f4a86ce4cb0143a9ff53c215e031df3d237cef0ef4fcde6c484f3ae0c5ce1a4b8d60f1faf4b1ceaf63675587480e704c26a903
+  checksum: 5b2278d7d8bffbe542383bb376a943b66f9c2ebbd21920cc31b13e4063b780cb43dc983c5cd189bc1f7c0aa9fd972cb15daec817a4e831105c9637c6fbb1f425
   languageName: node
   linkType: hard
 
@@ -24038,6 +24050,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
+    "@metamask/eth-json-rpc-provider": "npm:^2.1.0"
     "@metamask/eth-keyring-controller": "npm:^10.0.1"
     "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
     "@metamask/eth-snap-keyring": "npm:^0.2.2"
@@ -24068,7 +24081,7 @@ __metadata:
     "@metamask/rpc-methods": "npm:^2.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^1.0.0"
+    "@metamask/selected-network-controller": "npm:^1.0.1"
     "@metamask/signature-controller": "npm:^5.3.0"
     "@metamask/slip44": "npm:^3.0.0"
     "@metamask/smart-transactions-controller": "npm:^4.0.0"
