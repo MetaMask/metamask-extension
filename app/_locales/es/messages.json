@@ -611,18 +611,9 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buy": {
-    "message": "Comprar"
-  },
   "buyAsset": {
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Guarde sus criptomonedas y obtenga ganancias potenciales"
-  },
-  "buyDisabled": {
-    "message": "Comprar no está disponible en esta red"
   },
   "buyMoreAsset": {
     "message": "Comprar más $1",
