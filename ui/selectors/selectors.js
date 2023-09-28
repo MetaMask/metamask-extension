@@ -90,6 +90,7 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import {
+  NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
 } from '../../shared/notifications';
@@ -439,7 +440,7 @@ export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return cachedBalances && cachedBalances[selectedAddress];
+  return cachedBalances?.[selectedAddress];
 }
 
 export function getSelectedAccount(state) {
@@ -1070,7 +1071,6 @@ function getAllowedAnnouncementIds(state) {
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
-  const isSwapsChain = getIsSwapsChain(state);
 
   return {
     1: false,
@@ -1093,8 +1093,8 @@ function getAllowedAnnouncementIds(state) {
     18: false,
     19: false,
     20: currentKeyringIsLedger && isFirefox,
-    21: isSwapsChain,
-    22: true,
+    21: false,
+    22: false,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: true,
     ///: END:ONLY_INCLUDE_IN
@@ -1102,6 +1102,7 @@ function getAllowedAnnouncementIds(state) {
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
+    [NOTIFICATION_BUY_SELL_BUTTON]: true,
   };
 }
 

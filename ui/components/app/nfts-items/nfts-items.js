@@ -196,7 +196,8 @@ export default function NftsItems({
               const nftImageURL = imageOriginal?.startsWith('ipfs')
                 ? nftImage
                 : image;
-
+              const nftSrcUrl = imageOriginal ?? image;
+              const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
               return (
@@ -215,6 +216,7 @@ export default function NftsItems({
                     networkName={currentChain.nickname}
                     networkSrc={currentChain.rpcPrefs?.imageUrl}
                     onClick={handleImageClick}
+                    isIpfsURL={isIpfsURL}
                     clickable
                   />
                 </Box>

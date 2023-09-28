@@ -786,7 +786,7 @@ const updateMetamaskStateFromBackground = (): Promise<
  * @param previousGasParams - Object of gas params to set as previous
  */
 export function updatePreviousGasParams(
-  txId: number,
+  txId: string,
   previousGasParams: Record<string, any>,
 ): ThunkAction<
   Promise<TransactionMeta>,
@@ -811,7 +811,7 @@ export function updatePreviousGasParams(
 }
 
 export function updateEditableParams(
-  txId: number,
+  txId: string,
   editableParams: Partial<TxParams>,
 ): ThunkAction<
   Promise<TransactionMeta>,
@@ -846,7 +846,7 @@ export function updateEditableParams(
  * @returns
  */
 export function updateTransactionSendFlowHistory(
-  txId: number,
+  txId: string,
   currentSendFlowHistoryLength: number,
   sendFlowHistory: DraftTransaction['history'],
 ): ThunkAction<
@@ -902,7 +902,7 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
 
 // TODO: codeword: NOT_A_THUNK @brad-decker
 export function updateTransactionGasFees(
-  txId: number,
+  txId: string,
   txGasFees: Partial<TxGasFees>,
 ): ThunkAction<
   Promise<TransactionMeta>,
@@ -1110,7 +1110,7 @@ export async function getTransactions(
 }
 
 export function completedTx(
-  txId: number,
+  txId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch({
@@ -1122,7 +1122,7 @@ export function completedTx(
   };
 }
 
-export function updateTransactionParams(txId: number, txParams: TxParams) {
+export function updateTransactionParams(txId: string, txParams: TxParams) {
   return {
     type: actionConstants.UPDATE_TRANSACTION_PARAMS,
     id: txId,
@@ -2066,12 +2066,12 @@ export function clearPendingTokens(): Action {
 }
 
 export function createCancelTransaction(
-  txId: number,
+  txId: string,
   customGasSettings: CustomGasSettings,
   options: { estimatedBaseFee?: string } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.cancelTransaction');
-  let newTxId: number;
+  let newTxId: string;
 
   return (dispatch: MetaMaskReduxDispatch) => {
     const actionId = generateActionId();

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
@@ -21,6 +22,7 @@ import {
   getTotalUnapprovedMessagesCount,
   getInternalAccounts,
   unconfirmedTransactionsHashSelector,
+  getAccountType,
 } from '../../../selectors';
 import SignatureRequest from './signature-request';
 
@@ -84,6 +86,16 @@ jest.mock('react-redux', () => {
     useDispatch: () => jest.fn(),
   };
 });
+
+const mockCustodySignFn = jest.fn();
+
+jest.mock('../../../hooks/useMMICustodySignMessage', () => ({
+  useMMICustodySignMessage: () => ({
+    custodySignFn: mockCustodySignFn,
+  }),
+}));
+
+jest.mock('@metamask-institutional/extension');
 
 const generateUseSelectorRouter = (opts) => (selector) => {
   switch (selector) {
@@ -559,6 +571,61 @@ describe('Signature Request Component', () => {
       );
 
       expect(getByText('This is a deceptive request')).toBeInTheDocument();
+    });
+
+    it('should click onSign with custodyId as a accountType and call custodySignFn', () => {
+      const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { getByTestId } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+        />,
+        store,
+      );
+
+      const rejectRequestsLink = getByTestId('page-container-footer-next');
+      fireEvent.click(rejectRequestsLink);
+      expect(mockCustodySignFn).toHaveBeenCalledWith({ msgParams });
+    });
+
+    it('should call showCustodianDeepLink with correct parameters when txData.custodyId is truthy', () => {
+      const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+            custodyId: 'custodyId',
+          }}
+        />,
+        store,
+      );
+
+      expect(showCustodianDeepLink).toHaveBeenCalledWith({
+        dispatch: expect.any(Function),
+        mmiActions: expect.any(Object),
+        txId: undefined,
+        custodyId: 'custodyId',
+        fromAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        isSignature: true,
+        closeNotification: false,
+        onDeepLinkFetched: expect.any(Function),
+        onDeepLinkShown: expect.any(Function),
+        showCustodyConfirmLink: expect.any(Function),
+      });
     });
   });
 });
