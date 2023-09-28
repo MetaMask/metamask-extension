@@ -382,7 +382,7 @@ jobs:
           name: Install dependencies
           command: .circleci/scripts/install-dependencies.sh
       - save_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
           paths:
             - .yarn/cache
       - persist_to_workspace:
