@@ -60,7 +60,7 @@ describe('Test Snap Account', function () {
     );
   });
 
-  it.only('will display the keyring snap account removal warning', async function () {
+  it('will display the keyring snap account removal warning', async function () {
     await withFixtures(
       accountSnapFixtures(this.test.title),
       async ({ driver }) => {
@@ -110,7 +110,7 @@ describe('Test Snap Account', function () {
 
         await driver.fill(
           '[data-testid="remove-snap-confirmation-input"]',
-          'MetaMask Snap Simple Keyring',
+          'MetaMask Simple Snap Keyring',
         );
 
         await driver.clickElement({
@@ -121,7 +121,7 @@ describe('Test Snap Account', function () {
         // Checking result modal
         assert.equal(
           await driver.isElementPresentAndVisible({
-            text: 'MetaMask Snap Simple Keyring',
+            text: 'MetaMask Simple Snap Keyring',
           }),
           true,
         );
