@@ -24,6 +24,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getIsMainnet,
+  getOpenSeaEnabled,
   getSelectedAddress,
   getUseNftDetection,
 } from '../../../selectors';
@@ -58,6 +59,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
+  const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAddress = useSelector(getSelectedAddress);
@@ -162,7 +164,7 @@ export const ImportNftsModal = ({ onClose }) => {
           {t('importNFT')}
         </ModalHeader>
         <Box>
-          {isMainnet && !useNftDetection ? (
+          {isMainnet && !isDisplayNFTMediaToggleEnabled ? (
             <Box marginTop={6}>
               <NftsDetectionNoticeImportNFTs />
             </Box>
