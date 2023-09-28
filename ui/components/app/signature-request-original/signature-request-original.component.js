@@ -35,9 +35,9 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
   ButtonLink,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Box,
   Icon,
   IconName,
   Text,
