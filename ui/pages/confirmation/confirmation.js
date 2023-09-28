@@ -216,11 +216,6 @@ export default function ConfirmationPage({
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
   );
 
-  // When pendingConfirmation is undefined, this will also be undefined
-  const snapName =
-    targetSubjectMetadata &&
-    getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
-
   const SNAP_DIALOG_TYPE = [
     ApprovalType.SnapDialogAlert,
     ApprovalType.SnapDialogConfirmation,
@@ -228,6 +223,12 @@ export default function ConfirmationPage({
   ];
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+
+  // When pendingConfirmation is undefined, this will also be undefined
+  const snapName =
+    isSnapDialog &&
+    targetSubjectMetadata &&
+    getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
   ///: END:ONLY_INCLUDE_IN
 
   const INPUT_STATE_CONFIRMATIONS = [
