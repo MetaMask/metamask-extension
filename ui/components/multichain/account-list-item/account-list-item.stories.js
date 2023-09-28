@@ -88,6 +88,19 @@ HardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
 
+export const HardwareItemActive = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+HardwareItemActive.args = {
+  identity: HARDWARE_IDENTITY,
+  connectionStatus: 'Active',
+};
+HardwareItemActive.decorators = [
+  (story) => <Provider store={store}>{story()}</Provider>,
+];
+
 export const SelectedHardwareItem = (args) => (
   <div {...CONTAINER_STYLES}>
     <AccountListItem {...args} />
