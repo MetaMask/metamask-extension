@@ -3683,7 +3683,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param accountCount
    * @param accountName
-   * @returns {} keyState
+   * @returns {Promise<{accounts: InternalAccounts[]}>} A list of all the accounts after creating a new one.
    */
   async addNewAccount(accountCount, accountName) {
     const isActionMetricsQueueE2ETest =
@@ -3693,36 +3693,23 @@ export default class MetamaskController extends EventEmitter {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
     }
 
-    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found');
-    }
-    const { keyringController } = this;
-    const currentAccounts = this.accountsController.listAccounts();
-    const numberOfHdKeyringAccounts = currentAccounts.filter(
-      (account) => account.metadata.keyring.type === KeyringType.hdKeyTree,
-    ).length;
+    const { addedAccountAddress } =
+      await this.coreKeyringController.addNewAccount(accountCount);
 
-    if (numberOfHdKeyringAccounts === accountCount) {
-      const keyState = await keyringController.addNewAccount(primaryKeyring);
-      await this.accountsController.updateAccounts();
-      if (accountName) {
-        this.accountsController.setAccountName(
-          this.accountsController.getSelectedAccount().id,
-          accountName,
-        );
-      }
-      const updatedAccounts = this.accountsController.listAccounts();
-      return {
-        ...keyState,
-        accounts: updatedAccounts,
-      };
+    await this.accountsController.updateAccounts();
+    const currentAccounts = this.accountsController.listAccounts();
+
+    const newAccount = currentAccounts.find(
+      (account) =>
+        account.address.toLowerCase() === addedAccountAddress.toLowerCase(),
+    );
+
+    if (accountName) {
+      this.accountsController.setAccountName(newAccount.id, accountName);
     }
+    this.accountsController.setSelectedAccount(newAccount.id);
 
     return {
-      ...keyringController.memStore.getState(),
       accounts: currentAccounts,
     };
   }
@@ -3848,7 +3835,21 @@ export default class MetamaskController extends EventEmitter {
    * @param {any} args - The data required by that strategy to import an account.
    */
   async importAccountWithStrategy(strategy, args) {
-    await this.coreKeyringController.importAccountWithStrategy(strategy, args);
+    const { importedAccountAddress } =
+      await this.coreKeyringController.importAccountWithStrategy(
+        strategy,
+        args,
+      );
+    await this.accountsController.updateAccounts();
+    const importedAccount = await this.accountsController
+      .listAccounts()
+      .find(
+        (account) =>
+          account.address.toLowerCase() ===
+          importedAccountAddress.toLowerCase(),
+      );
+
+    this.accountsController.setSelectedAccount(importedAccount.id);
   }
 
   // ---------------------------------------------------------------------------

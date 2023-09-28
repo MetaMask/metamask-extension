@@ -667,8 +667,8 @@ describe('MetaMaskController', () => {
           'password',
           TEST_SEED,
         );
-        metamaskController.addNewAccount(1);
-        metamaskController.addNewAccount(2);
+        await metamaskController.addNewAccount(1);
+        await metamaskController.addNewAccount(2);
 
         metamaskController.selectFirstAccount();
       });
@@ -680,6 +680,7 @@ describe('MetaMaskController', () => {
 
       it('changes metamask controller selected account', function () {
         const metamaskState = metamaskController.getState();
+        console.log(metamaskState);
         expect(metamaskState.internalAccounts.selectedAccount).toStrictEqual(
           expectedId,
         );
@@ -903,9 +904,7 @@ describe('MetaMaskController', () => {
       it('errors when an primary keyring is does not exist', async () => {
         const addNewAccount = metamaskController.addNewAccount();
 
-        await expect(addNewAccount).rejects.toThrow(
-          'MetamaskController - No HD Key Tree found',
-        );
+        await expect(addNewAccount).rejects.toThrow('No HD keyring found');
       });
     });
 
