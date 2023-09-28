@@ -47,7 +47,7 @@ async function mockSegment(mockServer) {
         batch: [
           {
             type: 'track',
-            event: 'Transaction Submitted',
+            event: 'Transaction Submitted Anon',
           },
         ],
       })
@@ -78,7 +78,7 @@ async function mockSegment(mockServer) {
         batch: [
           {
             type: 'track',
-            event: 'Transaction Finalized',
+            event: 'Transaction Finalized Anon',
           },
         ],
       })
@@ -213,6 +213,8 @@ describe('Transaction Finalized Event', function () {
               status: 'submitted',
             }),
         ];
+
+        await driver.delay(10000);
 
         const transactionFinalizedWithSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,

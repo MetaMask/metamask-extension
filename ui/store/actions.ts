@@ -2992,6 +2992,21 @@ export function setUseMultiAccountBalanceChecker(
   };
 }
 
+export function setUseSafeChainsListValidation(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseSafeChainsListValidation`);
+    callBackgroundMethod('setUseSafeChainsListValidation', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
 export function setUseTokenDetection(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
