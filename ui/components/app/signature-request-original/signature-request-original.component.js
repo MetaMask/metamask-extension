@@ -28,13 +28,14 @@ import {
   Size,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
-  DISPLAY,
-  BLOCK_SIZES,
+  Display,
+  BlockSize,
   TextVariant,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   ButtonLink,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
@@ -46,7 +47,6 @@ import {
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
@@ -172,8 +172,8 @@ export default class SignatureRequestOriginal extends Component {
           this.props.fromAccount.address ? null : (
             <Box
               className="request-signature__mismatch-info"
-              display={DISPLAY.FLEX}
-              width={BLOCK_SIZES.FULL}
+              Display={Display.Flex}
+              width={BlockSize.Full}
               padding={4}
               marginBottom={4}
               backgroundColor={BackgroundColor.primaryMuted}

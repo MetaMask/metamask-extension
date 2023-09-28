@@ -12,6 +12,7 @@ import {
   rejectPendingApproval,
   completedTx,
 } from '../../../store/actions';
+import { shortenAddress } from '../../../helpers/utils/util';
 import SignatureRequestOriginal from '.';
 
 jest.mock('../../../store/actions', () => ({
@@ -52,26 +53,29 @@ const MOCK_SIGN_DATA = JSON.stringify({
   },
 });
 
+const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
 const props = {
   signMessage: jest.fn(),
   cancelMessage: jest.fn(),
   txData: {
     msgParams: {
-      from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      from: address,
       data: MOCK_SIGN_DATA,
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
     type: MESSAGE_TYPE.ETH_SIGN,
   },
   selectedAccount: {
-    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    address,
   },
 };
 
-const render = (txData = props.txData) => {
+const render = ({ txData = props.txData, selectedAddress = address } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      selectedAddress,
     },
   });
 
@@ -145,7 +149,7 @@ describe('SignatureRequestOriginal', () => {
       },
       type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
     };
-    const { getByText } = render(txData);
+    const { getByText } = render({ txData });
     expect(getByText('Message \\u202E test:')).toBeInTheDocument();
     expect(getByText('Hi, \\u202E Alice!')).toBeInTheDocument();
   });
@@ -195,5 +199,18 @@ describe('SignatureRequestOriginal', () => {
 
     render();
     expect(screen.getByText('This is a deceptive request')).toBeInTheDocument();
+  });
+
+  it('should display mismatch info when selected account address and from account address are not the same', () => {
+    const selectedAddress = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
+    const mismatchAccountText = `Your selected account (${shortenAddress(
+      selectedAddress,
+    )}) is different than the account trying to sign (${shortenAddress(
+      address,
+    )})`;
+
+    render({ selectedAddress });
+
+    expect(screen.getByText(mismatchAccountText)).toBeInTheDocument();
   });
 });
