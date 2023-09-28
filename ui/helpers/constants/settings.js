@@ -7,7 +7,9 @@ import {
   ABOUT_US_ROUTE,
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,blockaid)
   EXPERIMENTAL_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAPS_LIST_ROUTE,
   ///: END:ONLY_INCLUDE_IN
