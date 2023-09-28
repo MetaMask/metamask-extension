@@ -74,7 +74,7 @@ interface AppState {
   newTokensImported: string;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
-  txId: number | null;
+  txId: string | null;
   accountDetailsAddress: string;
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   snapsInstallPrivacyWarningShown: boolean;
