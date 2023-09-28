@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@metamask/name-controller": {
-      "signature": "a7c789c563c01df3f096ff56f1f5d0bc",
+      "signature": "f65cb7fec98562ac7bd0785d22cda751",
       "file": true,
       "replaced": "^1.0.0"
     }
