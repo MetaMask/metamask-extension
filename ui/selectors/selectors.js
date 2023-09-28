@@ -416,8 +416,7 @@ export function isBalanceCached(state) {
 export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
   const selectedAddress = getSelectedAddress(state);
-
-  return cachedBalances && cachedBalances[selectedAddress];
+  return cachedBalances?.[selectedAddress];
 }
 
 export function getSelectedAccount(state) {

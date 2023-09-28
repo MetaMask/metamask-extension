@@ -3314,14 +3314,6 @@
     "message": "Allow the snap to use lifecycle hooks to run code at specific times during its lifecycle.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "Run indefinitely.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Allow the snap to run indefinitely while, for example, processing large amounts of data.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Add and control Ethereum accounts",
     "description": "The description for `snap_manageAccounts` permission"

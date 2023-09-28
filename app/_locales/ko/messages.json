@@ -3194,14 +3194,6 @@
     "message": "스냅으로 라이프사이클 훅을 사용하도록 허용하면 라이프사이클 동안 코드를 특정 횟수만큼 실행합니다.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "무기한 운용됩니다.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "예를 들어 많은 양의 데이터를 처리하는 동안 스냅이 무기한 실행되도록 허용합니다.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "이더리움 계정 추가 및 제어",
     "description": "The description for `snap_manageAccounts` permission"
