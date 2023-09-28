@@ -562,6 +562,80 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('Change Transaction XXX anonymous event namnes', function () {
+    it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Added',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Added Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should change "Transaction Submitted" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Submitted',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Submitted Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should change "Transaction Finalized" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Finalized',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Finalized Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+  });
+
   describe('trackPage', function () {
     it('should track a page view', function () {
       const mock = sinon.mock(segment);
