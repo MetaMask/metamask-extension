@@ -34,12 +34,13 @@ describe('Confirm Transaction', () => {
         txData: mockState.metamask.transactions[0],
       },
     });
-    const { getByText, getByRole } = renderWithProvider(
+    const { container, getByText, getByRole } = renderWithProvider(
       <ConfirmTransaction actionKey="confirm" />,
       store,
       `${CONFIRM_TRANSACTION_ROUTE}/${unapprovedTransactionId}${CONFIRM_SEND_ETHER_PATH}`,
     );
-    expect(getByText('0xb19ac...f0c5e')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+    expect(getByText('0xb19Ac...f0c5e')).toBeInTheDocument();
     expect(getByRole('button', { name: 'Details' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Data' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Hex' })).toBeInTheDocument();
