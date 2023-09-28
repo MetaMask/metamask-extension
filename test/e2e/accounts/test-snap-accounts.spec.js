@@ -361,7 +361,10 @@ describe('Test Snap Account', function () {
     // click on Accounts
     await driver.clickElement('[data-testid="account-menu-icon"]');
 
-    const label = await driver.findElement({ css: '.mm-tag', text: 'Snaps' });
+    const label = await driver.findElement({
+      css: '.mm-tag',
+      text: 'MetaMask Simple Snap Keyring',
+    });
 
     label.click();
 
