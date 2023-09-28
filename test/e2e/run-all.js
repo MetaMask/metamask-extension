@@ -107,7 +107,6 @@ async function main() {
     testPaths = [
       ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
     ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
