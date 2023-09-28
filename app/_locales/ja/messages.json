@@ -611,18 +611,9 @@
   "busy": {
     "message": "ビジー状態"
   },
-  "buy": {
-    "message": "購入"
-  },
   "buyAsset": {
     "message": "$1を購入",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "仮想通貨を保持して利益を得ます"
-  },
-  "buyDisabled": {
-    "message": "このネットワークでは購入できません"
   },
   "buyMoreAsset": {
     "message": "$1を追加購入",

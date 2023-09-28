@@ -611,18 +611,9 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Bumili"
-  },
   "buyAsset": {
     "message": "Bumili ng $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "I-hold ang iyong crypto at makaipon ng potensyal na tubo"
-  },
-  "buyDisabled": {
-    "message": "Hindi available ang pagbili sa network na ito"
   },
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",

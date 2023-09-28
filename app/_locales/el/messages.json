@@ -611,18 +611,9 @@
   "busy": {
     "message": "Απασχολημένο"
   },
-  "buy": {
-    "message": "Αγορά"
-  },
   "buyAsset": {
     "message": "Αγορά $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Κρατήστε τα κρυπτονομίσματά σας και κερδίστε πιθανά κέρδη"
-  },
-  "buyDisabled": {
-    "message": "Η αγορά δεν είναι διαθέσιμη σε αυτό το δίκτυο"
   },
   "buyMoreAsset": {
     "message": "Αγοράστε περισσότερα $1",

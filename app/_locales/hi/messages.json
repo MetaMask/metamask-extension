@@ -611,18 +611,9 @@
   "busy": {
     "message": "बिज़ी"
   },
-  "buy": {
-    "message": "खरीदें"
-  },
   "buyAsset": {
     "message": "$1 खरीदें",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "अपने क्रिप्टो को रोक कर रखें और शानदार लाभ कमाएं"
-  },
-  "buyDisabled": {
-    "message": "इस नेटवर्क में खरीदारी उपलब्ध नहीं है"
   },
   "buyMoreAsset": {
     "message": "ज्यादा $1 खरीदें",

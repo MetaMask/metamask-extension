@@ -175,6 +175,7 @@ export enum IconName {
   Upload = 'upload',
   Usb = 'usb',
   Wifi = 'wifi',
+  PlusMinus = 'plus-minus',
 }
 
 export interface IconStyleUtilityProps extends StyleUtilityProps {
