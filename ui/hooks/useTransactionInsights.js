@@ -21,7 +21,7 @@ const isAllowedTransactionTypes = (transactionType) =>
 // A hook was needed to return JSX here as the way Tabs work JSX has to be included in
 // https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
 // Thus it is not possible to use React Component here
-const useTransactionInsights = ({ txData, hasFetchedV2Insight }) => {
+const useTransactionInsights = ({ txData, hasFetchedV2Insight = false }) => {
   const { txParams, chainId, origin } = txData;
   const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
   const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
