@@ -611,18 +611,9 @@
   "busy": {
     "message": "바쁨"
   },
-  "buy": {
-    "message": "구매"
-  },
   "buyAsset": {
     "message": "$1 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "암호화폐를 보유하고 잠재적인 수익을 얻으세요"
-  },
-  "buyDisabled": {
-    "message": "이 네트워크에서는 매수할 수 없습니다"
   },
   "buyMoreAsset": {
     "message": "$1 추가 구매",
@@ -3193,14 +3184,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "스냅으로 라이프사이클 훅을 사용하도록 허용하면 라이프사이클 동안 코드를 특정 횟수만큼 실행합니다.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "무기한 운용됩니다.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "예를 들어 많은 양의 데이터를 처리하는 동안 스냅이 무기한 실행되도록 허용합니다.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "이더리움 계정 추가 및 제어",

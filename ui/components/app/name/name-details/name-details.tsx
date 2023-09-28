@@ -43,12 +43,14 @@ import { I18nContext } from '../../../../contexts/i18n';
 
 export interface NameDetailsProps {
   onClose: () => void;
+  sourcePriority?: string[];
   type: NameType;
   value: string;
 }
 
 export default function NameDetails({
   onClose,
+  sourcePriority,
   type,
   value,
 }: NameDetailsProps) {
@@ -142,7 +144,7 @@ export default function NameDetails({
             <Name
               value={value}
               type={NameType.ETHEREUM_ADDRESS}
-              sourcePriority={['lens', 'token', 'ens', 'etherscan']}
+              sourcePriority={sourcePriority}
               disableEdit
             />
           </div>
