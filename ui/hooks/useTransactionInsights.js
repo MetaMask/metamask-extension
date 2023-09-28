@@ -38,6 +38,8 @@ const useTransactionInsights = ({ txData, hasFetchedV2Insight }) => {
     insightSnaps,
     ///: BEGIN:ONLY_INCLUDE_IN(build-main)
     insightSnapId: selectedInsightSnapId,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     hasFetchedV2Insight,
     ///: END:ONLY_INCLUDE_IN
   });

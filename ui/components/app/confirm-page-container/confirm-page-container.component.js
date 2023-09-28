@@ -164,20 +164,22 @@ const ConfirmPageContainer = (props) => {
     setCollectionBalance(tokenBalance.toString() || '0');
   }, [fromAddress, tokenAddress]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  let insightObject;
+  let insightComponent;
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
-  const insightObject = useTransactionInsights({
-    txData,
-    hasFetchedV2Insight,
-  });
-  const insightComponent = insightObject?.insightComponent;
+  insightObject = useTransactionInsights({ txData });
+  insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-  if (!hasFetchedV2Insight) {
-    setHasFetchedV2Insight(true);
-  }
+  insightObject = useTransactionInsights({
+    txData,
+    hasFetchedV2Insight,
+  });
+  insightComponent = insightComponent?.insightComponent;
+  setHasFetchedV2Insight(true);
   ///: END:ONLY_INCLUDE_IN
 
   const handleSubmit = () => {

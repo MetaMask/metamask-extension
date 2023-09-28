@@ -82,7 +82,15 @@ export function useTransactionInsightSnaps({
       fetchInsight();
     }
     return () => (cancelled = true);
-  }, [transaction, chainId, origin, subjects, insightSnaps, insightSnapId]);
+  }, [
+    transaction,
+    chainId,
+    origin,
+    subjects,
+    insightSnaps,
+    insightSnapId,
+    hasFetchedV2Insight,
+  ]);
 
   return { data, loading };
 }
