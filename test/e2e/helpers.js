@@ -759,6 +759,7 @@ async function switchToNotificationWindow(driver, numHandles = 3) {
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(async () => {
     let isPending = true;
+
     for (const mockedEndpoint of mockedEndpoints) {
       isPending = await mockedEndpoint.isPending();
     }
