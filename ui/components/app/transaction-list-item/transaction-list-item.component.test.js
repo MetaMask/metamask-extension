@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, prettyDOM } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
@@ -25,7 +25,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-
+import { TransactionStatus } from '../../../../shared/constants/transaction';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -231,10 +231,60 @@ describe('TransactionListItem', () => {
         ...(transactionGroup.primaryTransaction.custodyId = '1'),
       };
 
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, getByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={newTransactionGroup} />,
       );
+      const custodyIcon = getByTestId('custody-icon');
+
       expect(queryByTestId('custody-icon')).toBeInTheDocument();
+
+      expect(prettyDOM(custodyIcon)).toMatchSnapshot();
+    });
+
+    it('should display correctly the custody icon if status is signed', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        ...(transactionGroup.primaryTransaction.status =
+          TransactionStatus.signed),
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+
+      const custodyIcon = getByTestId('custody-icon');
+
+      expect(prettyDOM(custodyIcon)).toMatchSnapshot();
+    });
+
+    it('should display correctly the custody icon if status is rejected', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        ...(transactionGroup.primaryTransaction.status =
+          TransactionStatus.rejected),
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+
+      const custodyIcon = getByTestId('custody-icon');
+
+      expect(prettyDOM(custodyIcon)).toMatchSnapshot();
     });
 
     it('should click the custody list item and view the send screen', () => {
