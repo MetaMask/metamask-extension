@@ -166,7 +166,7 @@ const ConfirmPageContainer = (props) => {
 
   let insightObject;
   let insightComponent;
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main, build-mmi)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
   insightObject = useTransactionInsights({ txData });
