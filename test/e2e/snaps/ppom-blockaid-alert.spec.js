@@ -2,10 +2,10 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  getWindowHandles,
   openDapp,
   unlockWallet,
-  getWindowHandles,
+  withFixtures,
 } = require('../helpers');
 
 const {
