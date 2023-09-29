@@ -163,6 +163,9 @@ async function saveName(driver, parent, name, proposedName) {
 
 async function getProposedNames(driver, parent) {
   (await parent.nestedFindElement('.name')).click();
+
+  await driver.delay(3000);
+
   (await driver.findElement('.form-combo-field')).click();
 
   const primaryTextElements = await driver.findElements(
@@ -306,8 +309,8 @@ describe('Petnames', function () {
         const addresses = await getAddressesInMessage(driver);
 
         assert.deepEqual(await getProposedNames(driver, addresses[0]), [
-          ['example.domain - 0xCD2 / 0x539', 'Name Lookup Example Snap'],
           ['test.lens', 'Lens Protocol'],
+          ['example.domain - 0xcd2 / 0x539', 'Name Lookup Example Snap'],
         ]);
       },
     );
