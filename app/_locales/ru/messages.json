@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Отклонить напоминание о необходимости создать резервную копию секретной фразы для восстановления"
   },
-  "displayNftMedia": {
-    "message": "Показать NFT-носитель"
-  },
   "domain": {
     "message": "Домен"
   },
@@ -1404,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Включить API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
   "enableSmartSwaps": {
     "message": "Включить смарт-свопы"

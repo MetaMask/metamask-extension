@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Backup-Erinnerung zur geheimen Wiederherstellungsphrase verwerfen"
   },
-  "displayNftMedia": {
-    "message": "NFT-Medien anzeigen"
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1404,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API aktivieren"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
   "enableSmartSwaps": {
     "message": "Smart Swaps aktivieren"
