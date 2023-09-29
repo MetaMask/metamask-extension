@@ -2544,7 +2544,7 @@
     "message": "New contract"
   },
   "newNFTDetectedInImportNFTsMessage": {
-    "message": "To see your NFT, turn on Display NFT media in $1.",
+    "message": "To use Opensea see your NFT, turn on 'Enable OpenSea API' in $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
