@@ -36,7 +36,7 @@ const useTransactionInsights = ({ txData, hasFetchedV2Insight = false }) => {
     chainId: caip2ChainId,
     origin,
     insightSnaps,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,desktop)
     insightSnapId: selectedInsightSnapId,
     ///: END:ONLY_INCLUDE_IN
     hasFetchedV2Insight,
@@ -58,16 +58,16 @@ const useTransactionInsights = ({ txData, hasFetchedV2Insight = false }) => {
 
   let insightComponent;
 
-  if (insightSnaps.length === 1) {
+  if (data && insightSnaps.length === 1) {
     insightComponent = (
       <Tab
         className="confirm-page-container-content__tab"
         name={selectedSnap?.manifest.proposedName}
       >
-        <SnapInsight data={data?.[0]} loading={loading} />
+        <SnapInsight data={data[0]} loading={loading} />
       </Tab>
     );
-  } else {
+  } else if (data && insightSnaps.length > 1) {
     const dropdownOptions = insightSnaps?.map(
       ({ id, manifest: { proposedName } }) => ({
         value: id,
@@ -75,7 +75,7 @@ const useTransactionInsights = ({ txData, hasFetchedV2Insight = false }) => {
       }),
     );
 
-    const selectedSnapData = data?.find(
+    const selectedSnapData = data.find(
       (promise) => promise.snapId === selectedInsightSnapId,
     );
 
@@ -102,7 +102,7 @@ const useTransactionInsights = ({ txData, hasFetchedV2Insight = false }) => {
     return warningsArr;
   }, []);
 
-  return { insightComponent, warnings };
+  return data ? { insightComponent, warnings } : null;
 };
 
 export default useTransactionInsights;

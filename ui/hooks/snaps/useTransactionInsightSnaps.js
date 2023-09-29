@@ -24,6 +24,7 @@ export function useTransactionInsightSnaps({
 
     async function fetchInsight() {
       if (hasFetchedV2Insight) {
+        setLoading(false);
         return;
       }
 

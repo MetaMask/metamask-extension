@@ -127,6 +127,9 @@ const ConfirmPageContainer = (props) => {
     useState(false);
   const [hasFetchedV2Insight, setHasFetchedV2Insight] = useState(false);
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  const [cachedInsightObject, setCachedInsightObject] = useState({});
+  ///: END:ONLY_INCLUDE_IN
   const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
@@ -166,11 +169,12 @@ const ConfirmPageContainer = (props) => {
 
   let insightObject;
   let insightComponent;
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main, build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,desktop)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
   insightObject = useTransactionInsights({ txData });
-  insightComponent = insightObject?.insightComponent;
+  setCachedInsightObject(insightObject);
+  insightComponent = cachedInsightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
@@ -178,7 +182,10 @@ const ConfirmPageContainer = (props) => {
     txData,
     hasFetchedV2Insight,
   });
-  insightComponent = insightComponent?.insightComponent;
+  if (insightObject) {
+    setCachedInsightObject(insightObject);
+  }
+  insightComponent = cachedInsightObject?.insightComponent;
   if (!hasFetchedV2Insight) {
     setHasFetchedV2Insight(true);
   }
@@ -194,7 +201,7 @@ const ConfirmPageContainer = (props) => {
   // TODO: Better name
   const topLevelHandleSubmit = () => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-    if (insightObject?.warnings?.length > 0) {
+    if (cachedInsightObject?.warnings?.length > 0) {
       return setIsShowingTxInsightWarnings(true);
     }
     ///: END:ONLY_INCLUDE_IN
@@ -397,7 +404,7 @@ const ConfirmPageContainer = (props) => {
         }
         {isShowingTxInsightWarnings && (
           <TxInsightWarnings
-            warnings={insightObject.warnings}
+            warnings={cachedInsightObject.warnings}
             origin={origin}
             onCancel={() => setIsShowingTxInsightWarnings(false)}
             onSubmit={() => {
