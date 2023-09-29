@@ -37,7 +37,7 @@ export const Overflow: StoryFn<ConnectedSitePermissionsModalProps> = () => (
     onClose={() => {
       console.log('onClose');
     }}
-    siteName="reallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallylongsitename.com"
+    siteName="reallyreallyreallyreallyreallyreallylongsitename.com"
     siteIcon="https://uniswap.org/favicon.ico"
   />
 );

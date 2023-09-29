@@ -56,7 +56,6 @@ interface AppState {
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
-  showSitePermissionsModal: boolean;
   showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
@@ -128,7 +127,6 @@ const initialState: AppState = {
   openMetaMaskTabs: {},
   currentWindowTab: {},
   showWhatsNewPopup: true,
-  showSitePermissionsModal: false,
   showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
@@ -465,17 +463,7 @@ export default function reduceApp(
         ...appState,
         showWhatsNewPopup: false,
       };
-    case actionConstants.SHOW_SITE_PERMISSIONS_MODAL:
-      return {
-        ...appState,
-        showSitePermissionsModal: true,
-      };
 
-    case actionConstants.HIDE_SITE_PERMISSIONS_MODAL:
-      return {
-        ...appState,
-        showSitePermissionsModal: false,
-      };
     case actionConstants.CAPTURE_SINGLE_EXCEPTION:
       return {
         ...appState,

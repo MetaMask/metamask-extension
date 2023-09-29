@@ -24,4 +24,3 @@ export { ImportTokensModal } from './import-tokens-modal';
 export { SelectActionModal } from './select-action-modal';
 export { SelectActionModalItem } from './select-action-modal-item';
 export { ConnectedSitePermissionsModal } from './connected-site-permissions-modal';
-export { ConnectedSitePermissionsPill } from './connected-site-permissions-pill';

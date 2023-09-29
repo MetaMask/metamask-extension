@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { FC } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -10,8 +10,8 @@ import {
   IconName,
   AvatarIcon,
   AvatarIconSize,
+  TagUrl,
 } from '../../component-library';
-import { ConnectedSitePermissionsPill } from '../connected-site-permissions-pill';
 import {
   AlignItems,
   BackgroundColor,
@@ -36,22 +36,23 @@ interface ConnectedSitePermissionsModalProps {
 export const ConnectedSitePermissionsModal: FC<
   ConnectedSitePermissionsModalProps
 > = ({ onClose, siteIcon, siteName }) => {
-  const [open, setOpen] = useState(true);
   const t = useI18nContext();
 
-  const handleOnClose = () => {
-    setOpen(false);
-    onClose();
-  };
   return (
     <Modal
       data-testid="connected-site-permissions-modal"
-      isOpen={open}
-      onClose={handleOnClose}
+      isOpen
+      onClose={() => {
+        onClose();
+      }}
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={handleOnClose}>
+        <ModalHeader
+          onClose={() => {
+            onClose();
+          }}
+        >
           {t('permissionsTitle')}
         </ModalHeader>
         <Box
@@ -66,9 +67,12 @@ export const ConnectedSitePermissionsModal: FC<
             width={BlockSize.TenTwelfths}
             justifyContent={JustifyContent.center}
           >
-            <ConnectedSitePermissionsPill
-              siteName={siteName}
-              siteIcon={siteIcon}
+            <TagUrl
+              className="connected-site-permissions-pill"
+              label={siteName}
+              labelProps={{ ellipsis: true }}
+              src={siteIcon}
+              showLockIcon
             />
           </Box>
 
@@ -129,7 +133,14 @@ export const ConnectedSitePermissionsModal: FC<
               </Text>
             </Box>
           </Box>
-          <ButtonPrimary block onClick={handleOnClose} tabIndex={0}>
+          <ButtonPrimary
+            block
+            data-testid="connected-site-permissions-modal-cta-button"
+            onClick={() => {
+              onClose();
+            }}
+            tabIndex={0}
+          >
             {t('gotItButton')}
           </ButtonPrimary>
         </Box>
