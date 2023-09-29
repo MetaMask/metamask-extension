@@ -207,7 +207,13 @@
     "@metamask/signature-controller@^6.0.0": "patch:@metamask/signature-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-signature-controller-npm-6.0.0-90e8e479a9.patch",
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
-    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch"
+    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
+    "@metamask/rpc-methods": "github:danroc/snaps#workspace=@metamask/rpc-methods&commit=9eb4df2dc23852d7751f2109c4a36cfa440352a3",
+    "@metamask/snaps-controllers": "github:danroc/snaps#workspace=@metamask/snaps-controllers&commit=9eb4df2dc23852d7751f2109c4a36cfa440352a3",
+    "@metamask/snaps-utils": "github:danroc/snaps#workspace=@metamask/snaps-utils&commit=9eb4df2dc23852d7751f2109c4a36cfa440352a3",
+    "@metamask/snaps-types": "github:danroc/snaps#workspace=@metamask/snaps-types&commit=9eb4df2dc23852d7751f2109c4a36cfa440352a3",
+    "@metamask/snaps-execution-environments": "github:danroc/snaps#workspace=@metamask/snaps-execution-environments&commit=9eb4df2dc23852d7751f2109c4a36cfa440352a3",
+    "@metamask/keyring-api": "github:MetaMask/keyring-api#bc70a7ac6fa760724b6a9e793a0eed855e50c216"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -255,6 +261,7 @@
     "@metamask/gas-fee-controller": "^6.0.1",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^9.0.0",
+    "@metamask/keyring-api": "^0.2.7",
     "@metamask/keyring-controller": "^8.0.1",
     "@metamask/logging-controller": "^1.0.1",
     "@metamask/logo": "^3.1.2",
