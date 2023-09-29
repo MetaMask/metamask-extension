@@ -44,7 +44,11 @@ export const ConnectedSitePermissionsModal: FC<
     onClose();
   };
   return (
-    <Modal isOpen={open} onClose={handleOnClose}>
+    <Modal
+      data-testid="connected-site-permissions-modal"
+      isOpen={open}
+      onClose={handleOnClose}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={handleOnClose}>
