@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const {
+  defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
@@ -41,6 +42,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .build(),
+        defaultGanacheOptions,
         title: this.test.title,
       },
 
@@ -126,6 +128,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .build(),
+        defaultGanacheOptions,
         title: this.test.title,
       },
 
