@@ -611,18 +611,9 @@
   "busy": {
     "message": "Occupé"
   },
-  "buy": {
-    "message": "Acheter"
-  },
   "buyAsset": {
     "message": "Acheter $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Conservez vos crypto-actifs et dégagez des bénéfices potentiels"
-  },
-  "buyDisabled": {
-    "message": "Impossible d’effectuer un achat sur ce réseau"
   },
   "buyMoreAsset": {
     "message": "Acheter plus de $1",
@@ -3193,14 +3184,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Autorisez le Snap à utiliser des hooks de cycle de vie pour exécuter du code à des moments spécifiques de son cycle de vie.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Fonctionner indéfiniment.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Autoriser l’exécution illimitée du snap pendant, par exemple, le traitement de volumes importants de données.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ajouter et gérer des comptes Ethereum",

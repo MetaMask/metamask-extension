@@ -623,18 +623,18 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Buy"
+  "buyAndSell": {
+    "message": "Buy & Sell"
+  },
+  "buyAndSellDescription": {
+    "message": "Buy crypto or sell your crypto for cash"
+  },
+  "buyAndSellDisabled": {
+    "message": "Buy & Sell is not available in this network"
   },
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Hold up your crypto and earn potential profits"
-  },
-  "buyDisabled": {
-    "message": "Buy is not available in this network"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -956,6 +956,12 @@
   },
   "createPassword": {
     "message": "Create password"
+  },
+  "createSnapAccountDescription": {
+    "message": "$1 wants to add a new Snap account to your wallet"
+  },
+  "createSnapAccountTitle": {
+    "message": "Create Snap account"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -3311,14 +3317,6 @@
     "message": "Allow the snap to use lifecycle hooks to run code at specific times during its lifecycle.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "Run indefinitely.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Allow the snap to run indefinitely while, for example, processing large amounts of data.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Add and control Ethereum accounts",
     "description": "The description for `snap_manageAccounts` permission"
@@ -3590,7 +3588,16 @@
     "message": "NFT was successfully removed!"
   },
   "removeSnap": {
-    "message": "Remove snap"
+    "message": "Remove Snap"
+  },
+  "removeSnapAccountBannerDescription": {
+    "message": "Be sure you can access this account on your own before removing it"
+  },
+  "removeSnapAccountDescription": {
+    "message": "$1 wants to remove this account from MetaMask:"
+  },
+  "removeSnapAccountTitle": {
+    "message": "Remove account"
   },
   "removeSnapConfirmation": {
     "message": "Are you sure you want to remove $1?",
@@ -4048,6 +4055,12 @@
   },
   "smartSwapsSubDescription": {
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  },
+  "snapAccountCreated": {
+    "message": "Your account is ready!"
+  },
+  "snapAccountRemoved": {
+    "message": "Account removed"
   },
   "snapAccounts": {
     "message": "Snap accounts"
@@ -5367,6 +5380,16 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
+  },
+  "useSafeChainsListValidation": {
+    "message": "Network details check"
+  },
+  "useSafeChainsListValidationDescription": {
+    "message": "MetaMask uses a third-party service called $1 to show accurate and standardized network details. This reduces your chances of connecting to malicious or incorrect network. When using this feature, your IP address is exposed to chainid.network."
+  },
+  "useSafeChainsListValidationWebsite": {
+    "message": "chainid.network",
+    "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useSiteSuggestion": {
     "message": "Use site suggestion"

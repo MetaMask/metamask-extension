@@ -13,6 +13,7 @@ import {
   setOpenSeaEnabled,
   setUseNftDetection,
   setUse4ByteResolution,
+  setUseSafeChainsListValidation,
   ///: BEGIN:ONLY_INCLUDE_IN(petnames)
   setUseExternalNameSources,
   ///: END:ONLY_INCLUDE_IN
@@ -33,6 +34,7 @@ const mapStateToProps = (state) => {
     useTokenDetection,
     ipfsGateway,
     useMultiAccountBalanceChecker,
+    useSafeChainsListValidation,
     useCurrencyRateCheck,
     useAddressBarEnsResolution,
     openSeaEnabled,
@@ -54,6 +56,7 @@ const mapStateToProps = (state) => {
     useTokenDetection,
     ipfsGateway,
     useMultiAccountBalanceChecker,
+    useSafeChainsListValidation,
     useCurrencyRateCheck,
     useAddressBarEnsResolution,
     openSeaEnabled,
@@ -73,17 +76,14 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setParticipateInMetaMetrics(val)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
     setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
-    setUseTokenDetection: (value) => {
-      return dispatch(setUseTokenDetection(value));
-    },
-    setIpfsGateway: (value) => {
-      return dispatch(setIpfsGateway(value));
-    },
-    setUseMultiAccountBalanceChecker: (value) => {
-      return dispatch(setUseMultiAccountBalanceChecker(value));
-    },
-    setUseAddressBarEnsResolution: (value) =>
-      dispatch(setUseAddressBarEnsResolution(value)),
+    setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
+    setIpfsGateway: (val) => dispatch(setIpfsGateway(val)),
+    setUseMultiAccountBalanceChecker: (val) =>
+      dispatch(setUseMultiAccountBalanceChecker(val)),
+    setUseAddressBarEnsResolution: (val) =>
+      dispatch(setUseAddressBarEnsResolution(val)),
+    setUseSafeChainsListValidation: (val) =>
+      dispatch(setUseSafeChainsListValidation(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {

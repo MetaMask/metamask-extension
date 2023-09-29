@@ -68,7 +68,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Button,
   ButtonLink,
   TagUrl,
@@ -76,12 +76,12 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
+  Box,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 // eslint-disable-next-line import/order
-import Box from '../../ui/box/box';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -323,7 +323,7 @@ const SignatureRequest = ({ txData }) => {
         {verifyingContract ? (
           <div>
             <Button
-              variant={BUTTON_VARIANT.LINK}
+              variant={ButtonVariant.Link}
               onClick={() => setShowContractDetails(true)}
               className="signature-request-content__verify-contract-details"
               data-testid="verify-contract-details"
