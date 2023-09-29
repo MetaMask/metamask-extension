@@ -9,7 +9,7 @@
 
 *                                    @MetaMask/extension-devs
 **/snaps/**                          @MetaMask/snaps-devs
-**/flask/**                          @MetaMask/snaps-devs
+**/flask/**                          @MetaMask/extension-devs @MetaMask/snaps-devs
 development/                         @MetaMask/extension-devs @kumavis
 lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
 

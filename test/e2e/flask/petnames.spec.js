@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
 
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
