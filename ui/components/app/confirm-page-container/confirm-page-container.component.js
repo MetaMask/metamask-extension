@@ -126,8 +126,6 @@ const ConfirmPageContainer = (props) => {
   const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
     useState(false);
   const [hasFetchedV2Insight, setHasFetchedV2Insight] = useState(false);
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const [cachedInsightObject, setCachedInsightObject] = useState({});
   ///: END:ONLY_INCLUDE_IN
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -173,8 +171,7 @@ const ConfirmPageContainer = (props) => {
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
   insightObject = useTransactionInsights({ txData });
-  setCachedInsightObject(insightObject);
-  insightComponent = cachedInsightObject?.insightComponent;
+  insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
@@ -184,11 +181,9 @@ const ConfirmPageContainer = (props) => {
   });
   if (insightObject) {
     setCachedInsightObject(insightObject);
-  }
-  insightComponent = cachedInsightObject?.insightComponent;
-  if (!hasFetchedV2Insight) {
     setHasFetchedV2Insight(true);
   }
+  insightComponent = cachedInsightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
 
   const handleSubmit = () => {
