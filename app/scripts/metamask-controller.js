@@ -70,9 +70,6 @@ import {
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
-///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
@@ -242,6 +239,9 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { snapKeyringBuilder } from './lib/snap-keyring';
+///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -870,21 +870,21 @@ export default class MetamaskController extends EventEmitter {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    const getSnapController = () => this.snapController;
+    const getApprovalController = () => this.approvalController;
+    const getKeyringController = () => this.keyringController;
+    const getCoreKeyringController = () => this.coreKeyringController;
+
     additionalKeyrings.push(
-      (() => {
-        const builder = () =>
-          new SnapKeyring(this.snapController, {
-            saveState: async () => {
-              await this.keyringController.persistAllKeyrings();
-            },
-            removeAccount: async (address) => {
-              await this.removeAccount(address);
-            },
-          });
-        builder.type = SnapKeyring.type;
-        return builder;
-      })(),
+      snapKeyringBuilder(
+        getSnapController,
+        getApprovalController,
+        getKeyringController,
+        getCoreKeyringController,
+        (address) => this.removeAccount(address),
+      ),
     );
+
     ///: END:ONLY_INCLUDE_IN
 
     const keyringControllerMessenger = this.controllerMessenger.getRestricted({
