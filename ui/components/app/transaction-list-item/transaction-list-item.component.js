@@ -273,6 +273,7 @@ function TransactionListItemInner({
                 status={displayedStatusKey}
               />
               <Icon
+                data-testid="custody-icon-badge"
                 name={IconName.Custody}
                 className="transaction-list-item__icon-badge"
                 color={getTransactionColor(status)}

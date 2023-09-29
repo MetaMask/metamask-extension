@@ -12,7 +12,7 @@ describe('Terms of use', function () {
       },
     ],
   };
-  it('accepts the updated terms of use', async function () {
+  it('accepts the updated terms of use @no-mmi', async function () {
     const firstOfJan = 1672574400;
     await withFixtures(
       {
