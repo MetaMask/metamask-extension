@@ -48,17 +48,15 @@ describe('Send ERC20 token to contract address', function () {
         // Verify warning
         const warningText =
           'Warning: you are about to send to a token contract which could result in a loss of funds. Learn more';
-        const warning = await driver.findElement({
-          css: '[data-testid="send-warning-description"]',
-          tag: 'p',
-        });
+        const warning = await driver.findElement(
+          '[data-testid="send-warning-description"]',
+        );
         assert.equal(await warning.getText(), warningText);
 
         const warningButtonText = 'I understand';
-        const warningButton = await driver.findElement({
-          css: '[data-testid="send-warning-action-button"]',
-          tag: 'button',
-        });
+        const warningButton = await driver.findElement(
+          '[data-testid="send-warning-action-button"]',
+        );
         assert.equal(await warningButton.getText(), warningButtonText);
       },
     );
