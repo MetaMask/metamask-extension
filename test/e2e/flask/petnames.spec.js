@@ -167,13 +167,13 @@ describe('Petnames', function () {
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await focusNotification(driver);
-        await expectName(driver, '0xCD2...D826', false);
-        await expectName(driver, '0xbBb...BBbB', false);
-        await saveName(driver, '0xCD2...D826', undefined, 'test.lens');
-        await saveName(driver, '0xbBb...BBbB', undefined, 'test2.lens');
+        await expectName(driver, '0xCD2a3...DD826', false);
+        await expectName(driver, '0xbBbBB...bBBbB', false);
+        await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
+        await saveName(driver, '0xbBbBB...bBBbB', undefined, 'test2.lens');
         await showThirdPartyDetails(driver);
-        await expectName(driver, '0xCcC...cccC', false);
-        await saveName(driver, '0xCcC...cccC', 'Custom Name');
+        await expectName(driver, '0xCcCCc...ccccC', false);
+        await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
         await closeThirdPartyDetails(driver);
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
@@ -203,16 +203,16 @@ describe('Petnames', function () {
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await focusNotification(driver);
-        await expectName(driver, '0xCD2...D826', false);
-        await expectName(driver, '0xDea...beeF', false);
-        await expectName(driver, '0xbBb...BBbB', false);
-        await expectName(driver, '0xB0B...Ea57', false);
-        await expectName(driver, '0xB0B...0000', false);
-        await saveName(driver, '0xCD2...D826', undefined, 'test.lens');
-        await saveName(driver, '0xB0B...Ea57', undefined, 'Test Token 2');
+        await expectName(driver, '0xCD2a3...DD826', false);
+        await expectName(driver, '0xDeaDb...DbeeF', false);
+        await expectName(driver, '0xbBbBB...bBBbB', false);
+        await expectName(driver, '0xB0Bda...bEa57', false);
+        await expectName(driver, '0xB0B0b...00000', false);
+        await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
+        await saveName(driver, '0xB0Bda...bEa57', undefined, 'Test Token 2');
         await showThirdPartyDetails(driver);
-        await expectName(driver, '0xCcC...cccC', false);
-        await saveName(driver, '0xCcC...cccC', 'Custom Name');
+        await expectName(driver, '0xCcCCc...ccccC', false);
+        await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
         await closeThirdPartyDetails(driver);
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
@@ -245,7 +245,7 @@ describe('Petnames', function () {
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await focusNotification(driver);
-        await expectProposedNames(driver, '0xCD2...D826', [
+        await expectProposedNames(driver, '0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
           ['example.domain - 0xcd2 / 0x539', 'Name Lookup Example Snap'],
         ]);
