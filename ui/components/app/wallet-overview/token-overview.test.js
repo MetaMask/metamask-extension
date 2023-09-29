@@ -52,6 +52,12 @@ describe('TokenOverview', () => {
         },
       ],
       contractExchangeRates: {},
+      mmiConfiguration: {
+        portfolio: {
+          enabled: true,
+        },
+        url: 'https://metamask-institutional.io',
+      },
     },
   };
 
@@ -233,48 +239,6 @@ describe('TokenOverview', () => {
       );
     });
 
-    it('should always show the Portfolio button', () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
-        symbol: 'test',
-      };
-      const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        store,
-      );
-      const portfolioButton = queryByTestId('home__portfolio-site');
-      expect(portfolioButton).toBeInTheDocument();
-    });
-
-    it('should open the Portfolio URI when clicking on Portfolio button', async () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
-        symbol: 'test',
-      };
-      const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        store,
-      );
-
-      const portfolioButton = queryByTestId('home__portfolio-site');
-
-      expect(portfolioButton).toBeInTheDocument();
-      expect(portfolioButton).not.toBeDisabled();
-
-      fireEvent.click(portfolioButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`?metamaskEntry=ext`),
-        }),
-      );
-    });
-
     it('should show the Bridge button if chain id and token are supported', async () => {
       const mockToken = {
         name: 'test',
@@ -363,6 +327,18 @@ describe('TokenOverview', () => {
       );
       const bridgeButton = queryByTestId('token-overview-bridge');
       expect(bridgeButton).not.toBeInTheDocument();
+    });
+
+    it('should show the MMI Portfolio and Stake buttons', () => {
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={token} />,
+        store,
+      );
+      const mmiStakeButton = queryByTestId('token-overview-mmi-stake');
+      const mmiPortfolioButton = queryByTestId('token-overview-mmi-portfolio');
+
+      expect(mmiStakeButton).toBeInTheDocument();
+      expect(mmiPortfolioButton).toBeInTheDocument();
     });
   });
 });

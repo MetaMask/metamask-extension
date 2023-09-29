@@ -1,19 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
 import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
+  Box,
 } from '../../component-library';
 import {
   BackgroundColor,
   Display,
   JustifyContent,
-  Size,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
+import {
+  getIpfsGateway,
+  getOpenSeaEnabled,
+  getTestNetworkBackgroundColor,
+} from '../../../selectors';
 
 export const NftItem = ({
   alt,
@@ -23,8 +29,37 @@ export const NftItem = ({
   networkSrc,
   tokenId,
   onClick,
-  clickable = false,
+  clickable,
+  isIpfsURL,
 }) => {
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const isIpfsEnabled = useSelector(getIpfsGateway);
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
+
+  const ipfsImageIsRenderable = isIpfsEnabled && isIpfsURL && src;
+  const openseaImageIsRenderable = openSeaEnabled && src && !isIpfsURL;
+
+  const nftImageComponentToRender =
+    ipfsImageIsRenderable || openseaImageIsRenderable ? (
+      <Box
+        className="nft-item__item nft-item__item-image"
+        data-testid="nft-image"
+        as="img"
+        src={src}
+        alt={alt}
+        display={Display.Block}
+        justifyContent={JustifyContent.center}
+      />
+    ) : (
+      <NftDefaultImage
+        className="nft-item__default-image"
+        data-testid="nft-default-image"
+        name={name}
+        tokenId={tokenId}
+        clickable={clickable && isIpfsURL}
+      />
+    );
+
   return (
     <Box
       className="nft-item__container"
@@ -38,12 +73,13 @@ export const NftItem = ({
         })}
         anchorElementShape={BadgeWrapperAnchorElementShape.circular}
         positionObj={{ top: -4, right: -4 }}
-        display={Display.BLOCK}
+        display={Display.Block}
         badge={
           <AvatarNetwork
             className="nft-item__network-badge"
+            backgroundColor={testNetworkBackgroundColor}
             data-testid="nft-network-badge"
-            size={Size.SM}
+            size={AvatarNetworkSize.Sm}
             name={networkName}
             src={networkSrc}
             borderWidth={2}
@@ -54,25 +90,7 @@ export const NftItem = ({
           />
         }
       >
-        {src ? (
-          <Box
-            className="nft-item__item nft-item__item-image"
-            data-testid="nft-image"
-            as="img"
-            src={src}
-            alt={alt}
-            display={Display.Block}
-            justifyContent={JustifyContent.center}
-          />
-        ) : (
-          <NftDefaultImage
-            className="nft-item__default-image"
-            data-testid="nft-default-image"
-            name={name}
-            tokenId={tokenId}
-            clickable={clickable}
-          />
-        )}
+        {nftImageComponentToRender}
       </BadgeWrapper>
     </Box>
   );
@@ -87,4 +105,5 @@ NftItem.propTypes = {
   tokenId: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   clickable: PropTypes.bool,
+  isIpfsURL: PropTypes.bool,
 };

@@ -13,8 +13,9 @@ import {
 } from '../../../selectors';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
-  BUTTON_SECONDARY_SIZES,
+  ButtonSecondarySize,
   ButtonSecondary,
+  Box,
 } from '../../component-library';
 import {
   AlignItems,
@@ -29,7 +30,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../../ui/box/box';
 
 export const AccountDetailsDisplay = ({
   accounts,
@@ -74,7 +74,7 @@ export const AccountDetailsDisplay = ({
       {exportPrivateKeyFeatureEnabled ? (
         <ButtonSecondary
           block
-          size={BUTTON_SECONDARY_SIZES.LG}
+          size={ButtonSecondarySize.Lg}
           variant={TextVariant.bodyMd}
           onClick={() => {
             trackEvent({

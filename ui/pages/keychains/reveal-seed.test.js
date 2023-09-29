@@ -216,7 +216,7 @@ describe('Reveal Seed Page', () => {
     const holdButton = getByText('Hold to reveal SRP');
     const circleLocked = queryByLabelText('hold to reveal circle locked');
 
-    fireEvent.mouseDown(holdButton);
+    fireEvent.pointerDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
     const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
@@ -224,7 +224,7 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(holdButton.firstChild).toHaveClass(
-        'box hold-to-reveal-button__icon-container box--flex-direction-row',
+        'hold-to-reveal-button__icon-container',
       );
       // tests that the mock srp is now shown.
       expect(getByText('test srp')).toBeInTheDocument();

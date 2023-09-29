@@ -33,18 +33,6 @@ describe('AccountListItem', () => {
     });
   });
 
-  it('opens the portfolio site when item is clicked', async () => {
-    global.platform = { openTab: jest.fn() };
-
-    const { getByTestId } = render();
-    fireEvent.click(getByTestId('global-menu-portfolio'));
-    await waitFor(() => {
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: `/?metamaskEntry=ext&metametricsId=`,
-      });
-    });
-  });
-
   it('opens the support site when item is clicked', async () => {
     global.platform = { openTab: jest.fn() };
 
@@ -63,7 +51,7 @@ describe('AccountListItem', () => {
   });
 
   it('enables the settings item when there is no active transaction', async () => {
-    const { getByTestId } = render({ unapprovedTxs: {} });
+    const { getByTestId } = render({ transactions: [] });
     await waitFor(() => {
       expect(getByTestId('global-menu-settings')).toBeEnabled();
     });
@@ -77,7 +65,7 @@ describe('AccountListItem', () => {
   });
 
   it('enables the connected sites item when there is no active transaction', async () => {
-    const { getByTestId } = render({ unapprovedTxs: {} });
+    const { getByTestId } = render({ transactions: [] });
     await waitFor(() => {
       expect(getByTestId('global-menu-connected-sites')).toBeEnabled();
     });

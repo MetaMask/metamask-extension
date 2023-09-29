@@ -116,7 +116,7 @@ async function switchEthereumChainHandler(
       if (
         Object.values(BUILT_IN_INFURA_NETWORKS)
           .map(({ chainId: id }) => id)
-          .includes(chainId)
+          .includes(_chainId)
       ) {
         await setProviderType(approvedRequestData.type);
       } else {

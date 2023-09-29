@@ -12,8 +12,6 @@ The `BadgeWrapper` positions a badge on top of another component
 
 ## Props
 
-The `BadgeWrapper` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props.
-
 <ArgsTable of={BadgeWrapper} />
 
 ### Children
@@ -30,6 +28,7 @@ import { Color, Size } from '../../../helpers/constants/design-system';
 import {
   AvatarAccount,
   AvatarNetwork,
+  AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
@@ -39,7 +38,7 @@ import {
 <BadgeWrapper
   badge={
     <AvatarNetwork
-      size={Size.XS}
+      size={AvatarNetworkSize.Xs}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}
@@ -53,7 +52,7 @@ import {
 <BadgeWrapper
   badge={
     <AvatarNetwork
-      size={Size.XS}
+      size={AvatarNetworkSize.Xs}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}
@@ -69,7 +68,7 @@ import {
 <BadgeWrapper
   badge={
     <AvatarNetwork
-      size={Size.SM}
+      size={AvatarNetworkSize.Sm}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}
@@ -110,6 +109,7 @@ import {
 import {
   AvatarAccount,
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Icon,
@@ -121,7 +121,7 @@ import {
 <BadgeWrapper
   badge={
     <AvatarNetwork
-      size={Size.XS}
+      size={AvatarNetworkSize.Xs}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}
@@ -203,6 +203,7 @@ import { BorderColor Size } from '../../../helpers/constants/design-system';
 import {
   AvatarAccount,
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperPosition
 } from '../../component-library';
@@ -211,7 +212,7 @@ import {
   position={BadgeWrapperPosition.topLeft}
   badge={
     <AvatarNetwork
-      size={Size.XS}
+      size={AvatarNetworkSize.Xs}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}
@@ -223,7 +224,7 @@ import {
 <BadgeWrapper
   badge={
     <AvatarNetwork
-      size={Size.XS}
+      size={AvatarNetworkSize.Xs}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}
@@ -236,7 +237,7 @@ import {
   position={BadgeWrapperPosition.bottomLeft}
   badge={
     <AvatarNetwork
-      size={Size.XS}
+      size={AvatarNetworkSize.Xs}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}
@@ -249,7 +250,7 @@ import {
   position={BadgeWrapperPosition.bottomRight}
   badge={
     <AvatarNetwork
-      size={Size.XS}
+      size={AvatarNetworkSize.Xs}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}
@@ -279,6 +280,7 @@ import { BorderColor Size } from '../../../helpers/constants/design-system';
 import {
   AvatarAccount,
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
 } from '../../component-library';
 
@@ -286,7 +288,7 @@ import {
 <BadgeWrapper
   badge={
     <AvatarNetwork
-      size={Size.XS}
+      size={AvatarNetworkSize.Xs}
       name="Avalanche"
       src="./images/avax-token.png"
       borderColor={BorderColor.borderMuted}

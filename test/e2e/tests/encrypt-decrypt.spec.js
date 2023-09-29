@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-async function getEncryptionKey(driver) {
+async function validateEncryptionKey(driver, encryptionKey) {
   await driver.clickElement('#getEncryptionKeyButton');
   await driver.waitUntilXWindowHandles(3);
   let windowHandles = await driver.getAllWindowHandles();
@@ -15,7 +15,10 @@ async function getEncryptionKey(driver) {
   await driver.waitUntilXWindowHandles(2);
   windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-  return await driver.findElement('#encryptionKeyDisplay');
+  await driver.findElement({
+    css: '#encryptionKeyDisplay',
+    text: encryptionKey,
+  });
 }
 
 async function encryptMessage(driver, message) {
@@ -51,8 +54,10 @@ async function verifyDecryptedMessageMM(driver, message) {
 async function verifyDecryptedMessageDapp(driver, message) {
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-  const clearTextLabel = await driver.findElement('#cleartextDisplay');
-  assert.equal(await clearTextLabel.getText(), message);
+  await driver.findElement({
+    css: '#cleartextDisplay',
+    text: message,
+  });
 }
 
 describe('Encrypt Decrypt', function () {
@@ -67,6 +72,7 @@ describe('Encrypt Decrypt', function () {
   };
   const encryptionKey = 'fxYXfCbun026g5zcCQh7Ia+O0urAEVZWLG8H4Jzu7Xs=';
   const message = 'Hello, Bob!';
+
   it('should decrypt an encrypted message', async function () {
     await withFixtures(
       {
@@ -84,8 +90,7 @@ describe('Encrypt Decrypt', function () {
         await openDapp(driver);
 
         // ------ Get Encryption key ------
-        const encryptionKeyLabel = await getEncryptionKey(driver);
-        assert.equal(await encryptionKeyLabel.getText(), encryptionKey);
+        await validateEncryptionKey(driver, encryptionKey);
 
         // ------ Encrypt ------
         await encryptMessage(driver, message);
@@ -126,8 +131,7 @@ describe('Encrypt Decrypt', function () {
         await openDapp(driver);
 
         // ------ Get Encryption key ------
-        const encryptionKeyLabel = await getEncryptionKey(driver);
-        assert.equal(await encryptionKeyLabel.getText(), encryptionKey);
+        await validateEncryptionKey(driver, encryptionKey);
 
         // ------ Encrypt Message 1------
         await encryptMessage(driver, message);

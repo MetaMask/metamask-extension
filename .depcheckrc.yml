@@ -45,7 +45,6 @@ ignores:
   - 'playwright'
   - 'wait-on'
   # development tool
-  - 'improved-yarn-audit'
   - 'nyc'
   # storybook
   - '@storybook/cli'

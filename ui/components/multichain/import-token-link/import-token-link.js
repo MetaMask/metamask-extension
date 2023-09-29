@@ -1,18 +1,15 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../ui/box/box';
-import { ButtonLink, IconName } from '../../component-library';
+import { ButtonLink, IconName, Box } from '../../component-library';
 import {
   AlignItems,
   Display,
   Size,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
-import { detectNewTokens } from '../../../store/actions';
+import { detectNewTokens, showImportTokensModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -26,7 +23,7 @@ import {
 export const ImportTokenLink = ({ className, ...props }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  const history = useHistory();
+  const dispatch = useDispatch();
 
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
   const isTokenDetectionInactiveOnMainnet = useSelector(
@@ -48,7 +45,7 @@ export const ImportTokenLink = ({ className, ...props }) => {
           data-testid="import-token-button"
           startIconName={IconName.Add}
           onClick={() => {
-            history.push(IMPORT_TOKEN_ROUTE);
+            dispatch(showImportTokensModal());
             trackEvent({
               event: MetaMetricsEventName.TokenImportButtonClicked,
               category: MetaMetricsEventCategory.Navigation,
@@ -69,7 +66,7 @@ export const ImportTokenLink = ({ className, ...props }) => {
           size={Size.MD}
           startIconName={IconName.Refresh}
           data-testid="refresh-list-button"
-          onClick={() => detectNewTokens()}
+          onClick={() => dispatch(detectNewTokens())}
         >
           {t('refreshList')}
         </ButtonLink>

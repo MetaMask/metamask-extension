@@ -36,6 +36,7 @@
       display: flex;
       align-items: center;
       position: relative;
+      width: 100%;
 
       &__title {
         @include H4;

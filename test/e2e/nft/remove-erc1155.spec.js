@@ -32,7 +32,7 @@ describe('Remove ERC1155 NFT', function () {
         // Open the details page and click remove nft button
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         const importedNftImage = await driver.findVisibleElement(
-          '.nft-item__item',
+          '.nft-item__container',
         );
         await importedNftImage.click();
         await driver.clickElement('[data-testid="nft-options__button"]');

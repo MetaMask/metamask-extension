@@ -12,33 +12,28 @@ The `ButtonSecondary` is an extension of `ButtonBase` to support secondary style
 
 ## Props
 
-The `ButtonSecondary` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) and [ButtonBase](/docs/components-componentlibrary-buttonbase--default-story#props) component props
-
 <ArgsTable of={ButtonSecondary} />
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonSecondary`. Defaults to `Size.MD`
-
-Optional: `BUTTON_SIZES` from `./button-base` object can be used instead of `Size`.
+Use the `size` prop and the `ButtonSecondarySize` enum from `./ui/components/component-library` to change the size of `ButtonSecondary`. Defaults to `ButtonSecondarySize.Md`
 
 Possible sizes include:
 
-- `Size.SM` 32px
-- `Size.MD` 40px
-- `Size.LG` 48px
+- `ButtonSecondarySize.Sm` 32px
+- `ButtonSecondarySize.Md` 40px
+- `ButtonSecondarySize.Lg` 48px
 
 <Canvas>
   <Story id="components-componentlibrary-buttonsecondary--size-story" />
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { ButtonSecondary } from  '../../component-library';
+import { ButtonSecondary, ButtonSecondarySize } from  '../../component-library';
 
-<ButtonSecondary size={Size.SM} />
-<ButtonSecondary size={Size.MD} />
-<ButtonSecondary size={Size.LG} />
+<ButtonSecondary size={ButtonSecondarySize.Sm} />
+<ButtonSecondary size={ButtonSecondarySize.Md} />
+<ButtonSecondary size={ButtonSecondarySize.Lg} />
 ```
 
 ### Danger

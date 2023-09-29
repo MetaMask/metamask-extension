@@ -61,9 +61,13 @@ const render = ({ txProps, contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
+      identities: {
+        '0xAddress': {},
+      },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      advancedGasFee: {},
     },
   });
 

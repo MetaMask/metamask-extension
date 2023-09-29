@@ -13,21 +13,16 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 // Modal Components
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ComplianceDetailsModal from '../../institutional/compliance-details';
-import ComplianceModal from '../../institutional/compliance-modal';
 import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
 import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
 import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
 import TransactionFailed from '../../institutional/transaction-failed-modal';
 ///: END:ONLY_INCLUDE_IN
-import AccountDetailsModal from './account-details-modal';
-import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
-import HoldToRevealModal from './hold-to-reveal-modal';
 import TransactionConfirmed from './transaction-confirmed';
 
 import ConfirmDeleteNetwork from './confirm-delete-network';
@@ -144,29 +139,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '10px',
-    },
-  },
-
-  ACCOUNT_DETAILS: {
-    contents: <AccountDetailsModal />,
-    ...accountModalStyle,
-  },
-
-  EXPORT_PRIVATE_KEY: {
-    contents: <ExportPrivateKeyModal />,
-    ...accountModalStyle,
-  },
-
-  HOLD_TO_REVEAL_SRP: {
-    contents: <HoldToRevealModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 
@@ -330,35 +302,6 @@ const MODALS = {
   },
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE: {
-    contents: <ComplianceModal />,
-    onHide: (props) => props.hideWarning(),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  COMPLIANCE_DETAILS: {
-    contents: <ComplianceDetailsModal />,
-    onHide: (props) => props.hideWarning(),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      padding: '0px',
-      borderRadius: '8px',
-    },
-  },
-
   CONFIRM_REMOVE_JWT: {
     contents: <ConfirmRemoveJWT />,
     mobileModalStyle: {

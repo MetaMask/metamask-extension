@@ -1,3 +1,5 @@
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
@@ -132,13 +134,18 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
-      networkDetails: {
-        EIPS: {
-          1559: false,
+      selectedNetworkClientId: NetworkType.mainnet,
+      networksMetadata: {
+        [NetworkType.mainnet]: {
+          EIPS: {
+            1559: false,
+          },
+          status: NetworkStatus.Available,
         },
       },
       providerConfig: {
         chainId: CHAIN_IDS.MAINNET,
+        ticker: 'ETH',
       },
       cachedBalances: {
         [CHAIN_IDS.MAINNET]: 5,
@@ -147,7 +154,7 @@ export const createSwapsMockStore = () => {
         showFiatInTestnets: true,
       },
       currentCurrency: 'ETH',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 6571648590592143,
           time: 1667403993369,
@@ -155,7 +162,7 @@ export const createSwapsMockStore = () => {
           metamaskNetworkId: '5',
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
-          chainId: '0x5',
+          chainId: CHAIN_IDS.MAINNET,
           loadingDefaults: false,
           dappSuggestedGasFees: null,
           sendFlowHistory: null,

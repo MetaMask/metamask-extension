@@ -4,15 +4,13 @@ import classnames from 'classnames';
 import {
   BackgroundColor,
   BorderRadius,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
-
-import { ModalFocus, useModalContext } from '..';
+import { Box, ModalFocus, useModalContext } from '..';
 
 import { ModalContentProps, ModalContentSize } from './modal-content.types';
 
@@ -44,6 +42,17 @@ export const ModalContent = forwardRef(
     };
 
     const handleClickOutside = (event: MouseEvent) => {
+      // Popover should be launched from within Modal but
+      // the Popover containing element is a sibling to modal,
+      // so this is required to ensure `onClose` isn't triggered
+      // when clicking on a popover item
+      if (
+        isClosedOnOutsideClick &&
+        (event.target as HTMLElement).closest('.mm-popover')
+      ) {
+        return;
+      }
+
       if (
         isClosedOnOutsideClick &&
         modalDialogRef?.current &&
@@ -72,9 +81,9 @@ export const ModalContent = forwardRef(
         <Box
           className={classnames('mm-modal-content', className)}
           ref={ref}
-          display={DISPLAY.FLEX}
-          width={BLOCK_SIZES.SCREEN}
-          height={BLOCK_SIZES.SCREEN}
+          display={Display.Flex}
+          width={BlockSize.Screen}
+          height={BlockSize.Screen}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.flexStart}
           padding={4}
@@ -90,9 +99,9 @@ export const ModalContent = forwardRef(
             aria-modal="true"
             backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
-            width={BLOCK_SIZES.FULL}
-            marginTop={12}
-            marginBottom={12}
+            width={BlockSize.Full}
+            marginTop={[null, 8, 12]}
+            marginBottom={[null, 8, 12]}
             padding={4}
             ref={modalDialogRef}
             {...modalDialogProps}
