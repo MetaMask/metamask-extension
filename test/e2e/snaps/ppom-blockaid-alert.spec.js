@@ -2,9 +2,9 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const {
   defaultGanacheOptions,
+  getWindowHandles,
   openDapp,
   unlockWallet,
-  WINDOW_TITLES,
   withFixtures,
 } = require('../helpers');
 
@@ -36,40 +36,6 @@ async function mockInfura(mockServer) {
           jsonrpc: '2.0',
           id: req.body.json.id,
           result: '0x5cec',
-        },
-      };
-    });
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({ method: 'eth_feeHistory' })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result: {
-            baseFeePerGas: [
-              '0x69b11e562',
-              '0x666a7c239',
-              '0x6d9e609f6',
-              '0x6e9ab5408',
-              '0x6bca983cb',
-              '0x6a6f790c3',
-            ],
-            gasUsedRatio: [
-              0.37602026666666666, 0.7813118333333333, 0.5359671,
-              0.39827006666666664, 0.44968263333333336,
-            ],
-            oldestBlock: '0x115e9c0',
-            reward: [
-              ['0xfbc521', '0x21239e6', '0x5f5e100'],
-              ['0x5f5e100', '0x68e7780', '0x314050eb'],
-              ['0xfbc521', '0xfbc521', '0xfbc521'],
-              ['0x21239e6', '0x5f5e100', '0x5f5e100'],
-              ['0x21239e6', '0x5f5e100', '0x5f5e100'],
-            ],
-          },
         },
       };
     });
@@ -115,20 +81,6 @@ async function mockInfura(mockServer) {
     });
   await mockServer
     .forPost()
-    .withJsonBodyIncluding({ method: 'eth_call' })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result: '0x4563918244F40000',
-        },
-      };
-    });
-
-  await mockServer
-    .forPost()
     .withJsonBodyIncluding({ method: 'eth_gasPrice' })
     .thenCallback((req) => {
       return {
@@ -140,7 +92,8 @@ async function mockInfura(mockServer) {
         },
       };
     });
-  };
+}
+
 /**
  * Tests various Blockaid PPOM security alerts. Data for the E2E test requests and responses are provided here:
  *
@@ -214,7 +167,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up
           await driver.waitUntilXWindowHandles(3);
-
           const windowHandles = await getWindowHandles(driver, 3);
           await driver.switchToWindowWithTitle('MetaMask Notification');
 
@@ -227,7 +179,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await driver.switchToWindow(windowHandles.dapp);
         }
       },
     );
@@ -287,26 +239,24 @@ describe('Confirmation Security Alert - Blockaid', function () {
           await driver.clickElement(btnSelector);
 
           // Wait for confirmation pop-up
-          await driver.waitUntilXWindowHandles(3);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+          const windowHandles = await getWindowHandles(driver, 3);
+          await driver.switchToWindow(windowHandles.popup);
 
-          const bannerAlertFoundByTitle = await driver.findElement({
-            css: bannerAlertSelector,
-            text: expectedTitle,
-          });
+          const bannerAlert = await driver.findElement(bannerAlertSelector);
+          const bannerAlertText = await bannerAlert.getText();
 
           assert(
-            bannerAlertFoundByTitle,
-            `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
+            bannerAlertText.includes(expectedTitle),
+            `Expected banner alert title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
           );
           assert(
-            bannerAlertFoundByTitle.includes(expectedDescription),
-            `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
+            bannerAlertText.includes(expectedDescription),
+            `Expected banner alert description: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
           );
 
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await driver.switchToWindow(windowHandles.dapp);
         }
       },
     );
