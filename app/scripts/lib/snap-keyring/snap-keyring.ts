@@ -7,6 +7,23 @@ import type {
 import type { KeyringController } from '@metamask/keyring-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
+import MetamaskController from '../../metamask-controller';
+
+/**
+ * Get the addresses of the accounts managed by a given Snap.
+ *
+ * @param controller - Instance of the MetaMask Controller.
+ * @param snapId - Snap ID to get accounts for.
+ * @returns The addresses of the accounts.
+ */
+export const getAccountsBySnapId = async (
+  controller: MetamaskController,
+  snapId: string,
+) => {
+  const snapKeyring: SnapKeyring = await controller.getSnapKeyring();
+  return await snapKeyring.getAccountsBySnapId(snapId);
+};
+
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing snap accounts.
  *
@@ -20,7 +37,7 @@ import { t } from '../../translate';
  * - `addAccount`: Initiates the process of adding an account with user confirmation and handling the user input.
  * - `removeAccount`: Initiates the process of removing an account with user confirmation and handling the user input.
  */
-const snapKeyringBuilder = (
+export const snapKeyringBuilder = (
   getSnapController: () => SnapController,
   getApprovalController: () => ApprovalController,
   getKeyringController: () => KeyringController,
@@ -143,5 +160,3 @@ const snapKeyringBuilder = (
   builder.type = SnapKeyring.type;
   return builder;
 };
-
-export default snapKeyringBuilder;
