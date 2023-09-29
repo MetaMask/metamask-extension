@@ -90,6 +90,7 @@ const listOfPagesToShowPopupWhenMetamaskTabIsActive = [
   // chrome versions
   /chrome-extension:\/\/nkbihfbeogaeaoehlefnkodbefgpgknn\/home.html#add-snap-account\//u, // main build
   /chrome-extension:\/\/ljfoeinjpaedjfecbmggjgodbgkmjkjk\/home.html#add-snap-account\//u, // flask
+  /chrome-extension:\/\/ikkihjamdhfiojpdbnfllpjigpneipbc\/home.html#add-snap-account\//u, // mmi, there is no firefox version.
   // firfox versions
   /moz-extension:\/\/210446d6-cf13-4eed-b4aa-1a07c0c620af\/home.html#add-snap-account\//u, // main build
   /moz-extension:\/\/aa102033-7318-4203-bc44-44cc9198cd88\/home.html#add-snap-account\//u, // flask
