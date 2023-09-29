@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Descartar o lembrete de backup da Frase de Recuperação Secreta"
   },
-  "displayNftMedia": {
-    "message": "Exibir mídias de NFTs"
-  },
   "domain": {
     "message": "Domínio"
   },
@@ -1404,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Ative nas Configurações."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Habilitar API do OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
   "enableSmartSwaps": {
     "message": "Ativar trocas inteligentes"

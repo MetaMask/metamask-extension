@@ -1187,12 +1187,12 @@ exports[`Security Tab should match snapshot 1`] = `
           class="settings-page__content-item"
         >
           <span>
-            Display NFT media
+            Enable OpenSea API
           </span>
           <div
             class="settings-page__content-description"
           >
-            Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off. If NFT media is fully located on IPFS, it can still be displayed even when this feature is turned off.
+            Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.
           </div>
         </div>
         <div

@@ -11,7 +11,7 @@ export default function NftsDetectionNoticeImportNFTs() {
   return (
     <BannerAlert
       className="nfts-detection-notice"
-      actionButtonLabel={t('selectDisplayMediaPrivacyPreference')}
+      actionButtonLabel={t('selectEnableOpenseaAPIPrivacyPreference')}
       actionButtonOnClick={(e) => {
         e.preventDefault();
         history.push(`${SECURITY_ROUTE}#opensea-api`);

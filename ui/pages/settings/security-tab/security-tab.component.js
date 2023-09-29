@@ -727,12 +727,11 @@ export default class SecurityTab extends PureComponent {
         gap={4}
       >
         <div className="settings-page__content-item">
-          <span>{t('displayNftMedia')}</span>
+          <span>{t('enableOpenSeaAPI')}</span>
           <div className="settings-page__content-description">
-            {t('displayNftMediaDesc')}
+            {t('enableOpenSeaAPIDescription')}
           </div>
         </div>
-
         <div
           className="settings-page__content-item-col"
           data-testid="enableOpenSeaAPI"
