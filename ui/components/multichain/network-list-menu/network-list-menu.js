@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -79,6 +80,18 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const showSearch = nonTestNetworks.length > 3;
 
+  const [items, setItems] = useState(nonTestNetworks);
+
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+    const newItems = [...items];
+    const [removed] = newItems.splice(result.source.index, 1);
+    newItems.splice(result.destination.index, 0, removed);
+    setItems(newItems);
+  };
+
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
@@ -86,7 +99,7 @@ export const NetworkListMenu = ({ onClose }) => {
   }, [dispatch, currentlyOnTestNetwork]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  let searchResults = [...nonTestNetworks];
+  let searchResults = [...items];
   const isSearching = searchQuery !== '';
 
   if (isSearching) {
@@ -108,7 +121,7 @@ export const NetworkListMenu = ({ onClose }) => {
   }
 
   const generateMenuItems = (desiredNetworks) => {
-    return desiredNetworks.map((network) => {
+    return desiredNetworks.map((network, index) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
@@ -119,45 +132,55 @@ export const NetworkListMenu = ({ onClose }) => {
         isUnlocked && !isCurrentNetwork && network.removable;
 
       return (
-        <NetworkListItem
-          name={network.nickname}
-          iconSrc={network?.rpcPrefs?.imageUrl}
-          key={network.id}
-          selected={isCurrentNetwork}
-          focus={isCurrentNetwork && !showSearch}
-          onClick={() => {
-            dispatch(toggleNetworkMenu());
-            if (network.providerType) {
-              dispatch(setProviderType(network.providerType));
-            } else {
-              dispatch(setActiveNetwork(network.id));
-            }
-            trackEvent({
-              event: MetaMetricsEventName.NavNetworkSwitched,
-              category: MetaMetricsEventCategory.Network,
-              properties: {
-                location: 'Network Menu',
-                chain_id: currentChainId,
-                from_network: currentChainId,
-                to_network: network.chainId,
-              },
-            });
-          }}
-          onDeleteClick={
-            canDeleteNetwork
-              ? () => {
+        <Draggable key={network.id} draggableId={network.id} index={index}>
+          {(provided) => (
+            <Box
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+            >
+              <NetworkListItem
+                name={network.nickname}
+                iconSrc={network?.rpcPrefs?.imageUrl}
+                key={network.id}
+                selected={isCurrentNetwork}
+                focus={isCurrentNetwork && !showSearch}
+                onClick={() => {
                   dispatch(toggleNetworkMenu());
-                  dispatch(
-                    showModal({
-                      name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id,
-                      onConfirm: () => undefined,
-                    }),
-                  );
+                  if (network.providerType) {
+                    dispatch(setProviderType(network.providerType));
+                  } else {
+                    dispatch(setActiveNetwork(network.id));
+                  }
+                  trackEvent({
+                    event: MetaMetricsEventName.NavNetworkSwitched,
+                    category: MetaMetricsEventCategory.Network,
+                    properties: {
+                      location: 'Network Menu',
+                      chain_id: currentChainId,
+                      from_network: currentChainId,
+                      to_network: network.chainId,
+                    },
+                  });
+                }}
+                onDeleteClick={
+                  canDeleteNetwork
+                    ? () => {
+                        dispatch(toggleNetworkMenu());
+                        dispatch(
+                          showModal({
+                            name: 'CONFIRM_DELETE_NETWORK',
+                            target: network.id,
+                            onConfirm: () => undefined,
+                          }),
+                        );
+                      }
+                    : null
                 }
-              : null
-          }
-        />
+              />
+            </Box>
+          )}
+        </Draggable>
       );
     });
   };
@@ -226,7 +249,21 @@ export const NetworkListMenu = ({ onClose }) => {
                 {t('noNetworksFound')}
               </Text>
             ) : (
-              generateMenuItems(searchResults)
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="multichain-network-list-menu">
+                  {(provided) => {
+                    return (
+                      <Box
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="droppable"
+                      >
+                        {generateMenuItems(searchResults)}
+                      </Box>
+                    );
+                  }}
+                </Droppable>
+              </DragDropContext>
             )}
           </Box>
           <Box
