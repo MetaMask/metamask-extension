@@ -2586,6 +2586,9 @@
     "message": "This token is an NFT. Add on the $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
+  "nftAlreadyAdded": {
+    "message": "NFT has already been added."
+  },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
   },
