@@ -55,6 +55,17 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
+const ACTION_MODES = {
+  // Displays the search box and account list
+  LIST: '',
+  // Displays the Add, Import, Hardware accounts
+  MENU: 'menu',
+  // Displays the add account form controls
+  ADD: 'add',
+  // Displays the import account form controls
+  IMPORT: 'import',
+};
+
 export const AccountListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -69,7 +80,7 @@ export const AccountListMenu = ({ onClose }) => {
   ///: END:ONLY_INCLUDE_IN
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [actionMode, setActionMode] = useState('');
+  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
   let searchResults = accounts;
   if (searchQuery) {
@@ -86,18 +97,18 @@ export const AccountListMenu = ({ onClose }) => {
   }
 
   let title = t('selectAnAccount');
-  if (actionMode === 'add' || actionMode === 'menu') {
+  if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
     title = t('addAccount');
-  } else if (actionMode === 'import') {
+  } else if (actionMode === ACTION_MODES.IMPORT) {
     title = t('importAccount');
   }
 
   let onBack = null;
-  if (actionMode !== '') {
-    if (actionMode === 'menu') {
-      onBack = () => setActionMode('');
+  if (actionMode !== ACTION_MODES.LIST) {
+    if (actionMode === ACTION_MODES.MENU) {
+      onBack = () => setActionMode(ACTION_MODES.LIST);
     } else {
-      onBack = () => setActionMode('menu');
+      onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
 
@@ -116,20 +127,20 @@ export const AccountListMenu = ({ onClose }) => {
         <ModalHeader padding={4} onClose={onClose} onBack={onBack}>
           {title}
         </ModalHeader>
-        {actionMode === 'add' ? (
+        {actionMode === ACTION_MODES.ADD ? (
           <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <CreateAccount
               onActionComplete={(confirmed) => {
                 if (confirmed) {
                   dispatch(toggleAccountMenu());
                 } else {
-                  setActionMode('');
+                  setActionMode(ACTION_MODES.LIST);
                 }
               }}
             />
           </Box>
         ) : null}
-        {actionMode === 'import' ? (
+        {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
             paddingRight={4}
@@ -141,14 +152,14 @@ export const AccountListMenu = ({ onClose }) => {
                 if (confirmed) {
                   dispatch(toggleAccountMenu());
                 } else {
-                  setActionMode('');
+                  setActionMode(ACTION_MODES.LIST);
                 }
               }}
             />
           </Box>
         ) : null}
         {/* Add / Import / Hardware Menu */}
-        {actionMode === 'menu' ? (
+        {actionMode === ACTION_MODES.MENU ? (
           <Box padding={4}>
             <Box>
               <ButtonLink
@@ -163,7 +174,7 @@ export const AccountListMenu = ({ onClose }) => {
                       location: 'Main Menu',
                     },
                   });
-                  setActionMode('add');
+                  setActionMode(ACTION_MODES.ADD);
                 }}
                 data-testid="multichain-account-menu-popover-add-account"
               >
@@ -183,7 +194,7 @@ export const AccountListMenu = ({ onClose }) => {
                       location: 'Main Menu',
                     },
                   });
-                  setActionMode('import');
+                  setActionMode(ACTION_MODES.IMPORT);
                 }}
               >
                 {t('importAccount')}
@@ -268,7 +279,7 @@ export const AccountListMenu = ({ onClose }) => {
             }
           </Box>
         ) : null}
-        {actionMode === '' ? (
+        {actionMode === ACTION_MODES.LIST ? (
           <>
             {/* Search box */}
             {accounts.length > 1 ? (
@@ -346,7 +357,7 @@ export const AccountListMenu = ({ onClose }) => {
                 variant={ButtonVariant.Secondary}
                 size={ButtonSecondarySize.Lg}
                 block
-                onClick={() => setActionMode('menu')}
+                onClick={() => setActionMode(ACTION_MODES.MENU)}
                 data-testid="multichain-account-menu-popover-action-button"
               >
                 {t('addImportAccount')}
