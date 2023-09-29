@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.1.1]
+### Fixed
+- Ensure NFT settings notice in the NFT import modal is shown and hidden correctly, and that the modal is hidden when clicking the link to settings ([#21100](https://github.com/MetaMask/metamask-extension/pull/21100))
+- Modify settings toggle copy to more accurately describe behaviour ([#21109](https://github.com/MetaMask/metamask-extension/pull/21109))
+
 ## [11.1.0]
 ### Added
 - What's New popup on dropping of support for Ledger support for firefox ([#19498](https://github.com/MetaMask/metamask-extension/pull/19498))
@@ -4035,7 +4040,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.1.1...HEAD
+[11.1.1]: https://github.com/MetaMask/metamask-extension/compare/v11.1.0...v11.1.1
 [11.1.0]: https://github.com/MetaMask/metamask-extension/compare/v11.0.0...v11.1.0
 [11.0.0]: https://github.com/MetaMask/metamask-extension/compare/v10.35.1...v11.0.0
 [10.35.1]: https://github.com/MetaMask/metamask-extension/compare/v10.35.0...v10.35.1
