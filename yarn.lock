@@ -3875,6 +3875,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "@metamask/base-controller@npm:3.2.2"
+  dependencies:
+    "@metamask/utils": "npm:^6.2.0"
+    immer: "npm:^9.0.6"
+  checksum: 4d6537ef8cefbf091e652393d2a1d9c61d728032d0286bf22a228f8c8dc1b82e7551346fd17a92841d4fb61dd3bf37409e2305b504db393190363072ae528ca0
+  languageName: node
+  linkType: hard
+
 "@metamask/browser-passworder@npm:^4.0.2, @metamask/browser-passworder@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/browser-passworder@npm:4.1.0"
@@ -4420,15 +4430,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@file:.yalc/@metamask/name-controller::locator=metamask-crx%40workspace%3A.":
-  version: 1.0.0
-  resolution: "@metamask/name-controller@file:.yalc/@metamask/name-controller#.yalc/@metamask/name-controller::hash=915cfb&locator=metamask-crx%40workspace%3A."
+"@metamask/name-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/name-controller@npm:3.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/base-controller": "npm:^3.2.2"
     "@metamask/utils": "npm:^6.2.0"
     async-mutex: "npm:^0.2.6"
     immer: "npm:^9.0.6"
-  checksum: 0fed0a96547d582adc93779bb2e4a92eb5f47ea34ee478b7fada9663409fcf3ad83a8868c74e29600500d7704a5b34047664edb232c49731043641ad59184e5f
+  checksum: 8754f3b2e64c9bdac36d882fd4cbc650eef7322beaa6fb5095f5e289bae15f8658aa74f9183832423aaeec40edebfd14c14cb6da7a38224789f35f080079425a
   languageName: node
   linkType: hard
 
@@ -23926,7 +23936,7 @@ __metadata:
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/name-controller": "file:.yalc/@metamask/name-controller"
+    "@metamask/name-controller": "npm:^3.0.0"
     "@metamask/network-controller": "npm:^12.2.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
