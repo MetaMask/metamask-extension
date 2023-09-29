@@ -103,6 +103,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
       >
         <button
           class="button btn--rounded btn-secondary"
+          data-testid="confirmation-cancel-button"
           role="button"
           tabindex="0"
         >
@@ -110,6 +111,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
         </button>
         <button
           class="button btn--rounded btn-primary"
+          data-testid="confirmation-submit-button"
           role="button"
           tabindex="0"
         >
@@ -257,6 +259,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
       >
         <button
           class="button btn--rounded btn-secondary"
+          data-testid="confirmation-cancel-button"
           role="button"
           tabindex="0"
         >
@@ -264,6 +267,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
         </button>
         <button
           class="button btn--rounded btn-primary"
+          data-testid="confirmation-submit-button"
           role="button"
           tabindex="0"
         >

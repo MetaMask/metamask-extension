@@ -314,12 +314,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: 2,
   }),
-  [EndowmentPermissions['endowment:long-running']]: ({ t }) => ({
-    label: t('permission_longRunning'),
-    description: t('permission_longRunningDescription'),
-    leftIcon: IconName.Link,
-    weight: 3,
-  }),
   [EndowmentPermissions['endowment:transaction-insight']]: ({
     t,
     permissionValue,

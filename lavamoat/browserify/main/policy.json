@@ -1771,9 +1771,17 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/name-controller>@metamask/base-controller": true,
         "@metamask/name-controller>@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true
+      }
+    },
+    "@metamask/name-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/name-controller>@metamask/utils": {
@@ -2123,7 +2131,6 @@
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
         "@metamask/snaps-controllers>@metamask/post-message-stream": true,
-        "@metamask/snaps-controllers>@metamask/snaps-registry": true,
         "@metamask/snaps-controllers>@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
@@ -2132,6 +2139,7 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-utils": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
@@ -2168,13 +2176,6 @@
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/snaps-registry": {
-      "packages": {
-        "@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/snaps-controllers>@metamask/utils": true,
         "superstruct": true
       }
     },
@@ -2382,6 +2383,26 @@
         "browserify>path-browserify": true,
         "browserify>process": true,
         "chalk": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry": {
+      "packages": {
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
         "semver": true,
         "superstruct": true
       }

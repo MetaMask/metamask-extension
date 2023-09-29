@@ -12,7 +12,6 @@ describe('EndowmentPermissions', () => {
     // test, so we re-add them here.
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
       [
-        'endowment:long-running',
         'endowment:lifecycle-hooks',
         'endowment:name-lookup',
         ...Object.keys(endowmentPermissionBuilders).filter(
