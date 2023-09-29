@@ -25,6 +25,75 @@ const mainnetProviderConfig = {
   },
 };
 
+async function mockInfura(mockServer) {
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({ method: 'eth_estimateGas' })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result: '0x5cec',
+        },
+      };
+    });
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({ method: 'eth_getBalance' })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result: '0x55DE6A779BBAC0000',
+        },
+      };
+    });
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({ method: 'eth_getTransactionCount' })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result: '0x115e89f',
+        },
+      };
+    });
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({ method: 'eth_blockNumber' })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result: '0x1',
+          // result: '0x115e89f',
+        },
+      };
+    });
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({ method: 'eth_gasPrice' })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result: '0x09184e72a000',
+        },
+      };
+    });
+}
+
 /**
  * Tests various Blockaid PPOM security alerts. Data for the E2E test requests and responses are provided here:
  *
@@ -43,6 +112,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
           })
           .build(),
         defaultGanacheOptions,
+        testSpecificMock: mockInfura,
         title: this.test.title,
       },
 
@@ -109,7 +179,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindowWithTitle(windowHandles.dapp);
+          await driver.switchToWindow(windowHandles.dapp);
         }
       },
     );
@@ -130,6 +200,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
           })
           .build(),
         defaultGanacheOptions,
+        testSpecificMock: mockInfura,
         title: this.test.title,
       },
 
@@ -172,23 +243,21 @@ describe('Confirmation Security Alert - Blockaid', function () {
           const windowHandles = await getWindowHandles(driver, 3);
           await driver.switchToWindowWithTitle('MetaMask Notification');
 
-          const bannerAlertFoundByTitle = await driver.findElement({
-            css: bannerAlertSelector,
-            text: expectedTitle,
-          });
+          const bannerAlert = await driver.findElement(bannerAlertSelector);
+          const bannerAlertText = await bannerAlert.getText();
 
           assert(
-            bannerAlertFoundByTitle,
-            `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
+            bannerAlertText.includes(expectedTitle),
+            `Expected banner alert title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
           );
           assert(
-            bannerAlertFoundByTitle.includes(expectedDescription),
-            `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
+            bannerAlertText.includes(expectedDescription),
+            `Expected banner alert description: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
           );
 
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindowWithTitle(windowHandles.dapp);
+          await driver.switchToWindow(windowHandles.dapp);
         }
       },
     );
