@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { BannerAlert } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 
-export default function NftsDetectionNoticeImportNFTs() {
+export default function NftsDetectionNoticeImportNFTs({ onActionButtonClick }) {
   const t = useI18nContext();
   const history = useHistory();
 
@@ -15,6 +16,7 @@ export default function NftsDetectionNoticeImportNFTs() {
       actionButtonOnClick={(e) => {
         e.preventDefault();
         history.push(`${SECURITY_ROUTE}#opensea-api`);
+        onActionButtonClick?.();
       }}
     >
       {t('newNFTDetectedInImportNFTsMessage', [
@@ -25,3 +27,7 @@ export default function NftsDetectionNoticeImportNFTs() {
     </BannerAlert>
   );
 }
+
+NftsDetectionNoticeImportNFTs.propTypes = {
+  onActionButtonClick: PropTypes.func.isRequired,
+};

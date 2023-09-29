@@ -164,7 +164,7 @@ export const ImportNftsModal = ({ onClose }) => {
         <Box>
           {isMainnet && !isDisplayNFTMediaToggleEnabled ? (
             <Box marginTop={6}>
-              <NftsDetectionNoticeImportNFTs />
+              <NftsDetectionNoticeImportNFTs onActionButtonClick={onClose} />
             </Box>
           ) : null}
           {nftAddFailed && (
