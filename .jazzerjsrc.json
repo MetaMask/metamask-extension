@@ -1,0 +1,13 @@
+{
+  "excludes": ["node_modules"],
+  "fuzzerOptions": [
+    "-rss_limit_mb=16000",
+    "-max_total_time=10",
+    "-use_value_profile=1",
+    "-runs=5000",
+    "-ignore_crashes=true"
+  ],
+  "includes": ["*"],
+  "sync": false,
+  "timeout": 3000
+}

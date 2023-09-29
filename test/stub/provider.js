@@ -2,6 +2,13 @@ import { JsonRpcEngine, createScaffoldMiddleware } from 'json-rpc-engine';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import Ganache from 'ganache';
 
+export const providerResultStub = {
+  // 1 gwei
+  eth_gasPrice: '0x0de0b6b3a7640000',
+  // by default, all accounts are external accounts (not contracts)
+  eth_getCode: '0x',
+};
+
 export function getTestSeed() {
   return 'people carpet cluster attract ankle motor ozone mass dove original primary mask';
 }
@@ -53,6 +60,7 @@ export function createTestProviderTools(opts = {}) {
         network_id: opts.networkId,
         chain: { chainId: opts.chainId },
         hardfork: 'muirGlacier',
+        logging: opts.logging || {},
       }),
     ),
   );

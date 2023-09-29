@@ -32,6 +32,7 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "node ./test/run-unit-tests.js --mocha --jestGlobal --jestDev",
+    "test:unit:fuzz": "JAZZER_FUZZ=1 jest --config='./test/fuzz/jest.config.js' --testNamePattern=\"Fuzz\"",
     "test:unit:jest": "node ./test/run-unit-tests.js --jestGlobal --jestDev",
     "test:unit:jest:watch": "node --inspect ./node_modules/.bin/jest --watch",
     "test:unit:global": "mocha test/unit-global/*.test.js",
@@ -381,6 +382,8 @@
     "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.5.5",
     "@ethersproject/bignumber": "^5.7.0",
+    "@jazzer.js/core": "^2.0.0",
+    "@jazzer.js/jest-runner": "^2.0.0",
     "@lavamoat/allow-scripts": "^2.3.1",
     "@lavamoat/lavapack": "^5.2.4",
     "@metamask/auto-changelog": "^2.1.0",
@@ -629,7 +632,9 @@
       "@storybook/addon-knobs>core-js": false,
       "@storybook/manager-webpack5>core-js": false,
       "@storybook/react-webpack5>@storybook/preset-react-webpack>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false,
-      "ethjs-contract>babel-runtime>core-js": false
+      "ethjs-contract>babel-runtime>core-js": false,
+      "@jazzer.js/jest-runner>@jazzer.js/core>@jazzer.js/fuzzer": false,
+      "@jazzer.js/core>@jazzer.js/fuzzer": false
     }
   },
   "packageManager": "yarn@4.0.0-rc.48"
