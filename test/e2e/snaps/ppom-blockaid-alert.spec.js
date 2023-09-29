@@ -239,8 +239,9 @@ describe('Confirmation Security Alert - Blockaid', function () {
           await driver.clickElement(btnSelector);
 
           // Wait for confirmation pop-up
+          await driver.waitUntilXWindowHandles(3);
           const windowHandles = await getWindowHandles(driver, 3);
-          await driver.switchToWindow(windowHandles.popup);
+          await driver.switchToWindowWithTitle('MetaMask Notification');
 
           const bannerAlert = await driver.findElement(bannerAlertSelector);
           const bannerAlertText = await bannerAlert.getText();
