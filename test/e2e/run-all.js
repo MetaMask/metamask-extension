@@ -1,5 +1,6 @@
 const path = require('path');
-const { promises: fs } = require('fs');
+const fs = require('fs');
+const { execSync } = require('child_process');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
@@ -7,7 +8,9 @@ const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
 const getTestPathsForTestDir = async (testDir) => {
-  const testFilenames = await fs.readdir(testDir, { withFileTypes: true });
+  const testFilenames = await fs.promises.readdir(testDir, {
+    withFileTypes: true,
+  });
   const testPaths = [];
 
   for (const itemInDirectory of testFilenames) {
@@ -23,17 +26,6 @@ const getTestPathsForTestDir = async (testDir) => {
 
   return testPaths;
 };
-
-// Heavily inspired by: https://stackoverflow.com/a/51514813
-// Splits the array into totalChunks chunks with a decent spread of items in each chunk
-function chunk(array, totalChunks) {
-  const copyArray = [...array];
-  const result = [];
-  for (let chunkIndex = totalChunks; chunkIndex > 0; chunkIndex--) {
-    result.push(copyArray.splice(0, Math.ceil(copyArray.length / chunkIndex)));
-  }
-  return result;
-}
 
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
@@ -175,15 +167,22 @@ async function main() {
   }
 
   // For running E2Es in parallel in CI
-  const currentChunkIndex = process.env.CIRCLE_NODE_INDEX ?? 0;
-  const totalChunks = process.env.CIRCLE_NODE_TOTAL ?? 1;
-  const chunks = chunk(testPaths, totalChunks);
-  const currentChunk = chunks[currentChunkIndex];
+  fs.writeFileSync('testList.txt', testPaths.join('\n'));
+
+  // use `circleci tests split` on `testList.txt`
+  const result = execSync(
+    'circleci tests split --split-by=timings --timings-type=filename --time-default=30s testList.txt',
+  );
+
+  // take the line-delimited result and split into an array
+  const currentChunk = result.toString('utf8').split('\n');
+
+  fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
   for (const testPath of currentChunk) {
-    const dir = 'test/test-results/e2e';
-    fs.mkdir(dir, { recursive: true });
-    await runInShell('node', [...args, testPath]);
+    if (testPath !== '') {
+      await runInShell('node', [...args, testPath]);
+    }
   }
 }
 
