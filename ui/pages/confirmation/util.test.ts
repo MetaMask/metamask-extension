@@ -1,5 +1,5 @@
 import { ResultComponent } from '@metamask/approval-controller';
-import { processError, processString } from './util';
+import { processError, processHeader, processString } from './util';
 
 const FALLBACK_MESSAGE = 'Fallback Message';
 const mockResultComponent: ResultComponent = {
@@ -37,6 +37,7 @@ describe('processError', () => {
       props: { type: 'danger', message: 'Error Message' },
     });
   });
+
   it('returns TemplateRendererComponent when input is a ResultComponent', () => {
     const result = processError(mockResultComponent, FALLBACK_MESSAGE);
     expect(result).toEqual(expectedTemplateRendererComponent);
@@ -53,8 +54,21 @@ describe('processString', () => {
     const result = processString('Hello', FALLBACK_MESSAGE);
     expect(result).toEqual(['Hello']);
   });
+
   it('returns TemplateRendererComponent when input is a ResultComponent', () => {
     const result = processString(mockResultComponent, FALLBACK_MESSAGE);
     expect(result).toEqual(expectedTemplateRendererComponent);
+  });
+});
+
+describe('processHeader', () => {
+  it('returns undefined when input is not defined', () => {
+    const result = processHeader(undefined);
+    expect(result).toBeUndefined();
+  });
+
+  it('returns array when input is array', () => {
+    const result = processHeader(['Hello', mockResultComponent]);
+    expect(result).toEqual(['Hello', expectedTemplateRendererComponent]);
   });
 });

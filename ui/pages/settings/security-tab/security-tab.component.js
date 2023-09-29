@@ -71,6 +71,8 @@ export default class SecurityTab extends PureComponent {
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
+    useSafeChainsListValidation: PropTypes.bool.isRequired,
+    setUseSafeChainsListValidation: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useAddressBarEnsResolution: PropTypes.bool.isRequired,
@@ -340,6 +342,58 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderSafeChainsListValidationToggle() {
+    const { t } = this.context;
+    const { useSafeChainsListValidation, setUseSafeChainsListValidation } =
+      this.props;
+
+    const useSafeChainsListValidationWebsite = t(
+      'useSafeChainsListValidationWebsite',
+    );
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="setting-safe-chains-validation"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <Box
+          className="settings-page__content-row"
+          gap={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('useSafeChainsListValidation')}</span>
+            <div className="settings-page__content-description">
+              {t('useSafeChainsListValidationDescription', [
+                <b key="safechain-list-validation-website">
+                  {useSafeChainsListValidationWebsite}
+                </b>,
+              ])}
+            </div>
+          </div>
+
+          <div
+            className="settings-page__content-item-col"
+            data-testid="useSafeChainsListValidation"
+          >
+            <ToggleButton
+              value={useSafeChainsListValidation}
+              onToggle={(value) => setUseSafeChainsListValidation(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </Box>
+      </Box>
+    );
+  }
+
   renderIpfsGatewayControl() {
     const { t } = this.context;
     let ipfsError = '';
@@ -449,7 +503,7 @@ export default class SecurityTab extends PureComponent {
             {t('ensDomainsSettingTitle')}
             <div className="settings-page__content-description">
               <Text color={TextColor.inherit} variant={TextVariant.inherit}>
-                {t('ensDomainsSettingDescriptionIntro')}
+                {t('ensDomainsSettingDescriptionIntroduction')}
               </Text>
               <Box
                 as="ul"
@@ -463,25 +517,18 @@ export default class SecurityTab extends PureComponent {
                   color={TextColor.inherit}
                   variant={TextVariant.inherit}
                 >
-                  {t('ensDomainsSettingDescriptionPoint1')}
+                  {t('ensDomainsSettingDescriptionPart1')}
                 </Text>
                 <Text
                   as="li"
                   color={TextColor.inherit}
                   variant={TextVariant.inherit}
                 >
-                  {t('ensDomainsSettingDescriptionPoint2')}
-                </Text>
-                <Text
-                  as="li"
-                  color={TextColor.inherit}
-                  variant={TextVariant.inherit}
-                >
-                  {t('ensDomainsSettingDescriptionPoint3')}
+                  {t('ensDomainsSettingDescriptionPart2')}
                 </Text>
               </Box>
               <Text color={TextColor.inherit} variant={TextVariant.inherit}>
-                {t('ensDomainsSettingDescriptionOutro')}
+                {t('ensDomainsSettingDescriptionOutroduction')}
               </Text>
             </div>
           </div>
@@ -682,7 +729,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('displayNftMedia')}</span>
           <div className="settings-page__content-description">
-            {t('displayNftMediaDescription')}
+            {t('displayNftMediaDesc')}
           </div>
         </div>
 
@@ -735,17 +782,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('useNftDetection')}</span>
           <div className="settings-page__content-description">
-            <Text color={TextColor.textAlternative}>
-              {t('useNftDetectionDescription')}
-            </Text>
-            <ul className="settings-page__content-unordered-list">
-              <li>{t('useNftDetectionDescriptionLine2')}</li>
-              <li>{t('useNftDetectionDescriptionLine3')}</li>
-              <li>{t('useNftDetectionDescriptionLine4')}</li>
-            </ul>
-            <Text color={TextColor.textAlternative} paddingTop={4}>
-              {t('useNftDetectionDescriptionLine5')}
-            </Text>
+            {t('useNftDetectionDescriptionText')}
           </div>
         </div>
 
@@ -790,6 +827,7 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
+
         <div>
           <span className="settings-page__security-tab-sub-header">
             {this.context.t('alerts')}
@@ -813,13 +851,16 @@ export default class SecurityTab extends PureComponent {
           {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('networkProvider')}
         </span>
         <div className="settings-page__content-padded">
           {this.renderChooseYourNetworkButton()}
+          {this.renderSafeChainsListValidationToggle()}
           {this.renderIpfsGatewayControl()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('tokenAutoDetection')}
         </span>
@@ -829,6 +870,7 @@ export default class SecurityTab extends PureComponent {
           {this.renderDisplayNftMediaToggle()}
           {this.renderNftDetectionToggle()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}
         </span>

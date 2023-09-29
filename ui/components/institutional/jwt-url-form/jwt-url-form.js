@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -8,20 +8,22 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { BUTTON_VARIANT, Box, Button, Text } from '../../component-library';
+import { ButtonVariant, Box, Button, Text } from '../../component-library';
 import JwtDropdown from '../jwt-dropdown';
 
 const JwtUrlForm = (props) => {
   const t = useI18nContext();
-  const inputRef = useRef();
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
-  const [fileTooBigError, setFileTooBigError] = useState();
+  const showJwtDropdown = props.jwtList.length >= 1;
 
-  const renderJWTInput = () => {
-    const showAddNewToken = addNewTokenClicked;
-    const showJwtDropdown = props.jwtList.length >= 1;
-
-    return (
+  return (
+    <Box
+      className="jwt-url-form"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.flexStart}
+      marginBottom={8}
+    >
       <Box
         width={BlockSize.Full}
         display={Display.Flex}
@@ -33,16 +35,17 @@ const JwtUrlForm = (props) => {
       >
         {showJwtDropdown && (
           <JwtDropdown
+            key={props.currentJwt}
             data-testid="jwt-dropdown"
             currentJwt={props.currentJwt ? props.currentJwt : props.jwtList[0]}
             jwtList={props.jwtList}
             onChange={(value) => {
               props.onJwtChange(value);
-              setFileTooBigError(false);
             }}
           />
         )}
-        {showJwtDropdown && !showAddNewToken && (
+
+        {showJwtDropdown && !addNewTokenClicked && (
           <Box
             width={BlockSize.Full}
             display={Display.Flex}
@@ -53,7 +56,7 @@ const JwtUrlForm = (props) => {
             <Text>{t('or')}</Text>
             <Button
               data-testid="addNewToken-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
+              variant={ButtonVariant.Secondary}
               onClick={() => {
                 props.onJwtChange('');
                 setAddNewTokenClicked(true);
@@ -63,7 +66,7 @@ const JwtUrlForm = (props) => {
             </Button>
           </Box>
         )}
-        {(!showJwtDropdown || showAddNewToken) && (
+        {(!showJwtDropdown || addNewTokenClicked) && (
           <Box width={BlockSize.Full}>
             <Text
               className="jwt-url-form__instruction"
@@ -73,31 +76,20 @@ const JwtUrlForm = (props) => {
             >
               {props.jwtInputText}
             </Text>
-            {fileTooBigError && (
-              <span className="error">
-                <Text>{t('fileTooBig')}</Text>
-              </span>
-            )}
+
             <textarea
               className="jwt-url-form__input-jwt"
               data-testid="jwt-input"
               id="jwt-box"
               onChange={(e) => {
                 props.onJwtChange(e.target.value);
-                setFileTooBigError(false);
               }}
-              ref={inputRef.current}
               value={props.currentJwt}
               autoFocus
             />
           </Box>
         )}
       </Box>
-    );
-  };
-
-  const renderAPIURLInput = () => {
-    return (
       <Box width={BlockSize.Full}>
         <Text
           className="jwt-url-form__instruction"
@@ -108,6 +100,7 @@ const JwtUrlForm = (props) => {
         </Text>
         <Box marginTop={4}>
           <input
+            type="text"
             className="jwt-url-form__input"
             id="api-url-box"
             data-testid="jwt-api-url-input"
@@ -118,31 +111,18 @@ const JwtUrlForm = (props) => {
           />
         </Box>
       </Box>
-    );
-  };
-
-  return (
-    <Box
-      className="jwt-url-form"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.flexStart}
-      marginBottom={8}
-    >
-      {renderJWTInput()}
-      {renderAPIURLInput()}
     </Box>
   );
 };
 
 JwtUrlForm.propTypes = {
-  jwtList: PropTypes.array,
+  jwtList: PropTypes.array.isRequired,
+  onUrlChange: PropTypes.func.isRequired,
+  onJwtChange: PropTypes.func.isRequired,
   currentJwt: PropTypes.string,
-  onJwtChange: PropTypes.func,
   jwtInputText: PropTypes.string,
   apiUrl: PropTypes.string,
   urlInputText: PropTypes.string,
-  onUrlChange: PropTypes.func,
 };
 
 export default JwtUrlForm;

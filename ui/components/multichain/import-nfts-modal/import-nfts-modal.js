@@ -1,10 +1,15 @@
-import React, { useContext, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import React, { useContext, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import {
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../../shared/constants/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import {
   AlignItems,
   Display,
@@ -14,7 +19,14 @@ import {
   Severity,
   Size,
 } from '../../../helpers/constants/design-system';
-
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getCurrentChainId,
+  getIsMainnet,
+  getSelectedAddress,
+  getUseNftDetection,
+} from '../../../selectors';
 import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,
@@ -22,35 +34,22 @@ import {
   setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
+import NftsDetectionNoticeImportNFTs from '../../app/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import {
-  getCurrentChainId,
-  getIsMainnet,
-  getSelectedAddress,
-  getUseNftDetection,
-} from '../../../selectors';
-import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
-import NftsDetectionNotice from '../../app/nfts-detection-notice';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  MetaMetricsEventName,
-  MetaMetricsTokenEventSource,
-} from '../../../../shared/constants/metametrics';
-import {
-  IconName,
-  ModalContent,
-  ModalOverlay,
-  ModalHeader,
-  Modal,
+  BannerAlert,
+  Box,
   ButtonPrimary,
   ButtonSecondary,
   ButtonSecondarySize,
-  Box,
   FormTextField,
-  Label,
   Icon,
+  IconName,
   IconSize,
-  BannerAlert,
+  Label,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 
@@ -74,6 +73,8 @@ export const ImportNftsModal = ({ onClose }) => {
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+  const [nftAddressValidationError, setNftAddressValidationError] =
+    useState(null);
 
   const handleAddNft = async () => {
     try {
@@ -130,6 +131,10 @@ export const ImportNftsModal = ({ onClose }) => {
   };
 
   const validateAndSetAddress = (val) => {
+    setNftAddressValidationError(null);
+    if (val && !isValidHexAddress(val)) {
+      setNftAddressValidationError(t('invalidAddress'));
+    }
     setDisabled(!isValidHexAddress(val) || !tokenId);
     setNftAddress(val);
   };
@@ -159,7 +164,7 @@ export const ImportNftsModal = ({ onClose }) => {
         <Box>
           {isMainnet && !useNftDetection ? (
             <Box marginTop={6}>
-              <NftsDetectionNotice />
+              <NftsDetectionNoticeImportNFTs />
             </Box>
           ) : null}
           {nftAddFailed && (
@@ -211,6 +216,8 @@ export const ImportNftsModal = ({ onClose }) => {
                   validateAndSetAddress(e.target.value);
                   setNftAddFailed(false);
                 }}
+                helpText={nftAddressValidationError}
+                error={Boolean(nftAddressValidationError)}
               />
             </Box>
             <Box>
@@ -279,5 +286,8 @@ export const ImportNftsModal = ({ onClose }) => {
 };
 
 ImportNftsModal.propTypes = {
+  /**
+   * Executes when the modal closes
+   */
   onClose: PropTypes.func.isRequired,
 };
