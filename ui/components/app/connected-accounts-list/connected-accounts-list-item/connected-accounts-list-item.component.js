@@ -62,6 +62,7 @@ export default function ConnectedAccountsListItem({
             >
               {name}
             </Text>
+            <Text variant={TextVariant.bodyMd}>{shortenAddress(address)}</Text>
             {status ? (
               <Text
                 variant={TextVariant.bodyMd}
@@ -72,9 +73,6 @@ export default function ConnectedAccountsListItem({
               </Text>
             ) : null}
           </Box>
-          <Text variant={TextVariant.bodySm} paddingTop={1}>
-            {shortenAddress(address)}
-          </Text>
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             {action}
           </Box>
