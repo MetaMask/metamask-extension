@@ -7,6 +7,7 @@ import type {
 import type { KeyringController } from '@metamask/keyring-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
+import MetamaskController from '../../metamask-controller';
 
 /**
  * Get the addresses of the accounts managed by a given Snap.
@@ -15,8 +16,12 @@ import { t } from '../../translate';
  * @param snapId - Snap ID to get accounts for.
  * @returns The addresses of the accounts.
  */
-export const getAccountsBySnapId = async (controller: any, snapId: string) => {
-  const snapKeyring = await controller.getSnapKeyring();
+export const getAccountsBySnapId = async (
+  controller: MetamaskController,
+  snapId: string,
+) => {
+  const snapKeyring: SnapKeyring =
+    (await controller.getSnapKeyring()) as SnapKeyring;
   return await snapKeyring.getAccountsBySnapId(snapId);
 };
 
