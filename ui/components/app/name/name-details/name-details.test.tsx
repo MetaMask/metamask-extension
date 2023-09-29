@@ -3,6 +3,7 @@ import { NameType } from '@metamask/name-controller';
 import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
+import { useDispatch } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { setName, updateProposedNames } from '../../../../store/actions';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -19,7 +20,7 @@ jest.mock('../../../../store/actions', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: () => jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.useFakeTimers();
@@ -118,9 +119,11 @@ describe('NameDetails', () => {
   const store = configureStore()(STATE_MOCK);
   const setNameMock = jest.mocked(setName);
   const updateProposedNamesMock = jest.mocked(updateProposedNames);
+  const useDispatchMock = jest.mocked(useDispatch);
 
   beforeEach(() => {
     jest.resetAllMocks();
+    useDispatchMock.mockReturnValue(jest.fn());
   });
 
   it('renders with no saved name', () => {
@@ -299,16 +302,31 @@ describe('NameDetails', () => {
     it('sends open modal event', async () => {
       const trackEventMock = jest.fn();
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
-          <NameDetails
-            type={NameType.ETHEREUM_ADDRESS}
-            value={ADDRESS_SAVED_NAME_MOCK}
-            onClose={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
-        store,
+      useDispatchMock.mockReturnValue(
+        jest.fn().mockResolvedValue({
+          results: {
+            [SOURCE_ID_MOCK]: {
+              proposedNames: [PROPOSED_NAME_MOCK],
+            },
+            [SOURCE_ID_2_MOCK]: {
+              proposedNames: [PROPOSED_NAME_2_MOCK],
+            },
+          },
+        }),
       );
+
+      await act(async () => {
+        renderWithProvider(
+          <MetaMetricsContext.Provider value={trackEventMock}>
+            <NameDetails
+              type={NameType.ETHEREUM_ADDRESS}
+              value={ADDRESS_SAVED_NAME_MOCK}
+              onClose={() => undefined}
+            />
+          </MetaMetricsContext.Provider>,
+          store,
+        );
+      });
 
       expect(trackEventMock).toHaveBeenCalledWith({
         event: MetaMetricsEventName.PetnameModalOpened,

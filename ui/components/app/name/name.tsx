@@ -45,7 +45,7 @@ export default function Name({ value, type, disableEdit }: NameProps) {
       category: MetaMetricsEventCategory.Petnames,
       properties: {
         petname_category: type,
-        has_petname: Boolean(name),
+        has_petname: Boolean(name?.length),
       },
     });
   }, []);

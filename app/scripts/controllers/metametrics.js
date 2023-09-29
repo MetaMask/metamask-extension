@@ -1097,7 +1097,7 @@ export default class MetaMetricsController {
 
       const addressNameCount = Object.keys(addressEntry).reduce(
         (count, chainId) => {
-          const hasName = Boolean(addressEntry[chainId].name);
+          const hasName = Boolean(addressEntry[chainId].name?.length);
           return count + (hasName ? 1 : 0);
         },
         0,
