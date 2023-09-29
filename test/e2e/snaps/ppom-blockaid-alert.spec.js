@@ -2,10 +2,10 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  getWindowHandles,
   openDapp,
   unlockWallet,
-  getWindowHandles,
+  withFixtures,
 } = require('../helpers');
 
 const {
@@ -515,8 +515,9 @@ describe('Confirmation Security Alert - Blockaid', function () {
           );
 
           // Wait for confirmation pop-up
+          await driver.waitUntilXWindowHandles(3);
           const windowHandles = await getWindowHandles(driver, 3);
-          await driver.switchToWindow(windowHandles.popup);
+          await driver.switchToWindowWithTitle('MetaMask Notification');
 
           const isPresent = await driver.isElementPresent(bannerAlertSelector);
           assert.equal(
@@ -625,8 +626,9 @@ describe('Confirmation Security Alert - Blockaid', function () {
           await driver.clickElement(btnSelector);
 
           // Wait for confirmation pop-up
+          await driver.waitUntilXWindowHandles(3);
           const windowHandles = await getWindowHandles(driver, 3);
-          await driver.switchToWindow(windowHandles.popup);
+          await driver.switchToWindowWithTitle('MetaMask Notification');
 
           const bannerAlert = await driver.findElement(bannerAlertSelector);
           const bannerAlertText = await bannerAlert.getText();
