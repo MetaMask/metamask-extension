@@ -21,6 +21,9 @@ import {
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
