@@ -26,7 +26,6 @@ import {
   getIsMainnet,
   getOpenSeaEnabled,
   getSelectedAddress,
-  getUseNftDetection,
 } from '../../../selectors';
 import {
   addNftVerifyOwnership,
@@ -58,7 +57,6 @@ export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const useNftDetection = useSelector(getUseNftDetection);
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);
