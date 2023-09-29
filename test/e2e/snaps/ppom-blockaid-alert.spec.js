@@ -2,9 +2,9 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const {
   defaultGanacheOptions,
-  getWindowHandles,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
   withFixtures,
 } = require('../helpers');
 
@@ -96,8 +96,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
           );
 
           // Wait for confirmation pop-up
-          const windowHandles = await getWindowHandles(driver, 3);
-          await driver.switchToWindow(windowHandles.popup);
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
           const isPresent = await driver.isElementPresent(bannerAlertSelector);
           assert.equal(
@@ -108,7 +108,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindow(windowHandles.dapp);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         }
       },
     );
@@ -167,8 +167,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
           await driver.clickElement(btnSelector);
 
           // Wait for confirmation pop-up
-          const windowHandles = await getWindowHandles(driver, 3);
-          await driver.switchToWindow(windowHandles.popup);
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
           const bannerAlertFoundByTitle = await driver.findElement({
             css: bannerAlertSelector,
@@ -186,7 +186,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindow(windowHandles.dapp);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         }
       },
     );
