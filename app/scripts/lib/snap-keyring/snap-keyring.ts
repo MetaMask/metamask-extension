@@ -20,8 +20,7 @@ export const getAccountsBySnapId = async (
   controller: MetamaskController,
   snapId: string,
 ) => {
-  const snapKeyring: SnapKeyring =
-    (await controller.getSnapKeyring()) as SnapKeyring;
+  const snapKeyring: SnapKeyring = await controller.getSnapKeyring();
   return await snapKeyring.getAccountsBySnapId(snapId);
 };
 
