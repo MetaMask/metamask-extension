@@ -47,14 +47,15 @@ export default function NftsTab() {
     checkAndUpdateAllNftsOwnershipStatus();
   };
 
+  const hasAnyNfts = Object.keys(collections).length > 0;
+
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
   }
 
   return (
     <Box className="nfts-tab">
-      {Object.keys(collections).length > 0 ||
-      previouslyOwnedCollection.nfts.length > 0 ? (
+      {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
         <NftsItems
           collections={collections}
           previouslyOwnedCollection={previouslyOwnedCollection}
@@ -66,20 +67,23 @@ export default function NftsTab() {
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
-          <Box
-            paddingInlineStart={4}
-            paddingInlineEnd={4}
-            display={Display.Flex}
-          >
-            <AssetListConversionButton
-              variant="nft"
-              onClick={() =>
-                global.platform.openTab({
-                  url: 'https://support.metamask.io/hc/en-us/articles/360058238591-NFT-tokens-in-your-MetaMask-wallet',
-                })
-              }
-            />
-          </Box>
+          {(process.env.MULTICHAIN && hasAnyNfts === true) ||
+          process.env.MULTICHAIN === false ? null : (
+            <Box
+              paddingInlineStart={4}
+              paddingInlineEnd={4}
+              display={Display.Flex}
+            >
+              <AssetListConversionButton
+                variant="nft"
+                onClick={() =>
+                  global.platform.openTab({
+                    url: 'https://support.metamask.io/hc/en-us/articles/360058238591-NFT-tokens-in-your-MetaMask-wallet',
+                  })
+                }
+              />
+            </Box>
+          )}
           <Box
             padding={12}
             display={Display.Flex}
