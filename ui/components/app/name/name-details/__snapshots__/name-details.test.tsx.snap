@@ -88,7 +88,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                 <span
                   class="name__value"
                 >
-                  0xc0f...4979
+                  0xc0ffe...54979
                 </span>
               </div>
             </div>

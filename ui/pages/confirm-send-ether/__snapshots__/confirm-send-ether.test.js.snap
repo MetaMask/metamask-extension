@@ -244,7 +244,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 class="sender-to-recipient__name"
                 data-testid="sender-to-recipient__name"
               >
-                0x0c5...AaFb
+                0x0c54F...7AaFb
               </div>
             </div>
           </div>
