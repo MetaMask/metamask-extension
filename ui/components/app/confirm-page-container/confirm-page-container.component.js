@@ -179,7 +179,9 @@ const ConfirmPageContainer = (props) => {
     hasFetchedV2Insight,
   });
   insightComponent = insightComponent?.insightComponent;
-  setHasFetchedV2Insight(true);
+  if (!hasFetchedV2Insight) {
+    setHasFetchedV2Insight(true);
+  }
   ///: END:ONLY_INCLUDE_IN
 
   const handleSubmit = () => {
