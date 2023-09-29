@@ -3865,17 +3865,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@metamask/base-controller@npm:3.2.1"
-  dependencies:
-    "@metamask/utils": "npm:^6.2.0"
-    immer: "npm:^9.0.6"
-  checksum: ff4db984a72c942694b0ab849ec61f1c36423e6c6b7144a560f52fb6449e91dd4ce3b937a3b7e092468d0c679f305cc0c805085593f9b83acd98fbfe6f971b69
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^3.2.2":
+"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1, @metamask/base-controller@npm:^3.2.2":
   version: 3.2.2
   resolution: "@metamask/base-controller@npm:3.2.2"
   dependencies:
@@ -3927,22 +3917,6 @@ __metadata:
     ethjs-unit: "npm:^0.1.6"
     fast-deep-equal: "npm:^3.1.3"
   checksum: 16c82bdeeb99f96f2fb22132646e6aea66ada1a8427ba17e9c7d31e0bf32be6df7696d75030e30a4ab9be76c08a9d52dc3b25c21804a1328643c1240540ea621
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/controller-utils@npm:5.0.0"
-  dependencies:
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/utils": "npm:^6.2.0"
-    "@spruceid/siwe-parser": "npm:1.1.3"
-    eth-ens-namehash: "npm:^2.0.8"
-    eth-rpc-errors: "npm:^4.0.2"
-    ethereumjs-util: "npm:^7.0.10"
-    ethjs-unit: "npm:^0.1.6"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 4fbefc1affa9aee110fcb1b7fc95a96f29fc6d41d6fa6b92bd691d541833cf8531a282d7866daeb7585741533b50a5d9e8d0564071fc1abf09769c9fe039845b
   languageName: node
   linkType: hard
 
@@ -4376,23 +4350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.2":
-  version: 7.3.3
-  resolution: "@metamask/message-manager@npm:7.3.3"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/controller-utils": "npm:^5.0.0"
-    "@metamask/eth-sig-util": "npm:^7.0.0"
-    "@metamask/utils": "npm:^6.2.0"
-    "@types/uuid": "npm:^8.3.0"
-    ethereumjs-util: "npm:^7.0.10"
-    jsonschema: "npm:^1.2.4"
-    uuid: "npm:^8.3.2"
-  checksum: 1f9175c3ce44bf8d8ee80e391f1d36f559cef31e883a6ba7e3032d06c0263cc8e1d5fe15a591583bd415bbb01d113750ff6de99220d99ef71b4057985e34406e
-  languageName: node
-  linkType: hard
-
-"@metamask/message-manager@npm:^7.3.4":
+"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.2, @metamask/message-manager@npm:^7.3.4":
   version: 7.3.4
   resolution: "@metamask/message-manager@npm:7.3.4"
   dependencies:
@@ -4627,17 +4585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^4.1.0":
-  version: 4.4.1
-  resolution: "@metamask/preferences-controller@npm:4.4.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/controller-utils": "npm:^5.0.0"
-  checksum: 2404cf4c6f207316af7fd8cf9a7ae2ff3f38766bedde67103143d964ad4e253c8cf228da692a80644e65f072306bfaa807895771e45e93797ab879b9645744a7
-  languageName: node
-  linkType: hard
-
-"@metamask/preferences-controller@npm:^4.4.2":
+"@metamask/preferences-controller@npm:^4.1.0, @metamask/preferences-controller@npm:^4.4.2":
   version: 4.4.2
   resolution: "@metamask/preferences-controller@npm:4.4.2"
   dependencies:
