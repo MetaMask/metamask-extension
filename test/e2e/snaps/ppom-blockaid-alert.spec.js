@@ -2,9 +2,9 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const {
   defaultGanacheOptions,
-  getWindowHandles,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
   withFixtures,
 } = require('../helpers');
 
@@ -214,6 +214,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up
           await driver.waitUntilXWindowHandles(3);
+
           const windowHandles = await getWindowHandles(driver, 3);
           await driver.switchToWindowWithTitle('MetaMask Notification');
 
@@ -226,7 +227,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindow(windowHandles.dapp);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         }
       },
     );
@@ -286,24 +287,26 @@ describe('Confirmation Security Alert - Blockaid', function () {
           await driver.clickElement(btnSelector);
 
           // Wait for confirmation pop-up
-          const windowHandles = await getWindowHandles(driver, 3);
-          await driver.switchToWindow(windowHandles.popup);
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
-          const bannerAlert = await driver.findElement(bannerAlertSelector);
-          const bannerAlertText = await bannerAlert.getText();
+          const bannerAlertFoundByTitle = await driver.findElement({
+            css: bannerAlertSelector,
+            text: expectedTitle,
+          });
 
           assert(
-            bannerAlertText.includes(expectedTitle),
-            `Expected banner alert title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
+            bannerAlertFoundByTitle,
+            `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
           );
           assert(
-            bannerAlertText.includes(expectedDescription),
-            `Expected banner alert description: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
+            bannerAlertFoundByTitle.includes(expectedDescription),
+            `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
           );
 
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindow(windowHandles.dapp);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         }
       },
     );
