@@ -240,7 +240,7 @@ import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { snapKeyringBuilder } from './lib/snap-keyring';
+import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -2436,7 +2436,9 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
-      getAccountsBySnapId: this.getAccountsBySnapId.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      getAccountsBySnapId: (snapId) => getAccountsBySnapId(this, snapId),
+      ///: END:ONLY_INCLUDE_IN
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -3702,17 +3704,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return address;
-  }
-
-  /**
-   * Get the addresses of the accounts managed by a given Snap.
-   *
-   * @param {string} snapId - Snap ID to get accounts for.
-   * @returns {Promise<string[]>} The addresses of the accounts.
-   */
-  async getAccountsBySnapId(snapId) {
-    const snapKeyring = await this.getSnapKeyring();
-    return await snapKeyring.getAccountsBySnapId(snapId);
   }
 
   /**
