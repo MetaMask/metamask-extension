@@ -107,6 +107,7 @@ async function main() {
     testPaths = [
       ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
     ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
@@ -133,7 +134,7 @@ async function main() {
     const filteredTests = [
       'settings-add-snap-account-toggle.spec.js',
       'test-snap-accounts.spec.js',
-      'test-snap-manageAccount.spec.js',
+      'test-create-snap-account.spec.js',
       'test-snap-lifecycle.spec.js',
       'test-snap-get-locale.spec.js',
       'ppom-toggle-settings.spec.js',

@@ -90,7 +90,7 @@ const ConfirmTransaction = () => {
   ]);
 
   const { id, type } = transaction;
-  const transactionId = id && String(id);
+  const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =
     transactionId &&
