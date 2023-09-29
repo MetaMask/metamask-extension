@@ -4593,4 +4593,50 @@ export async function setSnapsAddSnapAccountModalDismissed() {
 export async function updateSnapRegistry() {
   await submitRequestToBackground('updateSnapRegistry', []);
 }
+
+export function updateAllowListedSnap({
+  snapId,
+  version,
+}: {
+  snapId: string;
+  version: string;
+}) {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    dispatch(showLoadingIndication());
+
+    const registry: {
+      id: string;
+      snapId: string;
+      iconUrl: string;
+      snapTitle: string;
+      snapSlug: string;
+      snapDescription: string;
+      tags: string[];
+      developer: string;
+      website: string;
+      auditUrls: string[];
+      version: string;
+      lastUpdated: string;
+    }[] = Object.values(getState().metamask.snapRegistryList);
+
+    const snapToUpdate = registry.find((snap) => snap.snapId === snapId);
+    if (!snapToUpdate) {
+      throw new Error('Snap not found in registry');
+    }
+
+    if (snapToUpdate.version !== version) {
+      throw new Error('Snap Version mismatch');
+    }
+
+    try {
+      await submitRequestToBackground('updateAllowListedSnap', [
+        { snapId, version },
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
 ///: END:ONLY_INCLUDE_IN

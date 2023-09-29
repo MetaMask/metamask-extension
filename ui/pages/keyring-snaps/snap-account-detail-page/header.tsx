@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import ConfigureSnapPopup, {
   ConfigureSnapPopupType,
 } from '../../../components/app/configure-snap-popup/configure-snap-popup';
@@ -23,6 +24,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { METAMASK_DEVELOPER } from '../constants';
 import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
+import { updateAllowListedSnap } from '../../../store/actions';
 import SnapDetailTag from './snap-detail-tag';
 
 export const SnapDetailHeader = ({
@@ -33,6 +35,8 @@ export const SnapDetailHeader = ({
   developer,
   auditUrls,
   website,
+  version,
+  snapId,
 }: Pick<
   SnapCardProps,
   | 'updateAvailable'
@@ -42,11 +46,14 @@ export const SnapDetailHeader = ({
   | 'developer'
   | 'auditUrls'
   | 'website'
+  | 'version'
+  | 'snapId'
 >) => {
   const t = useI18nContext();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
   const [showConfigPopoverType, setShowConfigPopoverType] =
     useState<ConfigureSnapPopupType>(ConfigureSnapPopupType.INSTALL);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -93,9 +100,13 @@ export const SnapDetailHeader = ({
               <Button
                 variant={ButtonVariant.Secondary}
                 marginRight={1}
-                onClick={() => {
-                  setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
-                  setShowConfigPopover(true);
+                onClick={async () => {
+                  await dispatch(
+                    updateAllowListedSnap({
+                      snapId,
+                      version,
+                    }),
+                  );
                 }}
               >
                 {t('snapUpdateAvailable')}
