@@ -138,6 +138,7 @@ async function main() {
       'test-remove-accounts-snap.spec.js',
       'test-snap-lifecycle.spec.js',
       'test-snap-get-locale.spec.js',
+      'ppom-blockaid-alert.spec.js',
       'ppom-toggle-settings.spec.js',
       'petnames.spec.js',
     ];
