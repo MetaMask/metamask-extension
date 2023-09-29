@@ -153,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountsConnected": {
+    "message": "Accounts connected"
+  },
   "active": {
     "message": "Active"
   },
@@ -841,6 +844,9 @@
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
   },
+  "connectedSnapAndNoAccountDescription": {
+    "message": "MetaMask is connected to this site, but no accounts are connected yet"
+  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -1320,12 +1326,6 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
-  "displayNftMedia": {
-    "message": "Display NFT media"
-  },
-  "displayNftMediaDesc": {
-    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off. If NFT media is fully located on IPFS, it can still be displayed even when this feature is turned off."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1450,6 +1450,12 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Enable OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartSwaps": {
     "message": "Enable smart swaps"
@@ -2544,7 +2550,7 @@
     "message": "New contract"
   },
   "newNFTDetectedInImportNFTsMessage": {
-    "message": "To see your NFT, turn on Display NFT media in $1.",
+    "message": "To use Opensea see your NFT, turn on 'Enable OpenSea API' in $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
@@ -2585,6 +2591,9 @@
   "nftAddressError": {
     "message": "This token is an NFT. Add on the $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
+  },
+  "nftAlreadyAdded": {
+    "message": "NFT has already been added."
   },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
@@ -3877,8 +3886,8 @@
   "selectAnAction": {
     "message": "Select an action"
   },
-  "selectDisplayMediaPrivacyPreference": {
-    "message": "Turn on Display NFT media"
+  "selectEnableOpenseaAPIPrivacyPreference": {
+    "message": "Turn on Enable Opensea API"
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -4188,6 +4197,9 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsConnected": {
+    "message": "Snaps connected"
+  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
   },
@@ -4208,6 +4220,9 @@
   "snapsPrivacyWarningThirdMessage": {
     "message": "Consensys has no access to information you share with Third Party Services.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsSettings": {
+    "message": "Snap settings"
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"

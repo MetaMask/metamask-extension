@@ -240,7 +240,7 @@ import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { snapKeyringBuilder } from './lib/snap-keyring';
+import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1945,6 +1945,8 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   /**
    * Initialize the snap keyring if it is not present.
+   *
+   * @returns {SnapKeyring}
    */
   async getSnapKeyring() {
     let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
@@ -2445,12 +2447,15 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
 
-      // primary HD keyring management
+      // primary keyring management
       addNewAccount: this.addNewAccount.bind(this),
       verifySeedPhrase: this.verifySeedPhrase.bind(this),
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      getAccountsBySnapId: (snapId) => getAccountsBySnapId(this, snapId),
+      ///: END:ONLY_INCLUDE_IN
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),

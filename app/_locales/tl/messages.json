@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "I-dismiss ang back up na paalala ng Lihim na Parirala sa Pagbawi"
   },
-  "displayNftMedia": {
-    "message": "Ipakita ang NFT media"
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1404,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Paganahin sa OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
   "enableSmartSwaps": {
     "message": "Paganahin ang mga smart swap"
