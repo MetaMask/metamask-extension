@@ -2430,12 +2430,13 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
 
-      // primary HD keyring management
+      // primary keyring management
       addNewAccount: this.addNewAccount.bind(this),
       verifySeedPhrase: this.verifySeedPhrase.bind(this),
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      getAccountsBySnapId: this.getAccountsBySnapId.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -3701,6 +3702,17 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return address;
+  }
+
+  /**
+   * Get the addresses of the accounts managed by a given Snap.
+   *
+   * @param {string} snapId - Snap ID to get accounts for.
+   * @returns {Promise<string[]>} The addresses of the accounts.
+   */
+  async getAccountsBySnapId(snapId) {
+    const snapKeyring = await this.getSnapKeyring();
+    return await snapKeyring.getAccountsBySnapId(snapId);
   }
 
   /**
