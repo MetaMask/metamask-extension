@@ -3877,8 +3877,8 @@
   "selectAnAction": {
     "message": "Select an action"
   },
-  "selectDisplayMediaPrivacyPreference": {
-    "message": "Turn on Display NFT media"
+  "selectEnableOpenseaAPIPrivacyPreference": {
+    "message": "Turn on Enable Opensea API"
   },
   "selectHdPath": {
     "message": "Select HD path"
