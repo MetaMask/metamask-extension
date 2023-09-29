@@ -15,7 +15,7 @@ import { processError, processHeader } from '../util';
 function getValues(pendingApproval, t, actions, _history) {
   return {
     content: [
-      ...processHeader(pendingApproval.requestData.header),
+      ...(processHeader(pendingApproval.requestData.header) ?? []),
       {
         key: 'container',
         element: 'Box',

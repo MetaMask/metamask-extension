@@ -20,6 +20,11 @@ import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { CreateSnapAccount } from '../../../pages/create-snap-account';
+import { RemoveSnapAccount } from '../../../pages/remove-snap-account';
+import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
+///: END:ONLY_INCLUDE_IN
 
 export const safeComponentList = {
   a: 'a',
@@ -49,5 +54,10 @@ export const safeComponentList = {
   SnapDelineator,
   SnapUIMarkdown,
   Spinner,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  CreateSnapAccount,
+  RemoveSnapAccount,
+  SnapAuthorshipHeader,
   ///: END:ONLY_INCLUDE_IN
 };

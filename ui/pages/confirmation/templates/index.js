@@ -6,6 +6,11 @@ import {
   setNewNetworkAdded,
   upsertNetworkConfiguration,
 } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import createSnapAccount from './create-snap-account';
+import removeSnapAccount from './remove-snap-account';
+///: END:ONLY_INCLUDE_IN
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
@@ -26,6 +31,12 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
+    createSnapAccount,
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval]:
+    removeSnapAccount,
   ///: END:ONLY_INCLUDE_IN
 };
 

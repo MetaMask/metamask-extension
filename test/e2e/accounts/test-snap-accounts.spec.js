@@ -48,7 +48,7 @@ describe('Test Snap Account', function () {
     .privateToAddress(Buffer.from(PRIVATE_KEY.slice(2), 'hex'))
     .toString('hex');
 
-  it('can create a new snap account', async function () {
+  it('can create a new Snap account', async function () {
     await withFixtures(
       accountSnapFixtures(this.test.title),
       async ({ driver }) => {
@@ -253,7 +253,7 @@ describe('Test Snap Account', function () {
 
     await unlockWallet(driver);
 
-    // navigate to test snaps page and connect
+    // navigate to test Snaps page and connect
     await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
     const connectButton = await driver.findElement('#connectButton');
     await driver.scrollToElement(connectButton);
@@ -321,6 +321,12 @@ describe('Test Snap Account', function () {
       tag: 'button',
     });
 
+    // Click "Create" on the Snap's confirmation popup
+    await switchToNotificationWindow(driver, 3);
+    await driver.clickElement('[data-testid="confirmation-submit-button"]');
+    await driver.clickElement('[data-testid="confirmation-submit-button"]');
+    await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
+
     await switchToAccount2(driver);
   }
 
@@ -337,6 +343,12 @@ describe('Test Snap Account', function () {
       text: 'Create Account',
       tag: 'button',
     });
+
+    // Click "Create" on the Snap's confirmation popup
+    await switchToNotificationWindow(driver, 3);
+    await driver.clickElement('[data-testid="confirmation-submit-button"]');
+    await driver.clickElement('[data-testid="confirmation-submit-button"]');
+    await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
 
     const newPublicKey = await (
       await driver.findElement({
