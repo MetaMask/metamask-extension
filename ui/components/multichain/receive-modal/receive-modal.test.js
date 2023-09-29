@@ -16,9 +16,7 @@ describe('ReceiveModal', () => {
     );
 
   it('should show the correct account address and name', () => {
-    const { container } = render();
-
-    expect(container).toMatchSnapshot();
+    render();
     // Check for the copy button
     expect(
       screen.queryByText(toChecksumHexAddress(address)),

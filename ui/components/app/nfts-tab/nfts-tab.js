@@ -48,6 +48,7 @@ export default function NftsTab() {
   };
 
   const hasAnyNfts = Object.keys(collections).length > 0;
+  const showNftBanner = process.env.MULTICHAIN && hasAnyNfts === false;
 
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
@@ -63,27 +64,25 @@ export default function NftsTab() {
       ) : (
         <>
           {isMainnet && !useNftDetection ? (
-            <Box padding={4}>
+            <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
-          {(process.env.MULTICHAIN && hasAnyNfts === true) ||
-          process.env.MULTICHAIN === false ? null : (
+          {showNftBanner ? (
             <Box
               paddingInlineStart={4}
               paddingInlineEnd={4}
               display={Display.Flex}
+              paddingTop={4}
             >
               <AssetListConversionButton
                 variant="nft"
                 onClick={() =>
-                  global.platform.openTab({
-                    url: 'https://support.metamask.io/hc/en-us/articles/360058238591-NFT-tokens-in-your-MetaMask-wallet',
-                  })
+                  global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS })
                 }
               />
             </Box>
-          )}
+          ) : null}
           <Box
             padding={12}
             display={Display.Flex}

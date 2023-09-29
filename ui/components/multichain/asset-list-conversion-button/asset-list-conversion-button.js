@@ -53,6 +53,7 @@ export const AssetListConversionButton = ({ onClick, variant }) => {
         <Box
           display={Display.Flex}
           className="asset-list-conversion-button__contents__button-wrapper"
+          borderRadius={BorderRadius.full}
         >
           <Box paddingTop={1} paddingInlineStart={1}>
             <Icon name={icon} size={IconSize.Sm} style={{ color }} />

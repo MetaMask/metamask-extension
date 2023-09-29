@@ -17,8 +17,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMetaMaskAccountsOrdered, getUseBlockie } from '../../../selectors';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
+  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -36,16 +38,21 @@ export const ReceiveModal = ({ address, onClose }) => {
         <ModalHeader marginBottom={4} onClose={onClose}>
           {t('receive')}
         </ModalHeader>
-        <AvatarAccount
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-          address={address}
-          size={AvatarAccountSize.Lg}
-          style={{ margin: '0 auto' }}
-        />
+        <Box
+          display={Display.Flex}
+          width={BlockSize.Full}
+          justifyContent={JustifyContent.center}
+        >
+          <AvatarAccount
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            address={address}
+            size={AvatarAccountSize.Lg}
+          />
+        </Box>
         <Text
           marginTop={4}
           variant={TextVariant.bodyLgMedium}
