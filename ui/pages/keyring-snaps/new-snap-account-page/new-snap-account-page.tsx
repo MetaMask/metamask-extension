@@ -116,9 +116,9 @@ export default function NewSnapAccountPage() {
             );
 
             const isInstalled = Boolean(foundSnap);
-            const updateAvailable = semver.gt(
-              snap.version,
-              foundSnap?.version as string,
+
+            const updateAvailable = Boolean(
+              foundSnap?.version && semver.gt(snap.version, foundSnap.version),
             );
 
             return (
