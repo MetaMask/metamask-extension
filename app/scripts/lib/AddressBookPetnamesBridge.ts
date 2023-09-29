@@ -60,13 +60,24 @@ export class AddressBookPetnamesBridge {
   }
 
   init() {
-    this.#addressBookController.subscribe((state) =>
-      this.#onAddressBookStateChange(state),
-    );
+    this.#addressBookController.subscribe((state) => {
+      try {
+        this.#onAddressBookStateChange(state);
+      } catch (error) {
+        log.debug(
+          'Error synchronising address book update with petnames',
+          error,
+        );
+      }
+    });
 
-    this.#messenger.subscribe('NameController:stateChange', (state) =>
-      this.#onPetnameStateChange(state),
-    );
+    this.#messenger.subscribe('NameController:stateChange', (state) => {
+      try {
+        this.#onPetnameStateChange(state);
+      } catch (error) {
+        log.debug('Error synchronising petname update with petnames', error);
+      }
+    });
   }
 
   #onPetnameStateChange(newState: NameControllerState) {
