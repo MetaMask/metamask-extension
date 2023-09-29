@@ -205,7 +205,6 @@
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "lavamoat-core@npm:^14.4.1": "patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch",
-    "@metamask/keyring-controller@^8.0.0": "patch:@metamask/keyring-controller@npm%3A8.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.0-806630ae4e.patch",
     "@metamask/signature-controller@^6.0.0": "patch:@metamask/signature-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-signature-controller-npm-6.0.0-90e8e479a9.patch",
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4"
@@ -256,7 +255,7 @@
     "@metamask/gas-fee-controller": "^6.0.1",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^9.0.0",
-    "@metamask/keyring-controller": "^8.0.0",
+    "@metamask/keyring-controller": "^8.0.1",
     "@metamask/logging-controller": "^1.0.1",
     "@metamask/logo": "^3.1.1",
     "@metamask/message-manager": "^7.3.0",
