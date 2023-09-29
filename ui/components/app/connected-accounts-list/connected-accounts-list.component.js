@@ -91,7 +91,7 @@ export default class ConnectedAccountsList extends PureComponent {
         className="connected-accounts-list__row--highlight"
         backgroundColor={BackgroundColor.warningMuted}
         address={address}
-        name={`${name} (…${address.substr(-4, 4)})`}
+        name={name}
         status={t('statusNotConnected')}
         action={
           <Text variant={TextVariant.bodyMd}>
@@ -155,7 +155,7 @@ export default class ConnectedAccountsList extends PureComponent {
               <ConnectedAccountsListItem
                 key={address}
                 address={address}
-                name={`${name} (…${address.substr(-4, 4)})`}
+                name={name}
                 status={index === 0 ? t('active') : null}
                 options={
                   shouldRenderListOptions

@@ -1,8 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-
 import { useSelector } from 'react-redux';
+import { shortenAddress } from '../../../../helpers/utils/util';
+
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -61,6 +62,7 @@ export default function ConnectedAccountsListItem({
             >
               {name}
             </Text>
+            <Text variant={TextVariant.bodyMd}>{shortenAddress(address)}</Text>
             {status ? (
               <Text
                 variant={TextVariant.bodyMd}
