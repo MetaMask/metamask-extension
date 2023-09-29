@@ -1771,9 +1771,17 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/name-controller>@metamask/base-controller": true,
         "@metamask/name-controller>@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true
+      }
+    },
+    "@metamask/name-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/name-controller>@metamask/utils": {
