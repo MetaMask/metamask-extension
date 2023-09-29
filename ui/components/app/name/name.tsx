@@ -16,6 +16,9 @@ export interface NameProps {
   /** Whether to prevent the modal from opening when the component is clicked. */
   disableEdit?: boolean;
 
+  /** Whether this is being rendered inside the NameDetails modal. */
+  internal?: boolean;
+
   /** The type of value, e.g. NameType.ETHEREUM_ADDRESS */
   type: NameType;
 
@@ -33,13 +36,22 @@ function formatValue(value: string, type: NameType): string {
   }
 }
 
-export default function Name({ value, type, disableEdit }: NameProps) {
+export default function Name({
+  value,
+  type,
+  disableEdit,
+  internal,
+}: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
   const { name } = useName(value, type);
 
   useEffect(() => {
+    if (internal) {
+      return;
+    }
+
     trackEvent({
       event: MetaMetricsEventName.PetnameDisplayed,
       category: MetaMetricsEventCategory.Petnames,

@@ -271,7 +271,12 @@ export default function NameDetails({
             {hasSavedName ? t('nameModalTitleSaved') : t('nameModalTitleNew')}
           </ModalHeader>
           <div style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}>
-            <Name value={value} type={NameType.ETHEREUM_ADDRESS} disableEdit />
+            <Name
+              value={value}
+              type={NameType.ETHEREUM_ADDRESS}
+              disableEdit
+              internal
+            />
           </div>
           <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
             {hasSavedName
