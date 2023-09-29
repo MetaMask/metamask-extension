@@ -554,7 +554,7 @@ const state = {
     providerConfig: {
       type: 'goerli',
       ticker: 'ETH',
-      nickname: '',
+      nickname: 'Goerli',
       rpcUrl: '',
       chainId: '0x5',
     },
@@ -626,7 +626,7 @@ const state = {
               path: '/txParams/nonce',
               timestamp: 1629582711220,
               value: '0x15b',
-            }
+            },
           ],
           [
             {

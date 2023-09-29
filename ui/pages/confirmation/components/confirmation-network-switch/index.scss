@@ -1,11 +1,11 @@
 .confirmation-network-switch {
   &__center-icon {
     position: relative;
-    height: 64px;
+    height: 48px;
   }
 
   &__icon {
-    width: 64px;
+    width: 48px;
   }
 
   &__check {
@@ -35,17 +35,5 @@
     width: 130px;
     border-bottom: 1px solid var(--color-border-muted);
     border-style: dashed;
-  }
-
-  &__unknown-icon {
-    color: var(--color-icon-muted);
-    border-radius: 50%;
-    border: 1px solid var(--color-border-muted);
-    background-color: var(--color-background-alternative);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 64px;
-    width: 64px;
   }
 }

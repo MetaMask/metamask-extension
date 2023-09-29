@@ -8,7 +8,6 @@ import {
   Text,
 } from '../../../../components/component-library';
 import {
-  FontWeight,
   Display,
   JustifyContent,
   BlockSize,
@@ -36,25 +35,20 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
-          <AvatarNetwork
-            src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-            margin="auto"
-            name={nickname}
-            size={AvatarNetworkSize.Xl}
-          />
-        ) : (
-          <div className="confirmation-network-switch__unknown-icon">
-            <i className="fa fa-question fa-2x" />
-          </div>
-        )}
+        <AvatarNetwork
+          src={
+            chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+              ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]
+              : ''
+          }
+          name={nickname}
+          size={AvatarNetworkSize.Xl}
+          marginBottom={2}
+        />
         <Text
-          fontWeight={FontWeight.Normal}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
           align={TextAlign.Center}
-          boxProps={{
-            display: Display.Flex,
-            justifyContent: JustifyContent.center,
-          }}
         >
           {nickname || NETWORK_TO_NAME_MAP[type]}
         </Text>
@@ -72,19 +66,21 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
-          <AvatarNetwork
-            src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
-            margin="auto"
-            name={newNetwork.nickname}
-            size={AvatarNetworkSize.Xl}
-          />
-        ) : (
-          <div className="confirmation-network-switch__unknown-icon">
-            <i className="fa fa-question fa-2x" />
-          </div>
-        )}
-        <Text fontWeight={FontWeight.Normal} align={TextAlign.Center}>
+        <AvatarNetwork
+          src={
+            newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+              ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]
+              : ''
+          }
+          name={newNetwork.nickname}
+          size={AvatarNetworkSize.Xl}
+          marginBottom={2}
+        />
+        <Text
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          align={TextAlign.Center}
+        >
           {newNetwork.nickname}
         </Text>
       </Box>
