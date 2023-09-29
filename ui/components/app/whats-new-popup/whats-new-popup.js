@@ -187,7 +187,7 @@ const renderFirstNotification = ({
   } = notification;
   const actionFunction = getActionFunctionById(id, history);
   let showNotificationDate = true;
-
+  console.log('him hereee', notification);
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   showNotificationDate = !hideDate;
   ///: END:ONLY_INCLUDE_IN
@@ -201,6 +201,7 @@ const renderFirstNotification = ({
     />
   );
   const placeImageBelowDescription = image?.placeImageBelowDescription;
+
   return (
     <div
       className={classnames(
@@ -239,6 +240,7 @@ const renderFirstNotification = ({
           {actionText}
         </ButtonPrimary>
       )}
+
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         customButton && customButton.name === 'mmi-portfolio' && (
@@ -353,6 +355,7 @@ export default function WhatsNewPopup({
       },
     );
   };
+
   useEffect(() => {
     const observer = new window.IntersectionObserver(
       (entries, _observer) => {
@@ -420,7 +423,7 @@ export default function WhatsNewPopup({
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
     [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
   };
-
+  console.log('notifications', notifications);
   return (
     <Popover
       title={t('whatsNew')}

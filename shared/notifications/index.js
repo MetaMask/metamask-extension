@@ -272,6 +272,27 @@ export const getTranslatedUINotifications = (t, locale) => {
         new Date(UI_NOTIFICATIONS[11].date),
       ),
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // eslint-disable-next-line no-dupe-keys
+    11: {
+      ...UI_NOTIFICATIONS[11],
+      title: 'Portfolio dashboard',
+      description: [
+        'Portfolio snapshots',
+        'Filtering by account and network',
+        'Sector and protocol allocation',
+        'Improved navigation',
+      ],
+      date: new Intl.DateTimeFormat(formattedLocale).format(
+        new Date(UI_NOTIFICATIONS[11].date),
+      ),
+      customButton: {
+        name: 'mmi-portfolio',
+        text: t('viewPortfolioDashboard'),
+        logo: true,
+      },
+    },
+    ///: END:ONLY_INCLUDE_IN
     12: {
       ...UI_NOTIFICATIONS[12],
       title: t('notifications12Title'),
