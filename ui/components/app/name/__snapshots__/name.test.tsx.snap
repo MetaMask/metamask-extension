@@ -13,7 +13,7 @@ exports[`Name renders address with no saved name 1`] = `
       <span
         class="name__value"
       >
-        0xC0f...4977
+        0xC0ffe...54977
       </span>
     </div>
   </div>
