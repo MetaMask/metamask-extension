@@ -113,7 +113,6 @@ export const SENTRY_BACKGROUND_STATE = {
   KeyringController: {
     isUnlocked: true,
     keyrings: false,
-    keyringTypes: false,
   },
   LoggingController: {
     logs: false,
