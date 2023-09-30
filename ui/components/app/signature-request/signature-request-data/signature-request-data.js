@@ -22,6 +22,7 @@ import { sanitizeString } from '../../../../helpers/utils/util';
 import { Box, Text } from '../../../component-library';
 import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
 import Name from '../../name/name';
+import { DEFAULT_NAME_SOURCE_PRIORITY } from '../../../../../shared/constants/names';
 
 function SignatureRequestData({ data }) {
   const identities = useSelector(getMemoizedMetaMaskIdentities);
@@ -73,7 +74,7 @@ function SignatureRequestData({ data }) {
                     <Name
                       value={value}
                       type={NameType.ETHEREUM_ADDRESS}
-                      sourcePriority={['ens', 'lens', 'token', 'etherscan']}
+                      sourcePriority={DEFAULT_NAME_SOURCE_PRIORITY}
                     />
                   ) : (
                     <Address

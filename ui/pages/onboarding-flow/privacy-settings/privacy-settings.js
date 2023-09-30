@@ -270,7 +270,7 @@ export default function PrivacySettings() {
             description={
               <>
                 <Text variant={TextVariant.inherit}>
-                  {t('ensDomainsSettingDescriptionIntro')}
+                  {t('ensDomainsSettingDescriptionIntroduction')}
                 </Text>
                 <Box
                   as="ul"
@@ -280,17 +280,14 @@ export default function PrivacySettings() {
                   style={{ listStyleType: 'circle' }}
                 >
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint1')}
+                    {t('ensDomainsSettingDescriptionPart1')}
                   </Text>
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint2')}
-                  </Text>
-                  <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint3')}
+                    {t('ensDomainsSettingDescriptionPart2')}
                   </Text>
                 </Box>
                 <Text variant={TextVariant.inherit}>
-                  {t('ensDomainsSettingDescriptionOutro')}
+                  {t('ensDomainsSettingDescriptionOutroduction')}
                 </Text>
               </>
             }

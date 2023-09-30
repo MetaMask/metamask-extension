@@ -611,18 +611,9 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buy": {
-    "message": "Satın Al"
-  },
   "buyAsset": {
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
-  "buyDisabled": {
-    "message": "Satın al bu ağda kullanılamaz"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -1286,12 +1277,6 @@
   "dismissReminderField": {
     "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma uyarısını yoksay"
   },
-  "displayNftMedia": {
-    "message": "NFT medyasını göster"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFT medyasının ve verilerin gösterilmesi IP adresinizin OpenSea'ye veya diğer üçüncü taraflara aktarılmasına neden olur. Bu durum, saldırganların IP adresinizi Ethereum adresinizle ilişkilendirmesini sağlayabilir. NFT otomatik algılama bu ayara dayalıdır ve bu ayar kapatıldığında kullanılamaz olur."
-  },
   "domain": {
     "message": "Alan"
   },
@@ -1417,6 +1402,12 @@
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API'yi etkinleştir"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
+  },
   "enableSmartSwaps": {
     "message": "Akıllı swap'ları etkinleştirin"
   },
@@ -1443,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Gelişmiş token algılama şu anda $1 üzerinden kullanılabilir. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask, \"https://metamask.eth\" gibi ENS alanlarını tarayıcınızın adres çubuğunda görmenizi sağlar. Şöyle çalışır:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Normal tarayıcılar genellikle ENS veya IPFS adreslerini kullanmaz, ancak MetaMask bu konuda yardımcı olur. Bu özelliği kullandığınızda IP adresiniz IPFS üçüncü taraf hizmetleri ile paylaşılabilir."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask, ENS adına bağlı kodu bulmak için Ethereum'un ENS sözleşmesi ile kontrol gerçekleştirir."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Kod IPFS'ye bağlı ise içeriği IPFS ağından alır."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Ardından, genellikle bir web sitesi veya benzeri olan içeriği görebilirsiniz."
   },
   "ensDomainsSettingTitle": {
     "message": "ENS alanlarını adres çubuğunda göster"
@@ -2474,12 +2450,6 @@
   "newContract": {
     "message": "Yeni sözleşme"
   },
-  "newNFTDetectedMessage": {
-    "message": "MetaMask'in Opensea'den NFT'leri otomatik olarak algılamasına ve cüzdanında görüntülemesine izin ver."
-  },
-  "newNFTsDetected": {
-    "message": "Yeni! NFT algılama"
-  },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
   },
@@ -3217,14 +3187,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Bu yaşam döngüsü sırasında belirli zamanlarda kod çalıştırmak için snapin yaşam döngüsü kancalarını kullanmasına izin verin.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Süresiz çalıştır.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Snapin örneğin büyük miktarda veri işlerken belirsiz süreyle çalışmasına izin verin.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum hesaplarını ekle ve kontrol et",
@@ -5238,21 +5200,6 @@
   },
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
-  },
-  "useNftDetectionDescription": {
-    "message": "Cüzdanınızdaki NFT'leri algılamak için üçüncü taraf API'leri kullanırız, yani IP adresinizin merkezi sunuculara açıklanmasına neden olabilir. Bu özelliği etkinleştirirken dikkat edilmesi gereken birkaç konu vardır."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Hesap adresiniz üçüncü taraf API'lerinde görüntülenebilir."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT meta verileri dolandırıcılık veya kimlik avı sitelerine bağlantılar içerebilir."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Hesabınıza herkes NFT airdrop'u gerçekleştirebilir. Cüzdanınızda otomatik olarak gösterilebilen saldırgan içerik de buna dahil olabilir."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Uygulamanın bu hizmetlerden veri çekmesini istemiyorsanız bu özelliği kapalı bırakın."
   },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"
