@@ -167,20 +167,30 @@ async function main() {
   }
 
   // For running E2Es in parallel in CI
-  fs.writeFileSync('testList.txt', testPaths.join('\n'));
+  const fullTestList = testPaths.join('\n');
+  console.log('Full test list:', fullTestList);
+  fs.writeFileSync('fullTestList.txt', fullTestList);
 
-  // use `circleci tests split` on `testList.txt`
-  const result = execSync(
-    'circleci tests split --split-by=timings --timings-type=filename --time-default=30s testList.txt',
+  // Use `circleci tests run` on `testList.txt` to do two things:
+  // 1. split the test files into chunks based on how long they take to run
+  // 2. support "Rerun failed tests" on CircleCI
+  execSync(
+    'circleci tests run --command=">myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < fullTestList.txt',
   );
 
-  // take the line-delimited result and split into an array
-  const currentChunk = result.toString('utf8').split('\n');
+  // take the space-delimited result and split into an array
+  const myTestList = fs
+    .readFileSync('myTestList.txt', { encoding: 'utf8' })
+    .split(' ');
+
+  console.log('My test list:', myTestList);
 
   fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
-  for (const testPath of currentChunk) {
+  // spawn `run-e2e-test.js` for each test in myTestList
+  for (let testPath of myTestList) {
     if (testPath !== '') {
+      testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
       await runInShell('node', [...args, testPath]);
     }
   }
