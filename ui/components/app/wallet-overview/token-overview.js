@@ -139,9 +139,12 @@ const TokenOverview = ({ className, token }) => {
             <IconButton
               className="token-overview__button"
               Icon={
-                <Icon name={IconName.Add} color={IconColor.primaryInverse} />
+                <Icon
+                  name={IconName.PlusMinus}
+                  color={IconColor.primaryInverse}
+                />
               }
-              label={t('buy')}
+              label={t('buyAndSell')}
               data-testid="token-overview-buy"
               onClick={() => {
                 openBuyCryptoInPdapp();
