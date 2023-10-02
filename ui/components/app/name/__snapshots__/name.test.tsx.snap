@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Name renders address with proposed name 1`] = `
+exports[`Name renders address with no saved name 1`] = `
 <div>
   <div>
     <div
@@ -13,41 +13,7 @@ exports[`Name renders address with proposed name 1`] = `
       <span
         class="name__value"
       >
-        0xc0f...4978
-      </span>
-      <span
-        class="name__proposed"
-      >
-        “
-        TestProposedName
-        ”
-      </span>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Name renders address with proposed name according to source priority 1`] = `
-<div>
-  <div>
-    <div
-      class="name name__missing"
-    >
-      <span
-        class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/warning.svg');"
-      />
-      <span
-        class="name__value"
-      >
-        0xc0f...4978
-      </span>
-      <span
-        class="name__proposed"
-      >
-        “
-        TestProposedName
-        ”
+        0xC0ffe...54977
       </span>
     </div>
   </div>
@@ -68,26 +34,6 @@ exports[`Name renders address with saved name 1`] = `
         class="name__name"
       >
         TestName
-      </span>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Name renders address without proposed name 1`] = `
-<div>
-  <div>
-    <div
-      class="name name__missing"
-    >
-      <span
-        class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/warning.svg');"
-      />
-      <span
-        class="name__value"
-      >
-        0xc0f...4979
       </span>
     </div>
   </div>
