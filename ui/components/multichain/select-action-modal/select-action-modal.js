@@ -49,9 +49,9 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { I18nContext } from '../../../contexts/i18n';
 import { AssetType } from '../../../../shared/constants/transaction';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
-import { MMI_STAKE_WEBSITE } from '../../../helpers/constants/common';
+import { getMmiPortfolioUrl } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -79,6 +79,8 @@ export const SelectActionModal = ({ onClose }) => {
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
+
   const stakingEvent = () => {
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -103,12 +105,12 @@ export const SelectActionModal = ({ onClose }) => {
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <SelectActionModalItem
-              actionIcon={IconName.Add}
+              actionIcon={IconName.PlusMinus}
               showIcon
-              primaryText={t('buy')}
-              secondaryText={t('buyDescription')}
+              primaryText={t('buyAndSell')}
+              secondaryText={t('buyAndSellDescription')}
               disabled={!isBuyableChain}
-              tooltipTitle={t('buyDisabled')}
+              tooltipTitle={t('buyAndSellDisabled')}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({
@@ -136,7 +138,7 @@ export const SelectActionModal = ({ onClose }) => {
               onClick={() => {
                 stakingEvent();
                 global.platform.openTab({
-                  url: MMI_STAKE_WEBSITE,
+                  url: `${mmiPortfolioUrl}/stake`,
                 });
                 onClose();
               }}
@@ -152,7 +154,7 @@ export const SelectActionModal = ({ onClose }) => {
             onClick={() => {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               global.platform.openTab({
-                url: MMI_SWAPS_URL,
+                url: `${mmiPortfolioUrl}/swap`,
               });
               ///: END:ONLY_INCLUDE_IN
 
