@@ -36,6 +36,10 @@ const mockBaseStore = {
     pendingApprovals: {
       [mockApprovalId]: mockApproval,
     },
+    providerConfig: {
+      type: 'test',
+      chainId: '0x5',
+    },
     approvalFlows: [],
     subjectMetadata: {},
   },
@@ -46,10 +50,6 @@ describe('error template', () => {
     const testStore = {
       metamask: {
         ...mockBaseStore.metamask,
-        providerConfig: {
-          type: 'test',
-          id: CHAIN_IDS.LOCALHOST,
-        },
         pendingApprovals: {
           [mockApprovalId]: {
             ...mockApproval,

@@ -14,6 +14,7 @@ const mockSnapOrigin = 'npm:@metamask/snap-test';
 const mockSnapName = 'Test Snap Account Name';
 const mockPublicAddress = '0x000000000000000000000000000000000000000';
 const providerConfig = {
+  type: 'test',
   chainId: '0x5',
 };
 const mockApproval = {
