@@ -208,6 +208,15 @@ async function withFixtures(options, testSuite) {
   }
 }
 
+const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  TestDApp: 'E2E Test Dapp',
+  Notification: 'MetaMask Notification',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  InstalledExtensions: 'Extensions',
+  SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
+});
+
 /**
  * @param {*} driver - selinium driver
  * @param {*} handlesCount - total count of windows that should be loaded
@@ -222,7 +231,7 @@ const getWindowHandles = async (driver, handlesCount) => {
 
   const extension = windowHandles[0];
   const dapp = await driver.switchToWindowWithTitle(
-    'E2E Test Dapp',
+    WINDOW_TITLES.TestDApp,
     windowHandles,
   );
   const popup = windowHandles.find(
@@ -513,8 +522,23 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const switchToOrOpenDapp = async (
+  driver,
+  contract = null,
+  dappURL = DAPP_URL,
+) => {
+  try {
+    await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  } catch {
+    await openDapp(driver, contract, dappURL);
+  }
+};
+
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
+const PRIVATE_KEY_TWO =
+  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
@@ -524,15 +548,26 @@ const defaultGanacheOptions = {
 
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
 
-const sendTransaction = async (driver, recipientAddress, quantity) => {
+const sendTransaction = async (
+  driver,
+  recipientAddress,
+  quantity,
+  isAsyncFlow = false,
+) => {
   await driver.clickElement('[data-testid="eth-overview-send"]');
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
   await driver.clickElement('[data-testid="page-container-footer-next"]');
   await driver.clickElement('[data-testid="page-container-footer-next"]');
-  await driver.clickElement('[data-testid="home__activity-tab"]');
-  await driver.waitForElementNotPresent('.transaction-list-item--unconfirmed');
-  await driver.findElement('.transaction-list-item');
+
+  // the default is to do this block, but if we're testing an async flow, it would get stuck here
+  if (!isAsyncFlow) {
+    await driver.clickElement('[data-testid="home__activity-tab"]');
+    await driver.waitForElementNotPresent(
+      '.transaction-list-item--unconfirmed',
+    );
+    await driver.findElement('.transaction-list-item');
+  }
 };
 
 const findAnotherAccountFromAccountList = async (
@@ -574,14 +609,13 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
     text: `${balance} ETH`,
   });
 };
-const DEFAULT_PRIVATE_KEY =
-  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 const DEFAULT_GANACHE_OPTIONS = {
   accounts: [
     {
-      secretKey: DEFAULT_PRIVATE_KEY,
+      secretKey: PRIVATE_KEY,
       balance: convertETHToHexGwei(25),
     },
   ],
@@ -597,13 +631,6 @@ async function waitForAccountRendered(driver) {
     '[data-testid="eth-overview__primary-currency"]',
   );
 }
-const WINDOW_TITLES = Object.freeze({
-  ExtensionInFullScreenView: 'MetaMask',
-  TestDApp: 'E2E Test Dapp',
-  Notification: 'MetaMask Notification',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
-  InstalledExtensions: 'Extensions',
-});
 
 const unlockWallet = async (driver) => {
   await driver.fill('#password', 'correct horse battery staple');
@@ -671,16 +698,53 @@ async function terminateServiceWorker(driver) {
 }
 
 /**
+ * This method handles clicking the sign button on signature confrimation
+ * screen.
+ *
+ * @param {WebDriver} driver
+ * @param numHandles
+ */
+async function clickSignOnSignatureConfirmation(driver, numHandles = 2) {
+  await driver.clickElement({ text: 'Sign', tag: 'button' });
+  await driver.waitUntilXWindowHandles(numHandles);
+  await driver.getAllWindowHandles();
+}
+
+/**
+ * Some signing methods have extra security that requires the user to click a
+ * button to validate that they have verified the details. This method handles
+ * performing the necessary steps to click that button.
+ *
+ * @param {WebDriver} driver
+ */
+async function validateContractDetails(driver) {
+  const verifyContractDetailsButton = await driver.findElement(
+    '.signature-request-content__verify-contract-details',
+  );
+
+  verifyContractDetailsButton.click();
+  await driver.clickElement({ text: 'Got it', tag: 'button' });
+
+  // Approve signing typed data
+  await driver.clickElement('[data-testid="signature-request-scroll-button"]');
+  await driver.delay(regularDelayMs);
+}
+
+/**
  * This method assumes the extension is open, the dapp is open and waits for a
  * third window handle to open (the notification window). Once it does it
  * switches to the new window.
  *
  * @param {WebDriver} driver
+ * @param numHandles
  */
-async function switchToNotificationWindow(driver) {
-  await driver.waitUntilXWindowHandles(3);
+async function switchToNotificationWindow(driver, numHandles = 3) {
+  await driver.waitUntilXWindowHandles(numHandles);
   const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+  await driver.switchToWindowWithTitle(
+    WINDOW_TITLES.Notification,
+    windowHandles,
+  );
 }
 
 /**
@@ -696,6 +760,7 @@ async function switchToNotificationWindow(driver) {
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(async () => {
     let isPending = true;
+
     for (const mockedEndpoint of mockedEndpoints) {
       isPending = await mockedEndpoint.isPending();
     }
@@ -748,6 +813,7 @@ module.exports = {
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
+  PRIVATE_KEY_TWO,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -767,6 +833,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  switchToOrOpenDapp,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
@@ -784,6 +851,8 @@ module.exports = {
   generateRandNumBetween,
   sleepSeconds,
   terminateServiceWorker,
+  clickSignOnSignatureConfirmation,
+  validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
   onboardingBeginCreateNewWallet,
