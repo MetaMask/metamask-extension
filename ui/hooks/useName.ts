@@ -3,6 +3,26 @@ import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getCurrentChainId, getNames } from '../selectors';
 
+function normalizeValue(value: string, type: string): string {
+  switch (type) {
+    case NameType.ETHEREUM_ADDRESS:
+      return value.toLowerCase();
+
+    default:
+      return value;
+  }
+}
+
+function getVariationKey(type: string, chainId: string): string {
+  switch (type) {
+    case NameType.ETHEREUM_ADDRESS:
+      return chainId;
+
+    default:
+      return '';
+  }
+}
+
 export function useName(
   value: string,
   type: NameType,
@@ -10,16 +30,14 @@ export function useName(
 ): NameEntry {
   const names = useSelector(getNames, isEqual);
   const chainId = useSelector(getCurrentChainId);
-
-  const variationKey =
-    variation ?? (type === NameType.ETHEREUM_ADDRESS ? chainId : '');
-
-  const nameEntry = names[type]?.[value]?.[variationKey];
+  const normalizedValue = normalizeValue(value, type);
+  const typeVariationKey = getVariationKey(type, chainId);
+  const variationKey = variation ?? typeVariationKey;
+  const nameEntry = names[type]?.[normalizedValue]?.[variationKey];
 
   return {
     name: nameEntry?.name ?? null,
     sourceId: nameEntry?.sourceId ?? null,
     proposedNames: nameEntry?.proposedNames ?? {},
-    proposedNamesLastUpdated: nameEntry?.proposedNamesLastUpdated ?? null,
   };
 }
