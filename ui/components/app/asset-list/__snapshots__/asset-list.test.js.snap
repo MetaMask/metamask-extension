@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AssetList calculates the correct fiat account total 1`] = `
+exports[`AssetList token fiat value calculations calculates the correct fiat account total 1`] = `
 <div>
   <div
     class="mm-box token-balance-overview mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
