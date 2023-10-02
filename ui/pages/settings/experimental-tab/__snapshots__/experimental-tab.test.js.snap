@@ -130,7 +130,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               <h6
                 class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
               >
-                Data is shared with third paties. Security providers will receive your unsigned transactions and signature requests.
+                Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests.
               </h6>
             </div>
             <label

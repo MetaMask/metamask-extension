@@ -3143,7 +3143,7 @@
     "message": "OpenSea + Blockaid"
   },
   "openSeaMessage": {
-    "message": "Data is shared with third paties. Security providers will receive your unsigned transactions and signature requests."
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests."
   },
   "openSeaNew": {
     "message": "OpenSea"
