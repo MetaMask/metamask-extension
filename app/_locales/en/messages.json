@@ -2577,9 +2577,6 @@
   "newNFTDetectedInNFTsTabMessage": {
     "message": "Let MetaMask automatically detect and display NFTs in your wallet."
   },
-  "newNFTDetectedMessage": {
-    "message": "Allow MetaMask $1 to automatically detect NFTs from Opensea and display in your wallet."
-  },
   "newNFTsAutodetected": {
     "message": "NFT autodetection"
   },
