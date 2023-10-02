@@ -18,9 +18,9 @@ const mockApproval = {
     header: [
       {
         key: 'headerText',
-        element: 'Typography',
+        name: 'Typography',
         children: 'Success mock',
-        props: {
+        properties: {
           variant: 'h2',
           class: 'header-mock-class',
         },

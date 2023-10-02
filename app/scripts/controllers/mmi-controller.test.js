@@ -19,6 +19,7 @@ describe('MMIController', function () {
       })),
       registerActionHandler: jest.fn(),
       publish: jest.fn(),
+      subscribe: jest.fn(),
     };
 
     mmiController = new MMIController({
@@ -56,8 +57,6 @@ describe('MMIController', function () {
       }),
       preferencesController: new PreferencesController({
         initState: {},
-        onInfuraIsBlocked: jest.fn(),
-        onInfuraIsUnblocked: jest.fn(),
         onAccountRemoved: jest.fn(),
         provider: {},
         networkConfigurations: {},
@@ -75,9 +74,6 @@ describe('MMIController', function () {
               autoLockTimeLimit: 0,
             },
           })),
-        },
-        qrHardwareStore: {
-          subscribe: jest.fn(),
         },
         messenger: mockMessenger,
       }),

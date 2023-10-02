@@ -19,11 +19,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { displayWarning } from '../../../store/actions';
 import BottomButtons from './bottom-buttons';
 
-JsonImportSubview.propTypes = {
-  importAccountFunc: PropTypes.func.isRequired,
-  onActionComplete: PropTypes.func.isRequired,
-};
-
 export default function JsonImportSubview({
   importAccountFunc,
   onActionComplete,
@@ -104,3 +99,14 @@ export default function JsonImportSubview({
     </>
   );
 }
+
+JsonImportSubview.propTypes = {
+  /**
+   * Function to import the account
+   */
+  importAccountFunc: PropTypes.func.isRequired,
+  /**
+   * Executes when the key is imported
+   */
+  onActionComplete: PropTypes.func.isRequired,
+};
