@@ -611,18 +611,9 @@
   "busy": {
     "message": "Απασχολημένο"
   },
-  "buy": {
-    "message": "Αγορά"
-  },
   "buyAsset": {
     "message": "Αγορά $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Κρατήστε τα κρυπτονομίσματά σας και κερδίστε πιθανά κέρδη"
-  },
-  "buyDisabled": {
-    "message": "Η αγορά δεν είναι διαθέσιμη σε αυτό το δίκτυο"
   },
   "buyMoreAsset": {
     "message": "Αγοράστε περισσότερα $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Απορρίψτε την υπενθύμιση δημιουργίας αντιγράφων ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
-  "displayNftMedia": {
-    "message": "Εμφάνιση των μέσων NFT"
-  },
   "domain": {
     "message": "Τομέας"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Ενεργοποίηση OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
   "enableSmartSwaps": {
     "message": "Ενεργοποίηση των έξυπνων ανταλλαγών"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Πειραματικά"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Εξερευνήστε το MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας."
+    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Εξωτερική επέκταση"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Επιτρέψτε στο snap να χρησιμοποιεί επιχειρηματικά μοντέλα για την εκτέλεση κώδικα σε συγκεκριμένες χρονικές στιγμές κατά τη διάρκεια του κύκλου ζωής του.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Εκτέλεση επ' αόριστον.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Επιτρέψτε στο snap να εκτελείται επ' αόριστον, ενώ, για παράδειγμα, επεξεργάζεται μεγάλες ποσότητες δεδομένων.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Προσθήκη και έλεγχος λογαριασμών στο Ethereum",

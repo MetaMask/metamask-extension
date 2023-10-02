@@ -7,6 +7,8 @@ const {
   openDapp,
   unlockWallet,
   getEventPayloads,
+  clickSignOnSignatureConfirmation,
+  validateContractDetails,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -43,38 +45,6 @@ async function mockSegment(mockServer) {
         };
       }),
   ];
-}
-
-/**
- * Some signing methods have extra security that requires the user to click a
- * button to validate that they have verified the details. This method handles
- * performing the necessary steps to click that button.
- *
- * @param {WebDriver} driver
- */
-async function validateContractDetails(driver) {
-  const verifyContractDetailsButton = await driver.findElement(
-    '.signature-request-content__verify-contract-details',
-  );
-
-  verifyContractDetailsButton.click();
-  await driver.clickElement({ text: 'Got it', tag: 'button' });
-
-  // Approve signing typed data
-  await driver.clickElement('[data-testid="signature-request-scroll-button"]');
-  await driver.delay(regularDelayMs);
-}
-
-/**
- * This method handles clicking the sign button on signature confrimation
- * screen.
- *
- * @param {WebDriver} driver
- */
-async function clickSignOnSignatureConfirmation(driver) {
-  await driver.clickElement({ text: 'Sign', tag: 'button' });
-  await driver.waitUntilXWindowHandles(2);
-  await driver.getAllWindowHandles();
 }
 
 describe('Signature Approved Event @no-mmi', function () {

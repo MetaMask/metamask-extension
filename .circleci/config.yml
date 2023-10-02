@@ -361,23 +361,28 @@ jobs:
     executor: node-browsers
     steps:
       - run: *shallow-git-clone
+      - run:
+          name: Save Yarn version
+          command: |
+            yarn --version > /tmp/YARN_VERSION
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
             # This cache key lookup will fail if the lock file is modified and a cache
             # has not yet been persisted for the new checksum.
-            - dependency-cache-v1-{{ checksum "yarn.lock" }}
+            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
             # To prevent having to do a full install of every node_module when
             # dependencies change, restore from the last known cache of any
-            # branch/checksum, the install step will remove cached items that are no longer
-            # required and add the new dependencies, and the cache will be persisted.
-            - dependency-cache-v1-
+            # branch/checksum with the same Yarn version, the install step will remove
+            # cached items that are no longer required and add the new dependencies, and
+            # the cache will be persisted.
+            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-
       - gh/install
       - run:
           name: Install dependencies
           command: .circleci/scripts/install-dependencies.sh
       - save_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
           paths:
             - .yarn/cache
       - persist_to_workspace:
@@ -579,10 +584,10 @@ jobs:
           name: Build extension for testing
           command: yarn build:test:flask
       - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
+          name: Move test build to 'dist-test-flask' to avoid conflict with production build
           command: mv ./dist ./dist-test-flask
       - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
+          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask
       - persist_to_workspace:
           root: .
@@ -624,7 +629,7 @@ jobs:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-mv3
       - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
+          name: Move test zips to 'builds-test-mv3' to avoid conflict with production build
           command: mv ./builds ./builds-test-mv3
       - persist_to_workspace:
           root: .
@@ -1267,6 +1272,10 @@ jobs:
       - store_artifacts:
           path: builds-mmi
           destination: builds-mmi
+      - store_artifacts:
+          path: builds-test
+      - store_artifacts:
+          path: builds-test-flask
       - store_artifacts:
           path: coverage
           destination: coverage

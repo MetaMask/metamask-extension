@@ -611,18 +611,9 @@
   "busy": {
     "message": "바쁨"
   },
-  "buy": {
-    "message": "구매"
-  },
   "buyAsset": {
     "message": "$1 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "암호화폐를 보유하고 잠재적인 수익을 얻으세요"
-  },
-  "buyDisabled": {
-    "message": "이 네트워크에서는 매수할 수 없습니다"
   },
   "buyMoreAsset": {
     "message": "$1 추가 구매",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "비밀복구구문 백업 알림 해지"
   },
-  "displayNftMedia": {
-    "message": "NFT 미디어 표시"
-  },
   "domain": {
     "message": "도메인"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API 활성화"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
   "enableSmartSwaps": {
     "message": "스마트 스왑 활성화"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "실험적"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask 스냅 탐색"
-  },
   "extendWalletWithSnaps": {
-    "message": "지갑 경험을 개인 맞춤하세요."
+    "message": "지갑 경험을 개인 맞춤하세요.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "외부 확장"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "스냅으로 라이프사이클 훅을 사용하도록 허용하면 라이프사이클 동안 코드를 특정 횟수만큼 실행합니다.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "무기한 운용됩니다.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "예를 들어 많은 양의 데이터를 처리하는 동안 스냅이 무기한 실행되도록 허용합니다.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "이더리움 계정 추가 및 제어",
