@@ -611,18 +611,9 @@
   "busy": {
     "message": "Ausgelastet"
   },
-  "buy": {
-    "message": "Kaufen"
-  },
   "buyAsset": {
     "message": "$1 kaufen",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Halten Sie Ihre Kryptowährung und erzielen Sie potenzielle Gewinne"
-  },
-  "buyDisabled": {
-    "message": "Kaufen ist in diesem Netzwerk nicht verfügbar"
   },
   "buyMoreAsset": {
     "message": "Mehr $1 kaufen",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Backup-Erinnerung zur geheimen Wiederherstellungsphrase verwerfen"
   },
-  "displayNftMedia": {
-    "message": "NFT-Medien anzeigen"
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API aktivieren"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
   "enableSmartSwaps": {
     "message": "Smart Swaps aktivieren"

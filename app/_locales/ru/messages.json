@@ -611,18 +611,9 @@
   "busy": {
     "message": "Занят"
   },
-  "buy": {
-    "message": "Купить"
-  },
   "buyAsset": {
     "message": "Купить $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Держите свою криптовалюту и зарабатывайте потенциально прибыль"
-  },
-  "buyDisabled": {
-    "message": "В этой сети недоступна покупка"
   },
   "buyMoreAsset": {
     "message": "Купить еще $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Отклонить напоминание о необходимости создать резервную копию секретной фразы для восстановления"
   },
-  "displayNftMedia": {
-    "message": "Показать NFT-носитель"
-  },
   "domain": {
     "message": "Домен"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Включить API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
   "enableSmartSwaps": {
     "message": "Включить смарт-свопы"

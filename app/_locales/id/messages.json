@@ -611,18 +611,9 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buy": {
-    "message": "Beli"
-  },
   "buyAsset": {
     "message": "Beli $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Pertahankan kripto Anda dan dapatkan potensi keuntungan"
-  },
-  "buyDisabled": {
-    "message": "Beli tidak tersedia di jaringan ini"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Lewatkan pengingat pencadangan Frasa Pemulihan Rahasia"
   },
-  "displayNftMedia": {
-    "message": "Tampilkan media NFT"
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Aktifkan API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
   "enableSmartSwaps": {
     "message": "Aktifkan pertukaran cerdas"

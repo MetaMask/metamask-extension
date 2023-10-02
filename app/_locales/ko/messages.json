@@ -611,18 +611,9 @@
   "busy": {
     "message": "바쁨"
   },
-  "buy": {
-    "message": "구매"
-  },
   "buyAsset": {
     "message": "$1 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "암호화폐를 보유하고 잠재적인 수익을 얻으세요"
-  },
-  "buyDisabled": {
-    "message": "이 네트워크에서는 매수할 수 없습니다"
   },
   "buyMoreAsset": {
     "message": "$1 추가 구매",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "비밀복구구문 백업 알림 해지"
   },
-  "displayNftMedia": {
-    "message": "NFT 미디어 표시"
-  },
   "domain": {
     "message": "도메인"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API 활성화"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
   "enableSmartSwaps": {
     "message": "스마트 스왑 활성화"
