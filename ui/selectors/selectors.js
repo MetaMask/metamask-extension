@@ -1096,7 +1096,6 @@ function getAllowedAnnouncementIds(state) {
 
 export function getSortedAnnouncementsToShow(state) {
   const announcements = Object.values(state.metamask.announcements);
-
   const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
   const announcementsToShow = announcements.filter(
     (announcement) =>
@@ -1105,7 +1104,7 @@ export function getSortedAnnouncementsToShow(state) {
   const announcementsSortedByDate = announcementsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),
   );
-  console.log('announcementsSortedByDate', allowedAnnouncementIds);
+
   return announcementsSortedByDate;
 }
 
