@@ -1320,6 +1320,10 @@
   "disconnectThisAccount": {
     "message": "Disconnect this account"
   },
+  "discoverSnaps": {
+    "message": "Discover Snaps",
+    "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
+  },
   "dismiss": {
     "message": "Dismiss"
   },
@@ -1602,11 +1606,9 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explore MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Customize your wallet experience."
+    "message": "Explore community-built Snaps to customize your web3 experience",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "extensionInsallCompleteDescription": {
     "message": "Return to the MetaMask Institutional product onboarding to connect your custodial or self-custodial accounts."
