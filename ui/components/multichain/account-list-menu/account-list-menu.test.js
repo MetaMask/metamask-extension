@@ -94,7 +94,7 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
-    expect(listItems).toHaveLength(4);
+    expect(listItems).toHaveLength(5);
 
     const searchBox = document.querySelector('input[type=search]');
     fireEvent.change(searchBox, {
