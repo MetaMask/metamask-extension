@@ -74,17 +74,17 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Going through the first time flow', function () {
-    it('clicks the "Create New Wallet" button on the welcome screen @no-mmi', async function () {
+  describe('Going through the first time flow @no-mmi', function () {
+    it('clicks the "Create New Wallet" button on the welcome screen', async function () {
       await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
       await driver.clickElement('[data-testid="onboarding-create-wallet"]');
     });
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen @no-mmi', async function () {
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
       await driver.clickElement('[data-testid="metametrics-no-thanks"]');
     });
 
-    it('accepts a secure password @no-mmi', async function () {
+    it('accepts a secure password', async function () {
       const password = 'correct horse battery staple';
       await driver.fill('[data-testid="create-password-new"]', password);
       await driver.fill('[data-testid="create-password-confirm"]', password);
