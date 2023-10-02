@@ -4073,7 +4073,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-keyring-controller@npm:^13.0.1":
+"@metamask/eth-keyring-controller@npm:13.0.1":
   version: 13.0.1
   resolution: "@metamask/eth-keyring-controller@npm:13.0.1"
   dependencies:
@@ -4085,6 +4085,21 @@ __metadata:
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/utils": "npm:^8.1.0"
   checksum: 7b5026ed3bd7a3b536b7e743122431a551a19d2a0113099d30bfbff44162d4fac99013665cf92fb419dde12b1497597750ea9d94d270a93b4f6706279b6cba01
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-keyring-controller@patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch":
+  version: 13.0.1
+  resolution: "@metamask/eth-keyring-controller@patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch::version=13.0.1&hash=6c75cf"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/browser-passworder": "npm:^4.1.0"
+    "@metamask/eth-hd-keyring": "npm:^6.0.0"
+    "@metamask/eth-sig-util": "npm:^6.0.0"
+    "@metamask/eth-simple-keyring": "npm:^5.0.0"
+    "@metamask/obs-store": "npm:^8.1.0"
+    "@metamask/utils": "npm:^8.1.0"
+  checksum: 0a177f9c8d69b3a386006e8a14a551d170236c18693d9624e92f95a5417ad10b8d08d6c1a3c06de2f80d4b21a64c2575a16cb79cfd561e54bd0b975cf26d031e
   languageName: node
   linkType: hard
 
