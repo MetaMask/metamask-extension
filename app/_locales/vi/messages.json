@@ -1538,11 +1538,9 @@
   "experimental": {
     "message": "Thử nghiệm"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Khám phá MetaMask Snap"
-  },
   "extendWalletWithSnaps": {
-    "message": "Tuỳ biến trải nghiệm sử dụng ví."
+    "message": "Tuỳ biến trải nghiệm sử dụng ví.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Tiện ích bên ngoài"
