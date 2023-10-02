@@ -107,7 +107,7 @@ export class SnapsNameProvider implements NameProvider {
     snap: TruncatedSnap,
     request: NameProviderRequest,
   ): Promise<{ sourceId: string; result: NameProviderSourceResult }> {
-    const { chainId: chainIdHex, value } = request;
+    const { variation: chainIdHex, value } = request;
     const sourceId = snap.id;
     const chainIdDecimal = parseInt(chainIdHex, 16);
 

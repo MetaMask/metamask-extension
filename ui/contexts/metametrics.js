@@ -37,7 +37,7 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 /**
  * @typedef {(
  *  payload: UIMetricsEventPayload,
- *  options: MetaMetricsEventOptions
+ *  options?: MetaMetricsEventOptions
  * ) => Promise<void>} UITrackEventMethod
  */
 
