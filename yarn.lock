@@ -4196,18 +4196,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/eth-trezor-keyring@npm:1.1.0"
+"@metamask/eth-trezor-keyring@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/eth-trezor-keyring@npm:2.0.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.0.0"
     "@ethereumjs/util": "npm:^8.0.0"
     "@metamask/eth-sig-util": "npm:^5.0.2"
-    "@metamask/utils": "npm:^4.0.0"
     "@trezor/connect-plugin-ethereum": "npm:^9.0.1"
     "@trezor/connect-web": "npm:^9.0.6"
     hdkey: "npm:0.8.0"
-  checksum: eb1ac827d07a6c2d7b0f1f291691b13b1b65db85f4bced5e2af9f5bdf9117a9b725673b069ad67fd57b7c525cbb53755f8b3877a1f2c72e7812b2d8e127a52a9
+  checksum: e245c0403689996f21ba53eed0a6e9ac098d15fafbb59dd5daaeeb4e33acc53bfa580d32e6091a921a11056ecfe0c3a139e7080a5c1de0a2aa22af762408ec42
   languageName: node
   linkType: hard
 
@@ -23867,7 +23866,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
     "@metamask/eth-snap-keyring": "npm:0.3.1"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
-    "@metamask/eth-trezor-keyring": "npm:^1.1.0"
+    "@metamask/eth-trezor-keyring": "npm:^2.0.0"
     "@metamask/etherscan-link": "npm:^2.2.0"
     "@metamask/ethjs-query": "npm:^0.5.0"
     "@metamask/forwarder": "npm:^1.1.0"

@@ -18,7 +18,10 @@ import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
-import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
+import {
+  TrezorConnectBridge,
+  TrezorKeyring,
+} from '@metamask/eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
@@ -215,6 +218,7 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
@@ -832,14 +836,29 @@ export default class MetamaskController extends EventEmitter {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
-        keyringOverrides?.trezor || TrezorKeyring,
         keyringOverrides?.ledger || LedgerBridgeKeyring,
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
 
+      const additionalBridgedKeyringTypes = [
+        {
+          keyring: keyringOverrides?.trezor || TrezorKeyring,
+          bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
+        },
+      ];
+
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
         keyringBuilderFactory(keyringType),
+      );
+
+      additionalBridgedKeyringTypes.forEach((keyringType) =>
+        additionalKeyrings.push(
+          hardwareKeyringBuilderFactory(
+            keyringType.keyring,
+            keyringType.bridge,
+          ),
+        ),
       );
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -3375,6 +3394,10 @@ export default class MetamaskController extends EventEmitter {
     );
     if (!keyring) {
       keyring = await this.coreKeyringController.addNewKeyring(keyringName);
+
+      if (deviceName === HardwareDeviceNames.trezor) {
+        await keyring.init();
+      }
     }
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
@@ -4845,13 +4868,6 @@ export default class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked() {
-    const [trezorKeyring] = this.coreKeyringController.getKeyringsByType(
-      KeyringType.trezor,
-    );
-    if (trezorKeyring) {
-      trezorKeyring.dispose();
-    }
-
     if (isManifestV3) {
       this.clearLoginArtifacts();
     }
