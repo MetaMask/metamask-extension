@@ -1116,7 +1116,6 @@ export function getShowRecoveryPhraseReminder(state) {
 
   const currentTime = new Date().getTime();
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
-
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
 
