@@ -39,7 +39,7 @@ describe('Confirm Transaction', () => {
       store,
       `${CONFIRM_TRANSACTION_ROUTE}/${unapprovedTransactionId}${CONFIRM_SEND_ETHER_PATH}`,
     );
-    expect(getByText('0xb19...0c5e')).toBeInTheDocument();
+    expect(getByText('0xb19Ac...f0c5e')).toBeInTheDocument();
     expect(getByRole('button', { name: 'Details' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Data' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Hex' })).toBeInTheDocument();

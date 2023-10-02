@@ -56,7 +56,7 @@ describe('Import flow', function () {
         const address = await driver.findElement(
           '.multichain-address-copy-button',
         );
-        assert.equal(await address.getText(), '0x0Cc...afD3');
+        assert.equal(await address.getText(), '0x0Cc52...7afD3');
 
         await driver.clickElement('.mm-modal button[aria-label="Close"]');
 

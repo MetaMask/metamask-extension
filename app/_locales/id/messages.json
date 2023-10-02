@@ -611,18 +611,9 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buy": {
-    "message": "Beli"
-  },
   "buyAsset": {
     "message": "Beli $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Pertahankan kripto Anda dan dapatkan potensi keuntungan"
-  },
-  "buyDisabled": {
-    "message": "Beli tidak tersedia di jaringan ini"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Lewatkan pengingat pencadangan Frasa Pemulihan Rahasia"
   },
-  "displayNftMedia": {
-    "message": "Tampilkan media NFT"
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Aktifkan API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
   "enableSmartSwaps": {
     "message": "Aktifkan pertukaran cerdas"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Jelajahi MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Perluas pengalaman dompet."
+    "message": "Perluas pengalaman dompet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Ekstensi eksternal"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Izinkan snap menggunakan lifecycle hook untuk menjalankan kode pada waktu tertentu selama siklus hidupnya.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Operasikan sepanjang waktu.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Izinkan snap beroperasi sepanjang waktu saat, sebagai contoh, memproses data dalam jumlah besar.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",
