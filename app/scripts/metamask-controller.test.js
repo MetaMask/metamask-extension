@@ -26,6 +26,7 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
 import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
+import { LOG_EVENT } from '../../shared/constants/logs';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -368,9 +369,8 @@ describe('MetaMaskController', () => {
         expect(localController.loggingController.add).toHaveBeenCalledWith({
           type: LogType.GenericLog,
           data: {
-            event: 'Extension version update',
+            event: LOG_EVENT.VERSION_UPDATE,
             previousVersion: mockOnInstalledEventDetails.previousVersion,
-            timestamp: expect.any(Number),
             version: mockVersion,
           },
         });

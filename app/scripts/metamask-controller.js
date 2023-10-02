@@ -156,6 +156,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
+import { LOG_EVENT } from '../../shared/constants/logs';
 
 import {
   getTokenIdParam,
@@ -320,9 +321,8 @@ export default class MetamaskController extends EventEmitter {
         this.loggingController.add({
           type: LogType.GenericLog,
           data: {
-            event: 'Extension version update',
+            event: LOG_EVENT.VERSION_UPDATE,
             previousVersion: details.previousVersion,
-            timestamp: Date.now(),
             version,
           },
         });
