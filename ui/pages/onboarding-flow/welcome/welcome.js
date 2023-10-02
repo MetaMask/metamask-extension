@@ -121,16 +121,6 @@ export default function OnboardingWelcome() {
     ///: END:ONLY_INCLUDE_IN
   };
 
-  trackEvent({
-    category: MetaMetricsEventCategory.Onboarding,
-    event: MetaMetricsEventName.OnboardingWelcome,
-    properties: {
-      message_title: t('welcomeToMetaMask'),
-      app_version: global?.platform?.getVersion(),
-    },
-    addEventBeforeMetricsOptIn: true,
-  });
-
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
       {

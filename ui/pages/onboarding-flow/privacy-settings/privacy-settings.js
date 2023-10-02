@@ -12,13 +12,14 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
-  BUTTON_SIZES,
-  BUTTON_VARIANT,
   Box,
-  Button,
   PickerNetwork,
   Text,
   TextField,
+  ButtonPrimary,
+  ButtonPrimarySize,
+  ButtonSecondary,
+  ButtonSecondarySize,
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -48,23 +49,39 @@ export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { incomingTransactionsPreferences } = useSelector(
-    (state) => state.metamask,
-  );
 
-  const [usePhishingDetection, setUsePhishingDetection] = useState(true);
-  const [turnOn4ByteResolution, setTurnOn4ByteResolution] = useState(true);
-  const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
-  const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] = useState(true);
+  const defaultState = useSelector((state) => state.metamask);
+  const {
+    incomingTransactionsPreferences,
+    usePhishDetect,
+    use4ByteResolution,
+    useTokenDetection,
+    useCurrencyRateCheck,
+    useMultiAccountBalanceChecker,
+    ipfsGateway,
+    useAddressBarEnsResolution,
+  } = defaultState;
+
+  const [usePhishingDetection, setUsePhishingDetection] =
+    useState(usePhishDetect);
+  const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
+    useState(use4ByteResolution);
+  const [turnOnTokenDetection, setTurnOnTokenDetection] =
+    useState(useTokenDetection);
+  const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] =
+    useState(useCurrencyRateCheck);
+
   const [
     isMultiAccountBalanceCheckerEnabled,
     setMultiAccountBalanceCheckerEnabled,
-  ] = useState(true);
-  const [ipfsURL, setIPFSURL] = useState('');
-  const [addressBarResolution, setAddressBarResolution] = useState(true);
+  ] = useState(useMultiAccountBalanceChecker);
+  const [ipfsURL, setIPFSURL] = useState(ipfsGateway);
   const [ipfsError, setIPFSError] = useState(null);
-  const trackEvent = useContext(MetaMetricsContext);
+  const [addressBarResolution, setAddressBarResolution] = useState(
+    useAddressBarEnsResolution,
+  );
 
+  const trackEvent = useContext(MetaMetricsContext);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getAllNetworks);
 
@@ -201,16 +218,15 @@ export default function PrivacySettings() {
                       </>
                     </div>
                   ) : (
-                    <Button
-                      variant={BUTTON_VARIANT.SECONDARY}
-                      size={BUTTON_SIZES.LG}
+                    <ButtonSecondary
+                      size={ButtonSecondarySize.Lg}
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
                       }}
                     >
                       {t('onboardingAdvancedPrivacyNetworkButton')}
-                    </Button>
+                    </ButtonSecondary>
                   )}
                 </Box>
               </>
@@ -224,6 +240,7 @@ export default function PrivacySettings() {
                 {t('onboardingAdvancedPrivacyIPFSDescription')}
                 <Box paddingTop={2}>
                   <TextField
+                    value={ipfsURL}
                     style={{ width: '100%' }}
                     inputProps={{ 'data-testid': 'ipfs-input' }}
                     onChange={(e) => {
@@ -253,7 +270,7 @@ export default function PrivacySettings() {
             description={
               <>
                 <Text variant={TextVariant.inherit}>
-                  {t('ensDomainsSettingDescriptionIntro')}
+                  {t('ensDomainsSettingDescriptionIntroduction')}
                 </Text>
                 <Box
                   as="ul"
@@ -263,17 +280,14 @@ export default function PrivacySettings() {
                   style={{ listStyleType: 'circle' }}
                 >
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint1')}
+                    {t('ensDomainsSettingDescriptionPart1')}
                   </Text>
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint2')}
-                  </Text>
-                  <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint3')}
+                    {t('ensDomainsSettingDescriptionPart2')}
                   </Text>
                 </Box>
                 <Text variant={TextVariant.inherit}>
-                  {t('ensDomainsSettingDescriptionOutro')}
+                  {t('ensDomainsSettingDescriptionOutroduction')}
                 </Text>
               </>
             }
@@ -309,15 +323,14 @@ export default function PrivacySettings() {
               </a>,
             ])}
           />
-          <Button
-            variant={BUTTON_VARIANT.PRIMARY}
-            size={BUTTON_SIZES.LG}
+          <ButtonPrimary
+            size={ButtonPrimarySize.Lg}
             onClick={handleSubmit}
             block
             marginTop={6}
           >
             {t('done')}
-          </Button>
+          </ButtonPrimary>
         </div>
       </div>
     </>

@@ -70,6 +70,9 @@ describe('Multiple transactions', function () {
         await driver.switchToWindow(extensionTab);
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForSelector(
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
+        );
 
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .activity-list-item',

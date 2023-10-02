@@ -57,6 +57,22 @@ export function processString(
 }
 
 /**
+ * Processes a header configuration and returns a value compatible with the template renderer.
+ *
+ * @param header - The header configuration to process.
+ * @returns The processed header.
+ */
+export function processHeader(
+  header: (string | ResultComponent)[] | undefined,
+):
+  | string
+  | TemplateRendererComponent
+  | (string | TemplateRendererComponent)[]
+  | undefined {
+  return convertResultComponents(header);
+}
+
+/**
  * Applies bold formatting to the message.
  *
  * @param message - The input message to apply bold formatting to.

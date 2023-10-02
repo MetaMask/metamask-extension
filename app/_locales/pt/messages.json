@@ -371,9 +371,6 @@
   "amount": {
     "message": "Valor"
   },
-  "apiUrl": {
-    "message": "URL da API"
-  },
   "appDescription": {
     "message": "Uma carteira de Ethereum no seu navegador",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buy": {
-    "message": "Comprar"
-  },
   "buyAsset": {
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Segure seus criptoativos e ganhe lucros em potencial"
-  },
-  "buyDisabled": {
-    "message": "A compra não está disponível nesta rede"
   },
   "buyMoreAsset": {
     "message": "Comprar mais $1",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "Custodiante"
   },
-  "custodianAccount": {
-    "message": "Conta custodiante"
-  },
   "custodianAccountAddedDesc": {
     "message": "Agora você pode usar suas contas de custódia no MetaMask Institutional."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "Descartar o lembrete de backup da Frase de Recuperação Secreta"
   },
-  "displayNftMedia": {
-    "message": "Exibir mídias de NFTs"
-  },
-  "displayNftMediaDescription": {
-    "message": "Exibir mídias e dados de NFTs expõe seu endereço IP à OpenSea ou outros terceiros. Isso pode possibilitar que invasores associem seu endereço IP ao seu endereço Ethereum. A detecção automática de NFTs depende dessa configuração e ficará indisponível quando ela estiver desativada."
-  },
   "domain": {
     "message": "Domínio"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
   },
-  "enableForAllNetworks": {
-    "message": "Ativar para todas as redes"
-  },
   "enableFromSettings": {
     "message": " Ative nas Configurações."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Habilitar API do OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
   "enableSmartSwaps": {
     "message": "Ativar trocas inteligentes"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "A detecção aprimorada de tokens está disponível no momento em $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "A MetaMask permite que você veja domínios ENS, como \"https://metamask.eth\", direto da barra de endereço do seu navegador. Veja como funciona:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Os navegadores comuns normalmente não lidam com endereços ENS ou IPFS, mas a MetaMask ajuda nisso. Usar esse recurso pode compartilhar seu endereço IP com serviços terceirizados de IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "A MetaMask verifica com o contrato ENS da Ethereum para encontrar o código conectado ao nome ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Se o código está vinculado ao IPFS, ele recebe o conteúdo da rede IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Então, você poderá ver o conteúdo, geralmente um website ou algo similar."
   },
   "ensDomainsSettingTitle": {
     "message": "Exibir domínios ENS na barra de endereço"
@@ -1605,9 +1572,6 @@
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "O arquivo inserido é grande demais."
   },
   "flaskWelcomeUninstall": {
     "message": "você deve desinstalar essa extensão",
@@ -2346,9 +2310,6 @@
   "missingSettingRequest": {
     "message": "Solicite aqui"
   },
-  "mmiAddToken": {
-    "message": "A página em $1 gostaria de autorizar o seguinte token de custodiante na MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "O MetaMask Institutional é projetado e desenvolvido ao redor do mundo."
   },
@@ -2488,12 +2449,6 @@
   },
   "newContract": {
     "message": "Novo contrato"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Permita que a MetaMask detecte automaticamente os NFTs da OpenSea e mostre-os em sua carteira."
-  },
-  "newNFTsDetected": {
-    "message": "Novidade! Detecção de NFT"
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
@@ -3233,14 +3188,6 @@
     "message": "Permitir que o snap use ganchos de ciclo de vida para executar códigos em momentos específicos durante seu ciclo de vida.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
-  "permission_longRunning": {
-    "message": "Executar indefinidamente.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Permitir que o snap seja executado indefinidamente, por exemplo, enquanto processa grandes volumes de dados.",
-    "description": "An extended description for the `endowment:long-running` permission"
-  },
   "permission_manageAccounts": {
     "message": "Adicionar e controlar contas Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
@@ -3885,9 +3832,6 @@
   "showIncomingTransactionsDescription": {
     "message": "Isso depende de $1, que terá acesso ao seu endereço Ethereum e ao seu endereço IP. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsInformation": {
-    "message": "Isso depende de cada rede que terá acesso ao seu endereço Ethereum e ao seu endereço IP."
   },
   "showMore": {
     "message": "Exibir mais"
@@ -5256,21 +5200,6 @@
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
-  },
-  "useNftDetectionDescription": {
-    "message": "Usamos APIs terceirizadas para detectar NFTs na sua carteira, ou seja, seu endereço IP pode ser exposto a servidores centralizados. Há algumas coisas para se ter cuidado ao ativar esse recurso."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "O endereço da sua conta estará exposto às APIs terceirizadas."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Os metadados de NFTs podem conter links para golpes ou sites de phishing."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Qualquer pessoa pode realizar o airdrop de NFTs em sua conta. Isso inclui conteúdo ofensivo que pode ser exibido automaticamente em sua carteira."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Deixe desativado esse recurso se não quiser que o app obtenha dados desses serviços."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
