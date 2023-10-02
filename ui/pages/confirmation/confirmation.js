@@ -59,7 +59,6 @@ import {
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
-import ConfirmationFooter from './components/confirmation-footer';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
