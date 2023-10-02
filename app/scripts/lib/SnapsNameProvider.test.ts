@@ -139,7 +139,7 @@ describe('SnapsNameProvider', () => {
       const response = await provider.getProposedNames({
         value: VALUE_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
-        chainId: CHAIN_ID_MOCK,
+        variation: CHAIN_ID_MOCK,
       });
 
       expect(response).toStrictEqual({
@@ -193,7 +193,7 @@ describe('SnapsNameProvider', () => {
       const response = await provider.getProposedNames({
         value: VALUE_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
-        chainId: CHAIN_ID_MOCK,
+        variation: CHAIN_ID_MOCK,
       });
 
       expect(response).toStrictEqual({
@@ -224,7 +224,7 @@ describe('SnapsNameProvider', () => {
       const response = await provider.getProposedNames({
         value: VALUE_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
-        chainId: CHAIN_ID_MOCK,
+        variation: CHAIN_ID_MOCK,
       });
 
       expect(response).toStrictEqual({

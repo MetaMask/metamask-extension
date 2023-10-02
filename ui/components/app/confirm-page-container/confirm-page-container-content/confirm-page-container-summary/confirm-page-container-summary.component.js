@@ -9,7 +9,7 @@ import { TransactionType } from '../../../../../../shared/constants/transaction'
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAddressDetails from '../../../../../hooks/useAddressDetails';
-import { getIpfsGateway } from '../../../../../selectors';
+import { getIpfsGateway, txDataSelector } from '../../../../../selectors';
 
 import Identicon from '../../../../ui/identicon';
 import InfoTooltip from '../../../../ui/info-tooltip';
@@ -25,7 +25,6 @@ const ConfirmPageContainerSummary = (props) => {
     subtitleComponent,
     className,
     tokenAddress,
-    toAddress,
     nonce,
     origin,
     image,
@@ -35,6 +34,10 @@ const ConfirmPageContainerSummary = (props) => {
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
+
+  const txData = useSelector(txDataSelector);
+  const { txParams = {} } = txData;
+  const { to: txParamsToAddress } = txParams;
 
   const contractInitiatedTransactionType = [
     TransactionType.contractInteraction,
@@ -48,14 +51,15 @@ const ConfirmPageContainerSummary = (props) => {
   if (isContractTypeTransaction) {
     // If the transaction is TOKEN_METHOD_TRANSFER or TOKEN_METHOD_TRANSFER_FROM
     // the contract address is passed down as tokenAddress, if it is anyother
-    // type of contract interaction it is passed as toAddress
+    // type of contract interaction it is "to" from txParams
+
     contractAddress =
       transactionType === TransactionType.tokenMethodTransfer ||
       transactionType === TransactionType.tokenMethodTransferFrom ||
       transactionType === TransactionType.tokenMethodSafeTransferFrom ||
       transactionType === TransactionType.tokenMethodSetApprovalForAll
         ? tokenAddress
-        : toAddress;
+        : txParamsToAddress;
   }
 
   const { toName, isTrusted } = useAddressDetails(contractAddress);
@@ -146,7 +150,6 @@ ConfirmPageContainerSummary.propTypes = {
   subtitleComponent: PropTypes.node,
   className: PropTypes.string,
   tokenAddress: PropTypes.string,
-  toAddress: PropTypes.string,
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
   transactionType: PropTypes.string,

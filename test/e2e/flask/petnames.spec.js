@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
@@ -88,84 +87,41 @@ async function focusTestDapp(driver) {
 }
 
 async function showThirdPartyDetails(driver) {
-  const verifyContractDetailsButton = await driver.findElement(
+  await driver.clickElement(
     '.signature-request-content__verify-contract-details',
   );
-
-  verifyContractDetailsButton.click();
-
-  await driver.delay(3000);
-
-  return await driver.findElement('.contract-details-modal');
 }
 
 async function closeThirdPartyDetails(driver) {
   await driver.clickElement({ text: 'Got it', tag: 'button' });
 }
 
-async function getAddressesInMessage(driver) {
-  return await driver.findElements(
-    '.signature-request-data__node__value__address',
-  );
+async function expectName(driver, expectedValue, isSaved) {
+  const containerClass = isSaved ? 'name__saved' : 'name__missing';
+  const valueClass = isSaved ? 'name__name' : 'name__value';
+
+  await driver.findElement({
+    css: `.${containerClass} .${valueClass}`,
+    text: expectedValue,
+  });
 }
 
-async function expectName(
-  parent,
-  expectedValue,
-  expectedProposedName,
-  isSaved,
-) {
-  const value = await (
-    await parent.nestedFindElement(isSaved ? '.name__name' : '.name__value')
-  ).getText();
-
-  assert.equal(value, expectedValue, 'Name value is incorrect');
-
-  if (expectedProposedName) {
-    const proposedName = (
-      await (await parent.nestedFindElement(`.name__proposed`))?.getText()
-    )
-      ?.replace('“', '')
-      .replace('”', '');
-
-    assert.equal(
-      proposedName,
-      expectedProposedName,
-      'Proposed name is incorrect',
-    );
-  }
-
-  if (isSaved) {
-    await parent.nestedFindElement(`.name__saved`);
-  } else {
-    await parent.nestedFindElement(`.name__missing`);
-  }
+async function clickName(driver, value) {
+  await driver.clickElement({
+    css: `.name`,
+    text: value,
+  });
 }
 
-async function saveName(driver, parent, name, proposedName) {
-  (await parent.nestedFindElement('.name')).click();
-  (await driver.findElement('.form-combo-field')).click();
+async function saveName(driver, value, name, proposedName) {
+  await clickName(driver, value);
+  await driver.clickElement('.form-combo-field');
 
   if (proposedName) {
-    const options = await driver.findElements(
-      '.form-combo-field__option-primary',
-    );
-
-    let found = false;
-
-    for (const option of options) {
-      const text = await option.getText();
-
-      if (text === proposedName) {
-        option.click();
-        found = true;
-        break;
-      }
-    }
-
-    if (!found) {
-      assert.fail('Could not find proposed name');
-    }
+    await driver.clickElement({
+      css: '.form-combo-field__option-primary',
+      text: proposedName,
+    });
   }
 
   if (name) {
@@ -177,28 +133,21 @@ async function saveName(driver, parent, name, proposedName) {
   await driver.clickElement({ text: 'Save', tag: 'button' });
 }
 
-async function getProposedNames(driver, parent) {
-  (await parent.nestedFindElement('.name')).click();
-  (await driver.findElement('.form-combo-field')).click();
+async function expectProposedNames(driver, value, options) {
+  await clickName(driver, value);
+  await driver.clickElement('.form-combo-field');
 
-  const primaryTextElements = await driver.findElements(
-    '.form-combo-field__option-primary',
-  );
+  for (const option of options) {
+    await driver.findElement({
+      css: '.form-combo-field__option-primary',
+      text: option[0],
+    });
 
-  const secondaryTextElements = await driver.findElements(
-    '.form-combo-field__option-secondary',
-  );
-
-  const proposedNames = [];
-
-  for (let i = 0; i < primaryTextElements.length; i++) {
-    const primaryText = await primaryTextElements[i].getText();
-    const secondaryText = await secondaryTextElements[i].getText();
-
-    proposedNames.push([primaryText, secondaryText]);
+    await driver.findElement({
+      css: '.form-combo-field__option-secondary',
+      text: option[1],
+    });
   }
-
-  return proposedNames;
 }
 
 describe('Petnames', function () {
@@ -218,39 +167,22 @@ describe('Petnames', function () {
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await focusNotification(driver);
-
-        let addresses = await getAddressesInMessage(driver);
-
-        await expectName(addresses[0], '0xCD2...D826', 'test.lens', false);
-        await expectName(addresses[1], '0xbBb...BBbB', 'test2.lens', false);
-
-        await saveName(driver, addresses[0], undefined, 'test.lens');
-        await saveName(driver, addresses[1], undefined, 'test2.lens');
-
-        let contractDetailsModal = await showThirdPartyDetails(driver);
-
-        await expectName(
-          contractDetailsModal,
-          '0xCcC...cccC',
-          'test3.lens',
-          false,
-        );
-
-        await saveName(driver, contractDetailsModal, 'Custom Name');
+        await expectName(driver, '0xCD2a3...DD826', false);
+        await expectName(driver, '0xbBbBB...bBBbB', false);
+        await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
+        await saveName(driver, '0xbBbBB...bBBbB', undefined, 'test2.lens');
+        await showThirdPartyDetails(driver);
+        await expectName(driver, '0xCcCCc...ccccC', false);
+        await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
         await closeThirdPartyDetails(driver);
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await focusNotification(driver);
-
-        addresses = await getAddressesInMessage(driver);
-
-        await expectName(addresses[0], 'test.lens', undefined, true);
-        await expectName(addresses[1], 'test2.lens', undefined, true);
-
-        contractDetailsModal = await showThirdPartyDetails(driver);
-
-        await expectName(contractDetailsModal, 'Custom Name', undefined, true);
+        await expectName(driver, 'test.lens', true);
+        await expectName(driver, 'test2.lens', true);
+        await showThirdPartyDetails(driver);
+        await expectName(driver, 'Custom Name', true);
       },
     );
   });
@@ -271,42 +203,25 @@ describe('Petnames', function () {
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await focusNotification(driver);
-
-        let addresses = await getAddressesInMessage(driver);
-
-        await expectName(addresses[0], '0xCD2...D826', 'test.lens', false);
-        await expectName(addresses[1], '0xDea...beeF', 'Test Token', false);
-        await expectName(addresses[2], '0xbBb...BBbB', 'test2.lens', false);
-        await expectName(addresses[3], '0xB0B...Ea57', 'Test Token 2', false);
-        await expectName(addresses[4], '0xB0B...0000', undefined, false);
-
-        await saveName(driver, addresses[0], undefined, 'test.lens');
-        await saveName(driver, addresses[3], undefined, 'Test Token 2');
-
-        let contractDetailsModal = await showThirdPartyDetails(driver);
-
-        await expectName(
-          contractDetailsModal,
-          '0xCcC...cccC',
-          'test3.lens',
-          false,
-        );
-
-        await saveName(driver, contractDetailsModal, 'Custom Name');
+        await expectName(driver, '0xCD2a3...DD826', false);
+        await expectName(driver, '0xDeaDb...DbeeF', false);
+        await expectName(driver, '0xbBbBB...bBBbB', false);
+        await expectName(driver, '0xB0Bda...bEa57', false);
+        await expectName(driver, '0xB0B0b...00000', false);
+        await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
+        await saveName(driver, '0xB0Bda...bEa57', undefined, 'Test Token 2');
+        await showThirdPartyDetails(driver);
+        await expectName(driver, '0xCcCCc...ccccC', false);
+        await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
         await closeThirdPartyDetails(driver);
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await focusNotification(driver);
-
-        addresses = await getAddressesInMessage(driver);
-
-        await expectName(addresses[0], 'test.lens', undefined, true);
-        await expectName(addresses[3], 'Test Token 2', undefined, true);
-
-        contractDetailsModal = await showThirdPartyDetails(driver);
-
-        await expectName(contractDetailsModal, 'Custom Name', undefined, true);
+        await expectName(driver, 'test.lens', true);
+        await expectName(driver, 'Test Token 2', true);
+        await showThirdPartyDetails(driver);
+        await expectName(driver, 'Custom Name', true);
       },
     );
   });
@@ -330,12 +245,9 @@ describe('Petnames', function () {
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await focusNotification(driver);
-
-        const addresses = await getAddressesInMessage(driver);
-
-        assert.deepEqual(await getProposedNames(driver, addresses[0]), [
-          ['example.domain - 0xCD2 / 0x539', 'Name Lookup Example Snap'],
+        await expectProposedNames(driver, '0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
+          ['example.domain - 0xcd2 / 0x539', 'Name Lookup Example Snap'],
         ]);
       },
     );
