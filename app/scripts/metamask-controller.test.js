@@ -23,10 +23,10 @@ import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
+import { LOG_EVENT } from '../../shared/constants/logs';
 import { deferredPromise } from './lib/util';
 import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
-import { LOG_EVENT } from '../../shared/constants/logs';
 
 const Ganache = require('../../test/e2e/ganache');
 
