@@ -12,7 +12,7 @@ import {
   setProviderType,
   toggleNetworkMenu,
 } from '../../../store/actions';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
   getCurrentChainId,
@@ -24,12 +24,13 @@ import ToggleButton from '../../ui/toggle-button';
 import {
   BlockSize,
   Display,
+  FlexDirection,
   JustifyContent,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  BUTTON_SECONDARY_SIZES,
+  ButtonSecondarySize,
   ButtonSecondary,
   Modal,
   ModalContent,
@@ -52,12 +53,6 @@ import {
   isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
 
-const UNREMOVABLE_CHAIN_IDS = [
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.LINEA_MAINNET,
-  ...TEST_CHAINS,
-];
-
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
 
@@ -79,6 +74,8 @@ export const NetworkListMenu = ({ onClose }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
 
   const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
+
+  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
 
   const showSearch = nonTestNetworks.length > 3;
 
@@ -111,7 +108,7 @@ export const NetworkListMenu = ({ onClose }) => {
   }
 
   const generateMenuItems = (desiredNetworks) => {
-    return desiredNetworks.map((network, index) => {
+    return desiredNetworks.map((network) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
@@ -119,13 +116,13 @@ export const NetworkListMenu = ({ onClose }) => {
       const isCurrentNetwork = currentNetwork.id === network.id;
 
       const canDeleteNetwork =
-        !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
+        isUnlocked && !isCurrentNetwork && network.removable;
 
       return (
         <NetworkListItem
           name={network.nickname}
           iconSrc={network?.rpcPrefs?.imageUrl}
-          key={`${network.id || network.chainId}-${index}`}
+          key={network.id}
           selected={isCurrentNetwork}
           focus={isCurrentNetwork && !showSearch}
           onClick={() => {
@@ -142,7 +139,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 location: 'Network Menu',
                 chain_id: currentChainId,
                 from_network: currentChainId,
-                to_network: network.id || network.chainId,
+                to_network: network.chainId,
               },
             });
           }}
@@ -153,7 +150,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   dispatch(
                     showModal({
                       name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id || network.chainId,
+                      target: network.id,
                       onConfirm: () => undefined,
                     }),
                   );
@@ -181,7 +178,12 @@ export const NetworkListMenu = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent
         className="multichain-network-list-menu-content-wrapper"
-        modalDialogProps={{ padding: 0 }}
+        modalDialogProps={{
+          className: 'multichain-network-list-menu-content-wrapper__dialog',
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          padding: 0,
+        }}
       >
         <ModalHeader
           paddingTop={4}
@@ -235,7 +237,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
-              disabled={currentlyOnTestNetwork}
+              disabled={currentlyOnTestNetwork || !isUnlocked}
               onToggle={handleToggle}
             />
           </Box>
@@ -246,7 +248,8 @@ export const NetworkListMenu = ({ onClose }) => {
           ) : null}
           <Box padding={4}>
             <ButtonSecondary
-              size={BUTTON_SECONDARY_SIZES.LG}
+              size={ButtonSecondarySize.Lg}
+              disabled={!isUnlocked}
               block
               onClick={() => {
                 if (isFullScreen) {

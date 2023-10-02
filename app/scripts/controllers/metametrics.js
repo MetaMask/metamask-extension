@@ -11,6 +11,7 @@ import {
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
+import { NameType } from '@metamask/name-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -21,8 +22,25 @@ import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
 import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+import {
+  AnonymousTransactionMetaMetricsEvent,
+  TransactionMetaMetricsEvent,
+} from '../../../shared/constants/transaction';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
+
+export const overrideAnonymousEventNames = {
+  [TransactionMetaMetricsEvent.added]:
+    AnonymousTransactionMetaMetricsEvent.added,
+  [TransactionMetaMetricsEvent.approved]:
+    AnonymousTransactionMetaMetricsEvent.approved,
+  [TransactionMetaMetricsEvent.finalized]:
+    AnonymousTransactionMetaMetricsEvent.finalized,
+  [TransactionMetaMetricsEvent.rejected]:
+    AnonymousTransactionMetaMetricsEvent.rejected,
+  [TransactionMetaMetricsEvent.submitted]:
+    AnonymousTransactionMetaMetricsEvent.submitted,
+};
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -176,20 +194,23 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      chrome.alarms.getAll((alarms) => {
+      this.extension.alarms.getAll((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
         );
 
         if (!hasAlarm) {
-          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
-            delayInMinutes: 1,
-            periodInMinutes: 1,
-          });
+          this.extension.alarms.create(
+            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+            {
+              delayInMinutes: 1,
+              periodInMinutes: 1,
+            },
+          );
         }
       });
-      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+      this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
           this.finalizeAbandonedFragments();
         }
@@ -419,18 +440,18 @@ export default class MetaMetricsController {
    *
    * @param {boolean} participateInMetaMetrics - Whether or not the user wants
    *  to participate in MetaMetrics
-   * @returns {string|null} the string of the new metametrics id, or null
+   * @returns {Promise<string|null>} the string of the new metametrics id, or null
    *  if not set
    */
-  setParticipateInMetaMetrics(participateInMetaMetrics) {
+  async setParticipateInMetaMetrics(participateInMetaMetrics) {
     let { metaMetricsId } = this.state;
     if (participateInMetaMetrics && !metaMetricsId) {
       // We also need to start sentry automatic session tracking at this point
-      globalThis.sentry?.startSession();
+      await globalThis.sentry?.startSession();
       metaMetricsId = this.generateMetaMetricsId();
     } else if (participateInMetaMetrics === false) {
       // We also need to stop sentry automatic session tracking at this point
-      globalThis.sentry?.endSession();
+      await globalThis.sentry?.endSession();
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
@@ -537,15 +558,23 @@ export default class MetaMetricsController {
         );
       }
 
+      // change anonymous event names
+      const anonymousEventName =
+        overrideAnonymousEventNames[`${payload.event}`];
+      const anonymousPayload = {
+        ...payload,
+        event: anonymousEventName ?? payload.event,
+      };
+
       const combinedProperties = merge(
-        payload.sensitiveProperties,
-        payload.properties,
+        anonymousPayload.sensitiveProperties,
+        anonymousPayload.properties,
       );
 
       events.push(
         this._track(
           this._buildEventPayload({
-            ...payload,
+            ...anonymousPayload,
             properties: combinedProperties,
             isDuplicateAnonymizedEvent: true,
           }),
@@ -772,6 +801,10 @@ export default class MetaMetricsController {
       ///: END:ONLY_INCLUDE_IN
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      [MetaMetricsUserTrait.PetnameAddressCount]:
+        this._getPetnameAddressCount(metamaskState),
+      ///: END:ONLY_INCLUDE_IN
     };
 
     if (!previousUserTraits) {
@@ -1047,5 +1080,30 @@ export default class MetaMetricsController {
       return callback?.(result);
     };
     this.segment[eventType](modifiedPayload, modifiedCallback);
+  }
+
+  /**
+   * Returns the total number of Ethereum addresses with saved petnames,
+   * including all chain ID variations.
+   *
+   * @param {object} metamaskState
+   * @returns {number}
+   */
+  _getPetnameAddressCount(metamaskState) {
+    const addressNames = metamaskState.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
+
+    return Object.keys(addressNames).reduce((totalCount, address) => {
+      const addressEntry = addressNames[address];
+
+      const addressNameCount = Object.keys(addressEntry).reduce(
+        (count, chainId) => {
+          const hasName = Boolean(addressEntry[chainId].name?.length);
+          return count + (hasName ? 1 : 0);
+        },
+        0,
+      );
+
+      return totalCount + addressNameCount;
+    }, 0);
   }
 }

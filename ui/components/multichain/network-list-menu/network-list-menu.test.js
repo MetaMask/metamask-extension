@@ -23,10 +23,12 @@ const render = (
   showTestNetworks = false,
   currentChainId = '0x5',
   providerConfigId = 'chain5',
+  isUnlocked = true,
 ) => {
   const state = {
     metamask: {
       ...mockState.metamask,
+      isUnlocked,
       providerConfig: {
         ...mockState.metamask.providerConfig,
         chainId: currentChainId,
@@ -82,7 +84,7 @@ describe('NetworkListMenu', () => {
 
   it('shows the correct selected network when networks share the same chain ID', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
-    render(false, '0x1', 'testNetworkConfigurationId');
+    render(false, CHAIN_IDS.MAINNET, 'testNetworkConfigurationId');
 
     // Contains Mainnet and the two custom networks
     const networkItems = document.querySelectorAll(
@@ -110,5 +112,22 @@ describe('NetworkListMenu', () => {
     fireEvent.change(searchBox, { target: { value: 'Main' } });
 
     expect(queryByText('Chain 5')).not.toBeInTheDocument();
+  });
+
+  it('disables the "Add Network" button when MetaMask is locked', () => {
+    const { queryByText } = render(false, '0x5', 'chain5', false);
+    expect(queryByText('Add network')).toBeDisabled();
+  });
+
+  it('enables the "Add Network" button when MetaMask is true', () => {
+    const { queryByText } = render(false, '0x5', 'chain5', true);
+    expect(queryByText('Add network')).toBeEnabled();
+  });
+
+  it('does not allow deleting networks when locked', () => {
+    render(false, '0x5', 'chain5', false);
+    expect(
+      document.querySelectorAll('multichain-network-list-item__delete'),
+    ).toHaveLength(0);
   });
 });

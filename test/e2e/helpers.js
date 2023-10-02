@@ -3,6 +3,7 @@ const path = require('path');
 const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
+const detectPort = require('detect-port');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
@@ -108,6 +109,11 @@ async function withFixtures(options, testSuite) {
     const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
       chainId: ganacheOptions?.chainId || 1337,
     });
+    if ((await detectPort(8000)) !== 8000) {
+      throw new Error(
+        'Failed to set up mock server, something else may be running on port 8000.',
+      );
+    }
     await mockServer.start(8000);
 
     driver = (await buildWebDriver(driverOptions)).driver;
@@ -128,7 +134,7 @@ async function withFixtures(options, testSuite) {
               console.log(
                 `[driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
-                )}`,
+                ).slice(0, 200)}`, // limit the length of the log entry to 200 characters
               );
               return originalProperty.bind(target)(...args);
             };
@@ -202,6 +208,15 @@ async function withFixtures(options, testSuite) {
   }
 }
 
+const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  TestDApp: 'E2E Test Dapp',
+  Notification: 'MetaMask Notification',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  InstalledExtensions: 'Extensions',
+  SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
+});
+
 /**
  * @param {*} driver - selinium driver
  * @param {*} handlesCount - total count of windows that should be loaded
@@ -216,7 +231,7 @@ const getWindowHandles = async (driver, handlesCount) => {
 
   const extension = windowHandles[0];
   const dapp = await driver.switchToWindowWithTitle(
-    'E2E Test Dapp',
+    WINDOW_TITLES.TestDApp,
     windowHandles,
   );
   const popup = windowHandles.find(
@@ -426,7 +441,7 @@ const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   );
 
   const warningText = 'Invalid Secret Recovery Phrase';
-  const warnings = await driver.findElements('.actionable-message__message');
+  const warnings = await driver.findElements('.import-srp__banner-alert-text');
   const warning = warnings[1];
 
   assert.equal(await warning.getText(), warningText);
@@ -506,88 +521,24 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
 };
-const STALELIST_URL =
-  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
 
-const emptyHtmlPage = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>title</title>
-  </head>
-  <body>
-    Empty page
-  </body>
-</html>`;
-
-/**
- * Setup fetch mocks for the phishing detection feature.
- *
- * The mock configuration will show that "127.0.0.1" is blocked. The dynamic lookup on the warning
- * page can be customized, so that we can test both the MetaMask and PhishFort block cases.
- *
- * @param {import('mockttp').Mockttp} mockServer - The mock server.
- * @param {object} metamaskPhishingConfigResponse - The response for the dynamic phishing
- * configuration lookup performed by the warning page.
- */
-async function setupPhishingDetectionMocks(
-  mockServer,
-  metamaskPhishingConfigResponse,
-) {
-  await mockServer.forGet(STALELIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        version: 2,
-        tolerance: 2,
-        fuzzylist: [],
-        allowlist: [],
-        blocklist: ['127.0.0.1'],
-        lastUpdated: 0,
-      },
-    };
-  });
-
-  await mockServer
-    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: emptyHtmlPage,
-      };
-    });
-  await mockServer
-    .forGet('https://github.com/phishfort/phishfort-lists/issues/new')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: emptyHtmlPage,
-      };
-    });
-
-  await mockServer
-    .forGet(
-      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
-    )
-    .thenCallback(() => metamaskPhishingConfigResponse);
-}
-
-function mockPhishingDetection(mockServer) {
-  setupPhishingDetectionMocks(mockServer, {
-    statusCode: 200,
-    json: {
-      version: 2,
-      tolerance: 2,
-      fuzzylist: [],
-      whitelist: [],
-      blacklist: ['127.0.0.1'],
-      lastUpdated: 0,
-    },
-  });
-}
+const switchToOrOpenDapp = async (
+  driver,
+  contract = null,
+  dappURL = DAPP_URL,
+) => {
+  try {
+    await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  } catch {
+    await openDapp(driver, contract, dappURL);
+  }
+};
 
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
+const PRIVATE_KEY_TWO =
+  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
@@ -597,15 +548,26 @@ const defaultGanacheOptions = {
 
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
 
-const sendTransaction = async (driver, recipientAddress, quantity) => {
+const sendTransaction = async (
+  driver,
+  recipientAddress,
+  quantity,
+  isAsyncFlow = false,
+) => {
   await driver.clickElement('[data-testid="eth-overview-send"]');
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
   await driver.clickElement('[data-testid="page-container-footer-next"]');
   await driver.clickElement('[data-testid="page-container-footer-next"]');
-  await driver.clickElement('[data-testid="home__activity-tab"]');
-  await driver.waitForElementNotPresent('.transaction-list-item--unconfirmed');
-  await driver.findElement('.transaction-list-item');
+
+  // the default is to do this block, but if we're testing an async flow, it would get stuck here
+  if (!isAsyncFlow) {
+    await driver.clickElement('[data-testid="home__activity-tab"]');
+    await driver.waitForElementNotPresent(
+      '.transaction-list-item--unconfirmed',
+    );
+    await driver.findElement('.transaction-list-item');
+  }
 };
 
 const findAnotherAccountFromAccountList = async (
@@ -647,14 +609,13 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
     text: `${balance} ETH`,
   });
 };
-const DEFAULT_PRIVATE_KEY =
-  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 const DEFAULT_GANACHE_OPTIONS = {
   accounts: [
     {
-      secretKey: DEFAULT_PRIVATE_KEY,
+      secretKey: PRIVATE_KEY,
       balance: convertETHToHexGwei(25),
     },
   ],
@@ -670,13 +631,6 @@ async function waitForAccountRendered(driver) {
     '[data-testid="eth-overview__primary-currency"]',
   );
 }
-const WINDOW_TITLES = Object.freeze({
-  ExtensionInFullScreenView: 'MetaMask',
-  TestDApp: 'E2E Test Dapp',
-  Notification: 'MetaMask Notification',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
-  InstalledExtensions: 'Extensions',
-});
 
 const unlockWallet = async (driver) => {
   await driver.fill('#password', 'correct horse battery staple');
@@ -744,16 +698,53 @@ async function terminateServiceWorker(driver) {
 }
 
 /**
+ * This method handles clicking the sign button on signature confrimation
+ * screen.
+ *
+ * @param {WebDriver} driver
+ * @param numHandles
+ */
+async function clickSignOnSignatureConfirmation(driver, numHandles = 2) {
+  await driver.clickElement({ text: 'Sign', tag: 'button' });
+  await driver.waitUntilXWindowHandles(numHandles);
+  await driver.getAllWindowHandles();
+}
+
+/**
+ * Some signing methods have extra security that requires the user to click a
+ * button to validate that they have verified the details. This method handles
+ * performing the necessary steps to click that button.
+ *
+ * @param {WebDriver} driver
+ */
+async function validateContractDetails(driver) {
+  const verifyContractDetailsButton = await driver.findElement(
+    '.signature-request-content__verify-contract-details',
+  );
+
+  verifyContractDetailsButton.click();
+  await driver.clickElement({ text: 'Got it', tag: 'button' });
+
+  // Approve signing typed data
+  await driver.clickElement('[data-testid="signature-request-scroll-button"]');
+  await driver.delay(regularDelayMs);
+}
+
+/**
  * This method assumes the extension is open, the dapp is open and waits for a
  * third window handle to open (the notification window). Once it does it
  * switches to the new window.
  *
  * @param {WebDriver} driver
+ * @param numHandles
  */
-async function switchToNotificationWindow(driver) {
-  await driver.waitUntilXWindowHandles(3);
+async function switchToNotificationWindow(driver, numHandles = 3) {
+  await driver.waitUntilXWindowHandles(numHandles);
   const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+  await driver.switchToWindowWithTitle(
+    WINDOW_TITLES.Notification,
+    windowHandles,
+  );
 }
 
 /**
@@ -769,6 +760,7 @@ async function switchToNotificationWindow(driver) {
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(async () => {
     let isPending = true;
+
     for (const mockedEndpoint of mockedEndpoints) {
       isPending = await mockedEndpoint.isPending();
     }
@@ -821,6 +813,7 @@ module.exports = {
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
+  PRIVATE_KEY_TWO,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -840,8 +833,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
-  mockPhishingDetection,
-  setupPhishingDetectionMocks,
+  switchToOrOpenDapp,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
@@ -859,6 +851,8 @@ module.exports = {
   generateRandNumBetween,
   sleepSeconds,
   terminateServiceWorker,
+  clickSignOnSignatureConfirmation,
+  validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
   onboardingBeginCreateNewWallet,

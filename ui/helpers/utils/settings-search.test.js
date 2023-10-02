@@ -71,8 +71,6 @@ const t = (key) => {
       return 'Reveal Secret Recovery Phrase';
     case 'showIncomingTransactions':
       return 'Show incoming transactions';
-    case 'showIncomingTransactionsDescription':
-      return 'Select this to use Etherscan to show incoming transactions in the transactions list';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -109,7 +107,7 @@ const t = (key) => {
       return "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.";
     case 'useNftDetection':
       return 'Autodetect NFTs';
-    case 'useNftDetectionDescription':
+    case 'useNftDetectionDescriptionText':
       return 'Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services.';
     case 'about':
       return 'About';
@@ -165,7 +163,7 @@ describe('Settings Search Utils', () => {
     it('should get good security & privacy section number', () => {
       expect(
         getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(10);
+      ).toStrictEqual(13);
     });
 
     it('should get good alerts section number', () => {
@@ -178,7 +176,7 @@ describe('Settings Search Utils', () => {
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        3,
+        1,
       );
     });
 

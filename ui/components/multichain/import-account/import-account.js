@@ -79,7 +79,7 @@ export const ImportAccount = ({ onActionComplete }) => {
   }
 
   function getLoadingMessage(strategy) {
-    if (strategy === 'JSON File') {
+    if (strategy === 'json') {
       return (
         <>
           <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
@@ -161,5 +161,8 @@ export const ImportAccount = ({ onActionComplete }) => {
 };
 
 ImportAccount.propTypes = {
+  /**
+   * Executes when the key is imported
+   */
   onActionComplete: PropTypes.func.isRequired,
 };

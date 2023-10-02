@@ -13,10 +13,8 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 ///: END:ONLY_INCLUDE_IN
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   resolvePendingApproval,
   completedTx,
-  ///: END:ONLY_INCLUDE_IN
   rejectPendingApproval,
 } from '../../../store/actions';
 import {
@@ -70,7 +68,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Button,
   ButtonLink,
   TagUrl,
@@ -78,17 +76,20 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
+  Box,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 // eslint-disable-next-line import/order
-import Box from '../../ui/box/box';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IN
 
 import Message from './signature-request-message';
@@ -158,14 +159,11 @@ const SignatureRequest = ({ txData }) => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (accountType === 'custody') {
       await custodySignFn(txData);
-      return;
     }
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     await dispatch(resolvePendingApproval(id));
     completedTx(id);
-    ///: END:ONLY_INCLUDE_IN
 
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -245,6 +243,16 @@ const SignatureRequest = ({ txData }) => {
         <SignatureRequestHeader txData={txData} />
       </div>
       <div className="signature-request-content">
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          <BlockaidBannerAlert
+            securityAlertResponse={txData?.securityAlertResponse}
+            marginLeft={4}
+            marginRight={4}
+            marginBottom={4}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
           txData?.securityProviderResponse?.flagAsDangerous !==
             SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
@@ -315,7 +323,7 @@ const SignatureRequest = ({ txData }) => {
         {verifyingContract ? (
           <div>
             <Button
-              variant={BUTTON_VARIANT.LINK}
+              variant={ButtonVariant.Link}
               onClick={() => setShowContractDetails(true)}
               className="signature-request-content__verify-contract-details"
               data-testid="verify-contract-details"

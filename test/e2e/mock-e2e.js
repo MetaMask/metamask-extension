@@ -4,21 +4,9 @@ const blacklistedHosts = [
   'mainnet.infura.io',
   'sepolia.infura.io',
 ];
-
-const HOTLIST_URL =
-  'https://static.metafi.codefi.network/api/v1/lists/hotlist.json';
-const STALELIST_URL =
-  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
-
-const emptyHotlist = [];
-const emptyStalelist = {
-  version: 2,
-  tolerance: 2,
-  fuzzylist: [],
-  allowlist: [],
-  blocklist: [],
-  lastUpdated: 0,
-};
+const {
+  mockEmptyStalelistAndHotlist,
+} = require('./tests/phishing-controller/mocks');
 
 /**
  * Setup E2E network mocks.
@@ -385,19 +373,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
-  await server.forGet(STALELIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: emptyStalelist,
-    };
-  });
-
-  await server.forGet(HOTLIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: emptyHotlist,
-    };
-  });
+  await mockEmptyStalelistAndHotlist(server);
 
   await server
     .forPost('https://customnetwork.com/api/customRPC')
@@ -412,7 +388,61 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
+  await mockLensNameProvider(server);
+  await mockTokenNameProvider(server, chainId);
+
   return mockedEndpoint;
+}
+
+async function mockLensNameProvider(server) {
+  const handlesByAddress = {
+    '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826': 'test.lens',
+    '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb': 'test2.lens',
+    '0xcccccccccccccccccccccccccccccccccccccccc': 'test3.lens',
+  };
+
+  await server.forPost('https://api.lens.dev').thenCallback((request) => {
+    const address = request.body?.json?.variables?.address;
+    const handle = handlesByAddress[address];
+
+    return {
+      statusCode: 200,
+      json: {
+        data: {
+          profiles: {
+            items: [
+              {
+                handle,
+              },
+            ],
+          },
+        },
+      },
+    };
+  });
+}
+
+async function mockTokenNameProvider(server) {
+  const namesByAddress = {
+    '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef': 'Test Token',
+    '0xb0bdabea57b0bdabea57b0bdabea57b0bdabea57': 'Test Token 2',
+  };
+
+  for (const address of Object.keys(namesByAddress)) {
+    const name = namesByAddress[address];
+
+    await server
+      .forGet(/https:\/\/token-api\.metaswap\.codefi\.network\/token\/.*/gu)
+      .withQuery({ address })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            name,
+          },
+        };
+      });
+  }
 }
 
 module.exports = { setupMocking };

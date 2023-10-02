@@ -58,33 +58,6 @@ export const txMetaStub = {
         timestamp: 1572395158261,
         value: '0x5',
       },
-      {
-        op: 'add',
-        path: '/nonceDetails',
-        value: {
-          local: {
-            details: {
-              highest: 4,
-              startPoint: 4,
-            },
-            name: 'local',
-            nonce: 4,
-          },
-          network: {
-            details: {
-              baseCount: 4,
-              blockNumber: '0x51a401',
-            },
-            name: 'network',
-            nonce: 4,
-          },
-          params: {
-            highestLocallyConfirmed: 0,
-            highestSuggested: 4,
-            nextNetworkNonce: 4,
-          },
-        },
-      },
     ],
     [
       {
@@ -164,29 +137,6 @@ export const txMetaStub = {
   id: 405984854664302,
   loadingDefaults: false,
   metamaskNetworkId: '5',
-  nonceDetails: {
-    local: {
-      details: {
-        highest: 4,
-        startPoint: 4,
-      },
-      name: 'local',
-      nonce: 4,
-    },
-    network: {
-      details: {
-        baseCount: 4,
-        blockNumber: '0x51a401',
-      },
-      name: 'network',
-      nonce: 4,
-    },
-    params: {
-      highestLocallyConfirmed: 0,
-      highestSuggested: 4,
-      nextNetworkNonce: 4,
-    },
-  },
   origin: 'MetaMask',
   r: '0x5f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57',
   rawTx:

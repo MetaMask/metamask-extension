@@ -7,41 +7,38 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Identicon from '../identicon';
-import { Text, Button, Box, BUTTON_VARIANT } from '../../component-library';
+import {
+  Text,
+  Box,
+  ButtonLink,
+  AvatarAccount,
+  AvatarAccountSize,
+} from '../../component-library';
 
 export default function NftInfo({ assetName, tokenAddress, tokenId }) {
   const t = useContext(I18nContext);
-
   return (
     <Box
-      display={Display.Flex}
       className="nft-info"
+      display={Display.Flex}
+      gap={4}
       backgroundColor={BackgroundColor.backgroundAlternative}
+      padding={4}
     >
-      <Box display={Display.Flex} className="nft-info__content">
-        <Box margin={4}>
-          <Identicon address={tokenAddress} diameter={24} />
-        </Box>
-        <Box>
-          <Text variant={TextVariant.bodySmBold} as="h6" marginTop={4}>
-            {assetName}
-          </Text>
-          <Text
-            variant={TextVariant.bodySm}
-            as="h6"
-            marginBottom={4}
-            color={TextColor.textAlternative}
-          >
-            {t('tokenId')} #{tokenId}
-          </Text>
-        </Box>
-      </Box>
-      <Box marginTop={4} marginRight={4}>
-        <Button className="nft-info__button" variant={BUTTON_VARIANT.LINK}>
-          {t('view')}
-        </Button>
-      </Box>
+      <AvatarAccount address={tokenAddress} size={AvatarAccountSize.Md} />
+      <div style={{ overflow: 'hidden' }}>
+        <Text variant={TextVariant.bodySmBold} ellipsis>
+          {assetName}
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          ellipsis
+        >
+          {t('tokenId')} #{tokenId}
+        </Text>
+      </div>
+      <ButtonLink marginLeft="auto">{t('view')}</ButtonLink>
     </Box>
   );
 }

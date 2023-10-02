@@ -72,6 +72,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
+  const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
   const ETH_OVERVIEW_SECONDARY_CURRENCY = 'eth-overview__secondary-currency';
 
@@ -187,6 +188,49 @@ describe('EthOverview', () => {
           url: expect.stringContaining(
             '/bridge?metamaskEntry=ext_bridge_button',
           ),
+        }),
+      );
+    });
+
+    it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
+      const mockedStoreWithCustodyKeyring = {
+        metamask: {
+          ...mockStore.metamask,
+          mmiConfiguration: {
+            portfolio: {
+              enabled: true,
+              url: 'https://metamask-institutional.io',
+            },
+          },
+          keyrings: [
+            {
+              type: 'Custody',
+              accounts: ['0x1'],
+            },
+          ],
+        },
+      };
+
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithCustodyKeyring,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
+
+      expect(swapButton).toBeInTheDocument();
+      expect(swapButton).not.toBeDisabled();
+
+      fireEvent.click(swapButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: 'https://metamask-institutional.io/swap',
         }),
       );
     });
@@ -312,7 +356,9 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });

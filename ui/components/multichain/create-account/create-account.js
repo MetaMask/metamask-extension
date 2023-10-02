@@ -44,7 +44,7 @@ export const CreateAccount = ({ onActionComplete }) => {
   const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
     accounts,
     { t },
-    trimmedAccountName ?? defaultAccountName,
+    trimmedAccountName || defaultAccountName,
     defaultAccountName,
   );
 
@@ -110,5 +110,8 @@ export const CreateAccount = ({ onActionComplete }) => {
 };
 
 CreateAccount.propTypes = {
+  /**
+   * Executes when the Create button is clicked
+   */
   onActionComplete: PropTypes.func.isRequired,
 };

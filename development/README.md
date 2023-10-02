@@ -76,24 +76,26 @@ To debug in a production Sentry environment:
 
 Errors reported whilst using the extension will be displayed in Sentry's `Issues` page.
 
+To debug in test build we need to comment out the IF condition https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/setupSentry.js#L392
+
 ## Source Maps
 
 ### Debugging production builds using Source Maps
 
 To unbundle the extensions compiled and minified JavaScript using Source Maps:
 
-- Open Chrome DevTools to inspect the `background.html` or `home.html` view  
+- Open Chrome DevTools to inspect the `background.html` or `home.html` view
 - Click on the `Sources` tab in Chrome DevTools
 - In the Sources tab, click on the `Page` panel
 - Expand the file directory in the Page panel until you see the source files you're after
-- Select a source file in the Page panel 
+- Select a source file in the Page panel
 ```
 chrome-extension://{EXTENSION_ID}/common-0.js
 ```
 - Double click the source file to open it in the Workspace
 - Right click in the body of the source file and select `Add source map...`
 - Enter the path to the corresponding source map file, and Click `Add`
-``` 
+```
 file:///{LOCAL_FILE_SYSTEM}/metamask-extension/dist/sourcemaps/common-0.js.map
 ```
 - Repeat the steps above as necessary adding all the relevant source map files

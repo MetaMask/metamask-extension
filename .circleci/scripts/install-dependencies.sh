@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
 set -e
-set -u
 set -o pipefail
 
-PR_NUMBER="${CIRCLE_PULL_REQUEST##*/}"
-if [ -n "$PR_NUMBER" ]
+IS_NON_FORK_DRAFT='false'
+
+if [[ -n $CIRCLE_PULL_REQUEST ]] && gh auth status
 then
-  IS_DRAFT="$(gh pr view --json isDraft --jq '.isDraft' "$PR_NUMBER")"
-else
-  IS_DRAFT='false'
+  PR_NUMBER="${CIRCLE_PULL_REQUEST##*/}"
+  if [ -n "$PR_NUMBER" ]
+  then
+    IS_NON_FORK_DRAFT="$(gh pr view --json isDraft --jq '.isDraft' "$PR_NUMBER")"
+  fi
 fi
 
 # Build query to see whether there are any "preview-like" packages in the manifest
@@ -29,7 +31,7 @@ else
   HAS_PREVIEW_BUILDS='false'
 fi
 
-if [[ $IS_DRAFT == 'true' && $HAS_PREVIEW_BUILDS == 'true' ]]
+if [[ $IS_NON_FORK_DRAFT == 'true' && $HAS_PREVIEW_BUILDS == 'true' ]]
 then
   # Use GitHub registry on draft PRs, allowing the use of preview builds
   echo "Installing with preview builds"

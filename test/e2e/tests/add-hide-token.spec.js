@@ -108,13 +108,15 @@ describe('Add existing token using search', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.fill('#search-tokens', 'BAT');
+        await driver.fill('input[placeholder="Search"]', 'BAT');
         await driver.clickElement({
           text: 'BAT',
           tag: 'span',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="import-tokens-modal-import-button"]',
+        );
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',

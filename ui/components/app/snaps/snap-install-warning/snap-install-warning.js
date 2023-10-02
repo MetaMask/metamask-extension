@@ -10,14 +10,19 @@ import {
   IconColor,
   TextVariant,
   TextAlign,
-  Size,
   JustifyContent,
   FontWeight,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
-import { AvatarIcon, IconName, Text } from '../../../component-library';
-import Box from '../../../ui/box/box';
+import {
+  AvatarIcon,
+  AvatarIconSize,
+  Box,
+  IconName,
+  Text,
+} from '../../../component-library';
 
 /**
  * a very simple reducer using produce from Immer to keep checkboxes state manipulation
@@ -82,12 +87,16 @@ export default function SnapInstallWarning({
       footerProps={{ padding: [4, 6] }}
       onClose={onCancel}
     >
-      <Box justifyContent={JustifyContent.center} marginBottom={6}>
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        marginBottom={6}
+      >
         <AvatarIcon
           iconName={IconName.Danger}
           backgroundColor={BackgroundColor.warningMuted}
           color={IconColor.warningDefault}
-          size={Size.XL}
+          size={AvatarIconSize.Xl}
         />
       </Box>
       <Text

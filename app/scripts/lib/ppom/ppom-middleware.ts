@@ -1,6 +1,15 @@
-import { PPOM } from '@blockaid/ppom';
-
+import { PPOM } from '@blockaid/ppom_release';
 import { PPOMController } from '@metamask/ppom-validator';
+import { NetworkController } from '@metamask/network-controller';
+
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../shared/constants/security-provider';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import PreferencesController from '../../controllers/preferences';
+
+const { sentry } = global as any;
 
 const ConfirmationMethods = Object.freeze([
   'eth_sendRawTransaction',
@@ -23,19 +32,40 @@ const ConfirmationMethods = Object.freeze([
  * the request will be forwarded to the next middleware, together with the PPOM response.
  *
  * @param ppomController - Instance of PPOMController.
+ * @param preferencesController - Instance of PreferenceController.
+ * @param networkController - Instance of NetworkController.
  * @returns PPOMMiddleware function.
  */
-export function createPPOMMiddleware(ppomController: PPOMController) {
+export function createPPOMMiddleware(
+  ppomController: PPOMController,
+  preferencesController: PreferencesController,
+  networkController: NetworkController,
+) {
   return async (req: any, _res: any, next: () => void) => {
     try {
-      if (ConfirmationMethods.includes(req.method)) {
+      const securityAlertsEnabled =
+        preferencesController.store.getState()?.securityAlertsEnabled;
+      const { chainId } = networkController.state.providerConfig;
+      if (
+        securityAlertsEnabled &&
+        ConfirmationMethods.includes(req.method) &&
+        chainId === CHAIN_IDS.MAINNET
+      ) {
         // eslint-disable-next-line require-atomic-updates
-        req.ppomResponse = await ppomController.usePPOM(async (ppom: PPOM) => {
-          return ppom.validateJsonRpc(req);
-        });
+        req.securityAlertResponse = await ppomController.usePPOM(
+          async (ppom: PPOM) => {
+            return ppom.validateJsonRpc(req);
+          },
+        );
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
+      sentry?.captureException(error);
       console.error('Error validating JSON RPC using PPOM: ', error);
+      req.securityAlertResponse = {
+        result_type: BlockaidResultType.Failed,
+        reason: BlockaidReason.failed,
+        description: 'Validating the confirmation failed by throwing error.',
+      };
     } finally {
       next();
     }
