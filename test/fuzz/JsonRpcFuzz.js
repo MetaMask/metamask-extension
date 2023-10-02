@@ -1,4 +1,5 @@
 import { createTestProviderTools, providerResultStub } from '../stub/provider';
+import { FuzzedDataProvider } from '@jazzer.js/core';
 
 export default class JsonRPCFuzz {
   constructor(opts = {}) {
@@ -26,6 +27,8 @@ export default class JsonRPCFuzz {
   }
 
   ethBlockNumber(data) {
+    const a = new FuzzedDataProvider(data)
+
     const dataString = data.toString();
 
     const ethBlockNumber = {
@@ -36,5 +39,24 @@ export default class JsonRPCFuzz {
     };
 
     return this.engine.handle(ethBlockNumber);
+  }
+
+  ethGetBalance(data) {
+    const a = new FuzzedDataProvider(data)
+
+    const arr = ['latest', 'earliest', 'pending']
+
+    console.log(a.pickValue(arr));
+
+    const dataString = data.toString();
+
+    const ethGetBalance = {
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'eth_getBalance',
+      params: [dataString],
+    };
+
+    return this.engine.handle(ethGetBalance);
   }
 }
