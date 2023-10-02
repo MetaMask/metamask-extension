@@ -52,6 +52,8 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { useNftsCollections } from '../../../hooks/useNftsCollections';
+import { checkTokenIdExists } from '../../../helpers/utils/util';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -67,7 +69,7 @@ export const ImportNftsModal = ({ onClose }) => {
     tokenId: initialTokenId,
     ignoreErc20Token,
   } = useSelector((state) => state.appState.importNftsModal);
-
+  const existingNfts = useNftsCollections();
   const [nftAddress, setNftAddress] = useState(initialTokenAddress ?? '');
   const [tokenId, setTokenId] = useState(initialTokenId ?? '');
   const [disabled, setDisabled] = useState(true);
@@ -75,6 +77,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
+  const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
 
   const handleAddNft = async () => {
     try {
@@ -140,7 +143,23 @@ export const ImportNftsModal = ({ onClose }) => {
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(!isValidHexAddress(nftAddress) || !val || isNaN(Number(val)));
+    setDuplicateTokenIdError(null);
+    // Check if tokenId is already imported
+    const tokenIdExists = checkTokenIdExists(
+      nftAddress,
+      val,
+      existingNfts.collections,
+    );
+    if (tokenIdExists) {
+      setDuplicateTokenIdError(t('nftAlreadyAdded'));
+    }
+    setDisabled(
+      !isValidHexAddress(nftAddress) ||
+        !val ||
+        isNaN(Number(val)) ||
+        tokenIdExists,
+    );
+
     setTokenId(val);
   };
 
@@ -250,6 +269,8 @@ export const ImportNftsModal = ({ onClose }) => {
                   validateAndSetTokenId(e.target.value);
                   setNftAddFailed(false);
                 }}
+                helpText={duplicateTokenIdError}
+                error={duplicateTokenIdError}
               />
             </Box>
           </Box>

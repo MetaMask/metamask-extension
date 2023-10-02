@@ -153,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountsConnected": {
+    "message": "Accounts connected"
+  },
   "active": {
     "message": "Active"
   },
@@ -840,6 +843,9 @@
   "connectedSitesEmptyDescription": {
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
+  },
+  "connectedSnapAndNoAccountDescription": {
+    "message": "MetaMask is connected to this site, but no accounts are connected yet"
   },
   "connecting": {
     "message": "Connecting..."
@@ -2586,6 +2592,9 @@
     "message": "This token is an NFT. Add on the $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
+  "nftAlreadyAdded": {
+    "message": "NFT has already been added."
+  },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
   },
@@ -4188,6 +4197,9 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsConnected": {
+    "message": "Snaps connected"
+  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
   },
@@ -4208,6 +4220,9 @@
   "snapsPrivacyWarningThirdMessage": {
     "message": "Consensys has no access to information you share with Third Party Services.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsSettings": {
+    "message": "Snap settings"
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
