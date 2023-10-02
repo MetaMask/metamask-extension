@@ -77,16 +77,46 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
+  toggleSecurityAlert(value) {
+    const { setSecurityAlertsEnabled, transactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: 'Enabled/Disable security_alerts_enabled',
+      properties: {
+        action: 'Enabled/Disable security_alerts_enabled',
+        legacy_event: true,
+      },
+    });
+    setSecurityAlertsEnabled(!value || false);
+    if (!value && transactionSecurityCheckEnabled) {
+      this.toggleTransactionSecurityCheck(true);
+    }
+  }
+
+  toggleTransactionSecurityCheck(value) {
+    const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: 'Enabled/Disable TransactionSecurityCheck',
+      properties: {
+        action: 'Enabled/Disable TransactionSecurityCheck',
+        legacy_event: true,
+      },
+    });
+    setTransactionSecurityCheckEnabled(!value);
+    if (!value && securityAlertsEnabled) {
+      this.toggleSecurityAlert(true);
+    }
+  }
+
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
-    const {
-      securityAlertsEnabled,
-      setSecurityAlertsEnabled,
-      transactionSecurityCheckEnabled,
-      setTransactionSecurityCheckEnabled,
-    } = this.props;
+    const { securityAlertsEnabled, transactionSecurityCheckEnabled } =
+      this.props;
 
     return (
       <>
@@ -145,17 +175,7 @@ export default class ExperimentalTab extends PureComponent {
                 </div>
                 <ToggleButton
                   value={securityAlertsEnabled}
-                  onToggle={(value) => {
-                    this.context.trackEvent({
-                      category: MetaMetricsEventCategory.Settings,
-                      event: 'Enabled/Disable security_alerts_enabled',
-                      properties: {
-                        action: 'Enabled/Disable security_alerts_enabled',
-                        legacy_event: true,
-                      },
-                    });
-                    setSecurityAlertsEnabled(!value || false);
-                  }}
+                  onToggle={this.toggleSecurityAlert.bind(this)}
                 />
               </div>
               <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
@@ -181,17 +201,7 @@ export default class ExperimentalTab extends PureComponent {
                 </div>
                 <ToggleButton
                   value={transactionSecurityCheckEnabled}
-                  onToggle={(value) => {
-                    this.context.trackEvent({
-                      category: MetaMetricsEventCategory.Settings,
-                      event: 'Enabled/Disable TransactionSecurityCheck',
-                      properties: {
-                        action: 'Enabled/Disable TransactionSecurityCheck',
-                        legacy_event: true,
-                      },
-                    });
-                    setTransactionSecurityCheckEnabled(!value);
-                  }}
+                  onToggle={this.toggleTransactionSecurityCheck.bind(this)}
                 />
               </div>
             </div>
