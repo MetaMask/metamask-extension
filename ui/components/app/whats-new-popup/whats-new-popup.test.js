@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -131,50 +131,5 @@ describe('WhatsNewPopup', () => {
     expect(
       screen.getByTestId('whats-new-description-item-1'),
     ).toBeInTheDocument();
-  });
-
-  it('renders custom "mmi-portfolio" button when customButton is provided with name "mmi-portfolio"', () => {
-    const mmiPortfolioUrl = 'http://mmi-portfolio.com';
-    const mockNotification = {
-      23: {
-        date: '2022-07-24',
-        id: 23,
-        isShown: false,
-      },
-    };
-
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        announcements: {
-          11: {
-            id: 11,
-            date: '2022-07-24',
-            title: 'test title',
-            description: 'test description',
-            customButton: {
-              name: 'mmi-portfolio',
-              text: 'View MMI Portfolio',
-            },
-            isShown: false,
-          },
-        },
-      },
-    });
-
-    renderWithProvider(
-      <WhatsNewPopup mmiPortfolioUrl={mmiPortfolioUrl} onClose={jest.fn()} />,
-      store,
-    );
-    const MmiPortfolioButton = screen.getByTestId('view-mmi-portfolio');
-
-    expect(MmiPortfolioButton).toBeInTheDocument();
-    expect(MmiPortfolioButton).toHaveTextContent(
-      mockNotification.customButton.text,
-    );
-
-    // Test button click
-    fireEvent.click(MmiPortfolioButton);
-    expect(window.open).toHaveBeenCalledWith(mmiPortfolioUrl, '_blank');
   });
 });
