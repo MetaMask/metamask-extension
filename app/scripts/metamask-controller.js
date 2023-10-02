@@ -1538,7 +1538,6 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(petnames)
     this.nameController = new NameController({
-      getChainId: () => this.networkController.state.providerConfig.chainId,
       messenger: this.controllerMessenger.getRestricted({
         name: 'NameController',
         allowedActions: [],
