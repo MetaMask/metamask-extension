@@ -2606,6 +2606,9 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
   },
+  "nftLearnMore": {
+    "message": "Learn more about NFTs"
+  },
   "nftOptions": {
     "message": "NFT Options"
   },
