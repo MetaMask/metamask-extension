@@ -4347,9 +4347,6 @@ export default class MetamaskController extends EventEmitter {
         handleMmiDashboardData: this.mmiController.handleMmiDashboardData.bind(
           this.mmiController,
         ),
-        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(
-          this.mmiController,
-        ),
         handleMmiSetAccountAndNetwork:
           this.mmiController.setAccountAndNetwork.bind(this.mmiController),
         handleMmiOpenAddHardwareWallet:
