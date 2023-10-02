@@ -361,4 +361,19 @@ describe('ConfirmApproveContent Component', () => {
 
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
+
+  it('should render token contract address when isSetApproveForAll and isApprovalOrRejection are true', () => {
+    const { getByText } = renderComponent({
+      ...props,
+      isSetApproveForAll: true,
+      isApprovalOrRejection: true,
+      tokenAddress: '0x',
+    });
+
+    const showViewTxDetails = getByText('View full transaction details');
+
+    fireEvent.click(showViewTxDetails);
+
+    expect(getByText(/Token contract address: 0x/u)).toBeInTheDocument();
+  });
 });
