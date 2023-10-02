@@ -153,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountsConnected": {
+    "message": "Accounts connected"
+  },
   "active": {
     "message": "Active"
   },
@@ -623,18 +626,18 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Buy"
+  "buyAndSell": {
+    "message": "Buy & Sell"
+  },
+  "buyAndSellDescription": {
+    "message": "Buy crypto or sell your crypto for cash"
+  },
+  "buyAndSellDisabled": {
+    "message": "Buy & Sell is not available in this network"
   },
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Hold up your crypto and earn potential profits"
-  },
-  "buyDisabled": {
-    "message": "Buy is not available in this network"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -841,6 +844,9 @@
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
   },
+  "connectedSnapAndNoAccountDescription": {
+    "message": "MetaMask is connected to this site, but no accounts are connected yet"
+  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -956,6 +962,12 @@
   },
   "createPassword": {
     "message": "Create password"
+  },
+  "createSnapAccountDescription": {
+    "message": "$1 wants to add a new Snap account to your wallet"
+  },
+  "createSnapAccountTitle": {
+    "message": "Create Snap account"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1305,6 +1317,10 @@
   "disconnectThisAccount": {
     "message": "Disconnect this account"
   },
+  "discoverSnaps": {
+    "message": "Discover Snaps",
+    "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
+  },
   "dismiss": {
     "message": "Dismiss"
   },
@@ -1313,12 +1329,6 @@
   },
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
-  },
-  "displayNftMedia": {
-    "message": "Display NFT media"
-  },
-  "displayNftMediaDesc": {
-    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off. If NFT media is fully located on IPFS, it can still be displayed even when this feature is turned off."
   },
   "domain": {
     "message": "Domain"
@@ -1444,6 +1454,12 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Enable OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartSwaps": {
     "message": "Enable smart swaps"
@@ -1587,11 +1603,9 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explore MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Customize your wallet experience."
+    "message": "Explore community-built Snaps to customize your web3 experience",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "External extension"
@@ -2538,7 +2552,7 @@
     "message": "New contract"
   },
   "newNFTDetectedInImportNFTsMessage": {
-    "message": "To see your NFT, turn on Display NFT media in $1.",
+    "message": "To use Opensea see your NFT, turn on 'Enable OpenSea API' in $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
@@ -2579,6 +2593,9 @@
   "nftAddressError": {
     "message": "This token is an NFT. Add on the $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
+  },
+  "nftAlreadyAdded": {
+    "message": "NFT has already been added."
   },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
@@ -3578,6 +3595,15 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
+  "removeSnapAccountBannerDescription": {
+    "message": "Be sure you can access this account on your own before removing it"
+  },
+  "removeSnapAccountDescription": {
+    "message": "$1 wants to remove this account from MetaMask:"
+  },
+  "removeSnapAccountTitle": {
+    "message": "Remove account"
+  },
   "removeSnapConfirmation": {
     "message": "Are you sure you want to remove $1?",
     "description": "$1 represents the name of the snap"
@@ -3862,8 +3888,8 @@
   "selectAnAction": {
     "message": "Select an action"
   },
-  "selectDisplayMediaPrivacyPreference": {
-    "message": "Turn on Display NFT media"
+  "selectEnableOpenseaAPIPrivacyPreference": {
+    "message": "Turn on Enable Opensea API"
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -4032,6 +4058,12 @@
   "smartSwapsSubDescription": {
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
+  "snapAccountCreated": {
+    "message": "Your account is ready!"
+  },
+  "snapAccountRemoved": {
+    "message": "Account removed"
+  },
   "snapAccounts": {
     "message": "Snap accounts"
   },
@@ -4167,6 +4199,9 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsConnected": {
+    "message": "Snaps connected"
+  },
   "snapsInsightLoading": {
     "message": "Loading transaction insight..."
   },
@@ -4187,6 +4222,9 @@
   "snapsPrivacyWarningThirdMessage": {
     "message": "Consensys has no access to information you share with Third Party Services.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsSettings": {
+    "message": "Snap settings"
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
@@ -5350,6 +5388,16 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
+  },
+  "useSafeChainsListValidation": {
+    "message": "Network details check"
+  },
+  "useSafeChainsListValidationDescription": {
+    "message": "MetaMask uses a third-party service called $1 to show accurate and standardized network details. This reduces your chances of connecting to malicious or incorrect network. When using this feature, your IP address is exposed to chainid.network."
+  },
+  "useSafeChainsListValidationWebsite": {
+    "message": "chainid.network",
+    "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useSiteSuggestion": {
     "message": "Use site suggestion"

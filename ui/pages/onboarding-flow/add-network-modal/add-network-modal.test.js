@@ -13,7 +13,10 @@ jest.mock('../../../store/actions', () => ({
 
 describe('Add Network Modal', () => {
   it('should render', async () => {
-    const mockStore = configureMockStore()();
+    const mockStore = configureMockStore([])({
+      metamask: { useSafeChainsListValidation: true },
+    });
+
     const { container } = renderWithProvider(<AddNetworkModal />, mockStore);
 
     await waitFor(() => {
@@ -22,7 +25,10 @@ describe('Add Network Modal', () => {
   });
 
   it('should handle callback', async () => {
-    const mockStore = configureMockStore([thunk])();
+    const mockStore = configureMockStore([thunk])({
+      metamask: { useSafeChainsListValidation: true },
+    });
+
     const { queryByText } = renderWithProvider(<AddNetworkModal />, mockStore);
 
     const cancelButton = queryByText('Cancel');

@@ -195,11 +195,14 @@ const EthOverview = ({ className, showAddress }) => {
             <IconButton
               className="eth-overview__button"
               Icon={
-                <Icon name={IconName.Add} color={IconColor.primaryInverse} />
+                <Icon
+                  name={IconName.PlusMinus}
+                  color={IconColor.primaryInverse}
+                />
               }
               disabled={!isBuyableChain}
               data-testid="eth-overview-buy"
-              label={t('buy')}
+              label={t('buyAndSell')}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({
