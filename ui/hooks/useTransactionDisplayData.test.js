@@ -34,7 +34,7 @@ const expectedResults = [
   {
     title: 'Send',
     category: TransactionGroupCategory.send,
-    subtitle: 'To: 0xffe...1a97',
+    subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314601567),
     primaryCurrency: '-1 ETH',
@@ -48,7 +48,7 @@ const expectedResults = [
   {
     title: 'Send',
     category: TransactionGroupCategory.send,
-    subtitle: 'To: 0x0cc...8848',
+    subtitle: 'To: 0x0ccc8...f8848',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314355872),
     primaryCurrency: '-2 ETH',
@@ -61,7 +61,7 @@ const expectedResults = [
   {
     title: 'Send',
     category: TransactionGroupCategory.send,
-    subtitle: 'To: 0xffe...1a97',
+    subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314345433),
     primaryCurrency: '-2 ETH',
@@ -74,7 +74,7 @@ const expectedResults = [
   {
     title: 'Receive',
     category: TransactionGroupCategory.receive,
-    subtitle: 'From: 0x31b...4523',
+    subtitle: 'From: 0x31b98...84523',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314295000),
     primaryCurrency: '18.75 ETH',
@@ -87,7 +87,7 @@ const expectedResults = [
   {
     title: 'Receive',
     category: TransactionGroupCategory.receive,
-    subtitle: 'From: 0x9ec...a149',
+    subtitle: 'From: 0x9eca6...6a149',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1588972833000),
     primaryCurrency: '0 ETH',
@@ -100,7 +100,7 @@ const expectedResults = [
   {
     title: 'Receive',
     category: TransactionGroupCategory.receive,
-    subtitle: 'From: 0xee0...febb',
+    subtitle: 'From: 0xee014...efebb',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1585087013000),
     primaryCurrency: '1 ETH',
@@ -139,7 +139,7 @@ const expectedResults = [
   {
     title: 'Safe transfer from',
     category: TransactionGroupCategory.send,
-    subtitle: 'To: 0xe7d...dd98',
+    subtitle: 'To: 0xe7d52...0dd98',
     subtitleContainsOrigin: true,
     primaryCurrency: '-0 ETH',
     senderAddress: '0x806627172af48bd5b0765d3449a7def80d6576ff',
