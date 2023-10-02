@@ -126,6 +126,7 @@ const SnapListTab = () => {
                 size={Size.auto}
                 href="https://metamask.io/snaps/"
                 target="_blank"
+                endIconName={IconName.Export}
               >
                 {`${t('discoverSnaps')}`}
               </ButtonLink>
