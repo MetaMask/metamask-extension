@@ -80,7 +80,7 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="onboarding-create-wallet"]');
     });
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
+    it('clicks the "No thanks" option on the metametrics opt-in screen @no-mmi', async function () {
       await driver.clickElement('[data-testid="metametrics-no-thanks"]');
     });
 
