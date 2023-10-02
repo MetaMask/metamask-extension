@@ -1,1 +1,1 @@
-export { default as snapKeyringBuilder } from './snap-keyring';
+export { snapKeyringBuilder, getAccountsBySnapId } from './snap-keyring';

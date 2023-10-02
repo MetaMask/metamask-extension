@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
 
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
@@ -221,8 +221,8 @@ describe('Petnames', function () {
 
         let addresses = await getAddressesInMessage(driver);
 
-        await expectName(addresses[0], '0xCD2...D826', 'test.lens', false);
-        await expectName(addresses[1], '0xbBb...BBbB', 'test2.lens', false);
+        await expectName(addresses[0], '0xCD2a3...DD826', 'test.lens', false);
+        await expectName(addresses[1], '0xbBbBB...bBBbB', 'test2.lens', false);
 
         await saveName(driver, addresses[0], undefined, 'test.lens');
         await saveName(driver, addresses[1], undefined, 'test2.lens');
@@ -231,7 +231,7 @@ describe('Petnames', function () {
 
         await expectName(
           contractDetailsModal,
-          '0xCcC...cccC',
+          '0xCcCCc...ccccC',
           'test3.lens',
           false,
         );
@@ -274,11 +274,16 @@ describe('Petnames', function () {
 
         let addresses = await getAddressesInMessage(driver);
 
-        await expectName(addresses[0], '0xCD2...D826', 'test.lens', false);
-        await expectName(addresses[1], '0xDea...beeF', 'Test Token', false);
-        await expectName(addresses[2], '0xbBb...BBbB', 'test2.lens', false);
-        await expectName(addresses[3], '0xB0B...Ea57', 'Test Token 2', false);
-        await expectName(addresses[4], '0xB0B...0000', undefined, false);
+        await expectName(addresses[0], '0xCD2a3...DD826', 'test.lens', false);
+        await expectName(addresses[1], '0xDeaDb...DbeeF', 'Test Token', false);
+        await expectName(addresses[2], '0xbBbBB...bBBbB', 'test2.lens', false);
+        await expectName(
+          addresses[3],
+          '0xB0Bda...bEa57',
+          'Test Token 2',
+          false,
+        );
+        await expectName(addresses[4], '0xB0B0b...00000', undefined, false);
 
         await saveName(driver, addresses[0], undefined, 'test.lens');
         await saveName(driver, addresses[3], undefined, 'Test Token 2');
@@ -287,7 +292,7 @@ describe('Petnames', function () {
 
         await expectName(
           contractDetailsModal,
-          '0xCcC...cccC',
+          '0xCcCCc...ccccC',
           'test3.lens',
           false,
         );
