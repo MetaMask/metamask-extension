@@ -126,7 +126,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Import Secret Recovery Phrase', function () {
+  describe('Import Secret Recovery Phrase @no-mmi', function () {
     it('logs out of the vault', async function () {
       await driver.clickElement('[data-testid="account-options-menu-button"]');
       await driver.delay(regularDelayMs);
