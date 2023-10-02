@@ -3909,23 +3909,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/controller-utils@npm:5.0.0"
-  dependencies:
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/utils": "npm:^6.2.0"
-    "@spruceid/siwe-parser": "npm:1.1.3"
-    eth-ens-namehash: "npm:^2.0.8"
-    eth-rpc-errors: "npm:^4.0.2"
-    ethereumjs-util: "npm:^7.0.10"
-    ethjs-unit: "npm:^0.1.6"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 4fbefc1affa9aee110fcb1b7fc95a96f29fc6d41d6fa6b92bd691d541833cf8531a282d7866daeb7585741533b50a5d9e8d0564071fc1abf09769c9fe039845b
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^5.0.1":
+"@metamask/controller-utils@npm:^5.0.0, @metamask/controller-utils@npm:^5.0.1":
   version: 5.0.1
   resolution: "@metamask/controller-utils@npm:5.0.1"
   dependencies:
@@ -4614,17 +4598,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^4.4.1":
-  version: 4.4.1
-  resolution: "@metamask/preferences-controller@npm:4.4.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/controller-utils": "npm:^5.0.0"
-  checksum: 2404cf4c6f207316af7fd8cf9a7ae2ff3f38766bedde67103143d964ad4e253c8cf228da692a80644e65f072306bfaa807895771e45e93797ab879b9645744a7
-  languageName: node
-  linkType: hard
-
-"@metamask/preferences-controller@npm:^4.4.2":
+"@metamask/preferences-controller@npm:^4.4.1, @metamask/preferences-controller@npm:^4.4.2":
   version: 4.4.2
   resolution: "@metamask/preferences-controller@npm:4.4.2"
   dependencies:
