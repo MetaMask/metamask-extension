@@ -450,6 +450,14 @@ export enum TransactionMetaMetricsEvent {
   submitted = 'Transaction Submitted',
 }
 
+export enum AnonymousTransactionMetaMetricsEvent {
+  added = 'Transaction Added Anon',
+  approved = 'Transaction Approved Anon',
+  finalized = 'Transaction Finalized Anon',
+  rejected = 'Transaction Rejected Anon',
+  submitted = 'Transaction Submitted Anon',
+}
+
 /**
  * The types of assets that a user can send
  *

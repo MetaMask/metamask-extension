@@ -396,9 +396,9 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
 async function mockLensNameProvider(server) {
   const handlesByAddress = {
-    '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826': 'test.lens',
-    '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB': 'test2.lens',
-    '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC': 'test3.lens',
+    '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826': 'test.lens',
+    '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb': 'test2.lens',
+    '0xcccccccccccccccccccccccccccccccccccccccc': 'test3.lens',
   };
 
   await server.forPost('https://api.lens.dev').thenCallback((request) => {
@@ -424,8 +424,8 @@ async function mockLensNameProvider(server) {
 
 async function mockTokenNameProvider(server) {
   const namesByAddress = {
-    '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF': 'Test Token',
-    '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57': 'Test Token 2',
+    '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef': 'Test Token',
+    '0xb0bdabea57b0bdabea57b0bdabea57b0bdabea57': 'Test Token 2',
   };
 
   for (const address of Object.keys(namesByAddress)) {

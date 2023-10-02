@@ -58,7 +58,7 @@ describe('View ERC1155 NFT details', function () {
         const nftContract = await driver.findElement(
           '.nft-details__contract-wrapper',
         );
-        assert.equal(await nftContract.getText(), '0x581...5947');
+        assert.equal(await nftContract.getText(), '0x581c3...45947');
       },
     );
   });

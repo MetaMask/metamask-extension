@@ -1058,12 +1058,6 @@ const state = {
     unapprovedEncryptionPublicKeyMsgCount: 0,
     unapprovedTypedMessages: {},
     unapprovedTypedMessagesCount: 0,
-    keyringTypes: [
-      KeyringType.imported,
-      KeyringType.hdKeyTree,
-      KeyringType.trezor,
-      KeyringType.ledger,
-    ],
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
