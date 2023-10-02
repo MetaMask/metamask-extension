@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import TokenList from '../token-list';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -10,8 +11,15 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getShouldHideZeroBalanceTokens,
+  getTokenExchangeRates,
+  getCurrentCurrency,
 } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getNativeCurrency,
+  getTokens,
+} from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import Box from '../../ui/box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -26,6 +34,14 @@ import {
   ImportTokenLink,
   BalanceOverview,
 } from '../../multichain';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import {
+  getValueFromWeiHex,
+  sumDecimals,
+} from '../../../../shared/modules/conversion.utils';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -66,9 +82,72 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
+  const contractExchangeRates = useSelector(
+    getTokenExchangeRates,
+    shallowEqual,
+  );
+  const conversionRate = useSelector(getConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
+
+  const nativeFiat = getValueFromWeiHex({
+    value: balance,
+    toCurrency: currentCurrency,
+    conversionRate,
+    numberOfDecimals: 2,
+  });
+
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  // use `isEqual` comparison function because the token array is serialized
+  // from the background so it has a new reference with each background update,
+  // even if the tokens haven't changed
+  const tokens = useSelector(getTokens, isEqual);
+  const { loading, tokensWithBalances } = useTokenTracker(
+    tokens,
+    true,
+    shouldHideZeroBalanceTokens,
+  );
+
+  const dollarBalances = tokensWithBalances.map((token) => {
+    const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
+      (key) => isEqualCaseInsensitive(key, token.address),
+    );
+    const tokenExchangeRate =
+      (contractExchangeTokenKey &&
+        contractExchangeRates[contractExchangeTokenKey]) ??
+      0;
+
+    const fiat = getTokenFiatAmount(
+      tokenExchangeRate,
+      conversionRate,
+      currentCurrency,
+      token.string,
+      token.symbol,
+      false,
+      false,
+    );
+
+    return fiat;
+  });
+
+  const totalFiat = formatCurrency(
+    sumDecimals(nativeFiat, ...dollarBalances).toString(10),
+    currentCurrency,
+  );
+
   return (
     <>
-      {process.env.MULTICHAIN ? <BalanceOverview /> : null}
+      {process.env.MULTICHAIN ? (
+        <BalanceOverview balance={totalFiat} loading={loading} />
+      ) : null}
+      {detectedTokens.length > 0 &&
+        !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
+          <DetectedTokensBanner
+            actionButtonOnClick={() => setShowDetectedTokens(true)}
+            margin={4}
+          />
+        )}
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
@@ -80,6 +159,8 @@ const AssetList = ({ onClickAsset }) => {
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
       />
       <TokenList
+        tokens={tokensWithBalances}
+        loading={loading}
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
           trackEvent({
@@ -92,13 +173,6 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      {detectedTokens.length > 0 &&
-      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
-        <DetectedTokensBanner
-          actionButtonOnClick={() => setShowDetectedTokens(true)}
-          margin={4}
-        />
-      ) : null}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <ImportTokenLink margin={4} marginBottom={2} />
       </Box>
