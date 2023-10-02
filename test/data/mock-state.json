@@ -20,6 +20,14 @@
     "warning": null,
     "customTokenAmount": "10"
   },
+  "confirmTransaction": {
+    "txData": {
+      "txParams": {
+        "gas": "0x153e2",
+        "value": "0x0"
+      }
+    }
+  },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
