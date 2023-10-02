@@ -10,8 +10,11 @@ import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+// eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
+// eslint-disable-next-line import/no-duplicates
+import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -30,8 +33,10 @@ import {
   SNAPS_METADATA,
 } from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IN
-
 // formatData :: ( date: <Unix Timestamp> ) -> String
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
     return '';
@@ -207,7 +212,7 @@ export function getRandomFileName() {
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.
  *
- * Example output: 0xabcd...1234
+ * Example output: 0xabcde...12345
  *
  * @param {string} address - The address to shorten.
  * @returns {string} The shortened address, or the original if it was no longer
@@ -630,4 +635,35 @@ export const getNetworkNameFromProviderType = (providerName) => {
  */
 export const isAbleToExportAccount = (keyringType = '') => {
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
+};
+
+/**
+ * Checks if a tokenId in Hex or decimal format already exists in an object.
+ *
+ * @param {string} address - collection address.
+ * @param {string} tokenId - tokenId to search for
+ * @param {*} obj - object to look into
+ * @returns {boolean} `false` if tokenId does not already exist.
+ */
+export const checkTokenIdExists = (address, tokenId, obj) => {
+  // check if input tokenId is hexadecimal
+  // If it is convert to decimal and compare with existing tokens
+  const isHex = isStrictHexString(tokenId);
+  let convertedTokenId = tokenId;
+  if (isHex) {
+    // Convert to decimal
+    convertedTokenId = hexToDecimal(tokenId);
+  }
+
+  if (obj[address]) {
+    const value = obj[address];
+    return lodash.some(value.nfts, (nft) => {
+      return (
+        nft.address === address &&
+        (isEqualCaseInsensitive(nft.tokenId, tokenId) ||
+          isEqualCaseInsensitive(nft.tokenId, convertedTokenId.toString()))
+      );
+    });
+  }
+  return false;
 };

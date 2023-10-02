@@ -299,9 +299,6 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buy": {
-    "message": "Comprar"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -724,6 +721,12 @@
   },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Activar API de OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Utilice la API de OpenSea para obtener los datos de NFT. La autodetección de NFT depende de la API de OpenSea y no estará disponible si la API está desactivada."
   },
   "enableToken": {
     "message": "activar $1",
@@ -1391,9 +1394,6 @@
   },
   "newContract": {
     "message": "Contrato nuevo"
-  },
-  "newNFTsDetected": {
-    "message": "¡Nuevo! Detección NFT"
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
@@ -2661,9 +2661,6 @@
   },
   "useNftDetection": {
     "message": "Autodetectar NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "La visualización de medios y datos de NFT puede exponer su dirección IP a servidores centralizados. Las API de terceros (como OpenSea) se utilizan para detectar NFT en su cartera. Esto expone la dirección de su cuenta con esos servicios. Deje esta opción desactivada si no quiere que la aplicación extraiga datos de esos servicios."
   },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"
