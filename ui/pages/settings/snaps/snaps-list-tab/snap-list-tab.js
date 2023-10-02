@@ -78,6 +78,7 @@ const SnapListTab = () => {
           flexDirection={FlexDirection.Row}
           flexWrap={FlexWrap.Wrap}
           justifyContent={JustifyContent.center}
+          className="snap-list-tab__container--snaps-info-content"
         >
           {snapsList.length < 1 && (
             <Box
