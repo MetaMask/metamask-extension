@@ -1,3 +1,4 @@
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -14,38 +15,48 @@ Object.defineProperty(globalThis, 'performance', {
   value: () => undefined,
 });
 
+const createMiddleWare = (
+  usePPOM?: any,
+  securityAlertsEnabled?: boolean,
+  chainId?: string,
+) => {
+  const usePPOMMock = jest.fn();
+  const ppomController = {
+    usePPOM: usePPOM || usePPOMMock,
+  };
+  const preferenceController = {
+    store: {
+      getState: () => ({
+        securityAlertsEnabled:
+          securityAlertsEnabled === undefined ?? securityAlertsEnabled,
+      }),
+    },
+  };
+  const networkController = {
+    state: { providerConfig: { chainId: chainId || CHAIN_IDS.MAINNET } },
+  };
+  return createPPOMMiddleware(
+    ppomController as any,
+    preferenceController as any,
+    networkController as any,
+  );
+};
+
 describe('PPOMMiddleware', () => {
   it('should call ppomController.usePPOM for requests of type confirmation', async () => {
-    const useMock = jest.fn();
-    const ppomController = {
-      usePPOM: useMock,
-    };
-    const preferenceController = {
-      store: { getState: () => ({ securityAlertsEnabled: true }) },
-    };
-    const middlewareFunction = createPPOMMiddleware(
-      ppomController as any,
-      preferenceController as any,
-    );
+    const usePPOMMock = jest.fn();
+    const middlewareFunction = createMiddleWare(usePPOMMock);
     await middlewareFunction(
       { method: 'eth_sendTransaction' },
       undefined,
       () => undefined,
     );
-    expect(useMock).toHaveBeenCalledTimes(1);
+    expect(usePPOMMock).toHaveBeenCalledTimes(1);
   });
 
   it('should add validation response on confirmation requests', async () => {
-    const ppomController = {
-      usePPOM: async () => Promise.resolve('VALIDATION_RESULT'),
-    };
-    const preferenceController = {
-      store: { getState: () => ({ securityAlertsEnabled: true }) },
-    };
-    const middlewareFunction = createPPOMMiddleware(
-      ppomController as any,
-      preferenceController as any,
-    );
+    const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
+    const middlewareFunction = createMiddleWare(usePPOM);
     const req = {
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
@@ -55,16 +66,19 @@ describe('PPOMMiddleware', () => {
   });
 
   it('should not do validation if user has not enabled preference', async () => {
-    const ppomController = {
-      usePPOM: async () => Promise.resolve('VALIDATION_RESULT'),
+    const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
+    const middlewareFunction = createMiddleWare(usePPOM, false);
+    const req = {
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
     };
-    const preferenceController = {
-      store: { getState: () => ({ securityAlertsEnabled: false }) },
-    };
-    const middlewareFunction = createPPOMMiddleware(
-      ppomController as any,
-      preferenceController as any,
-    );
+    await middlewareFunction(req, undefined, () => undefined);
+    expect(req.securityAlertResponse).toBeUndefined();
+  });
+
+  it('should not do validation if user is not on mainnet', async () => {
+    const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
+    const middlewareFunction = createMiddleWare(usePPOM, false, '0x2');
     const req = {
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
@@ -74,18 +88,10 @@ describe('PPOMMiddleware', () => {
   });
 
   it('should set Failed type in response if usePPOM throw error', async () => {
-    const ppomController = {
-      usePPOM: async () => {
-        throw new Error('some error');
-      },
+    const usePPOM = async () => {
+      throw new Error('some error');
     };
-    const preferenceController = {
-      store: { getState: () => ({ securityAlertsEnabled: true }) },
-    };
-    const middlewareFunction = createPPOMMiddleware(
-      ppomController as any,
-      preferenceController as any,
-    );
+    const middlewareFunction = createMiddleWare(usePPOM);
     const req = {
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
@@ -103,18 +109,10 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: () => undefined,
     };
-    const ppomController = {
-      usePPOM: async (callback: any) => {
-        callback(ppom);
-      },
+    const usePPOM = async (callback: any) => {
+      callback(ppom);
     };
-    const preferenceController = {
-      store: { getState: () => ({ securityAlertsEnabled: true }) },
-    };
-    const middlewareFunction = createPPOMMiddleware(
-      ppomController as any,
-      preferenceController as any,
-    );
+    const middlewareFunction = createMiddleWare(usePPOM);
     const nextMock = jest.fn();
     await middlewareFunction(
       { method: 'eth_sendTransaction' },
@@ -125,18 +123,10 @@ describe('PPOMMiddleware', () => {
   });
 
   it('should call next method when ppomController.usePPOM throws error', async () => {
-    const ppomController = {
-      usePPOM: async (_callback: any) => {
-        throw Error('Some error');
-      },
+    const usePPOM = async (_callback: any) => {
+      throw Error('Some error');
     };
-    const preferenceController = {
-      store: { getState: () => ({ securityAlertsEnabled: true }) },
-    };
-    const middlewareFunction = createPPOMMiddleware(
-      ppomController as any,
-      preferenceController as any,
-    );
+    const middlewareFunction = createMiddleWare(usePPOM);
     const nextMock = jest.fn();
     await middlewareFunction(
       { method: 'eth_sendTransaction' },
@@ -151,18 +141,10 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: validateMock,
     };
-    const ppomController = {
-      usePPOM: async (callback: any) => {
-        callback(ppom);
-      },
+    const usePPOM = async (callback: any) => {
+      callback(ppom);
     };
-    const preferenceController = {
-      store: { getState: () => ({ securityAlertsEnabled: true }) },
-    };
-    const middlewareFunction = createPPOMMiddleware(
-      ppomController as any,
-      preferenceController as any,
-    );
+    const middlewareFunction = createMiddleWare(usePPOM);
     await middlewareFunction(
       { method: 'eth_sendTransaction' },
       undefined,
@@ -176,18 +158,10 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: validateMock,
     };
-    const ppomController = {
-      usePPOM: async (callback: any) => {
-        callback(ppom);
-      },
+    const usePPOM = async (callback: any) => {
+      callback(ppom);
     };
-    const preferenceController = {
-      store: { getState: () => ({ securityAlertsEnabled: true }) },
-    };
-    const middlewareFunction = createPPOMMiddleware(
-      ppomController as any,
-      preferenceController as any,
-    );
+    const middlewareFunction = createMiddleWare(usePPOM);
     await middlewareFunction(
       { method: 'eth_someRequest' },
       undefined,

@@ -19,6 +19,8 @@ import {
 
 import {
   AvatarIcon,
+  AvatarIconSize,
+  Box,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
@@ -33,6 +35,17 @@ import {
   ModalHeader,
   AvatarIconSize,
 } from '../../../component-library';
+
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  Display,
+  FontWeight,
+  IconColor,
+  JustifyContent,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
   const t = useI18nContext();

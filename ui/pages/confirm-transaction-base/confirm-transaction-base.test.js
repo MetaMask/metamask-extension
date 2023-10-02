@@ -34,14 +34,14 @@ const mockNetworkId = '5';
 const mockTxParamsFromAddress = '0x123456789';
 
 const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
-const mockTxParamsToAddressConcat = '0x85c...D65e';
+const mockTxParamsToAddressConcat = '0x85c16...DD65e';
 
 const mockParsedTxDataToAddressWithout0x =
   'e57e7847fd3661a9b7c86aaf1daea08d9da5750a';
-const mockParsedTxDataToAddress = '0xe57...750A';
+const mockParsedTxDataToAddress = '0xe57E7...5750A';
 
 const mockPropsToAddress = '0x33m1685cfceaa5c0bdb1609fc536e9a8387dd567';
-const mockPropsToAddressConcat = '0x33m...d567';
+const mockPropsToAddressConcat = '0x33m16...dd567';
 
 const mockTxParams = {
   from: mockTxParamsFromAddress,
@@ -66,13 +66,14 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: '/' },
   metamask: {
-    unapprovedTxs: {
-      1: {
+    transactions: [
+      {
         id: 1,
         metamaskNetworkId: mockNetworkId,
         txParams: { ...mockTxParams },
+        status: 'unapproved',
       },
-    },
+    ],
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
@@ -175,7 +176,7 @@ const baseStore = {
 const mockedStore = jest.mocked(baseStore);
 
 const mockedStoreWithConfirmTxParams = (_mockTxParams = mockTxParams) => {
-  mockedStore.metamask.unapprovedTxs[1].txParams = { ..._mockTxParams };
+  mockedStore.metamask.transactions[0].txParams = { ..._mockTxParams };
   mockedStore.confirmTransaction.txData.txParams = { ..._mockTxParams };
 };
 
@@ -227,7 +228,7 @@ describe('Confirm Transaction Base', () => {
     mockedStore.metamask.mmiConfiguration = {
       custodians: [
         {
-          name: 'saturn-dev',
+          envName: 'saturn-dev',
           displayName: 'Saturn Custody',
           isNoteToTraderSupported: true,
         },

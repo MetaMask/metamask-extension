@@ -19,6 +19,8 @@ import {
   BlockSize,
   Size,
   TextColor,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -27,6 +29,9 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getIsAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
 import {
@@ -55,6 +60,9 @@ export const AccountListMenu = ({ onClose }) => {
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
+  ///: END:ONLY_INCLUDE_IN
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState('');
@@ -85,24 +93,22 @@ export const AccountListMenu = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent
         className="multichain-account-menu-popover"
-        modalDialogProps={{ padding: 0, marginBottom: 0 }}
+        modalDialogProps={{
+          className: 'multichain-account-menu-popover__dialog',
+          padding: 0,
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+        }}
       >
         <ModalHeader
-          paddingTop={4}
-          paddingRight={4}
-          paddingBottom={6}
+          padding={4}
           onClose={onClose}
           onBack={actionMode === '' ? null : () => setActionMode('')}
         >
           {title}
         </ModalHeader>
         {actionMode === 'add' ? (
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-          >
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <CreateAccount
               onActionComplete={(confirmed) => {
                 if (confirmed) {
@@ -133,7 +139,7 @@ export const AccountListMenu = ({ onClose }) => {
           </Box>
         ) : null}
         {actionMode === '' ? (
-          <Box>
+          <>
             {/* Search box */}
             {accounts.length > 1 ? (
               <Box
@@ -198,7 +204,7 @@ export const AccountListMenu = ({ onClose }) => {
             </Box>
             {/* Add / Import / Hardware */}
             <Box padding={4}>
-              <Box marginBottom={4}>
+              <Box>
                 <ButtonLink
                   size={Size.SM}
                   startIconName={IconName.Add}
@@ -218,7 +224,7 @@ export const AccountListMenu = ({ onClose }) => {
                   {t('addAccount')}
                 </ButtonLink>
               </Box>
-              <Box marginBottom={4}>
+              <Box marginTop={4}>
                 <ButtonLink
                   size={Size.SM}
                   startIconName={IconName.Import}
@@ -237,7 +243,7 @@ export const AccountListMenu = ({ onClose }) => {
                   {t('importAccount')}
                 </ButtonLink>
               </Box>
-              <Box marginBottom={4}>
+              <Box marginTop={4}>
                 <ButtonLink
                   size={Size.SM}
                   startIconName={IconName.Hardware}
@@ -265,7 +271,7 @@ export const AccountListMenu = ({ onClose }) => {
               </Box>
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-                <>
+                addSnapAccountEnabled && (
                   <Box marginTop={4}>
                     <ButtonLink
                       size={Size.SM}
@@ -284,12 +290,12 @@ export const AccountListMenu = ({ onClose }) => {
                       {t('settingAddSnapAccount')}
                     </ButtonLink>
                   </Box>
-                </>
+                )
                 ///: END:ONLY_INCLUDE_IN
               }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <Box>
+                <Box marginTop={4}>
                   <ButtonLink
                     size={Size.SM}
                     startIconName={IconName.Custody}
@@ -315,7 +321,7 @@ export const AccountListMenu = ({ onClose }) => {
                 ///: END:ONLY_INCLUDE_IN
               }
             </Box>
-          </Box>
+          </>
         ) : null}
       </ModalContent>
     </Modal>

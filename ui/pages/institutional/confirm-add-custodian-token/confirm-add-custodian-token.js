@@ -1,28 +1,28 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import {
-  AlignItems,
   Display,
   TextColor,
   TextAlign,
-  FlexDirection,
+  FontWeight,
+  TextVariant,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
+import Chip from '../../../components/ui/chip';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { setProviderType } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import {
-  Label,
-  ButtonLink,
   Button,
-  BUTTON_SIZES,
-  BUTTON_VARIANT,
+  ButtonSize,
+  ButtonVariant,
   Box,
   Text,
 } from '../../../components/component-library';
@@ -31,6 +31,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
+import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);
@@ -39,9 +40,12 @@ const ConfirmAddCustodianToken = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const mmiActions = mmiActionsFactory();
 
+  const { custodians } = useSelector(getMMIConfiguration);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
-  const [showMore, setShowMore] = useState(false);
+  const connectRequests = useSelector(
+    getInstitutionalConnectRequests,
+    shallowEqual,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
 
@@ -53,6 +57,71 @@ const ConfirmAddCustodianToken = () => {
       setIsLoading(false);
     }
   }, [connectRequest, history, mostRecentOverviewPage]);
+
+  const handleButtonClick = useCallback(
+    async ({ isConfirm }) => {
+      try {
+        if (isConfirm) {
+          setConnectError('');
+          setIsLoading(true);
+
+          if (connectRequest.chainId) {
+            const networkType = Object.keys(BUILT_IN_NETWORKS).find(
+              (key) =>
+                Number(BUILT_IN_NETWORKS[key].chainId).toString(10) ===
+                connectRequest.chainId.toString(),
+            );
+
+            await dispatch(setProviderType(networkType));
+          }
+
+          let custodianName = connectRequest.service.toLowerCase();
+
+          if (connectRequest.service === 'JSONRPC') {
+            custodianName = connectRequest.environment;
+          }
+
+          await dispatch(
+            mmiActions.setCustodianConnectRequest({
+              token: connectRequest.token,
+              apiUrl: connectRequest.apiUrl,
+              custodianName,
+              custodianType: connectRequest.service,
+            }),
+          );
+        }
+
+        await dispatch(
+          mmiActions.removeAddTokenConnectRequest({
+            origin: connectRequest.origin,
+            apiUrl: connectRequest.apiUrl,
+            token: connectRequest.token,
+          }),
+        );
+
+        trackEvent({
+          category: MetaMetricsEventCategory.MMI,
+          event: MetaMetricsEventName.TokenAdded,
+          properties: {
+            actions: isConfirm
+              ? 'Custodian RPC confirm'
+              : 'Custodian RPC cancel',
+            custodian: connectRequest.custodian,
+            apiUrl: connectRequest.apiUrl,
+          },
+        });
+
+        if (isConfirm) {
+          history.push(CUSTODY_ACCOUNT_ROUTE);
+        }
+      } catch (e) {
+        const errorMessage = e.message || 'Connection error';
+        setConnectError(errorMessage);
+        setIsLoading(false);
+      }
+    },
+    [connectRequest, dispatch, history, trackEvent, mmiActions],
+  );
 
   if (!connectRequest) {
     return null;
@@ -68,92 +137,41 @@ const ConfirmAddCustodianToken = () => {
     },
   });
 
-  let custodianLabel = '';
-
-  if (
-    connectRequest.labels &&
-    connectRequest.labels.some((label) => label.key === 'service')
-  ) {
-    custodianLabel = connectRequest.labels.find(
-      (label) => label.key === 'service',
-    ).value;
-  }
+  const custodianLabel =
+    connectRequest.labels?.find((label) => label.key === 'service')?.value ||
+    t('custodian');
+  const custodian = findCustodianByDisplayName(custodianLabel, custodians);
 
   return (
     <Box className="page-container">
-      <Box className="page-container__header">
-        <Text className="page-container__title">{t('custodianAccount')}</Text>
-        <Text className="page-container__subtitle">
-          {t('mmiAddToken', [connectRequest.origin])}
-        </Text>
+      <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
+        <Chip
+          borderColor={BorderColor.borderMuted}
+          label={connectRequest.origin}
+          maxContent={false}
+          leftIconUrl={custodian?.iconUrl}
+          labelProps={{
+            textAlign: TextAlign.Center,
+          }}
+        />
       </Box>
       <Box padding={4} className="page-container__content">
-        {custodianLabel && (
-          <>
-            <Text padding={4} color={TextColor.textDefault}>
-              {t('custodian')}
-            </Text>
-            <Label
-              marginRight={4}
-              marginLeft={4}
-              color={TextColor.textAlternative}
-              className="add_custodian_token_confirm__url"
-            >
-              {custodianLabel}
-            </Label>
-          </>
-        )}
-
-        <Text padding={4} color={TextColor.textDefault}>
-          {t('token')}
-        </Text>
-        <Box
-          marginRight={4}
-          marginLeft={4}
-          className="add_custodian_token_confirm__token"
+        <Text
+          padding={4}
+          fontWeight={FontWeight.Bold}
+          variant={TextVariant.headingSm}
         >
-          <Box
-            paddingTop={2}
-            paddingBottom={2}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-          >
-            <Text>
-              {showMore && connectRequest?.token
-                ? connectRequest?.token
-                : `...${connectRequest?.token.slice(-9)}`}
-            </Text>
-            {!showMore && (
-              <Box paddingLeft={2}>
-                <ButtonLink
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    setShowMore(true);
-                  }}
-                >
-                  {t('showMore')}
-                </ButtonLink>
-              </Box>
-            )}
-          </Box>
-        </Box>
-        {connectRequest.apiUrl && (
-          <Box>
-            <Text padding={4} color={TextColor.textDefault}>
-              {t('apiUrl')}
-            </Text>
-            <Text
-              marginRight={4}
-              marginLeft={4}
-              color={TextColor.textAlternative}
-              fontSize="14"
-              className="add_custodian_token_confirm__url"
-            >
-              {connectRequest.apiUrl}
-            </Text>
-          </Box>
-        )}
+          {t('confirmConnectionTitle', [custodianLabel])}
+        </Text>
+
+        <Text
+          paddingTop={3}
+          paddingLeft={4}
+          paddingRight={4}
+          color={TextColor.textAlternative}
+        >
+          {t('allowMmiToConnectToCustodian', [custodianLabel])}
+        </Text>
       </Box>
 
       <Box marginTop={4} data-testid="connect-custodian-token-error">
@@ -169,96 +187,20 @@ const ConfirmAddCustodianToken = () => {
           <Box display={Display.Flex} gap={4}>
             <Button
               block
-              variant={BUTTON_VARIANT.SECONDARY}
-              size={BUTTON_SIZES.LG}
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
               data-testid="cancel-btn"
-              onClick={async () => {
-                await dispatch(
-                  mmiActions.removeAddTokenConnectRequest({
-                    origin: connectRequest.origin,
-                    apiUrl: connectRequest.apiUrl,
-                    token: connectRequest.token,
-                  }),
-                );
-
-                trackEvent({
-                  category: MetaMetricsEventCategory.MMI,
-                  event: MetaMetricsEventName.TokenAdded,
-                  properties: {
-                    actions: 'Custodian RPC cancel',
-                    custodian: connectRequest.custodian,
-                    apiUrl: connectRequest.apiUrl,
-                  },
-                });
-              }}
+              onClick={() => handleButtonClick({ isConfirm: false })}
             >
               {t('cancel')}
             </Button>
             <Button
               block
               data-testid="confirm-btn"
-              size={BUTTON_SIZES.LG}
-              onClick={async () => {
-                setConnectError('');
-                setIsLoading(true);
-
-                try {
-                  if (connectRequest.chainId) {
-                    const networkType = Object.keys(BUILT_IN_NETWORKS).find(
-                      (key) =>
-                        Number(BUILT_IN_NETWORKS[key].chainId).toString(10) ===
-                        connectRequest.chainId.toString(),
-                    );
-                    await dispatch(setProviderType(networkType));
-                  }
-
-                  let custodianName = connectRequest.service.toLowerCase();
-
-                  if (connectRequest.service === 'JSONRPC') {
-                    custodianName = connectRequest.environment;
-                  }
-
-                  await dispatch(
-                    mmiActions.setCustodianConnectRequest({
-                      token: connectRequest.token,
-                      apiUrl: connectRequest.apiUrl,
-                      custodianName,
-                      custodianType: connectRequest.service,
-                    }),
-                  );
-
-                  await dispatch(
-                    mmiActions.removeAddTokenConnectRequest({
-                      origin: connectRequest.origin,
-                      apiUrl: connectRequest.apiUrl,
-                      token: connectRequest.token,
-                    }),
-                  );
-
-                  trackEvent({
-                    category: MetaMetricsEventCategory.MMI,
-                    event: MetaMetricsEventName.TokenAdded,
-                    properties: {
-                      actions: 'Custodian RPC confirm',
-                      custodian: connectRequest.custodian,
-                      apiUrl: connectRequest.apiUrl,
-                    },
-                  });
-
-                  history.push(CUSTODY_ACCOUNT_ROUTE);
-                } catch (e) {
-                  let errorMessage = e.message;
-
-                  if (!errorMessage) {
-                    errorMessage = 'Connection error';
-                  }
-
-                  setConnectError(errorMessage);
-                  setIsLoading(false);
-                }
-              }}
+              size={ButtonSize.Lg}
+              onClick={() => handleButtonClick({ isConfirm: true })}
             >
-              {t('confirm')}
+              {t('allow')}
             </Button>
           </Box>
         )}

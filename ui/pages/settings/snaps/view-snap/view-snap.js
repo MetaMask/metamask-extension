@@ -87,7 +87,7 @@ function ViewSnap() {
         .caveats[0].value;
     const newCaveatValue = { ...caveatValue };
     delete newCaveatValue[snapId];
-    if (Object.keys(newCaveatValue) > 0) {
+    if (Object.keys(newCaveatValue).length > 0) {
       dispatch(
         updateCaveat(
           connectedOrigin,
@@ -156,7 +156,7 @@ function ViewSnap() {
         />
       </Box>
       <Box className="view-snap__connected-sites" marginTop={12}>
-        <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+        <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
           {t('connectedSites')}
         </Text>
         <ConnectedSitesList
