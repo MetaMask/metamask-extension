@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
-import { isEqual } from 'lodash';
 import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
@@ -11,16 +10,10 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import {
-  handleMmiPortfolio,
-} from '@metamask-institutional/portfolio-dashboard';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  BUILD_QUOTE_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
-} from '../../../ui/helpers/constants/routes';
-import { previousValueComparator } from '../lib/util';
+import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
