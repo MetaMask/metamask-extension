@@ -386,6 +386,7 @@
     "@jazzer.js/jest-runner": "^2.0.0",
     "@lavamoat/allow-scripts": "^2.3.1",
     "@lavamoat/lavapack": "^5.2.4",
+    "@metamask/api-specs": "^0.0.30",
     "@metamask/auto-changelog": "^2.1.0",
     "@metamask/eslint-config": "^9.0.0",
     "@metamask/eslint-config-jest": "^9.0.0",

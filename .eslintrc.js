@@ -90,6 +90,8 @@ module.exports = {
         'test/stub/**/*.js',
         'test/unit-global/**/*.js',
         'test/fuzz/JsonRpcFuzz.js',
+        'test/fuzz/JsonRpcFuzz2.js',
+        'test/fuzz/FuzzData.js',
       ],
       // TODO: Convert these files to modern JS
       excludedFiles: ['test/lib/wait-until-called.js'],
