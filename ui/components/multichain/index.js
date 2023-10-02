@@ -12,6 +12,7 @@ export { ImportTokenLink } from './import-token-link';
 export { TokenListItem } from './token-list-item';
 export { AddressCopyButton } from './address-copy-button';
 export { ConnectedSiteMenu } from './connected-site-menu';
+export { ConnectionsHeader } from './connections-header';
 export { NetworkListItem } from './network-list-item';
 export { NetworkListMenu } from './network-list-menu';
 export { ProductTour } from './product-tour-popover';
