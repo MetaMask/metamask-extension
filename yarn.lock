@@ -4088,15 +4088,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^0.15.0":
-  version: 0.15.0
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:0.15.0"
+"@metamask/eth-ledger-bridge-keyring@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:1.0.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.1.1"
+    "@metamask/utils": "npm:^5.0.0"
     eth-sig-util: "npm:^2.0.0"
     ethereumjs-util: "npm:^7.0.9"
     hdkey: "npm:0.8.0"
-  checksum: d856b820806bfd3a9a030b2116b082b5089531e21a5e4ca53e5af027d83b2935013a853a5c18bc6c374555467d4e8e9f1a1712c263e891a7cd3cf0a4388968ae
+  checksum: 14bfff9291c67753f0dfa2be3da2f62ac01bb3b697067b9b4ecaec1dfbda14c6839036fbf9cbf2a785e3e6c299116478afe1f40be1dd05ee052534e5ac345018
   languageName: node
   linkType: hard
 
@@ -23863,7 +23864,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
     "@metamask/eth-keyring-controller": "npm:^13.0.1"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^1.0.0"
     "@metamask/eth-snap-keyring": "npm:0.3.1"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^2.0.0"
