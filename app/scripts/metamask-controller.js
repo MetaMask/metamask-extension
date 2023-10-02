@@ -3394,10 +3394,6 @@ export default class MetamaskController extends EventEmitter {
     );
     if (!keyring) {
       keyring = await this.coreKeyringController.addNewKeyring(keyringName);
-
-      if (deviceName === HardwareDeviceNames.trezor) {
-        await keyring.init();
-      }
     }
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
