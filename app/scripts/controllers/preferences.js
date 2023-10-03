@@ -105,7 +105,6 @@ export default class PreferencesController {
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IN
-      isLineaMainnetReleased: false,
       ///: BEGIN:ONLY_INCLUDE_IN(petnames)
       useExternalNameSources: true,
       ///: END:ONLY_INCLUDE_IN
