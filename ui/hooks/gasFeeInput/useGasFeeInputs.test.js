@@ -1,6 +1,10 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import { TransactionEnvelopeType } from '../../../shared/constants/transaction';
+import {
+  TransactionEnvelopeType,
+  TransactionStatus,
+  TransactionType,
+} from '../../../shared/constants/transaction';
 import {
   GasRecommendations,
   EditGasModes,
@@ -38,6 +42,16 @@ jest.mock('react-redux', () => {
     useDispatch: () => jest.fn(),
   };
 });
+
+const mockTransaction = {
+  status: TransactionStatus.unapproved,
+  type: TransactionType.simpleSend,
+  txParams: {
+    from: '0x000000000000000000000000000000000000dead',
+    type: '0x2',
+    value: '100',
+  },
+};
 
 describe('useGasFeeInputs', () => {
   beforeEach(() => {
@@ -141,7 +155,9 @@ describe('useGasFeeInputs', () => {
     });
 
     it('should return false', () => {
-      const { result } = renderHook(() => useGasFeeInputs());
+      const { result } = renderHook(() =>
+        useGasFeeInputs(undefined, mockTransaction),
+      );
       expect(result.current.balanceError).toBe(false);
     });
   });
@@ -157,8 +173,12 @@ describe('useGasFeeInputs', () => {
     it('should return true', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {
+          ...mockTransaction,
           userFeeLevel: GasRecommendations.medium,
-          txParams: { gas: '0x5208' },
+          txParams: {
+            ...mockTransaction.txParams,
+            gas: '0x5208',
+          },
         }),
       );
       expect(result.current.balanceError).toBe(true);
