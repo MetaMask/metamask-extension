@@ -276,13 +276,11 @@ export const AccountListMenu = ({ onClose }) => {
                     <ButtonLink
                       size={Size.SM}
                       startIconName={IconName.Snaps}
-                      onClick={() => {
+                      onClick={async () => {
                         dispatch(toggleAccountMenu());
                         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                          ? global.platform.openExtensionInBrowser(
+                          ? await global.platform.openExtensionInBrowser(
                               ADD_SNAP_ACCOUNT_ROUTE,
-                              null,
-                              true,
                             )
                           : history.push(ADD_SNAP_ACCOUNT_ROUTE);
                       }}

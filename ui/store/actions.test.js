@@ -30,6 +30,22 @@ const defaultState = {
         '0xFirstAddress': '0x0',
       },
     },
+    snapRegistryList: {
+      'mock-id': {
+        id: 'mock-id',
+        snapId: 'mock-id',
+        iconUrl: 'mock-icon-url',
+        snapTitle: 'mock-snap',
+        snapSlug: 'mock-slug',
+        snapDescription: 'mock-description',
+        tags: [],
+        developer: 'mock-developer',
+        website: 'website',
+        auditUrls: [],
+        version: '1.0.0',
+        lastUpdated: 'September 1, 2021',
+      },
+    },
   },
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
@@ -1992,6 +2008,64 @@ describe('Actions', () => {
 
         expect(setDesktopEnabled.calledOnceWith(true)).toBeTruthy();
       });
+    });
+  });
+
+  ///:
+  describe('#installAllowListedSnap', () => {
+    it('calls background installAllowListedSnap method', async () => {
+      const store = mockStore();
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        {
+          type: 'HIDE_LOADING_INDICATION',
+        },
+      ];
+
+      const installAllowListedSnap = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        installAllowListedSnap,
+      });
+
+      _setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.installAllowListedSnap({ snapId: 'mock-id', version: '1.0.0' }),
+      );
+
+      expect(
+        installAllowListedSnap.calledOnceWith({
+          snapId: 'mock-id',
+          version: '1.0.0',
+        }),
+      ).toBeTruthy();
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('should not call update trying to install a snap not in the registry', async () => {
+      const store = mockStore();
+
+      await expect(
+        store.dispatch(
+          actions.installAllowListedSnap({
+            snapId: 'unknown-snap',
+            version: '1.0.0',
+          }),
+        ),
+      ).rejects.toThrow('Snap not found in registry');
+    });
+    it("should reject trying to install a snap with a version that doesn't match the version in the registry", async () => {
+      const store = mockStore();
+      await expect(
+        store.dispatch(
+          actions.installAllowListedSnap({
+            snapId: 'mock-id',
+            version: '0.0.0',
+          }),
+        ),
+      ).rejects.toThrow('Snap Version mismatch');
     });
   });
 });

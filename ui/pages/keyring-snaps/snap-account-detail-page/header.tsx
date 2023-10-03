@@ -24,7 +24,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { METAMASK_DEVELOPER } from '../constants';
 import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
-import { updateAllowListedSnap } from '../../../store/actions';
+import { installAllowListedSnap } from '../../../store/actions';
 import SnapDetailTag from './snap-detail-tag';
 
 export const SnapDetailHeader = ({
@@ -98,11 +98,12 @@ export const SnapDetailHeader = ({
           <Box>
             {isInstalled && updateAvailable && (
               <Button
+                data-testid="update-snap-button"
                 variant={ButtonVariant.Secondary}
                 marginRight={1}
                 onClick={async () => {
                   await dispatch(
-                    updateAllowListedSnap({
+                    installAllowListedSnap({
                       snapId,
                       version,
                     }),
@@ -125,10 +126,15 @@ export const SnapDetailHeader = ({
             )}
             {!isInstalled && (
               <Button
+                data-testid="install-snap-button"
                 variant={ButtonVariant.Primary}
-                onClick={() => {
-                  setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
-                  setShowConfigPopover(true);
+                onClick={async () => {
+                  await dispatch(
+                    installAllowListedSnap({
+                      snapId,
+                      version,
+                    }),
+                  );
                 }}
               >
                 {t('snapInstall')}

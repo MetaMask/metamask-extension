@@ -46,6 +46,7 @@ export default function SnapCard({
 
   return (
     <Box
+      data-testid={`snap-${id}`}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundDefault}

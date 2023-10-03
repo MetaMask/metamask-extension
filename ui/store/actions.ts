@@ -4594,7 +4594,7 @@ export async function updateSnapRegistry() {
   await submitRequestToBackground('updateSnapRegistry', []);
 }
 
-export function updateAllowListedSnap({
+export function installAllowListedSnap({
   snapId,
   version,
 }: {
@@ -4602,8 +4602,6 @@ export function updateAllowListedSnap({
   version: string;
 }) {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
-    dispatch(showLoadingIndication());
-
     const registry: {
       id: string;
       snapId: string;
@@ -4629,13 +4627,11 @@ export function updateAllowListedSnap({
     }
 
     try {
-      await submitRequestToBackground('updateAllowListedSnap', [
+      await submitRequestToBackground('installAllowListedSnap', [
         { snapId, version },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }

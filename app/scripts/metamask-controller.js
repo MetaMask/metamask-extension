@@ -2752,7 +2752,7 @@ export default class MetamaskController extends EventEmitter {
       updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
         preferencesController,
       ),
-      updateAllowListedSnap: this.updateAllowListedSnap.bind(this),
+      installAllowListedSnap: this.installAllowListedSnap.bind(this),
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       // Desktop
@@ -2929,7 +2929,7 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.exportAccount(address, password);
   }
 
-  async updateAllowListedSnap({ snapId, version }) {
+  async installAllowListedSnap({ snapId, version }) {
     return this.controllerMessenger.call('SnapController:install', 'metamask', {
       [snapId]: {
         version,
