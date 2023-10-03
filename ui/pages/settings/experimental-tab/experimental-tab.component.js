@@ -40,8 +40,8 @@ export default class ExperimentalTab extends PureComponent {
   static propTypes = {
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertsEnabled: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -110,8 +110,12 @@ export default class ExperimentalTab extends PureComponent {
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
-    const { securityAlertsEnabled, transactionSecurityCheckEnabled } =
-      this.props;
+    const {
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertsEnabled,
+      ///: END:ONLY_INCLUDE_IN
+      transactionSecurityCheckEnabled,
+    } = this.props;
 
     return (
       <>
