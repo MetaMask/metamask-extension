@@ -2306,7 +2306,7 @@
     "message": "Reconnect your ledger, open the ETH app and try again."
   },
   "ledgerErrorDevicedLocked": {
-    "message": "Ledger device is locked."
+    "message": "Your Ledger is locked. Unlock it then try again."
   },
   "ledgerErrorEthAppNotOpen": {
     "message": "To solve the issue, open the ETH application on your device and retry."
