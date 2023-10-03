@@ -63,7 +63,7 @@ const useTransactionInsights = ({ txData }) => {
         className="confirm-page-container-content__tab"
         name={selectedSnap?.manifest.proposedName}
       >
-        <SnapInsight data={data[0]} loading={loading} />
+        <SnapInsight data={data?.[0]} loading={loading} />
       </Tab>
     );
   } else if (data && insightSnaps.length > 1) {
@@ -74,8 +74,8 @@ const useTransactionInsights = ({ txData }) => {
       }),
     );
 
-    const selectedSnapData = data.find(
-      (promise) => promise.snapId === selectedInsightSnapId,
+    const selectedSnapData = data?.find(
+      (promise) => promise?.snapId === selectedInsightSnapId,
     );
 
     insightComponent = (

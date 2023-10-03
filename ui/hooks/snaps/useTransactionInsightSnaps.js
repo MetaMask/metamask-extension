@@ -26,6 +26,7 @@ export function useTransactionInsightSnaps({
     async function fetchInsight() {
       ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
       if (hasFetchedV2Insight) {
+        setLoading(false);
         return;
       }
       ///: END:ONLY_INCLUDE_IN
