@@ -1447,7 +1447,7 @@
       },
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "mockttp>graphql-tag>tslib": true
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": {
@@ -1517,6 +1517,11 @@
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs>@protobufjs/aspromise": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs>@protobufjs/inquire": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": {
@@ -2556,6 +2561,149 @@
     "@metamask/subject-metadata-controller>@metamask/base-controller": {
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/transaction-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/transaction-controller>@metamask/controller-utils": true,
+        "@metamask/transaction-controller>@metamask/rpc-errors": true,
+        "@metamask/transaction-controller>@metamask/utils": true,
+        "@metamask/transaction-controller>eth-method-registry": true,
+        "eth-json-rpc-filters>async-mutex": true,
+        "ethereumjs-util": true,
+        "fast-json-patch": true,
+        "lodash": true,
+        "nonce-tracker": true,
+        "uuid": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/transaction-controller>@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/transaction-controller>@metamask/rpc-errors>@metamask/utils": true,
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry": {
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>ethjs": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs": {
+      "globals": {
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-abi": true,
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract": true,
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-query": true,
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-util": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-provider-http": true,
+        "ethjs>ethjs-unit": true,
+        "ethjs>js-sha3": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-abi": {
+      "packages": {
+        "bn.js": true,
+        "browserify>buffer": true,
+        "ethjs>js-sha3": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract": {
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-util": true,
+        "ethjs-contract>babel-runtime": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>js-sha3": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
+      "packages": {
+        "bn.js": true,
+        "browserify>buffer": true,
+        "ethjs>js-sha3": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/ethjs-query>ethjs-format": true,
+        "@metamask/ethjs-query>ethjs-rpc": true,
+        "ethjs-contract>babel-runtime": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "@metamask/utils": {
@@ -4557,6 +4705,7 @@
     },
     "mockttp>graphql-tag>tslib": {
       "globals": {
+        "SuppressedError": true,
         "define": true
       }
     },
@@ -4590,9 +4739,19 @@
     },
     "nonce-tracker": {
       "packages": {
-        "await-semaphore": true,
+        "@metamask/network-controller>eth-block-tracker": true,
         "browserify>assert": true,
-        "ethjs>ethjs-query": true
+        "ethjs>ethjs-query": true,
+        "nonce-tracker>async-mutex": true
+      }
+    },
+    "nonce-tracker>async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "obj-multiplex": {

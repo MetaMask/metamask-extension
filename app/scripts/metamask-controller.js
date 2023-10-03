@@ -4601,10 +4601,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Returns the nonce that will be associated with a transaction once approved
    *
-   * @param {string} address - The hex string address for the transaction
+   * @param {string} _address - The hex string address for the transaction
    * @returns {Promise<number>}
    */
-  async getPendingNonce(address) {
+  async getPendingNonce(_address) {
     // TxMigrationToDo - Add getNonceLock controller method.
     throw new Error('getPendingNonce - No getNonceLock controller method.');
 
@@ -4619,10 +4619,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Returns the next nonce according to the nonce-tracker
    *
-   * @param {string} address - The hex string address for the transaction
+   * @param {string} _address - The hex string address for the transaction
    * @returns {Promise<number>}
    */
-  async getNextNonce(address) {
+  async getNextNonce(_address) {
     // TxMigrationToDo - Add getNonceLock controller method.
     throw new Error('getNextNonce - No getNonceLock controller method.');
 

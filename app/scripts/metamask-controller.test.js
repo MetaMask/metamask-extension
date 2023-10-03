@@ -16,6 +16,7 @@ import {
 } from '@metamask/phishing-controller';
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
+import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -23,7 +24,6 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
-import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
 
 const Ganache = require('../../test/e2e/ganache');

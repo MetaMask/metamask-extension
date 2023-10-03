@@ -5,7 +5,6 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { SignatureController } from '@metamask/signature-controller';
 
 import MMIController from './mmi-controller';
-import TransactionController from './transactions';
 import PreferencesController from './preferences';
 import AppStateController from './app-state';
 
@@ -31,19 +30,12 @@ describe('MMIController', function () {
       transactionUpdateController: new TransactionUpdateController({
         getCustodyKeyring: jest.fn(),
       }),
-      txController: new TransactionController({
-        initState: {},
-        provider: {
-          chainId: 'fail',
-          nickname: '',
-          rpcTarget: 'https://api.myetherwallet.com/eth',
-          ticker: 'ETH',
-          type: 'rinkeby',
+      txController: {
+        setTxHash: jest.fn(),
+        txStateManager: {
+          getTransactions: jest.fn(),
         },
-        getCurrentChainId: jest.fn(),
-        getNetworkId: jest.fn(),
-        onNetworkStateChange: jest.fn(),
-      }),
+      },
       signatureController: new SignatureController({
         messenger: mockMessenger,
         keyringController: new KeyringController({

@@ -1,4 +1,4 @@
-import { snapshotFromTxMeta } from '../../app/scripts/controllers/transactions/lib/tx-state-history-helpers';
+import { cloneDeep } from 'lodash';
 import { TransactionStatus } from '../../shared/constants/transaction';
 
 export default function createTxMeta(partialMeta) {
@@ -7,10 +7,15 @@ export default function createTxMeta(partialMeta) {
     txParams: {},
     ...partialMeta,
   };
+
   // initialize history
   txMeta.history = [];
+
   // capture initial snapshot of txMeta for history
-  const snapshot = snapshotFromTxMeta(txMeta);
+  let snapshot = { ...txMeta };
+  delete snapshot.history;
+  snapshot = cloneDeep(snapshot);
+
   txMeta.history.push(snapshot);
   return txMeta;
 }

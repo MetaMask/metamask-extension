@@ -9912,7 +9912,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assert@npm:^1.4.0, assert@npm:^1.4.1":
+"assert@npm:^1.4.0":
   version: 1.5.0
   resolution: "assert@npm:1.5.0"
   dependencies:
@@ -25773,18 +25773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nonce-tracker@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "nonce-tracker@npm:1.0.1"
-  dependencies:
-    assert: "npm:^1.4.1"
-    await-semaphore: "npm:^0.1.3"
-    ethjs-query: "npm:^0.3.8"
-  checksum: ea0ebb9fe7f7fd3821248da4c2072013f3707a0339d60e4c95cb33919c74b243ae663f9e25efb3caaba86f698f3cd34e8cafad552c67bb2e6f42777a1d009df5
-  languageName: node
-  linkType: hard
-
-"nonce-tracker@npm:^1.1.0":
+"nonce-tracker@npm:^1.0.0, nonce-tracker@npm:^1.1.0":
   version: 1.2.0
   resolution: "nonce-tracker@npm:1.2.0"
   dependencies:
@@ -32802,7 +32791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.5.0, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0":
+"tslib@npm:2.5.0":
   version: 2.5.0
   resolution: "tslib@npm:2.5.0"
   checksum: ea556fbdf396fe15dbd45e242754e86e7c36e0dce8644404a7c8a81ae1e940744dc639569aeca1ae370a7f804d82872f3fd8564eb23be9adb7618201d0314dac
@@ -32816,7 +32805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.3.1":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: bd26c22d36736513980091a1e356378e8b662ded04204453d353a7f34a4c21ed0afc59b5f90719d4ba756e581a162ecbf93118dc9c6be5acf70aa309188166ca
