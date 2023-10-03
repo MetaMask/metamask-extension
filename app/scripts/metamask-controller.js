@@ -242,8 +242,8 @@ import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 import { updateCurrentLocale } from './translate';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
-import TxGasUtil from './controllers/transactions/tx-gas-utils';
 ///: END:ONLY_INCLUDE_IN
+import TxGasUtil from './controllers/transactions/tx-gas-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
