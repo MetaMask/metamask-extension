@@ -1142,7 +1142,7 @@ export function enableSnap(
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function removeSnap(
   snapId: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
     ///: END:ONLY_INCLUDE_IN
@@ -1171,9 +1171,9 @@ export function removeSnap(
           'getAccountsBySnapId',
           [snapId],
         );
-        addresses.forEach((address) =>
-          dispatch(removeAccount(address.toLowerCase())),
-        );
+        for (const address of addresses) {
+          await submitRequestToBackground('removeAccount', [address]);
+        }
       }
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
