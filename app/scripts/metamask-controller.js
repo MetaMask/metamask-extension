@@ -1537,6 +1537,9 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    const isExternalNameSourcesEnabled = () =>
+      this.preferencesController.store.getState().useExternalNameSources;
+
     this.nameController = new NameController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'NameController',
@@ -1548,9 +1551,9 @@ export default class MetamaskController extends EventEmitter {
             this.ensController,
           ),
         }),
-        new EtherscanNameProvider({}),
-        new TokenNameProvider({}),
-        new LensNameProvider(),
+        new EtherscanNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
+        new TokenNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
+        new LensNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
         new SnapsNameProvider({
           messenger: this.controllerMessenger.getRestricted({
             name: 'SnapsNameProvider',
@@ -2207,7 +2210,12 @@ export default class MetamaskController extends EventEmitter {
         }, []);
 
         this.dismissNotifications(notificationIds);
+      },
+    );
 
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapUninstalled`,
+      (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.SnapUninstalled,
           category: MetaMetricsEventCategory.Snaps,
@@ -2401,6 +2409,12 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       setAddSnapAccountEnabled:
         preferencesController.setAddSnapAccountEnabled.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      setUseExternalNameSources:
+        preferencesController.setUseExternalNameSources.bind(
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
@@ -4345,9 +4359,6 @@ export default class MetamaskController extends EventEmitter {
             this.mmiController,
           ),
         handleMmiDashboardData: this.mmiController.handleMmiDashboardData.bind(
-          this.mmiController,
-        ),
-        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(
           this.mmiController,
         ),
         handleMmiSetAccountAndNetwork:
