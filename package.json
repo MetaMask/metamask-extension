@@ -281,6 +281,7 @@
     "@metamask/snaps-ui": "^2.0.0",
     "@metamask/snaps-utils": "^2.0.1",
     "@metamask/subject-metadata-controller": "^2.0.0",
+    "@metamask/transaction-controller": "^13.0.0",
     "@metamask/utils": "^5.0.0",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
