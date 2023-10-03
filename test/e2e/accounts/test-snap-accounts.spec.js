@@ -121,21 +121,10 @@ describe('Test Snap Account', function () {
         // Checking result modal
         assert.equal(
           await driver.isElementPresentAndVisible({
-            text: 'MetaMask Simple Snap Keyring',
+            text: 'MetaMask Simple Snap Keyring removed',
+            tag: 'p',
           }),
           true,
-        );
-        assert.equal(
-          await driver.isElementPresentAndVisible({
-            text: 'removed',
-          }),
-          true,
-        );
-        assert.equal(
-          await driver.isElementPresentAndVisible({
-            text: 'not removed',
-          }),
-          false,
         );
       },
     );
