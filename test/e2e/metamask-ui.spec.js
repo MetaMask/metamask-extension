@@ -281,7 +281,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Send token from inside MetaMask', function () {
+  describe('Send token from inside MetaMask @no-mmi', function () {
     it('starts to send a transaction', async function () {
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.delay(regularDelayMs);
