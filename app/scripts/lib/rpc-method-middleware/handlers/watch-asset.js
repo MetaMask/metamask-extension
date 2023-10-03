@@ -40,6 +40,7 @@ async function watchAssetHandler(
     const {
       params: { options: asset, type },
       origin,
+      networkClientId,
     } = req;
 
     const { tokenId } = asset;
@@ -56,7 +57,7 @@ async function watchAssetHandler(
       );
     }
 
-    await handleWatchAssetRequest(asset, type, origin);
+    await handleWatchAssetRequest({ asset, type, origin, networkClientId });
     res.result = true;
     return end();
   } catch (error) {
