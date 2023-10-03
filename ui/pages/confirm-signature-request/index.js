@@ -75,7 +75,7 @@ const ConfirmTxScreen = ({ match }) => {
   const history = useHistory();
 
   useEffect(() => {
-    const unconfTxList = txHelper(unapprovedTxs || {}, {}, {}, {}, chainId);
+    const unconfTxList = txHelper(unapprovedTxs || {}, {}, {}, {}, {}, {}, chainId);
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
@@ -108,7 +108,8 @@ const ConfirmTxScreen = ({ match }) => {
           {},
           {},
           {},
-          networkId,
+          {},
+          {},
           chainId,
         );
         const prevTxData = prevUnconfTxList[prevIndex] || {};
@@ -121,7 +122,8 @@ const ConfirmTxScreen = ({ match }) => {
         {},
         {},
         {},
-        networkId,
+        {},
+        {},
         chainId,
       );
 
@@ -156,6 +158,8 @@ const ConfirmTxScreen = ({ match }) => {
       unapprovedTxs || {},
       unapprovedMsgs,
       unapprovedPersonalMsgs,
+      {},
+      {},
       unapprovedTypedMessages,
       chainId,
     );
@@ -170,7 +174,6 @@ const ConfirmTxScreen = ({ match }) => {
     chainId,
     index,
     match,
-    networkId,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTxs,
