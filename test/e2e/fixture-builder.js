@@ -309,7 +309,7 @@ function defaultFixture() {
         tokens: [],
       },
       TransactionController: {
-        transactions: [],
+        transactions: {},
       },
       config: {},
       firstTimeInfo: {
@@ -777,8 +777,8 @@ class FixtureBuilder {
 
   withTransactionControllerMultipleTransactions() {
     return this.withTransactionController({
-      transactions: [
-        {
+      transactions: {
+        '7087d1d7-f0e8-4c0f-a903-6d9daa392baf': {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -835,7 +835,7 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-        {
+        '6eab4240-3762-4581-abc5-cd91eab6964e': {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -892,7 +892,7 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-        {
+        'c15eee26-11d6-4914-a70e-36ef9a3bcacb': {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -949,7 +949,7 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-        {
+        'dfa9e5ad-d069-46b1-976e-a23734971d87': {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -1006,14 +1006,14 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-      ],
+      },
     });
   }
 
   withTransactionControllerTypeOneTransaction() {
     return this.withTransactionController({
-      transactions: [
-        {
+      transactions: {
+        '13a01e77-a368-4bb9-aba9-e7435580e3b9': {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
@@ -1075,14 +1075,14 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-      ],
+      },
     });
   }
 
   withTransactionControllerTypeTwoTransaction() {
     return this.withTransactionController({
-      transactions: [
-        {
+      transactions: {
+        '13a01e77-a368-4bb9-aba9-e7435580e3b9': {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
@@ -1150,14 +1150,14 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-      ],
+      },
     });
   }
 
   withTransactionControllerApprovedTransaction() {
     return this.withTransactionController({
-      transactions: [
-        {
+      transactions: {
+        '13a01e77-a368-4bb9-aba9-e7435580e3b9': {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
@@ -1234,14 +1234,14 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-      ],
+      },
     });
   }
 
   withTransactionControllerCompletedTransaction() {
     return this.withTransactionController({
-      transactions: [
-        {
+      transactions: {
+        '0c9342ce-ef3f-4cab-9425-8e57144256a6': {
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
@@ -1385,14 +1385,14 @@ class FixtureBuilder {
           },
           type: 'simpleSend',
         },
-      ],
+      },
     });
   }
 
   withTransactionControllerIncomingTransaction() {
     return this.withTransactionController({
-      transactions: [
-        {
+      transactions: {
+        '8a13fd36-fdad-48ae-8b6a-c8991026d550': {
           blockNumber: '1',
           chainId: CHAIN_IDS.LOCALHOST,
           hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
@@ -1409,7 +1409,7 @@ class FixtureBuilder {
           },
           type: 'incoming',
         },
-      ],
+      },
     });
   }
 
@@ -1423,7 +1423,10 @@ class FixtureBuilder {
         .TransactionController.transactions;
 
     return this.withTransactionController({
-      transactions: [...completedTransaction, ...incomingTransaction],
+      transactions: {
+        ...completedTransaction,
+        ...incomingTransaction,
+      },
     });
   }
 
@@ -1443,7 +1446,7 @@ class FixtureBuilder {
 
   build() {
     this.fixture.meta = {
-      version: 100,
+      version: 74,
     };
     return this.fixture;
   }
