@@ -42,7 +42,7 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,desktop,blockaid)
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
@@ -202,7 +202,7 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,desktop)
   renderTransactionSecurityCheckToggle() {
     const { t } = this.context;
 
@@ -404,7 +404,7 @@ export default class ExperimentalTab extends PureComponent {
           ///: END:ONLY_INCLUDE_IN
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,desktop)
           this.renderTransactionSecurityCheckToggle()
           ///: END:ONLY_INCLUDE_IN
         }
