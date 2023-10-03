@@ -273,6 +273,69 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             </p>
           </div>
         </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 62, 0);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#238FE1"
+                    height="28"
+                    transform="translate(-3.696976537625548 4.334010253908054) rotate(161.9 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FB1891"
+                    height="28"
+                    transform="translate(-3.8726006416348677 11.341987744107225) rotate(224.3 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F90901"
+                    height="28"
+                    transform="translate(-23.479125860782805 -13.386102528655465) rotate(344.7 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            >
+              Custody test
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
+              0xca8f...f281
+            </p>
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -706,6 +769,69 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
               class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xeb9e...4823
+            </p>
+          </div>
+        </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 62, 0);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#238FE1"
+                    height="28"
+                    transform="translate(-3.696976537625548 4.334010253908054) rotate(161.9 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FB1891"
+                    height="28"
+                    transform="translate(-3.8726006416348677 11.341987744107225) rotate(224.3 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F90901"
+                    height="28"
+                    transform="translate(-23.479125860782805 -13.386102528655465) rotate(344.7 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            >
+              Custody test
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
+              0xca8f...f281
             </p>
           </div>
         </div>
