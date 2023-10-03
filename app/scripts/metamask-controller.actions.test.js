@@ -244,10 +244,40 @@ describe('MetaMaskController', function () {
         );
 
       const [token1, token2] = await Promise.all([
-        metamaskController.getApi().addToken(address, symbol, decimals),
-        metamaskController.getApi().addToken(address, symbol, decimals),
+        metamaskController.getApi().addToken({ address, symbol, decimals }),
+        metamaskController.getApi().addToken({ address, symbol, decimals }),
       ]);
       assert.deepEqual(token1, token2);
+    });
+
+    it('networkClientId is used when provided', async function () {
+      const supportsInterfaceStub = sinon
+        .stub()
+        .returns(Promise.resolve(false));
+      sinon
+        .stub(metamaskController.tokensController, '_createEthersContract')
+        .callsFake(() =>
+          Promise.resolve({ supportsInterface: supportsInterfaceStub }),
+        );
+      sinon
+        .stub(metamaskController.tokensController, 'getNetworkClientById')
+        .callsFake(() => ({
+          configuration: {
+            chainId: '0xa',
+          },
+        }));
+
+      await metamaskController.getApi().addToken({
+        address,
+        symbol,
+        decimals,
+        networkClientId: 'networkClientId1',
+      });
+      assert.strictEqual(
+        metamaskController.tokensController.getNetworkClientById.getCall(0)
+          .args[0],
+        'networkClientId1',
+      );
     });
   });
 
