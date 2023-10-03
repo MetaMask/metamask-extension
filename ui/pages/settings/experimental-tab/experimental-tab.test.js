@@ -36,7 +36,7 @@ describe('ExperimentalTab', () => {
   it('should render multiple toggle options', () => {
     const { getAllByRole } = render({ desktopEnabled: true });
     const toggle = getAllByRole('checkbox');
-    expect(toggle).toHaveLength(4);
+    expect(toggle).toHaveLength(3);
   });
 
   it('should disable opensea when blockaid is enabled', () => {
