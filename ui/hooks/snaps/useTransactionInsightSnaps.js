@@ -94,7 +94,9 @@ export function useTransactionInsightSnaps({
     subjects,
     insightSnaps,
     insightSnapId,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     hasFetchedV2Insight,
+    ///: END:ONLY_INCLUDE_IN
   ]);
 
   return { data, loading };
