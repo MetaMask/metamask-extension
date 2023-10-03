@@ -4924,7 +4924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^13.0.0":
+"@metamask/transaction-controller@npm:13.0.0":
   version: 13.0.0
   resolution: "@metamask/transaction-controller@npm:13.0.0"
   dependencies:
@@ -4951,6 +4951,36 @@ __metadata:
     "@metamask/network-controller": ^13.0.1
     babel-runtime: ^6.26.0
   checksum: 78c9408dfc1f3f0326b6a2a1a5e2a17cea4fc7f8038fe6b63369cf6b2e4eb0c36ae97abf3939a3679d6533f06b2bf9911be45b6f6dbff621bac3e5d7d875a949
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-13.0.0-2b217d0763.patch":
+  version: 13.0.0
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-13.0.0-2b217d0763.patch::version=13.0.0&hash=08fbed"
+  dependencies:
+    "@ethereumjs/common": "npm:^3.2.0"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@metamask/approval-controller": "npm:^3.5.2"
+    "@metamask/base-controller": "npm:^3.2.2"
+    "@metamask/controller-utils": "npm:^5.0.1"
+    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/metamask-eth-abis": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^13.0.1"
+    "@metamask/rpc-errors": "npm:^6.0.0"
+    "@metamask/utils": "npm:^6.2.0"
+    async-mutex: "npm:^0.2.6"
+    eth-method-registry: "npm:1.1.0"
+    ethereumjs-util: "npm:^7.0.10"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    nonce-tracker: "npm:^1.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^3.5.2
+    "@metamask/network-controller": ^13.0.1
+    babel-runtime: ^6.26.0
+  checksum: b549591c1b72e0cc8c8eedeff686c34aa4854b400a1b95283745dc873917c54de36547081be2b9e75be4432d3b6f2362c7cff4d49d820839be4470513574a4d6
   languageName: node
   linkType: hard
 
@@ -23970,7 +24000,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^2.0.1"
     "@metamask/subject-metadata-controller": "npm:^2.0.0"
     "@metamask/test-dapp": "npm:^7.1.0"
-    "@metamask/transaction-controller": "npm:^13.0.0"
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-13.0.0-2b217d0763.patch"
     "@metamask/utils": "npm:^5.0.0"
     "@ngraveio/bc-ur": "npm:^1.1.6"
     "@popperjs/core": "npm:^2.4.0"

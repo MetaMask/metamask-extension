@@ -4601,36 +4601,32 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Returns the nonce that will be associated with a transaction once approved
    *
-   * @param {string} _address - The hex string address for the transaction
+   * @param {string} address - The hex string address for the transaction
    * @returns {Promise<number>}
    */
-  async getPendingNonce(_address) {
+  async getPendingNonce(address) {
     // TxMigrationToDo - Add getNonceLock controller method.
-    throw new Error('getPendingNonce - No getNonceLock controller method.');
+    const { nonceDetails, releaseLock } = await this.txController.getNonceLock(
+      address,
+    );
 
-    // const { nonceDetails, releaseLock } =
-    //   await this.txController.nonceTracker.getNonceLock(address);
-    // const pendingNonce = nonceDetails.params.highestSuggested;
+    const pendingNonce = nonceDetails.params.highestSuggested;
 
-    // releaseLock();
-    // return pendingNonce;
+    releaseLock();
+    return pendingNonce;
   }
 
   /**
    * Returns the next nonce according to the nonce-tracker
    *
-   * @param {string} _address - The hex string address for the transaction
+   * @param {string} address - The hex string address for the transaction
    * @returns {Promise<number>}
    */
-  async getNextNonce(_address) {
+  async getNextNonce(address) {
     // TxMigrationToDo - Add getNonceLock controller method.
-    throw new Error('getNextNonce - No getNonceLock controller method.');
-
-    // const nonceLock = await this.txController.nonceTracker.getNonceLock(
-    //   address,
-    // );
-    // nonceLock.releaseLock();
-    // return nonceLock.nextNonce;
+    const nonceLock = await this.txController.getNonceLock(address);
+    nonceLock.releaseLock();
+    return nonceLock.nextNonce;
   }
 
   /**
