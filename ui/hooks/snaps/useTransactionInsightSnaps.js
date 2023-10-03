@@ -12,22 +12,23 @@ export function useTransactionInsightSnaps({
   origin,
   insightSnaps,
   insightSnapId = '',
-  hasFetchedV2Insight = false,
 }) {
   const subjects = useSelector(getPermissionSubjects);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
-
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  const [hasFetchedV2Insight, setHasFetchedV2Insight] = useState(false);
+  ///: END:ONLY_INCLUDE_IN
   useEffect(() => {
     let cancelled = false;
 
     async function fetchInsight() {
+      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
       if (hasFetchedV2Insight) {
-        setLoading(false);
         return;
       }
-
+      ///: END:ONLY_INCLUDE_IN
       setLoading(true);
 
       let snapIds = insightSnaps.map((snap) => snap.id);
@@ -77,6 +78,9 @@ export function useTransactionInsightSnaps({
       if (!cancelled) {
         setData(reformattedData);
         setLoading(false);
+        ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+        setHasFetchedV2Insight(true);
+        ///: END:ONLY_INCLUDE_IN
       }
     }
     if (transaction) {
