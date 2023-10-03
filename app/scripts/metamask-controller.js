@@ -2210,7 +2210,12 @@ export default class MetamaskController extends EventEmitter {
         }, []);
 
         this.dismissNotifications(notificationIds);
+      },
+    );
 
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapUninstalled`,
+      (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.SnapUninstalled,
           category: MetaMetricsEventCategory.Snaps,
