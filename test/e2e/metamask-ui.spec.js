@@ -170,7 +170,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Add a custom token from a dapp', function () {
+  describe('Add a custom token from a dapp @no-mmi', function () {
     let windowHandles;
     let extension;
     let popup;
