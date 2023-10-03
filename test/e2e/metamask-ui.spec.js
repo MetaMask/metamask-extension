@@ -355,7 +355,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Send a custom token from dapp', function () {
+  describe('Send a custom token from dapp @no-mmi', function () {
     it('sends an already created token', async function () {
       const windowHandles = await driver.getAllWindowHandles();
       const extension = windowHandles[0];
