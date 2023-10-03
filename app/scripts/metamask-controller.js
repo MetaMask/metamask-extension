@@ -1219,48 +1219,49 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.txController = new TransactionController({
-      blockTracker: this.blockTracker,
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
-      getNetworkState: () => this.networkController.state,
-      getSelectedAddress: () =>
-        this.preferencesController.store.getState().selectedAddress,
-      incomingTransactions: {
-        includeTokenTransfers: false,
-        isEnabled: () =>
-          Boolean(
-            this.preferencesController.store.getState()
-              .incomingTransactionsPreferences?.[
-              this.networkController.state.providerConfig.chainId
-            ] && this.onboardingController.store.getState().completedOnboarding,
+    this.txController = new TransactionController(
+      {
+        blockTracker: this.blockTracker,
+        getCurrentNetworkEIP1559Compatibility:
+          this.networkController.getEIP1559Compatibility.bind(
+            this.networkController,
           ),
-        queryEntireHistory: false,
-        updateTransactions: false,
+        getCurrentAccountEIP1559Compatibility:
+          this.getCurrentAccountEIP1559Compatibility.bind(this),
+        getNetworkState: () => this.networkController.state,
+        getSelectedAddress: () =>
+          this.preferencesController.store.getState().selectedAddress,
+        incomingTransactions: {
+          includeTokenTransfers: false,
+          isEnabled: () =>
+            Boolean(
+              this.preferencesController.store.getState()
+                .incomingTransactionsPreferences?.[
+                this.networkController.state.providerConfig.chainId
+              ] &&
+                this.onboardingController.store.getState().completedOnboarding,
+            ),
+          queryEntireHistory: false,
+          updateTransactions: false,
+        },
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'TransactionController',
+          allowedActions: [`${this.approvalController.name}:addRequest`],
+        }),
+        onNetworkStateChange: (listener) => {
+          networkControllerMessenger.subscribe(
+            'NetworkController:stateChange',
+            () => listener(),
+            ({ networkId }) => networkId,
+          );
+        },
+        provider: this.provider,
       },
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'TransactionController',
-        allowedActions: [`${this.approvalController.name}:addRequest`],
-      }),
-      onNetworkStateChange: (listener) => {
-        networkControllerMessenger.subscribe(
-          'NetworkController:stateChange',
-          () => listener(),
-          ({ networkId }) => networkId,
-        );
+      {
+        sign: (...args) => this.coreKeyringController.signTransaction(...args),
       },
-      provider: this.provider,
-    });
-
-    this.txController.configure({
-      sign: (...args) => this.coreKeyringController.signTransaction(...args),
-    });
-
-    this.txController.update(initState.TransactionController);
+      initState.TransactionController,
+    );
 
     this.txController.hub.on('unapprovedTransaction', (txMeta) => {
       this.txController.hub.once(
@@ -1611,7 +1612,6 @@ export default class MetamaskController extends EventEmitter {
      */
     const resetOnRestartStore = {
       AccountTracker: this.accountTracker.store,
-      TxController: this.txController,
       TokenRatesController: this.tokenRatesController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
@@ -1698,6 +1698,7 @@ export default class MetamaskController extends EventEmitter {
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
+        TxController: this.txController,
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -1724,13 +1725,6 @@ export default class MetamaskController extends EventEmitter {
     // if this is the first time, clear the state of by calling these methods
     const resetMethods = [
       this.accountTracker.resetState,
-      // TxMigrationToDo - Add resetState method to controller.
-      () =>
-        this.txController.update({
-          methodData: {},
-          transactions: [],
-          lastFetchedBlockNumbers: {},
-        }),
       this.decryptMessageController.resetState.bind(
         this.decryptMessageController,
       ),
