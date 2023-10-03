@@ -246,6 +246,9 @@
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
   },
+  "addImportAccount": {
+    "message": "Add account or hardware wallet"
+  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -258,6 +261,9 @@
   "addNetworkTooltipWarning": {
     "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
     "description": "$1 is Learn more link"
+  },
+  "addNewAccount": {
+    "message": "Add a new account"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -1317,6 +1323,10 @@
   "disconnectThisAccount": {
     "message": "Disconnect this account"
   },
+  "discoverSnaps": {
+    "message": "Discover Snaps",
+    "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
+  },
   "dismiss": {
     "message": "Dismiss"
   },
@@ -1599,14 +1609,18 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explore MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Customize your wallet experience."
+    "message": "Explore community-built Snaps to customize your web3 experience",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "External extension"
+  },
+  "externalNameSourcesSetting": {
+    "message": "Suggest address names"
+  },
+  "externalNameSourcesSettingDescription": {
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"
@@ -2597,6 +2611,9 @@
   },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
+  },
+  "nftLearnMore": {
+    "message": "Learn more about NFTs"
   },
   "nftOptions": {
     "message": "NFT Options"
@@ -3937,6 +3954,9 @@
     "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
+  "sendingZeroAmount": {
+    "message": "You are sending 0 $1."
+  },
   "sepolia": {
     "message": "Sepolia test network"
   },
@@ -3958,6 +3978,9 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
+  },
+  "settingsSubHeadingSignatures": {
+    "message": "Signature requests"
   },
   "show": {
     "message": "Show"

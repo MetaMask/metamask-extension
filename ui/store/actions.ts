@@ -4449,6 +4449,16 @@ export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
 }
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+export function setUseExternalNameSources(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseExternalNameSources', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
+
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }
