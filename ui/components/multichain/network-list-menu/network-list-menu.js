@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -86,8 +87,44 @@ export const NetworkListMenu = ({ onClose }) => {
     }
   }, [dispatch, currentlyOnTestNetwork]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [items, setItems] = useState([...nonTestNetworks]);
 
-  let searchResults = [...nonTestNetworks];
+  const removeFromList = (list, index) => {
+    const result = Array?.from(list);
+    const [removed] = result.splice(index, 1);
+    return [removed, result];
+  };
+
+  const addToList = (list, index, element) => {
+    const result = Array?.from(list);
+    result.splice(index, 0, element);
+    return result;
+  };
+
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+    const listCopy = { ...items };
+
+    const sourceList = listCopy[result.source.droppableId];
+    const [removedElement, newSourceList] = removeFromList(
+      sourceList,
+      result.source.index,
+    );
+    listCopy[result.source.droppableId] = newSourceList;
+
+    const destinationList = listCopy[result.destination.droppableId];
+    listCopy[result.destination.droppableId] = addToList(
+      destinationList,
+      result.destination.index,
+      removedElement,
+    );
+
+    setItems(listCopy);
+  };
+
+  let searchResults = items;
   const isSearching = searchQuery !== '';
 
   if (isSearching) {
@@ -227,7 +264,93 @@ export const NetworkListMenu = ({ onClose }) => {
                 {t('noNetworksFound')}
               </Text>
             ) : (
-              generateMenuItems(searchResults)
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="characters">
+                  {(provided) => (
+                    <Box
+                      className="characters"
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                    >
+                      {searchResults?.map((network, index) => {
+                        if (
+                          !lineaMainnetReleased &&
+                          network.providerType === 'linea-mainnet'
+                        ) {
+                          return null;
+                        }
+
+                        const isCurrentNetwork =
+                          currentNetwork.id === network.id;
+
+                        const canDeleteNetwork =
+                          isUnlocked && !isCurrentNetwork && network.removable;
+
+                        return (
+                          <Draggable
+                            key={network.id}
+                            draggableId={network.id}
+                            index={index}
+                          >
+                            {(providedDrag) => (
+                              <Box
+                                ref={providedDrag.innerRef}
+                                {...providedDrag.draggableProps}
+                                {...providedDrag.dragHandleProps}
+                              >
+                                <NetworkListItem
+                                  name={network.nickname}
+                                  iconSrc={network?.rpcPrefs?.imageUrl}
+                                  key={network.id}
+                                  selected={isCurrentNetwork}
+                                  focus={isCurrentNetwork && !showSearch}
+                                  onClick={() => {
+                                    dispatch(toggleNetworkMenu());
+                                    if (network.providerType) {
+                                      dispatch(
+                                        setProviderType(network.providerType),
+                                      );
+                                    } else {
+                                      dispatch(setActiveNetwork(network.id));
+                                    }
+                                    trackEvent({
+                                      event:
+                                        MetaMetricsEventName.NavNetworkSwitched,
+                                      category:
+                                        MetaMetricsEventCategory.Network,
+                                      properties: {
+                                        location: 'Network Menu',
+                                        chain_id: currentChainId,
+                                        from_network: currentChainId,
+                                        to_network: network.chainId,
+                                      },
+                                    });
+                                  }}
+                                  onDeleteClick={
+                                    canDeleteNetwork
+                                      ? () => {
+                                          dispatch(toggleNetworkMenu());
+                                          dispatch(
+                                            showModal({
+                                              name: 'CONFIRM_DELETE_NETWORK',
+                                              target: network.id,
+                                              onConfirm: () => undefined,
+                                            }),
+                                          );
+                                        }
+                                      : null
+                                  }
+                                />
+                              </Box>
+                            )}
+                          </Draggable>
+                        );
+                      })}
+                      {provided.placeholder}
+                    </Box>
+                  )}
+                </Droppable>
+              </DragDropContext>
             )}
           </Box>
           <Box

@@ -17,11 +17,11 @@ exports[`NetworkListItem renders properly 1`] = `
     <div
       class="mm-box multichain-network-list-item__network-name"
     >
-      <button
+      <p
         class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
       >
         Polygon
-      </button>
+      </p>
     </div>
     <button
       aria-label="[deleteNetwork]"

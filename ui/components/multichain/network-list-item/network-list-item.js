@@ -72,11 +72,6 @@ export const NetworkListItem = ({
       <Box className="multichain-network-list-item__network-name">
         <Text
           ref={networkRef}
-          as="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClick();
-          }}
           color={TextColor.textDefault}
           backgroundColor={BackgroundColor.transparent}
           ellipsis
