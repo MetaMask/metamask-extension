@@ -2181,7 +2181,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "fast-json-patch": true,
+        "@metamask/transaction-controller>fast-json-patch": true,
         "lodash": true
       }
     },
@@ -2564,11 +2564,11 @@
         "@metamask/transaction-controller>@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/utils": true,
         "@metamask/transaction-controller>eth-method-registry": true,
+        "@metamask/transaction-controller>fast-json-patch": true,
+        "@metamask/transaction-controller>nonce-tracker": true,
         "eth-json-rpc-filters>async-mutex": true,
         "ethereumjs-util": true,
-        "fast-json-patch": true,
         "lodash": true,
-        "nonce-tracker": true,
         "uuid": true,
         "webpack>events": true
       }
@@ -2688,6 +2688,31 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "@metamask/transaction-controller>fast-json-patch": {
+      "globals": {
+        "addEventListener": true,
+        "clearTimeout": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      }
+    },
+    "@metamask/transaction-controller>nonce-tracker": {
+      "packages": {
+        "@metamask/network-controller>eth-block-tracker": true,
+        "@metamask/transaction-controller>nonce-tracker>async-mutex": true,
+        "browserify>assert": true,
+        "ethjs>ethjs-query": true
+      }
+    },
+    "@metamask/transaction-controller>nonce-tracker>async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@metamask/utils": {
@@ -4548,14 +4573,6 @@
         "stream-browserify": true
       }
     },
-    "fast-json-patch": {
-      "globals": {
-        "addEventListener": true,
-        "clearTimeout": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      }
-    },
     "fuse.js": {
       "globals": {
         "console": true,
@@ -4719,23 +4736,6 @@
         "Request": true,
         "Response": true,
         "fetch": true
-      }
-    },
-    "nonce-tracker": {
-      "packages": {
-        "@metamask/network-controller>eth-block-tracker": true,
-        "browserify>assert": true,
-        "ethjs>ethjs-query": true,
-        "nonce-tracker>async-mutex": true
-      }
-    },
-    "nonce-tracker>async-mutex": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "mockttp>graphql-tag>tslib": true
       }
     },
     "obj-multiplex": {
