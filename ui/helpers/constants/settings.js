@@ -7,7 +7,7 @@ import {
   ABOUT_US_ROUTE,
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,blockaid,desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,blockaid)
   EXPERIMENTAL_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -373,7 +373,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('transactionSecurityCheck'),
