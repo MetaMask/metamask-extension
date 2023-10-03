@@ -7,7 +7,7 @@ import {
   ABOUT_US_ROUTE,
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,blockaid,desktop)
   EXPERIMENTAL_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -224,8 +224,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('displayNftMedia'),
-    descriptionMessage: (t) => t('displayNftMediaDesc'),
+    sectionMessage: (t) => t('enableOpenSeaAPI'),
+    descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
     route: `${SECURITY_ROUTE}#opensea-api`,
     icon: 'fa fa-lock',
   },
@@ -373,7 +373,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi,desktop)
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('transactionSecurityCheck'),
