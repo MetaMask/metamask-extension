@@ -17,7 +17,7 @@ import {
   TextColor,
   TextVariant,
   Display,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid,desktop)
   FontWeight,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)

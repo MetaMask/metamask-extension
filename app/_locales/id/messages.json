@@ -5039,12 +5039,6 @@
   "transactionResubmitted": {
     "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Aktifkan peringatan keamanan"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan berbagai risiko yang muncul dalam transaksi yang belum ditandatangani dan permintaan tanda tangan sebelum Anda menandatanganinya. Layanan ini akan dapat mengakses transaksi yang belum ditandatangani dan permintaan tanda tangan, alamat akun, serta bahasa pilihan Anda."
-  },
   "transactionSettings": {
     "message": "Pengaturan transaksi"
   },
