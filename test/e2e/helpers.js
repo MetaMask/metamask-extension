@@ -1,9 +1,10 @@
 const { strict: assert } = require('assert');
 const path = require('path');
-const { promises: fs } = require('fs');
+const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
+const { isEqual, merge } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
@@ -106,9 +107,13 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
-      chainId: ganacheOptions?.chainId || 1337,
-    });
+    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
+      mockServer,
+      testSpecificMock,
+      {
+        chainId: ganacheOptions?.chainId || 1337,
+      },
+    );
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',
@@ -151,6 +156,25 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
     });
+
+    const privacySnapshotRaw = await readFileSync('./privacy-snapshot.json');
+    const privacySnapshot = JSON.parse(privacySnapshotRaw);
+    const privacyReport = getPrivacyReport();
+
+    const mergedReport = merge(privacySnapshot, privacyReport);
+
+    if (isEqual(mergedReport, privacySnapshot) === false) {
+      if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
+        writeFileSync(
+          './privacy-snapshot.json',
+          JSON.stringify(mergedReport, null, 2),
+        );
+      } else {
+        throw new Error(
+          'New host found in E2E report. If this is anticipated, run the test again with the --update-privacy-snapshot option',
+        );
+      }
+    }
   } catch (error) {
     failed = true;
     if (webDriver) {

@@ -9,15 +9,27 @@ const {
 } = require('./tests/phishing-controller/mocks');
 
 /**
+ * @typedef {import('mockttp').Mockttp} Mockttp
+ */
+
+/**
+ * @typedef {object} SetupMockReturn
+ * @property {Mockttp} server - The Mockttp server
+ * @property {any} mockedEndpoint - If a testSpecificMock was provided, returns the mockedEndpoint
+ * @property {() => string[]} getPrivacyReport - A function to get the current privacy report.
+ */
+
+/**
  * Setup E2E network mocks.
  *
  * @param {object} server - The mock server used for network mocks.
  * @param {Function} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
- * @returns
+ * @returns {SetupMockReturn}
  */
 async function setupMocking(server, testSpecificMock, { chainId }) {
+  const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
       const { host } = req.headers;
@@ -391,7 +403,15 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   await mockLensNameProvider(server);
   await mockTokenNameProvider(server, chainId);
 
-  return mockedEndpoint;
+  function getPrivacyReport() {
+    return [...privacyReport].sort();
+  }
+
+  server.on('request-initiated', (request) => {
+    privacyReport.add(request.headers.host);
+  });
+
+  return { server, mockedEndpoint, getPrivacyReport };
 }
 
 async function mockLensNameProvider(server) {
