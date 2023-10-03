@@ -16,8 +16,10 @@ import { Text, Box, Tag } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
-  FontWeight,
   Display,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  FontWeight,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   AlignItems,
   FlexDirection,
@@ -73,8 +75,10 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     const {
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertsEnabled,
       setSecurityAlertsEnabled,
+      ///: END:ONLY_INCLUDE_IN
       transactionSecurityCheckEnabled,
       setTransactionSecurityCheckEnabled,
     } = this.props;
