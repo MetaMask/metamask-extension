@@ -1281,6 +1281,7 @@ export default class MetamaskController extends EventEmitter {
       securityProviderRequest: this.securityProviderRequest.bind(this),
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
+      disablePublish: true,
       ///: END:ONLY_INCLUDE_IN
       messenger: this.controllerMessenger.getRestricted({
         name: 'TransactionController',

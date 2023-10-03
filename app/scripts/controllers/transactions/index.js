@@ -138,6 +138,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param {Function} opts.signTransaction - ethTx signer that returns a rawTx
  * @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
  * @param {Function} opts.hasCompletedOnboarding - Returns whether or not the user has completed the onboarding flow
+ * @param {boolean} opts.disablePublish - Skips publishing the transaction.
  * @param {object} opts.preferencesStore
  */
 
@@ -172,6 +173,7 @@ export default class TransactionController extends EventEmitter {
     this.securityProviderRequest = opts.securityProviderRequest;
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
+    this._disablePublish = opts.disablePublish ?? false;
 
     this.memStore = new ObservableStore({});
 
@@ -265,9 +267,9 @@ export default class TransactionController extends EventEmitter {
     this._updatePendingTxsAfterFirstBlock();
     this._onBootCleanUp();
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.transactionUpdateController = opts.transactionUpdateController;
-    ///: END:ONLY_INCLUDE_IN
+    this.transactionUpdateController = this._disablePublish
+      ? opts.transactionUpdateController
+      : undefined;
   }
 
   /**
@@ -1471,13 +1473,10 @@ export default class TransactionController extends EventEmitter {
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
       fromAddress,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       txMeta.custodyStatus ? txMeta : undefined,
-      ///: END:ONLY_INCLUDE_IN
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (txMeta.custodyStatus) {
+    if (this._disablePublish) {
       txMeta.custodyId = signedEthTx.custodian_transactionId;
       txMeta.custodyStatus = signedEthTx.transactionStatus;
 
@@ -1488,7 +1487,6 @@ export default class TransactionController extends EventEmitter {
 
       return null;
     }
-    ///: END:ONLY_INCLUDE_IN
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
@@ -1824,9 +1822,8 @@ export default class TransactionController extends EventEmitter {
     // that is already being incremented & signed.
     const txMeta = this.txStateManager.getTransaction(txId);
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
-    if (txMeta.custodyStatus) {
+    if (this._disablePublish) {
       this.inProcessOfSigning.delete(txId);
       // Custodial nonces and gas params are set by the custodian, so MMI follows the approve
       // workflow before the transaction parameters are sent to the keyring
@@ -1835,7 +1832,6 @@ export default class TransactionController extends EventEmitter {
       // MMI relies on custodian to publish transactions so exits this code path early
       return;
     }
-    ///: END:ONLY_INCLUDE_IN
 
     if (this.inProcessOfSigning.has(txId)) {
       return;
@@ -1995,18 +1991,12 @@ export default class TransactionController extends EventEmitter {
         },
       })
       .forEach((txMeta) => {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         // If you create a Tx and its still inside the custodian waiting to be approved we don't want to approve it right away
         if (!txMeta.custodyStatus) {
-          ///: END:ONLY_INCLUDE_IN
-
           // Line below will try to publish transaction which is in
           // APPROVED state at the time of controller bootup
           this._approveTransaction(txMeta.id);
-
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         }
-        ///: END:ONLY_INCLUDE_IN
       });
   }
 
