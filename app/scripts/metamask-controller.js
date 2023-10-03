@@ -2552,9 +2552,8 @@ export default class MetamaskController extends EventEmitter {
       },
 
       // TxMigrationToDo - Add updateEditableParams controller method.
-      updateEditableParams: () => undefined,
-      // updateEditableParams:
-      //   txController.updateEditableParams.bind(txController),
+      updateEditableParams:
+        txController.updateEditableParams.bind(txController),
 
       updateTransactionGasFees:
         txController.updateTransactionGasFees.bind(txController),

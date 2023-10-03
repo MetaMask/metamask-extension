@@ -118,8 +118,6 @@
       "tokens": "object"
     },
     "TransactionController": {
-      "lastFetchedBlockNumbers": "object",
-      "methodData": "object",
       "transactions": "object"
     },
     "config": "object",

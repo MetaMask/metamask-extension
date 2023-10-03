@@ -194,7 +194,9 @@
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
-    "approvalFlows": "object"
+    "approvalFlows": "object",
+    "lastFetchedBlockNumbers": "object",
+    "methodData": "object"
   },
   "send": "object",
   "swaps": "object",
