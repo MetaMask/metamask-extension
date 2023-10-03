@@ -97,7 +97,12 @@ export default class ExperimentalTab extends PureComponent {
           className="settings-page__content-row settings-page__content-row-experimental"
         >
           <div className="settings-page__content-item">
-            <span>{t('securityAlerts')}</span>
+            <Text
+              variant={TextVariant.inherit}
+              color={TextColor.textAlternative}
+            >
+              {t('securityAlerts')}
+            </Text>
             <div className="settings-page__content-description">
               <Text variant={TextVariant.bodySm}>
                 {t('securityAlertsDescription')}
