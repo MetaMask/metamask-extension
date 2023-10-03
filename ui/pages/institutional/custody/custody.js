@@ -597,8 +597,11 @@ const CustodyPage = () => {
                 history.push({
                   pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
                   state: {
-                    imgSrc: selectedCustodian.iconUrl,
-                    title: t('custodianAccountAddedTitle'),
+                    imgSrc: selectedCustodian && selectedCustodian.iconUrl,
+                    title: t('custodianAccountAddedTitle', [
+                      (selectedCustodian && selectedCustodian.displayName) ||
+                        'Custodian',
+                    ]),
                     description: t('custodianAccountAddedDesc'),
                   },
                 });
@@ -615,9 +618,7 @@ const CustodyPage = () => {
               setApiUrl('');
               setAddNewTokenClicked(false);
 
-              if (Object.keys(connectRequest).length) {
-                history.push(DEFAULT_ROUTE);
-              }
+              history.push(DEFAULT_ROUTE);
 
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,
