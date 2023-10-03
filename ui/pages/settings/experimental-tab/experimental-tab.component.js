@@ -107,7 +107,6 @@ export default class ExperimentalTab extends PureComponent {
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
