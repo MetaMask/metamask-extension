@@ -208,7 +208,8 @@
     "@metamask/keyring-controller@^8.0.0": "patch:@metamask/keyring-controller@npm%3A8.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.0-806630ae4e.patch",
     "@metamask/signature-controller@^5.3.0": "patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch",
     "semver@7.3.7": "^7.5.4",
-    "semver@7.3.8": "^7.5.4"
+    "semver@7.3.8": "^7.5.4",
+    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
