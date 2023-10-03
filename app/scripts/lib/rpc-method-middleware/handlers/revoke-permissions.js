@@ -41,9 +41,6 @@ async function revokePermissionsHandler(
 
     return end();
   } catch (error) {
-    if (error.message === 'User rejected to watch the asset.') {
-      return end(ethErrors.provider.userRejectedRequest());
-    }
     return end(error);
   }
 }
