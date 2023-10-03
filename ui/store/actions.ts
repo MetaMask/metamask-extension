@@ -28,6 +28,7 @@ import {
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
+import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -1803,10 +1804,19 @@ export function showConfTxPage({ id }: Partial<TransactionMeta> = {}) {
 }
 
 export function addToken(
-  address?: string,
-  symbol?: string,
-  decimals?: number,
-  image?: string,
+  {
+    address,
+    symbol,
+    decimals,
+    image,
+    networkClientId,
+  }: {
+    address?: string;
+    symbol?: string;
+    decimals?: number;
+    image?: string;
+    networkClientId?: NetworkClientId;
+  },
   dontShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1818,10 +1828,13 @@ export function addToken(
     }
     try {
       await submitRequestToBackground('addToken', [
-        address,
-        symbol,
-        decimals,
-        image,
+        {
+          address,
+          symbol,
+          decimals,
+          image,
+          networkClientId,
+        },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -1837,13 +1850,18 @@ export function addToken(
  * To add the tokens user selected to state
  *
  * @param tokensToImport
+ * @param networkClientId
  */
 export function addImportedTokens(
   tokensToImport: Token[],
+  networkClientId?: NetworkClientId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('addImportedTokens', [tokensToImport]);
+      await submitRequestToBackground('addImportedTokens', [
+        tokensToImport,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
