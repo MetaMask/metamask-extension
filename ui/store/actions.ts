@@ -6,9 +6,6 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { v4 as uuidV4 } from 'uuid';
-///: END:ONLY_INCLUDE_IN
 import {
   AssetsContractController,
   BalanceMap,
@@ -19,9 +16,6 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { HandlerType } from '@metamask/snaps-utils';
-///: END:ONLY_INCLUDE_IN
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -1147,7 +1141,7 @@ export function enableSnap(
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function removeSnap(
   snapId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
     ///: END:ONLY_INCLUDE_IN
@@ -1172,19 +1166,13 @@ export function removeSnap(
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       if (isAccountsSnap) {
-        const accounts = (await handleSnapRequest({
-          snapId,
-          origin: 'metamask',
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            id: uuidV4(),
-            jsonrpc: '2.0',
-            method: 'keyring_listAccounts',
-          },
-        })) as unknown as any[];
-        for (const account of accounts) {
-          dispatch(removeAccount(account.address.toLowerCase()));
-        }
+        const addresses: string[] = await submitRequestToBackground(
+          'getAccountsBySnapId',
+          [snapId],
+        );
+        addresses.forEach((address) =>
+          dispatch(removeAccount(address.toLowerCase())),
+        );
       }
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -4455,6 +4443,16 @@ export function setSecurityAlertsEnabled(val: boolean): void {
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   try {
     await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+export function setUseExternalNameSources(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseExternalNameSources', [val]);
   } catch (error) {
     logErrorWithMessage(error);
   }

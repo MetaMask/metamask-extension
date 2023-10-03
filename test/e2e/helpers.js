@@ -214,6 +214,7 @@ const WINDOW_TITLES = Object.freeze({
   Notification: 'MetaMask Notification',
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   InstalledExtensions: 'Extensions',
+  SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
 });
 
 /**
