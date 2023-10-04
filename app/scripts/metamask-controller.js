@@ -171,6 +171,7 @@ import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags
 
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
+import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -1565,6 +1566,15 @@ export default class MetamaskController extends EventEmitter {
       ],
       state: initState.NameController,
     });
+
+    new AddressBookPetnamesBridge({
+      addressBookController: this.addressBookController,
+      nameController: this.nameController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'AddressBookPetnamesBridge',
+        allowedEvents: ['NameController:stateChange'],
+      }),
+    }).init();
     ///: END:ONLY_INCLUDE_IN
 
     this.txController.on('newSwapApproval', (txMeta) => {
