@@ -763,26 +763,23 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.store,
           ),
       },
-      {
-        disabled:
-          !this.preferencesController.store.getState().useCurrencyRateCheck,
-      },
+      {},
       initState.TokenRatesController,
     );
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.tokenRatesController.start();
+    }
+
     this.preferencesController.store.subscribe(
       previousValueComparator((prevState, currState) => {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
           this.currencyRateController.start();
-          this.tokenRatesController.configure(
-            { disabled: false },
-            false,
-            false,
-          );
+          this.tokenRatesController.start();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
           this.currencyRateController.stop();
-          this.tokenRatesController.configure({ disabled: true }, false, false);
+          this.tokenRatesController.stop();
         }
       }, this.preferencesController.store.getState()),
     );
