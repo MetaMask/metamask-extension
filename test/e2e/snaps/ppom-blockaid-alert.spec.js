@@ -578,13 +578,12 @@ describe('Confirmation Security Alert - Blockaid', function () {
               'If you approve this request, a third party known for scams might take all your assets.',
             expectedReason: 'permit_farming',
           },
-          // PPOM Error: block does not exist
-          // {
-          //   btnSelector: '#maliciousRawEthButton',
-          //   expectedDescription:
-          //     'If you approve this request, you might lose your assets.',
-          //   expectedReason: 'raw_ether_transfer',
-          // },
+          {
+            btnSelector: '#maliciousRawEthButton',
+            expectedDescription:
+              'If you approve this request, a third party known for scams will take all your assets.',
+            expectedReason: 'raw_native_token_transfer',
+          },
           {
             btnSelector: '#maliciousSeaport',
             expectedDescription:
