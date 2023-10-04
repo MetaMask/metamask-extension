@@ -55,6 +55,7 @@ import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
+import { KeyringType } from '../../../shared/constants/keyring';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -96,6 +97,7 @@ export default class ConfirmTransactionBase extends Component {
     unapprovedTxCount: PropTypes.number,
     customGas: PropTypes.object,
     addToAddressBookIfNew: PropTypes.func,
+    keyringForAccount: PropTypes.object,
     // Component props
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -629,7 +631,10 @@ export default class ConfirmTransactionBase extends Component {
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
+      keyringForAccount,
     } = this.props;
+
+    const disableLoadingIndicator = keyringForAccount.type === KeyringType.snap;
 
     updateTxData({
       txData,
@@ -653,7 +658,7 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        sendTransaction(txData)
+        sendTransaction(txData, disableLoadingIndicator)
           .then(() => {
             if (!this._isMounted) {
               return;
