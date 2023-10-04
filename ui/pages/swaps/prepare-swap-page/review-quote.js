@@ -340,7 +340,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     );
   }
 
-  const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: swapsTokens,
+    includeFailedTokens: true,
+  });
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken

@@ -58,7 +58,7 @@ const TokenOverview = ({ className, token }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const { tokensWithBalances } = useTokenTracker([token]);
+  const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring.type);

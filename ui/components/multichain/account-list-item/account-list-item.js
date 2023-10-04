@@ -45,6 +45,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseBlockie } from '../../../selectors';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -88,6 +89,10 @@ export const AccountListItem = ({
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
+
+  const { formattedTotalFiatBalance } = useAccountTotalFiatBalance(
+    identity.address,
+  );
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -223,11 +228,15 @@ export const AccountListItem = ({
             textAlign={TextAlign.End}
             as="div"
           >
-            <UserPreferencedCurrencyDisplay
-              ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-              value={identity.balance}
-              type={SECONDARY}
-            />
+            {process.env.MULTICHAIN ? (
+              formattedTotalFiatBalance
+            ) : (
+              <UserPreferencedCurrencyDisplay
+                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                value={identity.balance}
+                type={SECONDARY}
+              />
+            )}
           </Text>
         </Box>
         {label ? (
