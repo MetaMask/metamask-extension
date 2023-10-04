@@ -27,7 +27,6 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   MetaMetricsEventCategory,
@@ -38,9 +37,8 @@ import {
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
-  txData,
   tokenSymbol,
-  onClickBlockaidSupport,
+  txData,
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
@@ -159,9 +157,8 @@ const TransactionAlerts = ({
 TransactionAlerts.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
   setUserAcknowledgedGasMissing: PropTypes.func,
-  txData: PropTypes.object,
   tokenSymbol: PropTypes.string,
-  onClickBlockaidSupport: PropTypes.func,
+  txData: PropTypes.object,
 };
 
 export default TransactionAlerts;

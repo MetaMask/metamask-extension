@@ -326,9 +326,6 @@ export default class ConfirmTransactionBase extends Component {
       isBuyableChain,
       useCurrencyRateCheck,
       tokenSymbol,
-      actionKey,
-      txData: { origin },
-      methodData = {},
     } = this.props;
 
     const { t } = this.context;
@@ -468,7 +465,6 @@ export default class ConfirmTransactionBase extends Component {
           type={txData.type}
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
-          onClickBlockaidSupport={onClickBlockaidSupport}
         />
         <TransactionDetail
           disabled={isDisabled()}
