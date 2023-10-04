@@ -202,7 +202,7 @@ index 0000000000000000000000000000000000000000..e06b36dd9d5219159ad6f668af03b75c
 +//# sourceMappingURL=PendingTransactionTracker.js.map
 \ No newline at end of file
 diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
-index d8fa996c21bc45df84598be8aa7f870910184244..b8dfc655893cd23bf527569adbf22ea56d53bc12 100644
+index d8fa996c21bc45df84598be8aa7f870910184244..7ddb669112c576b1a48535e61422985adaaf6336 100644
 --- a/dist/TransactionController.d.ts
 +++ b/dist/TransactionController.d.ts
 @@ -7,8 +7,10 @@ import { BaseController } from '@metamask/base-controller';
@@ -239,7 +239,26 @@ index d8fa996c21bc45df84598be8aa7f870910184244..b8dfc655893cd23bf527569adbf22ea5
          getNetworkState: () => NetworkState;
          getSelectedAddress: () => string;
          incomingTransactions: {
-@@ -237,10 +241,19 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -186,13 +190,17 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @param opts.type - Type of transaction to add, such as 'cancel' or 'swap'.
+      * @returns Object containing a promise resolving to the transaction hash if approved.
+      */
+-    addTransaction(txParams: TransactionParams, { actionId, deviceConfirmedOn, origin, requireApproval, securityAlertResponse, sendFlowHistory, type, }?: {
++    addTransaction(txParams: TransactionParams, { actionId, deviceConfirmedOn, origin, requireApproval, securityAlertResponse, sendFlowHistory, swaps, type, }?: {
+         actionId?: string;
+         deviceConfirmedOn?: WalletDevice;
+         origin?: string;
+         requireApproval?: boolean | undefined;
+         securityAlertResponse?: Record<string, unknown>;
+         sendFlowHistory?: SendFlowHistoryEntry[];
++        swaps?: {
++            hasApproveTx?: boolean;
++            meta?: any;
++        };
+         type?: TransactionType;
+     }): Promise<Result>;
+     startIncomingTransactionPolling(): void;
+@@ -237,10 +245,19 @@ export declare class TransactionController extends BaseController<TransactionCon
          gas: string;
          gasPrice: any;
          estimateGasError?: undefined;
@@ -259,7 +278,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..b8dfc655893cd23bf527569adbf22ea5
      }>;
      /**
       * Check the status of submitted transactions on the network to determine whether they have
-@@ -431,6 +444,25 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -431,6 +448,29 @@ export declare class TransactionController extends BaseController<TransactionCon
       */
      private updateTransactionMetaRSV;
      private getEIP1559Compatibility;
@@ -282,6 +301,10 @@ index d8fa996c21bc45df84598be8aa7f870910184244..b8dfc655893cd23bf527569adbf22ea5
 +    private getDefaultGasLimit;
 +    private getDefaultGasFees;
 +    private addTxGasDefaults;
++    private createSwapsTransaction;
++    private updateSwapApprovalTransaction;
++    private updateSwapTransaction;
++    private throwErrorIfNotUnapprovedTx;
  }
  export default TransactionController;
  //# sourceMappingURL=TransactionController.d.ts.map
@@ -295,7 +318,7 @@ index 083b07c332887c5dc2bca0074f22794962934600..00000000000000000000000000000000
 -{"version":3,"file":"TransactionController.d.ts","sourceRoot":"","sources":["../src/TransactionController.ts"],"names":[],"mappings":"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"}
 \ No newline at end of file
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559aee7382ca 100644
+index bfa28719cf6450321d54123b47563ae0c102f1e4..8f4fcb0d4824250b3afc5cd6b63b7b414524d8e7 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
 @@ -26,6 +26,7 @@ const events_1 = require("events");
@@ -306,7 +329,15 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
  const EtherscanRemoteTransactionSource_1 = require("./EtherscanRemoteTransactionSource");
  const external_transactions_1 = require("./external-transactions");
  const history_1 = require("./history");
-@@ -72,7 +73,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -33,6 +34,7 @@ const IncomingTransactionHelper_1 = require("./IncomingTransactionHelper");
+ const transaction_type_1 = require("./transaction-type");
+ const types_1 = require("./types");
+ const utils_1 = require("./utils");
++const validation_1 = require("./validation");
+ exports.HARDFORK = common_1.Hardfork.London;
+ /**
+  * Multiplier used to determine a transaction's increased gas fee during cancellation
+@@ -72,7 +74,7 @@ class TransactionController extends base_controller_1.BaseController {
       * @param config - Initial options used to configure this controller.
       * @param state - Initial state to set on this controller.
       */
@@ -315,7 +346,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
          super(config, state);
          this.mutex = new async_mutex_1.Mutex();
          /**
-@@ -104,6 +105,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -104,6 +106,7 @@ class TransactionController extends base_controller_1.BaseController {
              getCurrentAccountEIP1559Compatibility;
          this.getCurrentNetworkEIP1559Compatibility =
              getCurrentNetworkEIP1559Compatibility;
@@ -323,7 +354,20 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
          this.nonceTracker = new nonce_tracker_1.default({
              provider,
              blockTracker,
-@@ -211,7 +213,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -200,18 +203,18 @@ class TransactionController extends base_controller_1.BaseController {
+      * @param opts.type - Type of transaction to add, such as 'cancel' or 'swap'.
+      * @returns Object containing a promise resolving to the transaction hash if approved.
+      */
+-    addTransaction(txParams, { actionId, deviceConfirmedOn, origin, requireApproval, securityAlertResponse, sendFlowHistory, type, } = {}) {
++    addTransaction(txParams, { actionId, deviceConfirmedOn, origin, requireApproval, securityAlertResponse, sendFlowHistory, swaps, type, } = {}) {
+         return __awaiter(this, void 0, void 0, function* () {
+             const chainId = this.getChainId();
+             const { transactions } = this.state;
+             txParams = (0, utils_1.normalizeTxParams)(txParams);
+             const isEIP1559Compatible = yield this.getEIP1559Compatibility();
+-            (0, utils_1.validateTxParams)(txParams, isEIP1559Compatible);
++            (0, validation_1.validateTxParams)(txParams, isEIP1559Compatible);
+             const dappSuggestedGasFees = this.generateDappSuggestedGasFees(txParams, origin);
              const transactionType = type !== null && type !== void 0 ? type : (yield (0, transaction_type_1.determineTransactionType)(txParams, this.ethQuery)).type;
              const existingTransactionMeta = this.getTransactionWithActionId(actionId);
              // If a request to add a transaction with the same actionId is submitted again, a new transaction will not be created for it.
@@ -332,7 +376,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
                  // Add actionId to txMeta to check if same actionId is seen again
                  actionId,
                  chainId,
-@@ -227,16 +229,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -227,15 +230,9 @@ class TransactionController extends base_controller_1.BaseController {
                  verifiedOnBlockchain: false,
                  type: transactionType,
              };
@@ -345,12 +389,13 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
 -            catch (error) {
 -                this.failTransaction(transactionMeta, error);
 -                return Promise.reject(error);
--            }
 +            yield this.addTxGasDefaults(transactionMeta);
++            if ([types_1.TransactionType.swap, types_1.TransactionType.swapApproval].includes(transactionType)) {
++                transactionMeta = yield this.createSwapsTransaction(swaps, transactionType, transactionMeta);
+             }
              // Checks if a transaction already exists with a given actionId
              if (!existingTransactionMeta) {
-                 if (!this.isSendFlowHistoryDisabled) {
-@@ -443,10 +436,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -443,10 +440,7 @@ class TransactionController extends base_controller_1.BaseController {
              if (typeof gas !== 'undefined') {
                  return { gas, gasPrice };
              }
@@ -362,7 +407,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
              // 2. If to is not defined or this is not a contract address, and there is no data use 0x5208 / 21000.
              // If the network is a custom network then bypass this check and fetch 'estimateGas'.
              /* istanbul ignore next */
-@@ -467,6 +457,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -467,6 +461,7 @@ class TransactionController extends base_controller_1.BaseController {
              estimatedTransaction.gas = (0, controller_utils_1.BNToHex)((0, controller_utils_1.fractionBN)(gasLimitBN, 19, 20));
              let gasHex;
              let estimateGasError;
@@ -370,7 +415,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
              try {
                  gasHex = yield (0, controller_utils_1.query)(this.ethQuery, 'estimateGas', [
                      estimatedTransaction,
-@@ -474,6 +465,11 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -474,6 +469,11 @@ class TransactionController extends base_controller_1.BaseController {
              }
              catch (error) {
                  estimateGasError = utils_1.ESTIMATE_GAS_ERROR;
@@ -382,7 +427,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
              }
              // 4. Pad estimated gas without exceeding the most recent block gasLimit. If the network is a
              // a custom network then return the eth_estimateGas value.
-@@ -482,7 +478,12 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -482,7 +482,12 @@ class TransactionController extends base_controller_1.BaseController {
              const paddedGasBN = gasBN.muln(1.5);
              /* istanbul ignore next */
              if (gasBN.gt(maxGasBN) || isCustomNetwork) {
@@ -396,7 +441,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
              }
              /* istanbul ignore next */
              if (paddedGasBN.lt(maxGasBN)) {
-@@ -490,9 +491,15 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -490,9 +495,15 @@ class TransactionController extends base_controller_1.BaseController {
                      gas: (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN)),
                      gasPrice,
                      estimateGasError,
@@ -413,7 +458,16 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
          });
      }
      /**
-@@ -1182,6 +1189,203 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -530,7 +541,7 @@ class TransactionController extends base_controller_1.BaseController {
+     updateTransaction(transactionMeta, note) {
+         const { transactions } = this.state;
+         transactionMeta.txParams = (0, utils_1.normalizeTxParams)(transactionMeta.txParams);
+-        (0, utils_1.validateTxParams)(transactionMeta.txParams);
++        (0, validation_1.validateTxParams)(transactionMeta.txParams);
+         if (!this.isHistoryDisabled) {
+             (0, history_1.updateTransactionHistory)(transactionMeta, note);
+         }
+@@ -1182,6 +1193,262 @@ class TransactionController extends base_controller_1.BaseController {
              return (currentNetworkIsEIP1559Compatible && currentAccountIsEIP1559Compatible);
          });
      }
@@ -613,6 +667,65 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..0896f3f785c0fd01f4cab1d1e990559a
 +            // };
 +            return txMeta;
 +        });
++    }
++    createSwapsTransaction(swapOptions, transactionType, txMeta) {
++        return __awaiter(this, void 0, void 0, function* () {
++            // The simulationFails property is added if the estimateGas call fails. In cases
++            // when no swaps approval tx is required, this indicates that the swap will likely
++            // fail. There was an earlier estimateGas call made by the swaps controller,
++            // but it is possible that external conditions have change since then, and
++            // a previously succeeding estimate gas call could now fail. By checking for
++            // the `simulationFails` property here, we can reduce the number of swap
++            // transactions that get published to the blockchain only to fail and thereby
++            // waste the user's funds on gas.
++            if (transactionType === types_1.TransactionType.swap &&
++                (swapOptions === null || swapOptions === void 0 ? void 0 : swapOptions.hasApproveTx) === false &&
++                txMeta.simulationFails) {
++                yield this.cancelTransaction(txMeta.id);
++                throw new Error('Simulation failed');
++            }
++            const swapsMeta = swapOptions === null || swapOptions === void 0 ? void 0 : swapOptions.meta;
++            if (!swapsMeta) {
++                return txMeta;
++            }
++            if (transactionType === types_1.TransactionType.swapApproval) {
++                this.hub.emit('newSwapApproval', txMeta);
++                return this.updateSwapApprovalTransaction(txMeta, swapsMeta);
++            }
++            if (transactionType === types_1.TransactionType.swap) {
++                this.hub.emit('newSwap', txMeta);
++                return this.updateSwapTransaction(txMeta, swapsMeta);
++            }
++            return txMeta;
++        });
++    }
++    updateSwapApprovalTransaction(txMeta, { type, sourceTokenSymbol, }) {
++        (0, utils_1.validateIfTransactionUnapproved)(txMeta, 'updateSwapApprovalTransaction');
++        const swapApprovalTransaction = (0, lodash_1.pickBy)({ type, sourceTokenSymbol });
++        return (0, lodash_1.merge)(txMeta, swapApprovalTransaction);
++    }
++    updateSwapTransaction(txMeta, { sourceTokenSymbol, destinationTokenSymbol, type, destinationTokenDecimals, destinationTokenAddress, swapMetaData, swapTokenValue, estimatedBaseFee, approvalTxId, }) {
++        (0, utils_1.validateIfTransactionUnapproved)(txMeta, 'updateSwapTransaction');
++        const swapTransaction = (0, lodash_1.pickBy)({
++            sourceTokenSymbol,
++            destinationTokenSymbol,
++            type,
++            destinationTokenDecimals,
++            destinationTokenAddress,
++            swapMetaData,
++            swapTokenValue,
++            estimatedBaseFee,
++            approvalTxId,
++        });
++        return (0, lodash_1.merge)(txMeta, swapTransaction);
++    }
++    throwErrorIfNotUnapprovedTx(txId, methodName) {
++        const transactionMeta = this.getTransaction(txId);
++        if (!transactionMeta) {
++            throw new Error(`Method ${methodName} failed as no transaction metadata found`);
++        }
++        (0, utils_1.validateIfTransactionUnapproved)(transactionMeta, methodName);
++        return transactionMeta;
 +    }
  }
  exports.TransactionController = TransactionController;
@@ -872,6 +985,25 @@ index 7bca6309ea4e62b2fa4c1a99b9dbad0b35e89705..00000000000000000000000000000000
 @@ -1 +0,0 @@
 -{"version":3,"file":"types.js","sourceRoot":"","sources":["../src/types.ts"],"names":[],"mappings":";;;AAwNA;;;;GAIG;AACH,IAAY,iBAUX;AAVD,WAAY,iBAAiB;IAC3B,0CAAqB,CAAA;IACrB,4CAAuB,CAAA;IACvB,4CAAuB,CAAA;IACvB,wCAAmB,CAAA;IACnB,sCAAiB,CAAA;IACjB,0CAAqB,CAAA;IACrB,sCAAiB,CAAA;IACjB,4CAAuB,CAAA;IACvB,8CAAyB,CAAA;AAC3B,CAAC,EAVW,iBAAiB,GAAjB,yBAAiB,KAAjB,yBAAiB,QAU5B;AAED;;GAEG;AACH,IAAY,YAIX;AAJD,WAAY,YAAY;IACtB,6CAA6B,CAAA;IAC7B,mDAAmC,CAAA;IACnC,sCAAsB,CAAA;AACxB,CAAC,EAJW,YAAY,GAAZ,oBAAY,KAAZ,oBAAY,QAIvB;AAED;;GAEG;AACH,IAAY,eA+GX;AA/GD,WAAY,eAAe;IACzB;;OAEG;IACH,oCAAiB,CAAA;IAEjB;;;;OAIG;IACH,8DAA2C,CAAA;IAE3C;;OAEG;IACH,wDAAqC,CAAA;IAErC;;OAEG;IACH,6CAA0B,CAAA;IAE1B;;OAEG;IACH,2EAAwD,CAAA;IAExD;;OAEG;IACH,wCAAqB,CAAA;IAErB;;OAEG;IACH,iDAA8B,CAAA;IAE9B;;;;;OAKG;IACH,kCAAe,CAAA;IAEf;;OAEG;IACH,4CAAyB,CAAA;IAEzB;;OAEG;IACH,oCAAiB,CAAA;IAEjB;;OAEG;IACH,sDAAmC,CAAA;IAEnC;;OAEG;IACH,kCAAe,CAAA;IAEf;;OAEG;IACH,gCAAa,CAAA;IAEb;;;;;OAKG;IACH,gDAA6B,CAAA;IAE7B;;;OAGG;IACH,iDAA8B,CAAA;IAE9B;;;;;OAKG;IACH,mEAAgD,CAAA;IAEhD;;;OAGG;IACH,mDAAgC,CAAA;IAEhC;;;;OAIG;IACH,2DAAwC,CAAA;IAExC;;;OAGG;IACH,qEAAkD,CAAA;AACpD,CAAC,EA/GW,eAAe,GAAf,uBAAe,KAAf,uBAAe,QA+G1B","sourcesContent":["import type { Hex } from '@metamask/utils';\nimport type { Operation } from 'fast-json-patch';\n\n/**\n * Representation of transaction metadata.\n */\nexport type TransactionMeta =\n  | ({\n      status: Exclude<TransactionStatus, TransactionStatus.failed>;\n    } & TransactionMetaBase)\n  | ({ status: TransactionStatus.failed; error: Error } & TransactionMetaBase);\n\n/**\n * Information about a single transaction such as status and block number.\n */\ntype TransactionMetaBase = {\n  /**\n   * Unique ID to prevent duplicate requests.\n   */\n  actionId?: string;\n\n  /**\n   * Base fee of the block as a hex value, introduced in EIP-1559.\n   */\n  baseFeePerGas?: Hex;\n\n  /**\n   * Number of the block where the transaction has been included.\n   */\n  blockNumber?: string;\n\n  /**\n   * The timestamp for when the block was collated.\n   */\n  blockTimestamp?: string;\n\n  /**\n   * Network code as per EIP-155 for this transaction.\n   */\n  chainId: Hex;\n\n  /**\n   * Gas values provided by the dApp.\n   */\n  dappSuggestedGasFees?: DappSuggestedGasFees;\n\n  /**\n   * The default estimate for gas.\n   */\n  defaultGasEstimates?: string;\n\n  /**\n   * String to indicate what device the transaction was confirmed on.\n   */\n  deviceConfirmedOn?: WalletDevice;\n\n  /**\n   * The estimated base fee of the transaction.\n   */\n  estimatedBaseFee?: string;\n\n  /**\n   * Which estimate level that the API suggested.\n   */\n  estimateSuggested?: string;\n\n  /**\n   * Which estimate level was used\n   */\n  estimateUsed?: string;\n\n  /**\n   * A hex string of the transaction hash, used to identify the transaction on the network.\n   */\n  hash?: string;\n\n  /**\n   * A history of mutations to TransactionMeta.\n   */\n  history?: TransactionHistory;\n\n  /**\n   * Generated UUID associated with this transaction.\n   */\n  id: string;\n\n  /**\n   * Whether the transaction is a transfer.\n   */\n  isTransfer?: boolean;\n\n  /**\n   * Network code as per EIP-155 for this transaction\n   *\n   * @deprecated Use `chainId` instead.\n   */\n  readonly networkID?: string;\n\n  /**\n   * Origin this transaction was sent from.\n   */\n  origin?: string;\n\n  /**\n   * The original gas estimation of the transaction.\n   */\n  originalGasEstimate?: string;\n\n  /**\n   * The transaction's 'r' value as a hex string.\n   */\n  r?: string;\n\n  /**\n   * Hex representation of the underlying transaction.\n   */\n  rawTx?: string;\n\n  /**\n   * When the transaction is dropped, this is the replacement transaction hash.\n   */\n  replacedBy?: string;\n\n  /**\n   * When the transaction is dropped, this is the replacement transaction ID.\n   */\n  replacedById?: string;\n\n  /**\n   * The transaction's 's' value as a hex string.\n   */\n  s?: string;\n\n  /**\n   * Response from security validator.\n   */\n  securityAlertResponse?: Record<string, unknown>;\n\n  /**\n   * An array of entries that describe the user's journey through the send flow.\n   * This is purely attached to state logs for troubleshooting and support.\n   */\n  sendFlowHistory?: SendFlowHistoryEntry[];\n\n  /**\n   * The time the transaction was submitted to the network, in Unix epoch time (ms).\n   */\n  submittedTime?: number;\n\n  /**\n   * Timestamp associated with this transaction.\n   */\n  time: number;\n\n  /**\n   * Whether transaction recipient is a smart contract.\n   */\n  toSmartContract?: boolean;\n\n  /**\n   * Additional transfer information.\n   */\n  transferInformation?: {\n    contractAddress: string;\n    decimals: number;\n    symbol: string;\n  };\n\n  /**\n   * Underlying Transaction object.\n   */\n  txParams: TransactionParams;\n\n  /**\n   * Transaction receipt.\n   */\n  txReceipt?: TransactionReceipt;\n\n  /**\n   * The type of transaction such as `cancel` or `swap`.\n   */\n  type?: TransactionType;\n\n  /**\n   * The gas limit supplied by user.\n   */\n  userEditedGasLimit?: boolean;\n\n  /**\n   * Estimate level user selected.\n   */\n  userFeeLevel?: string;\n\n  /**\n   * The transaction's 'v' value as a hex string.\n   */\n  v?: string;\n\n  /**\n   * Whether the transaction is verified on the blockchain.\n   */\n  verifiedOnBlockchain?: boolean;\n};\n\nexport type SendFlowHistoryEntry = {\n  /**\n   * String to indicate user interaction information.\n   */\n  entry: string;\n\n  /**\n   * Timestamp associated with this entry.\n   */\n  timestamp: number;\n};\n\n/**\n * The status of the transaction. Each status represents the state of the transaction internally\n * in the wallet. Some of these correspond with the state of the transaction on the network, but\n * some are wallet-specific.\n */\nexport enum TransactionStatus {\n  approved = 'approved',\n  cancelled = 'cancelled',\n  confirmed = 'confirmed',\n  dropped = 'dropped',\n  failed = 'failed',\n  rejected = 'rejected',\n  signed = 'signed',\n  submitted = 'submitted',\n  unapproved = 'unapproved',\n}\n\n/**\n * Options for wallet device.\n */\nexport enum WalletDevice {\n  MM_MOBILE = 'metamask_mobile',\n  MM_EXTENSION = 'metamask_extension',\n  OTHER = 'other_device',\n}\n\n/**\n * The type of the transaction.\n */\nexport enum TransactionType {\n  /**\n   * A transaction sending a network's native asset to a recipient.\n   */\n  cancel = 'cancel',\n\n  /**\n   * A transaction that is interacting with a smart contract's methods that we\n   * have not treated as a special case, such as approve, transfer, and\n   * transferfrom.\n   */\n  contractInteraction = 'contractInteraction',\n\n  /**\n   * A transaction that deployed a smart contract.\n   */\n  deployContract = 'contractDeployment',\n\n  /**\n   * A transaction for Ethereum decryption.\n   */\n  ethDecrypt = 'eth_decrypt',\n\n  /**\n   * A transaction for getting an encryption public key.\n   */\n  ethGetEncryptionPublicKey = 'eth_getEncryptionPublicKey',\n\n  /**\n   * An incoming (deposit) transaction.\n   */\n  incoming = 'incoming',\n\n  /**\n   * A transaction for personal sign.\n   */\n  personalSign = 'personal_sign',\n\n  /**\n   * When a transaction is failed it can be retried by\n   * resubmitting the same transaction with a higher gas fee. This type is also used\n   * to speed up pending transactions. This is accomplished by creating a new tx with\n   * the same nonce and higher gas fees.\n   */\n  retry = 'retry',\n\n  /**\n   * A transaction sending a network's native asset to a recipient.\n   */\n  simpleSend = 'simpleSend',\n\n  /**\n   * A transaction that is signing a message.\n   */\n  sign = 'eth_sign',\n\n  /**\n   * A transaction that is signing typed data.\n   */\n  signTypedData = 'eth_signTypedData',\n\n  /**\n   * A transaction sending a network's native asset to a recipient.\n   */\n  smart = 'smart',\n\n  /**\n   * A transaction swapping one token for another through MetaMask Swaps.\n   */\n  swap = 'swap',\n\n  /**\n   * Similar to the approve type, a swap approval is a special case of ERC20\n   * approve method that requests an allowance of the token to spend on behalf\n   * of the user for the MetaMask Swaps contract. The first swap for any token\n   * will have an accompanying swapApproval transaction.\n   */\n  swapApproval = 'swapApproval',\n\n  /**\n   * A token transaction requesting an allowance of the token to spend on\n   * behalf of the user.\n   */\n  tokenMethodApprove = 'approve',\n\n  /**\n   * A token transaction transferring tokens from an account that the sender\n   * has an allowance of. The method is prefixed with safe because when calling\n   * this method the contract checks to ensure that the receiver is an address\n   * capable of handling the token being sent.\n   */\n  tokenMethodSafeTransferFrom = 'safetransferfrom',\n\n  /**\n   * A token transaction where the user is sending tokens that they own to\n   * another address.\n   */\n  tokenMethodTransfer = 'transfer',\n\n  /**\n   * A token transaction transferring tokens from an account that the sender\n   * has an allowance of. For more information on allowances, see the approve\n   * type.\n   */\n  tokenMethodTransferFrom = 'transferfrom',\n\n  /**\n   * A token transaction requesting an allowance of all of a user's tokens to\n   * spend on behalf of the user.\n   */\n  tokenMethodSetApprovalForAll = 'setapprovalforall',\n}\n\n/**\n * Standard data concerning a transaction to be processed by the blockchain.\n */\nexport interface TransactionParams {\n  /**\n   * Network ID as per EIP-155.\n   */\n  chainId?: Hex;\n\n  /**\n   * Data to pass with this transaction.\n   */\n  data?: string;\n\n  /**\n   * Error message for gas estimation failure.\n   */\n  estimateGasError?: string;\n\n  /**\n   * Estimated base fee for this transaction.\n   */\n  estimatedBaseFee?: string;\n\n  /**\n   * Address to send this transaction from.\n   */\n  from: string;\n\n  /**\n   * same as gasLimit?\n   */\n  gas?: string;\n\n  /**\n   * Maxmimum number of units of gas to use for this transaction.\n   */\n  gasLimit?: string;\n\n  /**\n   * Price per gas for legacy txs\n   */\n  gasPrice?: string;\n\n  /**\n   * Gas used in the transaction.\n   */\n  gasUsed?: string;\n\n  /**\n   * Maximum amount per gas to pay for the transaction, including the priority\n   * fee.\n   */\n  maxFeePerGas?: string;\n\n  /**\n   * Maximum amount per gas to give to validator as incentive.\n   */\n  maxPriorityFeePerGas?: string;\n\n  /**\n   * Unique number to prevent replay attacks.\n   */\n  nonce?: string;\n\n  /**\n   * Address to send this transaction to.\n   */\n  to?: string;\n\n  /**\n   * Value associated with this transaction.\n   */\n  value?: string;\n\n  /**\n   * Type of transaction.\n   * 0x0 indicates a legacy transaction.\n   */\n  type?: string;\n}\n\n/**\n * Standard data concerning a transaction processed by the blockchain.\n */\nexport interface TransactionReceipt {\n  /**\n   * The block hash of the block that this transaction was included in.\n   */\n  blockHash?: string;\n\n  /**\n   * The block number of the block that this transaction was included in.\n   */\n  blockNumber?: string;\n\n  /**\n   * Effective gas price the transaction was charged at.\n   */\n  effectiveGasPrice?: string;\n\n  /**\n   * Gas used in the transaction.\n   */\n  gasUsed?: string;\n\n  /**\n   * Total used gas in hex.\n   */\n  l1Fee?: string;\n\n  /**\n   * All the logs emitted by this transaction.\n   */\n  logs?: Log[];\n\n  /**\n   * The status of the transaction.\n   */\n  status?: string;\n\n  /**\n   * The index of this transaction in the list of transactions included in the block this transaction was mined in.\n   */\n  transactionIndex?: number;\n}\n\n/**\n * Represents an event that has been included in a transaction using the EVM `LOG` opcode.\n */\nexport interface Log {\n  /**\n   * Address of the contract that generated log.\n   */\n  address?: string;\n  /**\n   * List of topics for log.\n   */\n  topics?: string;\n}\n\n/**\n * The configuration required to fetch transaction data from a RemoteTransactionSource.\n */\nexport interface RemoteTransactionSourceRequest {\n  /**\n   * The address of the account to fetch transactions for.\n   */\n  address: string;\n\n  /**\n   * The chainId of the current network.\n   */\n  currentChainId: Hex;\n\n  /**\n   * Block number to start fetching transactions from.\n   */\n  fromBlock?: number;\n\n  /**\n   * Maximum number of transactions to retrieve.\n   */\n  limit?: number;\n}\n\n/**\n * An object capable of fetching transaction data from a remote source.\n * Used by the IncomingTransactionHelper to retrieve remote transaction data.\n */\nexport interface RemoteTransactionSource {\n  /**\n   * @param chainId - The chainId of the current network.\n   * @returns Whether the remote transaction source supports the specified network.\n   */\n  isSupportedNetwork: (chainId: Hex) => boolean;\n\n  /**\n   * @returns An array of additional keys to use when caching the last fetched block number.\n   */\n  getLastBlockVariations?: () => string[];\n\n  /**\n   * @param request - A request object containing data such as the address and chain ID.\n   * @returns An array of transaction metadata for the retrieved transactions.\n   */\n  fetchTransactions: (\n    request: RemoteTransactionSourceRequest,\n  ) => Promise<TransactionMeta[]>;\n}\n\n/**\n * Gas values initially suggested by the dApp.\n */\nexport interface DappSuggestedGasFees {\n  gas?: string;\n  gasPrice?: string;\n  maxFeePerGas?: string;\n  maxPriorityFeePerGas?: string;\n}\n\n/**\n * A transaction history operation that includes a note and timestamp.\n */\ntype ExtendedHistoryOperation = Operation & {\n  note?: string;\n  timestamp?: number;\n};\n\n/**\n * A transaction history entry that includes the ExtendedHistoryOperation as the first element.\n */\nexport type TransactionHistoryEntry = [\n  ExtendedHistoryOperation,\n  ...Operation[],\n];\n\n/**\n * A transaction history that includes the transaction meta as the first element.\n * And the rest of the elements are the operation arrays that were applied to the transaction meta.\n */\nexport type TransactionHistory = [\n  TransactionMeta,\n  ...TransactionHistoryEntry[],\n];\n\n/**\n * Result of inferring the transaction type.\n */\nexport type InferTransactionTypeResult = {\n  /**\n   * The contract code, in hex format if it exists. '0x0' or\n   * '0x' are also indicators of non-existent contract code.\n   */\n  getCodeResponse?: string | null;\n\n  /**\n   * The type of transaction\n   */\n  type: TransactionType;\n};\n"]}
 \ No newline at end of file
+diff --git a/dist/utils.d.ts b/dist/utils.d.ts
+index 1049d83b18f43a35a07b7aa91e41dfabd28abdef..e4af04866db852b8ccf4b5153a1f08129290ceda 100644
+--- a/dist/utils.d.ts
++++ b/dist/utils.d.ts
+@@ -10,14 +10,6 @@ export declare const ESTIMATE_GAS_ERROR = "eth_estimateGas rpc method error";
+  * @returns Normalized transaction params.
+  */
+ export declare function normalizeTxParams(txParams: TransactionParams): TransactionParams;
+-/**
+- * Validates the transaction params for required properties and throws in
+- * the event of any validation error.
+- *
+- * @param txParams - Transaction params object to validate.
+- * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.
+- */
+-export declare function validateTxParams(txParams: TransactionParams, isEIP1559Compatible?: boolean): void;
+ /**
+  * Checks if a transaction is EIP-1559 by checking for the existence of
+  * maxFeePerGas and maxPriorityFeePerGas within its parameters.
 diff --git a/dist/utils.d.ts.map b/dist/utils.d.ts.map
 deleted file mode 100644
 index 01c0c6638685642ce82bda693b2fa2fbb06205a7..0000000000000000000000000000000000000000
@@ -880,6 +1012,73 @@ index 01c0c6638685642ce82bda693b2fa2fbb06205a7..00000000000000000000000000000000
 @@ -1 +0,0 @@
 -{"version":3,"file":"utils.d.ts","sourceRoot":"","sources":["../src/utils.ts"],"names":[],"mappings":"AAMA,OAAO,KAAK,EAAE,WAAW,IAAI,uBAAuB,EAAE,MAAM,iCAAiC,CAAC;AAE9F,OAAO,KAAK,EACV,aAAa,EACb,sBAAsB,EACvB,MAAM,yBAAyB,CAAC;AACjC,OAAO,EAAE,iBAAiB,EAAE,MAAM,SAAS,CAAC;AAC5C,OAAO,KAAK,EAAE,iBAAiB,EAAE,eAAe,EAAE,MAAM,SAAS,CAAC;AAElE,eAAO,MAAM,kBAAkB,qCAAqC,CAAC;AAmBrE;;;;;GAKG;AACH,wBAAgB,iBAAiB,CAAC,QAAQ,EAAE,iBAAiB,qBAS5D;AAED;;;;;;GAMG;AACH,wBAAgB,gBAAgB,CAC9B,QAAQ,EAAE,iBAAiB,EAC3B,mBAAmB,UAAO,QAyD3B;AAED;;;;;;GAMG;AACH,wBAAgB,oBAAoB,CAAC,QAAQ,EAAE,iBAAiB,GAAG,OAAO,CAOzE;AAED,eAAO,MAAM,iBAAiB,cACjB,aAAa,GAAG,sBAAsB,SAUlD,CAAC;AAEF,eAAO,MAAM,wBAAwB,eACvB,aAAa,GAAG,sBAAsB,wCAGuB,CAAC;AAE5E,eAAO,MAAM,eAAe,eACd,aAAa,GAAG,sBAAsB,+BAEE,CAAC;AAEvD,eAAO,MAAM,oBAAoB,UAAW,MAAM,QAAQ,MAAM,KAAG,MACF,CAAC;AAElE,eAAO,MAAM,6BAA6B,UACjC,MAAM,GAAG,SAAS,QACnB,MAAM,KACX,MAEF,CAAC;AAEF;;;;;;;GAOG;AACH,wBAAgB,uBAAuB,CAAC,QAAQ,EAAE,MAAM,EAAE,GAAG,EAAE,MAAM,UAQpE;AAED;;;;;;;GAOG;AACH,wBAAgB,uCAAuC,CACrD,WAAW,EAAE,MAAM,EACnB,iBAAiB,EAAE,iBAAiB,EACpC,YAAY,EAAE,eAAe,EAAE,GAC9B,uBAAuB,EAAE,CAsB3B;AAED;;;;;;GAMG;AACH,wBAAgB,+BAA+B,CAC7C,eAAe,EAAE,eAAe,GAAG,SAAS,EAC5C,MAAM,EAAE,MAAM,QAQf"}
 \ No newline at end of file
+diff --git a/dist/utils.js b/dist/utils.js
+index 835d1e47a79dd5d8d088f9ec4fb35d014813ba1f..ff87b64fb67fc7226073196cea896b06d81021c1 100644
+--- a/dist/utils.js
++++ b/dist/utils.js
+@@ -1,8 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.validateIfTransactionUnapproved = exports.getAndFormatTransactionsForNonceTracker = exports.validateMinimumIncrease = exports.getIncreasedPriceFromExisting = exports.getIncreasedPriceHex = exports.isGasPriceValue = exports.isFeeMarketEIP1559Values = exports.validateGasValues = exports.isEIP1559Transaction = exports.validateTxParams = exports.normalizeTxParams = exports.ESTIMATE_GAS_ERROR = void 0;
++exports.validateIfTransactionUnapproved = exports.getAndFormatTransactionsForNonceTracker = exports.validateMinimumIncrease = exports.getIncreasedPriceFromExisting = exports.getIncreasedPriceHex = exports.isGasPriceValue = exports.isFeeMarketEIP1559Values = exports.validateGasValues = exports.isEIP1559Transaction = exports.normalizeTxParams = exports.ESTIMATE_GAS_ERROR = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+-const rpc_errors_1 = require("@metamask/rpc-errors");
+ const ethereumjs_util_1 = require("ethereumjs-util");
+ const types_1 = require("./types");
+ exports.ESTIMATE_GAS_ERROR = 'eth_estimateGas rpc method error';
+@@ -37,52 +36,6 @@ function normalizeTxParams(txParams) {
+     return normalizedTxParams;
+ }
+ exports.normalizeTxParams = normalizeTxParams;
+-/**
+- * Validates the transaction params for required properties and throws in
+- * the event of any validation error.
+- *
+- * @param txParams - Transaction params object to validate.
+- * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.
+- */
+-function validateTxParams(txParams, isEIP1559Compatible = true) {
+-    if (!txParams.from ||
+-        typeof txParams.from !== 'string' ||
+-        !(0, controller_utils_1.isValidHexAddress)(txParams.from)) {
+-        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "from" address: ${txParams.from} must be a valid string.`);
+-    }
+-    if (isEIP1559Transaction(txParams) && !isEIP1559Compatible) {
+-        throw rpc_errors_1.rpcErrors.invalidParams('Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559');
+-    }
+-    if (txParams.to === '0x' || txParams.to === undefined) {
+-        if (txParams.data) {
+-            delete txParams.to;
+-        }
+-        else {
+-            throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "to" address: ${txParams.to} must be a valid string.`);
+-        }
+-    }
+-    else if (txParams.to !== undefined && !(0, controller_utils_1.isValidHexAddress)(txParams.to)) {
+-        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "to" address: ${txParams.to} must be a valid string.`);
+-    }
+-    if (txParams.value !== undefined) {
+-        const value = txParams.value.toString();
+-        if (value.includes('-')) {
+-            throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "value": ${value} is not a positive number.`);
+-        }
+-        if (value.includes('.')) {
+-            throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "value": ${value} number must be denominated in wei.`);
+-        }
+-        const intValue = parseInt(txParams.value, 10);
+-        const isValid = Number.isFinite(intValue) &&
+-            !Number.isNaN(intValue) &&
+-            !isNaN(Number(value)) &&
+-            Number.isSafeInteger(intValue);
+-        if (!isValid) {
+-            throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "value": ${value} number must be a valid number.`);
+-        }
+-    }
+-}
+-exports.validateTxParams = validateTxParams;
+ /**
+  * Checks if a transaction is EIP-1559 by checking for the existence of
+  * maxFeePerGas and maxPriorityFeePerGas within its parameters.
 diff --git a/dist/utils.js.map b/dist/utils.js.map
 deleted file mode 100644
 index 013009a958e3d81146cdad86460848b4f2dc74de..0000000000000000000000000000000000000000
@@ -887,4 +1086,148 @@ index 013009a958e3d81146cdad86460848b4f2dc74de..00000000000000000000000000000000
 +++ /dev/null
 @@ -1 +0,0 @@
 -{"version":3,"file":"utils.js","sourceRoot":"","sources":["../src/utils.ts"],"names":[],"mappings":"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","sourcesContent":["import {\n  convertHexToDecimal,\n  isValidHexAddress,\n} from '@metamask/controller-utils';\nimport { rpcErrors } from '@metamask/rpc-errors';\nimport { addHexPrefix, isHexString } from 'ethereumjs-util';\nimport type { Transaction as NonceTrackerTransaction } from 'nonce-tracker/dist/NonceTracker';\n\nimport type {\n  GasPriceValue,\n  FeeMarketEIP1559Values,\n} from './TransactionController';\nimport { TransactionStatus } from './types';\nimport type { TransactionParams, TransactionMeta } from './types';\n\nexport const ESTIMATE_GAS_ERROR = 'eth_estimateGas rpc method error';\n\nconst NORMALIZERS: { [param in keyof TransactionParams]: any } = {\n  data: (data: string) => addHexPrefix(data),\n  from: (from: string) => addHexPrefix(from).toLowerCase(),\n  gas: (gas: string) => addHexPrefix(gas),\n  gasLimit: (gas: string) => addHexPrefix(gas),\n  gasPrice: (gasPrice: string) => addHexPrefix(gasPrice),\n  nonce: (nonce: string) => addHexPrefix(nonce),\n  to: (to: string) => addHexPrefix(to).toLowerCase(),\n  value: (value: string) => addHexPrefix(value),\n  maxFeePerGas: (maxFeePerGas: string) => addHexPrefix(maxFeePerGas),\n  maxPriorityFeePerGas: (maxPriorityFeePerGas: string) =>\n    addHexPrefix(maxPriorityFeePerGas),\n  estimatedBaseFee: (maxPriorityFeePerGas: string) =>\n    addHexPrefix(maxPriorityFeePerGas),\n  type: (type: string) => (type === '0x0' ? '0x0' : undefined),\n};\n\n/**\n * Normalizes properties on transaction params.\n *\n * @param txParams - The transaction params to normalize.\n * @returns Normalized transaction params.\n */\nexport function normalizeTxParams(txParams: TransactionParams) {\n  const normalizedTxParams: TransactionParams = { from: '' };\n  let key: keyof TransactionParams;\n  for (key in NORMALIZERS) {\n    if (txParams[key as keyof TransactionParams]) {\n      normalizedTxParams[key] = NORMALIZERS[key](txParams[key]) as never;\n    }\n  }\n  return normalizedTxParams;\n}\n\n/**\n * Validates the transaction params for required properties and throws in\n * the event of any validation error.\n *\n * @param txParams - Transaction params object to validate.\n * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.\n */\nexport function validateTxParams(\n  txParams: TransactionParams,\n  isEIP1559Compatible = true,\n) {\n  if (\n    !txParams.from ||\n    typeof txParams.from !== 'string' ||\n    !isValidHexAddress(txParams.from)\n  ) {\n    throw rpcErrors.invalidParams(\n      `Invalid \"from\" address: ${txParams.from} must be a valid string.`,\n    );\n  }\n\n  if (isEIP1559Transaction(txParams) && !isEIP1559Compatible) {\n    throw rpcErrors.invalidParams(\n      'Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559',\n    );\n  }\n\n  if (txParams.to === '0x' || txParams.to === undefined) {\n    if (txParams.data) {\n      delete txParams.to;\n    } else {\n      throw rpcErrors.invalidParams(\n        `Invalid \"to\" address: ${txParams.to} must be a valid string.`,\n      );\n    }\n  } else if (txParams.to !== undefined && !isValidHexAddress(txParams.to)) {\n    throw rpcErrors.invalidParams(\n      `Invalid \"to\" address: ${txParams.to} must be a valid string.`,\n    );\n  }\n\n  if (txParams.value !== undefined) {\n    const value = txParams.value.toString();\n    if (value.includes('-')) {\n      throw rpcErrors.invalidParams(\n        `Invalid \"value\": ${value} is not a positive number.`,\n      );\n    }\n\n    if (value.includes('.')) {\n      throw rpcErrors.invalidParams(\n        `Invalid \"value\": ${value} number must be denominated in wei.`,\n      );\n    }\n    const intValue = parseInt(txParams.value, 10);\n    const isValid =\n      Number.isFinite(intValue) &&\n      !Number.isNaN(intValue) &&\n      !isNaN(Number(value)) &&\n      Number.isSafeInteger(intValue);\n    if (!isValid) {\n      throw rpcErrors.invalidParams(\n        `Invalid \"value\": ${value} number must be a valid number.`,\n      );\n    }\n  }\n}\n\n/**\n * Checks if a transaction is EIP-1559 by checking for the existence of\n * maxFeePerGas and maxPriorityFeePerGas within its parameters.\n *\n * @param txParams - Transaction params object to add.\n * @returns Boolean that is true if the transaction is EIP-1559 (has maxFeePerGas and maxPriorityFeePerGas), otherwise returns false.\n */\nexport function isEIP1559Transaction(txParams: TransactionParams): boolean {\n  const hasOwnProp = (obj: TransactionParams, key: string) =>\n    Object.prototype.hasOwnProperty.call(obj, key);\n  return (\n    hasOwnProp(txParams, 'maxFeePerGas') &&\n    hasOwnProp(txParams, 'maxPriorityFeePerGas')\n  );\n}\n\nexport const validateGasValues = (\n  gasValues: GasPriceValue | FeeMarketEIP1559Values,\n) => {\n  Object.keys(gasValues).forEach((key) => {\n    const value = (gasValues as any)[key];\n    if (typeof value !== 'string' || !isHexString(value)) {\n      throw new TypeError(\n        `expected hex string for ${key} but received: ${value}`,\n      );\n    }\n  });\n};\n\nexport const isFeeMarketEIP1559Values = (\n  gasValues?: GasPriceValue | FeeMarketEIP1559Values,\n): gasValues is FeeMarketEIP1559Values =>\n  (gasValues as FeeMarketEIP1559Values)?.maxFeePerGas !== undefined ||\n  (gasValues as FeeMarketEIP1559Values)?.maxPriorityFeePerGas !== undefined;\n\nexport const isGasPriceValue = (\n  gasValues?: GasPriceValue | FeeMarketEIP1559Values,\n): gasValues is GasPriceValue =>\n  (gasValues as GasPriceValue)?.gasPrice !== undefined;\n\nexport const getIncreasedPriceHex = (value: number, rate: number): string =>\n  addHexPrefix(`${parseInt(`${value * rate}`, 10).toString(16)}`);\n\nexport const getIncreasedPriceFromExisting = (\n  value: string | undefined,\n  rate: number,\n): string => {\n  return getIncreasedPriceHex(convertHexToDecimal(value), rate);\n};\n\n/**\n * Validates that the proposed value is greater than or equal to the minimum value.\n *\n * @param proposed - The proposed value.\n * @param min - The minimum value.\n * @returns The proposed value.\n * @throws Will throw if the proposed value is too low.\n */\nexport function validateMinimumIncrease(proposed: string, min: string) {\n  const proposedDecimal = convertHexToDecimal(proposed);\n  const minDecimal = convertHexToDecimal(min);\n  if (proposedDecimal >= minDecimal) {\n    return proposed;\n  }\n  const errorMsg = `The proposed value: ${proposedDecimal} should meet or exceed the minimum value: ${minDecimal}`;\n  throw new Error(errorMsg);\n}\n\n/**\n * Helper function to filter and format transactions for the nonce tracker.\n *\n * @param fromAddress - Address of the account from which the transactions to filter from are sent.\n * @param transactionStatus - Status of the transactions for which to filter.\n * @param transactions - Array of transactionMeta objects that have been prefiltered.\n * @returns Array of transactions formatted for the nonce tracker.\n */\nexport function getAndFormatTransactionsForNonceTracker(\n  fromAddress: string,\n  transactionStatus: TransactionStatus,\n  transactions: TransactionMeta[],\n): NonceTrackerTransaction[] {\n  return transactions\n    .filter(\n      ({ status, txParams: { from } }) =>\n        status === transactionStatus &&\n        from.toLowerCase() === fromAddress.toLowerCase(),\n    )\n    .map(({ status, txParams: { from, gas, value, nonce } }) => {\n      // the only value we care about is the nonce\n      // but we need to return the other values to satisfy the type\n      // TODO: refactor nonceTracker to not require this\n      return {\n        status,\n        history: [{}],\n        txParams: {\n          from: from ?? '',\n          gas: gas ?? '',\n          value: value ?? '',\n          nonce: nonce ?? '',\n        },\n      };\n    });\n}\n\n/**\n * Validates that a transaction is unapproved.\n * Throws if the transaction is not unapproved.\n *\n * @param transactionMeta - The transaction metadata to check.\n * @param fnName - The name of the function calling this helper.\n */\nexport function validateIfTransactionUnapproved(\n  transactionMeta: TransactionMeta | undefined,\n  fnName: string,\n) {\n  if (transactionMeta?.status !== TransactionStatus.unapproved) {\n    throw new Error(\n      `Can only call ${fnName} on an unapproved transaction.\n      Current tx status: ${transactionMeta?.status}`,\n    );\n  }\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/validation.d.ts b/dist/validation.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..7f69a1f295158bea13187f73abb80d7d9344527b
+--- /dev/null
++++ b/dist/validation.d.ts
+@@ -0,0 +1,10 @@
++import type { TransactionParams } from './types';
++/**
++ * Validates the transaction params for required properties and throws in
++ * the event of any validation error.
++ *
++ * @param txParams - Transaction params object to validate.
++ * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.
++ */
++export declare function validateTxParams(txParams: TransactionParams, isEIP1559Compatible?: boolean): void;
++//# sourceMappingURL=validation.d.ts.map
+\ No newline at end of file
+diff --git a/dist/validation.js b/dist/validation.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..e5a311397b59a2ef388c4e1f3866dea30a2fe046
+--- /dev/null
++++ b/dist/validation.js
+@@ -0,0 +1,120 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.validateTxParams = void 0;
++const abi_1 = require("@ethersproject/abi");
++const controller_utils_1 = require("@metamask/controller-utils");
++const metamask_eth_abis_1 = require("@metamask/metamask-eth-abis");
++const rpc_errors_1 = require("@metamask/rpc-errors");
++const utils_1 = require("./utils");
++/**
++ * Validates the transaction params for required properties and throws in
++ * the event of any validation error.
++ *
++ * @param txParams - Transaction params object to validate.
++ * @param isEIP1559Compatible - whether or not the current network supports EIP-1559 transactions.
++ */
++function validateTxParams(txParams, isEIP1559Compatible = true) {
++    validateEIP1559Compatibility(txParams, isEIP1559Compatible);
++    validateParamFrom(txParams.from);
++    validateParamRecipient(txParams);
++    validateParamValue(txParams.value);
++    validateParamData(txParams.data);
++}
++exports.validateTxParams = validateTxParams;
++/**
++ * Validates EIP-1559 compatibility for transaction creation.
++ *
++ * @param txParams - The transaction parameters to validate.
++ * @param isEIP1559Compatible - Indicates if the current network supports EIP-1559.
++ * @throws Throws invalid params if the transaction specifies EIP-1559 but the network does not support it.
++ */
++function validateEIP1559Compatibility(txParams, isEIP1559Compatible) {
++    if ((0, utils_1.isEIP1559Transaction)(txParams) && !isEIP1559Compatible) {
++        throw rpc_errors_1.rpcErrors.invalidParams('Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559');
++    }
++}
++/**
++ * Validates value property, ensuring it is a valid positive integer number
++ * denominated in wei.
++ *
++ * @param value - The value to validate, expressed as a string.
++ * @throws Throws an error if the value is not a valid positive integer
++ * number denominated in wei.
++ * - If the value contains a hyphen (-), it is considered invalid.
++ * - If the value contains a decimal point (.), it is considered invalid.
++ * - If the value is not a finite number, is NaN, or is not a safe integer, it is considered invalid.
++ */
++function validateParamValue(value) {
++    if (value !== undefined) {
++        if (value.includes('-')) {
++            throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "value": ${value} is not a positive number.`);
++        }
++        if (value.includes('.')) {
++            throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "value": ${value} number must be denominated in wei.`);
++        }
++        const intValue = parseInt(value, 10);
++        const isValid = Number.isFinite(intValue) &&
++            !Number.isNaN(intValue) &&
++            !isNaN(Number(value)) &&
++            Number.isSafeInteger(intValue);
++        if (!isValid) {
++            throw rpc_errors_1.rpcErrors.invalidParams(`Invalid "value": ${value} number must be a valid number.`);
++        }
++    }
++}
++/**
++ * Validates the recipient address in a transaction's parameters.
++ *
++ * @param txParams - The transaction parameters object to validate.
++ * @throws Throws an error if the recipient address is invalid:
++ * - If the recipient address is an empty string ('0x') or undefined and the transaction contains data,
++ * the "to" field is removed from the transaction parameters.
++ * - If the recipient address is not a valid hexadecimal Ethereum address, an error is thrown.
++ */
++function validateParamRecipient(txParams) {
++    if (txParams.to === '0x' || txParams.to === undefined) {
++        if (txParams.data) {
++            delete txParams.to;
++        }
++        else {
++            throw new Error(`Invalid "to" address: ${txParams.to} must be a valid string.`);
++        }
++    }
++    else if (txParams.to !== undefined && !(0, controller_utils_1.isValidHexAddress)(txParams.to)) {
++        throw new Error(`Invalid "to" address: ${txParams.to} must be a valid string.`);
++    }
++}
++/**
++ * Validates the recipient address in a transaction's parameters.
++ *
++ * @param from - The from property to validate.
++ * @throws Throws an error if the recipient address is invalid:
++ * - If the recipient address is an empty string ('0x') or undefined and the transaction contains data,
++ * the "to" field is removed from the transaction parameters.
++ * - If the recipient address is not a valid hexadecimal Ethereum address, an error is thrown.
++ */
++function validateParamFrom(from) {
++    if (!from || typeof from !== 'string' || !(0, controller_utils_1.isValidHexAddress)(from)) {
++        throw new Error(`Invalid "from" address: ${from} must be a valid string.`);
++    }
++}
++/**
++ * Validates input data for transactions.
++ *
++ * @param value - The input data to validate.
++ * @throws Throws invalid params if the input data is invalid.
++ */
++function validateParamData(value) {
++    if (value) {
++        const ERC20Interface = new abi_1.Interface(metamask_eth_abis_1.abiERC20);
++        try {
++            ERC20Interface.parseTransaction({ data: value });
++        }
++        catch (error) {
++            if (error.message.match(/BUFFER_OVERRUN/u)) {
++                throw rpc_errors_1.rpcErrors.invalidParams('Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.');
++            }
++        }
++    }
++}
++//# sourceMappingURL=validation.js.map
 \ No newline at end of file
