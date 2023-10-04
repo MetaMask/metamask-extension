@@ -74,7 +74,7 @@ export const UI_MAPPING = {
   image: (props) => ({
     element: 'SnapUIImage',
     props: {
-      image: props.image,
+      value: props.value,
     },
   }),
 };
