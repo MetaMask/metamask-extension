@@ -11,7 +11,9 @@ export function useTransactionInsightSnaps({
   chainId,
   origin,
   insightSnaps,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,desktop)
   insightSnapId = '',
+  ///: END:ONLY_INCLUDE_IN
 }) {
   const subjects = useSelector(getPermissionSubjects);
 
@@ -33,9 +35,11 @@ export function useTransactionInsightSnaps({
       setLoading(true);
 
       let snapIds = insightSnaps.map((snap) => snap.id);
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,desktop)
       if (insightSnapId.length > 0) {
         snapIds = [insightSnapId];
       }
+      ///: END:ONLY_INCLUDE_IN
       const newData = await Promise.allSettled(
         snapIds.map((snapId) => {
           const permission = subjects[snapId]?.permissions[INSIGHT_PERMISSION];
@@ -62,6 +66,7 @@ export function useTransactionInsightSnaps({
           });
         }),
       );
+
       const reformattedData = newData.map((promise, idx) => {
         const snapId = snapIds[idx];
         if (promise.status === 'rejected') {
