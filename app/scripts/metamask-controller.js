@@ -769,6 +769,8 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.TokenRatesController,
     );
+    this.tokenRatesController.start();
+
     this.preferencesController.store.subscribe(
       previousValueComparator((prevState, currState) => {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
