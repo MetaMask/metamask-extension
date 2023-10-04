@@ -424,10 +424,7 @@ export class Numeric {
     }
 
     let conversionRate = new Numeric(rate, 10);
-    if (invert) {
-      conversionRate = new Numeric(new BigNumber(1.0)).divide(conversionRate);
-    }
-    return this.times(conversionRate);
+    return invert ? this.divide(conversionRate) : this.times(conversionRate);
   }
 
   round(
