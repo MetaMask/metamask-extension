@@ -4,7 +4,7 @@ const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
-const { isEqual, merge } = require('lodash');
+const { isEqual, merge, difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
@@ -178,13 +178,18 @@ async function withFixtures(options, testSuite) {
           JSON.stringify(mergedReport, null, 2),
         );
       } else {
+        // Errors printed to console in CI are easier to read if quotations are
+        // escaped.
+        /* eslint-disable no-useless-escape */
         throw new Error(
           `A new host not contained in the privacy-snapshot received a network
-           request during the "${title}" test suite. Please update the
-           'privacy-snapshot.json' file by passing the
-           --update-privacy-snapshot option to the test command.
+           request during the \"${title}\" test suite. Please update the
+           \'privacy-snapshot.json\' file by passing the
+           --update-privacy-snapshot option to the test command. New hosts
+           found: ${difference(mergedReport, privacySnapshot)}.
           `,
         );
+        /* eslint-enable no-useless-escape */
       }
     }
   } catch (error) {
