@@ -24,6 +24,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
+import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -1138,13 +1139,17 @@ export function enableSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+
+export async function getPhishingResult(website: string) {
+  return await submitRequestToBackground('getPhishingResult', [website]);
+}
 ///: END:ONLY_INCLUDE_IN
 
 // TODO: Clean this up.
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function removeSnap(
   snapId: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
     ///: END:ONLY_INCLUDE_IN
@@ -1173,9 +1178,9 @@ export function removeSnap(
           'getAccountsBySnapId',
           [snapId],
         );
-        addresses.forEach((address) =>
-          dispatch(removeAccount(address.toLowerCase())),
-        );
+        for (const address of addresses) {
+          await submitRequestToBackground('removeAccount', [address]);
+        }
       }
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -1780,10 +1785,19 @@ export function showConfTxPage({ id }: Partial<TransactionMeta> = {}) {
 }
 
 export function addToken(
-  address?: string,
-  symbol?: string,
-  decimals?: number,
-  image?: string,
+  {
+    address,
+    symbol,
+    decimals,
+    image,
+    networkClientId,
+  }: {
+    address?: string;
+    symbol?: string;
+    decimals?: number;
+    image?: string;
+    networkClientId?: NetworkClientId;
+  },
   dontShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1795,10 +1809,13 @@ export function addToken(
     }
     try {
       await submitRequestToBackground('addToken', [
-        address,
-        symbol,
-        decimals,
-        image,
+        {
+          address,
+          symbol,
+          decimals,
+          image,
+          networkClientId,
+        },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -1814,13 +1831,18 @@ export function addToken(
  * To add the tokens user selected to state
  *
  * @param tokensToImport
+ * @param networkClientId
  */
 export function addImportedTokens(
   tokensToImport: Token[],
+  networkClientId?: NetworkClientId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('addImportedTokens', [tokensToImport]);
+      await submitRequestToBackground('addImportedTokens', [
+        tokensToImport,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
