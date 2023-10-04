@@ -21,7 +21,6 @@ import {
   TextVariant,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   IconColor,
-  BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../helpers/constants/design-system';
 
