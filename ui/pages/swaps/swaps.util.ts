@@ -10,6 +10,7 @@ import {
   GOERLI,
   OPTIMISM,
   POLYGON,
+  ZKSYNC_ERA,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
@@ -627,6 +628,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return OPTIMISM;
     case CHAIN_IDS.ARBITRUM:
       return ARBITRUM;
+    case CHAIN_IDS.ZKSYNC_ERA:
+      return ZKSYNC_ERA;
     default:
       return '';
   }

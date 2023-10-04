@@ -56,7 +56,7 @@ describe('Import flow', function () {
         const address = await driver.findElement(
           '.multichain-address-copy-button',
         );
-        assert.equal(await address.getText(), '0x0Cc...afD3');
+        assert.equal(await address.getText(), '0x0Cc52...7afD3');
 
         await driver.clickElement('.mm-modal button[aria-label="Close"]');
 
@@ -83,7 +83,10 @@ describe('Import flow', function () {
 
         // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement({ text: 'Add account', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement({ text: 'Add a new account', tag: 'button' });
 
         // set account name
         await driver.fill('[placeholder="Account 2"]', '2nd account');
@@ -196,6 +199,9 @@ describe('Import flow', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement({ text: 'Import account', tag: 'button' });
 
         // Imports Account 4 with private key
@@ -222,6 +228,9 @@ describe('Import flow', function () {
         });
 
         // Imports Account 5 with private key
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement({ text: 'Import account', tag: 'button' });
         await driver.findClickableElement('#private-key-box');
         await driver.fill('#private-key-box', testPrivateKey2);
@@ -277,6 +286,9 @@ describe('Import flow', function () {
 
         // Imports an account with JSON file
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement({ text: 'Import account', tag: 'button' });
 
         await driver.clickElement('.dropdown__select');
@@ -340,6 +352,9 @@ describe('Import flow', function () {
 
         // choose Import Account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement({ text: 'Import account', tag: 'button' });
 
         // enter private key
@@ -373,6 +388,9 @@ describe('Import flow', function () {
 
           // choose Connect hardware wallet from the account menu
           await driver.clickElement('[data-testid="account-menu-icon"]');
+          await driver.clickElement(
+            '[data-testid="multichain-account-menu-popover-action-button"]',
+          );
           await driver.clickElement({
             text: 'Add hardware wallet',
             tag: 'button',
