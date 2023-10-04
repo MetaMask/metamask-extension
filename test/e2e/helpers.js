@@ -190,7 +190,9 @@ async function withFixtures(options, testSuite) {
           `A new host not contained in the privacy-snapshot received a network
            request during test execution. Please update the privacy-snapshot
            file by passing the --update-privacy-snapshot option to the test
-           command. New hosts found: ${newHosts}.`,
+           command or add the new hosts to the snapshot manually.
+
+           New hosts found: ${newHosts}.`,
         );
       }
     }
