@@ -371,9 +371,6 @@
   "amount": {
     "message": "金額"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "ブラウザにあるイーサリアムウォレット",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "ビジー状態"
   },
-  "buy": {
-    "message": "購入"
-  },
   "buyAsset": {
     "message": "$1を購入",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "仮想通貨を保持して利益を得ます"
-  },
-  "buyDisabled": {
-    "message": "このネットワークでは購入できません"
   },
   "buyMoreAsset": {
     "message": "$1を追加購入",
@@ -980,9 +968,6 @@
   },
   "custodian": {
     "message": "カストディアン"
-  },
-  "custodianAccount": {
-    "message": "カストディアンアカウント"
   },
   "custodianAccountAddedDesc": {
     "message": "カストディアンアカウントをMetaMask Institutionalで使えるようになりました。"
@@ -1414,9 +1399,6 @@
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
-  "enableForAllNetworks": {
-    "message": "すべてのネットワークで有効にする"
-  },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
@@ -1556,11 +1538,9 @@
   "experimental": {
     "message": "試験運用"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snapsを閲覧"
-  },
   "extendWalletWithSnaps": {
-    "message": "ウォレットのユーザー体験をカスタマイズします。"
+    "message": "ウォレットのユーザー体験をカスタマイズします。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部拡張機能"
@@ -1590,9 +1570,6 @@
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "ドロップされたファイルが大きすぎます。"
   },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
@@ -2331,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "ここからリクエスト"
   },
-  "mmiAddToken": {
-    "message": "$1のページがMetaMask Institutionalで次のカストディアントークンの承認を求めています"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
   },
@@ -2879,6 +2853,21 @@
   "notificationsMarkAllAsRead": {
     "message": "すべて既読にする"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "詳細"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 MetaMask Snapsのオープンベータについてお知らせします！"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "開発者コミュニティによって開発されたsnapで、ウォレットをカスタマイズできます！"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snapsを使えば、他のネットワークへの接続やトランザクションインサイトの表示、カスタム通知の取得など、MetaMaskでより多くのことができるようになります。"
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "MetaMask Snapsのご紹介"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1種類の新しいトークンがこのアカウントで見つかりました",
     "description": "$1 is the number of new tokens detected"
@@ -3196,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "snapがライフサイクルフックを使用して、ライフサイクルの特定のタイミングでコードを実行することを許可します。",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "無期限で実行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "大きなデータの処理中など、snapが無期限で実行されることを許可します。",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "イーサリアムアカウントを追加して管理します",
@@ -4059,6 +4040,10 @@
   },
   "snapsNoInsight": {
     "message": "snapがインサイトを返しませんでした"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "サードパーティサービスと共有する情報は、当該サードパーティサービスにより、それぞれのプライバシーポリシーに従い直接収集されます。詳細は、各サードパーティサービスのプライバシーポリシーをご覧ください。",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Snapsの管理"

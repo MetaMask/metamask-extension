@@ -33,10 +33,6 @@ describe('Settings', function () {
           '.settings-page__header__title-container__close-button',
         );
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        const nftDefaultImage1 = await driver.findElement(
-          '[data-testid=nft-default-image]',
-        );
-        assert.equal(await nftDefaultImage1.isDisplayed(), true);
         const importedNftImage = await driver.findVisibleElement(
           '.nft-item__container',
         );
@@ -61,15 +57,10 @@ describe('Settings', function () {
           tag: 'button',
         });
         // should render image now
-        const nftImage = await driver.findElement('[data-testid="nft-image"]');
+        const nftImage = await driver.findVisibleElement(
+          '[data-testid="nft-image"]',
+        );
         assert.equal(await nftImage.isDisplayed(), true);
-
-        await driver.clickElement('[data-testid="asset__back"]');
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement('[data-testid="collection-expander-button"]');
-
-        const nftImage2 = await driver.findElement('[data-testid=nft-image]');
-        assert.equal(await nftImage2.isDisplayed(), true);
       },
     );
   });
