@@ -202,6 +202,8 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
     console.log('namelookup permission:', permission);
     // TODO: add a caveat getter to the snaps monorepo for name lookup similar to the other caveat getters
     const nameLookupCaveat = permission.caveats[0].value;
+    console.log(nameLookupCaveat);
+    console.log(chainId);
     return nameLookupCaveat.includes(chainId);
   });
   console.log('filteredNameLookupSnapsIds:', filteredNameLookupSnapsIds);
@@ -303,8 +305,8 @@ export function lookupDomainName(domainName) {
           domainType: hasSnapResolution ? 'Other' : ENS,
           domainName: trimmedDomainName,
           ...(hasSnapResolution
-            ? {}
-            : { resolvingSnap: getSnapName(fetchedResolutions[0].snapId) }),
+            ? { resolvingSnap: getSnapName(fetchedResolutions[0].snapId) }
+            : {}),
         }),
       );
     }
