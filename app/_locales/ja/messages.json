@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "カスタムネットワークリストを表示"
   },
   "notifications13Description": {
-    "message": "人気のカスタムネットワーク (Arbitrum、Avalanche、Binance Smart Chain、Fantom、Harmony、Optimism、Palm、Polygon) が簡単に追加できるようになりました！この機能を有効にするには、「設定」>「試験運用」に移動し、「カスタムネットワークリストを表示」をオンにしてください！",
+    "message": "人気のカスタムネットワーク (Arbitrum、Avalanche、Binance Smart Chain、Fantom、Harmony、OP Mainnet、Palm、Polygon) が簡単に追加できるようになりました！この機能を有効にするには、「設定」>「試験運用」に移動し、「カスタムネットワークリストを表示」をオンにしてください！",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

@@ -78,7 +78,7 @@ export default {
       },
       {
         chainId: '10',
-        nickname: 'Optimism',
+        nickname: 'OP Mainnet',
         rpcUrl: 'https://optimism-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'KOR',
         rpcPrefs: {

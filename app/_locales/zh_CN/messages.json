@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "显示自定义网络列表"
   },
   "notifications13Description": {
-    "message": "您现在可以轻松添加以下热门自定义网络：Arbitrum、Avalanche、Binance Smart Chain、Fantom、Harmony、Optimism、Palm和Polygon！如需启用此功能，请转到“设置 -> 实验项”，然后打开“显示自定义网络列表”！",
+    "message": "您现在可以轻松添加以下热门自定义网络：Arbitrum、Avalanche、Binance Smart Chain、Fantom、Harmony、OP Mainnet、Palm和Polygon！如需启用此功能，请转到“设置 -> 实验项”，然后打开“显示自定义网络列表”！",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

@@ -106,7 +106,7 @@ describe('ConfirmLegacyGasDisplay', () => {
     });
   });
 
-  it('should contain L1 L2 fee details for optimism', async () => {
+  it('should contain L1 L2 fee details for OP Mainnet', async () => {
     mmState.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
     mmState.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
     const state = {

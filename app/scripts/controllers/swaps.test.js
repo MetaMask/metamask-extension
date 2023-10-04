@@ -751,7 +751,7 @@ describe('SwapsController', function () {
         );
       });
 
-      it('calls returns the correct quotes on the optimism chain', async function () {
+      it('calls returns the correct quotes on the OP Mainnet chain', async function () {
         fetchTradesInfoStub.resetHistory();
         const OPTIMISM_MOCK_FETCH_METADATA = {
           ...MOCK_FETCH_METADATA,

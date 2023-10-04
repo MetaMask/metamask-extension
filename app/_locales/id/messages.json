@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "Tampilkan daftar jaringan khusus"
   },
   "notifications13Description": {
-    "message": "Kini Anda dapat menambahkan jaringan khusus populer berikut dengan mudah: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm, dan Polygon! Untuk mengaktifkan fitur ini, buka Pengaturan > Eksperimental dan aktifkan \"Tampilkan daftar jaringan khusus\"!",
+    "message": "Kini Anda dapat menambahkan jaringan khusus populer berikut dengan mudah: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm, dan Polygon! Untuk mengaktifkan fitur ini, buka Pengaturan > Eksperimental dan aktifkan \"Tampilkan daftar jaringan khusus\"!",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

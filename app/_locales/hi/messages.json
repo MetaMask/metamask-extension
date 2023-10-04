@@ -2388,7 +2388,7 @@
     "message": "गोएर्ली"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "बहुभुज"
@@ -2632,7 +2632,7 @@
     "message": "कस्टम नेटवर्क लिस्ट दिखाएं"
   },
   "notifications13Description": {
-    "message": "अब आप निम्नलिखित पॉपुलर कस्टम नेटवर्क्स आसानी से जोड़ सकते हैं:  Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm and Polygon!! इस फीचर को इनेबल करने के लिए, सेटिंग्स पर जाएं ->एक्सपेरिमेंटल और \"कस्टम नेटवर्क लिस्ट दिखाएँ\" ऑन करें!",
+    "message": "अब आप निम्नलिखित पॉपुलर कस्टम नेटवर्क्स आसानी से जोड़ सकते हैं:  Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm and Polygon!! इस फीचर को इनेबल करने के लिए, सेटिंग्स पर जाएं ->एक्सपेरिमेंटल और \"कस्टम नेटवर्क लिस्ट दिखाएँ\" ऑन करें!",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

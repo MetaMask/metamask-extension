@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "Benutzerdefinierte Netzwerkliste anzeigen"
   },
   "notifications13Description": {
-    "message": "Sie können die folgenden beliebten benutzerdefinierten Netzwerke jetzt einfach hinzufügen: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm und Polygon! Gehen Sie zu „Einstellungen“ -> „Experimentell“ und schalten Sie „Benutzerdefinierte Netzwerkliste anzeigen“ ein, um diese Funktion zu aktivieren.",
+    "message": "Sie können die folgenden beliebten benutzerdefinierten Netzwerke jetzt einfach hinzufügen: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm und Polygon! Gehen Sie zu „Einstellungen“ -> „Experimentell“ und schalten Sie „Benutzerdefinierte Netzwerkliste anzeigen“ ein, um diese Funktion zu aktivieren.",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

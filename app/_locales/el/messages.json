@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "Προβολή λίστας προσαρμοσμένων δικτύων"
   },
   "notifications13Description": {
-    "message": "Τώρα μπορείτε να προσθέσετε εύκολα τα ακόλουθα δημοφιλή προσαρμοσμένα δίκτυα: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm και Polygon! Για να ενεργοποιήσετε αυτή τη λειτουργία, μεταβείτε στις Ρυθμίσεις -> Πειραματικά και ενεργοποιήστε την επιλογή «Προβολή λίστας προσαρμοσμένων δικτύων»!",
+    "message": "Τώρα μπορείτε να προσθέσετε εύκολα τα ακόλουθα δημοφιλή προσαρμοσμένα δίκτυα: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm και Polygon! Για να ενεργοποιήσετε αυτή τη λειτουργία, μεταβείτε στις Ρυθμίσεις -> Πειραματικά και ενεργοποιήστε την επιλογή «Προβολή λίστας προσαρμοσμένων δικτύων»!",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

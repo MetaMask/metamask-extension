@@ -193,7 +193,7 @@ describe('Confirm Transaction Base', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should not contain L1 L2 fee details for chains that are not optimism', () => {
+  it('should not contain L1 L2 fee details for chains that are not OP Mainnet', () => {
     const store = configureMockStore(middleware)(baseStore);
     const { queryByText } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,

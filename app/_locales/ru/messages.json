@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "Показать пользовательский список сетей"
   },
   "notifications13Description": {
-    "message": "Теперь вы можете легко добавить следующие популярные пользовательские сети: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm и Polygon! Чтобы включить эту функцию, перейдите в «Настройки» -> «Экспериментальные» и включите «Показать пользовательский список сетей»!",
+    "message": "Теперь вы можете легко добавить следующие популярные пользовательские сети: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm и Polygon! Чтобы включить эту функцию, перейдите в «Настройки» -> «Экспериментальные» и включите «Показать пользовательский список сетей»!",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

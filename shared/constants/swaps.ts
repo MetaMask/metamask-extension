@@ -268,7 +268,7 @@ export const POLYGON = 'polygon';
 export const BSC = 'bsc';
 export const GOERLI = 'goerli';
 export const AVALANCHE = 'avalanche';
-export const OPTIMISM = 'optimism';
+export const OPTIMISM = 'OP Mainnet';
 export const ARBITRUM = 'arbitrum';
 export const ZKSYNC_ERA = 'zksync';
 

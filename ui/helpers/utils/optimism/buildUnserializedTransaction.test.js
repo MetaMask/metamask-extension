@@ -2,7 +2,7 @@ import { BN } from 'ethereumjs-util';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 
 describe('buildUnserializedTransaction', () => {
-  it('returns a transaction that can be serialized and fed to an Optimism smart contract', () => {
+  it('returns a transaction that can be serialized and fed to an OP Mainnet smart contract', () => {
     const unserializedTransaction = buildUnserializedTransaction({
       txParams: {
         nonce: '0x0',

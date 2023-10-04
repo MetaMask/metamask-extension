@@ -37,7 +37,7 @@ export const Label: StoryFn<typeof PickerNetwork> = (args) => (
   <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <PickerNetwork {...args} label="Arbitrum One" />
     <PickerNetwork {...args} label="Polygon Mainnet" />
-    <PickerNetwork {...args} label="Optimism" />
+    <PickerNetwork {...args} label="OP Mainnet" />
     <PickerNetwork
       {...args}
       label="BNB Smart Chain (previously Binance Smart Chain Mainnet)"
@@ -54,7 +54,7 @@ export const Src: StoryFn<typeof PickerNetwork> = (args) => (
       label="Polygon Mainnet"
       src="./images/matic-token.png"
     />
-    <PickerNetwork {...args} label="Optimism" src="./images/optimism.svg" />
+    <PickerNetwork {...args} label="OP Mainnet" src="./images/optimism.svg" />
   </Box>
 );
 

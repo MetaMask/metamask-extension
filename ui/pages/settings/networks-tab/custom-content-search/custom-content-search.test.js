@@ -71,12 +71,12 @@ describe('CustomContentSearch', () => {
     const networksSearchFuse = new Fuse(networkList, {
       keys: ['label', 'labelKey'],
     });
-    const fuseSearchResult = networksSearchFuse.search('Optimism');
+    const fuseSearchResult = networksSearchFuse.search('OP Mainnet');
     const wrapper = renderComponent({
       componentProps: {
         onSearch,
         networksList: networkList,
-        searchQueryInput: 'Optimism',
+        searchQueryInput: 'OP Mainnet',
         error: 'No matching results found.',
       },
     });

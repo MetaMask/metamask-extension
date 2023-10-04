@@ -252,7 +252,7 @@ describe('Swaps Util', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.AVALANCHE)).toBe(AVALANCHE);
     });
 
-    it('returns "optimism" for Optimism chain ID', () => {
+    it('returns "OP Mainnet" for OP Mainnet chain ID', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.OPTIMISM)).toBe(OPTIMISM);
     });
 

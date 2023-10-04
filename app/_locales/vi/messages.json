@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "Hiển thị danh sách mạng tùy chỉnh"
   },
   "notifications13Description": {
-    "message": "Giờ đây, bạn có thể dễ dàng thêm các mạng tùy chỉnh phổ biến sau: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm và Polygon! Để bật tính năng này, hãy chuyển đến Cài đặt > Thử nghiệm và bật \"Hiển thị danh sách mạng tùy chỉnh\"!",
+    "message": "Giờ đây, bạn có thể dễ dàng thêm các mạng tùy chỉnh phổ biến sau: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm và Polygon! Để bật tính năng này, hãy chuyển đến Cài đặt > Thử nghiệm và bật \"Hiển thị danh sách mạng tùy chỉnh\"!",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

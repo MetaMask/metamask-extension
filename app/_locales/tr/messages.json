@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "Özel ağ listesini göster"
   },
   "notifications13Description": {
-    "message": "Artık şu popüler özel ağları kolayca ekleyebilirsin: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm ve Polygon! Bu özelliği etkinleştirmek için Ayarlar -> Deneysel kısmına gidip \"Özel ağ listesini göster\" seçeneğini aç!",
+    "message": "Artık şu popüler özel ağları kolayca ekleyebilirsin: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm ve Polygon! Bu özelliği etkinleştirmek için Ayarlar -> Deneysel kısmına gidip \"Özel ağ listesini göster\" seçeneğini aç!",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

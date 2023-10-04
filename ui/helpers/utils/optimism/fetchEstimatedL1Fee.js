@@ -32,7 +32,7 @@ export default async function fetchEstimatedL1Fee(
 
   if (process.env.IN_TEST) {
     provider.detectNetwork = async () => ({
-      name: 'optimism',
+      name: 'OP Mainnet',
       chainId: chainIdAsDecimalNumber,
     });
   }

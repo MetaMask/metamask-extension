@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "Exibir lista de redes personalizadas"
   },
   "notifications13Description": {
-    "message": "Agora você pode adicionar facilmente as seguintes redes personalizadas populares: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm e Polygon. Para ativar esse recurso, acesse Configurações -> Experimental e ative \"Exibir lista de redes personalizadas\"!",
+    "message": "Agora você pode adicionar facilmente as seguintes redes personalizadas populares: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm e Polygon. Para ativar esse recurso, acesse Configurações -> Experimental e ative \"Exibir lista de redes personalizadas\"!",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {

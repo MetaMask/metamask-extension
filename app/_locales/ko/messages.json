@@ -2388,7 +2388,7 @@
     "message": "Goerli"
   },
   "networkNameOptimism": {
-    "message": "Optimism"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2632,7 +2632,7 @@
     "message": "사용자 정의 네트워크 목록 보기"
   },
   "notifications13Description": {
-    "message": "이제 Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm 및 Polygon과 같은 인기 맞춤 네트워크를 쉽게 추가할 수 있습니다! 이 기능을 활성화하려면 설정 -> 실험으로 이동하여 \"맞춤 네트워크 목록 표시\"를 활성화하세요!",
+    "message": "이제 Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, OP Mainnet, Palm 및 Polygon과 같은 인기 맞춤 네트워크를 쉽게 추가할 수 있습니다! 이 기능을 활성화하려면 설정 -> 실험으로 이동하여 \"맞춤 네트워크 목록 표시\"를 활성화하세요!",
     "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
   },
   "notifications13Title": {
