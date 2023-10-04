@@ -447,40 +447,23 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
         const testBenignConfigs = [
           {
-            logExpectedDetail: 'Benign 1',
+            logExpectedDetail: 'Benign eth_sendTransaction with no value',
+            btnSelector: '#sendButton',
+          },
+          {
+            logExpectedDetail: 'Benign eth_sendTransaction with value',
             method: 'eth_sendTransaction',
             params: [
               {
                 from: selectedAddress,
-                data: '0x095ea7b3000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-                to: '0x6b175474e89094c44da98b954eedeac495271d0f',
-                value: '0x0',
+                to: '0xf977814e90da44bfa03b6295a0616a897441acec',
+                value: '0x9184e72a000',
               },
             ],
+            block: '16000000',
           },
-          // {
-          //   logExpectedDetail: 'Benign 2',
-          //   method: 'eth_sendTransaction',
-          //   params: [
-          //     {
-          //       from: selectedAddress,
-          //       to: '0xf977814e90da44bfa03b6295a0616a897441acec',
-          //       value: '0x9184e72a000',
-          //     },
-          //   ],
-          //   block: '16000000',
-          // },
-          // {
-          //   logExpectedDetail: 'eth_signTypedData',
-          //   method: 'eth_signTypedData',
-          //   params: [
-          //     selectedAddress,
-          //     '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"holder","type":"address"},{"name":"spender","type":"address"},{"name":"nonce","type":"uint256"},{"name":"expiry","type":"uint256"},{"name":"allowed","type":"bool"}]},"primaryType":"Permit","domain":{"name":"Dai Stablecoin","verifyingContract":"0x6b175474e89094c44da98b954eedeac495271d0f","chainId":1,"version":"1"},"message":{"expiry":1683011683,"nonce":3,"spender":"0x1111111254eeb25477b68fb85ed929f73a960582","holder":"0x3bbec29ab82db1f0be3f67261cc902c4e35ab70d","allowed":true}}',
-          //   ],
-          //   block: '17181852',
-          // },
           {
-            logExpectedDetail: 'blur',
+            logExpectedDetail: 'Benign Blur eth_sendTransaction',
             method: 'eth_signTypedData_v4',
             params: [
               selectedAddress,
@@ -488,27 +471,34 @@ describe('Confirmation Security Alert - Blockaid', function () {
             ],
           },
           {
-            logExpectedDetail: 'seaport',
+            logExpectedDetail: 'Benign Seaport eth_sendTransaction',
             method: 'eth_signTypedData_v4',
             params: [
               selectedAddress,
               '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"OrderComponents":[{"name":"offerer","type":"address"},{"name":"zone","type":"address"},{"name":"offer","type":"OfferItem[]"},{"name":"consideration","type":"ConsiderationItem[]"},{"name":"orderType","type":"uint8"},{"name":"startTime","type":"uint256"},{"name":"endTime","type":"uint256"},{"name":"zoneHash","type":"bytes32"},{"name":"salt","type":"uint256"},{"name":"conduitKey","type":"bytes32"},{"name":"counter","type":"uint256"}],"OfferItem":[{"name":"itemType","type":"uint8"},{"name":"token","type":"address"},{"name":"identifierOrCriteria","type":"uint256"},{"name":"startAmount","type":"uint256"},{"name":"endAmount","type":"uint256"}],"ConsiderationItem":[{"name":"itemType","type":"uint8"},{"name":"token","type":"address"},{"name":"identifierOrCriteria","type":"uint256"},{"name":"startAmount","type":"uint256"},{"name":"endAmount","type":"uint256"},{"name":"recipient","type":"address"}]},"primaryType":"OrderComponents","domain":{"name":"Seaport","version":"1.4","chainId":"1","verifyingContract":"0x00000000000001ad428e4906aE43D8F9852d0dD6"},"message":{"offerer":"0xCaFca5eDFb361E8A39a735233f23DAf86CBeD5FC","offer":[{"itemType":"1","token":"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2","identifierOrCriteria":"0","startAmount":"2500000000000000","endAmount":"2500000000000000"}],"consideration":[{"itemType":"2","token":"0xaA7200ee500dE2dcde75E996De83CBD73BCa9705","identifierOrCriteria":"11909","startAmount":"1","endAmount":"1","recipient":"0xCaFca5eDFb361E8A39a735233f23DAf86CBeD5FC"},{"itemType":"1","token":"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2","identifierOrCriteria":"0","startAmount":"62500000000000","endAmount":"62500000000000","recipient":"0x0000a26b00c1F0DF003000390027140000fAa719"},{"itemType":"1","token":"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2","identifierOrCriteria":"0","startAmount":"12500000000000","endAmount":"12500000000000","recipient":"0x8324BdEF2F30E08E368f2Fa2F14143cDCA77423D"}],"startTime":"1681835413","endTime":"1682094598","orderType":"0","zone":"0x004C00500000aD104D7DBd00e3ae0A5C00560C00","zoneHash":"0x0000000000000000000000000000000000000000000000000000000000000000","salt":"24446860302761739304752683030156737591518664810215442929812618382526293324216","conduitKey":"0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000","totalOriginalConsiderationItems":"3","counter":"0"}}',
             ],
           },
+          {
+            logExpectedDetail: 'Benign eth_signTypedData',
+            btnSelector: '#signTypedData',
+          },
         ];
 
         for (const config of testBenignConfigs) {
-          const { logExpectedDetail, method, params } = config;
+          const { btnSelector, logExpectedDetail, method, params } = config;
 
-          // Send JSON-RPC request
-          const request = JSON.stringify({
-            jsonrpc: '2.0',
-            method,
-            params,
-          });
-          await driver.executeScript(
-            `window.transactionHash = window.ethereum.request(${request})`,
-          );
+          if (btnSelector) {
+            await driver.clickElement(btnSelector);
+          } else {
+            const request = JSON.stringify({
+              jsonrpc: '2.0',
+              method,
+              params,
+            });
+            await driver.executeScript(
+              `window.transactionHash = window.ethereum.request(${request})`,
+            );
+          }
 
           // Wait for confirmation pop-up
           await driver.waitUntilXWindowHandles(3);
