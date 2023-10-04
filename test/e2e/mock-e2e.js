@@ -403,10 +403,22 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   await mockLensNameProvider(server);
   await mockTokenNameProvider(server, chainId);
 
+  /**
+   * Returns an array of alphanumerically sorted hostnames that were requested
+   * during the current test suite.
+   *
+   * @returns {string[]} privacy report for the current test suite.
+   */
   function getPrivacyReport() {
     return [...privacyReport].sort();
   }
 
+  /**
+   * Listen for requests and add the hostname to the privacy report if it did
+   * not previously exist. This is used to track which hosts are requested
+   * during the current test suite and used to ask for extra scrutiny when new
+   * hosts are added to the privacy-snapshot.json file.
+   */
   server.on('request-initiated', (request) => {
     privacyReport.add(request.headers.host);
   });

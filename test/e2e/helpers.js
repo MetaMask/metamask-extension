@@ -157,11 +157,19 @@ async function withFixtures(options, testSuite) {
       mockedEndpoint,
     });
 
-    const privacySnapshotRaw = await readFileSync('./privacy-snapshot.json');
+    // Evaluate whether any new hosts received network requests during E2E test
+    // suite execution. If so, fail the test unless the
+    // --update-privacy-snapshot was specified. In that case, update the
+    // snapshot file.
+    const privacySnapshotRaw = readFileSync('./privacy-snapshot.json');
     const privacySnapshot = JSON.parse(privacySnapshotRaw);
     const privacyReport = getPrivacyReport();
 
-    const mergedReport = merge(privacySnapshot, privacyReport);
+    // We must compare the snapshot to the merged report, because the snapshot
+    // may contain hosts that were not tested in this run, but were tested in
+    // previous runs. The lodash merge function mutates the first object passed
+    // so we pass a new empty object as the first argument.
+    const mergedReport = merge({}, privacySnapshot, privacyReport);
 
     if (isEqual(mergedReport, privacySnapshot) === false) {
       if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
@@ -171,7 +179,11 @@ async function withFixtures(options, testSuite) {
         );
       } else {
         throw new Error(
-          'New host found in E2E report. If this is anticipated, run the test again with the --update-privacy-snapshot option',
+          `A new host not contained in the privacy-snapshot received a network
+           request during the "${title}" test suite. Please update the
+           'privacy-snapshot.json' file by passing the
+           --update-privacy-snapshot option to the test command.
+          `,
         );
       }
     }
