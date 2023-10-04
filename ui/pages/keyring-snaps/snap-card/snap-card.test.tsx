@@ -72,4 +72,13 @@ describe('SnapCard', () => {
       ).toBeInTheDocument();
     });
   });
+
+  it('should show `Update Available` tag', () => {
+    const { getByText } = renderComponent({
+      ...snap,
+      isInstalled: true,
+      updateAvailable: true,
+    });
+    expect(getByText(messages.snapUpdateAvailable.message)).toBeInTheDocument();
+  });
 });

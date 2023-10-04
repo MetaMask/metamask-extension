@@ -2,6 +2,7 @@ import { Snap } from '@metamask/snaps-utils';
 import React, { useState, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import semver from 'semver';
 import { Box, Text } from '../../../components/component-library';
 import {
   AlignItems,
@@ -116,11 +117,16 @@ export default function NewSnapAccountPage() {
 
             const isInstalled = Boolean(foundSnap);
 
+            const updateAvailable = Boolean(
+              foundSnap?.version && semver.gt(snap.version, foundSnap.version),
+            );
+
             return (
               <SnapCard
                 {...snap}
                 key={index}
                 isInstalled={isInstalled}
+                updateAvailable={updateAvailable}
                 onClickFunc={() => {
                   history.push(`/add-snap-account/${snap.id}`);
                 }}
