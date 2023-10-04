@@ -406,6 +406,17 @@ export default class Routes extends Component {
     );
   }
 
+  showConnectionHeader() {
+    const { location } = this.props;
+
+    return Boolean(
+      matchPath(location.pathname, {
+        path: CONNECTIONS,
+        exact: true,
+      }),
+    );
+  }
+
   onEditTransactionPage() {
     return (
       this.props.sendStage === SEND_STAGES.EDIT ||
@@ -452,6 +463,12 @@ export default class Routes extends Component {
     );
 
     if (isInitializing && !this.onInitializationUnlockPage()) {
+      return true;
+    }
+
+    const isConnectionsPage = this.showConnectionHeader();
+
+    if (isConnectionsPage) {
       return true;
     }
 
@@ -518,17 +535,6 @@ export default class Routes extends Component {
       matchPath(location.pathname, {
         path: ONBOARDING_ROUTE,
         exact: false,
-      }),
-    );
-  }
-
-  showConnectionHeader() {
-    const { location } = this.props;
-
-    return Boolean(
-      matchPath(location.pathname, {
-        path: CONNECTIONS,
-        exact: true,
       }),
     );
   }
