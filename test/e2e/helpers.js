@@ -186,18 +186,12 @@ async function withFixtures(options, testSuite) {
           JSON.stringify(mergedReport, null, 2),
         );
       } else {
-        // Errors printed to console in CI are easier to read if quotations are
-        // escaped.
-        /* eslint-disable no-useless-escape */
         throw new Error(
           `A new host not contained in the privacy-snapshot received a network
-           request during the \"${title}\" test suite. Please update the
-           \'privacy-snapshot.json\' file by passing the
-           --update-privacy-snapshot option to the test command. New hosts
-           found: ${newHosts}.
-          `,
+           request during test execution. Please update the privacy-snapshot
+           file by passing the --update-privacy-snapshot option to the test
+           command. New hosts found: ${newHosts}.`,
         );
-        /* eslint-enable no-useless-escape */
       }
     }
   } catch (error) {
