@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
-import { isEqual } from 'lodash';
 import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
@@ -11,17 +10,10 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import {
-  handleMmiPortfolio,
-  setDashboardCookie,
-} from '@metamask-institutional/portfolio-dashboard';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  BUILD_QUOTE_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
-} from '../../../ui/helpers/constants/routes';
-import { previousValueComparator } from '../lib/util';
+import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
@@ -62,17 +54,6 @@ export default class MMIController extends EventEmitter {
         this.transactionUpdateController.subscribeToEvents();
       });
     }
-
-    this.preferencesController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { identities: prevIdentities } = prevState;
-        const { identities: currIdentities } = currState;
-        if (isEqual(prevIdentities, currIdentities)) {
-          return;
-        }
-        await this.prepareMmiPortfolio();
-      }, this.preferencesController.store.getState()),
-    );
 
     this.signatureController.hub.on(
       'personal_sign:signed',
@@ -584,20 +565,6 @@ export default class MMIController extends EventEmitter {
     });
   }
 
-  async prepareMmiPortfolio() {
-    if (!process.env.IN_TEST) {
-      try {
-        const mmiDashboardData = await this.handleMmiDashboardData();
-        const cookieSetUrls =
-          this.mmiConfigurationController.store.mmiConfiguration?.portfolio
-            ?.cookieSetUrls || [];
-        setDashboardCookie(mmiDashboardData, cookieSetUrls);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-
   async newUnsignedMessage(msgParams, req, version) {
     // The code path triggered by deferSetAsSigned: true is for custodial accounts
     const accountDetails = this.custodyController.getAccountDetails(
@@ -670,12 +637,6 @@ export default class MMIController extends EventEmitter {
       this.permissionController,
     ).addPermittedAccount(origin, addressToLowerCase);
 
-    return true;
-  }
-
-  async handleMmiOpenSwaps(origin, address, chainId) {
-    await this.setAccountAndNetwork(origin, address, chainId);
-    this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
     return true;
   }
 

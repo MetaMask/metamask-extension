@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Απορρίψτε την υπενθύμιση δημιουργίας αντιγράφων ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
-  "displayNftMedia": {
-    "message": "Εμφάνιση των μέσων NFT"
-  },
   "domain": {
     "message": "Τομέας"
   },
@@ -1405,6 +1402,12 @@
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
   },
+  "enableOpenSeaAPI": {
+    "message": "Ενεργοποίηση OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
+  },
   "enableSmartSwaps": {
     "message": "Ενεργοποίηση των έξυπνων ανταλλαγών"
   },
@@ -1529,11 +1532,9 @@
   "experimental": {
     "message": "Πειραματικά"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Εξερευνήστε το MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας."
+    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Εξωτερική επέκταση"

@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Lewatkan pengingat pencadangan Frasa Pemulihan Rahasia"
   },
-  "displayNftMedia": {
-    "message": "Tampilkan media NFT"
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1405,6 +1402,12 @@
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
   },
+  "enableOpenSeaAPI": {
+    "message": "Aktifkan API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
+  },
   "enableSmartSwaps": {
     "message": "Aktifkan pertukaran cerdas"
   },
@@ -1529,11 +1532,9 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Jelajahi MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Perluas pengalaman dompet."
+    "message": "Perluas pengalaman dompet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Ekstensi eksternal"

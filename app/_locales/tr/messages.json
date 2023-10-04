@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma uyarısını yoksay"
   },
-  "displayNftMedia": {
-    "message": "NFT medyasını göster"
-  },
   "domain": {
     "message": "Alan"
   },
@@ -1405,6 +1402,12 @@
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API'yi etkinleştir"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
+  },
   "enableSmartSwaps": {
     "message": "Akıllı swap'ları etkinleştirin"
   },
@@ -1529,11 +1532,9 @@
   "experimental": {
     "message": "Deneysel"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaplerini keşfedin"
-  },
   "extendWalletWithSnaps": {
-    "message": "Cüzdan deneyimini kişiselleştirin."
+    "message": "Cüzdan deneyimini kişiselleştirin.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Harici uzantı"
