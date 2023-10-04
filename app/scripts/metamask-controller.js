@@ -1228,6 +1228,9 @@ export default class MetamaskController extends EventEmitter {
           ),
         getCurrentAccountEIP1559Compatibility:
           this.getCurrentAccountEIP1559Compatibility.bind(this),
+        getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+          this.gasFeeController,
+        ),
         getNetworkState: () => this.networkController.state,
         getSelectedAddress: () =>
           this.preferencesController.store.getState().selectedAddress,
@@ -1258,6 +1261,7 @@ export default class MetamaskController extends EventEmitter {
         provider: this.provider,
       },
       {
+        interval: 1000,
         sign: (...args) => this.coreKeyringController.signTransaction(...args),
       },
       initState.TransactionController,
@@ -2561,9 +2565,8 @@ export default class MetamaskController extends EventEmitter {
         txController.updateTransactionSendFlowHistory.bind(txController),
 
       // TxMigrationToDo - Add updatePreviousGasParams controller method.
-      updatePreviousGasParams: () => undefined,
-      // updatePreviousGasParams:
-      //   txController.updatePreviousGasParams.bind(txController),
+      updatePreviousGasParams:
+        txController.updatePreviousGasParams.bind(txController),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
@@ -2798,15 +2801,9 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsPage: metaMetricsController.trackPage.bind(
         metaMetricsController,
       ),
-      createEventFragment: metaMetricsController.createEventFragment.bind(
-        metaMetricsController,
-      ),
-      updateEventFragment: metaMetricsController.updateEventFragment.bind(
-        metaMetricsController,
-      ),
-      finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
-        metaMetricsController,
-      ),
+      createEventFragment: () => undefined,
+      updateEventFragment: () => undefined,
+      finalizeEventFragment: () => undefined,
 
       // approval controller
       resolvePendingApproval: this.resolvePendingApproval,

@@ -2575,6 +2575,7 @@
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/transaction-controller>@metamask/controller-utils": true,
         "@metamask/transaction-controller>@metamask/rpc-errors": true,
