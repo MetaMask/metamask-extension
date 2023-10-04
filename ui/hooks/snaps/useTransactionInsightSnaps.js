@@ -11,7 +11,7 @@ export function useTransactionInsightSnaps({
   chainId,
   origin,
   insightSnaps,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
   insightSnapId = '',
   ///: END:ONLY_INCLUDE_IN
 }) {
@@ -35,7 +35,7 @@ export function useTransactionInsightSnaps({
       setLoading(true);
 
       let snapIds = insightSnaps.map((snap) => snap.id);
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,desktop)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
       if (insightSnapId.length > 0) {
         snapIds = [insightSnapId];
       }
@@ -99,7 +99,9 @@ export function useTransactionInsightSnaps({
     origin,
     subjects,
     insightSnaps,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
     insightSnapId,
+    ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     hasFetchedV2Insight,
     ///: END:ONLY_INCLUDE_IN
