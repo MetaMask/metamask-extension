@@ -173,7 +173,7 @@ export default class AddRecipient extends Component {
           <Identicon address={address} diameter={28} />
           <div className="send__select-recipient-wrapper__group-item__content">
             <div className="send__select-recipient-wrapper__group-item__title">
-              <Confusable input={ellipsify(name)} />
+              <Confusable input={name} />
               <Text paddingLeft={2}>{ellipsify(address)}</Text>
             </div>
             <div className="send__select-recipient-wrapper__group-item__subtitle">
@@ -182,14 +182,16 @@ export default class AddRecipient extends Component {
                 iconName={IconName.Snaps}
                 size={AvatarIconSize.Xs}
                 backgroundColor={IconColor.infoDefault}
-                borderColor={BackgroundColor.backgroundDefault}
-                borderWidth={2}
+                marginRight={1}
                 iconProps={{
                   color: IconColor.infoInverse,
                 }}
               />
-              <Text color={TextColor.infoDefault}>
-                {ellipsify(resolvingSnap)}
+              <Text
+                color={TextColor.infoDefault}
+                style={{ textOverflow: 'ellipsis' }}
+              >
+                {resolvingSnap}
               </Text>
             </div>
           </div>
