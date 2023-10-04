@@ -17,7 +17,7 @@ const Ganache = require('./ganache');
 const ganacheServer = new Ganache();
 const dappPort = 8080;
 
-describe('MetaMask', function () {
+describe('MetaMask @no-mmi', function () {
   let driver;
   let dappServer;
   let tokenAddress;
@@ -74,7 +74,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Going through the first time flow @no-mmi', function () {
+  describe('Going through the first time flow', function () {
     it('clicks the "Create New Wallet" button on the welcome screen', async function () {
       await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
       await driver.clickElement('[data-testid="onboarding-create-wallet"]');
@@ -126,7 +126,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Import Secret Recovery Phrase @no-mmi', function () {
+  describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
       await driver.clickElement('[data-testid="account-options-menu-button"]');
       await driver.delay(regularDelayMs);
