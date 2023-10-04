@@ -1,0 +1,31 @@
+name: Add regression prod label to issue, in case it is a production bug
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+
+jobs:
+  add-regression-prod-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+            fetch-depth: 1 # This retrieves only the latest commit.
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn --immutable
+          
+      - name: Add regression prod label to issue
+        id: add-regression-prod-label-to-issue
+        env:
+          REGRESSION_PROD_LABEL_TOKEN: ${{ secrets.REGRESSION_PROD_LABEL_TOKEN }}
+        run: npm run add-regression-prod-label-to-issue
