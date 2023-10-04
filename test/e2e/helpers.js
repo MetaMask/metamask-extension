@@ -4,7 +4,7 @@ const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
-const { isEqual, merge, difference } = require('lodash');
+const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
@@ -165,13 +165,20 @@ async function withFixtures(options, testSuite) {
     const privacySnapshot = JSON.parse(privacySnapshotRaw);
     const privacyReport = getPrivacyReport();
 
-    // We must compare the snapshot to the merged report, because the snapshot
-    // may contain hosts that were not tested in this run, but were tested in
-    // previous runs. The lodash merge function mutates the first object passed
-    // so we pass a new empty object as the first argument.
-    const mergedReport = merge({}, privacySnapshot, privacyReport);
+    // We must add to our privacyReport all of the known hosts that are
+    // included in the privacySnapshot. If no new hosts were requested during
+    // this test suite execution, then the mergedReport and the privacySnapshot
+    // should be identical.
+    const mergedReport = [
+      ...new Set([...privacyReport, ...privacySnapshot]),
+    ].sort();
 
-    if (isEqual(mergedReport, privacySnapshot) === false) {
+    // To determine if a new host was requsted, we use the lodash difference
+    // method to generate an array of the items included in the first argument
+    // but not in the second
+    const newHosts = difference(mergedReport, privacySnapshot);
+
+    if (newHosts.length > 0) {
       if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
         writeFileSync(
           './privacy-snapshot.json',
@@ -186,7 +193,7 @@ async function withFixtures(options, testSuite) {
            request during the \"${title}\" test suite. Please update the
            \'privacy-snapshot.json\' file by passing the
            --update-privacy-snapshot option to the test command. New hosts
-           found: ${difference(mergedReport, privacySnapshot)}.
+           found: ${newHosts}.
           `,
         );
         /* eslint-enable no-useless-escape */
