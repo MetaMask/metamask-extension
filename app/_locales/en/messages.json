@@ -1135,12 +1135,6 @@
   "data": {
     "message": "Data"
   },
-  "transactionInsightsDeprecationTitle": {
-    "message": "This feature will be deprecated soon"
-  },
-  "transactionInsightsDeprecationInfo": {
-    "message": "Explore more ways to get transaction insights with"
-  },
   "dataBackupSeemsCorrupt": {
     "message": "Can not restore your data. The file appears to be corrupt."
   },
@@ -5253,6 +5247,12 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "transactionInsightsDeprecationInfo": {
+    "message": "Explore more ways to get transaction insights with"
+  },
+  "transactionInsightsDeprecationTitle": {
+    "message": "This feature will be deprecated soon"
   },
   "transactionNote": {
     "message": "Transaction note"
