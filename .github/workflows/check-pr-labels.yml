@@ -20,7 +20,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-            fetch-depth: 0 # This is needed to checkout all branches
+            fetch-depth: 1 # This retrieves only the latest commit.
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
