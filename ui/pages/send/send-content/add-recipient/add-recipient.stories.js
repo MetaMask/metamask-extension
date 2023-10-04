@@ -67,8 +67,10 @@ export default {
   },
   args: {
     recipient,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     domainType: 'Other',
     resolvingSnap: '@metamask/example-lookup-snap',
+    ///: END:ONLY_INCLUDE_IN
     contacts: [addressBook],
     nonContacts: [addressBook],
     ownedAccounts: [addressBook],
