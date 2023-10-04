@@ -65,7 +65,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
     getSnapRegistryData(state, snapId),
   );
   const { website = undefined } = snapRegistryData?.metadata ?? {};
-  const [safeWebsite, setSafeWebsite] = useState('');
+  const [safeWebsite, setSafeWebsite] = useState(null);
 
   useEffect(() => {
     const performPhishingCheck = async () => {
