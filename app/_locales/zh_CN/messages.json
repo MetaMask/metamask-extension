@@ -1286,9 +1286,6 @@
   "dismissReminderField": {
     "message": "关闭账户私钥助记词备份提醒"
   },
-  "displayNftMedia": {
-    "message": "显示NFT媒体"
-  },
   "domain": {
     "message": "域"
   },
@@ -1416,6 +1413,12 @@
   },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
+  },
+  "enableOpenSeaAPI": {
+    "message": "启用 OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
   "enableSmartSwaps": {
     "message": "启用智能兑换"

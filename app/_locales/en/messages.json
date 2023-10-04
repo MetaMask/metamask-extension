@@ -1304,12 +1304,6 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
-  "displayNftMedia": {
-    "message": "Display NFT media"
-  },
-  "displayNftMediaDesc": {
-    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. NFT autodetection relies on this feature, and won't be available when it is turned off. If NFT media is fully located on IPFS, it can still be displayed even when this feature is turned off."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1437,6 +1431,12 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Enable OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartSwaps": {
     "message": "Enable smart swaps"
@@ -2502,7 +2502,7 @@
     "message": "New contract"
   },
   "newNFTDetectedInImportNFTsMessage": {
-    "message": "To see your NFT, turn on Display NFT media in $1.",
+    "message": "To use Opensea see your NFT, turn on 'Enable OpenSea API' in $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
@@ -3821,8 +3821,8 @@
   "selectAnAction": {
     "message": "Select an action"
   },
-  "selectDisplayMediaPrivacyPreference": {
-    "message": "Turn on Display NFT media"
+  "selectEnableOpenseaAPIPrivacyPreference": {
+    "message": "Turn on Enable Opensea API"
   },
   "selectHdPath": {
     "message": "Select HD path"
