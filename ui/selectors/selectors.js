@@ -416,8 +416,7 @@ export function isBalanceCached(state) {
 export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
   const selectedAddress = getSelectedAddress(state);
-
-  return cachedBalances && cachedBalances[selectedAddress];
+  return cachedBalances?.[selectedAddress];
 }
 
 export function getSelectedAccount(state) {
@@ -1646,6 +1645,10 @@ export function getCustomTokenAmount(state) {
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
 }
+
+export const useSafeChainsListValidationSelector = (state) => {
+  return state.metamask.useSafeChainsListValidation;
+};
 
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion

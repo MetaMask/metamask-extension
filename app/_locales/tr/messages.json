@@ -611,18 +611,9 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buy": {
-    "message": "Satın Al"
-  },
   "buyAsset": {
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
-  "buyDisabled": {
-    "message": "Satın al bu ağda kullanılamaz"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma uyarısını yoksay"
   },
-  "displayNftMedia": {
-    "message": "NFT medyasını göster"
-  },
   "domain": {
     "message": "Alan"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API'yi etkinleştir"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
   "enableSmartSwaps": {
     "message": "Akıllı swap'ları etkinleştirin"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Deneysel"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaplerini keşfedin"
-  },
   "extendWalletWithSnaps": {
-    "message": "Cüzdan deneyimini kişiselleştirin."
+    "message": "Cüzdan deneyimini kişiselleştirin.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Harici uzantı"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Bu yaşam döngüsü sırasında belirli zamanlarda kod çalıştırmak için snapin yaşam döngüsü kancalarını kullanmasına izin verin.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Süresiz çalıştır.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Snapin örneğin büyük miktarda veri işlerken belirsiz süreyle çalışmasına izin verin.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum hesaplarını ekle ve kontrol et",

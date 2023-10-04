@@ -611,18 +611,9 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buy": {
-    "message": "Comprar"
-  },
   "buyAsset": {
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Segure seus criptoativos e ganhe lucros em potencial"
-  },
-  "buyDisabled": {
-    "message": "A compra não está disponível nesta rede"
   },
   "buyMoreAsset": {
     "message": "Comprar mais $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Descartar o lembrete de backup da Frase de Recuperação Secreta"
   },
-  "displayNftMedia": {
-    "message": "Exibir mídias de NFTs"
-  },
   "domain": {
     "message": "Domínio"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Ative nas Configurações."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Habilitar API do OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
   "enableSmartSwaps": {
     "message": "Ativar trocas inteligentes"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explorar os snaps da MetaMask"
-  },
   "extendWalletWithSnaps": {
-    "message": "Personalize sua experiência com a carteira."
+    "message": "Personalize sua experiência com a carteira.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Extensão externa"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Permitir que o snap use ganchos de ciclo de vida para executar códigos em momentos específicos durante seu ciclo de vida.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Executar indefinidamente.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Permitir que o snap seja executado indefinidamente, por exemplo, enquanto processa grandes volumes de dados.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Adicionar e controlar contas Ethereum",

@@ -20,6 +20,14 @@
     "warning": null,
     "customTokenAmount": "10"
   },
+  "confirmTransaction": {
+    "txData": {
+      "txParams": {
+        "gas": "0x153e2",
+        "value": "0x0"
+      }
+    }
+  },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
@@ -152,6 +160,10 @@
       {
         "type": "Snap Keyring",
         "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
+      },
+      {
+        "type": "Custody test",
+        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
       }
     ],
     "identities": {
@@ -170,6 +182,10 @@
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "name": "Test Account 3",
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "name": "Custody test",
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
       }
     },
     "selectedNetworkClientId": "goerli",
