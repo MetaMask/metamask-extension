@@ -10,20 +10,20 @@ const {
 
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
+ * @typedef {import('mockttp').MockedEndpoint} MockedEndpoint
  */
 
 /**
  * @typedef {object} SetupMockReturn
- * @property {Mockttp} server - The Mockttp server
- * @property {any} mockedEndpoint - If a testSpecificMock was provided, returns the mockedEndpoint
+ * @property {MockedEndpoint} mockedEndpoint - If a testSpecificMock was provided, returns the mockedEndpoint
  * @property {() => string[]} getPrivacyReport - A function to get the current privacy report.
  */
 
 /**
  * Setup E2E network mocks.
  *
- * @param {object} server - The mock server used for network mocks.
- * @param {Function} testSpecificMock - A function for setting up test-specific network mocks
+ * @param {Mockttp} server - The mock server used for network mocks.
+ * @param {(server: Mockttp) => MockedEndpoint} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @returns {SetupMockReturn}
@@ -411,7 +411,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     privacyReport.add(request.headers.host);
   });
 
-  return { server, mockedEndpoint, getPrivacyReport };
+  return { mockedEndpoint, getPrivacyReport };
 }
 
 async function mockLensNameProvider(server) {
