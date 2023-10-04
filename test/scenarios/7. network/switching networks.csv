@@ -1,0 +1,5 @@
+Step,Test steps,Test data,Expected result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Select the Network list drop-down.,,A list of added networks appears. The Show Test Networks toggle appears. The Add Network button appears.,
+4,Proceed to select a network from the drop-down list.,e.g. Linea Mainnet. ,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Linea Mainnet.        ,
