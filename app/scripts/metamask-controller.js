@@ -2395,6 +2395,7 @@ export default class MetamaskController extends EventEmitter {
       assetsContractController,
       backup,
       approvalController,
+      phishingController,
     } = this;
 
     return {
@@ -2822,6 +2823,11 @@ export default class MetamaskController extends EventEmitter {
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       updateCaveat: this.updateCaveat.bind(this),
+      getPhishingResult: async (website) => {
+        await phishingController.maybeUpdateState();
+
+        return phishingController.test(website);
+      },
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
