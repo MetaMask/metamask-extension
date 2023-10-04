@@ -207,7 +207,8 @@
     "lavamoat-core@npm:^14.4.1": "patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch",
     "@metamask/signature-controller@^6.0.0": "patch:@metamask/signature-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-signature-controller-npm-6.0.0-90e8e479a9.patch",
     "semver@7.3.7": "^7.5.4",
-    "semver@7.3.8": "^7.5.4"
+    "semver@7.3.8": "^7.5.4",
+    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -237,7 +238,7 @@
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",
-    "@metamask/assets-controllers": "^9.2.0",
+    "@metamask/assets-controllers": "^13.0.0",
     "@metamask/base-controller": "^3.2.0",
     "@metamask/browser-passworder": "^4.1.0",
     "@metamask/contract-metadata": "^2.3.1",
