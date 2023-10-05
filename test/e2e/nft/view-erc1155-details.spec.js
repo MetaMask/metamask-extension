@@ -15,7 +15,7 @@ describe('View ERC1155 NFT details', function () {
     ],
   };
 
-  it('user should be able to view ERC1155 NFT details', async function () {
+  it('user should be able to view ERC1155 NFT details @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
