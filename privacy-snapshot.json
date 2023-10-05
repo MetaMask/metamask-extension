@@ -1,6 +1,7 @@
 [
   "acl.execution.consensys.io",
   "api.coingecko.com",
+  "api.lens.dev",
   "api.segment.io",
   "arbitrum-mainnet.infura.io",
   "bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link",
@@ -24,6 +25,7 @@
   "registry.npmjs.org",
   "responsive-rpc.url",
   "sentry.io",
+  "start.metamask.io",
   "static.metafi.codefi.network",
   "swap.metaswap.codefi.network",
   "test.metamask-phishing.io",
