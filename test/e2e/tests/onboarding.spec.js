@@ -14,7 +14,7 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('MetaMask onboarding', function () {
+describe('MetaMask onboarding @no-mmi', function () {
   const testPassword = 'correct horse battery staple';
   const wrongSeedPhrase =
     'test test test test test test test test test test test test';
@@ -239,7 +239,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it(`User can add custom network during onboarding`, async function () {
+  it('User can add custom network during onboarding', async function () {
     const networkName = 'Localhost 8546';
     const networkUrl = 'http://127.0.0.1:8546';
     const currencySymbol = 'ETH';
