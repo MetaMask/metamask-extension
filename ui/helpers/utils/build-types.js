@@ -1,9 +1,6 @@
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 ///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import mmiJson from '../../../app/build-types/mmi/images/mmi-mascot.json';
-///: END:ONLY_INCLUDE_IN
 
 const assetList = {
   main: {
@@ -22,7 +19,7 @@ const assetList = {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   mmi: {
-    foxMeshJson: mmiJson,
+    foxMeshJson: undefined,
   },
   ///: END:ONLY_INCLUDE_IN
 };
