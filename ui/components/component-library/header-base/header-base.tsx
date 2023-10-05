@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
-  BlockSize,
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
