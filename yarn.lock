@@ -3854,7 +3854,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.2.3":
+"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1, @metamask/base-controller@npm:^3.2.2, @metamask/base-controller@npm:^3.2.3":
   version: 3.2.3
   resolution: "@metamask/base-controller@npm:3.2.3"
   dependencies:
@@ -4332,18 +4332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/logging-controller@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/logging-controller@npm:1.0.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/controller-utils": "npm:^4.3.2"
-    uuid: "npm:^8.3.2"
-  checksum: ce70fab9e5345e08c5a361a6ee2ca4095a4ad25939728617b762d0465045f3efb3f87d5b98f2bebe504e2b7d5072b18a2164c90604ee5a00cf5bff51ac1ae205
-  languageName: node
-  linkType: hard
-
-"@metamask/logging-controller@npm:^1.0.3":
+"@metamask/logging-controller@npm:^1.0.1, @metamask/logging-controller@npm:^1.0.3":
   version: 1.0.3
   resolution: "@metamask/logging-controller@npm:1.0.3"
   dependencies:
