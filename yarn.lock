@@ -5794,10 +5794,10 @@
     crypto-js "^4.1.1"
     elliptic "^6.5.4"
 
-"@unstoppabledomains/tldsresolverkeys@^2.3.7":
-  version "2.3.7"
-  resolved "https://registry.yarnpkg.com/@unstoppabledomains/tldsresolverkeys/-/tldsresolverkeys-2.3.7.tgz#489b0e1263181d7e0d702fa72474df0cd8923c36"
-  integrity sha512-SkQ91EvdwuMrWBfaiiBkGu2jBq25tvr05f//YWM7bZLOSWpMgfFvcOepfxlcmtZOG+PWaPN2KV7NO8OWO+VtoQ==
+"@unstoppabledomains/tldsresolverkeys@^2.3.9":
+  version "2.3.9"
+  resolved "https://registry.yarnpkg.com/@unstoppabledomains/tldsresolverkeys/-/tldsresolverkeys-2.3.9.tgz#6495ca0a26c51c7cfc7cf7e27d0aa8283cd73f9a"
+  integrity sha512-a6gOg6kG8lO872ym8JOWu2GlfjuC8FPhuSVUqTsF8NNxVKSWsKFdaPIHvhUgsVda4wbIm0PxK3+c+FHN/X4PIA==
 
 "@vue/compiler-core@3.3.4":
   version "3.3.4"
