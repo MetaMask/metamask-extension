@@ -55,13 +55,15 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
     }, [startAccessoryRef, endAccessoryRef, children]);
 
     const getTitleStyles = useMemo(() => {
-      if (startAccessory && !endAccessory) {
+      if (startAccessory && !endAccessory && accessoryMinWidth) {
         return {
           marginRight: `${accessoryMinWidth}px`,
+          maxWidth: `calc(100% - ${accessoryMinWidth * 2}px)`,
         };
-      } else if (!startAccessory && endAccessory) {
+      } else if (!startAccessory && endAccessory && accessoryMinWidth) {
         return {
           marginLeft: `${accessoryMinWidth}px`,
+          maxWidth: `calc(100% - ${accessoryMinWidth * 2}px)`,
         };
       } else if (startAccessory && endAccessory && accessoryMinWidth) {
         return {
