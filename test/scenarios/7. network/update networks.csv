@@ -1,0 +1,8 @@
+Step,Test steps,Preconditions,Test data,Expected result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Select Expand view in the wallet menu.,,,A new tab opens. The expanded extension view is shown.,
+4,Proceed to Networks in the Settings menu.,,,The list of main networks and test networks is shown.,
+5,Select the network to update.,A custom network should be added first.,e.g. Arbitrum One.,"The network name, RPC URL, chain ID, currency symbol and block explorer URL are shown.",
+6,Update network RPC URL.,,e.g. https://rpc.ankr.com/arbitrum,,
+7,Save changes. ,,,The request and status are shown in the Networks tab in the browser Developer Tools. ,
