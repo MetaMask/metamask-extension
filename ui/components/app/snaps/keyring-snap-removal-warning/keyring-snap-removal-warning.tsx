@@ -44,7 +44,9 @@ export default function KeyringRemovalSnapWarning({
   isOpen: boolean;
 }) {
   const t = useI18nContext();
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(
+    keyringAccounts.length === 0,
+  );
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
@@ -73,7 +75,6 @@ export default function KeyringRemovalSnapWarning({
           <ModalHeader
             onBack={() => {
               setShowConfirmation(false);
-              onBack();
             }}
             onClose={() => {
               setShowConfirmation(false);
