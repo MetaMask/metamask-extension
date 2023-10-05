@@ -58,16 +58,16 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
       if (startAccessory && !endAccessory && accessoryMinWidth) {
         return {
           marginRight: `${accessoryMinWidth}px`,
-          maxWidth: `calc(100% - ${accessoryMinWidth * 2}px)`,
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
         };
       } else if (!startAccessory && endAccessory && accessoryMinWidth) {
         return {
           marginLeft: `${accessoryMinWidth}px`,
-          maxWidth: `calc(100% - ${accessoryMinWidth * 2}px)`,
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
         };
       } else if (startAccessory && endAccessory && accessoryMinWidth) {
         return {
-          maxWidth: `calc(100% - ${accessoryMinWidth * 2}px)`,
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
         };
       }
       return {};
@@ -98,7 +98,6 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
         )}
         {children && (
           <Box
-            width={BlockSize.Full}
             style={getTitleStyles}
             {...(childrenWrapperProps as BoxProps<'div'>)}
           >
