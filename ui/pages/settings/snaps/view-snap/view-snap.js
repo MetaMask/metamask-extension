@@ -66,8 +66,10 @@ function ViewSnap() {
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   const [keyringAccounts, setKeyringAccounts] = useState([]);
   const identities = useSelector(getMemoizedMetaMaskIdentities);
+  ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
     if (!snap) {

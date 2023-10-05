@@ -61,7 +61,7 @@ describe('Test Snap Account', function () {
     );
   });
 
-  it.only('will display the keyring snap account removal warning', async function () {
+  it('will display the keyring snap account removal warning', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
