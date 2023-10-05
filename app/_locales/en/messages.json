@@ -903,6 +903,9 @@
   "continue": {
     "message": "Continue"
   },
+  "continueMmiOnboarding": {
+    "message": "Continue MetaMask Institutional onboarding"
+  },
   "contract": {
     "message": "Contract"
   },
@@ -1616,6 +1619,12 @@
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
+  "extensionInsallCompleteDescription": {
+    "message": "Return to the MetaMask Institutional product onboarding to connect your custodial or self-custodial accounts."
+  },
+  "extensionInsallCompleteTitle": {
+    "message": "Extension install complete"
+  },
   "externalExtension": {
     "message": "External extension"
   },
@@ -2030,6 +2039,12 @@
   "install": {
     "message": "Install"
   },
+  "installExtension": {
+    "message": "Install extension"
+  },
+  "installExtensionDescription": {
+    "message": "The institution-compliant version of the world's leading web3 wallet, MetaMask."
+  },
   "installOrigin": {
     "message": "Install origin"
   },
@@ -2393,6 +2408,9 @@
   },
   "mmiNewNFTDetectedInNFTsTabMessage": {
     "message": "Let MetaMask Institutional automatically detect and display NFTs in your wallet."
+  },
+  "mmiPasswordSetupDetails": {
+    "message": "This password will unlock your MetaMask Institutional extension only."
   },
   "more": {
     "message": "more"
@@ -3151,6 +3169,9 @@
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
   },
+  "onboardingPinMmiExtensionLabel": {
+    "message": "Pin MetaMask Institutional"
+  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -3216,6 +3237,9 @@
   },
   "password": {
     "message": "Password"
+  },
+  "passwordMmiTermsWarning": {
+    "message": "I understand that MetaMask Institutional cannot recover this password for me. $1"
   },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
@@ -3443,6 +3467,12 @@
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
+  },
+  "pinExtensionDescription": {
+    "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
+  },
+  "pinExtensionTitle": {
+    "message": "Pin extension"
   },
   "pleaseConfirm": {
     "message": "Please confirm"
