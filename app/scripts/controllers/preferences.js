@@ -106,6 +106,9 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IN
       isLineaMainnetReleased: false,
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      useExternalNameSources: true,
+      ///: END:ONLY_INCLUDE_IN
       ...opts.initState,
     };
 
@@ -257,6 +260,19 @@ export default class PreferencesController {
   setAddSnapAccountEnabled(addSnapAccountEnabled) {
     this.store.updateState({
       addSnapAccountEnabled,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  /**
+   * Setter for the `useExternalNameSources` property
+   *
+   * @param {boolean} useExternalNameSources - Whether or not to use external name providers in the name controller.
+   */
+  setUseExternalNameSources(useExternalNameSources) {
+    this.store.updateState({
+      useExternalNameSources,
     });
   }
   ///: END:ONLY_INCLUDE_IN
