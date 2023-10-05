@@ -52,6 +52,11 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
                 List item
               </li>
             </ul>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
+            >
+              [somethingDoesntLookRight]
+            </p>
           </div>
           <div
             class="disclosure__footer"
