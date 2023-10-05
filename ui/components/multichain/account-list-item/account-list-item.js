@@ -44,7 +44,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getUseBlockie } from '../../../selectors';
+import { getShouldShowFiat, getUseBlockie } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -90,9 +90,11 @@ export const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
 
-  const { formattedTotalFiatBalance } = useAccountTotalFiatBalance(
-    identity.address,
-  );
+  const { formattedTotalFiatBalance, hexTotalBalance } =
+    useAccountTotalFiatBalance(identity.address);
+  const balanceToTranslate = process.env.MULTICHAIN
+    ? hexTotalBalance
+    : identity.balance;
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -199,7 +201,7 @@ export const AccountListItem = ({
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={identity.balance}
+                value={balanceToTranslate}
                 type={PRIMARY}
               />
             </Text>
@@ -228,15 +230,11 @@ export const AccountListItem = ({
             textAlign={TextAlign.End}
             as="div"
           >
-            {process.env.MULTICHAIN ? (
-              formattedTotalFiatBalance
-            ) : (
-              <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={identity.balance}
-                type={SECONDARY}
-              />
-            )}
+            <UserPreferencedCurrencyDisplay
+              ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+              value={balanceToTranslate}
+              type={SECONDARY}
+            />
           </Text>
         </Box>
         {label ? (
