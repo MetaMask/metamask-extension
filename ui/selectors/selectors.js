@@ -649,6 +649,11 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+/**
+ * @deprecated - use getTestNetworks to retrieve image URLs for test
+ * network icons.
+ * @param {object} state - redux state object
+ */
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = state.metamask.providerConfig.ticker;
   switch (true) {
