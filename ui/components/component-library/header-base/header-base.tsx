@@ -63,6 +63,10 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
         return {
           marginLeft: `${accessoryMinWidth}px`,
         };
+      } else if (startAccessory && endAccessory && accessoryMinWidth) {
+        return {
+          maxWidth: `calc(100% - ${accessoryMinWidth * 2}px)`,
+        };
       }
       return {};
     }, [accessoryMinWidth, startAccessory, endAccessory]);
