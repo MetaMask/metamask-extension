@@ -218,7 +218,7 @@ export default function CreatePassword({
       </Text>
       <Text
         variant={TextVariant.headingSm}
-        align={TextAlign.Center}
+        textAlign={TextAlign.Center}
         fontWeight={FontWeight.Normal}
       >
         {t('passwordSetupDetails')}
