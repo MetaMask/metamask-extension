@@ -1471,7 +1471,7 @@ export default class TransactionController extends EventEmitter {
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
       fromAddress,
-      txMeta.custodyStatus ? txMeta : undefined,
+      this._shouldDisablePublish(txMeta) ? txMeta : undefined,
     );
 
     if (this._shouldDisablePublish(txMeta, signedEthTx)) {

@@ -5006,6 +5006,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} txMeta - The transaction meta.
    * @param signedEthTx - Signed ethereum transaction.
    */
+  // eslint-disable-next-line no-unused-vars
   _shouldDisablePublish(txMeta, signedEthTx) {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
