@@ -44,7 +44,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getShouldShowFiat, getUseBlockie } from '../../../selectors';
+import { getUseBlockie } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -90,10 +90,9 @@ export const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
 
-  const { formattedTotalFiatBalance, hexTotalBalance } =
-    useAccountTotalFiatBalance(identity.address);
+  const { totalWeiBalance } = useAccountTotalFiatBalance(identity.address);
   const balanceToTranslate = process.env.MULTICHAIN
-    ? hexTotalBalance
+    ? totalWeiBalance
     : identity.balance;
 
   // If this is the selected item in the Account menu,

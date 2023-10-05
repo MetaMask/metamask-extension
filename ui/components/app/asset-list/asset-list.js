@@ -83,12 +83,8 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const {
-    tokensWithBalances,
-    totalFiatBalance,
-    formattedTotalFiatBalance,
-    loading,
-  } = useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
+  const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
+    useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
 
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -101,10 +97,7 @@ const AssetList = ({ onClickAsset }) => {
   return (
     <>
       {process.env.MULTICHAIN ? (
-        <BalanceOverview
-          balance={formattedTotalFiatBalance}
-          loading={loading}
-        />
+        <BalanceOverview balance={totalWeiBalance} loading={loading} />
       ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (

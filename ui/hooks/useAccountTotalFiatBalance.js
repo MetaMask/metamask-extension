@@ -7,10 +7,8 @@ import {
   getTokenExchangeRates,
 } from '../selectors';
 import {
-  decWEIToDecETH,
-  decimalToHex,
   getValueFromWeiHex,
-  hexWEIToDecETH,
+  getWeiHexFromDecimalValue,
   sumDecimals,
 } from '../../shared/modules/conversion.utils';
 import { getConversionRate } from '../ducks/metamask/metamask';
@@ -51,8 +49,6 @@ export const useAccountTotalFiatBalance = (
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
 
-  console.log("tokensWithBalances: ", tokensWithBalances);
-
   // Create fiat values for token balances
   const tokenFiatBalances = tokensWithBalances.map((token) => {
     const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
@@ -76,20 +72,6 @@ export const useAccountTotalFiatBalance = (
     return totalFiatValue;
   });
 
-  const totalEthBalances = tokensWithBalances.map((token) => {
-    const eth = decWEIToDecETH(token.balance);
-    console.log(`ETH value of ${token.balance} is: `, eth);
-    return eth;
-  });
-  const totalEthBalance = sumDecimals(
-    hexWEIToDecETH(balance),
-    ...totalEthBalances,
-  ).toString(10);
-
-  console.log('hexWEIToDecETH(balance): ', hexWEIToDecETH(balance));
-  console.log('totalEthBalances: ', totalEthBalances);
-  console.log("totalEthBalance is: ", totalEthBalance);
-
   // Total native and token fiat balance as a string (ex: "8.90")
   const totalFiatBalance = sumDecimals(
     nativeFiat,
@@ -97,21 +79,20 @@ export const useAccountTotalFiatBalance = (
   ).toString(10);
 
   // Fiat balance formatted in user's desired currency (ex: "$8.90")
-  const formattedTotalFiatBalance = formatCurrency(
-    totalFiatBalance,
-    currentCurrency,
-  );
+  const formattedFiat = formatCurrency(totalFiatBalance, currentCurrency);
 
-  // Balance converted to hex for ETH representation
-  const hexTotalBalance = decimalToHex(Number(totalFiatBalance));
-
-  console.log('totalFiatBalance is: ', totalFiatBalance);
-  console.log('hexTotalBalance is: ', hexTotalBalance);
+  // WEI Number which can be used with UserPreferencedCurrencyDisplay component
+  const totalWeiBalance = getWeiHexFromDecimalValue({
+    value: totalFiatBalance,
+    fromCurrency: currentCurrency,
+    conversionRate,
+    invertConversionRate: true,
+  });
 
   return {
-    formattedTotalFiatBalance,
+    formattedFiat,
+    totalWeiBalance,
     totalFiatBalance,
-    hexTotalBalance,
     tokensWithBalances,
     loading,
   };
