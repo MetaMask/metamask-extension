@@ -69,11 +69,11 @@ async function main(): Promise<void> {
   // nor to retrieve the list of organisations a user belongs to.
   // In our case, we may want to create "regression-prod-x.y.z" label when it doesn't already exist.
   // We may also want to retrieve the list of organisations a user belongs to.
-  // As a consequence, we need to create our own "REGRESSION_PROD_LABEL_TOKEN" with "repo" and "read:org" permissions.
+  // As a consequence, we need to create our own "LABEL_TOKEN" with "repo" and "read:org" permissions.
   // Such a token allows both to create new labels and fetch user's list of organisations.
-  const personalAccessToken = process.env.REGRESSION_PROD_LABEL_TOKEN;
+  const personalAccessToken = process.env.LABEL_TOKEN;
   if (!personalAccessToken) {
-    core.setFailed('REGRESSION_PROD_LABEL_TOKEN not found');
+    core.setFailed('LABEL_TOKEN not found');
     process.exit(1);
   }
 

@@ -1,4 +1,4 @@
-name: Add regression prod label to issue, in case it is a production bug
+name: Check issue template and add labels
 
 on:
   issues:
@@ -23,9 +23,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn --immutable
-          
-      - name: Add regression prod label to issue
-        id: add-regression-prod-label-to-issue
+
+      - name: Check issue template and add labels
+        id: check-issue-template-and-add-labels
         env:
-          REGRESSION_PROD_LABEL_TOKEN: ${{ secrets.REGRESSION_PROD_LABEL_TOKEN }}
-        run: npm run add-regression-prod-label-to-issue
+          LABEL_TOKEN: ${{ secrets.LABEL_TOKEN }}
+        run: npm run check-issue-template-and-add-labels
