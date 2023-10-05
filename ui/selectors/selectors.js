@@ -29,6 +29,8 @@ import {
   LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
+  GOERLI_TOKEN_IMAGE_URL,
+  SEPOLIA_TOKEN_IMAGE_URL,
   LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
@@ -1283,6 +1285,9 @@ export function getTestNetworks(state) {
       chainId: CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+      rpcPrefs: {
+        imageUrl: GOERLI_TOKEN_IMAGE_URL,
+      },
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
       id: NETWORK_TYPES.GOERLI,
@@ -1292,6 +1297,9 @@ export function getTestNetworks(state) {
       chainId: CHAIN_IDS.SEPOLIA,
       nickname: SEPOLIA_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+      rpcPrefs: {
+        imageUrl: SEPOLIA_TOKEN_IMAGE_URL,
+      },
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
       id: NETWORK_TYPES.SEPOLIA,
