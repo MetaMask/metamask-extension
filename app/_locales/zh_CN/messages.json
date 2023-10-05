@@ -611,18 +611,9 @@
   "busy": {
     "message": "忙碌中"
   },
-  "buy": {
-    "message": "购买"
-  },
   "buyAsset": {
     "message": "购买$1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "继续持有加密货币，赚取潜在利润"
-  },
-  "buyDisabled": {
-    "message": "在此网络中无法购买"
   },
   "buyMoreAsset": {
     "message": "购买更多$1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "关闭账户私钥助记词备份提醒"
   },
-  "displayNftMedia": {
-    "message": "显示NFT媒体"
-  },
   "domain": {
     "message": "域"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
+  },
+  "enableOpenSeaAPI": {
+    "message": "启用 OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
   "enableSmartSwaps": {
     "message": "启用智能兑换"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "实验性"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "探索 MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "扩展钱包体验。"
+    "message": "扩展钱包体验。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部扩展程序"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "允许snap使用生命周期挂钩在其生命周期的特定时间运行代码。",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "无限期运行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "允许snap无限期运行，例如在处理大量数据时。",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "添加并控制以太坊账户",

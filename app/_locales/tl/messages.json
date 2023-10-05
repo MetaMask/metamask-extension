@@ -611,18 +611,9 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Bumili"
-  },
   "buyAsset": {
     "message": "Bumili ng $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "I-hold ang iyong crypto at makaipon ng potensyal na tubo"
-  },
-  "buyDisabled": {
-    "message": "Hindi available ang pagbili sa network na ito"
   },
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "I-dismiss ang back up na paalala ng Lihim na Parirala sa Pagbawi"
   },
-  "displayNftMedia": {
-    "message": "Ipakita ang NFT media"
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Paganahin sa OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
   "enableSmartSwaps": {
     "message": "Paganahin ang mga smart swap"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Galugarin ang MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "I-customize ang iyong karanasan sa wallet."
+    "message": "I-customize ang iyong karanasan sa wallet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "External Extension"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Pinapayagan ang snap na gumamit ng mga lifecycle hook para paganahin ang code sa mga espisipikong panahon sa oras ng lifecycle nito.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Patakbuhin ng walang katapusan.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Payagan ang snap para gumana nang walang limitasyon sa tagal habang, halimbawa, nagpoproseso ng maraming data.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Magdagdag at kontrolin ang mga Ethereum account",

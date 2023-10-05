@@ -611,18 +611,9 @@
   "busy": {
     "message": "Đang bận"
   },
-  "buy": {
-    "message": "Mua"
-  },
   "buyAsset": {
     "message": "Mua $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Giữ tiền mã hóa và kiếm lợi nhuận tiềm năng"
-  },
-  "buyDisabled": {
-    "message": "Mua không khả dụng trong mạng này"
   },
   "buyMoreAsset": {
     "message": "Mua thêm $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Tắt lời nhắc sao lưu Cụm từ khôi phục bí mật"
   },
-  "displayNftMedia": {
-    "message": "Hiển thị phương tiện NFT"
-  },
   "domain": {
     "message": "Tên miền"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Bật API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
   },
   "enableSmartSwaps": {
     "message": "Kích hoạt hoán đổi thông minh"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Thử nghiệm"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Khám phá MetaMask Snap"
-  },
   "extendWalletWithSnaps": {
-    "message": "Tuỳ biến trải nghiệm sử dụng ví."
+    "message": "Tuỳ biến trải nghiệm sử dụng ví.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Tiện ích bên ngoài"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Cho phép Snap sử dụng hook vòng đời để chạy mã vào những thời điểm cụ thể trong vòng đời của nó.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Chạy không giới hạn.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Ví dụ: cho phép Snap chạy vô thời hạn trong quá trình xử lý lượng lớn dữ liệu.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Thêm và kiểm soát các tài khoản Ethereum",

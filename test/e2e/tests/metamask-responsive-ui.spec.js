@@ -8,7 +8,7 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
-  it('Creating a new wallet', async function () {
+  it('Creating a new wallet @no-mmi', async function () {
     const driverOptions = { openDevToolsForTabs: true };
 
     await withFixtures(
