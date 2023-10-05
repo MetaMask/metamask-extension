@@ -16,6 +16,48 @@ interface Labelable {
   }[];
 }
 
+// An enum, to categorise issues, based on template it matches
+enum IssueType {
+  GeneralIssue,
+  BugReport,
+  None,
+}
+
+// Titles of our two issues templates ('general-issue.yml' and 'bug-report.yml' issue)
+const generalIssueTemplateTitles = [
+  '### What is this about?',
+  '### Scenario',
+  '### Design',
+  '### Technical Details',
+  '### Threat Modeling Framework',
+  '### Acceptance Criteria',
+  '### References',
+];
+const bugReportTemplateTitles = [
+  '### Describe the bug',
+  '### Expected behavior',
+  '### Screenshots',
+  '### Steps to reproduce',
+  '### Error messages or log output',
+  '### Version',
+  '### Build type',
+  '### Browser',
+  '### Operating system',
+  '### Hardware wallet',
+  '### Additional context',
+  '### Severity'
+];
+
+// External contributor label
+const externalContributorLabelName = `external-contributor`;
+const externalContributorLabelColor = 'B60205'; // red
+const externalContributorLabelDescription = `Issue or PR created by user outside MetaMask organisation`;
+
+// Craft invalid issue template label
+const invalidIssueTemplateLabelName = `INVALID-ISSUE-TEMPLATE`;
+const invalidIssueTemplateLabelColor = 'B60205'; // red
+const invalidIssueTemplateLabelDescription = `Issue's body doesn't match any issue template.`;
+
 main().catch((error: Error): void => {
   console.error(error);
   process.exit(1);
@@ -45,76 +87,84 @@ async function main(): Promise<void> {
   }
 
   // Initialise octokit, required to call Github GraphQL API
-  const octokit: InstanceType<typeof GitHub> = getOctokit(
-    personalAccessToken,
-    {
-      previews: ["bane"], // The "bane" preview is required for adding, updating, creating and deleting labels.
-    },
-  );
+  const octokit: InstanceType<typeof GitHub> = getOctokit(personalAccessToken, {
+    previews: ['bane'], // The "bane" preview is required for adding, updating, creating and deleting labels.
+  });
 
   // Retrieve issue
-  const issue: Labelable = await retrieveIssue(octokit, issueRepoOwner, issueRepoName, issueNumber);
+  const issue: Labelable = await retrieveIssue(
+    octokit,
+    issueRepoOwner,
+    issueRepoName,
+    issueNumber,
+  );
 
-  // Retrieve issue's author list of organisations
-  const orgs: string[] = await retrieveUserOrgs(octokit, issue?.author);
+  // Add external contributor label to the issue, in case author is not part of the MetaMask organisation
+  await addExternalContributorLabel(octokit, issue);
 
-  // Add external contributor label to the issue if author is not part of the MetaMask organisation
-  if (!orgs.includes('MetaMask')) {
-    // Craft external contributor label to add
-    const externalContributorLabelName = `external-contributor`;
-    const externalContributorLabelColor = 'B60205'; // red
-    const externalContributorLabelDescription = `Issue or PR created by user outside MetaMask organisation`;
+  // Check if issue's body matches one of the two issues templates ('general-issue.yml' or 'bug-report.yml')
+  const issueType: IssueType = extractIssueTypeFromIssueBody(issue.body);
 
-    // Add external contributor label to the issue
-    await addLabelToLabelable(octokit, issue, externalContributorLabelName, externalContributorLabelColor, externalContributorLabelDescription);
+  if (issueType === IssueType.GeneralIssue) {
+    console.log("Issue matches 'general-issue.yml' template.");
+    await removeInvalidIssueTemplateLabelIfPresent(octokit, issue);
+  } else if (issueType === IssueType.BugReport) {
+    console.log("Issue matches 'bug-report.yml' template.");
+    await removeInvalidIssueTemplateLabelIfPresent(octokit, issue);
+
+    // Extract release version from issue body (is existing)
+    const releaseVersion = extractReleaseVersionFromIssueBody(issue.body);
+
+    // Add regression prod label to the issue if release version was found is issue body
+    if (releaseVersion) {
+      await addRegressionProdLabel(octokit, releaseVersion, issue);
+    } else {
+      console.log(
+        `No release version was found in body of issue ${issue?.number}.`,
+      );
+    }
+  } else {
+    const errorMessage =
+      "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').";
+    console.log(errorMessage);
+
+    // Add invalid issue template label to the issue, in case issue doesn't match any template
+    await addInvalidIssueTemplateLabel(octokit, issue);
+
+    // Github action shall fail in case issue doesn't match any template
+    throw new Error(errorMessage);
+  }
+}
+
+// This helper function checks if issue's body matches one of the two issues templates ('general-issue.yml' or 'bug-report.yml').
+function extractIssueTypeFromIssueBody(issueBody: string): IssueType {
+  let missingGeneralIssueTitle: boolean = false;
+  for (const title of generalIssueTemplateTitles) {
+    if (!issueBody.includes(title)) {
+      missingGeneralIssueTitle = true;
+    }
   }
 
-  // Extract release version from issue body (is existing)
-  const releaseVersion = extractReleaseVersionFromIssueBody(issue.body);
-
-  // Add regression prod label to the issue if release version was found is issue body
-  if (releaseVersion) {
-    // Craft regression prod label to add
-    const regressionProdLabelName = `regression-prod-${releaseVersion}`;
-    const regressionProdLabelColor = '5319E7'; // violet
-    const regressionProdLabelDescription = `Regression bug that was found in production in release ${releaseVersion}`;
-
-    let regressionProdLabelFound: boolean = false;
-    const regressionProdLabelsToBeRemoved: {
-      id: string;
-      name: string;
-    }[] = [];
-
-    // Loop over issue's labels, to see if regression labels are either missing, or to be removed
-    issue?.labels?.forEach(label => {
-      if (label?.name === regressionProdLabelName) {
-        regressionProdLabelFound = true;
-      } else if (label?.name?.startsWith('regression-prod-')) {
-        regressionProdLabelsToBeRemoved.push(label);
-      }
-    });
-
-    // Add regression prod label to the issue if missing
-    if (regressionProdLabelFound) {
-      console.log(`Issue ${issue?.number} already has ${regressionProdLabelName} label.`);
-    } else {
-      console.log(`Add ${regressionProdLabelName} label to issue ${issue?.number}.`);
-      await addLabelToLabelable(octokit, issue, regressionProdLabelName, regressionProdLabelColor, regressionProdLabelDescription);
+  let missingBugReportTitle: boolean = false;
+  for (const title of bugReportTemplateTitles) {
+    if (!issueBody.includes(title)) {
+      missingBugReportTitle = true;
     }
+  }
 
-    // Remove other regression prod label from the issue
-    await Promise.all(
-      regressionProdLabelsToBeRemoved.map(label => {
-        removeLabelFromLabelable(octokit, issue, label?.id);
-      })
-    );
+  if (!missingGeneralIssueTitle) {
+    return IssueType.GeneralIssue;
+  } else if (!missingBugReportTitle) {
+    return IssueType.BugReport;
   } else {
-    console.log(`No release version was found in body of issue ${issue?.number}.`);
+    return IssueType.None;
   }
 }
 
 // This helper function checks if issue's body has a bug report format.
-function extractReleaseVersionFromIssueBody(issueBody: string): string | undefined {
+function extractReleaseVersionFromIssueBody(
+  issueBody: string,
+): string | undefined {
   // Remove newline characters
   const cleanedIssueBody = issueBody.replace(/\r?\n/g, ' ');
 
@@ -131,9 +181,116 @@ function extractReleaseVersionFromIssueBody(issueBody: string): string | undefin
   return version;
 }
 
-// This function retrieves the repo
-async function retrieveRepo(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string): Promise<string> {
+// This function adds the "external-contributor" label to the issue, in case author is not part of the MetaMask organisation
+async function addExternalContributorLabel(
+  octokit: InstanceType<typeof GitHub>,
+  issue: Labelable,
+): Promise<void> {
+  // Retrieve issue's author list of organisations
+  const orgs: string[] = await retrieveUserOrgs(octokit, issue?.author);
 
+  // If author is not part of the MetaMask organisation
+  if (!orgs.includes('MetaMask')) {
+    // Add external contributor label to the issue
+    await addLabelToLabelable(
+      octokit,
+      issue,
+      externalContributorLabelName,
+      externalContributorLabelColor,
+      externalContributorLabelDescription,
+    );
+  }
+}
+
+// This function adds the correct "regression-prod-x.y.z" label to the issue, and removes other ones
+async function addRegressionProdLabel(
+  octokit: InstanceType<typeof GitHub>,
+  releaseVersion: string,
+  issue: Labelable,
+): Promise<void> {
+  // Craft regression prod label to add
+  const regressionProdLabelName = `regression-prod-${releaseVersion}`;
+  const regressionProdLabelColor = '5319E7'; // violet
+  const regressionProdLabelDescription = `Regression bug that was found in production in release ${releaseVersion}`;
+
+  let regressionProdLabelFound: boolean = false;
+  const regressionProdLabelsToBeRemoved: {
+    id: string;
+    name: string;
+  }[] = [];
+
+  // Loop over issue's labels, to see if regression labels are either missing, or to be removed
+  issue?.labels?.forEach((label) => {
+    if (label?.name === regressionProdLabelName) {
+      regressionProdLabelFound = true;
+    } else if (label?.name?.startsWith('regression-prod-')) {
+      regressionProdLabelsToBeRemoved.push(label);
+    }
+  });
+
+  // Add regression prod label to the issue if missing
+  if (regressionProdLabelFound) {
+    console.log(
+      `Issue ${issue?.number} already has ${regressionProdLabelName} label.`,
+    );
+  } else {
+    console.log(
+      `Add ${regressionProdLabelName} label to issue ${issue?.number}.`,
+    );
+    await addLabelToLabelable(
+      octokit,
+      issue,
+      regressionProdLabelName,
+      regressionProdLabelColor,
+      regressionProdLabelDescription,
+    );
+  }
+
+  // Remove other regression prod label from the issue
+  await Promise.all(
+    regressionProdLabelsToBeRemoved.map((label) => {
+      removeLabelFromLabelable(octokit, issue, label?.id);
+    }),
+  );
+}
+
+// This function adds the "INVALID-ISSUE-TEMPLATE" label to the issue
+async function addInvalidIssueTemplateLabel(
+  octokit: InstanceType<typeof GitHub>,
+  issue: Labelable,
+): Promise<void> {
+  // Add label to issue
+  await addLabelToLabelable(
+    octokit,
+    issue,
+    invalidIssueTemplateLabelName,
+    invalidIssueTemplateLabelColor,
+    invalidIssueTemplateLabelDescription,
+  );
+}
+
+// This function removes the "INVALID-ISSUE-TEMPLATE" label from the issue, in case it's present
+async function removeInvalidIssueTemplateLabelIfPresent(
+  octokit: InstanceType<typeof GitHub>,
+  issue: Labelable,
+): Promise<void> {
+  // Check if label is present on issue
+  const label = issue?.labels?.find(
+    (label) => label.name === invalidIssueTemplateLabelName,
+  );
+
+  if (label?.id) {
+    // Remove label from issue
+    await removeLabelFromLabelable(octokit, issue, label.id);
+  }
+}
+
+// This function retrieves the repo
+async function retrieveRepo(
+  octokit: InstanceType<typeof GitHub>,
+  repoOwner: string,
+  repoName: string,
+): Promise<string> {
   const retrieveRepoQuery = `
   query RetrieveRepo($repoOwner: String!, $repoName: String!) {
     repository(owner: $repoOwner, name: $repoName) {
@@ -157,8 +314,12 @@ async function retrieveRepo(octokit: InstanceType<typeof GitHub>, repoOwner: str
 }
 
 // This function retrieves the label on a specific repo
-async function retrieveLabel(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string, labelName: string): Promise<string> {
-
+async function retrieveLabel(
+  octokit: InstanceType<typeof GitHub>,
+  repoOwner: string,
+  repoName: string,
+  labelName: string,
+): Promise<string> {
   const retrieveLabelQuery = `
     query RetrieveLabel($repoOwner: String!, $repoName: String!, $labelName: String!) {
       repository(owner: $repoOwner, name: $repoName) {
@@ -187,8 +348,13 @@ async function retrieveLabel(octokit: InstanceType<typeof GitHub>, repoOwner: st
 }
 
 // This function creates the label on a specific repo
-async function createLabel(octokit: InstanceType<typeof GitHub>, repoId: string, labelName: string, labelColor: string, labelDescription: string): Promise<string> {
-
+async function createLabel(
+  octokit: InstanceType<typeof GitHub>,
+  repoId: string,
+  labelName: string,
+  labelColor: string,
+  labelDescription: string,
+): Promise<string> {
   const createLabelMutation = `
     mutation CreateLabel($repoId: ID!, $labelName: String!, $labelColor: String!, $labelDescription: String) {
       createLabel(input: {repositoryId: $repoId, name: $labelName, color: $labelColor, description: $labelDescription}) {
@@ -218,8 +384,14 @@ async function createLabel(octokit: InstanceType<typeof GitHub>, repoId: string,
 }
 
 // This function creates or retrieves the label on a specific repo
-async function createOrRetrieveLabel(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string, labelName: string, labelColor: string, labelDescription: string): Promise<string> {
-
+async function createOrRetrieveLabel(
+  octokit: InstanceType<typeof GitHub>,
+  repoOwner: string,
+  repoName: string,
+  labelName: string,
+  labelColor: string,
+  labelDescription: string,
+): Promise<string> {
   // Check if label already exists on the repo
   let labelId = await retrieveLabel(octokit, repoOwner, repoName, labelName);
 
@@ -229,15 +401,25 @@ async function createOrRetrieveLabel(octokit: InstanceType<typeof GitHub>, repoO
     const repoId = await retrieveRepo(octokit, repoOwner, repoName);
 
     // Create label on repo
-    labelId = await createLabel(octokit, repoId, labelName, labelColor, labelDescription);
+    labelId = await createLabel(
+      octokit,
+      repoId,
+      labelName,
+      labelColor,
+      labelDescription,
+    );
   }
 
   return labelId;
 }
 
 // This function retrieves the issue on a specific repo
-async function retrieveIssue(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string, issueNumber: number): Promise<Labelable> {
-
+async function retrieveIssue(
+  octokit: InstanceType<typeof GitHub>,
+  repoOwner: string,
+  repoName: string,
+  issueNumber: number,
+): Promise<Labelable> {
   const retrieveIssueQuery = `
     query GetIssue($repoOwner: String!, $repoName: String!, $issueNumber: Int!) {
       repository(owner: $repoOwner, name: $repoName) {
@@ -265,13 +447,13 @@ async function retrieveIssue(octokit: InstanceType<typeof GitHub>, repoOwner: st
         body: string;
         author: {
           login: string;
-        }
+        };
         labels: {
           nodes: {
             id: string;
             name: string;
           }[];
-        }
+        };
       };
     };
   } = await octokit.graphql(retrieveIssueQuery, {
@@ -288,16 +470,28 @@ async function retrieveIssue(octokit: InstanceType<typeof GitHub>, repoOwner: st
     body: retrieveIssueResult?.repository?.issue?.body,
     author: retrieveIssueResult?.repository?.issue?.author?.login,
     labels: retrieveIssueResult?.repository?.issue?.labels?.nodes,
-  }
+  };
 
   return issue;
 }
 
 // This function adds label to a labelable object (i.e. a pull request or an issue)
-async function addLabelToLabelable(octokit: InstanceType<typeof GitHub>, labelable: Labelable, labelName: string, labelColor: string, labelDescription: string): Promise<void> {
-
+async function addLabelToLabelable(
+  octokit: InstanceType<typeof GitHub>,
+  labelable: Labelable,
+  labelName: string,
+  labelColor: string,
+  labelDescription: string,
+): Promise<void> {
   // Retrieve label from the labelable's repo, or create label if required
-  const labelId = await createOrRetrieveLabel(octokit, labelable?.repoOwner, labelable?.repoName, labelName, labelColor, labelDescription);
+  const labelId = await createOrRetrieveLabel(
+    octokit,
+    labelable?.repoOwner,
+    labelable?.repoName,
+    labelName,
+    labelColor,
+    labelDescription,
+  );
 
   const addLabelsToLabelableMutation = `
     mutation AddLabelsToLabelable($labelableId: ID!, $labelIds: [ID!]!) {
@@ -310,12 +504,15 @@ async function addLabelToLabelable(octokit: InstanceType<typeof GitHub>, labelab
   await octokit.graphql(addLabelsToLabelableMutation, {
     labelableId: labelable?.id,
     labelIds: [labelId],
-   });
-
+  });
 }
 
 // This function removes a label from a labelable object (i.e. a pull request or an issue)
-async function removeLabelFromLabelable(octokit: InstanceType<typeof GitHub>, labelable: Labelable, labelId: string): Promise<void> {
+async function removeLabelFromLabelable(
+  octokit: InstanceType<typeof GitHub>,
+  labelable: Labelable,
+  labelId: string,
+): Promise<void> {
   const removeLabelsFromLabelableMutation = `
     mutation RemoveLabelsFromLabelable($labelableId: ID!, $labelIds: [ID!]!) {
       removeLabelsFromLabelable(input: {labelableId: $labelableId, labelIds: $labelIds}) {
@@ -331,7 +528,10 @@ async function removeLabelFromLabelable(octokit: InstanceType<typeof GitHub>, la
 }
 
 // This function retrieves the list of organizations a specific user belongs to
-async function retrieveUserOrgs(octokit: InstanceType<typeof GitHub>, username: string): Promise<string[]> {
+async function retrieveUserOrgs(
+  octokit: InstanceType<typeof GitHub>,
+  username: string,
+): Promise<string[]> {
   const userOrgsQuery = `
     query UserOrgs($login: String!) {
       user(login: $login) {
@@ -349,13 +549,15 @@ async function retrieveUserOrgs(octokit: InstanceType<typeof GitHub>, username: 
       organizations: {
         nodes: {
           login: string;
-        }[]
-      }
-    }
+        }[];
+      };
+    };
   } = await octokit.graphql(userOrgsQuery, { login: username });
 
   // Extract the organization logins from the result
-  const orgs = retrieveUserOrgsResult.user.organizations.nodes.map((node: { login: string }) => node.login);
+  const orgs = retrieveUserOrgsResult.user.organizations.nodes.map(
+    (node: { login: string }) => node.login,
+  );
 
   return orgs;
 }
