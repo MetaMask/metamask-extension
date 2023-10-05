@@ -1,9 +1,9 @@
 const { strict: assert } = require('assert');
 const { keccak } = require('ethereumjs-util');
 const {
-  defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  defaultGanacheOptions,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
