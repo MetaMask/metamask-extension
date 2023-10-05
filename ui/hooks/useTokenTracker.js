@@ -1,16 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { shallowEqual, useSelector } from 'react-redux';
-import {
-  getCurrentChainId,
-  getCurrentCurrency,
-  getSelectedAddress,
-  getTokenExchangeRates,
-} from '../selectors';
+import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { SECOND } from '../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getConversionRate } from '../ducks/metamask/metamask';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function useTokenTracker({
@@ -23,13 +16,6 @@ export function useTokenTracker({
 
   const selectedAddress = useSelector(getSelectedAddress, shallowEqual);
   const userAddress = address ?? selectedAddress;
-
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
-    shallowEqual,
-  );
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
 
   const [loading, setLoading] = useState(() => tokens?.length >= 0);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
@@ -45,24 +31,6 @@ export function useTokenTracker({
       // TODO: improve this pattern for adding this field when we improve support for
       // EIP721 tokens.
       const matchingTokensWithIsERC721Flag = matchingTokens.map((token) => {
-        const contractExchangeTokenKey = Object.keys(
-          contractExchangeRates,
-        ).find((key) => isEqualCaseInsensitive(key, token.address));
-        const tokenExchangeRate =
-          (contractExchangeTokenKey &&
-            contractExchangeRates[contractExchangeTokenKey]) ??
-          0;
-
-        const totalFiatValue = getTokenFiatAmount(
-          tokenExchangeRate,
-          conversionRate,
-          currentCurrency,
-          token.string,
-          token.symbol,
-          false,
-          false,
-        );
-
         const additionalTokenData = memoizedTokens.find((t) =>
           isEqualCaseInsensitive(t.address, token.address),
         );
@@ -70,20 +38,13 @@ export function useTokenTracker({
           ...token,
           isERC721: additionalTokenData?.isERC721,
           image: additionalTokenData?.image,
-          totalFiatValue,
         };
       });
       setTokensWithBalances(matchingTokensWithIsERC721Flag);
       setLoading(false);
       setError(null);
     },
-    [
-      hideZeroBalanceTokens,
-      memoizedTokens,
-      contractExchangeRates,
-      conversionRate,
-      currentCurrency,
-    ],
+    [hideZeroBalanceTokens, memoizedTokens],
   );
 
   const showError = useCallback((err) => {
