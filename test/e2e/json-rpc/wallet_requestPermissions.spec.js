@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { defaultGanacheOptions, withFixtures } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  switchToNotificationWindow,
+  switchToOrOpenDapp,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('wallet_requestPermissions', function () {
@@ -24,14 +29,36 @@ describe('wallet_requestPermissions', function () {
         const requestPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_requestPermissions',
-          params: [{ eth_accounts: 0 }],
+          params: [{ eth_accounts: {} }],
         });
 
-        const requestPermissions = await driver.executeScript(
-          `return window.ethereum.request(${requestPermissionsRequest})`,
+        await driver.executeScript(
+          `window.ethereum.request(${requestPermissionsRequest})`,
         );
 
-        assert.strictEqual(requestPermissions, '');
+        await switchToNotificationWindow(driver);
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        await switchToOrOpenDapp(driver);
+
+        const getPermissionsRequest = JSON.stringify({
+          method: 'wallet_getPermissions',
+        });
+
+        const getPermissions = await driver.executeScript(
+          `return window.ethereum.request(${getPermissionsRequest})`,
+        );
+
+        assert.strictEqual(getPermissions[0].parentCapability, 'eth_accounts');
       },
     );
   });
