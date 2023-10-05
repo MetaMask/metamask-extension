@@ -1821,6 +1821,9 @@
   "goBack": {
     "message": "Go back"
   },
+  "goToSite": {
+    "message": "Go to site"
+  },
   "goerli": {
     "message": "Goerli test network"
   },
@@ -4157,6 +4160,12 @@
   "snapAccountCreated": {
     "message": "Your account is ready!"
   },
+  "snapAccountRedirectContinueInSiteTitle": {
+    "message": "Continue in site"
+  },
+  "snapAccountRedirectSiteDescription": {
+    "message": "You’ll need to finish signing on the $1 site:"
+  },
   "snapAccountRemoved": {
     "message": "Account removed"
   },
@@ -4291,6 +4300,9 @@
   },
   "snapUpdateSuccess": {
     "message": "Update complete"
+  },
+  "snapUrlIsBlocked": {
+    "message": "This Snap wants to take you to a blocked site. $1."
   },
   "snaps": {
     "message": "Snaps"
