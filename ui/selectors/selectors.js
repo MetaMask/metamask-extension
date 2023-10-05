@@ -723,6 +723,18 @@ export function getTargetSubjectMetadata(state, origin) {
   return metadata;
 }
 
+/**
+ * Retrieve registry data for requested Snap.
+ *
+ * @param state - Redux state object.
+ * @param snapId - ID of a Snap.
+ * @returns Object containing metadata stored in Snaps registry for requested Snap.
+ */
+export function getSnapRegistryData(state, snapId) {
+  const snapsRegistryData = state.metamask.database.verifiedSnaps;
+  return snapsRegistryData ? snapsRegistryData[snapId] : null;
+}
+
 export function getRpcPrefsForCurrentProvider(state) {
   const { rpcPrefs } = getProviderConfig(state);
   return rpcPrefs || {};
@@ -1645,6 +1657,10 @@ export function getCustomTokenAmount(state) {
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
 }
+
+export const useSafeChainsListValidationSelector = (state) => {
+  return state.metamask.useSafeChainsListValidation;
+};
 
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion

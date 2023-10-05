@@ -611,18 +611,9 @@
   "busy": {
     "message": "ビジー状態"
   },
-  "buy": {
-    "message": "購入"
-  },
   "buyAsset": {
     "message": "$1を購入",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "仮想通貨を保持して利益を得ます"
-  },
-  "buyDisabled": {
-    "message": "このネットワークでは購入できません"
   },
   "buyMoreAsset": {
     "message": "$1を追加購入",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "シークレットリカバリーフレーズのバックアップリマインダーを解除"
   },
-  "displayNftMedia": {
-    "message": "NFTメディアの表示"
-  },
   "domain": {
     "message": "ドメイン"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea APIを有効にする"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
   "enableSmartSwaps": {
     "message": "スマートスワップを有効にする"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "試験運用"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snapsを閲覧"
-  },
   "extendWalletWithSnaps": {
-    "message": "ウォレットのユーザー体験をカスタマイズします。"
+    "message": "ウォレットのユーザー体験をカスタマイズします。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部拡張機能"
@@ -3193,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "snapがライフサイクルフックを使用して、ライフサイクルの特定のタイミングでコードを実行することを許可します。",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "無期限で実行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "大きなデータの処理中など、snapが無期限で実行されることを許可します。",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "イーサリアムアカウントを追加して管理します",
