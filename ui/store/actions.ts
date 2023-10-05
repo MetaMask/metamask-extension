@@ -1166,10 +1166,10 @@ export function removeSnap(
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
     ///: END:ONLY_INCLUDE_IN
 
-    // Do not let failure to remove an account block the remove the snap
-    // The Snap keyring would still remove all the accounts when the snap is removed.
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     try {
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       if (isAccountsSnap) {
         const addresses: string[] = await submitRequestToBackground(
           'getAccountsBySnapId',
@@ -1179,13 +1179,9 @@ export function removeSnap(
           await submitRequestToBackground('removeAccount', [address]);
         }
       }
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-    ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    try {
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
@@ -4488,6 +4484,15 @@ export function hideKeyringRemovalResultModal() {
   return {
     type: actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT,
   };
+}
+
+export async function getSnapAccountsById(snapId: string): Promise<string[]> {
+  const addresses: string[] = await submitRequestToBackground(
+    'getAccountsBySnapId',
+    [snapId],
+  );
+
+  return addresses;
 }
 ///: END:ONLY_INCLUDE_IN
 

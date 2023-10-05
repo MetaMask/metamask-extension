@@ -7,6 +7,7 @@ const {
   openDapp,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
+  defaultGanacheOptions,
   sendTransaction,
   switchToNotificationWindow,
   switchToOrOpenDapp,
@@ -60,9 +61,14 @@ describe('Test Snap Account', function () {
     );
   });
 
-  it('will display the keyring snap account removal warning', async function () {
+  it.only('will display the keyring snap account removal warning', async function () {
     await withFixtures(
-      accountSnapFixtures(this.test.title),
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        failOnConsoleError: false,
+        title: this.test.title,
+      },
       async ({ driver }) => {
         await installSnapSimpleKeyring(driver, false);
 

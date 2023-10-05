@@ -33,7 +33,6 @@ export default function KeyringRemovalSnapWarning({
   keyringAccounts,
   onCancel,
   onClose,
-  onBack,
   onSubmit,
   isOpen,
 }: {
@@ -41,7 +40,6 @@ export default function KeyringRemovalSnapWarning({
   keyringAccounts: { name: string; address: string }[];
   onCancel: () => void;
   onClose: () => void;
-  onBack: () => void;
   onSubmit: () => void;
   isOpen: boolean;
 }) {

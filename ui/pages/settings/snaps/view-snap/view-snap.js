@@ -28,6 +28,7 @@ import {
   updateCaveat,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   showKeyringSnapRemovalModal,
+  getSnapAccountsById,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../store/actions';
 import {
@@ -37,7 +38,7 @@ import {
   getPermissionSubjects,
   getTargetSubjectMetadata,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  getKeyringSnapAccounts,
+  getMemoizedMetaMaskIdentities,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
@@ -65,6 +66,8 @@ function ViewSnap() {
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const [keyringAccounts, setKeyringAccounts] = useState([]);
+  const identities = useSelector(getMemoizedMetaMaskIdentities);
 
   useEffect(() => {
     if (!snap) {
@@ -94,7 +97,19 @@ function ViewSnap() {
   let isKeyringSnap = false;
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   isKeyringSnap = Boolean(subjects[snap?.id]?.permissions?.snap_manageAccounts);
-  const keyringAccounts = useSelector(getKeyringSnapAccounts);
+
+  useEffect(() => {
+    if (isKeyringSnap) {
+      (async () => {
+        const addresses = await getSnapAccountsById(snap.id);
+        const snapIdentities = Object.values(identities).filter((identity) =>
+          addresses.includes(identity.address.toLowerCase()),
+        );
+        setKeyringAccounts(snapIdentities);
+      })();
+    }
+  }, [snap?.id, identities, isKeyringSnap]);
+
   ///: END:ONLY_INCLUDE_IN
 
   const dispatch = useDispatch();
@@ -225,7 +240,6 @@ function ViewSnap() {
                 snapUrl={snap.url}
                 onCancel={() => setIsShowingRemoveWarning(false)}
                 onClose={() => setIsShowingRemoveWarning(false)}
-                onBack={() => setIsShowingRemoveWarning(false)}
                 onSubmit={async () => {
                   try {
                     await dispatch(removeSnap(snap.id));
