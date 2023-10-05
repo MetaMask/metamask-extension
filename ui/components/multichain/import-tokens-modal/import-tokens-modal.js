@@ -21,6 +21,7 @@ import {
   getMetaMaskIdentities,
   getRpcPrefsForCurrentProvider,
   getSelectedAddress,
+  getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
 } from '../../../selectors';
@@ -152,10 +153,11 @@ export const ImportTokensModal = ({ onClose }) => {
   // CONFIRMATION MODE
   const trackEvent = useContext(MetaMetricsContext);
   const pendingTokens = useSelector(getPendingTokens);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const handleAddTokens = useCallback(async () => {
     const addedTokenValues = Object.values(pendingTokens);
-    await dispatch(addImportedTokens(addedTokenValues));
+    await dispatch(addImportedTokens(addedTokenValues, networkClientId));
 
     const firstTokenAddress = addedTokenValues?.[0].address?.toLowerCase();
 
@@ -363,7 +365,7 @@ export const ImportTokensModal = ({ onClose }) => {
             <ButtonLink
               className="import-tokens-modal__nft-address-error-link"
               onClick={() => {
-                dispatch(showImportNftsModal());
+                dispatch(showImportNftsModal({ tokenAddress: address }));
                 onClose();
               }}
               color={TextColor.primaryDefault}
@@ -452,7 +454,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                 className="import-tokens-modal__autodetect"
                                 onClick={() => {
                                   history.push(
-                                    `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
+                                    `${SECURITY_ROUTE}#auto-detect-tokens`,
                                   );
                                   onClose();
                                 }}
@@ -505,11 +507,12 @@ export const ImportTokensModal = ({ onClose }) => {
                             <ButtonLink
                               type="link"
                               key="import-token-token-detection-announcement"
-                              onClick={() =>
+                              onClick={() => {
                                 history.push(
-                                  `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
-                                )
-                              }
+                                  `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                );
+                                onClose();
+                              }}
                             >
                               {t('inYourSettings')}
                             </ButtonLink>,

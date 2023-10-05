@@ -1,5 +1,5 @@
 import namehash from 'eth-ens-namehash';
-import Eth from 'ethjs-query';
+import Eth from '@metamask/ethjs-query';
 import EthContract from 'ethjs-contract';
 import contentHash from '@ensdomains/content-hash';
 import registryAbi from './contracts/registry';

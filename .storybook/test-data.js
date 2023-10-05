@@ -1062,12 +1062,6 @@ const state = {
     unapprovedEncryptionPublicKeyMsgCount: 0,
     unapprovedTypedMessages: {},
     unapprovedTypedMessagesCount: 0,
-    keyringTypes: [
-      KeyringType.imported,
-      KeyringType.hdKeyTree,
-      KeyringType.trezor,
-      KeyringType.ledger,
-    ],
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
@@ -1137,7 +1131,6 @@ const state = {
     lostIdentities: {},
     forgottenPassword: false,
     ipfsGateway: 'dweb.link',
-    infuraBlocked: false,
     migratedPrivacyMode: false,
     selectedAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     metaMetricsId:
