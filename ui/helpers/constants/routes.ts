@@ -70,6 +70,7 @@ const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-recovery-phrase';
 const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
 const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
+const MMI_ONBOARDING_COMPLETION_ROUTE = '/onboarding/account-completion';
 const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
@@ -276,6 +277,7 @@ export {
   ONBOARDING_CONFIRM_SRP_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  MMI_ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
