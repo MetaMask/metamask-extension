@@ -9,6 +9,16 @@ const {
 } = require('./tests/phishing-controller/mocks');
 
 /**
+ * The browser makes requests to domains within its own namespace for
+ * functionality specific to the browser. For example when running E2E tests in
+ * firefox the act of adding the extension from the firefox settins triggers
+ * a series of requests to various mozilla.net or mozilla.com domains. These
+ * are not requests that the extension itself makes.
+ */
+const browserAPIRequestDomains =
+  /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|gvt1\.com)$/iu;
+
+/**
  * @typedef {import('mockttp').Mockttp} Mockttp
  * @typedef {import('mockttp').MockedEndpoint} MockedEndpoint
  */
@@ -417,10 +427,14 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
    * Listen for requests and add the hostname to the privacy report if it did
    * not previously exist. This is used to track which hosts are requested
    * during the current test suite and used to ask for extra scrutiny when new
-   * hosts are added to the privacy-snapshot.json file.
+   * hosts are added to the privacy-snapshot.json file. We intentionally do not
+   * add hosts to the report that are requested as part of the browsers normal
+   * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
-    privacyReport.add(request.headers.host);
+    if (request.headers.host.match(browserAPIRequestDomains) === null) {
+      privacyReport.add(request.headers.host);
+    }
   });
 
   return { mockedEndpoint, getPrivacyReport };

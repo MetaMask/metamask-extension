@@ -161,7 +161,6 @@ async function withFixtures(options, testSuite) {
     // suite execution. If so, fail the test unless the
     // --update-privacy-snapshot was specified. In that case, update the
     // snapshot file.
-    console.log(process.env.BUILD_TYPE);
     const privacySnapshotRaw = readFileSync('./privacy-snapshot.json');
     const privacySnapshot = JSON.parse(privacySnapshotRaw);
     const privacyReport = getPrivacyReport();
