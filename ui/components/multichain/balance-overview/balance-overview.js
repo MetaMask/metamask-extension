@@ -35,9 +35,9 @@ import {
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
-import { PRIMARY } from '../../../helpers/constants/common';
-import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 ///: END:ONLY_INCLUDE_IN
+import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
+import { PRIMARY } from '../../../helpers/constants/common';
 
 export const BalanceOverview = ({ balance, loading }) => {
   const trackEvent = useContext(MetaMetricsContext);
