@@ -146,7 +146,7 @@ async function mockInfura(mockServer) {
       };
     });
 
-  // balanceOf (address) to BUSD
+  // balanceOf (address) to USDC
   await mockServer
     .forPost()
     .withJsonBodyIncluding({
@@ -171,7 +171,7 @@ async function mockInfura(mockServer) {
       };
     });
 
-  // get contract code BUSD
+  // get contract code USDC
   await mockServer
     .forPost()
     .withJsonBodyIncluding({
