@@ -30,6 +30,7 @@ describe('Import flow', function () {
         await unlockWallet(driver);
 
         // Token list is only on mainnet
+        await driver.waitForSelector('[data-testid="network-display"]');
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
 
