@@ -18,6 +18,10 @@ const {
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const BUSD_ADDRESS = '0x4fabb145d64652a948d72533023f6e7a623c7c53';
+const CONTRACT_ADDRESS = {
+  BalanceChecker: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
+  OffChainOracle: '0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b',
+};
 
 const mainnetProviderConfig = {
   providerConfig: {
@@ -29,7 +33,43 @@ const mainnetProviderConfig = {
 };
 
 async function mockInfura(mockServer) {
-  await mockServerJsonRpc(mockServer, [['eth_getBlockByNumber']]);
+  await mockServerJsonRpc(mockServer, [
+    [
+      'eth_call',
+      {
+        methodResultVariant: 'balanceChecker',
+        params: [{ to: CONTRACT_ADDRESS.BalanceChecker }],
+      },
+    ],
+    [
+      'eth_call',
+      {
+        methodResultVariant: 'offchainOracle',
+        params: [{ to: CONTRACT_ADDRESS.OffChainOracle }],
+      },
+    ],
+    [
+      'eth_call',
+      {
+        methodResultVariant: 'balance',
+        params: [{ to: BUSD_ADDRESS }],
+      },
+    ],
+    [
+      'eth_call',
+      {
+        methodResultVariant: 'balance',
+        params: [
+          {
+            accessList: [],
+            data: `0x70a082310000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e1`,
+            to: BUSD_ADDRESS,
+          },
+        ],
+      },
+    ],
+    ['eth_getBlockByNumber'],
+  ]);
 
   await mockServer
     .forPost()
@@ -154,31 +194,6 @@ async function mockInfura(mockServer) {
       };
     });
 
-  // balanceOf (address) to BUSD
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'eth_call',
-      params: [
-        {
-          accessList: [],
-          data: `0x70a082310000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e1`,
-          to: BUSD_ADDRESS,
-        },
-      ],
-    })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result:
-            '0x000000000000000000000000000000000000000000000000000000000001ea4c',
-        },
-      };
-    });
-
   // get contract code BUSD
   await mockServer
     .forPost()
@@ -244,44 +259,6 @@ async function mockInfura(mockServer) {
               bytes_signature: null,
             },
           ],
-        },
-      };
-    });
-
-  // balance checker
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'eth_call',
-      params: [{ to: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39' }],
-    })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result:
-            '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000091d6cb8fbf55100000000000000000000000000000000000000000000000000014e4d6652a8200000000000000000000000000000000000000000000000000001beca58919dc000000000000000000000000000000000000000000000000000177480e2c2667f0000000000000000000000000000000000000000000000000001d9ae54845818000000000000000000000000000000000000000000000000000009184e72a000',
-        },
-      };
-    });
-
-  // Balance of BUSD
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'eth_call',
-      params: [{ to: BUSD_ADDRESS }],
-    })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result:
-            '0x000000000000000000000000000000000000000000000000000000000001ea4c',
         },
       };
     });
