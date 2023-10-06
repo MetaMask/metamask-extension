@@ -262,7 +262,7 @@ const CustodyPage = () => {
         if (connectRequest && Object.keys(connectRequest).length) {
           const {
             token,
-            environment: custodianName,  // this is the env name
+            environment: custodianName, // this is the env name
             service: custodianType,
             apiUrl: custodianApiUrl,
           } = connectRequest;

@@ -455,7 +455,9 @@ export default class MMIController extends EventEmitter {
 
     const { custodians } = mmiConfiguration;
 
-    const custodian = custodians.find((item) => item.envName === custodianEnvName);
+    const custodian = custodians.find(
+      (item) => item.envName === custodianEnvName,
+    );
 
     if (!custodian) {
       return [];
@@ -482,7 +484,9 @@ export default class MMIController extends EventEmitter {
           !custodyAccountDetails ||
           custodyAccountDetails.custodianName !== custodianEnvName
         ) {
-          log.debug(`${address} does not belong to ${custodianEnvName} keyring`);
+          log.debug(
+            `${address} does not belong to ${custodianEnvName} keyring`,
+          );
           continue;
         }
 
