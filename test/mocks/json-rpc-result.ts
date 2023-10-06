@@ -1,8 +1,14 @@
+const MOCK_BLOCK_NUMBER = '0x116f841';
+
 export interface mockJsonRpcResultType {
   [methodName: string]: { [arbitraryVariantName: string]: any };
 }
 
 export const mockJsonRpcResult: mockJsonRpcResultType = {
+  eth_blockNumber: {
+    default: MOCK_BLOCK_NUMBER,
+  },
+
   eth_call: {
     balance:
       '0x000000000000000000000000000000000000000000000000000000000001ea4c',
@@ -35,7 +41,7 @@ export const mockJsonRpcResult: mockJsonRpcResultType = {
       mixHash:
         '0xdcf58909059bf2c21d9f84862e5f038b622443395b8e91a147353d0403019c6f',
       nonce: '0x0000000000000000',
-      number: '0x116f841',
+      number: MOCK_BLOCK_NUMBER,
       parentHash:
         '0x40bbc17240a659f2df8f3392a9d6d97f1ec60dd6407ee4553ddf40f32187a5cc',
       receiptsRoot:

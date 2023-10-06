@@ -34,6 +34,7 @@ const mainnetProviderConfig = {
 
 async function mockInfura(mockServer) {
   await mockServerJsonRpc(mockServer, [
+    ['eth_blockNumber'],
     [
       'eth_call',
       {
@@ -164,20 +165,6 @@ async function mockInfura(mockServer) {
             type: 'CALL',
             value: '0x0',
           },
-        },
-      };
-    });
-
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({ method: 'eth_blockNumber' })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result: '0x116fecf',
         },
       };
     });
