@@ -277,8 +277,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
       >
         <button
           class="button btn--rounded btn-primary btn--large"
-          role="button"
-          tabindex="0"
         >
           Disable Desktop App
         </button>

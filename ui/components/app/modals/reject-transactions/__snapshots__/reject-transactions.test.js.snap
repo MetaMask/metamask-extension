@@ -34,15 +34,11 @@ exports[`Reject Transactions Model should match snapshot 1`] = `
     >
       <button
         class="button btn--rounded btn-secondary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         [cancel]
       </button>
       <button
         class="button btn--rounded btn-primary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         [rejectAll]
       </button>
