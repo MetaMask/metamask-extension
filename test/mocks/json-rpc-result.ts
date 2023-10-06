@@ -9,6 +9,10 @@ export const mockJsonRpcResult: mockJsonRpcResultType = {
     default: MOCK_BLOCK_NUMBER,
   },
 
+  eth_estimateGas: {
+    default: '0x5cec',
+  },
+
   eth_call: {
     balance:
       '0x000000000000000000000000000000000000000000000000000000000001ea4c',
