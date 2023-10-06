@@ -105,9 +105,9 @@ export const SnapDelineator = ({
 SnapDelineator.propTypes = {
   snapName: PropTypes.string,
   type: PropTypes.string,
-  children: PropTypes.ReactNode,
   isCollapsable: PropTypes.bool,
   isCollapsed: PropTypes.bool,
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
+  children: PropTypes.node,
 };
