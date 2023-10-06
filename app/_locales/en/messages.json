@@ -246,6 +246,9 @@
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
   },
+  "addImportAccount": {
+    "message": "Add account or hardware wallet"
+  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -258,6 +261,9 @@
   "addNetworkTooltipWarning": {
     "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
     "description": "$1 is Learn more link"
+  },
+  "addNewAccount": {
+    "message": "Add a new account"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -626,6 +632,9 @@
   "busy": {
     "message": "Busy"
   },
+  "buy": {
+    "message": "Buy"
+  },
   "buyAndSell": {
     "message": "Buy & Sell"
   },
@@ -893,6 +902,9 @@
   },
   "continue": {
     "message": "Continue"
+  },
+  "continueMmiOnboarding": {
+    "message": "Continue MetaMask Institutional onboarding"
   },
   "contract": {
     "message": "Contract"
@@ -1607,8 +1619,20 @@
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
+  "extensionInsallCompleteDescription": {
+    "message": "Return to the MetaMask Institutional product onboarding to connect your custodial or self-custodial accounts."
+  },
+  "extensionInsallCompleteTitle": {
+    "message": "Extension install complete"
+  },
   "externalExtension": {
     "message": "External extension"
+  },
+  "externalNameSourcesSetting": {
+    "message": "Suggest address names"
+  },
+  "externalNameSourcesSettingDescription": {
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"
@@ -2015,6 +2039,12 @@
   "install": {
     "message": "Install"
   },
+  "installExtension": {
+    "message": "Install extension"
+  },
+  "installExtensionDescription": {
+    "message": "The institution-compliant version of the world's leading web3 wallet, MetaMask."
+  },
   "installOrigin": {
     "message": "Install origin"
   },
@@ -2379,6 +2409,9 @@
   "mmiNewNFTDetectedInNFTsTabMessage": {
     "message": "Let MetaMask Institutional automatically detect and display NFTs in your wallet."
   },
+  "mmiPasswordSetupDetails": {
+    "message": "This password will unlock your MetaMask Institutional extension only."
+  },
   "more": {
     "message": "more"
   },
@@ -2599,6 +2632,9 @@
   },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
+  },
+  "nftLearnMore": {
+    "message": "Learn more about NFTs"
   },
   "nftOptions": {
     "message": "NFT Options"
@@ -3133,6 +3169,9 @@
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
   },
+  "onboardingPinMmiExtensionLabel": {
+    "message": "Pin MetaMask Institutional"
+  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -3198,6 +3237,9 @@
   },
   "password": {
     "message": "Password"
+  },
+  "passwordMmiTermsWarning": {
+    "message": "I understand that MetaMask Institutional cannot recover this password for me. $1"
   },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
@@ -3425,6 +3467,12 @@
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
+  },
+  "pinExtensionDescription": {
+    "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
+  },
+  "pinExtensionTitle": {
+    "message": "Pin extension"
   },
   "pleaseConfirm": {
     "message": "Please confirm"
@@ -3939,6 +3987,9 @@
     "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
+  "sendingZeroAmount": {
+    "message": "You are sending 0 $1."
+  },
   "sepolia": {
     "message": "Sepolia test network"
   },
@@ -3960,6 +4011,9 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
+  },
+  "settingsSubHeadingSignatures": {
+    "message": "Signature requests"
   },
   "show": {
     "message": "Show"
@@ -4241,6 +4295,10 @@
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
+  },
+  "somethingDoesntLookRight": {
+    "message": "Something doesn't look right? $1",
+    "description": "A false positive message for users to contact support. $1 is a link to the support page."
   },
   "somethingIsWrong": {
     "message": "Something's gone wrong. Try reloading the page."
