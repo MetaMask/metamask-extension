@@ -92,7 +92,9 @@ export function useTransactionInsightSnaps({
     if (transaction) {
       fetchInsight();
     }
-    return () => (cancelled = true);
+    return () => {
+      cancelled = true;
+    };
   }, [
     transaction,
     chainId,

@@ -78,8 +78,6 @@ const useTransactionInsights = ({ txData }) => {
       (promise) => promise?.snapId === selectedInsightSnapId,
     );
 
-    console.log(data, selectedSnap);
-
     insightComponent = (
       <DropdownTab
         className="confirm-page-container-content__tab"

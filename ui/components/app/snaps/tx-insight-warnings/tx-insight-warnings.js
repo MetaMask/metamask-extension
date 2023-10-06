@@ -124,13 +124,13 @@ export default function TxInsightWarnings({
           </Text>
         </ModalHeader>
         <Text variant={TextVariant.bodyMd} paddingBottom={4}>
-          {warnings.length > 1
-            ? t('transactionInsightWarningContentPlural', [
-                warnings.length,
+          {warnings.length === 1
+            ? t('transactionInsightWarningContentSingular', [
                 type,
                 results[type].noun,
               ])
-            : t('transactionInsightWarningContentSingular', [
+            : t('transactionInsightWarningContentPlural', [
+                warnings.length,
                 type,
                 results[type].noun,
               ])}

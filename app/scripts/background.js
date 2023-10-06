@@ -487,7 +487,7 @@ export function setupController(
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {
       ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-      txInsightV2: true,
+      snapsTransactionInsightsV2: true,
       ///: END:ONLY_INCLUDE_IN
     },
   });

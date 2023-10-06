@@ -2017,7 +2017,7 @@ export default class MetamaskController extends EventEmitter {
     // We're not tracking transaction insights at this point in Flask because we eagerly fetch insights in v2.
     if (
       args.handler !== HandlerType.OnTransaction &&
-      !this.featureFlags.txInsightV2
+      !this.featureFlags.snapsTransactionInsightsV2
     ) {
       this._trackSnapExportUsage(args.snapId, args.handler);
     }
