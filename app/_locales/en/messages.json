@@ -358,6 +358,9 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allButtonLink": {
+    "message": "All"
+  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -2403,6 +2406,15 @@
   },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
+  },
+  "metamaskNotConnected1": {
+    "message": "MetaMask isn’t connected to this site."
+  },
+  "metamaskNotConnected2": {
+    "message": "To connect to a web3 site, find and click"
+  },
+  "metamaskNotConnected3": {
+    "message": "connect"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."

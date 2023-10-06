@@ -8,11 +8,13 @@ import {
   JustifyContent,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const Connections = () => {
-  // TODO use translations here
+  const t = useI18nContext();
   return (
     <Box
+      data-testid="site-not-connected"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.center}
@@ -20,11 +22,11 @@ export const Connections = () => {
       height={BlockSize.Full}
       gap={2}
     >
-      <Text>MetaMask isn’t connected to this site</Text>
+      <Text>{t('metamaskNotConnected1')}</Text>
       <Text color={TextColor.textAlternative}>
-        To connect to a web3 site, find and click{' '}
+        {t('metamaskNotConnected2')}{' '}
         <Text color={TextColor.textAlternative} as="strong">
-          connect
+          {t('metamaskNotConnected3')}
         </Text>
       </Text>
     </Box>
