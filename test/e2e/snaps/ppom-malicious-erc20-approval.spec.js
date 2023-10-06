@@ -68,6 +68,7 @@ async function mockInfura(mockServer) {
         ],
       },
     ],
+    ['eth_gasPrice'],
     ['eth_getBalance'],
     ['eth_getBlockByNumber'],
   ]);
@@ -210,20 +211,6 @@ async function mockInfura(mockServer) {
           jsonrpc: '2.0',
           id: req.body.json.id,
           result: '0x5cec',
-        },
-      };
-    });
-
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({ method: 'eth_gasPrice' })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result: '0x09184e72a000',
         },
       };
     });

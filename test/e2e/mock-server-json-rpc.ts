@@ -22,7 +22,6 @@ const DEFAULT_VARIANT = 'default';
  * @example
  * ```
  *  await mockServerJsonRpc(mockServer, [
- *    ['eth_getBlockByNumber']
  *    ['eth_call', {
  *      methodResultVariant: 'balanceChecker',
  *      params: [{to :'0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b'}],
@@ -34,6 +33,7 @@ const DEFAULT_VARIANT = 'default';
  *    ['eth_getBalance', {
  *      result: '0x27d17a5b79f77509541',
  *    }],
+ *    ['eth_gasPrice],
  *    ['eth_getBlockByNumber']
  *  ]);
  * ```
