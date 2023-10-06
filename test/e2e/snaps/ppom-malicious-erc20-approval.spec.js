@@ -325,13 +325,14 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
           css: bannerAlertSelector,
           text: expectedTitle,
         });
+        const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
         assert(
           bannerAlertFoundByTitle,
           `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: approval_farming\n`,
         );
         assert(
-          bannerAlertFoundByTitle.includes(expectedDescription),
+          bannerAlertText.includes(expectedDescription),
           `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: approval_farming\n`,
         );
       },
