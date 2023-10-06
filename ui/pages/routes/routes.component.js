@@ -36,7 +36,6 @@ import {
   ImportTokensModal,
   SelectActionModal,
   AppFooter,
-  ConnectionsHeader,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -406,17 +405,6 @@ export default class Routes extends Component {
     );
   }
 
-  showConnectionHeader() {
-    const { location } = this.props;
-
-    return Boolean(
-      matchPath(location.pathname, {
-        path: CONNECTIONS,
-        exact: true,
-      }),
-    );
-  }
-
   onEditTransactionPage() {
     return (
       this.props.sendStage === SEND_STAGES.EDIT ||
@@ -466,7 +454,12 @@ export default class Routes extends Component {
       return true;
     }
 
-    const isConnectionsPage = this.showConnectionHeader();
+    const isConnectionsPage = Boolean(
+      matchPath(location.pathname, {
+        path: CONNECTIONS,
+        exact: true,
+      }),
+    );
 
     if (isConnectionsPage) {
       return true;
@@ -627,9 +620,6 @@ export default class Routes extends Component {
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && <AppHeader location={location} />}
-        {this.showConnectionHeader() && (
-          <ConnectionsHeader location={location} />
-        )}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
