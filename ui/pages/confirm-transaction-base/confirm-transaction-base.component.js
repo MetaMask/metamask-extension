@@ -55,7 +55,9 @@ import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { KeyringType } from '../../../shared/constants/keyring';
+///: END:ONLY_INCLUDE_IN
 import { isHardwareKeyring } from '../../helpers/utils/hardware';
 
 export default class ConfirmTransactionBase extends Component {
