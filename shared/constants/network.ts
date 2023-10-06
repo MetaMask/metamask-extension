@@ -653,10 +653,6 @@ export const BUYABLE_CHAINS_MAP: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'linea',
   },
-  [CHAIN_IDS.ZKSYNC_ERA]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: 'zksync',
-  },
 };
 
 export const FEATURED_RPCS: RPCDefinition[] = [
