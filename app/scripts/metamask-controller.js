@@ -141,9 +141,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { UI_INSTITUTIONAL_NOTIFICATIONS } from '../../shared/notifications/institutional';
-///: END:ONLY_INCLUDE_IN
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -743,15 +740,9 @@ export default class MetamaskController extends EventEmitter {
       name: 'AnnouncementController',
     });
 
-    let allAnnouncements = UI_NOTIFICATIONS;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    allAnnouncements = UI_INSTITUTIONAL_NOTIFICATIONS;
-    ///: END:ONLY_INCLUDE_IN
-
     this.announcementController = new AnnouncementController({
       messenger: announcementMessenger,
-      allAnnouncements,
+      allAnnouncements: UI_NOTIFICATIONS,
       state: initState.AnnouncementController,
     });
 
@@ -772,26 +763,23 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.store,
           ),
       },
-      {
-        disabled:
-          !this.preferencesController.store.getState().useCurrencyRateCheck,
-      },
+      {},
       initState.TokenRatesController,
     );
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.tokenRatesController.start();
+    }
+
     this.preferencesController.store.subscribe(
       previousValueComparator((prevState, currState) => {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
           this.currencyRateController.start();
-          this.tokenRatesController.configure(
-            { disabled: false },
-            false,
-            false,
-          );
+          this.tokenRatesController.start();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
           this.currencyRateController.stop();
-          this.tokenRatesController.configure({ disabled: true }, false, false);
+          this.tokenRatesController.stop();
         }
       }, this.preferencesController.store.getState()),
     );
