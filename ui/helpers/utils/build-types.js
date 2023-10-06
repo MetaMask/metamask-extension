@@ -2,7 +2,7 @@
 import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import mmiJson from '../../../app/build-types/mmi/images/mmi-mascot.json';
+import mmiJson from '../../../app/build-types/mmi/mmi-mascot.json';
 ///: END:ONLY_INCLUDE_IN
 
 const assetList = {
