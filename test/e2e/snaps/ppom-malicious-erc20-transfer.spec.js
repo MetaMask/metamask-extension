@@ -563,16 +563,18 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function () {
         await getWindowHandles(driver, 3); // TODO: delete. triple-check race-condition issue
         await driver.switchToWindowWithTitle('MetaMask Notification');
 
-        const bannerAlert = await driver.findElement(bannerAlertSelector);
-        const bannerAlertText = await bannerAlert.getText();
+        const bannerAlertFoundByTitle = await driver.findElement({
+          css: bannerAlertSelector,
+          text: expectedTitle,
+        });
 
         assert(
-          bannerAlertText.includes(expectedTitle),
-          `Expected banner alert title: ${expectedTitle} \nExpected reason: transfer_farming\n`,
+          bannerAlertFoundByTitle,
+          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: transfer_farming\n`,
         );
         assert(
-          bannerAlertText.includes(expectedDescription),
-          `Expected banner alert description: ${expectedDescription} \nExpected reason: transfer_farming\n`,
+          bannerAlertFoundByTitle.includes(expectedDescription),
+          `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: transfer_farming\n`,
         );
       },
     );
