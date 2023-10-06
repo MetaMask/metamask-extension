@@ -36,6 +36,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   JustifyContent,
+  BlockSize,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
@@ -48,6 +49,7 @@ import {
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
   Text,
+  PickerNetwork,
 } from '../../components/component-library';
 
 import {
@@ -192,6 +194,9 @@ export default class Home extends PureComponent {
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     waitForConfirmDeepLinkDialog: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
+    testNetworkBackgroundColor: PropTypes.string,
+    currentNetwork: PropTypes.object,
+    toggleNetworkMenu: PropTypes.func,
   };
 
   state = {
@@ -725,6 +730,9 @@ export default class Home extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       mmiPortfolioEnabled,
       ///: END:ONLY_INCLUDE_IN
+      testNetworkBackgroundColor,
+      currentNetwork,
+      toggleNetworkMenu,
     } = this.props;
 
     if (forgottenPassword) {
@@ -733,6 +741,37 @@ export default class Home extends PureComponent {
       return null;
     }
     const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
+
+    const networkPicker = process.env.MULTICHAIN ? (
+      <Box marginTop={4} marginInlineEnd={4}>
+        <PickerNetwork
+          className="home__tab__network-picker"
+          avatarNetworkProps={{
+            backgroundColor: testNetworkBackgroundColor,
+          }}
+          margin={2}
+          label={currentNetwork?.nickname}
+          src={currentNetwork?.rpcPrefs?.imageUrl}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            toggleNetworkMenu();
+            this.context.trackEvent({
+              event: MetaMetricsEventName.NavNetworkMenuOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: 'App header',
+                chain_id: currentNetwork?.chainId,
+              },
+            });
+          }}
+          display={Display.Flex}
+          width={BlockSize.Full}
+          data-testid="network-display"
+        />
+      </Box>
+    ) : null;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     const showWhatsNew =
@@ -841,6 +880,7 @@ export default class Home extends PureComponent {
                   name={this.context.t('tokens')}
                   tabKey="tokens"
                 >
+                  {networkPicker}
                   <Box marginTop={2}>
                     <AssetList
                       onClickAsset={(asset) =>
@@ -874,6 +914,7 @@ export default class Home extends PureComponent {
                   name={this.context.t('nfts')}
                   tabKey="nfts"
                 >
+                  {networkPicker}
                   <NftsTab />
                   {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-main)
@@ -901,6 +942,7 @@ export default class Home extends PureComponent {
                   name={t('activity')}
                   tabKey="activity"
                 >
+                  {networkPicker}
                   <TransactionList />
                   {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-main)

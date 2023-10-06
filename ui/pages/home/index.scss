@@ -26,6 +26,18 @@
     padding: 0 16px;
   }
 
+  &__main-view .tabs__content {
+    .mm-picker-network {
+      max-width: none;
+      text-align:  start;
+
+      .mm-text--ellipsis {
+        flex-grow: 1;
+        text-align: start;
+      }
+    }
+  }
+
   &__main-view &__tab {
     @include H6;
 

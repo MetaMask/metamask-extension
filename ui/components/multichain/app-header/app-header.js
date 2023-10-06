@@ -153,6 +153,7 @@ export const AppHeader = ({ location }) => {
     isTransactionEditPage ||
     isConfirmationPage ||
     hasUnapprovedTransactions;
+  const showNetworkPicker = Boolean(process.env.MULTICHAIN) === false;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
@@ -223,29 +224,33 @@ export const AppHeader = ({ location }) => {
             >
               {popupStatus ? (
                 <Box className="multichain-app-header__contents__container">
-                  <Tooltip title={currentNetwork?.nickname} position="right">
-                    <PickerNetwork
-                      avatarNetworkProps={{
-                        backgroundColor: testNetworkBackgroundColor,
-                      }}
-                      className="multichain-app-header__contents--avatar-network"
-                      ref={menuRef}
-                      as="button"
-                      src={currentNetwork?.rpcPrefs?.imageUrl}
-                      label={currentNetwork?.nickname}
-                      aria-label={t('networkMenu')}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        networkOpenCallback();
-                      }}
-                      display={[Display.Flex, Display.None]} // show on popover hide on desktop
-                      disabled={disableNetworkPicker}
-                    />
-                  </Tooltip>
+                  <Box
+                    display={showNetworkPicker ? Display.Flex : Display.None}
+                  >
+                    <Tooltip title={currentNetwork?.nickname} position="right">
+                      <PickerNetwork
+                        avatarNetworkProps={{
+                          backgroundColor: testNetworkBackgroundColor,
+                        }}
+                        className="multichain-app-header__contents--avatar-network"
+                        ref={menuRef}
+                        as="button"
+                        src={currentNetwork?.rpcPrefs?.imageUrl}
+                        label={currentNetwork?.nickname}
+                        aria-label={t('networkMenu')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          networkOpenCallback();
+                        }}
+                        display={[Display.Flex, Display.None]} // show on popover hide on desktop
+                        disabled={disableNetworkPicker}
+                      />
+                    </Tooltip>
+                  </Box>
                 </Box>
               ) : (
-                <div>
+                <Box display={showNetworkPicker ? Display.Flex : Display.None}>
                   <PickerNetwork
                     avatarNetworkProps={{
                       backgroundColor: testNetworkBackgroundColor,
@@ -263,7 +268,7 @@ export const AppHeader = ({ location }) => {
                     disabled={disableNetworkPicker}
                     data-testid="network-display"
                   />
-                </div>
+                </Box>
               )}
               {showProductTour &&
               popupStatus &&

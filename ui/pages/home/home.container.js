@@ -37,6 +37,8 @@ import {
   getSuggestedTokens,
   getSuggestedNfts,
   getApprovalFlows,
+  getTestNetworkBackgroundColor,
+  getCurrentNetwork,
 } from '../../selectors';
 
 import {
@@ -54,6 +56,7 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
+  toggleNetworkMenu,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -171,6 +174,8 @@ const mapStateToProps = (state) => {
     mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
     notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
     ///: END:ONLY_INCLUDE_IN
+    testNetworkBackgroundColor: getTestNetworkBackgroundColor(state),
+    currentNetwork: getCurrentNetwork(state),
   };
 };
 
@@ -220,6 +225,7 @@ const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IN
+    toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
   };
 };
 
