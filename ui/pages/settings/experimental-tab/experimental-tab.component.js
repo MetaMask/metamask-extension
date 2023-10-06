@@ -45,6 +45,7 @@ export default class ExperimentalTab extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
+    isSnapAccountsReleased: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -250,7 +251,15 @@ export default class ExperimentalTab extends PureComponent {
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
-    const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
+    const {
+      isSnapAccountsReleased,
+      addSnapAccountEnabled,
+      setAddSnapAccountEnabled,
+    } = this.props;
+
+    if (!isSnapAccountsReleased) {
+      return null;
+    }
 
     return (
       <>
