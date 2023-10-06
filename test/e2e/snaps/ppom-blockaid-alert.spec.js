@@ -109,7 +109,6 @@ async function mockInfura(mockServer) {
           jsonrpc: '2.0',
           id: req.body.json.id,
           result: '0x1',
-          // result: '0x115e89f',
         },
       };
     });
@@ -140,7 +139,6 @@ async function mockInfura(mockServer) {
         },
       };
     });
-  // maybe unlock for malicious
   // mock transfer USDC
   // await mockServer
   //   .forPost()
@@ -547,22 +545,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
         const expectedTitle = 'This is a deceptive request';
 
         const testMaliciousConfigs = [
-          // {
-          //   btnSelector: '#maliciousApprovalButton',
-          //   expectedDescription:
-          //     'If you approve this request, a third party known for scams might take all your assets.',
-          //   expectedReason: 'approval_farming',
-          // },
-
-          // PPOM Error: block does not exist
-          // Sending ETH - Contract at 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 could not be found in the project information
-          // {
-          //   expectedDescription:
-          //     'If you approve this request, a third party known for scams will take all your assets.',
-          //   expectedReason: 'transfer_farming of ERC20',
-          //   btnSelector: '#maliciousERC20TransferButton',
-          // },
-
           // Error from PPOM: block does not exist
           // Sending ETH - Contract at 0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB could not be found in the project information
           // transferPunk(address _to, uint _tokenId)

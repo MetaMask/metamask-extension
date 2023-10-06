@@ -529,16 +529,8 @@ async function mockInfura(mockServer) {
     });
 }
 
-/**
- * Tests various Blockaid PPOM security alerts. Data for the E2E test requests and responses are provided here:
- *
- * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
- */
-describe('Confirmation Security Alert - Blockaid', function () {
-  /**
-   * Disclaimer: this test may be missing checks for some reason types. e.g. blur, domain, and failed
-   */
-  it('should show security alerts for malicious requests', async function () {
+describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function () {
+  it('should show banner alert', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -555,50 +547,33 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
+        const expectedTitle = 'This is a deceptive request';
+        const expectedDescription =
+          'If you approve this request, a third party known for scams will take all your assets.';
+
         await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
-        const expectedTitle = 'This is a deceptive request';
+        // Click TestDapp button to send JSON-RPC request
+        await driver.clickElement('#maliciousERC20TransferButton');
 
-        const testMaliciousConfigs = [
-          {
-            btnSelector: '#maliciousERC20TransferButton',
-            expectedDescription:
-              'If you approve this request, a third party known for scams will take all your assets.',
-            expectedReason: 'approval_farming',
-          },
-        ];
+        // Wait for confirmation pop-up
+        await driver.waitUntilXWindowHandles(3);
+        await getWindowHandles(driver, 3); // TODO: delete. triple-check race-condition issue
+        await driver.switchToWindowWithTitle('MetaMask Notification');
 
-        for (const config of testMaliciousConfigs) {
-          const { expectedDescription, expectedReason, btnSelector } = config;
+        const bannerAlert = await driver.findElement(bannerAlertSelector);
+        const bannerAlertText = await bannerAlert.getText();
 
-          // Click TestDapp button to send JSON-RPC request
-          await driver.clickElement(btnSelector);
-
-          // Wait for confirmation pop-up
-          await driver.waitUntilXWindowHandles(3);
-          const windowHandles = await getWindowHandles(driver, 3);
-          await driver.switchToWindowWithTitle('MetaMask Notification');
-
-          const bannerAlert = await driver.findElement(bannerAlertSelector);
-          const bannerAlertText = await bannerAlert.getText();
-
-          assert(
-            bannerAlertText.includes(expectedTitle),
-            `Expected banner alert title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
-          );
-          assert(
-            bannerAlertText.includes(expectedDescription),
-            `Expected banner alert description: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
-          );
-
-          await driver.delay(10000);
-
-          // Wait for confirmation pop-up to close
-          await driver.clickElement({ text: 'Reject', tag: 'button' });
-          await driver.switchToWindow(windowHandles.dapp);
-        }
+        assert(
+          bannerAlertText.includes(expectedTitle),
+          `Expected banner alert title: ${expectedTitle} \nExpected reason: transfer_farming\n`,
+        );
+        assert(
+          bannerAlertText.includes(expectedDescription),
+          `Expected banner alert description: ${expectedDescription} \nExpected reason: transfer_farming\n`,
+        );
       },
     );
   });
