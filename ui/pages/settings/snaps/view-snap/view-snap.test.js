@@ -1,6 +1,7 @@
 import * as React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { waitFor, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import ViewSnap from './view-snap';
@@ -12,6 +13,11 @@ jest.mock('../../../../store/actions.ts', () => {
     removeSnap: jest.fn(),
     removePermissionsFor: jest.fn(),
     updateCaveat: jest.fn(),
+    getPhishingResult: jest.fn().mockImplementation(() => {
+      return {
+        result: false,
+      };
+    }),
   };
 });
 
@@ -45,6 +51,12 @@ describe('ViewSnap', () => {
     expect(
       getByText('An example Snap that signs messages using BLS.'),
     ).toBeDefined();
+    // Snap website
+    await waitFor(() => {
+      const websiteElement = screen.queryByText('https://snaps.consensys.io/');
+      expect(websiteElement).toBeDefined();
+      expect(getByText('https://snaps.consensys.io/')).toBeDefined();
+    });
     // Snap version info
     expect(getByText('5.1.2')).toBeDefined();
     // Enable Snap

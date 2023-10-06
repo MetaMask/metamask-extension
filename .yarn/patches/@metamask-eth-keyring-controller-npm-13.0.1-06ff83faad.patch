@@ -1,0 +1,20 @@
+# The `removeAccount` method of some keyrings is async (e.g. `SnapKeyring`), so
+# this patch makes the `KeyringController` await the account removal.
+#
+# In the future, we must make sure that all keyrings implement the same
+# interface.
+#
+# See: https://github.com/MetaMask/KeyringController/pull/280
+diff --git a/dist/KeyringController.js b/dist/KeyringController.js
+index 3644209391f2cdf7ff5e2bd8f94517bff13b0f47..ed63d0ba4cb56df9fe3eb6b0a274f696375dd9dc 100644
+--- a/dist/KeyringController.js
++++ b/dist/KeyringController.js
+@@ -259,7 +259,7 @@ class KeyringController extends events_1.EventEmitter {
+         if (!keyring.removeAccount) {
+             throw new Error(constants_1.KeyringControllerError.UnsupportedRemoveAccount);
+         }
+-        keyring.removeAccount(address);
++        await keyring.removeAccount(address);
+         this.emit('removedAccount', address);
+         const accounts = await keyring.getAccounts();
+         // Check if this was the last/only account
