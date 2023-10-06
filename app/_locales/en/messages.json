@@ -2280,6 +2280,12 @@
   "loadingNFTs": {
     "message": "Loading NFTs..."
   },
+  "loadingScreenHardwareWalletMessage": {
+    "message": "Please complete the transaction on the hardware wallet."
+  },
+  "loadingScreenSnapMessage": {
+    "message": "Please complete the transaction on the Snap."
+  },
   "loadingTokens": {
     "message": "Loading tokens..."
   },
