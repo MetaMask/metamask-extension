@@ -53,7 +53,7 @@ const Button = ({
   } else if (submit) {
     buttonProps.type = 'submit';
   }
-  if (typeof buttonProps.onClick === 'function') {
+  if (type === 'link' && typeof buttonProps.onClick === 'function') {
     buttonProps.onKeyUp ??= (event) => {
       if (event.key === 'Enter') {
         buttonProps.onClick();
