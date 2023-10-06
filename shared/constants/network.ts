@@ -589,7 +589,6 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
-    | typeof CHAIN_IDS.ZKSYNC_ERA
     | typeof CHAIN_IDS.ZKSYNC_ERA_TESTNET
   >]: BuyableChainSettings;
 } = {
@@ -652,6 +651,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.LINEA_MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'linea',
+  },
+  [CHAIN_IDS.ZKSYNC_ERA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'zksync',
   },
 };
 
