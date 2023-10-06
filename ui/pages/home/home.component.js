@@ -31,12 +31,12 @@ import {
   Display,
   TextColor,
   TextVariant,
+  BlockSize,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   Size,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   JustifyContent,
-  BlockSize,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
