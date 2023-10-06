@@ -437,3 +437,9 @@ export function doesUserHaveALedgerAccount(state) {
 export function isLineaMainnetNetworkReleased(state) {
   return state.metamask.isLineaMainnetReleased;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export function isSnapAccountsReleased(state) {
+  return state.metamask.isSnapAccountsReleased;
+}
+///: END:ONLY_INCLUDE_IN
