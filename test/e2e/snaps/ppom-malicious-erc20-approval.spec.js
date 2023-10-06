@@ -580,8 +580,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             `Expected banner alert description: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
           );
 
-          await driver.delay(10000)
-
           // Wait for confirmation pop-up to close
           await driver.clickElement({ text: 'Reject', tag: 'button' });
           await driver.switchToWindow(windowHandles.dapp);
