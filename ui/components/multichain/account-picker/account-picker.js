@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
+import classnames from 'classnames';
 import {
   Box,
   AvatarAccount,
@@ -33,6 +34,7 @@ export const AccountPicker = ({
   name,
   onClick,
   disabled,
+  className = '',
   showAddress = false,
 }) => {
   const useBlockie = useSelector(getUseBlockie);
@@ -40,7 +42,7 @@ export const AccountPicker = ({
 
   return (
     <ButtonBase
-      className="multichain-account-picker"
+      className={classnames('multichain-account-picker', className)}
       data-testid="account-menu-icon"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
@@ -114,4 +116,8 @@ AccountPicker.propTypes = {
    * Represents if the account address should display
    */
   showAddress: PropTypes.bool,
+  /**
+   * CSS class to be added to the root element
+   */
+  className: PropTypes.string,
 };

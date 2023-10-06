@@ -13,6 +13,10 @@
     grid-template-columns: 1fr 2fr 1fr;
     height: 64px;
 
+    &--no-network {
+      grid-template-columns: 2fr 1fr;
+    }
+
     @include screen-sm-max {
       height: $height-screen-sm-max;
     }
@@ -40,6 +44,11 @@
     &__container {
       width: fit-content;
     }
+  }
+
+  /* Aligns the Account Picker left when there's no PickerNetwork */
+  &__account-picker {
+    justify-self: baseline;
   }
 
   &__lock-contents {
