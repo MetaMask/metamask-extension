@@ -252,7 +252,7 @@ async function mockInfura(mockServer) {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: 7631292168577930,
+          id: req.body.json.id,
           result: {
             baseFeePerGas: '0x16c696eb7',
             difficulty: '0x0',
