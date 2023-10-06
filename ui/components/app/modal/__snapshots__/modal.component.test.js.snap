@@ -13,15 +13,11 @@ exports[`Modal Component should render a modal with a cancel and a submit button
     >
       <button
         class="button btn--rounded btn-secondary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Cancel
       </button>
       <button
         class="button btn--rounded btn-primary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Submit
       </button>
@@ -56,15 +52,11 @@ exports[`Modal Component should render a modal with a header 1`] = `
     >
       <button
         class="button btn--rounded btn-secondary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Cancel
       </button>
       <button
         class="button btn--rounded btn-primary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Submit
       </button>
@@ -109,15 +101,11 @@ exports[`Modal Component should render a modal with children 1`] = `
     >
       <button
         class="button btn--rounded btn-secondary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Cancel
       </button>
       <button
         class="button btn--rounded btn-primary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Submit
       </button>
@@ -139,15 +127,11 @@ exports[`Modal Component should render a modal with different button types 1`] =
     >
       <button
         class="button btn--rounded btn-default modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Cancel
       </button>
       <button
         class="button btn--rounded btn-default modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Submit
       </button>
