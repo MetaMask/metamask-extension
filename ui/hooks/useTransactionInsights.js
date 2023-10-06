@@ -49,20 +49,17 @@ const useTransactionInsights = ({ txData }) => {
     return null;
   }
 
-  let insightComponent;
-  let warnings;
-
-  if (data) {
-    insightComponent = (
-      <TxInsights
-        data={data}
-        loading={loading}
-        insightSnaps={insightSnaps}
-        onChange={(snapId) => setSelectedInsightSnapId(snapId)}
-        selectedSnapId={selectedInsightSnapId}
-      />
-    );
-    warnings = data.reduce((warningsArr, promise) => {
+  const insightComponent = (
+    <TxInsights
+      data={data}
+      loading={loading}
+      insightSnaps={insightSnaps}
+      onChange={(snapId) => setSelectedInsightSnapId(snapId)}
+      selectedSnapId={selectedInsightSnapId}
+    />
+  );
+  if (insightComponent) {
+    const warnings = data.reduce((warningsArr, promise) => {
       if (promise.response?.severity === SeverityLevel.Critical) {
         const {
           snapId,

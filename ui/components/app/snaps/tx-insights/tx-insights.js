@@ -12,7 +12,7 @@ export default function TxInsights({
   selectedSnapId,
 }) {
   const selectedSnap = insightSnaps.find(({ id }) => id === selectedSnapId);
-  if (insightSnaps.length === 1) {
+  if (data && insightSnaps.length === 1) {
     return (
       <Tab
         className="confirm-page-container-content__tab"
@@ -21,7 +21,7 @@ export default function TxInsights({
         <SnapInsight data={data?.[0]} loading={loading} />
       </Tab>
     );
-  } else if (insightSnaps.length > 1) {
+  } else if (data && insightSnaps.length > 1) {
     const dropdownOptions = insightSnaps?.map(
       ({ id, manifest: { proposedName } }) => ({
         value: id,
