@@ -120,7 +120,7 @@ export default function SnapInstall({
         <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       )}
       <Box
-        ref={ref}
+        ref={!isLoading && !hasError ? ref : undefined}
         onScroll={onScroll}
         className="snap-install__content"
         style={{

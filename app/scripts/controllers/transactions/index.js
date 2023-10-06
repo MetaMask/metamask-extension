@@ -1,7 +1,7 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
-import EthQuery from 'ethjs-query';
+import EthQuery from '@metamask/ethjs-query';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
@@ -345,6 +345,9 @@ export default class TransactionController extends EventEmitter {
       this._requestTransactionApproval(txMeta, {
         shouldShowRequest: false,
       }).catch((error) => {
+        if (error.code === errorCodes.provider.userRejectedRequest) {
+          return;
+        }
         log.error('Error during persisted transaction approval', error);
       });
     });
@@ -960,6 +963,7 @@ export default class TransactionController extends EventEmitter {
       if (blockTimestamp) {
         txMeta.blockTimestamp = blockTimestamp;
       }
+      txMeta.verifiedOnBlockchain = true;
 
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
@@ -1857,11 +1861,6 @@ export default class TransactionController extends EventEmitter {
         customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
 
       txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
-      // add nonce debugging information to txMeta
-      txMeta.nonceDetails = nonceLock.nonceDetails;
-      if (customNonceValue) {
-        txMeta.nonceDetails.customNonceValue = customNonceValue;
-      }
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions#approveTransaction',
@@ -2426,7 +2425,10 @@ export default class TransactionController extends EventEmitter {
       ) {
         if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
           transactionApprovalAmountType = TransactionApprovalAmountType.revoke;
-        } else if (customTokenAmount) {
+        } else if (
+          customTokenAmount &&
+          customTokenAmount !== dappProposedTokenAmount
+        ) {
           transactionApprovalAmountType = TransactionApprovalAmountType.custom;
         } else if (dappProposedTokenAmount) {
           transactionApprovalAmountType =
@@ -2792,7 +2794,9 @@ export default class TransactionController extends EventEmitter {
     const currentTransactions = this.store.getState().transactions || {};
 
     const incomingTransactions = transactions
-      .filter((tx) => !this._hasTransactionHash(tx.hash, currentTransactions))
+      .filter((tx) =>
+        this._hasNoDuplicateIncoming(tx.hash, currentTransactions),
+      )
       .reduce((result, tx) => {
         result[tx.id] = tx;
         return result;
@@ -2810,8 +2814,21 @@ export default class TransactionController extends EventEmitter {
     this.store.updateState({ lastFetchedBlockNumbers });
   }
 
-  _hasTransactionHash(hash, transactions) {
-    return Object.values(transactions).some((tx) => tx.hash === hash);
+  /**
+   * This function checks if there is not any transaction in the provided
+   * transactions object that has the same hash as the provided txHash and has a
+   * type of 'incoming'.
+   *
+   * @param {string} txHash - The transaction hash to compare with.
+   * @param {object} transactions - The transactions to check in.
+   * @returns {boolean} Returns false if there is a transaction that has the
+   * same hash as the provided txHash and has a type of 'incoming'. Otherwise,
+   * it returns true.
+   */
+  _hasNoDuplicateIncoming(txHash, transactions) {
+    return !Object.values(transactions).some(
+      (tx) => tx.hash === txHash && tx.type === TransactionType.incoming,
+    );
   }
 
   // Approvals
@@ -2827,7 +2844,7 @@ export default class TransactionController extends EventEmitter {
       const { origin } = txMeta;
 
       const approvalResult = await this._requestApproval(
-        String(txId),
+        txId,
         origin,
         { txId },
         {

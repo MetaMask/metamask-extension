@@ -9,8 +9,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import NftsTab from '../../components/app/nfts-tab';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 ///: END:ONLY_INCLUDE_IN
@@ -193,7 +193,6 @@ export default class Home extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
-    mmiPortfolioUrl: PropTypes.string,
     modalOpen: PropTypes.bool,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     waitForConfirmDeepLinkDialog: PropTypes.bool,
@@ -772,7 +771,6 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       mmiPortfolioEnabled,
-      mmiPortfolioUrl,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
@@ -822,14 +820,7 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
-          {showWhatsNew ? (
-            <WhatsNewPopup
-              onClose={hideWhatsNewPopup}
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              mmiPortfolioUrl={mmiPortfolioUrl}
-              ///: END:ONLY_INCLUDE_IN
-            />
-          ) : null}
+          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
           }
@@ -861,7 +852,6 @@ export default class Home extends PureComponent {
                   <EthOverview
                     showAddress
                     mmiPortfolioEnabled={mmiPortfolioEnabled}
-                    mmiPortfolioUrl={mmiPortfolioUrl}
                   />
                   ///: END:ONLY_INCLUDE_IN
                 }
@@ -931,11 +921,7 @@ export default class Home extends PureComponent {
                   name={this.context.t('nfts')}
                   tabKey="nfts"
                 >
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                    <NftsTab />
-                    ///: END:ONLY_INCLUDE_IN
-                  }
+                  <NftsTab />
                   {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-main)
                     <ButtonLink

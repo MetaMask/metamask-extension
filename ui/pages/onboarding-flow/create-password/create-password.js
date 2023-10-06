@@ -13,17 +13,24 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import CheckBox from '../../../components/ui/check-box';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import {
   ThreeStepProgressBar,
   threeStepStages,
   TwoStepProgressBar,
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
+///: END:ONLY_INCLUDE_IN
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
@@ -82,7 +89,13 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring) {
       if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_COMPLETION_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -185,19 +198,45 @@ export default function CreatePassword({
       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       history.push(ONBOARDING_COMPLETION_ROUTE);
+      ///: END:ONLY_INCLUDE_IN
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+      ///: END:ONLY_INCLUDE_IN
     } else {
       // Otherwise we are in create new wallet flow
       try {
         if (createNewAccount) {
           await createNewAccount(password);
         }
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
       } catch (error) {
         setPasswordError(error.message);
       }
     }
   };
+
+  const createPasswordLink = (
+    <a
+      onClick={(e) => e.stopPropagation()}
+      key="create-password__link-text"
+      href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span className="create-password__link-text">
+        {t('learnMoreUpperCase')}
+      </span>
+    </a>
+  );
 
   return (
     <div className="create-password__wrapper" data-testid="create-password">
@@ -251,6 +290,7 @@ export default function CreatePassword({
           />
           <FormField
             dataTestId="create-password-confirm"
+            marginTop={3}
             onChange={handleConfirmPasswordChange}
             password={!showPassword}
             error={confirmPasswordError}
@@ -267,6 +307,7 @@ export default function CreatePassword({
           <Box
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
             marginBottom={4}
           >
             <label className="create-password__form__terms-label">
@@ -292,24 +333,42 @@ export default function CreatePassword({
               </Text>
             </label>
           </Box>
-          <Button
-            data-testid={
-              secretRecoveryPhrase &&
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            <Button
+              type="primary"
+              large
+              className="create-password__form--submit-button"
+              disabled={!isValid || !termsChecked}
+              onClick={handleCreate}
+            >
+              {t('continue')}
+            </Button>
+            ///: END:ONLY_INCLUDE_IN
+          }
+
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            <Button
+              data-testid={
+                secretRecoveryPhrase &&
+                firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+                  ? 'create-password-import'
+                  : 'create-password-wallet'
+              }
+              type="primary"
+              large
+              className="create-password__form--submit-button"
+              disabled={!isValid || !termsChecked}
+              onClick={handleCreate}
+            >
+              {secretRecoveryPhrase &&
               firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
-                ? 'create-password-import'
-                : 'create-password-wallet'
-            }
-            type="primary"
-            large
-            className="create-password__form--submit-button"
-            disabled={!isValid || !termsChecked}
-            onClick={handleCreate}
-          >
-            {secretRecoveryPhrase &&
-            firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
-              ? t('importMyWallet')
-              : t('createNewWallet')}
-          </Button>
+                ? t('importMyWallet')
+                : t('createNewWallet')}
+            </Button>
+            ///: END:ONLY_INCLUDE_IN
+          }
         </form>
       </Box>
       {shouldInjectMetametricsIframe ? (
