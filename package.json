@@ -258,7 +258,7 @@
     "@metamask/key-tree": "^9.0.0",
     "@metamask/keyring-controller": "^8.0.1",
     "@metamask/logging-controller": "^1.0.1",
-    "@metamask/logo": "^3.1.1",
+    "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^7.3.0",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/name-controller": "^3.0.0",
