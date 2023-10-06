@@ -1580,6 +1580,16 @@ export function getIsSecurityAlertsEnabled(state) {
 export function getIsAddSnapAccountEnabled(state) {
   return state.metamask.addSnapAccountEnabled;
 }
+
+/**
+ * Get the state of the `isSnapAccountsReleased` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `isSnapAccountsReleased` flag.
+ */
+export function getIsSnapAccountsReleased(state) {
+  return state.metamask.isSnapAccountsReleased;
+}
 ///: END:ONLY_INCLUDE_IN
 
 export function getIsCustomNetwork(state) {
