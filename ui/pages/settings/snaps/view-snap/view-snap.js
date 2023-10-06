@@ -66,8 +66,10 @@ function ViewSnap() {
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+
+  // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   const identities = useSelector(getMemoizedMetaMaskIdentities);
   ///: END:ONLY_INCLUDE_IN
 
