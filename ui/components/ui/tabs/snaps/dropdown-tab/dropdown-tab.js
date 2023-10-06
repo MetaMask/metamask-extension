@@ -26,7 +26,6 @@ export const DropdownTab = ({
 
   const selectOption = useCallback(
     (option) => {
-      // event.stopPropagation();
       onChange(option);
     },
     [onChange],
@@ -85,7 +84,7 @@ export const DropdownTab = ({
         selectedOption={selectedOption}
         title="Transaction Insights"
         style={{
-          'pointer-events': isActive ? 'auto' : 'none',
+          pointerEvents: isActive ? 'auto' : 'none',
         }}
       />
     </Box>
