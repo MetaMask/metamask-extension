@@ -84,6 +84,12 @@ async function main() {
             default: false,
             description: 'Update E2E snapshots',
             type: 'boolean',
+          })
+          .option('update-privacy-snapshot', {
+            default: false,
+            description:
+              'Update the privacy snapshot to include new hosts and paths',
+            type: 'boolean',
           }),
     )
     .strict()
@@ -99,6 +105,7 @@ async function main() {
     rpc,
     buildType,
     updateSnapshot,
+    updatePrivacySnapshot,
   } = argv;
 
   let testPaths;
@@ -161,6 +168,9 @@ async function main() {
   }
   if (updateSnapshot) {
     args.push('--update-snapshot');
+  }
+  if (updatePrivacySnapshot) {
+    args.push('--update-privacy-snapshot');
   }
   if (mmi) {
     args.push('--mmi');
