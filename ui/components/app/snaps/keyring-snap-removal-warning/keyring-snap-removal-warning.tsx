@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
@@ -44,13 +44,15 @@ export default function KeyringRemovalSnapWarning({
   isOpen: boolean;
 }) {
   const t = useI18nContext();
-  const [showConfirmation, setShowConfirmation] = useState(
-    keyringAccounts.length === 0,
-  );
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
   const { chainId } = useSelector(getProviderConfig);
+
+  useEffect(() => {
+    setShowConfirmation(keyringAccounts.length === 0);
+  }, [keyringAccounts]);
 
   const validateConfirmationInput = (input: string): boolean => {
     setError(false);

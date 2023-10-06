@@ -226,7 +226,11 @@ function ViewSnap() {
             </Text>
           </Button>
           <SnapRemoveWarning
-            isOpen={isShowingRemoveWarning && !isKeyringSnap}
+            isOpen={
+              isShowingRemoveWarning &&
+              !isKeyringSnap &&
+              keyringAccounts.length === 0
+            }
             onCancel={() => setIsShowingRemoveWarning(false)}
             onSubmit={async () => {
               await dispatch(removeSnap(snap.id));
@@ -262,7 +266,11 @@ function ViewSnap() {
                     );
                   }
                 }}
-                isOpen={isShowingRemoveWarning && isKeyringSnap}
+                isOpen={
+                  isShowingRemoveWarning &&
+                  isKeyringSnap &&
+                  keyringAccounts.length > 0
+                }
               />
             </>
             ///: END:ONLY_INCLUDE_IN
