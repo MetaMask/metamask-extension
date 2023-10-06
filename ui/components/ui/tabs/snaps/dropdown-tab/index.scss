@@ -1,0 +1,24 @@
+.transaction-insight-dropdown {
+  cursor: pointer;
+
+  select {
+    font-size: 0.75rem;
+    border: none;
+    width: 150px;
+    overflow: hidden !important;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-left: 4px;
+    padding-right: 24px;
+    cursor: pointer;
+  }
+
+  select:focus {
+    outline: none;
+  }
+
+  .dropdown__icon-caret-down {
+    right: 4px;
+    cursor: pointer;
+  }
+}
