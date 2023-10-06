@@ -1397,6 +1397,7 @@
     ],
     "desktopEnabled": false,
     "addSnapAccountEnabled": false,
+    "isSnapAccountsReleased": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
