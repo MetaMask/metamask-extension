@@ -58,7 +58,7 @@ const useTransactionInsights = ({ txData }) => {
       selectedSnapId={selectedInsightSnapId}
     />
   );
-  if (insightComponent) {
+  if (data) {
     const warnings = data.reduce((warningsArr, promise) => {
       if (promise.response?.severity === SeverityLevel.Critical) {
         const {
