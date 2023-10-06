@@ -205,7 +205,9 @@ exports[`App Header should match snapshot 1`] = `
     <div
       class="mm-box multichain-app-header__contents multichain-app-header-shadow mm-box--padding-2 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
     >
-      <div>
+      <div
+        class="mm-box"
+      >
         <button
           class="mm-box mm-picker-network multichain-app-header__contents__network-picker mm-box--margin-2 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-none mm-box--sm:display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
           data-testid="network-display"
