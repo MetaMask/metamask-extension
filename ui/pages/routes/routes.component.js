@@ -119,6 +119,7 @@ import NewNetworkInfo from '../../components/ui/new-network-info/new-network-inf
 import { ThemeType } from '../../../shared/constants/preferences';
 import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
+import { Send } from '../../components/multichain/pages/send';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -275,7 +276,7 @@ export default class Routes extends Component {
         />
         <Authenticated
           path={SEND_ROUTE}
-          component={SendTransactionScreen}
+          component={process.env.MULTICHAIN ? Send : SendTransactionScreen}
           exact
         />
         <Authenticated
@@ -439,6 +440,16 @@ export default class Routes extends Component {
         exact: false,
       }),
     );
+
+    const isMultichainSend = Boolean(
+      matchPath(location.pathname, {
+        path: SEND_ROUTE,
+        exact: false,
+      }),
+    );
+    if (process.env.MULTICHAIN && isMultichainSend) {
+      return true;
+    }
 
     if (isInitializing && !this.onInitializationUnlockPage()) {
       return true;
