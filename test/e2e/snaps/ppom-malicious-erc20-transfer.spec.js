@@ -69,22 +69,9 @@ async function mockInfura(mockServer) {
         ],
       },
     ],
+    ['eth_getBalance'],
     ['eth_getBlockByNumber'],
   ]);
-
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({ method: 'eth_getBalance' })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result: '0x27d17a5b79f77509541',
-        },
-      };
-    });
 
   await mockServer
     .forPost()

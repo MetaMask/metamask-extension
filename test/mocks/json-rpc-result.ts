@@ -13,6 +13,10 @@ export const mockJsonRpcResult: mockJsonRpcResultType = {
       '0x0000000000000000000000000000000000000000000000000ddfe4d79cbd3de5',
   },
 
+  eth_getBalance: {
+    default: '0x27d17a5b79f77509541',
+  },
+
   eth_getBlockByNumber: {
     default: {
       baseFeePerGas: '0x16c696eb7',
