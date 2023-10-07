@@ -240,7 +240,9 @@ export default function CreatePassword({
 
   return (
     <div className="create-password__wrapper" data-testid="create-password">
-      {secretRecoveryPhrase &&
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        secretRecoveryPhrase &&
       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
         <TwoStepProgressBar
           stage={twoStepStages.PASSWORD_CREATE}
