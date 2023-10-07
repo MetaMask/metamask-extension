@@ -2,10 +2,10 @@
 
 exports[`Confirmation Transaction Page should display the Loading component when the transaction is invalid 1`] = `
 <div
-  class="loading-overlay"
+  class="mm-box loading-overlay"
 >
   <div
-    class="loading-overlay__container"
+    class="mm-box loading-overlay__container mm-box--margin-bottom-3"
   >
     <div
       class="spinner loading-overlay__spinner"
@@ -275,5 +275,8 @@ exports[`Confirmation Transaction Page should display the Loading component when
       </svg>
     </div>
   </div>
+  <div
+    class="mm-box"
+  />
 </div>
 `;
