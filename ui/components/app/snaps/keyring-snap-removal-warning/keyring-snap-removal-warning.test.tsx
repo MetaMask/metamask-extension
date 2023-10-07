@@ -43,6 +43,10 @@ describe('Keyring Snap Remove Warning', () => {
   beforeAll(() => {
     store = configureMockStore()(mockStore);
   });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   it('show render the keyring snap warning and content', () => {
     const { getByText } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,
@@ -113,6 +117,41 @@ describe('Keyring Snap Remove Warning', () => {
 
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalled();
+    });
+  });
+  describe('#onBack', () => {
+    it('will dismiss modal if modal is showing accounts', async () => {
+      const { getByLabelText } = renderWithProvider(
+        <KeyringSnapRemovalWarning {...defaultArgs} />,
+        store,
+      );
+
+      const backButton = getByLabelText('Back');
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockOnBack).toHaveBeenCalled();
+      });
+    });
+
+    it('it will return to account list if modal is showing confirmation', async () => {
+      const { getByText, getByLabelText } = renderWithProvider(
+        <KeyringSnapRemovalWarning {...defaultArgs} />,
+        store,
+      );
+
+      const continueButton = getByText('Continue');
+
+      fireEvent.click(continueButton);
+
+      const backButton = getByLabelText('Back');
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockOnBack).not.toHaveBeenCalled();
+      });
     });
   });
 });

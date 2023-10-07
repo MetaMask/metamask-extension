@@ -34,6 +34,7 @@ export default function KeyringRemovalSnapWarning({
   onCancel,
   onClose,
   onSubmit,
+  onBack,
   isOpen,
 }: {
   snap: Snap;
@@ -41,6 +42,7 @@ export default function KeyringRemovalSnapWarning({
   onCancel: () => void;
   onClose: () => void;
   onSubmit: () => void;
+  onBack: () => void;
   isOpen: boolean;
 }) {
   const t = useI18nContext();
@@ -76,7 +78,11 @@ export default function KeyringRemovalSnapWarning({
         >
           <ModalHeader
             onBack={() => {
-              setShowConfirmation(false);
+              if (showConfirmation) {
+                setShowConfirmation(false);
+              } else {
+                onBack();
+              }
             }}
             onClose={() => {
               setShowConfirmation(false);
