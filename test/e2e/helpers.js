@@ -601,8 +601,16 @@ const sendTransaction = async (
   await driver.clickElement('[data-testid="eth-overview-send"]');
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-  await driver.clickElement('[data-testid="page-container-footer-next"]');
-  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement({
+    text: 'Next',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  });
+  await driver.clickElement({
+    text: 'Confirm',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  });
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
