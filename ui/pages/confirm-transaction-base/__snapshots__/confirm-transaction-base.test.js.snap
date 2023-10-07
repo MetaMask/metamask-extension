@@ -513,8 +513,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           <button
             class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
             data-testid="page-container-footer-cancel"
-            role="button"
-            tabindex="0"
           >
             Reject
           </button>
@@ -522,8 +520,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
             class="button btn--rounded btn-primary page-container__footer-button"
             data-testid="page-container-footer-next"
             disabled=""
-            role="button"
-            tabindex="0"
           >
             Confirm
           </button>

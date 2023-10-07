@@ -32,8 +32,6 @@ exports[`Transaction Confirmed should match snapshot 1`] = `
     >
       <button
         class="button btn--rounded btn-primary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         [ok]
       </button>
