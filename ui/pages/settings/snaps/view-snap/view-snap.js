@@ -230,8 +230,7 @@ function ViewSnap() {
           <SnapRemoveWarning
             isOpen={
               isShowingRemoveWarning &&
-              !isKeyringSnap &&
-              keyringAccounts.length === 0
+              (!isKeyringSnap || keyringAccounts.length === 0)
             }
             onCancel={() => setIsShowingRemoveWarning(false)}
             onSubmit={async () => {
@@ -248,6 +247,7 @@ function ViewSnap() {
                 snapUrl={snap.url}
                 onCancel={() => setIsShowingRemoveWarning(false)}
                 onClose={() => setIsShowingRemoveWarning(false)}
+                onBack={() => setIsShowingRemoveWarning(false)}
                 onSubmit={async () => {
                   try {
                     await dispatch(removeSnap(snap.id));
