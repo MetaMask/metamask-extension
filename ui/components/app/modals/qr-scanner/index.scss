@@ -39,7 +39,7 @@
     height: 4px;
     border-radius: 2px;
     overflow: hidden;
-    background-color: #dadada;
+    background-color: var(--color-border-muted);
     margin: 6px auto 0;
 
     &::before {
