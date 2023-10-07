@@ -328,19 +328,16 @@ export default function CreatePassword({
                 checked={termsChecked}
               />
               <Text variant={TextVariant.bodyMd} marginLeft={3}>
-                {t('passwordTermsWarning', [
-                  <a
-                    onClick={(e) => e.stopPropagation()}
-                    key="create-password__link-text"
-                    href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span className="create-password__link-text">
-                      {t('learnMoreUpperCase')}
-                    </span>
-                  </a>,
-                ])}
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  t('passwordTermsWarning', [createPasswordLink])
+                  ///: END:ONLY_INCLUDE_IN
+                }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                  t('passwordMmiTermsWarning', [createPasswordLink])
+                  ///: END:ONLY_INCLUDE_IN
+                }
               </Text>
             </label>
           </Box>
