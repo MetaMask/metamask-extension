@@ -14,6 +14,6 @@ describe('DetectedTokenAddress', () => {
     renderWithProvider(<DetectedTokenAddress {...args} />, store);
 
     expect(screen.getByText('Token address:')).toBeInTheDocument();
-    expect(screen.getByText('0xc01...2a6f')).toBeInTheDocument();
+    expect(screen.getByText('0xc011a...f2a6f')).toBeInTheDocument();
   });
 });

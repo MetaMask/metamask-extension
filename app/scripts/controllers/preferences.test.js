@@ -251,11 +251,31 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setUseTokenDetection', () => {
-    it('should default to false', () => {
+  describe('setUseSafeChainsListValidation', function () {
+    it('should default to true', function () {
+      const state = preferencesController.store.getState();
+
+      expect(state.useSafeChainsListValidation).toStrictEqual(true);
+    });
+
+    it('should set the `setUseSafeChainsListValidation` property in state', function () {
       expect(
-        preferencesController.store.getState().useTokenDetection,
+        preferencesController.store.getState().useSafeChainsListValidation,
+      ).toStrictEqual(true);
+
+      preferencesController.setUseSafeChainsListValidation(false);
+
+      expect(
+        preferencesController.store.getState().useSafeChainsListValidation,
       ).toStrictEqual(false);
+    });
+  });
+
+  describe('setUseTokenDetection', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+
+      expect(state.useTokenDetection).toStrictEqual(false);
     });
 
     it('should set the useTokenDetection property in state', () => {
@@ -399,4 +419,21 @@ describe('preferences controller', () => {
       });
     });
   });
+
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  describe('setUseExternalNameSources', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the useExternalNameSources property in state', () => {
+      preferencesController.setUseExternalNameSources(false);
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(false);
+    });
+  });
+  ///: END:ONLY_INCLUDE_IN
 });
