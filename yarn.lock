@@ -4337,13 +4337,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/logo@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "@metamask/logo@npm:3.1.1"
+"@metamask/logo@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "@metamask/logo@npm:3.1.2"
   dependencies:
     gl-mat4: "npm:1.1.4"
     gl-vec3: "npm:1.0.3"
-  checksum: 328b34d5d590bf2542587301dedc32587705b12bde471e5ce162b443b662a3728833b6ca18348700790579d45b8f639331d2eef147a6f9ea7f64e18c52a06a9d
+  checksum: 4233cb45692b44a466a844a33c43b94c5a07baa38a2317fadfbc2aa356198d5e85306d8c17cd9911b9b97a15cbe6496080868b1f827357a13b68664105bbe1ab
   languageName: node
   linkType: hard
 
@@ -4616,7 +4616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^11.1.0, @metamask/providers@npm:^11.1.1":
+"@metamask/providers@npm:^11.1.1":
   version: 11.1.2
   resolution: "@metamask/providers@npm:11.1.2"
   dependencies:
@@ -23882,7 +23882,7 @@ __metadata:
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/keyring-controller": "npm:^8.0.1"
     "@metamask/logging-controller": "npm:^1.0.1"
-    "@metamask/logo": "npm:^3.1.1"
+    "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/name-controller": "npm:^3.0.0"
@@ -23894,7 +23894,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^6.2.0"
     "@metamask/ppom-validator": "npm:^0.5.0"
-    "@metamask/providers": "npm:^11.1.0"
+    "@metamask/providers": "npm:^13.0.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/rpc-methods": "npm:^2.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
