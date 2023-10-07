@@ -262,7 +262,16 @@ export default function CreatePassword({
         textAlign={TextAlign.Center}
         fontWeight={FontWeight.Normal}
       >
-        {t('passwordSetupDetails')}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          t('passwordSetupDetails')
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          t('mmiPasswordSetupDetails')
+          ///: END:ONLY_INCLUDE_IN
+        }
       </Text>
       <Box justifyContent={JustifyContent.center} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
