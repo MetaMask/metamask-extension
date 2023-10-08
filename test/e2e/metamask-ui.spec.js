@@ -17,7 +17,7 @@ const Ganache = require('./ganache');
 const ganacheServer = new Ganache();
 const dappPort = 8080;
 
-describe('MetaMask', function () {
+describe('MetaMask @no-mmi', function () {
   let driver;
   let dappServer;
   let tokenAddress;

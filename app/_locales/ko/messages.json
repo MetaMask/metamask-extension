@@ -1538,11 +1538,9 @@
   "experimental": {
     "message": "실험적"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask 스냅 탐색"
-  },
   "extendWalletWithSnaps": {
-    "message": "지갑 경험을 개인 맞춤하세요."
+    "message": "지갑 경험을 개인 맞춤하세요.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "외부 확장"
@@ -5274,9 +5272,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea에서 보기"
-  },
-  "viewPortfolioDashboard": {
-    "message": "포트폴리오 대시보드 보기"
   },
   "viewinCustodianApp": {
     "message": "수탁 앱에서 보기"

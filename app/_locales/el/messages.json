@@ -1538,11 +1538,9 @@
   "experimental": {
     "message": "Πειραματικά"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Εξερευνήστε το MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας."
+    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Εξωτερική επέκταση"
@@ -5274,9 +5272,6 @@
   },
   "viewOnOpensea": {
     "message": "Προβολή στο Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Προβολή πίνακα ελέγχου χαρτοφυλακίου"
   },
   "viewinCustodianApp": {
     "message": "Προβολή στην εφαρμογή θεματοφύλακα"

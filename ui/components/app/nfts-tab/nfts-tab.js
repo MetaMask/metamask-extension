@@ -24,6 +24,7 @@ import {
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
+import { AssetListConversionButton } from '../../multichain';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -46,14 +47,16 @@ export default function NftsTab() {
     checkAndUpdateAllNftsOwnershipStatus();
   };
 
+  const hasAnyNfts = Object.keys(collections).length > 0;
+  const showNftBanner = process.env.MULTICHAIN && hasAnyNfts === false;
+
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
   }
 
   return (
     <Box className="nfts-tab">
-      {Object.keys(collections).length > 0 ||
-      previouslyOwnedCollection.nfts.length > 0 ? (
+      {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
         <NftsItems
           collections={collections}
           previouslyOwnedCollection={previouslyOwnedCollection}
@@ -61,8 +64,23 @@ export default function NftsTab() {
       ) : (
         <>
           {isMainnet && !useNftDetection ? (
-            <Box padding={4}>
+            <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
               <NFTsDetectionNoticeNFTsTab />
+            </Box>
+          ) : null}
+          {showNftBanner ? (
+            <Box
+              paddingInlineStart={4}
+              paddingInlineEnd={4}
+              display={Display.Flex}
+              paddingTop={4}
+            >
+              <AssetListConversionButton
+                variant="nft"
+                onClick={() =>
+                  global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS })
+                }
+              />
             </Box>
           ) : null}
           <Box
