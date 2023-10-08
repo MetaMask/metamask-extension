@@ -481,7 +481,11 @@ exports[`Security Tab should match snapshot 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              G
+              <img
+                alt="Goerli logo"
+                class="mm-avatar-network__network-image"
+                src="./images/goerli-logo-testnet.png"
+              />
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -560,7 +564,11 @@ exports[`Security Tab should match snapshot 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              S
+              <img
+                alt="Sepolia logo"
+                class="mm-avatar-network__network-image"
+                src="./images/sepolia-logo-testnet.png"
+              />
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-column"
