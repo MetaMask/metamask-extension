@@ -1538,11 +1538,9 @@
   "experimental": {
     "message": "Experimentell"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaps erforschen"
-  },
   "extendWalletWithSnaps": {
-    "message": "Erweitern Sie Ihr Wallet-Erlebnis."
+    "message": "Erweitern Sie Ihr Wallet-Erlebnis.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Externe Erweiterung"
@@ -5274,9 +5272,6 @@
   },
   "viewOnOpensea": {
     "message": "Auf Opensea ansehen"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolio-Dashboard anzeigen"
   },
   "viewinCustodianApp": {
     "message": "In Verwahrungs-App anzeigen"

@@ -1538,11 +1538,9 @@
   "experimental": {
     "message": "实验性"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "探索 MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "扩展钱包体验。"
+    "message": "扩展钱包体验。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部扩展程序"
@@ -5274,9 +5272,6 @@
   },
   "viewOnOpensea": {
     "message": "在 Opensea 上查看"
-  },
-  "viewPortfolioDashboard": {
-    "message": "查看 Portfolio 控制面板"
   },
   "viewinCustodianApp": {
     "message": "在托管应用程序中查看"

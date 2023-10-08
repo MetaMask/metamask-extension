@@ -1538,11 +1538,9 @@
   "experimental": {
     "message": "Экспериментальные"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Обзор MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Настройте кошелек под себя."
+    "message": "Настройте кошелек под себя.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Внешнее расширение"
@@ -5274,9 +5272,6 @@
   },
   "viewOnOpensea": {
     "message": "Смотреть на OpenSea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Просмотр панели инструментов Portfolio"
   },
   "viewinCustodianApp": {
     "message": "Смотреть в приложении депозитария"

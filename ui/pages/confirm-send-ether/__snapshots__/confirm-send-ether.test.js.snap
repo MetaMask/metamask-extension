@@ -329,6 +329,21 @@ exports[`ConfirmSendEther should render correct information for for confirm send
               </p>
             </div>
           </div>
+          <div
+            class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
+              style="mask-image: url('./images/icons/danger.svg');"
+            />
+            <div>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                You are sending 0 ETH.
+              </p>
+            </div>
+          </div>
         </div>
         <div
           class="transaction-detail"
@@ -635,16 +650,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           <button
             class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
             data-testid="page-container-footer-cancel"
-            role="button"
-            tabindex="0"
           >
             Reject
           </button>
           <button
             class="button btn--rounded btn-primary page-container__footer-button"
             data-testid="page-container-footer-next"
-            role="button"
-            tabindex="0"
           >
             Confirm
           </button>
