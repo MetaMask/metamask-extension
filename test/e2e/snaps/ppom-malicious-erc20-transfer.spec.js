@@ -21,6 +21,7 @@ const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const CONTRACT_ADDRESS = {
   BalanceChecker: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
+  FiatTokenV2_1: '0xa2327a938febf5fec13bacfb16ae10ecbc4cbdcf',
   OffChainOracle: '0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b',
 };
 
@@ -103,7 +104,7 @@ async function mockInfura(mockServer) {
                 gas: '0x1d55c2c7',
                 gasUsed: '0xf0',
                 input: '0x00000000',
-                to: '0xa2327a938febf5fec13bacfb16ae10ecbc4cbdcf',
+                to: CONTRACT_ADDRESS.FiatTokenV2_1,
                 type: 'DELEGATECALL',
                 value: '0x0',
               },
@@ -128,6 +129,9 @@ async function mockInfura(mockServer) {
       params: [{ from: selectedAddress }],
     })
     .thenCallback((req) => {
+      const mockFakePhishingAddress =
+        '5fbdb2315678afecb367f032d93f642f64180aa3';
+
       return {
         statusCode: 200,
         json: {
@@ -139,22 +143,21 @@ async function mockInfura(mockServer) {
                 from: USDC_ADDRESS,
                 gas: '0x2923d',
                 gasUsed: '0x4cac',
-                input:
-                  '0xa9059cbb0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa30000000000000000000000000000000000000000000000000000000000000064',
+                input: `0xa9059cbb000000000000000000000000${mockFakePhishingAddress}0000000000000000000000000000000000000000000000000000000000000064`,
                 logs: [
                   {
                     address: USDC_ADDRESS,
                     data: '0x0000000000000000000000000000000000000000000000000000000000000064',
                     topics: [
                       '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                      '0x0000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e1',
-                      '0x0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa3',
+                      `0x000000000000000000000000${selectedAddressWithoutPrefix}`,
+                      `0x000000000000000000000000${mockFakePhishingAddress}`,
                     ],
                   },
                 ],
                 output:
                   '0x0000000000000000000000000000000000000000000000000000000000000001',
-                to: '0xa2327a938febf5fec13bacfb16ae10ecbc4cbdcf',
+                to: CONTRACT_ADDRESS.FiatTokenV2_1,
                 type: 'DELEGATECALL',
                 value: '0x0',
               },
@@ -162,8 +165,7 @@ async function mockInfura(mockServer) {
             from: selectedAddress,
             gas: '0x30d40',
             gasUsed: '0xbd69',
-            input:
-              '0xa9059cbb0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa30000000000000000000000000000000000000000000000000000000000000064',
+            input: `0xa9059cbb000000000000000000000000${mockFakePhishingAddress}0000000000000000000000000000000000000000000000000000000000000064`,
             output:
               '0x0000000000000000000000000000000000000000000000000000000000000001',
             to: USDC_ADDRESS,

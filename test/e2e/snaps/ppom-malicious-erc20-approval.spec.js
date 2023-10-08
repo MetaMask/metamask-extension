@@ -16,10 +16,14 @@ const {
 } = require('../../../shared/constants/network');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
+
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const BUSD_ADDRESS = '0x4fabb145d64652a948d72533023f6e7a623c7c53';
+
 const CONTRACT_ADDRESS = {
   BalanceChecker: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
+  BUSDImplementation: '0x2a3f1a37c04f82aa274f5353834b2d002db91015',
   OffChainOracle: '0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b',
 };
 
@@ -63,7 +67,7 @@ async function mockInfura(mockServer) {
         params: [
           {
             accessList: [],
-            data: `0x70a082310000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e1`,
+            data: `0x70a08231000000000000000000000000${selectedAddressWithoutPrefix}`,
             to: BUSD_ADDRESS,
           },
         ],
@@ -102,7 +106,7 @@ async function mockInfura(mockServer) {
                 gas: '0x1d55c2cb',
                 gasUsed: '0x39c',
                 input: '0x00000000',
-                to: '0x2a3f1a37c04f82aa274f5353834b2d002db91015',
+                to: CONTRACT_ADDRESS.BUSDImplementation,
                 type: 'DELEGATECALL',
                 value: '0x0',
               },
@@ -150,14 +154,14 @@ async function mockInfura(mockServer) {
                     data: '0x000000000000000000000000000000000000000000000000ffffffffffffffff',
                     topics: [
                       '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925',
-                      '0x0000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e1',
+                      `0x000000000000000000000000${selectedAddressWithoutPrefix}`,
                       '0x000000000000000000000000e50a2dbc466d01a34c3e8b7e8e45fce4f7da39e6',
                     ],
                   },
                 ],
                 output:
                   '0x0000000000000000000000000000000000000000000000000000000000000001',
-                to: '0x2a3f1a37c04f82aa274f5353834b2d002db91015',
+                to: CONTRACT_ADDRESS.BUSDImplementation,
                 type: 'DELEGATECALL',
                 value: '0x0',
               },
