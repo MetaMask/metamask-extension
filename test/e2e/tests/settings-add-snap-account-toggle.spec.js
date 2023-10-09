@@ -6,7 +6,9 @@ describe('Add snap account experimental settings', function () {
   it('switch "Enable Add snap account" to on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerAccountToggleFlag()
+          .build(),
         title: this.test.title,
         failOnConsoleError: false,
       },
