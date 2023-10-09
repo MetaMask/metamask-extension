@@ -77,11 +77,31 @@ export const AccountPicker = ({
                 : AvatarAccountVariant.Jazzicon
             }
             address={address}
-            size={Size.XS}
+            size={Size.SM}
             borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
           />
-          <Text as="span" ellipsis {...labelProps}>
+          <Text
+            as="span"
+            ellipsis
+            {...labelProps}
+            className={classnames(
+              'multichain-account-picker__label',
+              labelProps.className ?? '',
+            )}
+          >
             {name}
+            {showAddress ? (
+              <Text
+                color={TextColor.textAlternative}
+                textAlign={block ? TextAlign.Start : TextAlign.Center}
+                variant={TextVariant.bodySm}
+                paddingInlineStart={block ? 5 : 0}
+                ellipsis
+                {...addressProps}
+              >
+                {shortenedAddress}
+              </Text>
+            ) : null}
           </Text>
           <Icon
             name={IconName.ArrowDown}
@@ -89,17 +109,6 @@ export const AccountPicker = ({
             size={Size.SM}
           />
         </Box>
-        {showAddress ? (
-          <Text
-            color={TextColor.textAlternative}
-            textAlign={block ? TextAlign.Start : TextAlign.Center}
-            variant={TextVariant.bodySm}
-            paddingInlineStart={block ? 5 : 0}
-            {...addressProps}
-          >
-            {shortenedAddress}
-          </Text>
-        ) : null}
       </Box>
     </ButtonBase>
   );

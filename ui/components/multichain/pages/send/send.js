@@ -16,7 +16,6 @@ import {
   PickerNetwork,
 } from '../../../component-library';
 import {
-  BlockSize,
   BorderColor,
   Display,
   FlexDirection,
@@ -90,6 +89,17 @@ export const SendPage = () => {
               display: Display.Flex,
               textAlign: TextAlign.Start,
             }}
+          />
+        </SendPageRow>
+        <SendPageRow>
+          <Label paddingBottom={2}>{t('to')}</Label>
+          <DomainInput
+            userInput=""
+            onChange={() => undefined}
+            onReset={() => undefined}
+            lookupEnsName={() => undefined}
+            initializeDomainSlice={() => undefined}
+            resetDomainResolution={() => undefined}
           />
         </SendPageRow>
       </Content>
