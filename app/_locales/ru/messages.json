@@ -3022,9 +3022,6 @@
   "openInBlockExplorer": {
     "message": "Открыть в обозревателе блоков"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (бета-версия)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -4799,9 +4796,6 @@
   "termsOfService": {
     "message": "Условия обслуживания"
   },
-  "termsOfUse": {
-    "message": "условия использования"
-  },
   "termsOfUseAgreeText": {
     "message": " Я согласен(-на) с Условиями использования, которые применяются к использованию мною MetaMask и всех его функций"
   },
@@ -4829,10 +4823,6 @@
   },
   "thisCollection": {
     "message": "эта коллекция"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Эта услуга является экспериментальной. Включив эту функцию, вы соглашаетесь с $1 OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Время"

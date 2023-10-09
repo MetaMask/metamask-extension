@@ -3022,9 +3022,6 @@
   "openInBlockExplorer": {
     "message": "Blok gezgininde aç"
   },
-  "openSea": {
-    "message": "OpenSea + Blockad (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -4799,9 +4796,6 @@
   "termsOfService": {
     "message": "Hizmet şartları"
   },
-  "termsOfUse": {
-    "message": "kullanım şartları"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum"
   },
@@ -4829,10 +4823,6 @@
   },
   "thisCollection": {
     "message": "bu koleksiyon"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Hizmet deneyseldir. Bu özelliği etkinleştirerek OpenSea'nin $1 bölümünü kabul edersiniz.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Zaman"

@@ -3022,9 +3022,6 @@
   "openInBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर में खोलें"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (बीटा)"
-  },
   "openSeaNew": {
     "message": "ओपनसी"
   },
@@ -4799,9 +4796,6 @@
   "termsOfService": {
     "message": "सेवा की शर्तें"
   },
-  "termsOfUse": {
-    "message": "इस्तेमाल की शर्तें"
-  },
   "termsOfUseAgreeText": {
     "message": " मैं इस्तेमाल की शर्तों से सहमत हूं, जो MetaMask और इसकी सभी फीचर्स के मेरे इस्तेमाल पर लागू होती हैं"
   },
@@ -4829,10 +4823,6 @@
   },
   "thisCollection": {
     "message": "यह संग्रह"
-  },
-  "thisServiceIsExperimental": {
-    "message": "यह सेवा प्रायोगिक है। इस सुविधा को इनेबल करके, आप OpenSea के $1 से सहमत होते हैं।",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "समय"
