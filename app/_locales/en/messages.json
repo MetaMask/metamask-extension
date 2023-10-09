@@ -3183,7 +3183,8 @@
     "message": "Only connect with sites you trust."
   },
   "openCustodianApp": {
-    "message": "Open $1 app"
+    "message": "Open $1 app",
+    "description": "The $1 is the name of the Custodian that will be open"
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Go to full screen to connect your Ledger.",

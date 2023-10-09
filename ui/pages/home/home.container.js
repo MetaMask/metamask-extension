@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
-} from '@metamask-institutional/portfolio-dashboard';
+} from '../../selectors/institutional/selectors';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
 import { getWaitForConfirmDeepLinkDialog } from '../../selectors/institutional/selectors';
 import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
