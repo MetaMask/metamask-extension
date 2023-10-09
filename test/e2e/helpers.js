@@ -601,8 +601,16 @@ const sendTransaction = async (
   await driver.clickElement('[data-testid="eth-overview-send"]');
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-  await driver.clickElement('[data-testid="page-container-footer-next"]');
-  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement({
+    text: 'Next',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  });
+  await driver.clickElement({
+    text: 'Confirm',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  });
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
@@ -636,19 +644,10 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly
-const assertAccountBalanceForDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-  const balanceElement = await driver.findElement(
-    '[data-testid="eth-overview__primary-currency"]',
-  );
-  assert.equal(`${balance}\nETH`, await balanceElement.getText());
-};
-
-// Usually happens after txn is made
+// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
-  await driver.waitForSelector({
+  await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
     text: `${balance} ETH`,
   });
@@ -683,7 +682,7 @@ const unlockWallet = async (driver) => {
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
-  await assertAccountBalanceForDOM(driver, ganacheServer);
+  await locateAccountBalanceDOM(driver, ganacheServer);
 };
 
 async function sleepSeconds(sec) {
@@ -883,7 +882,6 @@ module.exports = {
   findAnotherAccountFromAccountList,
   unlockWallet,
   logInWithBalanceValidation,
-  assertAccountBalanceForDOM,
   locateAccountBalanceDOM,
   waitForAccountRendered,
   generateGanacheOptions,

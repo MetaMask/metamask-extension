@@ -119,12 +119,11 @@ describe('Swaps - notifications @no-mmi', function () {
           amount: 50,
           skipCounter: true,
         });
-        const swapButton = await driver.waitForSelector({
+        await driver.waitForSelector({
           text: 'Swap',
           tag: 'button',
+          css: '[disabled]',
         });
-        assert.equal(await swapButton.getText(), 'Swap');
-        assert.equal(await swapButton.isEnabled(), false);
       },
     );
   });
