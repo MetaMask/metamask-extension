@@ -20,6 +20,7 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferen
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 
 const initialState = {
   isInitialized: false,
@@ -419,6 +420,34 @@ export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
   return keyring?.type === KeyringType.ledger;
+}
+
+export function isAddressHardware(state, address) {
+  const keyring = findKeyringForAddress(state, address);
+
+  let deviceName = null;
+  switch (keyring?.type) {
+    case KeyringType.ledger:
+      deviceName = HardwareDeviceNames.ledger;
+      break;
+    case KeyringType.trezor:
+      deviceName = HardwareDeviceNames.trezor;
+      break;
+    case KeyringType.lattice:
+      deviceName = HardwareDeviceNames.lattice;
+      break;
+    case KeyringType.qr:
+      deviceName = HardwareDeviceNames.qr;
+      break;
+    default:
+      break;
+  }
+
+  return {
+    usingHardware: Boolean(keyring?.type?.includes('Hardware')),
+    keyringType: keyring?.type,
+    deviceName,
+  };
 }
 
 /**
