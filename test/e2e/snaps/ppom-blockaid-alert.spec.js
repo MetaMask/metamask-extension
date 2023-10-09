@@ -226,4 +226,46 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
     );
   });
+
+  it('should show "Request may not be safe" if PPOM fails to check transaction', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            securityAlertsEnabled: true,
+          })
+          .build(),
+        defaultGanacheOptions,
+        title: this.test.title,
+      },
+
+      async ({ driver }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
+        await openDapp(driver);
+
+        // Click TestDapp button to send JSON-RPC request
+        await driver.clickElement('#maliciousApprovalButton');
+
+        // Wait for confirmation pop-up
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle('MetaMask Notification');
+
+        const expectedTitle = 'Request may not be safe';
+
+        const bannerAlert = await driver.findElement({
+          css: bannerAlertSelector,
+          text: expectedTitle,
+        });
+
+        assert(
+          bannerAlert,
+          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: transfer_farming\n`,
+        );
+      },
+    );
+  });
 });
