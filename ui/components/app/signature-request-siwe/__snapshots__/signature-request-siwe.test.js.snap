@@ -392,16 +392,12 @@ https://example.com/my-web2-claim.json
         <button
           class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
           data-testid="page-container-footer-cancel"
-          role="button"
-          tabindex="0"
         >
           Cancel
         </button>
         <button
           class="button btn--rounded btn-primary page-container__footer-button"
           data-testid="page-container-footer-next"
-          role="button"
-          tabindex="0"
         >
           Sign-In
         </button>

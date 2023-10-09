@@ -94,8 +94,6 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           <button
             class="button btn--rounded btn-primary nft-details__send-button"
             data-testid="nft-send-button"
-            role="button"
-            tabindex="0"
           >
             Send
           </button>

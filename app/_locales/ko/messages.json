@@ -3022,9 +3022,6 @@
   "openInBlockExplorer": {
     "message": "블록 탐색기 열기"
   },
-  "openSea": {
-    "message": "OpenSea+ Blockaid(베타)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -4799,9 +4796,6 @@
   "termsOfService": {
     "message": "서비스 약관"
   },
-  "termsOfUse": {
-    "message": "이용약관"
-  },
   "termsOfUseAgreeText": {
     "message": " 본인은 MetaMask의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
   },
@@ -4829,10 +4823,6 @@
   },
   "thisCollection": {
     "message": "이 컬렉션"
-  },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 기능입니다. 이 기능을 활성화하면 OpenSea의 $1에 동의하는 것입니다.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "시간"
@@ -5272,9 +5262,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea에서 보기"
-  },
-  "viewPortfolioDashboard": {
-    "message": "포트폴리오 대시보드 보기"
   },
   "viewinCustodianApp": {
     "message": "수탁 앱에서 보기"
