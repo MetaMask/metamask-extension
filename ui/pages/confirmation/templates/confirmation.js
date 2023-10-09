@@ -44,13 +44,13 @@ import Loading from '../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
+import { BannerAlert } from '../../components/component-library/banner-alert';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
-import { BannerAlert } from '../../components/component-library/banner-alert';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
