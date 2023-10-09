@@ -28,7 +28,8 @@ Content.propTypes = {
   /**
    * Elements that go in the page content section
    */
-  children: PropTypes.element,
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+    .isRequired,
   /**
    * Additional CSS class provided to the content
    */
