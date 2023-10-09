@@ -9,11 +9,6 @@ const {
   withFixtures,
 } = require('../helpers');
 
-const {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} = require('../../../shared/constants/network');
-
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -24,15 +19,6 @@ const CONTRACT_ADDRESS = {
   BalanceChecker: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
   BUSDImplementation: '0x2a3f1a37c04f82aa274f5353834b2d002db91015',
   OffChainOracle: '0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b',
-};
-
-const mainnetProviderConfig = {
-  providerConfig: {
-    chainId: CHAIN_IDS.MAINNET,
-    nickname: '',
-    rpcUrl: '',
-    type: NETWORK_TYPES.MAINNET,
-  },
 };
 
 async function mockInfura(mockServer) {
@@ -187,7 +173,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(mainnetProviderConfig)
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             securityAlertsEnabled: true,

@@ -10,22 +10,8 @@ const {
   withFixtures,
 } = require('../helpers');
 
-const {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} = require('../../../shared/constants/network');
-
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-
-const mainnetProviderConfig = {
-  providerConfig: {
-    chainId: CHAIN_IDS.MAINNET,
-    nickname: '',
-    rpcUrl: '',
-    type: NETWORK_TYPES.MAINNET,
-  },
-};
 
 async function mockInfura(mockServer) {
   await mockServerJsonRpc(mockServer, [
@@ -48,7 +34,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(mainnetProviderConfig)
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             securityAlertsEnabled: true,
@@ -147,7 +133,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(mainnetProviderConfig)
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             securityAlertsEnabled: true,
