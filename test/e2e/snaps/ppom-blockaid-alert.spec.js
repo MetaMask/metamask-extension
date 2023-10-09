@@ -35,55 +35,6 @@ async function mockInfura(mockServer) {
     ['eth_gasPrice'],
     ['eth_getBalance'],
   ]);
-
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({ method: 'eth_feeHistory' })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result: {
-            baseFeePerGas: [
-              '0x69b11e562',
-              '0x666a7c239',
-              '0x6d9e609f6',
-              '0x6e9ab5408',
-              '0x6bca983cb',
-              '0x6a6f790c3',
-            ],
-            gasUsedRatio: [
-              0.37602026666666666, 0.7813118333333333, 0.5359671,
-              0.39827006666666664, 0.44968263333333336,
-            ],
-            oldestBlock: '0x115e9c0',
-            reward: [
-              ['0xfbc521', '0x21239e6', '0x5f5e100'],
-              ['0x5f5e100', '0x68e7780', '0x314050eb'],
-              ['0xfbc521', '0xfbc521', '0xfbc521'],
-              ['0x21239e6', '0x5f5e100', '0x5f5e100'],
-              ['0x21239e6', '0x5f5e100', '0x5f5e100'],
-            ],
-          },
-        },
-      };
-    });
-
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({ method: 'eth_getTransactionCount' })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result: '0x115e89f',
-        },
-      };
-    });
 }
 
 /**
