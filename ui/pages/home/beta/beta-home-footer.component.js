@@ -43,7 +43,7 @@ const BetaHomeFooter = () => {
       </a>{' '}
       |{' '}
       <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer">
-        {t('needHelpFeedback')} ajnddwjn
+        {t('needHelpFeedback')}
       </a>
     </>
   );
