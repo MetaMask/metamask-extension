@@ -22635,12 +22635,12 @@ __metadata:
 
 "lavamoat-core@patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch":
   version: 14.4.1
-  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch::version=14.4.1&hash=5307c6"
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch::version=14.4.1&hash=1822ab"
   dependencies:
     json-stable-stringify: "npm:^1.0.2"
     lavamoat-tofu: "npm:^6.2.1"
     merge-deep: "npm:^3.0.3"
-  checksum: 47a7f3863bd7b7ddb59ea6dad15a48859538725b0ed7bc53fd78a1a3f752c86f77b83f554c6b4a27420beb07d088fbfe1fd0847048c4e53174599d526d503fe8
+  checksum: 53e042240c5bc61aa61f8fc058734e4324243c2e9541c40c3445686238871a287f72ffce19cfc4c04ccf659e75fbec188460a14b8e6c61b36220042038d2eb18
   languageName: node
   linkType: hard
 
