@@ -55,6 +55,8 @@ const useTransactionInsights = ({ txData }) => {
     ({ id }) => id === selectedInsightSnapId,
   );
 
+  // TODO(hbmalik88): refactor this into another component once we've redone
+  // the logic inside of tabs.component.js is re-done to account for nested tabs
   let insightComponent;
 
   if (data && insightSnaps.length === 1) {
