@@ -55,7 +55,7 @@ export const snapKeyringBuilder = (
         await getKeyringController().persistAllKeyrings();
       },
       addAccount: async (
-        _address: string,
+        address: string,
         origin: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
@@ -79,7 +79,7 @@ export const snapKeyringBuilder = (
             try {
               await handleUserInput(confirmationResult);
               await getKeyringController().persistAllKeyrings();
-              getPreferencesController().setSelectedAddress(_address);
+              getPreferencesController().setSelectedAddress(address);
               await getApprovalController().success({
                 message: t('snapAccountCreated') ?? 'Your account is ready!',
                 header: [snapAuthorshipHeader],
