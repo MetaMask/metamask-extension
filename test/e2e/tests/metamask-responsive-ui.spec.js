@@ -3,7 +3,7 @@ const {
   TEST_SEED_PHRASE_TWO,
   convertToHexValue,
   withFixtures,
-  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -109,7 +109,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );
   });

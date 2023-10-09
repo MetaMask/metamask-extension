@@ -3,10 +3,10 @@ const { isEqual, omit } = require('lodash');
 const {
   defaultGanacheOptions,
   withFixtures,
-  unlockWallet,
   sendTransaction,
   getEventPayloads,
   assertInAnyOrder,
+  logInWithBalanceValidation,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -147,9 +147,9 @@ describe('Transaction Finalized Event', function () {
         title: this.test.title,
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await driver.navigate();
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await sendTransaction(driver, RECIPIENT, '2.0');
 
