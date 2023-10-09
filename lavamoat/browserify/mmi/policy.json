@@ -2710,16 +2710,6 @@
         "semver": true
       }
     },
-    "@metamask/subject-metadata-controller": {
-      "packages": {
-        "@metamask/subject-metadata-controller>@metamask/base-controller": true
-      }
-    },
-    "@metamask/subject-metadata-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/utils": {
       "globals": {
         "TextDecoder": true,
