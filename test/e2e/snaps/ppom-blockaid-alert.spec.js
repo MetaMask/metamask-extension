@@ -24,7 +24,8 @@ async function mockInfura(mockServer) {
 }
 
 /**
- * Tests various Blockaid PPOM security alerts. Data for the E2E test requests and responses are provided here:
+ * Tests various Blockaid PPOM security alerts. Some other tests live in separate files due to the need for more
+ * sophisticated JSON-RPC mock requests. Data for the E2E test requests and responses are provided here:
  *
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
@@ -126,7 +127,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
   });
 
   /**
-   * Disclaimer: this test may be missing checks for some reason types. e.g. blur, domain, and failed
+   * Disclaimer: this test may be missing checks for some reason types. e.g. blur and domain.
+   * Some other tests are found in other files e.g. test/e2e/snaps/ppom-malicious-<name>.spec.js
    */
   it('should show security alerts for malicious requests', async function () {
     await withFixtures(
@@ -152,15 +154,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
         const expectedTitle = 'This is a deceptive request';
 
         const testMaliciousConfigs = [
-          // Error from PPOM: block does not exist
-          // Sending ETH - Contract at 0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB could not be found in the project information
-          // transferPunk(address _to, uint _tokenId)
-          // {
-          //   btnSelector: '#maliciousERC721Transfer',
-          //   expectedDescription:
-          //     'If you approve this request, a third party known for scams will take all your assets.',
-          //   expectedReason: 'transfer_farming of ERC721',
-          // },
           {
             btnSelector: '#maliciousPermit',
             expectedDescription:
@@ -179,12 +172,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
               'If you approve this request, someone can steal your assets listed on OpenSea.',
             expectedReason: 'seaport_farming',
           },
-          // {
-          //   btnSelector: '#maliciousSetApprovalForAll',
-          //   expectedDescription:
-          //     'If you approve this request, someone can steal your assets listed on OpenSea.',
-          //   expectedReason: 'set_approval_for_all'
-          // },
           {
             btnSelector: '#maliciousTradeOrder',
             expectedDescription:
