@@ -36,7 +36,6 @@ import {
   getTotalUnapprovedCount,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
-import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import { Icon, IconName } from '../../components/component-library';
 import Loading from '../../components/ui/loading-screen';
