@@ -1,4 +1,4 @@
-const MOCK_BLOCK_NUMBER = '0x116f841';
+const MOCK_BLOCK_NUMBER = '0x1';
 
 export interface mockJsonRpcResultType {
   [methodName: string]: { [arbitraryVariantName: string]: any };
@@ -28,7 +28,7 @@ export const mockJsonRpcResult: mockJsonRpcResultType = {
   },
 
   eth_getBalance: {
-    default: '0x27d17a5b79f77509541',
+    default: '0x55DE6A779BBAC0000',
   },
 
   eth_getBlockByNumber: {
