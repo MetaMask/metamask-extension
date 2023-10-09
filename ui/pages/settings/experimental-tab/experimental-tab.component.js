@@ -83,7 +83,7 @@ export default class ExperimentalTab extends PureComponent {
         legacy_event: true,
       },
     });
-    setSecurityAlertsEnabled(!value || false);
+    setSecurityAlertsEnabled(!value);
     if (!value && transactionSecurityCheckEnabled) {
       this.toggleTransactionSecurityCheck(true);
     }
