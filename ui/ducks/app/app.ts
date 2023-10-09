@@ -33,6 +33,11 @@ interface AppState {
     ignoreErc20Token?: boolean;
   };
   showIpfsModalOpen: boolean;
+  keyringRemovalSnapModal: {
+    snapName: string;
+    result: 'success' | 'failure' | 'none';
+  };
+  showKeyringRemovalSnapModal: boolean;
   importTokensModalOpen: boolean;
   showSelectActionModal: boolean;
   accountDetail: {
@@ -105,6 +110,11 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModal: { open: false },
   showIpfsModalOpen: false,
+  keyringRemovalSnapModal: {
+    snapName: '',
+    result: 'none',
+  },
+  showKeyringRemovalSnapModal: false,
   importTokensModalOpen: false,
   showSelectActionModal: false,
   accountDetail: {
@@ -505,6 +515,26 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
+      return {
+        ...appState,
+        showKeyringRemovalSnapModal: true,
+        keyringRemovalSnapModal: {
+          ...action.payload,
+        },
+      };
+    case actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT:
+      return {
+        ...appState,
+        showKeyringRemovalSnapModal: false,
+        keyringRemovalSnapModal: {
+          snapName: '',
+          result: 'none',
+        },
+      };
+    ///: END:ONLY_INCLUDE_IN
+
     default:
       return appState;
   }
