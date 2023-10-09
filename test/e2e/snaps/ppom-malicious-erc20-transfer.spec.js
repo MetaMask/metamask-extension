@@ -10,9 +10,11 @@ const {
 } = require('../helpers');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
+
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
 const CONTRACT_ADDRESS = {
   BalanceChecker: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
   FiatTokenV2_1: '0xa2327a938febf5fec13bacfb16ae10ecbc4cbdcf',
@@ -34,13 +36,6 @@ async function mockInfura(mockServer) {
       {
         methodResultVariant: 'offchainOracle',
         params: [{ to: CONTRACT_ADDRESS.OffChainOracle }],
-      },
-    ],
-    [
-      'eth_call',
-      {
-        methodResultVariant: 'balance',
-        params: [{ to: USDC_ADDRESS }],
       },
     ],
     [

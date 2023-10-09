@@ -42,13 +42,6 @@ async function mockInfura(mockServer) {
       'eth_call',
       {
         methodResultVariant: 'balance',
-        params: [{ to: BUSD_ADDRESS }],
-      },
-    ],
-    [
-      'eth_call',
-      {
-        methodResultVariant: 'balance',
         params: [
           {
             accessList: [],
