@@ -3,6 +3,15 @@
 
   height: var(--picker-network-height);
 
+  &--full {
+    max-width: none;
+
+    .mm-text--ellipsis {
+      flex-grow: 1;
+      text-align: start;
+    }
+  }
+
   &:active {
     background-color: var(--color-background-default-hover);
   }
