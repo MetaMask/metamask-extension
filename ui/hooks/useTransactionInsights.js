@@ -58,21 +58,19 @@ const useTransactionInsights = ({ txData }) => {
       selectedSnapId={selectedInsightSnapId}
     />
   );
-  if (data) {
-    const warnings = data.reduce((warningsArr, promise) => {
-      if (promise.response?.severity === SeverityLevel.Critical) {
-        const {
-          snapId,
-          response: { content },
-        } = promise;
-        warningsArr.push({ snapId, content });
-      }
-      return warningsArr;
-    }, []);
-    return { insightComponent, warnings };
-  }
 
-  return null;
+  const warnings = data?.reduce((warningsArr, promise) => {
+    if (promise.response?.severity === SeverityLevel.Critical) {
+      const {
+        snapId,
+        response: { content },
+      } = promise;
+      warningsArr.push({ snapId, content });
+    }
+    return warningsArr;
+  }, []);
+
+  return data ? { insightComponent, warnings } : null;
 };
 
 export default useTransactionInsights;

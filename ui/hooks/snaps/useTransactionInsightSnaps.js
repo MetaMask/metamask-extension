@@ -60,7 +60,7 @@ export function useTransactionInsightSnaps({
             handler: 'onTransaction',
             request: {
               jsonrpc: '2.0',
-              method: ' ',
+              method: '',
               params: { transaction, chainId, transactionOrigin },
             },
           });
