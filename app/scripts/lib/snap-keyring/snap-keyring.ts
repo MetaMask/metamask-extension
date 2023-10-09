@@ -8,7 +8,7 @@ import type { KeyringController } from '@metamask/keyring-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
-import PreferencesController from 'app/scripts/controllers/preferences';
+import PreferencesController from '../../controllers/preferences';
 
 /**
  * Get the addresses of the accounts managed by a given Snap.
