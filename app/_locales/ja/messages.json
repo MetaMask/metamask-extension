@@ -3022,9 +3022,6 @@
   "openInBlockExplorer": {
     "message": "ブロックエクスプローラーで開く"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (ベータ)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -4799,9 +4796,6 @@
   "termsOfService": {
     "message": "サービス規約"
   },
-  "termsOfUse": {
-    "message": "利用規約"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します。"
   },
@@ -4829,10 +4823,6 @@
   },
   "thisCollection": {
     "message": "このコレクション"
-  },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは試験運用中です。この機能を有効にすることで、OpenSeaの$1に同意したものとみなされます。",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "時間"
@@ -5272,9 +5262,6 @@
   },
   "viewOnOpensea": {
     "message": "Openseaで表示"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolioダッシュボードを表示"
   },
   "viewinCustodianApp": {
     "message": "カストディアンアプリで表示"

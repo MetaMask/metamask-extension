@@ -4,7 +4,7 @@ const {
   convertToHexValue,
   withFixtures,
   openDapp,
-  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
   logInWithBalanceValidation,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -429,7 +429,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // Go back to home screen to check txn
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver, ganacheServer);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const txn = await driver.isElementPresent(
           '.transaction-list__completed-transactions .activity-list-item',
