@@ -13,11 +13,11 @@ import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
 export const ButtonLink: ButtonLinkComponent = React.forwardRef(
   <C extends React.ElementType = 'button' | 'a'>(
     {
-      className,
+      className = '',
       color,
-      danger,
-      disabled,
-      loading,
+      danger = false,
+      disabled = false,
+      loading = false,
       size = ButtonLinkSize.Auto,
       ...props
     }: ButtonLinkProps<C>,

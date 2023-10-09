@@ -172,9 +172,6 @@
   "copyAddress": {
     "message": "Kopier adresse til  utklippstavlen "
   },
-  "copyPrivateKey": {
-    "message": "Dette er din private nøkkel (klikk for å kopiere)"
-  },
   "copyToClipboard": {
     "message": "Kopiér til utklippstavlen"
   },
@@ -238,9 +235,6 @@
   "ensRegistrationError": {
     "message": "Feil i ENS-navneregistrering"
   },
-  "enterPassword": {
-    "message": "Skriv inn passord "
-  },
   "enterPasswordContinue": {
     "message": "Skriv inn passord for å fortsette"
   },
@@ -252,9 +246,6 @@
   },
   "expandView": {
     "message": "Utvid visning"
-  },
-  "exportPrivateKey": {
-    "message": "Eksporter privat nøkkel"
   },
   "failed": {
     "message": "Mislyktes"
@@ -608,9 +599,6 @@
   "searchResults": {
     "message": "Søkeresultater"
   },
-  "searchTokens": {
-    "message": "Søk i sjetonger"
-  },
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"
   },
@@ -646,9 +634,6 @@
   },
   "showHexDataDescription": {
     "message": "Velg dette for å vise hex-datafeltet på sendskjermen"
-  },
-  "showPrivateKeys": {
-    "message": "Vis private nøkler"
   },
   "sigRequest": {
     "message": "Signaturforespørsel "
@@ -763,9 +748,6 @@
   },
   "tryAgain": {
     "message": "Prøv igjen"
-  },
-  "typePassword": {
-    "message": "Skriv inn MetaMask-passordet"
   },
   "unapproved": {
     "message": "Ikke godkjent "

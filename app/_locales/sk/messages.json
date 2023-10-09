@@ -169,9 +169,6 @@
   "copyAddress": {
     "message": "Kopírovať adresu do schránky"
   },
-  "copyPrivateKey": {
-    "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
-  },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
   },
@@ -235,9 +232,6 @@
   "ensRegistrationError": {
     "message": "Chyba pri registrácii názvu ENS"
   },
-  "enterPassword": {
-    "message": "Zadejte heslo"
-  },
   "enterPasswordContinue": {
     "message": "Pokračujte zadaním hesla"
   },
@@ -249,9 +243,6 @@
   },
   "expandView": {
     "message": "Rozbaliť zobrazenie"
-  },
-  "exportPrivateKey": {
-    "message": "Exportovat privátní klíč"
   },
   "failed": {
     "message": "Neúspěšné"
@@ -596,9 +587,6 @@
   "searchResults": {
     "message": "Výsledky vyhľadávania"
   },
-  "searchTokens": {
-    "message": "Hledat tokeny"
-  },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
@@ -637,9 +625,6 @@
   },
   "showHexDataDescription": {
     "message": "Vyberte toto, ak chcete, aby sa na obrazovke odosielania zobrazilo hex dátové pole"
-  },
-  "showPrivateKeys": {
-    "message": "Zobrazit privátní klíče"
   },
   "sigRequest": {
     "message": "Požadavek podpisu"
@@ -754,9 +739,6 @@
   },
   "tryAgain": {
     "message": "Skúsiť znova"
-  },
-  "typePassword": {
-    "message": "Zadejte své heslo"
   },
   "unapproved": {
     "message": "Neschváleno"

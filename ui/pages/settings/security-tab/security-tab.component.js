@@ -17,13 +17,12 @@ import {
   COINGECKO_LINK,
   CONSENSYS_PRIVACY_LINK,
   CRYPTOCOMPARE_LINK,
-  ETHERSCAN_PRIVACY_LINK,
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
-  BUTTON_SIZES,
   Button,
+  BUTTON_SIZES,
   Box,
   Text,
 } from '../../../components/component-library';
@@ -42,6 +41,8 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
+import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -57,8 +58,9 @@ export default class SecurityTab extends PureComponent {
     setUseNftDetection: PropTypes.func,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
-    showIncomingTransactions: PropTypes.bool.isRequired,
-    setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
+    incomingTransactionsPreferences: PropTypes.object.isRequired,
+    allNetworks: PropTypes.array.isRequired,
+    setIncomingTransactionsPreferences: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
     setUse4ByteResolution: PropTypes.func.isRequired,
@@ -69,17 +71,23 @@ export default class SecurityTab extends PureComponent {
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
+    useSafeChainsListValidation: PropTypes.bool.isRequired,
+    setUseSafeChainsListValidation: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useAddressBarEnsResolution: PropTypes.bool.isRequired,
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    useExternalNameSources: PropTypes.bool.isRequired,
+    setUseExternalNameSources: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
-    ipfsGateway: this.props.ipfsGateway,
+    ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
     srpQuizModalVisible: false,
-    ipfsToggle: false,
+    ipfsToggle: this.props.ipfsGateway.length > 0,
   };
 
   settingsRefCounter = 0;
@@ -170,55 +178,19 @@ export default class SecurityTab extends PureComponent {
   }
 
   renderIncomingTransactionsOptIn() {
-    const { t } = this.context;
-    const { showIncomingTransactions, setShowIncomingTransactionsFeatureFlag } =
-      this.props;
+    const {
+      incomingTransactionsPreferences,
+      allNetworks,
+      setIncomingTransactionsPreferences,
+    } = this.props;
 
     return (
-      <Box
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('showIncomingTransactions')}</span>
-          <div className="settings-page__content-description">
-            {t('showIncomingTransactionsDescription', [
-              // TODO: Update to use real link
-              <a
-                href={ETHERSCAN_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="etherscan-privacy-link"
-              >
-                {t('etherscan')}
-              </a>,
-              // TODO: Update to use real link
-              <a
-                href={CONSENSYS_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="ic-consensys-privacy-link"
-              >
-                {t('privacyMsg')}
-              </a>,
-            ])}
-          </div>
-        </div>
-        <div
-          className="settings-page__content-item-col"
-          data-testid="showIncomingTransactions"
-        >
-          <ToggleButton
-            value={showIncomingTransactions}
-            onToggle={(value) => setShowIncomingTransactionsFeatureFlag(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
+      <IncomingTransactionToggle
+        wrapperRef={this.settingsRefs[1]}
+        allNetworks={allNetworks}
+        setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
+        incomingTransactionsPreferences={incomingTransactionsPreferences}
+      />
     );
   }
 
@@ -233,6 +205,7 @@ export default class SecurityTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('usePhishingDetection')}</span>
@@ -260,27 +233,33 @@ export default class SecurityTab extends PureComponent {
     const { t } = this.context;
     const { use4ByteResolution, setUse4ByteResolution } = this.props;
     return (
-      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
+      <Box
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
         <div className="settings-page__content-item">
           <span>{t('use4ByteResolution')}</span>
           <div className="settings-page__content-description">
             {t('use4ByteResolutionDescription')}
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div
-            className="settings-page__content-item-col"
-            data-testid="4byte-resolution-container"
-          >
-            <ToggleButton
-              value={use4ByteResolution}
-              onToggle={(value) => setUse4ByteResolution(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="4byte-resolution-container"
+        >
+          <ToggleButton
+            value={use4ByteResolution}
+            onToggle={(value) => setUse4ByteResolution(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
         </div>
-      </div>
+      </Box>
     );
   }
 
@@ -296,6 +275,7 @@ export default class SecurityTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('participateInMetaMetrics')}</span>
@@ -329,6 +309,7 @@ export default class SecurityTab extends PureComponent {
         data-testid="advanced-setting-choose-your-network"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('chooseYourNetwork')}</span>
@@ -365,53 +346,94 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderIpfsGatewayControl() {
+  renderSafeChainsListValidationToggle() {
     const { t } = this.context;
-    const { ipfsGatewayError } = this.state;
-    const { useAddressBarEnsResolution, setUseAddressBarEnsResolution } =
+    const { useSafeChainsListValidation, setUseSafeChainsListValidation } =
       this.props;
 
-    const handleIpfsGatewaySave = (gateway) => {
-      const url = gateway ? new URL(addUrlProtocolPrefix(gateway)) : '';
-      const { host } = url;
+    const useSafeChainsListValidationWebsite = t(
+      'useSafeChainsListValidationWebsite',
+    );
 
-      this.props.setIpfsGateway(host);
-    };
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="setting-safe-chains-validation"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <Box
+          className="settings-page__content-row"
+          gap={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('useSafeChainsListValidation')}</span>
+            <div className="settings-page__content-description">
+              {t('useSafeChainsListValidationDescription', [
+                <b key="safechain-list-validation-website">
+                  {useSafeChainsListValidationWebsite}
+                </b>,
+              ])}
+            </div>
+          </div>
+
+          <div
+            className="settings-page__content-item-col"
+            data-testid="useSafeChainsListValidation"
+          >
+            <ToggleButton
+              value={useSafeChainsListValidation}
+              onToggle={(value) => setUseSafeChainsListValidation(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </Box>
+      </Box>
+    );
+  }
+
+  renderIpfsGatewayControl() {
+    const { t } = this.context;
+    let ipfsError = '';
 
     const handleIpfsGatewayChange = (url) => {
-      this.setState(() => {
-        let ipfsError = '';
-
+      if (url.length > 0) {
         try {
-          const urlObj = new URL(addUrlProtocolPrefix(url));
-          if (!urlObj.host) {
-            throw new Error();
+          const validUrl = addUrlProtocolPrefix(url);
+
+          if (!validUrl) {
+            ipfsError = t('invalidIpfsGateway');
           }
+
+          const urlObj = new URL(validUrl);
 
           // don't allow the use of this gateway
           if (urlObj.host === 'gateway.ipfs.io') {
-            throw new Error('Forbidden gateway');
+            ipfsError = t('forbiddenIpfsGateway');
+          }
+
+          if (ipfsError.length === 0) {
+            this.props.setIpfsGateway(urlObj.host);
           }
         } catch (error) {
-          ipfsError =
-            error.message === 'Forbidden gateway'
-              ? t('forbiddenIpfsGateway')
-              : t('invalidIpfsGateway');
+          ipfsError = t('invalidIpfsGateway');
         }
+      } else {
+        ipfsError = t('invalidIpfsGateway');
+      }
 
-        handleIpfsGatewaySave(url);
-        return {
-          ipfsGateway: url,
-          ipfsGatewayError: ipfsError,
-        };
+      this.setState({
+        ipfsGateway: url,
+        ipfsGatewayError: ipfsError,
       });
     };
 
-    const handleIpfsToggle = (url) => {
-      url?.length < 1
-        ? handleIpfsGatewayChange(IPFS_DEFAULT_GATEWAY_URL)
-        : handleIpfsGatewayChange('');
-    };
     return (
       <Box
         ref={this.settingsRefs[6]}
@@ -419,34 +441,52 @@ export default class SecurityTab extends PureComponent {
         data-testid="setting-ipfs-gateway"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
+        gap={4}
       >
-        <div className="settings-page__content-item">
-          <span>{t('ipfsGateway')}</span>
-          <div className="settings-page__content-description">
-            {t('ipfsGatewayDescription')}
+        <Box
+          className="settings-page__content-row"
+          gap={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('ipfsGateway')}</span>
+            <div className="settings-page__content-description">
+              {t('ipfsGatewayDescription')}
+            </div>
           </div>
-        </div>
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={this.state.ipfsGateway}
-            onToggle={(value) => {
-              handleIpfsToggle(value);
-              this.setState({ ipfsToggle: Boolean(value) });
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-        {!this.state.ipfsToggle && (
+          <div
+            className="settings-page__content-item-col"
+            data-testid="ipfsToggle"
+          >
+            <ToggleButton
+              value={this.state.ipfsToggle}
+              onToggle={(value) => {
+                if (value) {
+                  // turning from true to false
+                  this.props.setIpfsGateway('');
+                } else {
+                  // turning from false to true
+                  handleIpfsGatewayChange(this.state.ipfsGateway);
+                }
+
+                this.setState({ ipfsToggle: !value });
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </Box>
+        {this.state.ipfsToggle && (
           <div className="settings-page__content-item">
             <span>{t('addIPFSGateway')}</span>
             <div className="settings-page__content-item-col">
               <TextField
                 type="text"
-                disabled={!this.state.ipfsGateway}
                 value={this.state.ipfsGateway}
                 onChange={(e) => handleIpfsGatewayChange(e.target.value)}
-                error={ipfsGatewayError}
+                error={this.state.ipfsGatewayError}
                 fullWidth
                 margin="dense"
               />
@@ -458,6 +498,7 @@ export default class SecurityTab extends PureComponent {
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
+          gap={4}
           ref={this.settingsRefs[10]}
           marginTop={3}
           id="ens-domains"
@@ -466,7 +507,7 @@ export default class SecurityTab extends PureComponent {
             {t('ensDomainsSettingTitle')}
             <div className="settings-page__content-description">
               <Text color={TextColor.inherit} variant={TextVariant.inherit}>
-                {t('ensDomainsSettingDescriptionIntro')}
+                {t('ensDomainsSettingDescriptionIntroduction')}
               </Text>
               <Box
                 as="ul"
@@ -480,25 +521,18 @@ export default class SecurityTab extends PureComponent {
                   color={TextColor.inherit}
                   variant={TextVariant.inherit}
                 >
-                  {t('ensDomainsSettingDescriptionPoint1')}
+                  {t('ensDomainsSettingDescriptionPart1')}
                 </Text>
                 <Text
                   as="li"
                   color={TextColor.inherit}
                   variant={TextVariant.inherit}
                 >
-                  {t('ensDomainsSettingDescriptionPoint2')}
-                </Text>
-                <Text
-                  as="li"
-                  color={TextColor.inherit}
-                  variant={TextVariant.inherit}
-                >
-                  {t('ensDomainsSettingDescriptionPoint3')}
+                  {t('ensDomainsSettingDescriptionPart2')}
                 </Text>
               </Box>
               <Text color={TextColor.inherit} variant={TextVariant.inherit}>
-                {t('ensDomainsSettingDescriptionOutro')}
+                {t('ensDomainsSettingDescriptionOutroduction')}
               </Text>
             </div>
           </div>
@@ -508,8 +542,10 @@ export default class SecurityTab extends PureComponent {
             data-testid="ipfs-gateway-resolution-container"
           >
             <ToggleButton
-              value={useAddressBarEnsResolution}
-              onToggle={(value) => setUseAddressBarEnsResolution(!value)}
+              value={this.props.useAddressBarEnsResolution}
+              onToggle={(value) =>
+                this.props.setUseAddressBarEnsResolution(!value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -531,6 +567,8 @@ export default class SecurityTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        id="advanced-settings-autodetect-tokens"
       >
         <div className="settings-page__content-item">
           <span>{t('autoDetectTokens')}</span>
@@ -583,6 +621,7 @@ export default class SecurityTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
@@ -624,6 +663,7 @@ export default class SecurityTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('currencyRateCheckToggle')}</span>
@@ -672,7 +712,7 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderOpenSeaEnabledToggle() {
+  renderDisplayNftMediaToggle() {
     const { t } = this.context;
     const {
       openSeaEnabled,
@@ -688,17 +728,17 @@ export default class SecurityTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
-          <span>{t('displayNftMedia')}</span>
+          <span>{t('enableOpenSeaAPI')}</span>
           <div className="settings-page__content-description">
-            {t('displayNftMediaDescription')}
+            {t('enableOpenSeaAPIDescription')}
           </div>
         </div>
-
         <div
           className="settings-page__content-item-col"
-          data-testid="displayNftMedia"
+          data-testid="enableOpenSeaAPI"
         >
           <ToggleButton
             value={openSeaEnabled}
@@ -740,21 +780,12 @@ export default class SecurityTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('useNftDetection')}</span>
           <div className="settings-page__content-description">
-            <Text color={TextColor.textAlternative}>
-              {t('useNftDetectionDescription')}
-            </Text>
-            <ul className="settings-page__content-unordered-list">
-              <li>{t('useNftDetectionDescriptionLine2')}</li>
-              <li>{t('useNftDetectionDescriptionLine3')}</li>
-              <li>{t('useNftDetectionDescriptionLine4')}</li>
-            </ul>
-            <Text color={TextColor.textAlternative} paddingTop={4}>
-              {t('useNftDetectionDescriptionLine5')}
-            </Text>
+            {t('useNftDetectionDescriptionText')}
           </div>
         </div>
 
@@ -786,6 +817,43 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  renderExternalNameSourcesToggle() {
+    const { t } = this.context;
+    const { useExternalNameSources, setUseExternalNameSources } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[13]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('externalNameSourcesSetting')}</span>
+          <div className="settings-page__content-description">
+            {t('externalNameSourcesSettingDescription')}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useExternalNameSources"
+        >
+          <ToggleButton
+            value={useExternalNameSources}
+            onToggle={(value) => setUseExternalNameSources(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   render() {
     const { warning } = this.props;
 
@@ -799,6 +867,7 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
+
         <div>
           <span className="settings-page__security-tab-sub-header">
             {this.context.t('alerts')}
@@ -807,6 +876,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderPhishingDetectionToggle()}
         </div>
+
         <div>
           <span className="settings-page__security-tab-sub-header">
             {this.context.t('smartContracts')}
@@ -815,6 +885,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderUse4ByteResolutionToggle()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('transactions')}
         </span>
@@ -822,22 +893,39 @@ export default class SecurityTab extends PureComponent {
           {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('networkProvider')}
         </span>
         <div className="settings-page__content-padded">
           {this.renderChooseYourNetworkButton()}
+          {this.renderSafeChainsListValidationToggle()}
           {this.renderIpfsGatewayControl()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('tokenAutoDetection')}
         </span>
         <div className="settings-page__content-padded">
           {this.renderAutoDetectTokensToggle()}
           {this.renderBatchAccountBalanceRequestsToggle()}
-          {this.renderOpenSeaEnabledToggle()}
+          {this.renderDisplayNftMediaToggle()}
           {this.renderNftDetectionToggle()}
         </div>
+
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        }
+        <span className="settings-page__security-tab-sub-header">
+          {this.context.t('settingsSubHeadingSignatures')}
+        </span>
+        <div className="settings-page__content-padded">
+          {this.renderExternalNameSourcesToggle()}
+        </div>
+        {
+          ///: END:ONLY_INCLUDE_IN
+        }
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}
         </span>

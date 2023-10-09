@@ -45,4 +45,9 @@ describe('AccountPicker', () => {
     const { container } = render({}, { useBlockie: false });
     expect(container.querySelector('svg')).toBeDefined();
   });
+
+  it('should show the address in the account button for multichain', () => {
+    const { getByText } = render({ showAddress: true });
+    expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();
+  });
 });

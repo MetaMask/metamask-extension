@@ -37,14 +37,20 @@ describe('Import flow', function () {
         await driver.delay(regularDelayMs);
 
         await driver.clickElement('[data-testid="import-token-button"]');
-        await driver.fill('input[placeholder="Search tokens"]', 'cha');
+        await driver.fill('input[placeholder="Search"]', 'cha');
 
         await driver.clickElement('.token-list__token');
         await driver.clickElement('.token-list__token:nth-of-type(2)');
         await driver.clickElement('.token-list__token:nth-of-type(3)');
 
-        await driver.clickElement({ css: 'button', text: 'Next' });
-        await driver.clickElement({ css: 'button', text: 'Import' });
+        await driver.clickElement({
+          css: '.import-tokens-modal button',
+          text: 'Next',
+        });
+        await driver.clickElement({
+          css: '.import-tokens-modal button',
+          text: 'Import',
+        });
 
         await driver.clickElement('.asset-breadcrumb');
 

@@ -25,13 +25,13 @@ setBackgroundConnection({
 
 describe('Confirm Transaction', () => {
   const unapprovedTransactionId = Object.keys(
-    mockState.metamask.unapprovedTxs,
+    mockState.metamask.transactions,
   )[0];
   it('should render correct information for approve transaction with value', () => {
     const store = configureMockStore(middleware)({
       ...mockState,
       confirmTransaction: {
-        txData: mockState.metamask.unapprovedTxs[unapprovedTransactionId],
+        txData: mockState.metamask.transactions[0],
       },
     });
     const { getByText, getByRole } = renderWithProvider(
@@ -39,7 +39,7 @@ describe('Confirm Transaction', () => {
       store,
       `${CONFIRM_TRANSACTION_ROUTE}/${unapprovedTransactionId}${CONFIRM_SEND_ETHER_PATH}`,
     );
-    expect(getByText('0xb19...0c5e')).toBeInTheDocument();
+    expect(getByText('0xb19Ac...f0c5e')).toBeInTheDocument();
     expect(getByRole('button', { name: 'Details' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Data' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Hex' })).toBeInTheDocument();

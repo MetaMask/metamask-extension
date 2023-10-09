@@ -26,8 +26,15 @@ interface AppState {
     values?: { address?: string | null };
   } | null;
   networkDropdownOpen: boolean;
-  importNftsModalOpen: boolean;
+  importNftsModal: {
+    open: boolean;
+    tokenAddress?: string;
+    tokenId?: string;
+    ignoreErc20Token?: boolean;
+  };
   showIpfsModalOpen: boolean;
+  importTokensModalOpen: boolean;
+  showSelectActionModal: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -67,7 +74,7 @@ interface AppState {
   newTokensImported: string;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
-  txId: number | null;
+  txId: string | null;
   accountDetailsAddress: string;
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   snapsInstallPrivacyWarningShown: boolean;
@@ -96,8 +103,10 @@ const initialState: AppState = {
   alertMessage: null,
   qrCodeData: null,
   networkDropdownOpen: false,
-  importNftsModalOpen: false,
+  importNftsModal: { open: false },
   showIpfsModalOpen: false,
+  importTokensModalOpen: false,
+  showSelectActionModal: false,
   accountDetail: {
     privateKey: '',
   },
@@ -170,13 +179,18 @@ export default function reduceApp(
     case actionConstants.IMPORT_NFTS_MODAL_OPEN:
       return {
         ...appState,
-        importNftsModalOpen: true,
+        importNftsModal: {
+          open: true,
+          ...action.payload,
+        },
       };
 
     case actionConstants.IMPORT_NFTS_MODAL_CLOSE:
       return {
         ...appState,
-        importNftsModalOpen: false,
+        importNftsModal: {
+          open: false,
+        },
       };
 
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
@@ -189,6 +203,30 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
+      return {
+        ...appState,
+        importTokensModalOpen: true,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
+      return {
+        ...appState,
+        importTokensModalOpen: false,
+      };
+
+    case actionConstants.SELECT_ACTION_MODAL_OPEN:
+      return {
+        ...appState,
+        showSelectActionModal: true,
+      };
+
+    case actionConstants.SELECT_ACTION_MODAL_CLOSE:
+      return {
+        ...appState,
+        showSelectActionModal: false,
       };
 
     // alert methods

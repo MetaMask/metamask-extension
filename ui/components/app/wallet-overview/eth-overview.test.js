@@ -196,6 +196,12 @@ describe('EthOverview', () => {
       const mockedStoreWithCustodyKeyring = {
         metamask: {
           ...mockStore.metamask,
+          mmiConfiguration: {
+            portfolio: {
+              enabled: true,
+              url: 'https://metamask-institutional.io',
+            },
+          },
           keyrings: [
             {
               type: 'Custody',
@@ -224,9 +230,7 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            'https://metamask-institutional.io/swap',
-          ),
+          url: 'https://metamask-institutional.io/swap',
         }),
       );
     });
@@ -352,7 +356,9 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });

@@ -51,20 +51,24 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'Custom token',
           tag: 'button',
         });
-        await driver.fill('#custom-address', contractAddress);
-        await driver.waitForSelector('#custom-decimals');
+        await driver.fill(
+          '[data-testid="import-tokens-modal-custom-address"]',
+          contractAddress,
+        );
+        await driver.waitForSelector(
+          '[data-testid="import-tokens-modal-custom-decimals"]',
+        );
         await driver.delay(2000);
 
         await driver.clickElement({
-          text: 'Add custom token',
+          text: 'Next',
           tag: 'button',
         });
 
         await driver.delay(2000);
-        await driver.clickElement({
-          text: 'Import tokens',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          '[data-testid="import-tokens-modal-import-button"]',
+        );
 
         // renders balance for newly created token
         await driver.clickElement('.app-header__logo-container');
@@ -77,7 +81,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('approves an already created token and displays the token approval data', async function () {
+  it('approves an already created token and displays the token approval data @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -195,7 +199,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('set custom spending cap, customizes gas, edit spending cap and checks transaction in transaction list', async function () {
+  it('set custom spending cap, customizes gas, edit spending cap and checks transaction in transaction list @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -337,7 +341,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('set maximum spending cap, submits the transaction and finds the transaction in the transactions list', async function () {
+  it('set maximum spending cap, submits the transaction and finds the transaction in the transactions list @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -421,7 +425,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('approves token without gas, set site suggested spending cap, submits the transaction and finds the transaction in the transactions list', async function () {
+  it('approves token without gas, set site suggested spending cap, submits the transaction and finds the transaction in the transactions list @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

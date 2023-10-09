@@ -24,12 +24,13 @@ import ToggleButton from '../../ui/toggle-button';
 import {
   BlockSize,
   Display,
+  FlexDirection,
   JustifyContent,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  BUTTON_SECONDARY_SIZES,
+  ButtonSecondarySize,
   ButtonSecondary,
   Modal,
   ModalContent,
@@ -177,7 +178,12 @@ export const NetworkListMenu = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent
         className="multichain-network-list-menu-content-wrapper"
-        modalDialogProps={{ padding: 0 }}
+        modalDialogProps={{
+          className: 'multichain-network-list-menu-content-wrapper__dialog',
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          padding: 0,
+        }}
       >
         <ModalHeader
           paddingTop={4}
@@ -242,7 +248,7 @@ export const NetworkListMenu = ({ onClose }) => {
           ) : null}
           <Box padding={4}>
             <ButtonSecondary
-              size={BUTTON_SECONDARY_SIZES.LG}
+              size={ButtonSecondarySize.Lg}
               disabled={!isUnlocked}
               block
               onClick={() => {

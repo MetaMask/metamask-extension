@@ -111,6 +111,15 @@ $font-size-h9: map-get($typography-variants, 'h9');
   font-weight: normal;
 }
 
+/**
+* @deprecated The typography mixins `@include H1` - `@include H9` have been deprecated in favor of the `<Text>` component from the component-library.
+* Please update your code to use the `<Text>` component instead, which can be found in ui/components/component-library/text/text.tsx.
+* You can find documentation for the new `<Text>` component in the MetaMask Storybook:
+* {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-text--docs}
+* If you would like to help with the replacement of the old mixins `@include H1` - `@include H9`, please submit a pull request against this GitHub issue:
+* {@link https://github.com/MetaMask/metamask-extension/issues/19533}
+*/
+
 // Typography
 @mixin H1 {
   @include typography('h1');

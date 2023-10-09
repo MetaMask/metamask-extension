@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "העתק כתובת ללוח"
   },
-  "copyPrivateKey": {
-    "message": "זה המפתח הפרטי שלך (נא להקיש כדי להעתיק)"
-  },
   "copyToClipboard": {
     "message": "העתק ללוח"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
   },
-  "enterPassword": {
-    "message": "יש להזין ססמה"
-  },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "הרחב תצוגה"
-  },
-  "exportPrivateKey": {
-    "message": "יצא/י מפתח פרטי"
   },
   "failed": {
     "message": "נכשל"
@@ -621,9 +612,6 @@
   "searchResults": {
     "message": "תוצאות חיפוש"
   },
-  "searchTokens": {
-    "message": "חיפוש טוקנים"
-  },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
@@ -662,9 +650,6 @@
   },
   "showHexDataDescription": {
     "message": "בחר/י בזה כדי להציג את שדה הנתונים ההקסדצימאלים על מסך השליחה"
-  },
-  "showPrivateKeys": {
-    "message": "הצג מפתחות פרטיים"
   },
   "sigRequest": {
     "message": "בקשת חתימה"
@@ -785,9 +770,6 @@
   },
   "tryAgain": {
     "message": "ניסיון חוזר"
-  },
-  "typePassword": {
-    "message": "נא להקליד את סיסמת MetaMask שלך"
   },
   "unapproved": {
     "message": "לא אושר"
