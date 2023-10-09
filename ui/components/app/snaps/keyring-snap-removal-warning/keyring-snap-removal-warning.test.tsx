@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { Snap } from '@metamask/snaps-utils';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import messages from '../../../../../app/_locales/en/messages.json';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 
@@ -59,7 +60,9 @@ describe('Keyring Snap Remove Warning', () => {
 
     for (const account of defaultArgs.keyringAccounts) {
       expect(getByText(account.name)).toBeInTheDocument();
-      expect(getByText(account.address)).toBeInTheDocument();
+      expect(
+        getByText(toChecksumHexAddress(account.address)),
+      ).toBeInTheDocument();
     }
   });
 

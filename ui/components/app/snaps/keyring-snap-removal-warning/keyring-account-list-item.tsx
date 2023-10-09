@@ -11,6 +11,8 @@ import {
   OverflowWrap,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+// import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const KeyringAccountListItem = ({
@@ -45,7 +47,9 @@ export const KeyringAccountListItem = ({
           <Text color={TextColor.textMuted}>
             {t('keyringAccountPublicAddress')}
           </Text>
-          <Text overflowWrap={OverflowWrap.Anywhere}>{account.address}</Text>
+          <Text overflowWrap={OverflowWrap.Anywhere}>
+            {toChecksumHexAddress(account.address)}
+          </Text>
         </Box>
       </Box>
       <Box
