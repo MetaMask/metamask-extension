@@ -60,7 +60,11 @@ export default function CustodyAccountList({
           data-testid="custody-account-list"
         >
           {accounts
-            .sort((a, b) => a.name.localeCompare(b.name))
+            .sort((a, b) =>
+              a.name
+                .toLocaleLowerCase()
+                .localeCompare(b.name.toLocaleLowerCase()),
+            )
             .map((account, idx) => (
               <Box
                 display={Display.Flex}
