@@ -160,6 +160,11 @@ export default class ExtensionPlatform {
     return tab;
   }
 
+  async getActiveTabsWithUrl() {
+    const tabs = await browser.tabs.query({ active: true, url: '<all_urls>' });
+    return tabs;
+  }
+
   async switchToTab(tabId) {
     const tab = await browser.tabs.update(tabId, { highlighted: true });
     return tab;

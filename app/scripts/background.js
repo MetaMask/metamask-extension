@@ -865,7 +865,7 @@ export function setupController(
  * Opens the browser popup for user confirmation
  */
 async function triggerUi() {
-  const tabs = await platform.getActiveTabs();
+  const tabs = await platform.getActiveTabsWithUrl();
   const currentlyActiveMetamaskTab = tabs.find(
     (tab) => openMetamaskTabsIDs[tab.id],
   );
