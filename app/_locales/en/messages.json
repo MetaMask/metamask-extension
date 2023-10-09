@@ -2547,8 +2547,8 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
+  "networkNameOpMainnet": {
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
