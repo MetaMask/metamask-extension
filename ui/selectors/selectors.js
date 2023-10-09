@@ -1,5 +1,5 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { SubjectType } from '@metamask/subject-metadata-controller';
+import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -1757,4 +1757,20 @@ export function getSnapRegistry(state) {
   const { snapRegistryList } = state.metamask;
   return snapRegistryList;
 }
+
+export function getKeyringSnapAccounts(state) {
+  const identities = getMetaMaskIdentities(state);
+
+  const keyringAccounts = Object.values(identities).filter((identity) => {
+    return (
+      findKeyringForAddress(state, identity.address).type === 'Snap Keyring'
+    );
+  });
+  return keyringAccounts;
+}
+
+export function getKeyringSnapRemovalResult(state) {
+  return state.appState.keyringRemovalSnapModal;
+}
+
 ///: END:ONLY_INCLUDE_IN
