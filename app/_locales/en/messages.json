@@ -4179,6 +4179,9 @@
   "snapDetailsCreateASnapAccount": {
     "message": "Create a Snap Account"
   },
+  "snapFeedback": {
+    "message": "Submit feedback"
+  },
   "snapDetailsInstalled": {
     "message": "Installed"
   },
