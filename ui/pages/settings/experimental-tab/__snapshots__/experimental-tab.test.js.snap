@@ -20,7 +20,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
         >
           Security alerts
-        </p>
+        </span>
         <div
           class="settings-page__content-description"
         >
