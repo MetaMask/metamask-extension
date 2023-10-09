@@ -269,7 +269,7 @@
     "@metamask/phishing-controller": "^6.0.0",
     "@metamask/post-message-stream": "^6.2.0",
     "@metamask/ppom-validator": "^0.5.0",
-    "@metamask/providers": "^11.1.0",
+    "@metamask/providers": "^13.0.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/rpc-methods": "^2.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
