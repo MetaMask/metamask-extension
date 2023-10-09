@@ -49,7 +49,7 @@ export default function FeeCard({
       case CHAIN_IDS.AVALANCHE:
         return t('networkNameAvalanche');
       case CHAIN_IDS.OPTIMISM:
-        return t('networkNameOptimism');
+        return t('networkNameOpMainnet');
       case CHAIN_IDS.ARBITRUM:
         return t('networkNameArbitrum');
       case CHAIN_IDS.ZKSYNC_ERA:
