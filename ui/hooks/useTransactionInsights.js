@@ -5,8 +5,10 @@ import { SeverityLevel } from '@metamask/snaps-utils';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
+import { Tab } from '../components/ui/tabs';
+import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
+import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
 import { getInsightSnaps } from '../selectors';
-import TxInsights from '../components/app/snaps/tx-insights/tx-insights';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -49,15 +51,44 @@ const useTransactionInsights = ({ txData }) => {
     return null;
   }
 
-  const insightComponent = (
-    <TxInsights
-      data={data}
-      loading={loading}
-      insightSnaps={insightSnaps}
-      onChange={(snapId) => setSelectedInsightSnapId(snapId)}
-      selectedSnapId={selectedInsightSnapId}
-    />
+  const selectedSnap = insightSnaps.find(
+    ({ id }) => id === selectedInsightSnapId,
   );
+
+  let insightComponent;
+
+  if (data && insightSnaps.length === 1) {
+    insightComponent = (
+      <Tab
+        className="confirm-page-container-content__tab"
+        name={selectedSnap?.manifest.proposedName}
+      >
+        <SnapInsight data={data?.[0]} loading={loading} />
+      </Tab>
+    );
+  } else if (data && insightSnaps.length > 1) {
+    const dropdownOptions = insightSnaps?.map(
+      ({ id, manifest: { proposedName } }) => ({
+        value: id,
+        name: proposedName,
+      }),
+    );
+
+    const selectedSnapData = data?.find(
+      (promise) => promise?.snapId === selectedInsightSnapId,
+    );
+
+    insightComponent = (
+      <DropdownTab
+        className="confirm-page-container-content__tab"
+        options={dropdownOptions}
+        selectedOption={selectedInsightSnapId}
+        onChange={(snapId) => setSelectedInsightSnapId(snapId)}
+      >
+        <SnapInsight loading={loading} data={selectedSnapData} />
+      </DropdownTab>
+    );
+  }
 
   const warnings = data?.reduce((warningsArr, promise) => {
     if (promise.response?.severity === SeverityLevel.Critical) {
