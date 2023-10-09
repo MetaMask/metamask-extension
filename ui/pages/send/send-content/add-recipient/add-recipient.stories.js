@@ -56,15 +56,19 @@ export default {
     recipient: {
       control: 'object',
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     domainType: {
       control: 'text',
     },
     resolvingSnap: {
       control: 'text',
     },
+    ///: END:ONLY_INCLUDE_IN
   },
   args: {
     recipient,
+    domainType: 'Other',
+    resolvingSnap: '@metamask/example-lookup-snap',
     contacts: [addressBook],
     nonContacts: [addressBook],
     ownedAccounts: [addressBook],
@@ -79,8 +83,10 @@ export const DefaultStory = (args) => {
         {...args}
         updateRecipient={() => undefined}
         updateGas={() => undefined}
+        ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
         domainType="Other"
         resolvingSnap="@metamask/example-lookup-snap"
+        ///: END:ONLY_INCLUDE_IN
       />
     </div>
   );
@@ -95,8 +101,10 @@ export const ErrorStory = (args) => {
         {...args}
         updateRecipient={() => undefined}
         updateGas={() => undefined}
+        ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
         domainType="Other"
         resolvingSnap="@metamask/example-lookup-snap"
+        ///: END:ONLY_INCLUDE_IN
       />
     </div>
   );
@@ -114,8 +122,10 @@ export const WarningStory = (args) => {
         {...args}
         updateRecipient={() => undefined}
         updateGas={() => undefined}
+        ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
         domainType="Other"
         resolvingSnap="@metamask/example-lookup-snap"
+        ///: END:ONLY_INCLUDE_IN
       />
     </div>
   );
