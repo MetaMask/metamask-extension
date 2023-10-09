@@ -1,3 +1,4 @@
+import { MockttpServer } from 'mockttp';
 import { mockJsonRpcResult } from '../mocks/json-rpc-result';
 
 type RequestConfig = [
@@ -39,7 +40,7 @@ const DEFAULT_VARIANT = 'default';
  * ```
  */
 async function mockServerJsonRpc(
-  mockServer: any, // MockttpServer
+  mockServer: MockttpServer,
   listOfRequestConfigs: RequestConfig[],
 ) {
   for (const [method, options] of listOfRequestConfigs) {
