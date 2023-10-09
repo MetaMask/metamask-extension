@@ -74,3 +74,13 @@ export const SECURITY_PROVIDER_MESSAGE_SEVERITY = {
   MALICIOUS: 1,
   NOT_SAFE: 2,
 };
+
+export const PPOM_CALL_METRIC_KEY_MAP: Record<string, string> = {
+  eth_call: 'ppom_eth_call_count',
+  eth_createAccessList: 'ppom_eth_createAccessList_count',
+  eth_getStorageAt: 'ppom_eth_getStorageAt_count',
+  eth_getCode: 'ppom_eth_getCode_count',
+  eth_getTrasanctionCount: 'ppom_eth_getTrasanctionCount_count',
+  eth_getBalance: 'ppom_eth_getBalance_count',
+  trace_call: 'ppom_trace_call_count',
+};

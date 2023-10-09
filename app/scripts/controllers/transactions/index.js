@@ -60,6 +60,7 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   BlockaidReason,
   BlockaidResultType,
+  PPOM_CALL_METRIC_KEY_MAP,
 } from '../../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -2489,6 +2490,20 @@ export default class TransactionController extends EventEmitter {
     }
     ///: END:ONLY_INCLUDE_IN
 
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    const additionalBlockaidParams = {};
+
+    if (securityProviderResponse?.providerRequestsCount) {
+      Object.keys(securityProviderResponse.providerRequestsCount).forEach(
+        (key) => {
+          const metricKey = PPOM_CALL_METRIC_KEY_MAP[key];
+          additionalBlockaidParams[metricKey] =
+            securityProviderResponse.providerRequestsCount[key];
+        },
+      );
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
     let properties = {
       chain_id: chainId,
@@ -2509,6 +2524,7 @@ export default class TransactionController extends EventEmitter {
         securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
       security_alert_reason:
         securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
+      ...additionalBlockaidParams,
       ///: END:ONLY_INCLUDE_IN
     };
 

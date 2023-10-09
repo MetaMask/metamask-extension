@@ -14,6 +14,7 @@ import { TransactionStatus } from '../../../shared/constants/transaction';
 import {
   BlockaidReason,
   BlockaidResultType,
+  PPOM_CALL_METRIC_KEY_MAP,
 } from '../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 
@@ -197,6 +198,18 @@ export default function createRPCMethodTrackingMiddleware({
           from = req?.params?.[0];
         }
         const paramsExamplePassword = req?.params?.[2];
+
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        if (req.securityAlertResponse?.providerRequestsCount) {
+          Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
+            (key) => {
+              const metricKey = PPOM_CALL_METRIC_KEY_MAP[key];
+              eventProperties[metricKey] =
+                req.securityAlertResponse.providerRequestsCount[key];
+            },
+          );
+        }
+        ///: END:ONLY_INCLUDE_IN
 
         ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
         eventProperties.security_alert_response =
