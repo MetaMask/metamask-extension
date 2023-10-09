@@ -599,6 +599,9 @@
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
+  "blockaidMessage": {
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
+  },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
   },
@@ -2280,6 +2283,12 @@
   "loadingNFTs": {
     "message": "Loading NFTs..."
   },
+  "loadingScreenHardwareWalletMessage": {
+    "message": "Please complete the transaction on the hardware wallet."
+  },
+  "loadingScreenSnapMessage": {
+    "message": "Please complete the transaction on the Snap."
+  },
   "loadingTokens": {
     "message": "Loading tokens..."
   },
@@ -3189,8 +3198,11 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
+  "openSeaLabel": {
+    "message": "OpenSea + Blockaid"
+  },
+  "openSeaMessage": {
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests."
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3493,6 +3505,9 @@
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
+  },
+  "preferredProvider": {
+    "message": "Select your preferred provider"
   },
   "preparingSwap": {
     "message": "Preparing swap..."
@@ -3843,7 +3858,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -5038,9 +5053,6 @@
   "termsOfService": {
     "message": "Terms of service"
   },
-  "termsOfUse": {
-    "message": "terms of use"
-  },
   "termsOfUseAgreeText": {
     "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
   },
@@ -5068,10 +5080,6 @@
   },
   "thisCollection": {
     "message": "this collection"
-  },
-  "thisServiceIsExperimental": {
-    "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Time"
