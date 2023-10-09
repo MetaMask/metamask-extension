@@ -24,8 +24,9 @@ async function mockInfura(mockServer) {
 }
 
 /**
- * Tests various Blockaid PPOM security alerts. Some other tests live in separate files due to the need for more
- * sophisticated JSON-RPC mock requests. Data for the E2E test requests and responses are provided here:
+ * Tests various Blockaid PPOM security alerts. Some other tests live in separate files due to
+ * the need for more sophisticated JSON-RPC mock requests. Some example PPOM Blockaid
+ * requests and responses are provided here:
  *
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
@@ -66,7 +67,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
                 value: '0x9184e72a000',
               },
             ],
-            block: '16000000',
           },
           {
             logExpectedDetail: 'Benign Blur eth_sendTransaction',
@@ -93,6 +93,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
         for (const config of testBenignConfigs) {
           const { btnSelector, logExpectedDetail, method, params } = config;
 
+          // Either click TestDapp button to send JSON-RPC request or manually send request
           if (btnSelector) {
             await driver.clickElement(btnSelector);
           } else {
@@ -127,8 +128,9 @@ describe('Confirmation Security Alert - Blockaid', function () {
   });
 
   /**
-   * Disclaimer: this test may be missing checks for some reason types. e.g. blur and domain.
-   * Some other tests are found in other files e.g. test/e2e/snaps/ppom-malicious-<name>.spec.js
+   * Disclaimer: This test does not test all reason types. e.g. 'blur_farming',
+   * 'malicious_domain', 'unfair_trade'. Some other tests are found in other files:
+   * e.g. test/e2e/snaps/ppom-malicious-<name>.spec.js
    */
   it('should show security alerts for malicious requests', async function () {
     await withFixtures(
@@ -214,7 +216,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
     );
   });
 
-  it('should show "Request may not be safe" if PPOM fails to check transaction', async function () {
+  it('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
         dapp: true,

@@ -5,9 +5,9 @@ type RequestConfig = [
   options?: {
     /** optional arbitrary method variant name to return various result values */
     methodResultVariant?: string;
-    /** optional params value for withJsonBodyIncluding() */
+    /** optional params value for JSON request used in withJsonBodyIncluding() */
     params?: any;
-    /** optional result */
+    /** optional result value returned in JSON response */
     result?: any;
   },
 ];
@@ -15,7 +15,7 @@ type RequestConfig = [
 const DEFAULT_VARIANT = 'default';
 
 /**
- * Helper function to assist with mocking JSON-RPC post requests
+ * Helper function to assist with mocking JSON-RPC POST requests
  *
  * @param mockServer
  * @param listOfRequestConfigs
@@ -23,17 +23,17 @@ const DEFAULT_VARIANT = 'default';
  * ```
  *  await mockServerJsonRpc(mockServer, [
  *    ['eth_call', {
- *      methodResultVariant: 'balanceChecker',
- *      params: [{to :'0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b'}],
- *    }],
- *    ['eth_call', {
  *      params: ['0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b'],
  *      result: '0x0000000000000000000000000000000000000000000000000ddfe4d79cbd3de5',
  *    }],
+ *    ['eth_call', {
+ *      methodResultVariant: 'balanceChecker',
+ *      params: [{to :'0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b'}],
+ *    }],
+ *    ['eth_gasPrice],
  *    ['eth_getBalance', {
  *      result: '0x27d17a5b79f77509541',
  *    }],
- *    ['eth_gasPrice],
  *    ['eth_getBlockByNumber']
  *  ]);
  * ```
