@@ -4,7 +4,6 @@ const { mockServerJsonRpc } = require('../mock-server-json-rpc');
 
 const {
   defaultGanacheOptions,
-  getWindowHandles,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -235,7 +234,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
 
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
-        await getWindowHandles(driver, 3); // TODO: delete. triple-check race-condition issue
         await driver.switchToWindowWithTitle('MetaMask Notification');
 
         const bannerAlertFoundByTitle = await driver.findElement({
