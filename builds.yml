@@ -26,6 +26,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/2.0.1/index.html
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     # Main build uses the default browser manifest
     manifestOverrides: false
 
@@ -63,6 +64,7 @@ buildTypes:
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/dev/registry.json
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
 
@@ -82,6 +84,7 @@ buildTypes:
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
 
@@ -156,8 +159,6 @@ features:
         dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
-    env:
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
 
