@@ -31,7 +31,6 @@ import {
   useSafeChainsListValidationSelector,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
-import Callout from '../../components/ui/callout';
 import { Icon, IconName } from '../../components/component-library';
 import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -41,6 +40,7 @@ import { getSnapName } from '../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
+import { BannerAlert } from '../../components/component-library/banner-alert';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -406,17 +406,14 @@ export default function ConfirmationPage({
           alertState[pendingConfirmation.id] &&
           Object.values(alertState[pendingConfirmation.id])
             .filter((alert) => alert.dismissed === false)
-            .map((alert, idx, filtered) => (
-              <Callout
+            .map((alert) => (
+              <BannerAlert
                 key={alert.id}
                 severity={alert.severity}
-                dismiss={() => dismissAlert(alert.id)}
-                isFirst={idx === 0}
-                isLast={idx === filtered.length - 1}
-                isMultiple={filtered.length > 1}
+                onClose={() => dismissAlert(alert.id)}
               >
                 <MetaMaskTemplateRenderer sections={alert.content} />
-              </Callout>
+              </BannerAlert>
             ))
         }
         ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
@@ -441,10 +438,10 @@ export default function ConfirmationPage({
         cancelText={templatedValues.cancelText}
         loadingText={loadingText || templatedValues.loadingText}
         loading={loading}
-        submitAlerts={submitAlerts.map((alert, idx) => (
-          <Callout key={alert.id} severity={alert.severity} isFirst={idx === 0}>
+        submitAlerts={submitAlerts.map((alert) => (
+          <BannerAlert key={alert.id} severity={alert.severity}>
             <MetaMaskTemplateRenderer sections={alert.content} />
-          </Callout>
+          </BannerAlert>
         ))}
       />
     </div>
