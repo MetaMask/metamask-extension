@@ -32,8 +32,9 @@ export const AccountPicker = ({
   address,
   name,
   onClick,
-  disabled,
+  disabled = false,
   showAddress = false,
+  ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
@@ -51,8 +52,9 @@ export const AccountPicker = ({
         gap: 2,
         alignItems: AlignItems.center,
       }}
-      disabled={disabled}
       size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Md}
+      disabled={disabled}
+      {...props}
     >
       <Box
         display={Display.Flex}
@@ -109,7 +111,7 @@ AccountPicker.propTypes = {
   /**
    * Represents if the AccountPicker should be actionable
    */
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
   /**
    * Represents if the account address should display
    */
