@@ -20,7 +20,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
         >
           Security alerts
-        </span>
+        </p>
         <div
           class="settings-page__content-description"
         >
@@ -282,8 +282,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
       >
         <button
           class="button btn--rounded btn-primary btn--large"
-          role="button"
-          tabindex="0"
         >
           Disable Desktop App
         </button>
