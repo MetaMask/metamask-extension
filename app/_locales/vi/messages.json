@@ -611,18 +611,9 @@
   "busy": {
     "message": "Đang bận"
   },
-  "buy": {
-    "message": "Mua"
-  },
   "buyAsset": {
     "message": "Mua $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Giữ tiền mã hóa và kiếm lợi nhuận tiềm năng"
-  },
-  "buyDisabled": {
-    "message": "Mua không khả dụng trong mạng này"
   },
   "buyMoreAsset": {
     "message": "Mua thêm $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Tắt lời nhắc sao lưu Cụm từ khôi phục bí mật"
   },
-  "displayNftMedia": {
-    "message": "Hiển thị phương tiện NFT"
-  },
   "domain": {
     "message": "Tên miền"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Bật API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
   },
   "enableSmartSwaps": {
     "message": "Kích hoạt hoán đổi thông minh"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Thử nghiệm"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Khám phá MetaMask Snap"
-  },
   "extendWalletWithSnaps": {
-    "message": "Tuỳ biến trải nghiệm sử dụng ví."
+    "message": "Tuỳ biến trải nghiệm sử dụng ví.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Tiện ích bên ngoài"
@@ -3029,9 +3021,6 @@
   },
   "openInBlockExplorer": {
     "message": "Mở trên trình khám phá khối"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4807,9 +4796,6 @@
   "termsOfService": {
     "message": "Điều khoản dịch vụ"
   },
-  "termsOfUse": {
-    "message": "điều khoản sử dụng"
-  },
   "termsOfUseAgreeText": {
     "message": " Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng MetaMask và tất cả các tính năng của MetaMask"
   },
@@ -4837,10 +4823,6 @@
   },
   "thisCollection": {
     "message": "bộ sưu tập này"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Đây là dịch vụ thử nghiệm. Bằng cách bật tính năng này, bạn đồng ý với $1 của OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Thời gian"
@@ -5280,9 +5262,6 @@
   },
   "viewOnOpensea": {
     "message": "Xem trên Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Xem Trang tổng quan Danh mục đầu tư"
   },
   "viewinCustodianApp": {
     "message": "Xem trong ứng dụng lưu ký"

@@ -611,18 +611,9 @@
   "busy": {
     "message": "Απασχολημένο"
   },
-  "buy": {
-    "message": "Αγορά"
-  },
   "buyAsset": {
     "message": "Αγορά $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Κρατήστε τα κρυπτονομίσματά σας και κερδίστε πιθανά κέρδη"
-  },
-  "buyDisabled": {
-    "message": "Η αγορά δεν είναι διαθέσιμη σε αυτό το δίκτυο"
   },
   "buyMoreAsset": {
     "message": "Αγοράστε περισσότερα $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Απορρίψτε την υπενθύμιση δημιουργίας αντιγράφων ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
-  "displayNftMedia": {
-    "message": "Εμφάνιση των μέσων NFT"
-  },
   "domain": {
     "message": "Τομέας"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Ενεργοποίηση OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
   "enableSmartSwaps": {
     "message": "Ενεργοποίηση των έξυπνων ανταλλαγών"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Πειραματικά"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Εξερευνήστε το MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας."
+    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Εξωτερική επέκταση"
@@ -3029,9 +3021,6 @@
   },
   "openInBlockExplorer": {
     "message": "Άνοιγμα στο Block Explorer"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Δοκιμαστικά)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4807,9 +4796,6 @@
   "termsOfService": {
     "message": "Όροι παροχής υπηρεσιών"
   },
-  "termsOfUse": {
-    "message": "όροι χρήσης"
-  },
   "termsOfUseAgreeText": {
     "message": " Συμφωνώ με τους Όρους Χρήσης, οι οποίοι ισχύουν για τη χρήση του MetaMask και όλων των λειτουργιών του"
   },
@@ -4837,10 +4823,6 @@
   },
   "thisCollection": {
     "message": "αυτή η συλλογή"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Η υπηρεσία αυτή είναι πειραματική. Ενεργοποιώντας αυτή τη λειτουργία, συμφωνείτε με τους $1 του OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Ώρα"
@@ -5280,9 +5262,6 @@
   },
   "viewOnOpensea": {
     "message": "Προβολή στο Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Προβολή πίνακα ελέγχου χαρτοφυλακίου"
   },
   "viewinCustodianApp": {
     "message": "Προβολή στην εφαρμογή θεματοφύλακα"

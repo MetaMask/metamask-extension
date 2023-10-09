@@ -611,18 +611,9 @@
   "busy": {
     "message": "बिज़ी"
   },
-  "buy": {
-    "message": "खरीदें"
-  },
   "buyAsset": {
     "message": "$1 खरीदें",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "अपने क्रिप्टो को रोक कर रखें और शानदार लाभ कमाएं"
-  },
-  "buyDisabled": {
-    "message": "इस नेटवर्क में खरीदारी उपलब्ध नहीं है"
   },
   "buyMoreAsset": {
     "message": "ज्यादा $1 खरीदें",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "सीक्रेट रिकवरी फ्रेज़ बैकअप रिमाइंडर खारिज करें"
   },
-  "displayNftMedia": {
-    "message": "NFT मीडिया को दिखाएं"
-  },
   "domain": {
     "message": "डोमेन"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API इनेबल करें"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
   "enableSmartSwaps": {
     "message": "स्मार्ट स्वैप इनेबल करें"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "एक्सपेरिमेंटल"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaps को एक्सप्लोर करें"
-  },
   "extendWalletWithSnaps": {
-    "message": "वॉलेट एक्सपीरियंस को कस्टमाइज़ करें।"
+    "message": "वॉलेट एक्सपीरियंस को कस्टमाइज़ करें।",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "बाहरी एक्स्टेन्शन"
@@ -3029,9 +3021,6 @@
   },
   "openInBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर में खोलें"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (बीटा)"
   },
   "openSeaNew": {
     "message": "ओपनसी"
@@ -4807,9 +4796,6 @@
   "termsOfService": {
     "message": "सेवा की शर्तें"
   },
-  "termsOfUse": {
-    "message": "इस्तेमाल की शर्तें"
-  },
   "termsOfUseAgreeText": {
     "message": " मैं इस्तेमाल की शर्तों से सहमत हूं, जो MetaMask और इसकी सभी फीचर्स के मेरे इस्तेमाल पर लागू होती हैं"
   },
@@ -4837,10 +4823,6 @@
   },
   "thisCollection": {
     "message": "यह संग्रह"
-  },
-  "thisServiceIsExperimental": {
-    "message": "यह सेवा प्रायोगिक है। इस सुविधा को इनेबल करके, आप OpenSea के $1 से सहमत होते हैं।",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "समय"
@@ -5280,9 +5262,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea पर देखें"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolio डैशबोर्ड देखें"
   },
   "viewinCustodianApp": {
     "message": "Custodian ऐप में देखें"

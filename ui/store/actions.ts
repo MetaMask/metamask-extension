@@ -6,9 +6,6 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { v4 as uuidV4 } from 'uuid';
-///: END:ONLY_INCLUDE_IN
 import {
   AssetsContractController,
   BalanceMap,
@@ -19,14 +16,12 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { HandlerType } from '@metamask/snaps-utils';
-///: END:ONLY_INCLUDE_IN
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
+import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -1044,6 +1039,7 @@ export async function addTransactionAndWaitForPublish(
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
+  loadingIndicatorMessage: string,
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -1051,7 +1047,8 @@ export function updateAndApproveTx(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
+    !dontShowLoadingIndicator &&
+      dispatch(showLoadingIndication(loadingIndicatorMessage));
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod(
@@ -1141,13 +1138,17 @@ export function enableSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+
+export async function getPhishingResult(website: string) {
+  return await submitRequestToBackground('getPhishingResult', [website]);
+}
 ///: END:ONLY_INCLUDE_IN
 
 // TODO: Clean this up.
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function removeSnap(
   snapId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
     ///: END:ONLY_INCLUDE_IN
@@ -1172,18 +1173,12 @@ export function removeSnap(
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       if (isAccountsSnap) {
-        const accounts = (await handleSnapRequest({
-          snapId,
-          origin: 'metamask',
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            id: uuidV4(),
-            jsonrpc: '2.0',
-            method: 'keyring_listAccounts',
-          },
-        })) as unknown as any[];
-        for (const account of accounts) {
-          dispatch(removeAccount(account.address.toLowerCase()));
+        const addresses: string[] = await submitRequestToBackground(
+          'getAccountsBySnapId',
+          [snapId],
+        );
+        for (const address of addresses) {
+          await submitRequestToBackground('removeAccount', [address]);
         }
       }
       ///: END:ONLY_INCLUDE_IN
@@ -1789,10 +1784,19 @@ export function showConfTxPage({ id }: Partial<TransactionMeta> = {}) {
 }
 
 export function addToken(
-  address?: string,
-  symbol?: string,
-  decimals?: number,
-  image?: string,
+  {
+    address,
+    symbol,
+    decimals,
+    image,
+    networkClientId,
+  }: {
+    address?: string;
+    symbol?: string;
+    decimals?: number;
+    image?: string;
+    networkClientId?: NetworkClientId;
+  },
   dontShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1804,10 +1808,13 @@ export function addToken(
     }
     try {
       await submitRequestToBackground('addToken', [
-        address,
-        symbol,
-        decimals,
-        image,
+        {
+          address,
+          symbol,
+          decimals,
+          image,
+          networkClientId,
+        },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -1823,13 +1830,18 @@ export function addToken(
  * To add the tokens user selected to state
  *
  * @param tokensToImport
+ * @param networkClientId
  */
 export function addImportedTokens(
   tokensToImport: Token[],
+  networkClientId?: NetworkClientId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('addImportedTokens', [tokensToImport]);
+      await submitRequestToBackground('addImportedTokens', [
+        tokensToImport,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
@@ -2984,6 +2996,21 @@ export function setUseMultiAccountBalanceChecker(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseMultiAccountBalanceChecker`);
     callBackgroundMethod('setUseMultiAccountBalanceChecker', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
+export function setUseSafeChainsListValidation(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseSafeChainsListValidation`);
+    callBackgroundMethod('setUseSafeChainsListValidation', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err));
@@ -4440,6 +4467,16 @@ export function setSecurityAlertsEnabled(val: boolean): void {
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   try {
     await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+export function setUseExternalNameSources(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseExternalNameSources', [val]);
   } catch (error) {
     logErrorWithMessage(error);
   }

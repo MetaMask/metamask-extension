@@ -260,7 +260,6 @@ export const createSwapsMockStore = () => {
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       currentLocale: 'en',
-      keyringTypes: [KeyringType.imported, KeyringType.hdKeyTree],
       keyrings: [
         {
           type: KeyringType.hdKeyTree,
