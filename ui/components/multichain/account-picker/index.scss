@@ -1,4 +1,9 @@
 .multichain-account-picker {
+  &--full > span {
+    display: flex;
+    width: 100%;
+  }
+
   &:hover,
   &:focus {
     box-shadow: none;

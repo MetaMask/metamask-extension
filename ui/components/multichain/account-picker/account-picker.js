@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
@@ -15,6 +16,7 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
@@ -34,6 +36,9 @@ export const AccountPicker = ({
   onClick,
   disabled = false,
   showAddress = false,
+  block = false,
+  addressProps = {},
+  labelProps = {},
   ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
@@ -41,7 +46,9 @@ export const AccountPicker = ({
 
   return (
     <ButtonBase
-      className="multichain-account-picker"
+      className={classnames('multichain-account-picker', {
+        'multichain-account-picker--full': block,
+      })}
       data-testid="account-menu-icon"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
@@ -60,6 +67,7 @@ export const AccountPicker = ({
         display={Display.Flex}
         className="multichain-account-picker-container"
         flexDirection={FlexDirection.Column}
+        width={BlockSize.Full}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
           <AvatarAccount
@@ -72,7 +80,7 @@ export const AccountPicker = ({
             size={Size.XS}
             borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
           />
-          <Text as="span" fontWeight={FontWeight.Bold} ellipsis>
+          <Text as="span" ellipsis {...labelProps}>
             {name}
           </Text>
           <Icon
@@ -84,8 +92,10 @@ export const AccountPicker = ({
         {showAddress ? (
           <Text
             color={TextColor.textAlternative}
-            textAlign={TextAlign.Center}
+            textAlign={block ? TextAlign.Start : TextAlign.Center}
             variant={TextVariant.bodySm}
+            paddingInlineStart={block ? 5 : 0}
+            {...addressProps}
           >
             {shortenedAddress}
           </Text>
@@ -116,4 +126,9 @@ AccountPicker.propTypes = {
    * Represents if the account address should display
    */
   showAddress: PropTypes.bool,
+
+  /**
+   * Represents if the AccountPicker should take full width
+   */
+  block: PropTypes.bool,
 };

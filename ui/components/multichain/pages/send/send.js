@@ -21,6 +21,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { getCurrentNetwork, getSelectedIdentity } from '../../../../selectors';
 import { AccountPicker } from '../..';
@@ -83,8 +84,12 @@ export const SendPage = () => {
             borderWidth={1}
             paddingTop={4}
             paddingBottom={4}
-            width={BlockSize.Full}
+            block
             justifyContent={JustifyContent.flexStart}
+            addressProps={{
+              display: Display.Flex,
+              textAlign: TextAlign.Start,
+            }}
           />
         </SendPageRow>
       </Content>
