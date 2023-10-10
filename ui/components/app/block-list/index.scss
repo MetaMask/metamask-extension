@@ -3,15 +3,6 @@
   flex-flow: column;
   margin: 32px;
 
-  &__buttons {
-    margin-left: auto;
-    margin-right: auto;
-
-    > * {
-      margin-bottom: 4px;
-    }
-  }
-
   &__block {
     display: flex;
     flex-flow: column;
@@ -19,7 +10,6 @@
     color: 1px solid $Grey-000;
     padding: 24px;
     margin-top: 12px;
-    position: relative;
 
     span {
       overflow: hidden;
@@ -27,10 +17,12 @@
     }
   }
 
-  &__block-delete {
-    width: 40px !important;
-    position: absolute;
-    right: 10px;
-    height: 30px;
+  &__buttons {
+    display: flex;
+
+    button {
+      margin-left: 8px;
+      margin-right: 8px;
+    }
   }
 }
