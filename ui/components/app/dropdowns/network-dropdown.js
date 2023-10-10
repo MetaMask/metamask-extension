@@ -23,12 +23,8 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  Icon,
-  ButtonIcon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library';
+
+import { Icon, ICON_NAMES } from '../../component-library';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -51,7 +47,7 @@ function mapStateToProps(state) {
   return {
     provider: state.metamask.provider,
     shouldShowTestNetworks: getShowTestNetworks(state),
-    networkConfigurations: state.metamask.networkConfigurations,
+    networkConfigurations: state.metamask.networkConfigurations || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
     showTestnetMessageInDropdown: state.metamask.showTestnetMessageInDropdown,
   };
@@ -62,8 +58,8 @@ function mapDispatchToProps(dispatch) {
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type));
     },
-    setActiveNetwork: (networkConfigurationId) => {
-      dispatch(actions.setActiveNetwork(networkConfigurationId));
+    setCurrentNetwork: (networkConfigurationId) => {
+      dispatch(actions.setCurrentNetwork(networkConfigurationId));
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     displayInvalidCustomNetworkAlert: (networkName) => {
@@ -90,13 +86,13 @@ class NetworkDropdown extends Component {
 
   static propTypes = {
     provider: PropTypes.shape({
-      nickname: PropTypes.string,
+      chainName: PropTypes.string,
       rpcUrl: PropTypes.string,
       type: PropTypes.string,
       ticker: PropTypes.string,
     }).isRequired,
     setProviderType: PropTypes.func.isRequired,
-    setActiveNetwork: PropTypes.func.isRequired,
+    setCurrentNetwork: PropTypes.func.isRequired,
     hideNetworkDropdown: PropTypes.func.isRequired,
     networkConfigurations: PropTypes.object.isRequired,
     shouldShowTestNetworks: PropTypes.bool,
@@ -156,19 +152,22 @@ class NetworkDropdown extends Component {
 
   renderCustomRpcList(networkConfigurations, provider, opts = {}) {
     return Object.entries(networkConfigurations).map(
-      ([networkConfigurationId, networkConfiguration]) => {
-        const { rpcUrl, chainId, nickname = '' } = networkConfiguration;
+      ([networkConfigurationId, entry]) => {
+        const { rpcUrl, chainId, chainName = '' } = entry;
         const isCurrentRpcTarget =
           provider.type === NETWORK_TYPES.RPC && rpcUrl === provider.rpcUrl;
+
         return (
           <DropdownMenuItem
             key={`common${rpcUrl}`}
             closeMenu={() => this.props.hideNetworkDropdown()}
             onClick={() => {
               if (isPrefixedFormattedHexString(chainId)) {
-                this.props.setActiveNetwork(networkConfigurationId);
+                this.props.setCurrentNetwork(networkConfigurationId);
               } else {
-                this.props.displayInvalidCustomNetworkAlert(nickname || rpcUrl);
+                this.props.displayInvalidCustomNetworkAlert(
+                  chainName || rpcUrl,
+                );
               }
             }}
             style={{
@@ -178,7 +177,7 @@ class NetworkDropdown extends Component {
             }}
           >
             {isCurrentRpcTarget ? (
-              <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+              <IconCheck color="var(--color-success-default)" />
             ) : (
               <div className="network-check__transparent">✓</div>
             )}
@@ -189,25 +188,22 @@ class NetworkDropdown extends Component {
             />
             <span
               className="network-name-item"
-              data-testid={`${nickname}-network-item`}
+              data-testid={`${chainName}-network-item`}
               style={{
                 color: isCurrentRpcTarget
                   ? 'var(--color-text-default)'
                   : 'var(--color-text-alternative)',
               }}
             >
-              {nickname || rpcUrl}
+              {chainName || rpcUrl}
             </span>
-            {isCurrentRpcTarget && (
-              <ButtonIcon
-                className="delete"
-                iconName={ICON_NAMES.CLOSE}
-                size={ICON_SIZES.SM}
-                ariaLabel={this.context.t('delete')}
+            {isCurrentRpcTarget ? null : (
+              <i
+                className="fa fa-times delete"
                 onClick={(e) => {
                   e.stopPropagation();
                   this.props.showConfirmDeleteNetworkModal({
-                    target: rpcUrl,
+                    target: networkConfigurationId,
                     onConfirm: () => undefined,
                   });
                 }}
@@ -234,7 +230,7 @@ class NetworkDropdown extends Component {
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:
-        return provider.nickname || t('unknownNetwork');
+        return provider.chainName || t('unknownNetwork');
     }
   }
 

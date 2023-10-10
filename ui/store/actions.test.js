@@ -11,11 +11,7 @@ import { _setBackgroundConnection } from './action-queue';
 
 const middleware = [thunk];
 const defaultState = {
-  appState: {
-    transactionsToDisplayOnFailure: {},
-  },
   metamask: {
-    currentNetworkTxList: [],
     currentLocale: 'test',
     selectedAddress: '0xFirstAddress',
     provider: { chainId: '0x1' },
@@ -354,11 +350,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.importNewAccount(
-          'Private Key',
-          ['c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'],
-          '',
-        ),
+        actions.importNewAccount('Private Key', [
+          'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
+        ]),
       );
       expect(importAccountWithStrategy.callCount).toStrictEqual(1);
     });
@@ -375,8 +369,9 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'SHOW_LOADING_INDICATION',
-          payload: undefined,
+          payload: 'This may take a while, please be patient.',
         },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -391,7 +386,6 @@ describe('Actions', () => {
   describe('#addNewAccount', () => {
     it('adds a new account', async () => {
       const store = mockStore({
-        appState: defaultState.appState,
         metamask: { identities: {}, ...defaultState.metamask },
       });
 
@@ -1204,26 +1198,26 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setActiveNetwork', () => {
+  describe('#setCurrentNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setActiveNetwork', async () => {
+    it('calls setCurrentNetwork', async () => {
       const store = mockStore();
 
       const setCurrentNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        setActiveNetwork: setCurrentNetworkStub,
+        setCurrentNetwork: setCurrentNetworkStub,
       });
       _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setActiveNetwork('http://localhost:8545'));
+      await store.dispatch(actions.setCurrentNetwork('http://localhost:8545'));
       expect(setCurrentNetworkStub.callCount).toStrictEqual(1);
     });
 
-    it('displays warning when setActiveNetwork throws', async () => {
+    it('displays warning when setCurrentNetwork throws', async () => {
       const store = mockStore();
 
       const setCurrentNetworkStub = sinon
@@ -1231,7 +1225,7 @@ describe('Actions', () => {
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
-        setActiveNetwork: setCurrentNetworkStub,
+        setCurrentNetwork: setCurrentNetworkStub,
       });
       _setBackgroundConnection(background.getApi());
 
@@ -1242,7 +1236,7 @@ describe('Actions', () => {
         },
       ];
 
-      await store.dispatch(actions.setActiveNetwork());
+      await store.dispatch(actions.setCurrentNetwork());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1259,13 +1253,13 @@ describe('Actions', () => {
         .stub()
         .callsFake((_, cb) => cb());
 
-      const upsertNetworkConfigurationStub = sinon
+      const upsertAndSetNetworkConfigurationStub = sinon
         .stub()
         .callsFake((_, cb) => cb());
 
       background.getApi.returns({
         removeNetworkConfiguration: removeNetworkConfigurationStub,
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+        upsertAndSetNetworkConfiguration: upsertAndSetNetworkConfigurationStub,
       });
       _setBackgroundConnection(background.getApi());
 
@@ -1275,18 +1269,29 @@ describe('Actions', () => {
           rpcUrl: 'newRpc',
           chainId: '0x',
           ticker: 'ETH',
-          nickname: 'nickname',
+          chainName: 'chainName',
           rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
         }),
       );
       expect(removeNetworkConfigurationStub.callCount).toStrictEqual(1);
-      expect(upsertNetworkConfigurationStub.callCount).toStrictEqual(1);
+      expect(upsertAndSetNetworkConfigurationStub.callCount).toStrictEqual(1);
+
+      const expectedActions = [
+        {
+          type: 'UPDATE_NETWORK_TARGET',
+          value: {
+            rpcUrl: 'newRpc',
+            networkConfigurationId: 'networkConfigurationId',
+          },
+        },
+      ];
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
     it('displays warning when removeNetworkConfiguration throws', async () => {
       const store = mockStore();
 
-      const upsertNetworkConfigurationStub = sinon
+      const upsertAndSetNetworkConfigurationStub = sinon
         .stub()
         .callsFake((_, cb) => cb());
 
@@ -1296,7 +1301,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeNetworkConfiguration: removeNetworkConfigurationStub,
-        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+        upsertAndSetNetworkConfiguration: upsertAndSetNetworkConfigurationStub,
       });
 
       _setBackgroundConnection(background.getApi());
@@ -1311,7 +1316,7 @@ describe('Actions', () => {
           rpcUrl: 'newRpc',
           chainId: '0x',
           ticker: 'ETH',
-          nickname: 'nickname',
+          chainName: 'chainName',
           rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
         }),
       );
