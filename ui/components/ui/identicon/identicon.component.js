@@ -5,6 +5,7 @@ import { isEqual } from 'lodash';
 import Jazzicon from '../jazzicon';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
+import UrlIcon from '../url-icon';
 import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({
@@ -57,6 +58,7 @@ export default class Identicon extends Component {
      * User preferred IPFS gateway
      */
     ipfsGateway: PropTypes.string,
+    tokenSymbol: PropTypes.string,
   };
 
   state = {
@@ -72,11 +74,24 @@ export default class Identicon extends Component {
     useBlockie: false,
     alt: '',
     tokenList: {},
+    tokenSymbol: undefined,
+  };
+
+  state = {
+    isError: false,
   };
 
   renderImage() {
-    const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
+    const {
+      className,
+      diameter,
+      alt,
+      imageBorder,
+      ipfsGateway,
+      tokenSymbol,
+    } = this.props;
     let { image } = this.props;
+    const { isError } = this.state;
 
     if (Array.isArray(image) && image.length) {
       image = image[0];
@@ -89,6 +104,19 @@ export default class Identicon extends Component {
       image = getAssetImageURL(image, ipfsGateway);
     }
 
+    if (isError) {
+      return (
+        <UrlIcon
+          className={classnames('identicon', className, {
+            'identicon__image-border': imageBorder || isError,
+            'identicon__image--error': isError,
+          })}
+          icon={null}
+          name={tokenSymbol}
+        />
+      );
+    }
+
     return (
       <img
         className={classnames('identicon', className, {
@@ -96,6 +124,7 @@ export default class Identicon extends Component {
         })}
         src={image}
         style={getStyles(diameter)}
+        onError={() => this.setState({ isError: true })}
         alt={alt}
         onError={() => {
           this.setState({ imageLoadingError: true });
