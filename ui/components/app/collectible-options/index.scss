@@ -1,0 +1,12 @@
+.collectible-options {
+  &__button {
+    font-size: $font-size-paragraph;
+    color: var(--color-text-default);
+    background-color: inherit;
+    padding: 2px 0 2px 8px;
+  }
+
+  &__icon {
+    font-weight: 900;
+  }
+}

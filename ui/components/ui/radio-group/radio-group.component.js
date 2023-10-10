@@ -2,8 +2,12 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
-import { Color, TextVariant } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import Typography from '../typography/typography';
+import {
+  COLORS,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 
 function Connector({ isFirst, isLast }) {
   if (isFirst) {
@@ -43,14 +47,13 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
           <div className="radio-group__column" key={`${name}-${option.value}`}>
             <label className="radio-group__column-inner">
               {hasRecommendation && (
-                <Text
-                  color={Color.successDefault}
+                <Typography
+                  color={COLORS.SUCCESS_DEFAULT}
                   className="radio-group__column-recommended"
-                  variant={TextVariant.bodySm}
-                  as="h6"
+                  variant={TYPOGRAPHY.H7}
                 >
                   {option.recommended ? t('recommendedGasLabel') : ''}
-                </Text>
+                </Typography>
               )}
               <div className="radio-group__column-radio">
                 <input
@@ -65,14 +68,14 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
                 isFirst={index === 0}
                 isLast={index === options.length - 1}
               />
-              <Text
-                color={checked ? Color.textDefault : Color.textMuted}
-                variant={TextVariant.bodySmBold}
-                as="h6"
+              <Typography
+                color={checked ? COLORS.BLACK : COLORS.UI4}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
                 className="radio-group__column-label"
               >
                 {option.label}
-              </Text>
+              </Typography>
             </label>
           </div>
         );

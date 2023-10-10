@@ -1,34 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { capitalize } from 'lodash';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
-import { EditGasModes } from '../../../../../shared/constants/gas';
-
+import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
+import Box from '../../../ui/box';
+import Typography from '../../../ui/typography';
+import CheckBox from '../../../ui/check-box';
 import {
-  Display,
-  FlexDirection,
+  COLORS,
+  DISPLAY,
+  FLEX_DIRECTION,
+  TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
-import {
-  getAdvancedGasFeeValues,
-  getCurrentChainId,
-  getNetworkIdentifier,
-} from '../../../../selectors';
+import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
+
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Checkbox, Box } from '../../../component-library';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { gasErrors, maxBaseFee, maxPriorityFeePerGas } =
-    useAdvancedGasFeePopoverContext();
+  const {
+    gasErrors,
+    maxBaseFee,
+    maxPriorityFeePerGas,
+  } = useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  // This will need to use a different chainId in multinetwork
-  const chainId = useSelector(getCurrentChainId);
-  const networkIdentifier = useSelector(getNetworkIdentifier);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { editGasMode } = useGasFeeContext();
   const [isDefaultSettingsSelected, setDefaultSettingsSelected] = useState(
@@ -47,7 +46,7 @@ const AdvancedGasFeeDefaults = () => {
 
   const handleUpdateDefaultSettings = () => {
     if (isDefaultSettingsSelected) {
-      dispatch(setAdvancedGasFee({ chainId, gasFeePreferences: undefined }));
+      dispatch(setAdvancedGasFee(null));
       setDefaultSettingsSelected(false);
       updateTransactionEventFragment({
         properties: {
@@ -58,11 +57,8 @@ const AdvancedGasFeeDefaults = () => {
     } else {
       dispatch(
         setAdvancedGasFee({
-          chainId,
-          gasFeePreferences: {
-            maxBaseFee,
-            priorityFee: maxPriorityFeePerGas,
-          },
+          maxBaseFee,
+          priorityFee: maxPriorityFeePerGas,
         }),
       );
       updateTransactionEventFragment({
@@ -74,27 +70,36 @@ const AdvancedGasFeeDefaults = () => {
     }
   };
 
-  if (editGasMode === EditGasModes.swaps) {
+  if (editGasMode === EDIT_GAS_MODES.SWAPS) {
     return null;
   }
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      marginTop={4}
-      marginLeft={2}
-      marginRight={2}
-      paddingTop={4}
-      paddingBottom={4}
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.ROW}
+      margin={[4, 2, 0, 2]}
       className="advanced-gas-fee-defaults"
     >
-      <Checkbox
-        isChecked={isDefaultSettingsSelected}
-        onChange={handleUpdateDefaultSettings}
-        isDisabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
-        label={t('advancedGasFeeDefaultOptIn', [capitalize(networkIdentifier)])}
-      />
+      <label className="advanced-gas-fee-defaults__label">
+        <CheckBox
+          checked={isDefaultSettingsSelected}
+          className="advanced-gas-fee-defaults__checkbox"
+          onClick={handleUpdateDefaultSettings}
+          disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
+        />
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.TEXT_ALTERNATIVE}
+          margin={0}
+        >
+          {isDefaultSettingsSelected
+            ? t('advancedGasFeeDefaultOptOut')
+            : t('advancedGasFeeDefaultOptIn', [
+                <strong key="default-value-change">{t('newValues')}</strong>,
+              ])}
+        </Typography>
+      </label>
     </Box>
   );
 };

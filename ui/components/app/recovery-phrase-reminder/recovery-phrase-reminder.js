@@ -6,54 +6,51 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
+import Typography from '../../ui/typography';
 // Helpers
 import {
+  COLORS,
   DISPLAY,
-  TextAlign,
-  TextVariant,
+  TEXT_ALIGN,
+  TYPOGRAPHY,
   BLOCK_SIZES,
-  FontWeight,
-  JustifyContent,
-  TextColor,
+  FONT_WEIGHT,
+  JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
-import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
-import { Text } from '../../component-library';
+import { INITIALIZE_BACKUP_SEED_PHRASE_ROUTE } from '../../../helpers/constants/routes';
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
   const t = useI18nContext();
   const history = useHistory();
 
   const handleBackUp = () => {
-    history.push(ONBOARDING_UNLOCK_ROUTE);
+    history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE);
   };
 
   return (
     <Popover centerTitle title={t('recoveryPhraseReminderTitle')}>
-      <Box
-        paddingRight={4}
-        paddingBottom={6}
-        paddingLeft={4}
-        className="recovery-phrase-reminder"
-      >
-        <Text
-          color={TextColor.textDefault}
-          align={TextAlign.Center}
-          variant={TextVariant.bodyMd}
-          marginBottom={4}
+      <Box padding={[0, 4, 6, 4]} className="recovery-phrase-reminder">
+        <Typography
+          color={COLORS.TEXT_DEFAULT}
+          align={TEXT_ALIGN.CENTER}
+          variant={TYPOGRAPHY.Paragraph}
+          boxProps={{ marginTop: 0, marginBottom: 4 }}
         >
           {t('recoveryPhraseReminderSubText')}
-        </Text>
-        <Box marginTop={4} marginBottom={8}>
+        </Typography>
+        <Box margin={[4, 0, 8, 0]}>
           <ul className="recovery-phrase-reminder__list">
-            <Text
-              as="li"
-              color={TextColor.textDefault}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('recoveryPhraseReminderItemOne')}
-            </Text>
-            <Text as="li">{t('recoveryPhraseReminderItemTwo')}</Text>
-            <Text as="li">
+            <li>
+              <Typography
+                tag="span"
+                color={COLORS.TEXT_DEFAULT}
+                fontWeight={FONT_WEIGHT.BOLD}
+              >
+                {t('recoveryPhraseReminderItemOne')}
+              </Typography>
+            </li>
+            <li>{t('recoveryPhraseReminderItemTwo')}</li>
+            <li>
               {hasBackedUp ? (
                 t('recoveryPhraseReminderHasBackedUp')
               ) : (
@@ -73,10 +70,10 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
                   </Box>
                 </>
               )}
-            </Text>
+            </li>
           </ul>
         </Box>
-        <Box justifyContent={JustifyContent.center}>
+        <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Box width={BLOCK_SIZES.TWO_FIFTHS}>
             <Button type="primary" onClick={onConfirm}>
               {t('recoveryPhraseReminderConfirm')}

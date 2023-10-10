@@ -4,13 +4,13 @@ import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 
 import { I18nContext } from '../../../contexts/i18n';
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   getApproveTxParams,
   prepareToLeaveSwaps,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -21,18 +21,17 @@ import {
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
+import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import {
   BLOCK_SIZES,
-  TextVariant,
-  JustifyContent,
+  COLORS,
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  JUSTIFY_CONTENT,
   DISPLAY,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { Text } from '../../../components/component-library';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
@@ -48,31 +47,28 @@ export default function AwaitingSignatures() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
-  const currentSmartTransactionsEnabled = useSelector(
-    getCurrentSmartTransactionsEnabled,
-  );
   const needsTwoConfirmations = Boolean(approveTxParams);
-  const trackEvent = useContext(MetaMetricsContext);
+
+  const awaitingSignaturesEvent = useNewMetricEvent({
+    event: 'Awaiting Signature(s) on a HW wallet',
+    sensitiveProperties: {
+      needs_two_confirmations: needsTwoConfirmations,
+      token_from: sourceTokenInfo?.symbol,
+      token_from_amount: fetchParams?.value,
+      token_to: destinationTokenInfo?.symbol,
+      request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+      slippage: fetchParams?.slippage,
+      custom_slippage: fetchParams?.slippage === 2,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+    },
+    category: 'swaps',
+  });
 
   useEffect(() => {
-    trackEvent({
-      event: 'Awaiting Signature(s) on a HW wallet',
-      category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties: {
-        needs_two_confirmations: needsTwoConfirmations,
-        token_from: sourceTokenInfo?.symbol,
-        token_from_amount: fetchParams?.value,
-        token_to: destinationTokenInfo?.symbol,
-        request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-        slippage: fetchParams?.slippage,
-        custom_slippage: fetchParams?.slippage === 2,
-        is_hardware_wallet: hardwareWalletUsed,
-        hardware_wallet_type: hardwareWalletType,
-        stx_enabled: smartTransactionsEnabled,
-        current_stx_enabled: currentSmartTransactionsEnabled,
-        stx_user_opt_in: smartTransactionsOptInStatus,
-      },
-    });
+    awaitingSignaturesEvent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -86,59 +82,61 @@ export default function AwaitingSignatures() {
         paddingLeft={8}
         paddingRight={8}
         height={BLOCK_SIZES.FULL}
-        justifyContent={JustifyContent.center}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
         display={DISPLAY.FLEX}
         className="awaiting-signatures__content"
       >
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
         </Box>
-        <Text
-          color={TextColor.textDefault}
-          variant={TextVariant.headingMd}
-          as="h3"
-        >
+        <Typography color={COLORS.TEXT_DEFAULT} variant={TYPOGRAPHY.H3}>
           {headerText}
-        </Text>
+        </Typography>
         {needsTwoConfirmations && (
           <>
-            <Text variant={TextVariant.bodyMdBold} marginTop={2}>
+            <Typography
+              variant={TYPOGRAPHY.Paragraph}
+              boxProps={{ marginTop: 2 }}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
               {t('swapToConfirmWithHwWallet')}
-            </Text>
+            </Typography>
             <ul className="awaiting-signatures__steps">
               <li>
                 <SwapStepIcon stepNumber={1} />
                 {t('swapAllowSwappingOf', [
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMdBold}
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.BOLD}
                     key="allowToken"
                   >
                     {destinationTokenInfo?.symbol}
-                  </Text>,
+                  </Typography>,
                 ])}
               </li>
               <li>
                 <SwapStepIcon stepNumber={2} />
                 {t('swapFromTo', [
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMdBold}
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.BOLD}
                     key="tokenFrom"
                   >
                     {sourceTokenInfo?.symbol}
-                  </Text>,
-                  <Text
-                    as="span"
-                    variation={TextVariant.bodyMdBold}
+                  </Typography>,
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.BOLD}
                     key="tokenTo"
                   >
                     {destinationTokenInfo?.symbol}
-                  </Text>,
+                  </Typography>,
                 ])}
               </li>
             </ul>
-            <Text variant={TextVariant.bodyMd}>{t('swapGasFeesSplit')}</Text>
+            <Typography variant={TYPOGRAPHY.Paragraph}>
+              {t('swapGasFeesSplit')}
+            </Typography>
           </>
         )}
       </Box>

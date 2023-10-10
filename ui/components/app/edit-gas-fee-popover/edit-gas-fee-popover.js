@@ -1,38 +1,42 @@
 import React from 'react';
 
-import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+} from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import Box from '../../ui/box';
 import ErrorMessage from '../../ui/error-message';
+import I18nValue from '../../ui/i18n-value';
 import Popover from '../../ui/popover';
+import Typography from '../../ui/typography/typography';
 
-import {
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import AppLoadingSpinner from '../app-loading-spinner';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { Text } from '../../component-library';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
 
 const EditGasFeePopover = () => {
   const { balanceError, editGasMode } = useGasFeeContext();
   const t = useI18nContext();
-  const { closeAllModals, closeModal, currentModal, openModalCount } =
-    useTransactionModalContext();
+  const {
+    closeAllModals,
+    closeModal,
+    currentModal,
+    openModalCount,
+  } = useTransactionModalContext();
 
   if (currentModal !== 'editGasFee') {
     return null;
   }
 
   let popupTitle = 'editGasFeeModalTitle';
-  if (editGasMode === EditGasModes.cancel) {
+  if (editGasMode === EDIT_GAS_MODES.CANCEL) {
     popupTitle = 'editCancellationGasFeeModalTitle';
-  } else if (editGasMode === EditGasModes.speedUp) {
+  } else if (editGasMode === EDIT_GAS_MODES.SPEED_UP) {
     popupTitle = 'editSpeedUpEditGasFeeModalTitle';
   }
 
@@ -40,9 +44,7 @@ const EditGasFeePopover = () => {
     <Popover
       title={t(popupTitle)}
       // below logic ensures that back button is visible only if there are other modals open before this.
-      onBack={
-        openModalCount === 1 ? undefined : () => closeModal(['editGasFee'])
-      }
+      onBack={openModalCount === 1 ? undefined : () => closeModal('editGasFee')}
       onClose={closeAllModals}
       className="edit-gas-fee-popover"
     >
@@ -56,53 +58,57 @@ const EditGasFeePopover = () => {
               )}
               <div className="edit-gas-fee-popover__content__header">
                 <span className="edit-gas-fee-popover__content__header-option">
-                  {t('gasOption')}
+                  <I18nValue messageKey="gasOption" />
                 </span>
                 <span className="edit-gas-fee-popover__content__header-time">
-                  {editGasMode !== EditGasModes.swaps && t('time')}
+                  {editGasMode !== EDIT_GAS_MODES.SWAPS && (
+                    <I18nValue messageKey="time" />
+                  )}
                 </span>
                 <span className="edit-gas-fee-popover__content__header-max-fee">
-                  {t('maxFee')}
+                  <I18nValue messageKey="maxFee" />
                 </span>
               </div>
-              {(editGasMode === EditGasModes.cancel ||
-                editGasMode === EditGasModes.speedUp) && (
+              {(editGasMode === EDIT_GAS_MODES.CANCEL ||
+                editGasMode === EDIT_GAS_MODES.SPEED_UP) && (
                 <EditGasItem
-                  priorityLevel={PriorityLevels.tenPercentIncreased}
+                  priorityLevel={PRIORITY_LEVELS.TEN_PERCENT_INCREASED}
                 />
               )}
-              {editGasMode === EditGasModes.modifyInPlace && (
-                <EditGasItem priorityLevel={PriorityLevels.low} />
+              {editGasMode === EDIT_GAS_MODES.MODIFY_IN_PLACE && (
+                <EditGasItem priorityLevel={PRIORITY_LEVELS.LOW} />
               )}
-              <EditGasItem priorityLevel={PriorityLevels.medium} />
-              <EditGasItem priorityLevel={PriorityLevels.high} />
+              <EditGasItem priorityLevel={PRIORITY_LEVELS.MEDIUM} />
+              <EditGasItem priorityLevel={PRIORITY_LEVELS.HIGH} />
               <div className="edit-gas-fee-popover__content__separator" />
-              {editGasMode === EditGasModes.modifyInPlace && (
-                <EditGasItem priorityLevel={PriorityLevels.dAppSuggested} />
+              {editGasMode === EDIT_GAS_MODES.MODIFY_IN_PLACE && (
+                <EditGasItem priorityLevel={PRIORITY_LEVELS.DAPP_SUGGESTED} />
               )}
-              <EditGasItem priorityLevel={PriorityLevels.custom} />
+              <EditGasItem priorityLevel={PRIORITY_LEVELS.CUSTOM} />
             </Box>
             <Box>
               <NetworkStatistics />
-              <Text
+              <Typography
                 className="edit-gas-fee-popover__know-more"
                 align="center"
-                color={TextColor.textAlternative}
-                tag={TextVariant.bodyMd}
-                variant={TextVariant.bodySm}
-                as="h6"
+                color={COLORS.TEXT_ALTERNATIVE}
+                tag={TYPOGRAPHY.Paragraph}
+                variant={TYPOGRAPHY.H7}
               >
-                {t('learnMoreAboutGas', [
-                  <a
-                    key="learnMoreLink"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={ZENDESK_URLS.USER_GUIDE_GAS}
-                  >
-                    {t('learnMore')}
-                  </a>,
-                ])}
-              </Text>
+                <I18nValue
+                  messageKey="learmMoreAboutGas"
+                  options={[
+                    <a
+                      key="learnMoreLink"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://metamask.zendesk.com/hc/en-us/articles/4404600179227-User-Guide-Gas"
+                    >
+                      <I18nValue messageKey="learnMore" />
+                    </a>,
+                  ]}
+                />
+              </Typography>
             </Box>
           </div>
         </div>

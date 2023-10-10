@@ -2,17 +2,10 @@ import React from 'react';
 import AssetList from '.';
 
 export default {
-  title: 'Components/App/AssetList',
-  argTypes: {
-    onClickAsset: {
-      control: 'onClickAsset',
-    },
-  },
-  args: {
-    onClickAsset: () => console.log('onClickAsset fired'),
-  },
+  title: 'Components/App/AssetList', // title should follow the folder structure location of the component. Don't use spaces.
+  id: __filename,
 };
 
-export const DefaultStory = (args) => <AssetList {...args} />;
+export const DefaultStory = () => <AssetList />;
 
 DefaultStory.storyName = 'Default';

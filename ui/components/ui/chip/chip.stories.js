@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
 import {
-  TypographyVariant,
+  COLORS,
+  TYPOGRAPHY,
   SEVERITIES,
-  Color,
-  BorderColor,
-  BackgroundColor,
-  TextColor,
-  Severity,
 } from '../../../helpers/constants/design-system';
 
-import { BannerAlert } from '../../component-library';
 import ApproveIcon from '../icon/approve-icon.component';
 import InfoIcon from '../icon/info-icon.component';
 import Identicon from '../identicon/identicon.component';
@@ -23,7 +17,7 @@ import Chip from '.';
 
 export default {
   title: 'Components/UI/Chip',
-
+  id: __filename,
   component: Chip,
   parameters: {
     docs: {
@@ -64,14 +58,14 @@ export default {
         control: {
           type: 'select',
         },
-        options: Object.values(Color),
+        options: Object.values(COLORS),
       },
       variant: {
         color: {
           control: {
             type: 'select',
           },
-          options: Object.values(TypographyVariant),
+          options: Object.values(TYPOGRAPHY),
         },
       },
     },
@@ -79,13 +73,13 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(BorderColor),
+      options: Object.values(COLORS),
     },
     backgroundColor: {
       control: {
         type: 'select',
       },
-      options: Object.values(BackgroundColor),
+      options: Object.values(COLORS),
     },
     children: {
       control: 'text',
@@ -93,94 +87,66 @@ export default {
   },
 };
 
-const Deprecated = ({ children }) => (
-  <>
-    <BannerAlert
-      severity={Severity.Warning}
-      title="Deprecated"
-      description="<Chip/> has been deprecated in favor of <Tag/>"
-      marginBottom={4}
-    />
-    {children}
-  </>
-);
-
-Deprecated.propTypes = {
-  children: PropTypes.node,
-};
-
-export const DefaultStory = (args) => (
-  <Deprecated>
-    <Chip {...args} />
-  </Deprecated>
-);
+export const DefaultStory = (args) => <Chip {...args} />;
 
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   label: 'Chip',
-  borderColor: BorderColor.borderDefault,
-  backgroundColor: BackgroundColor.backgroundAlternative,
+  borderColor: COLORS.BORDER_DEFAULT,
+  backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
   labelProps: {
-    color: TextColor.textDefault,
-    variant: TypographyVariant.H6,
+    color: COLORS.TEXT_DEFAULT,
+    variant: TYPOGRAPHY.H6,
   },
 };
 
 export const WithLeftIcon = () => (
-  <Deprecated>
-    <Chip
-      label="Done!"
-      borderColor={BorderColor.successDefault}
-      leftIcon={<ApproveIcon size={24} color="var(--color-success-default)" />}
-    />
-  </Deprecated>
+  <Chip
+    label="Done!"
+    borderColor={COLORS.SUCCESS_DEFAULT}
+    leftIcon={<ApproveIcon size={24} color="var(--color-success-default)" />}
+  />
 );
 
 export const WithRightIcon = () => (
-  <Deprecated>
-    <Chip
-      label="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-      borderColor={BorderColor.borderDefault}
-      rightIcon={
-        <Identicon
-          address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-          diameter={25}
-        />
-      }
-    />
-  </Deprecated>
+  <Chip
+    label="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+    borderColor={COLORS.BORDER_DEFAULT}
+    rightIcon={
+      <Identicon
+        address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+        diameter={25}
+      />
+    }
+  />
 );
 
 export const WithBothIcons = () => (
-  <Deprecated>
-    <Chip
-      label="Account 1"
-      borderColor={BorderColor.borderDefault}
-      rightIcon={<InfoIcon size={24} severity={SEVERITIES.INFO} />}
-      leftIcon={
-        <Identicon
-          address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-          diameter={25}
-        />
-      }
-    />
-  </Deprecated>
+  <Chip
+    label="Account 1"
+    borderColor={COLORS.BORDER_DEFAULT}
+    rightIcon={<InfoIcon size={24} severity={SEVERITIES.INFO} />}
+    bordercolor={COLORS.TEXT_ALTERNATIVE}
+    leftIcon={
+      <Identicon
+        address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+        diameter={25}
+      />
+    }
+  />
 );
-
 export const WithInput = (args) => {
   const [inputValue, setInputValue] = useState('Chip with input');
   return (
-    <Deprecated>
-      <ChipWithInput
-        {...args}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-      />
-    </Deprecated>
+    <ChipWithInput
+      {...args}
+      inputValue={inputValue}
+      setInputValue={setInputValue}
+    />
   );
 };
 
 WithInput.args = {
-  borderColor: BorderColor.borderDefault,
+  borderColor: COLORS.BORDER_DEFAULT,
 };

@@ -3,22 +3,19 @@ import PropTypes from 'prop-types';
 import { omit } from 'lodash';
 import Typography from '../typography';
 import {
-  Size,
-  TypographyVariant,
+  COLORS,
+  SIZES,
+  TYPOGRAPHY,
   FONT_WEIGHT,
-  OVERFLOW_WRAP,
-  TextColor,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip';
-import { Icon, IconName, IconSize } from '../../component-library';
 
 const MARGIN_MAP = {
-  [Size.XS]: 0,
-  [Size.SM]: 2,
-  [Size.MD]: 4,
-  [Size.LG]: 6,
-  [Size.XL]: 8,
+  [SIZES.XS]: 0,
+  [SIZES.SM]: 2,
+  [SIZES.MD]: 4,
+  [SIZES.LG]: 6,
+  [SIZES.XL]: 8,
 };
 
 export default function DefinitionList({
@@ -26,14 +23,14 @@ export default function DefinitionList({
   termTypography = {},
   definitionTypography = {},
   tooltips = {},
-  gapSize = Size.SM,
+  gapSize = SIZES.SM,
 }) {
   return (
     <dl className="definition-list">
       {Object.entries(dictionary).map(([term, definition]) => (
         <React.Fragment key={`definition-for-${term}`}>
           <Typography
-            variant={TypographyVariant.H6}
+            variant={TYPOGRAPHY.H6}
             fontWeight={FONT_WEIGHT.BOLD}
             {...termTypography}
             boxProps={{
@@ -41,7 +38,7 @@ export default function DefinitionList({
               marginBottom: 1,
             }}
             className="definition-list__term"
-            as="dt"
+            tag="dt"
           >
             {term}
             {tooltips[term] && (
@@ -50,26 +47,20 @@ export default function DefinitionList({
                 position="top"
                 containerClassName="definition-list__tooltip-wrapper"
               >
-                <Icon
-                  name={IconName.Info}
-                  size={IconSize.Sm}
-                  marginLeft={1}
-                  color={IconColor.iconDefault}
-                />
+                <i className="fas fa-info-circle" />
               </Tooltip>
             )}
           </Typography>
           <Typography
-            variant={TypographyVariant.H6}
-            color={TextColor.textAlternative}
+            variant={TYPOGRAPHY.H6}
+            color={COLORS.TEXT_ALTERNATIVE}
             {...definitionTypography}
             boxProps={{
               marginTop: 0,
               marginBottom: MARGIN_MAP[gapSize],
             }}
             className="definition-list__definition"
-            overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-            as="dd"
+            tag="dd"
           >
             {definition}
           </Typography>
@@ -80,15 +71,15 @@ export default function DefinitionList({
 }
 
 DefinitionList.propTypes = {
-  gapSize: PropTypes.oneOf(Object.values(Size)),
+  gapSize: PropTypes.oneOf(Object.values(SIZES)),
   dictionary: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   ),
   tooltips: PropTypes.objectOf(PropTypes.string),
   termTypography: PropTypes.shape({
-    ...omit(TypographyVariant.propTypes, ['tag', 'className', 'boxProps']),
+    ...omit(Typography.propTypes, ['tag', 'className', 'boxProps']),
   }),
   definitionTypography: PropTypes.shape({
-    ...omit(TypographyVariant.propTypes, ['tag', 'className', 'boxProps']),
+    ...omit(Typography.propTypes, ['tag', 'className', 'boxProps']),
   }),
 };

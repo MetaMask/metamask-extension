@@ -3,7 +3,7 @@
     @include H6;
 
     background: var(--color-background-default);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.214);
+    box-shadow: 0 2px 10px var(--color-overlay-default);
     border-radius: 8px;
     width: 225px;
     color: var(--color-text-default);
@@ -26,6 +26,7 @@
 
 .menu-item {
   background: none;
+  color: var(--color-text-default);
   font-size: inherit;
   display: grid;
   grid-template-columns: min-content auto;

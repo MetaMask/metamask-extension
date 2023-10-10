@@ -4,12 +4,13 @@ import MaterialSlider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  TextColor,
-  TextVariant,
+  COLORS,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import { Text } from '../../component-library';
+import Typography from '../typography/typography';
 
 const styles = {
   root: {
@@ -18,12 +19,12 @@ const styles = {
   },
   rail: {
     borderRadius: 50,
-    background: 'var(--color-background-alternative)',
+    background: '#D6D9DC',
     height: 6,
   },
   track: {
     borderRadius: 50,
-    background: 'var(--color-primary-default)',
+    background: '#037DD6',
     height: 6,
   },
   thumb: {
@@ -31,16 +32,16 @@ const styles = {
     width: 20,
     marginTop: -7,
     marginLeft: -7,
-    backgroundColor: 'var(--color-primary-default)',
-    border: '1px solid var(--color-border-muted)',
+    backgroundColor: '#037DD6',
+    border: '1px solid #EAF6FF',
     boxSizing: 'border-box',
-    boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+    boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
     '&:focus, &$active': {
       height: 20,
       width: 20,
       marginTop: -7,
       marginLeft: -7,
-      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
     },
     '&:hover': {
       height: 22,
@@ -48,7 +49,7 @@ const styles = {
       marginTop: -8,
       marginLeft: -8,
       border: 'none',
-      boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
     },
   },
 };
@@ -67,24 +68,34 @@ const Slider = ({
     <div className="slider__heading">
       <div className="slider__heading-title">
         {titleText && (
-          <Text variant={TextVariant.bodySmBold} as="h6">
+          <Typography
+            tag={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TYPOGRAPHY.H6}
+          >
             {titleText}
-          </Text>
+          </Typography>
         )}
         {tooltipText && (
           <InfoTooltip position="top" contentText={tooltipText} />
         )}
         {valueText && (
-          <Text tag={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {valueText}
-          </Text>
+          </Typography>
         )}
       </div>
       {titleDetail && (
         <div className="slider__heading-detail">
-          <Text tag={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {titleDetail}
-          </Text>
+          </Typography>
         </div>
       )}
     </div>
@@ -92,9 +103,12 @@ const Slider = ({
     <div className="slider__footer">
       <div className="slider__footer-info">
         {infoText && (
-          <Text tag={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {infoText}
-          </Text>
+          </Typography>
         )}
       </div>
       <div className="slider__footer-edit">

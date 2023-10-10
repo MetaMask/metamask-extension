@@ -1,21 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
-  Color,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+} from '../../../../shared/constants/gas';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
-///: END:ONLY_INCLUDE_IN
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import Typography from '../../ui/typography/typography';
 
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const t = useI18nContext();
@@ -26,7 +23,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
     estimateUsed,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    supportsEIP1559,
+    supportsEIP1559V2,
     transaction,
   } = useGasFeeContext();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -34,25 +31,20 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const editEnabled =
     !hasSimulationError || userAcknowledgedGasMissing === true;
 
-  if (!supportsEIP1559 || !estimateUsed || !editEnabled) {
+  if (!supportsEIP1559V2 || !estimateUsed || !editEnabled) {
     return null;
   }
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+
   let icon = estimateUsed;
-  ///: END:ONLY_INCLUDE_IN
   let title = estimateUsed;
   if (
-    estimateUsed === PriorityLevels.high &&
-    editGasMode === EditGasModes.swaps
+    estimateUsed === PRIORITY_LEVELS.HIGH &&
+    editGasMode === EDIT_GAS_MODES.SWAPS
   ) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     icon = 'swapSuggested';
-    ///: END:ONLY_INCLUDE_IN
     title = 'swapSuggested';
-  } else if (estimateUsed === PriorityLevels.tenPercentIncreased) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  } else if (estimateUsed === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
     icon = undefined;
-    ///: END:ONLY_INCLUDE_IN
     title = 'tenPercentIncreased';
   }
 
@@ -73,21 +65,13 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   return (
     <div className="edit-gas-fee-button">
       <button onClick={openEditGasFeeModal} data-testid="edit-gas-fee-button">
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-          icon && (
-            <span className="edit-gas-fee-button__icon">
-              {PRIORITY_LEVEL_ICON_MAP[icon]}
-            </span>
-          )
-          ///: END:ONLY_INCLUDE_IN
-        }
+        {icon && (
+          <span className="edit-gas-fee-button__icon">
+            {PRIORITY_LEVEL_ICON_MAP[icon]}
+          </span>
+        )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>
-        <Icon
-          name={IconName.ArrowRight}
-          color={Color.primaryDefault}
-          size={IconSize.Xs}
-        />
+        <i className="fas fa-chevron-right asset-list-item__chevron-right" />
       </button>
       {estimateUsed === 'custom' && (
         <button onClick={openAdvancedGasFeeModal}>{t('edit')}</button>
@@ -96,24 +80,24 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
         <InfoTooltip
           contentText={
             <div className="edit-gas-fee-button__tooltip">
-              {transaction?.origin && (
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.textAlternative}
-                >
-                  {t('dappSuggestedTooltip', [transaction.origin])}
-                </Text>
-              )}
-              <Text variant={TextVariant.bodySm} as="h6">
-                <b>{t('maxBaseFee')}</b> {maxFeePerGas}
-              </Text>
-              <Text variant={TextVariant.bodySm} as="h6">
-                <b>{t('maxPriorityFee')}</b> {maxPriorityFeePerGas}
-              </Text>
-              <Text variant={TextVariant.bodySm} as="h6">
-                <b>{t('gasLimit')}</b> {gasLimit}
-              </Text>
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
+                {t('dappSuggestedTooltip', [transaction.origin])}
+              </Typography>
+              <Typography variant={TYPOGRAPHY.H7}>
+                <b>{t('maxBaseFee')}</b>
+                {maxFeePerGas}
+              </Typography>
+              <Typography variant={TYPOGRAPHY.H7}>
+                <b>{t('maxPriorityFee')}</b>
+                {maxPriorityFeePerGas}
+              </Typography>
+              <Typography variant={TYPOGRAPHY.H7}>
+                <b>{t('gasLimit')}</b>
+                {gasLimit}
+              </Typography>
             </div>
           }
           position="top"

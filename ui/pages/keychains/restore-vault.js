@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
+  initializeThreeBox,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
@@ -11,16 +12,12 @@ import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import Typography from '../../components/ui/typography';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import {
-  TextColor,
-  TypographyVariant,
-} from '../../helpers/constants/design-system';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { TYPOGRAPHY, COLORS } from '../../helpers/constants/design-system';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    trackEvent: PropTypes.func,
+    metricsEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -28,6 +25,7 @@ class RestoreVaultPage extends Component {
     leaveImportSeedScreenState: PropTypes.func,
     history: PropTypes.object,
     isLoading: PropTypes.bool,
+    initializeThreeBox: PropTypes.func,
   };
 
   handleImport = async (password, seedPhrase) => {
@@ -36,18 +34,20 @@ class RestoreVaultPage extends Component {
       createNewVaultAndRestore,
       leaveImportSeedScreenState,
       history,
+      // eslint-disable-next-line no-shadow
+      initializeThreeBox,
     } = this.props;
 
     leaveImportSeedScreenState();
     await createNewVaultAndRestore(password, seedPhrase);
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Retention,
-      event: 'onboardingRestoredVault',
-      properties: {
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Retention',
         action: 'userEntersSeedPhrase',
-        legacy_event: true,
+        name: 'onboardingRestoredVault',
       },
     });
+    initializeThreeBox();
     history.push(DEFAULT_ROUTE);
   };
 
@@ -64,26 +64,19 @@ class RestoreVaultPage extends Component {
               onClick={(e) => {
                 e.preventDefault();
                 this.props.leaveImportSeedScreenState();
-                this.props.history.push(DEFAULT_ROUTE);
+                this.props.history.goBack();
               }}
               href="#"
             >
               {`< ${t('back')}`}
             </a>
-            <Typography
-              variant={TypographyVariant.H1}
-              color={TextColor.textDefault}
-            >
+            <Typography variant={TYPOGRAPHY.H1} color={COLORS.TEXT_DEFAULT}>
               {t('resetWallet')}
             </Typography>
-            <Typography color={TextColor.textDefault}>
+            <Typography color={COLORS.TEXT_DEFAULT}>
               {t('resetWalletSubHeader')}
             </Typography>
-            <Typography
-              color={TextColor.textDefault}
-              marginTop={4}
-              marginBottom={4}
-            >
+            <Typography color={COLORS.TEXT_DEFAULT} margin={[4, 0]}>
               {t('resetWalletUsingSRP', [
                 <Button
                   type="link"
@@ -117,11 +110,7 @@ class RestoreVaultPage extends Component {
                 </Button>,
               ])}
             </Typography>
-            <Typography
-              color={TextColor.textDefault}
-              margin={0}
-              marginBottom={4}
-            >
+            <Typography color={COLORS.TEXT_DEFAULT} margin={[0, 0, 4]}>
               {t('resetWalletWarning')}
             </Typography>
             <CreateNewVault
@@ -144,5 +133,6 @@ export default connect(
     },
     createNewVaultAndRestore: (pw, seed) =>
       dispatch(createNewVaultAndRestore(pw, seed)),
+    initializeThreeBox: () => dispatch(initializeThreeBox()),
   }),
 )(RestoreVaultPage);

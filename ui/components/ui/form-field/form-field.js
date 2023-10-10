@@ -2,55 +2,38 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import Typography from '../typography/typography';
+import Box from '../box/box';
 import {
-  TextAlign,
-  Display,
-  TextVariant,
-  AlignItems,
-  TextColor,
+  COLORS,
+  TEXT_ALIGN,
+  DISPLAY,
+  TYPOGRAPHY,
+  FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 
 import NumericInput from '../numeric-input/numeric-input.component';
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import { Text, Box } from '../../component-library';
-
-/**
- * @deprecated The `<FormField />` component has been deprecated in favor of the new `<FormTextField>` component from the component-library.
- * Please update your code to use the new `<FormTextField>` component instead, which can be found at ui/components/component-library/form-text-field/form-text-field.js.
- * You can find documentation for the new FormTextField component in the MetaMask Storybook:
- * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-formtextfield--docs}
- * If you would like to help with the replacement of the old FormField component, please submit a pull request against this GitHub issue:
- * {@link https://github.com/MetaMask/metamask-extension/issues/19737}
- */
 
 export default function FormField({
   dataTestId,
-  titleText = '',
-  TitleTextCustomComponent,
-  titleUnit = '',
-  TitleUnitCustomComponent,
-  tooltipText = '',
-  TooltipCustomComponent,
-  titleDetail = '',
-  titleDetailWrapperProps,
-  titleHeadingWrapperProps,
+  titleText,
+  titleUnit,
+  tooltipText,
+  titleDetail,
   error,
-  onChange = undefined,
-  value = 0,
+  onChange,
+  value,
   numeric,
-  detailText = '',
-  autoFocus = false,
-  password = false,
-  allowDecimals = false,
-  disabled = false,
+  detailText,
+  autoFocus,
+  password,
+  allowDecimals,
+  disabled,
   placeholder,
   warning,
   passwordStrength,
   passwordStrengthText,
-  id,
-  inputProps,
-  wrappingLabelProps,
-  inputRef,
 }) {
   return (
     <div
@@ -58,46 +41,39 @@ export default function FormField({
         'form-field__row--error': error,
       })}
     >
-      <Box as="label" {...wrappingLabelProps}>
+      <label>
         <div className="form-field__heading">
-          <Box
-            className="form-field__heading-title"
-            display={Display.Flex}
-            alignItems={AlignItems.baseline}
-            {...titleHeadingWrapperProps}
-          >
-            {TitleTextCustomComponent ||
-              (titleText && (
-                <Text
-                  as="h6"
-                  variant={TextVariant.bodySmBold}
-                  display={Display.InlineBlock}
-                >
-                  {titleText}
-                </Text>
-              ))}
-            {TitleUnitCustomComponent ||
-              (titleUnit && (
-                <Text
-                  as="h6"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
-                  display={Display.InlineBlock}
-                >
-                  {titleUnit}
-                </Text>
-              ))}
-            {TooltipCustomComponent ||
-              (tooltipText && (
-                <InfoTooltip position="top" contentText={tooltipText} />
-              ))}
-          </Box>
+          <div className="form-field__heading-title">
+            {titleText && (
+              <Typography
+                tag={TYPOGRAPHY.H6}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H6}
+                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+              >
+                {titleText}
+              </Typography>
+            )}
+            {titleUnit && (
+              <Typography
+                tag={TYPOGRAPHY.H6}
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+              >
+                {titleUnit}
+              </Typography>
+            )}
+            {tooltipText && (
+              <InfoTooltip position="top" contentText={tooltipText} />
+            )}
+          </div>
           {titleDetail && (
             <Box
               className="form-field__heading-detail"
-              textAlign={TextAlign.End}
+              textAlign={TEXT_ALIGN.END}
+              marginBottom={3}
               marginRight={2}
-              {...titleDetailWrapperProps}
             >
               {titleDetail}
             </Box>
@@ -114,8 +90,6 @@ export default function FormField({
             disabled={disabled}
             dataTestId={dataTestId}
             placeholder={placeholder}
-            id={id}
-            inputRef={inputRef}
           />
         ) : (
           <input
@@ -130,52 +104,45 @@ export default function FormField({
             disabled={disabled}
             data-testid={dataTestId}
             placeholder={placeholder}
-            id={id}
-            ref={inputRef}
-            {...inputProps}
           />
         )}
         {error && (
-          <Text
-            color={TextColor.errorDefault}
-            variant={TextVariant.bodySm}
-            as="h6"
+          <Typography
+            color={COLORS.ERROR_DEFAULT}
+            variant={TYPOGRAPHY.H7}
             className="form-field__error"
           >
             {error}
-          </Text>
+          </Typography>
         )}
         {warning && (
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            as="h6"
+          <Typography
+            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TYPOGRAPHY.H7}
             className="form-field__warning"
           >
             {warning}
-          </Text>
+          </Typography>
         )}
         {passwordStrength && (
-          <Text
-            color={TextColor.textDefault}
-            variant={TextVariant.bodySm}
-            as="h6"
+          <Typography
+            color={COLORS.TEXT_DEFAULT}
+            variant={TYPOGRAPHY.H7}
             className="form-field__password-strength"
           >
             {passwordStrength}
-          </Text>
+          </Typography>
         )}
         {passwordStrengthText && (
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyXs}
-            as="h6"
+          <Typography
+            color={COLORS.TEXT_MUTED}
+            variant={TYPOGRAPHY.H8}
             className="form-field__password-strength-text"
           >
             {passwordStrengthText}
-          </Text>
+          </Typography>
         )}
-      </Box>
+      </label>
     </div>
   );
 }
@@ -190,46 +157,17 @@ FormField.propTypes = {
    */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * A custom component to replace the title text Typography component
-   * titleText will be ignored if this is provided
-   */
-  TitleTextCustomComponent: PropTypes.node,
-  /**
    * Show unit (eg. ETH)
    */
   titleUnit: PropTypes.string,
-  /**
-   * A custom component to replace the title unit Typography component
-   * titleUnit will be ignored if this is provided
-   */
-  TitleUnitCustomComponent: PropTypes.node,
   /**
    * Add Tooltip and text content
    */
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * A custom component to replace the tooltip component
-   * tooltipText will be ignored if this is provided
-   */
-  TooltipCustomComponent: PropTypes.node,
-  /**
    * Show content (text, image, component) in title
    */
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  /**
-   * Props to pass to wrapping Box component of the titleDetail component
-   * Accepts all props of the Box component
-   */
-  titleDetailWrapperProps: PropTypes.shape({
-    ...Box.propTypes,
-  }),
-  /**
-   * Props to pass to wrapping Box component of the titleHeading component
-   * Accepts all props of the Box component
-   */
-  titleHeadingWrapperProps: PropTypes.shape({
-    ...Box.propTypes,
-  }),
   /**
    * Show error message
    */
@@ -282,22 +220,20 @@ FormField.propTypes = {
    * Show password strength description
    */
   passwordStrengthText: PropTypes.string,
-  /**
-   * The id of the input element. Should be used when the wrapping label is changed to a div to ensure accessibility.
-   */
-  id: PropTypes.string,
-  /**
-   * Any additional input attributes or overrides not provided by exposed props
-   */
-  inputProps: PropTypes.object,
-  /**
-   * The FormField is wrapped in a Box component that is rendered as a <label/> using the polymorphic "as" prop.
-   * This object allows you to override the rendering of the label by using the wrapperProps={{ as: 'div' }} prop.
-   * If used ensure the id prop is set on the input and a label element is present using htmlFor with the same id to ensure accessibility.
-   */
-  wrappingLabelProps: PropTypes.object,
-  /**
-   * ref for input component
-   */
-  inputRef: PropTypes.object,
+};
+
+FormField.defaultProps = {
+  titleText: '',
+  titleUnit: '',
+  tooltipText: '',
+  titleDetail: '',
+  error: '',
+  onChange: undefined,
+  value: 0,
+  detailText: '',
+  autoFocus: false,
+  numeric: false,
+  password: false,
+  allowDecimals: true,
+  disabled: false,
 };
