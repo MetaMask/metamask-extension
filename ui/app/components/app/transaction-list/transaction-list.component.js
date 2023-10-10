@@ -27,6 +27,9 @@ const getTransactionGroupRecipientAddressFilter = (
   chainId,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
+    if (!txParams) {
+      return false;
+    }
     return (
       txParams?.to === recipientAddress ||
       (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&

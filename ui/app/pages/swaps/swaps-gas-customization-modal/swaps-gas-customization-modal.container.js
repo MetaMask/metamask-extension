@@ -70,7 +70,7 @@ const mapStateToProps = (state) => {
 
   const balance = getCurrentEthBalance(state)
 
-  const newTotalEth = sumHexWEIsToRenderableEth([
+  const newTotalChainCurrency = sumHexWEIsToRenderableEth([
     value,
     customGasTotal,
     customTotalSupplement,
@@ -109,7 +109,7 @@ const mapStateToProps = (state) => {
         customTotalSupplement,
       ]),
       newTotalFiat,
-      newTotalEth,
+      newTotalChainCurrency,
       transactionFee: sumHexWEIsToRenderableEth(['0x0', customGasTotal]),
       sendAmount,
       extraInfoRow,

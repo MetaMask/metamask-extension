@@ -1,19 +1,22 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
-import classnames from 'classnames'
-import { uniqBy } from 'lodash'
-import { useHistory } from 'react-router-dom'
-import { MetaMetricsContext } from '../../../contexts/metametrics.new'
-import { useTokensToSearch } from '../../../hooks/useTokensToSearch'
-import { useEqualityCheck } from '../../../hooks/useEqualityCheck'
-import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
-import { I18nContext } from '../../../contexts/i18n'
-import DropdownInputPair from '../dropdown-input-pair'
-import DropdownSearchList from '../dropdown-search-list'
-import SlippageButtons from '../slippage-buttons'
-import { getTokens } from '../../../ducks/metamask/metamask'
-import InfoTooltip from '../../../components/ui/info-tooltip'
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import classnames from 'classnames';
+import { uniqBy, isEqual } from 'lodash';
+import { useHistory } from 'react-router-dom';
+import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import {
+  useTokensToSearch,
+  getRenderableTokenData,
+} from '../../../hooks/useTokensToSearch';
+import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+import { I18nContext } from '../../../contexts/i18n';
+import DropdownInputPair from '../dropdown-input-pair';
+import DropdownSearchList from '../dropdown-search-list';
+import SlippageButtons from '../slippage-buttons';
+import { getTokens } from '../../../ducks/metamask/metamask';
+import InfoTooltip from '../../../components/ui/info-tooltip';
+import ActionableMessage from '../actionable-message';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -24,28 +27,40 @@ import {
   getBalanceError,
   getTopAssets,
   getFetchParams,
-} from '../../../ducks/swaps/swaps'
+} from '../../../ducks/swaps/swaps';
+import {
+  getSwapsDefaultToken,
+  getTokenExchangeRates,
+  getConversionRate,
+  getCurrentCurrency,
+  getCurrentChainId,
+} from '../../../selectors';
 import {
   getValueFromWeiHex,
   hexToDecimal,
-} from '../../../helpers/utils/conversions.util'
-import { calcTokenAmount } from '../../../helpers/utils/token-util'
-import { usePrevious } from '../../../hooks/usePrevious'
-import { useTokenTracker } from '../../../hooks/useTokenTracker'
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount'
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount'
+} from '../../../helpers/utils/conversions.util';
+import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { usePrevious } from '../../../hooks/usePrevious';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
+import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps'
+import {
+  isSwapsDefaultTokenAddress,
+  isSwapsDefaultTokenSymbol,
+} from '../../../../../shared/modules/swaps.utils';
 
-import { resetSwapsPostFetchState, removeToken } from '../../../store/actions'
-import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util'
-import SwapsFooter from '../swaps-footer'
+import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
+import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
+import SwapsFooter from '../swaps-footer';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
   { name: 'symbol', weight: 0.499 },
   { name: 'address', weight: 0.002 },
-]
+];
+
+const MAX_ALLOWED_SLIPPAGE = 15;
 
 export default function BuildQuote({
   inputValue,
@@ -55,71 +70,85 @@ export default function BuildQuote({
   maxSlippage,
   selectedAccountAddress,
 }) {
-  const t = useContext(I18nContext)
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const metaMetricsEvent = useContext(MetaMetricsContext)
+  const t = useContext(I18nContext);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const metaMetricsEvent = useContext(MetaMetricsContext);
 
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(
     undefined,
-  )
+  );
+  const [verificationClicked, setVerificationClicked] = useState(false);
 
-  const balanceError = useSelector(getBalanceError)
-  const fetchParams = useSelector(getFetchParams)
+  const balanceError = useSelector(getBalanceError);
+  const fetchParams = useSelector(getFetchParams);
   const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
-    fetchParams?.metaData || {}
-  const tokens = useSelector(getTokens)
-  const topAssets = useSelector(getTopAssets)
-  const fromToken = useSelector(getFromToken)
-  const toToken = useSelector(getToToken) || destinationTokenInfo
-  const swapsEthToken = useSwapsEthToken()
-  const fetchParamsFromToken =
-    sourceTokenInfo?.symbol === 'ETH' ? swapsEthToken : sourceTokenInfo
+    fetchParams?.metaData || {};
+  const tokens = useSelector(getTokens);
+  const topAssets = useSelector(getTopAssets);
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken) || destinationTokenInfo;
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const chainId = useSelector(getCurrentChainId);
 
-  const { loading, tokensWithBalances } = useTokenTracker(tokens)
+  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
+  const conversionRate = useSelector(getConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
+
+  const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
+    sourceTokenInfo?.symbol,
+    chainId,
+  )
+    ? defaultSwapsToken
+    : sourceTokenInfo;
+
+  const { loading, tokensWithBalances } = useTokenTracker(tokens);
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    fromToken?.symbol !== 'ETH' && fromToken?.balance ? [fromToken] : []
+    !isSwapsDefaultTokenSymbol(fromToken?.symbol, chainId) && fromToken?.balance
+      ? [fromToken]
+      : [];
   const usersTokens = uniqBy(
     [...tokensWithBalances, ...tokens, ...fromTokenArray],
     'address',
-  )
-  const memoizedUsersTokens = useEqualityCheck(usersTokens)
+  );
+  const memoizedUsersTokens = useEqualityCheck(usersTokens);
 
-  const selectedFromToken = useTokensToSearch({
-    providedTokens:
-      fromToken || fetchParamsFromToken
-        ? [fromToken || fetchParamsFromToken]
-        : [],
-    usersTokens: memoizedUsersTokens,
-    onlyEth: (fromToken || fetchParamsFromToken)?.symbol === 'ETH',
-    singleToken: true,
-  })[0]
+  const selectedFromToken = getRenderableTokenData(
+    fromToken || fetchParamsFromToken,
+    tokenConversionRates,
+    conversionRate,
+    currentCurrency,
+    chainId,
+  );
 
   const tokensToSearch = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
-  })
+  });
   const selectedToToken =
     tokensToSearch.find(({ address }) => address === toToken?.address) ||
-    toToken
-
+    toToken;
+  const toTokenIsNotDefault =
+    selectedToToken?.address &&
+    !isSwapsDefaultTokenAddress(selectedToToken?.address, chainId);
+  const occurances = Number(selectedToToken?.occurances || 0);
   const {
     address: fromTokenAddress,
     symbol: fromTokenSymbol,
     string: fromTokenString,
     decimals: fromTokenDecimals,
     balance: rawFromTokenBalance,
-  } = selectedFromToken || {}
+  } = selectedFromToken || {};
 
   const fromTokenBalance =
     rawFromTokenBalance &&
-    calcTokenAmount(rawFromTokenBalance, fromTokenDecimals).toString(10)
+    calcTokenAmount(rawFromTokenBalance, fromTokenDecimals).toString(10);
 
-  const prevFromTokenBalance = usePrevious(fromTokenBalance)
+  const prevFromTokenBalance = usePrevious(fromTokenBalance);
 
   const swapFromTokenFiatValue = useTokenFiatAmount(
     fromTokenAddress,
@@ -129,14 +158,15 @@ export default function BuildQuote({
       showFiat: true,
     },
     true,
-  )
-  const swapFromEthFiatValue = useEthFiatAmount(
+  );
+  const swapFromChainCurrencyFiatValue = useEthFiatAmount(
     inputValue || 0,
     { showFiat: true },
     true,
-  )
-  const swapFromFiatValue =
-    fromTokenSymbol === 'ETH' ? swapFromEthFiatValue : swapFromTokenFiatValue
+  );
+  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
+    ? swapFromChainCurrencyFiatValue
+    : swapFromTokenFiatValue;
 
   const onFromSelect = (token) => {
     if (
@@ -146,11 +176,11 @@ export default function BuildQuote({
     ) {
       fetchTokenPrice(token.address).then((rate) => {
         if (rate !== null && rate !== undefined) {
-          setFetchedTokenExchangeRate(rate)
+          setFetchedTokenExchangeRate(rate);
         }
-      })
+      });
     } else {
-      setFetchedTokenExchangeRate(null)
+      setFetchedTokenExchangeRate(null);
     }
     if (
       token?.address &&
@@ -161,83 +191,87 @@ export default function BuildQuote({
       fetchTokenBalance(token.address, selectedAccountAddress).then(
         (fetchedBalance) => {
           if (fetchedBalance?.balance) {
-            const balanceAsDecString = fetchedBalance.balance.toString(10)
+            const balanceAsDecString = fetchedBalance.balance.toString(10);
             const userTokenBalance = calcTokenAmount(
               balanceAsDecString,
               token.decimals,
-            )
+            );
             dispatch(
               setSwapsFromToken({
                 ...token,
                 string: userTokenBalance.toString(10),
                 balance: balanceAsDecString,
               }),
-            )
+            );
           }
         },
-      )
+      );
     }
-    dispatch(setSwapsFromToken(token))
+    dispatch(setSwapsFromToken(token));
     onInputChange(
       token?.address ? inputValue : '',
       token.string,
       token.decimals,
-    )
-  }
+    );
+  };
 
-  const { destinationTokenAddedForSwap } = fetchParams || {}
-  const { address: toAddress } = toToken || {}
+  const { destinationTokenAddedForSwap } = fetchParams || {};
+  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
       if (destinationTokenAddedForSwap && token.address !== toAddress) {
-        dispatch(removeToken(toAddress))
+        dispatch(removeToken(toAddress));
       }
-      dispatch(setSwapToToken(token))
+      dispatch(setSwapToToken(token));
+      setVerificationClicked(false);
     },
     [dispatch, destinationTokenAddedForSwap, toAddress],
-  )
+  );
 
   const hideDropdownItemIf = useCallback(
     (item) => item.address === fromTokenAddress,
     [fromTokenAddress],
-  )
+  );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find(
     (token) => token.address === fromToken?.address,
-  )
+  );
   const previousTokensWithBalancesFromToken = usePrevious(
     tokensWithBalancesFromToken,
-  )
+  );
 
   useEffect(() => {
-    const notEth =
-      tokensWithBalancesFromToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address
+    const notDefault = !isSwapsDefaultTokenAddress(
+      tokensWithBalancesFromToken?.address,
+      chainId,
+    );
     const addressesAreTheSame =
       tokensWithBalancesFromToken?.address ===
-      previousTokensWithBalancesFromToken?.address
+      previousTokensWithBalancesFromToken?.address;
     const balanceHasChanged =
       tokensWithBalancesFromToken?.balance !==
-      previousTokensWithBalancesFromToken?.balance
-    if (notEth && addressesAreTheSame && balanceHasChanged) {
+      previousTokensWithBalancesFromToken?.balance;
+    if (notDefault && addressesAreTheSame && balanceHasChanged) {
       dispatch(
         setSwapsFromToken({
           ...fromToken,
           balance: tokensWithBalancesFromToken?.balance,
           string: tokensWithBalancesFromToken?.string,
         }),
-      )
+      );
     }
   }, [
     dispatch,
     tokensWithBalancesFromToken,
     previousTokensWithBalancesFromToken,
     fromToken,
-  ])
+    chainId,
+  ]);
 
   // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
     if (
-      fromToken?.address === ETH_SWAPS_TOKEN_OBJECT.address &&
+      isSwapsDefaultTokenAddress(fromToken?.address, chainId) &&
       fromToken?.balance !== hexToDecimal(ethBalance)
     ) {
       dispatch(
@@ -250,26 +284,26 @@ export default function BuildQuote({
             toDenomination: 'ETH',
           }),
         }),
-      )
+      );
     }
-  }, [dispatch, fromToken, ethBalance])
+  }, [dispatch, fromToken, ethBalance, chainId]);
 
   useEffect(() => {
     if (prevFromTokenBalance !== fromTokenBalance) {
-      onInputChange(inputValue, fromTokenBalance)
+      onInputChange(inputValue, fromTokenBalance);
     }
-  }, [onInputChange, prevFromTokenBalance, inputValue, fromTokenBalance])
+  }, [onInputChange, prevFromTokenBalance, inputValue, fromTokenBalance]);
 
   useEffect(() => {
-    dispatch(resetSwapsPostFetchState())
-  }, [dispatch])
+    dispatch(resetSwapsPostFetchState());
+  }, [dispatch]);
 
   return (
     <div className="build-quote">
       <div className="build-quote__content">
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
-          {fromTokenSymbol !== 'ETH' && (
+          {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
             <div
               className="build-quote__max-button"
               onClick={() =>
@@ -284,7 +318,7 @@ export default function BuildQuote({
           onSelect={onFromSelect}
           itemsToSearch={tokensToSearch}
           onInputChange={(value) => {
-            onInputChange(value, fromTokenBalance)
+            onInputChange(value, fromTokenBalance);
           }}
           inputValue={inputValue}
           leftValue={inputValue && swapFromFiatValue}
@@ -330,8 +364,8 @@ export default function BuildQuote({
           <button
             className="build-quote__swap-arrows"
             onClick={() => {
-              onToSelect(selectedFromToken)
-              onFromSelect(selectedToToken)
+              onToSelect(selectedFromToken);
+              onFromSelect(selectedToToken);
             }}
           >
             <img
@@ -367,10 +401,52 @@ export default function BuildQuote({
             defaultToAll
           />
         </div>
-        {selectedToToken?.address &&
-          selectedToToken?.address !== ETH_SWAPS_TOKEN_OBJECT.address && (
+        {toTokenIsNotDefault &&
+          (occurances < 2 ? (
+            <ActionableMessage
+              message={
+                <div className="build-quote__token-verification-warning-message">
+                  <div className="build-quote__bold">
+                    {occurances === 1
+                      ? t('swapTokenVerificationOnlyOneSource')
+                      : t('swapTokenVerificationNoSource')}
+                  </div>
+                  <div>
+                    {t('verifyThisTokenOn', [
+                      <a
+                        className="build-quote__token-etherscan-link build-quote__underline"
+                        key="build-quote-etherscan-link"
+                        href={`https://etherscan.io/token/${selectedToToken.address}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('etherscan')}
+                      </a>,
+                    ])}
+                  </div>
+                </div>
+              }
+              primaryAction={
+                verificationClicked
+                  ? null
+                  : {
+                      label: t('continue'),
+                      onClick: () => setVerificationClicked(true),
+                    }
+              }
+              type="warning"
+              withRightButton
+              infoTooltipText={t('swapVerifyTokenExplanation')}
+            />
+          ) : (
             <div className="build-quote__token-message">
-              {t('verifyThisTokenOn', [
+              <span
+                className="build-quote__bold"
+                key="token-verification-bold-text"
+              >
+                {t('swapTokenVerificationSources', [occurances])}
+              </span>
+              {t('swapTokenVerificationMessage', [
                 <a
                   className="build-quote__token-etherscan-link"
                   key="build-quote-etherscan-link"
@@ -385,14 +461,16 @@ export default function BuildQuote({
                 position="top"
                 contentText={t('swapVerifyTokenExplanation')}
                 containerClassName="build-quote__token-tooltip-container"
+                key="token-verification-info-tooltip"
               />
             </div>
-          )}
+          ))}
         <div className="build-quote__slippage-buttons-container">
           <SlippageButtons
             onSelect={(newSlippage) => {
-              setMaxSlippage(newSlippage)
+              setMaxSlippage(newSlippage);
             }}
+            maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
           />
         </div>
       </div>
@@ -405,18 +483,21 @@ export default function BuildQuote({
               maxSlippage,
               metaMetricsEvent,
             ),
-          )
+          );
         }}
-        submitText={t('swapGetQuotes')}
+        submitText={t('swapReviewSwap')}
         disabled={
           !Number(inputValue) ||
           !selectedToToken?.address ||
-          Number(maxSlippage) === 0
+          Number(maxSlippage) === 0 ||
+          Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
+          (toTokenIsNotDefault && occurances < 2 && !verificationClicked)
         }
         hideCancel
+        showTermsOfService
       />
     </div>
-  )
+  );
 }
 
 BuildQuote.propTypes = {
@@ -426,4 +507,4 @@ BuildQuote.propTypes = {
   ethBalance: PropTypes.string,
   setMaxSlippage: PropTypes.func,
   selectedAccountAddress: PropTypes.string,
-}
+};
