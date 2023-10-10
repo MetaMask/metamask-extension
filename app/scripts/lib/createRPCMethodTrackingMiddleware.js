@@ -1,22 +1,23 @@
-import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
+import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
-
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
-import { TransactionStatus } from '../../../shared/constants/transaction';
-import { SECOND } from '../../../shared/constants/time';
-
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
+import { SECOND } from '../../../shared/constants/time';
+import { TransactionStatus } from '../../../shared/constants/transaction';
+
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
+
+import getSnapAndHardwareInfoForMetrics from './snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -117,6 +118,7 @@ const rateLimitTimeouts = {};
  * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
  *  allowing another set of events to be tracked.
  * @param opts.securityProviderRequest
+ * @param {MetamaskController} opts.metamaskController
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
@@ -124,6 +126,7 @@ export default function createRPCMethodTrackingMiddleware({
   getMetricsState,
   rateLimitSeconds = 60 * 5,
   securityProviderRequest,
+  metamaskController,
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -196,6 +199,13 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
         ///: END:ONLY_INCLUDE_IN
+
+        const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+          metamaskController,
+        );
+
+        // merge the snapAndHardwareInfo into eventProperties
+        Object.assign(eventProperties, snapAndHardwareInfo);
 
         const msgData = {
           msgParams: {
@@ -273,6 +283,13 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties.error = res.error;
       } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
+      } else if (
+        res.error?.code === errorCodes.rpc.internal &&
+        res.error?.message === 'Request rejected by user or snap.'
+      ) {
+        // The signature was approved in MetaMask but rejected in the snap
+        event = eventType.REJECTED;
+        eventProperties.status = res.error.message;
       } else {
         event = eventType.APPROVED;
       }

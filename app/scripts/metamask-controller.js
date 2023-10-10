@@ -1295,10 +1295,9 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
-      getAccountType: this.getAccountType.bind(this),
-      getDeviceModel: this.getDeviceModel.bind(this),
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      metamaskController: this,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IN
@@ -3508,10 +3507,10 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Retrieves the keyring for the selected address and using the .type returns
-   * a subtype for the account. Either 'hardware', 'imported' or 'MetaMask'.
+   * a subtype for the account. Either 'hardware', 'imported', 'snap', or 'MetaMask'.
    *
    * @param {string} address - Address to retrieve keyring for
-   * @returns {'hardware' | 'imported' | 'MetaMask'}
+   * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
     const keyringType = await this.keyringController.getAccountKeyringType(
@@ -3525,6 +3524,8 @@ export default class MetamaskController extends EventEmitter {
         return 'hardware';
       case KeyringType.imported:
         return 'imported';
+      case KeyringType.snap:
+        return 'snap';
       default:
         return 'MetaMask';
     }
@@ -3536,7 +3537,7 @@ export default class MetamaskController extends EventEmitter {
    * 'N/A' for non hardware wallets.
    *
    * @param {string} address - Address to retrieve keyring for
-   * @returns {'ledger' | 'lattice' | 'N/A' | string}
+   * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
@@ -3552,7 +3553,7 @@ export default class MetamaskController extends EventEmitter {
         // TODO: get model after lattice keyring exposes method
         return HardwareDeviceNames.lattice;
       default:
-        return 'N/A';
+        return undefined;
     }
   }
 
@@ -4266,6 +4267,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.store,
         ),
         securityProviderRequest: this.securityProviderRequest.bind(this),
+        metamaskController: this,
       }),
     );
 
