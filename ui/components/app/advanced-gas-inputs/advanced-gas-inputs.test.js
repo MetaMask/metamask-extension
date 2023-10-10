@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
-import { renderWithProvider, fireEvent } from '../../../../test/jest';
-import configureStore from '../../../store/store';
+import { renderWithProvider, fireEvent } from '../../../../../test/jest';
+import configureStore from '../../../../store/store';
 import AdvancedGasInputs from '.';
 
 describe('AdvancedGasInputs', () => {
@@ -20,7 +20,7 @@ describe('AdvancedGasInputs', () => {
     minimumGasLimit: 21000,
   };
 
-  const store = configureStore({ metamask: { providerConfig: {} } });
+  const store = configureStore({ metamask: { provider: {} } });
 
   beforeEach(() => {
     clock = sinon.useFakeTimers();
@@ -105,7 +105,7 @@ describe('AdvancedGasInputs', () => {
       store,
     );
 
-    expect(queryByText('Gas price extremely low')).toBeInTheDocument();
+    expect(queryByText('Gas Price Extremely Low')).toBeInTheDocument();
   });
 
   it('errors when custom gas price is too excessive', () => {
@@ -114,6 +114,6 @@ describe('AdvancedGasInputs', () => {
       store,
     );
 
-    expect(queryByText('Gas price is excessive')).toBeInTheDocument();
+    expect(queryByText('Gas Price Is Excessive')).toBeInTheDocument();
   });
 });

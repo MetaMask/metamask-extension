@@ -2210,6 +2210,9 @@
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
+  },
   "learnMore": {
     "message": "learn more"
   },
@@ -5307,6 +5310,15 @@
   },
   "transactionHistoryL2GasPriceLabel": {
     "message": "L2 gas price"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "Total L1 gas fee"
+  },
+  "transactionHistoryL2GasLimitLabel": {
+    "message": "L2 gas limit`"
+  },
+  "transactionHistoryL2GasPriceLabel": {
+    "message": "L2 gas price`"
   },
   "transactionHistoryMaxFeePerGas": {
     "message": "Max fee per gas"

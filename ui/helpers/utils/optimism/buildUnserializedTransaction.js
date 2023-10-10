@@ -1,8 +1,7 @@
 import { omit } from 'lodash';
-import { BN } from 'ethereumjs-util';
-import { Common, Hardfork } from '@ethereumjs/common';
+import { BN, stripHexPrefix } from 'ethereumjs-util';
+import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
-import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 
 function buildTxParams(txMeta) {
   return {
@@ -17,7 +16,7 @@ function buildTransactionCommon(txMeta) {
   // genesis points to the mainnet genesis, not the Optimism genesis — but
   // considering that all we want to do is serialize a transaction, this works
   // fine for our use case.
-  return Common.custom({
+  return Common.forCustomChain(Chain.Mainnet, {
     chainId: new BN(stripHexPrefix(txMeta.chainId), 16),
     networkId: new BN(txMeta.metamaskNetworkId, 10),
     // Optimism only supports type-0 transactions; it does not support any of

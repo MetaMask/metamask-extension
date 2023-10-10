@@ -1,10 +1,11 @@
 import { connect } from 'react-redux';
-import { MIN_GAS_LIMIT_DEC } from '../../../pages/send/send.constants';
 import {
   decGWEIToHexWEI,
   decimalToHex,
   hexWEIToDecGWEI,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../helpers/utils/conversions.util';
+import { getNetworkSupportsSettingGasPrice } from '../../../../selectors/selectors';
+import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import AdvancedGasInputs from './advanced-gas-inputs.component';
 
 function convertGasPriceForInputs(gasPriceInHexWEI) {
@@ -17,6 +18,12 @@ function convertGasLimitForInputs(gasLimitInHexWEI) {
 
 function convertMinimumGasLimitForInputs(minimumGasLimit = MIN_GAS_LIMIT_DEC) {
   return parseInt(minimumGasLimit, 10);
+}
+
+function mapStateToProps(state) {
+  return {
+    networkSupportsSettingGasPrice: getNetworkSupportsSettingGasPrice(state),
+  };
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
@@ -40,4 +47,4 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   };
 }
 
-export default connect(undefined, null, mergeProps)(AdvancedGasInputs);
+export default connect(mapStateToProps, null, mergeProps)(AdvancedGasInputs);
