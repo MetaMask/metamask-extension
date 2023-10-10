@@ -56,22 +56,22 @@ describe('Custom network', function () {
         assert.equal(
           await networkName.getText(),
           networkNAME,
-          'Network name is not correct displayed',
+          'Network name is not correctly displayed',
         );
         assert.equal(
           await networkUrl.getText(),
           networkURL,
-          'Network Url is not correct displayed',
+          'Network Url is not correctly displayed',
         );
         assert.equal(
           await chainIdElement.getText(),
           chainID.toString(),
-          'Chain Id is not correct displayed',
+          'Chain Id is not correctly displayed',
         );
         assert.equal(
           await currencySymbol.getText(),
           currencySYMBOL,
-          'Currency symbol is not correct displayed',
+          'Currency symbol is not correctly displayed',
         );
 
         await driver.clickElement({ tag: 'a', text: 'View all details' });
@@ -154,10 +154,10 @@ describe('Custom network', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController({
             networkConfigurations: {
-              testUUID: {
+              networkConfigurationId: {
                 rpcUrl: networkURL,
                 chainId: chainID,
-                chainName: networkNAME,
+                nickname: networkNAME,
                 ticker: currencySYMBOL,
                 rpcPrefs: {},
               },

@@ -20,7 +20,7 @@ const switchEthereumChain = {
     getCurrentChainId: true,
     findNetworkConfigurationBy: true,
     setProviderType: true,
-    setCurrentNetwork: true,
+    setActiveNetwork: true,
     requestUserApproval: true,
   },
 };
@@ -31,7 +31,7 @@ function findExistingNetwork(chainId, findNetworkConfigurationBy) {
     return {
       chainId,
       ticker: CURRENCY_SYMBOLS.ETH,
-      chainName: NETWORK_TO_NAME_MAP[chainId],
+      nickname: NETWORK_TO_NAME_MAP[chainId],
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
       type: CHAIN_ID_TO_TYPE_MAP[chainId],
     };
@@ -49,7 +49,7 @@ async function switchEthereumChainHandler(
     getCurrentChainId,
     findNetworkConfigurationBy,
     setProviderType,
-    setCurrentNetwork,
+    setActiveNetwork,
     requestUserApproval,
   },
 ) {
@@ -65,12 +65,7 @@ async function switchEthereumChainHandler(
 
   const { origin } = req;
 
-  const { chainId, networkConfigurationId } = req.params[0];
-
-  if (networkConfigurationId) {
-    await setCurrentNetwork(networkConfigurationId);
-    return end();
-  }
+  const { chainId } = req.params[0];
 
   const otherKeys = Object.keys(omit(req.params[0], ['chainId']));
 
@@ -119,7 +114,7 @@ async function switchEthereumChainHandler(
       ) {
         setProviderType(approvedRequestData.type);
       } else {
-        await setCurrentNetwork(approvedRequestData);
+        await setActiveNetwork(approvedRequestData);
       }
       res.result = null;
     } catch (error) {

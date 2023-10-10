@@ -1,7 +1,3 @@
-const {
-  WALLET_SNAP_PERMISSION_KEY,
-  SnapCaveatType,
-} = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 
@@ -110,9 +106,9 @@ function defaultFixture() {
             id: 15,
             isShown: false,
           },
-          16: {
+          17: {
             date: null,
-            id: 16,
+            id: 17,
             isShown: true,
           },
         },
@@ -177,19 +173,20 @@ function defaultFixture() {
         network: '1337',
         provider: {
           chainId: CHAIN_IDS.LOCALHOST,
-          chainName: 'Localhost 8545',
+          nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           type: 'rpc',
         },
         networkConfigurations: {
-          testUUID: {
+          networkConfigurationId: {
             chainId: CHAIN_IDS.LOCALHOST,
-            chainName: 'Localhost 8545',
+            nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
             ticker: 'ETH',
+            networkConfigurationId: 'networkConfigurationId',
           },
         },
       },
@@ -238,7 +235,6 @@ function defaultFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        transactionSecurityCheckEnabled: true,
         openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
@@ -311,15 +307,16 @@ function onboardingFixture() {
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
           chainId: CHAIN_IDS.LOCALHOST,
-          chainName: 'Localhost 8545',
+          nickname: 'Localhost 8545',
         },
         networkConfigurations: {
-          testUUID: {
+          networkConfigurationId: {
             chainId: CHAIN_IDS.LOCALHOST,
-            chainName: 'Localhost 8545',
+            nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
             ticker: 'ETH',
+            networkConfigurationId: 'networkConfigurationId',
           },
         },
       },
@@ -352,7 +349,6 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        transactionSecurityCheckEnabled: true,
         openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
@@ -533,22 +529,48 @@ class FixtureBuilder {
         'https://metamask.github.io': {
           origin: 'https://metamask.github.io',
           permissions: {
-            [WALLET_SNAP_PERMISSION_KEY]: {
-              caveats: [
-                {
-                  type: SnapCaveatType.SnapIds,
-                  value: {
-                    'npm@metamask/test-snap-bip32': {},
-                    'npm@metamask/test-snap-bip44': {},
-                    'npm@metamask/test-snap-error': {},
-                    'npm@metamask/test-snap-managestate': {},
-                    'npm@metamask/test-snap-notification': {},
-                  },
-                },
-              ],
+            'wallet_snap_npm:@metamask/test-snap-bip32': {
               id: 'CwdJq0x8N_b9FNxn6dVuP',
-              parentCapability: WALLET_SNAP_PERMISSION_KEY,
+              parentCapability: 'wallet_snap_npm:@metamask/test-snap-bip32',
               invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-bip44': {
+              id: '8zH-0opWuZhvJew41FMVh',
+              parentCapability: 'wallet_snap_npm:@metamask/test-snap-bip44',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-confirm': {
+              id: 'Wb_1c9toBggBQWfOJwjMg',
+              parentCapability: 'wallet_snap_npm:@metamask/test-snap-confirm',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-error': {
+              id: '5FUZoCyimOWKTbuLCEOWa',
+              parentCapability: 'wallet_snap_npm:@metamask/test-snap-error',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-managestate': {
+              id: 'Z6XPdyuCHCf1pyqSiU7nh',
+              parentCapability:
+                'wallet_snap_npm:@metamask/test-snap-managestate',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
+              date: 1664388714636,
+            },
+            'wallet_snap_npm:@metamask/test-snap-notification': {
+              id: '_xfRMXzq0bs8QcXRcvjcP',
+              parentCapability:
+                'wallet_snap_npm:@metamask/test-snap-notification',
+              invoker: 'https://metamask.github.io',
+              caveats: null,
               date: 1664388714636,
             },
           },

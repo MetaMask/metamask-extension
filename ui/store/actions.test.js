@@ -350,9 +350,11 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.importNewAccount('Private Key', [
-          'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
-        ]),
+        actions.importNewAccount(
+          'Private Key',
+          ['c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'],
+          '',
+        ),
       );
       expect(importAccountWithStrategy.callCount).toStrictEqual(1);
     });
@@ -369,9 +371,8 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'SHOW_LOADING_INDICATION',
-          payload: 'This may take a while, please be patient.',
+          payload: undefined,
         },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1198,26 +1199,26 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setCurrentNetwork', () => {
+  describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setCurrentNetwork', async () => {
+    it('calls setActiveNetwork', async () => {
       const store = mockStore();
 
       const setCurrentNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        setCurrentNetwork: setCurrentNetworkStub,
+        setActiveNetwork: setCurrentNetworkStub,
       });
       _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setCurrentNetwork('http://localhost:8545'));
+      await store.dispatch(actions.setActiveNetwork('http://localhost:8545'));
       expect(setCurrentNetworkStub.callCount).toStrictEqual(1);
     });
 
-    it('displays warning when setCurrentNetwork throws', async () => {
+    it('displays warning when setActiveNetwork throws', async () => {
       const store = mockStore();
 
       const setCurrentNetworkStub = sinon
@@ -1225,7 +1226,7 @@ describe('Actions', () => {
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
-        setCurrentNetwork: setCurrentNetworkStub,
+        setActiveNetwork: setCurrentNetworkStub,
       });
       _setBackgroundConnection(background.getApi());
 
@@ -1236,7 +1237,7 @@ describe('Actions', () => {
         },
       ];
 
-      await store.dispatch(actions.setCurrentNetwork());
+      await store.dispatch(actions.setActiveNetwork());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1253,13 +1254,13 @@ describe('Actions', () => {
         .stub()
         .callsFake((_, cb) => cb());
 
-      const upsertAndSetNetworkConfigurationStub = sinon
+      const upsertNetworkConfigurationStub = sinon
         .stub()
         .callsFake((_, cb) => cb());
 
       background.getApi.returns({
         removeNetworkConfiguration: removeNetworkConfigurationStub,
-        upsertAndSetNetworkConfiguration: upsertAndSetNetworkConfigurationStub,
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
       });
       _setBackgroundConnection(background.getApi());
 
@@ -1269,29 +1270,18 @@ describe('Actions', () => {
           rpcUrl: 'newRpc',
           chainId: '0x',
           ticker: 'ETH',
-          chainName: 'chainName',
+          nickname: 'nickname',
           rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
         }),
       );
       expect(removeNetworkConfigurationStub.callCount).toStrictEqual(1);
-      expect(upsertAndSetNetworkConfigurationStub.callCount).toStrictEqual(1);
-
-      const expectedActions = [
-        {
-          type: 'UPDATE_NETWORK_TARGET',
-          value: {
-            rpcUrl: 'newRpc',
-            networkConfigurationId: 'networkConfigurationId',
-          },
-        },
-      ];
-      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(upsertNetworkConfigurationStub.callCount).toStrictEqual(1);
     });
 
     it('displays warning when removeNetworkConfiguration throws', async () => {
       const store = mockStore();
 
-      const upsertAndSetNetworkConfigurationStub = sinon
+      const upsertNetworkConfigurationStub = sinon
         .stub()
         .callsFake((_, cb) => cb());
 
@@ -1301,7 +1291,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeNetworkConfiguration: removeNetworkConfigurationStub,
-        upsertAndSetNetworkConfiguration: upsertAndSetNetworkConfigurationStub,
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
       });
 
       _setBackgroundConnection(background.getApi());
@@ -1316,7 +1306,7 @@ describe('Actions', () => {
           rpcUrl: 'newRpc',
           chainId: '0x',
           ticker: 'ETH',
-          chainName: 'chainName',
+          nickname: 'nickname',
           rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
         }),
       );

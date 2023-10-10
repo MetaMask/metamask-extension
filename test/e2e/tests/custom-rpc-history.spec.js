@@ -192,18 +192,18 @@ describe('Stores custom RPC history', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController({
             networkConfigurations: {
-              testUUID: {
+              networkConfigurationId: {
                 rpcUrl: 'http://127.0.0.1:8545/1',
                 chainId: '0x539',
                 ticker: 'ETH',
-                chainName: 'http://127.0.0.1:8545/1',
+                nickname: 'http://127.0.0.1:8545/1',
                 rpcPrefs: {},
               },
-              testUUID2: {
+              networkConfigurationId2: {
                 rpcUrl: 'http://127.0.0.1:8545/2',
                 chainId: '0x539',
                 ticker: 'ETH',
-                chainName: 'http://127.0.0.1:8545/2',
+                nickname: 'http://127.0.0.1:8545/2',
                 rpcPrefs: {},
               },
             },
@@ -240,18 +240,18 @@ describe('Stores custom RPC history', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController({
             networkConfigurations: {
-              testUUID: {
+              networkConfigurationId: {
                 rpcUrl: 'http://127.0.0.1:8545/1',
                 chainId: '0x539',
                 ticker: 'ETH',
-                chainName: 'http://127.0.0.1:8545/1',
+                nickname: 'http://127.0.0.1:8545/1',
                 rpcPrefs: {},
               },
-              testUUID2: {
+              networkConfigurationId2: {
                 rpcUrl: 'http://127.0.0.1:8545/2',
                 chainId: '0x539',
                 ticker: 'ETH',
-                chainName: 'http://127.0.0.1:8545/2',
+                nickname: 'http://127.0.0.1:8545/2',
                 rpcPrefs: {},
               },
             },

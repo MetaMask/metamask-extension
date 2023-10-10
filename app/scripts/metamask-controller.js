@@ -4,8 +4,8 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import { debounce, pickBy } from 'lodash';
-import { providerAsMiddleware } from 'eth-json-rpc-middleware';
+import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
+import { debounce } from 'lodash';
 import {
   KeyringController,
   keyringBuilderFactory,
@@ -113,6 +113,8 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { isMain, isFlask } from '../../shared/constants/environment';
+// eslint-disable-next-line import/order
+import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
@@ -174,16 +176,6 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
-
-/* eslint-disable import/first */
-/* eslint-disable import/order */
-
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
-///: END:ONLY_INCLUDE_IN
-
-/* eslint-enable import/first */
-/* eslint-enable import/order */
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -262,6 +254,8 @@ export default class MetamaskController extends EventEmitter {
     this.networkController = new NetworkController({
       state: initState.NetworkController,
       infuraProjectId: opts.infuraProjectId,
+      trackMetaMetricsEvent: (...args) =>
+        this.metaMetricsController.trackEvent(...args),
     });
     this.networkController.initializeProvider();
     this.provider =
@@ -868,6 +862,10 @@ export default class MetamaskController extends EventEmitter {
       state: initState.CronjobController,
       messenger: cronjobControllerMessenger,
     });
+
+    this.desktopController = new DesktopController({
+      initState: initState.DesktopController,
+    });
     ///: END:ONLY_INCLUDE_IN
 
     this.detectTokensController = new DetectTokensController({
@@ -965,14 +963,14 @@ export default class MetamaskController extends EventEmitter {
         const txMeta = this.txController.txStateManager.getTransaction(txId);
         let rpcPrefs = {};
         if (txMeta.chainId) {
-          const networkConfigurations =
-            this.networkController.getNetworkConfigurations();
-          let matchingNetworkConfig;
-          for (const networkConfig of Object.values(networkConfigurations)) {
-            if (networkConfig.chainId === txMeta.chainId) {
-              matchingNetworkConfig = networkConfig;
-            }
-          }
+          const { networkConfigurations } =
+            this.networkController.store.getState();
+          const matchingNetworkConfig = Object.values(
+            networkConfigurations,
+          ).find(
+            (networkConfiguration) =>
+              networkConfiguration.chainId === txMeta.chainId,
+          );
           rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
         }
         this.platform.showTransactionNotification(txMeta, rpcPrefs);
@@ -1125,12 +1123,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    this.desktopController = new DesktopController({
-      initState: initState.DesktopController,
-    });
-    ///: END:ONLY_INCLUDE_IN
-
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       this.accountTracker._updateAccounts();
@@ -1237,8 +1229,6 @@ export default class MetamaskController extends EventEmitter {
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
@@ -1272,8 +1262,6 @@ export default class MetamaskController extends EventEmitter {
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
-        ///: END:ONLY_INCLUDE_IN
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
@@ -1727,6 +1715,7 @@ export default class MetamaskController extends EventEmitter {
       txController,
       assetsContractController,
       backupController,
+      approvalController,
     } = this;
 
     return {
@@ -1778,6 +1767,10 @@ export default class MetamaskController extends EventEmitter {
       markNotificationPopupAsAutomaticallyClosed: () =>
         this.notificationManager.markAsAutomaticallyClosed(),
 
+      // approval
+      requestUserApproval:
+        approvalController.addAndShowApprovalRequest.bind(approvalController),
+
       // primary HD keyring management
       addNewAccount: this.addNewAccount.bind(this),
       verifySeedPhrase: this.verifySeedPhrase.bind(this),
@@ -1823,14 +1816,9 @@ export default class MetamaskController extends EventEmitter {
         networkController.rollbackToPreviousProvider.bind(networkController),
       removeNetworkConfiguration:
         networkController.removeNetworkConfiguration.bind(networkController),
-      setCurrentNetwork:
-        networkController.setCurrentNetwork.bind(networkController),
-      getNetworkConfigurations:
-        networkController.getNetworkConfigurations.bind(networkController),
-      upsertAndSetNetworkConfiguration:
-        this.upsertAndSetNetworkConfiguration.bind(this),
+      setActiveNetwork:
+        networkController.setActiveNetwork.bind(networkController),
       upsertNetworkConfiguration: this.upsertNetworkConfiguration.bind(this),
-      requestAddNetworkApproval: this.requestAddNetworkApproval.bind(this),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,
@@ -1872,6 +1860,10 @@ export default class MetamaskController extends EventEmitter {
       setTheme: preferencesController.setTheme.bind(preferencesController),
       setTransactionSecurityCheckEnabled:
         preferencesController.setTransactionSecurityCheckEnabled.bind(
+          preferencesController,
+        ),
+      setOpenSeaTransactionSecurityProviderPopoverHasBeenShown:
+        preferencesController.setOpenSeaTransactionSecurityProviderPopoverHasBeenShown.bind(
           preferencesController,
         ),
       // AssetsContractController
@@ -1934,6 +1926,7 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
+
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -2042,6 +2035,22 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
+      // Desktop
+      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      generateDesktopOtp: this.desktopController.generateOtp.bind(
+        this.desktopController,
+      ),
+      testDesktopConnection: this.desktopController.testDesktopConnection.bind(
+        this.desktopController,
+      ),
+      disableDesktop: this.desktopController.disableDesktop.bind(
+        this.desktopController,
+      ),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -2182,24 +2191,6 @@ export default class MetamaskController extends EventEmitter {
         assetsContractController.getBalancesInSingleCall.bind(
           assetsContractController,
         ),
-
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
-        this.desktopController,
-      ),
-      setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
-        this.desktopController,
-      ),
-      generateOtp: this.desktopController.generateOtp.bind(
-        this.desktopController,
-      ),
-      testDesktopConnection: this.desktopController.testDesktopConnection.bind(
-        this.desktopController,
-      ),
-      disableDesktop: this.desktopController.disableDesktop.bind(
-        this.desktopController,
-      ),
-      ///: END:ONLY_INCLUDE_IN
     };
   }
 
@@ -2259,63 +2250,6 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
-  }
-
-  async requestAddNetworkApproval(customRpc, originIsMetaMask) {
-    try {
-      await this.approvalController.addAndShowApprovalRequest({
-        origin: 'metamask',
-        type: 'wallet_addEthereumChain',
-        requestData: {
-          chainId: customRpc.chainId,
-          blockExplorerUrl: customRpc.rpcPrefs.blockExplorerUrl,
-          chainName: customRpc.chainName,
-          rpcUrl: customRpc.rpcUrl,
-          ticker: customRpc.ticker,
-          imageUrl: customRpc.rpcPrefs.imageUrl,
-        },
-      });
-    } catch (error) {
-      if (
-        !(originIsMetaMask && error.message === 'User rejected the request.')
-      ) {
-        throw error;
-      }
-    }
-  }
-
-  async upsertNetworkConfiguration({
-    chainId,
-    chainName,
-    rpcUrl,
-    ticker,
-    blockExplorerUrl,
-  }) {
-    const networkConfigurationId =
-      this.networkController.upsertNetworkConfiguration({
-        rpcUrl,
-        chainId,
-        ticker,
-        chainName,
-        rpcPrefs: {
-          blockExplorerUrl,
-        },
-      });
-
-    this.metaMetricsController.trackEvent({
-      event: 'Custom Network Added',
-      category: EVENT.CATEGORIES.NETWORK,
-      referrer: {
-        url: ORIGIN_METAMASK,
-      },
-      properties: {
-        chain_id: chainId,
-        symbol: ticker,
-        source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
-      },
-    });
-
-    return networkConfigurationId;
   }
 
   /**
@@ -2607,7 +2541,9 @@ export default class MetamaskController extends EventEmitter {
       if (loginToken && loginSalt) {
         const { vault } = this.keyringController.store.getState();
 
-        if (vault.salt !== loginSalt) {
+        const jsonVault = JSON.parse(vault);
+
+        if (jsonVault.salt !== loginSalt) {
           console.warn(
             'submitEncryptionKey: Stored salt and vault salt do not match',
           );
@@ -3462,7 +3398,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    * @param version
    */
-  newUnsignedTypedMessage(msgParams, req, version) {
+  async newUnsignedTypedMessage(msgParams, req, version) {
     const promise = this.typedMessageManager.addUnapprovedMessageAsync(
       msgParams,
       req,
@@ -4000,17 +3936,15 @@ export default class MetamaskController extends EventEmitter {
 
         getCurrentChainId: () =>
           this.networkController.store.getState().provider.chainId,
-        getCurrentRpcUrl:
+        getCurrentRpcUrl: () =>
           this.networkController.store.getState().provider.rpcUrl,
         // network configuration-related
+        getNetworkConfigurations: () =>
+          this.networkController.store.getState().networkConfigurations,
         upsertNetworkConfiguration: this.upsertNetworkConfiguration.bind(this),
-        setCurrentNetwork: this.networkController.setCurrentNetwork.bind(
+        setActiveNetwork: this.networkController.setActiveNetwork.bind(
           this.networkController,
         ),
-        getNetworkConfigurations:
-          this.networkController.getNetworkConfigurations.bind(
-            this.networkController,
-          ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
@@ -4024,11 +3958,6 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
-
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-        testDesktopConnection: this.desktopController.testDesktopConnection,
-        generateOtp: this.desktopController.generateOtp,
-        ///: END:ONLY_INCLUDE_IN
       }),
     );
 
@@ -4375,40 +4304,6 @@ export default class MetamaskController extends EventEmitter {
   // CONFIG
   //=============================================================================
 
-  // Log blocks
-
-  /**
-   * Adds a network configuration if the rpcUrl is not already present on an
-   * existing network configuration. Otherwise updates the entry with the matching rpcUrl.
-   *
-   * @param config - The network configuration.
-   * @param config.rpcUrl - The network configuration RPC URL.
-   * @param config.chainId - The chain ID of the network, as per EIP-155.
-   * @param config.ticker - Currency ticker.
-   * @param config.chainName - Personalized network name.
-   * @param config.rpcPrefs - Personalized preferences.
-   * @returns id for the added or updated network configuration
-   */
-  async upsertAndSetNetworkConfiguration({
-    rpcUrl,
-    chainId,
-    ticker = 'ETH',
-    chainName,
-    rpcPrefs,
-  }) {
-    const networkConfigurationId = await this.upsertNetworkConfiguration({
-      rpcUrl,
-      chainId,
-      ticker,
-      chainName,
-      rpcPrefs,
-    });
-
-    await this.networkController.setCurrentNetwork(networkConfigurationId);
-
-    return networkConfigurationId;
-  }
-
   /**
    * Returns the first network configuration object that matches at least one field of the
    * provided search criteria. Returns null if no match is found
@@ -4417,20 +4312,16 @@ export default class MetamaskController extends EventEmitter {
    * @returns {object} rpcInfo found in the network configurations list
    */
   findNetworkConfigurationBy(rpcInfo) {
-    const networkConfigurations =
-      this.networkController.getNetworkConfigurations();
-    return (
-      Object.values(
-        pickBy(networkConfigurations, (config) => {
-          for (const key of Object.keys(rpcInfo)) {
-            if (config[key] === rpcInfo[key]) {
-              return config;
-            }
-          }
-          return undefined;
-        }),
-      )?.[0] || null
+    const { networkConfigurations } = this.networkController.store.getState();
+    const networkConfiguration = Object.values(networkConfigurations).find(
+      (configuration) => {
+        return Object.keys(rpcInfo).some((key) => {
+          return configuration[key] === rpcInfo[key];
+        });
+      },
     );
+
+    return networkConfiguration || null;
   }
 
   /**

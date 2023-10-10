@@ -34,7 +34,7 @@ export default class BackupController {
       this.networkController.store.updateState(network);
     }
 
-    if (preferences && addressBook && network) {
+    if (preferences || addressBook || network) {
       this._trackMetaMetricsEvent({
         event: 'User Data Imported',
         category: 'Backup',
@@ -46,7 +46,10 @@ export default class BackupController {
     const userData = {
       preferences: { ...this.preferencesController.store.getState() },
       addressBook: { ...this.addressBookController.state },
-      network: { ...this.networkController.store.getState() },
+      network: {
+        networkConfigurations:
+          this.networkController.store.getState().networkConfigurations,
+      },
     };
 
     /**

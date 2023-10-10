@@ -604,14 +604,14 @@ const state = {
     provider: {
       type: 'goerli',
       ticker: 'ETH',
-      chainName: '',
+      nickname: '',
       rpcUrl: '',
       chainId: '0x5',
     },
     previousProviderStore: {
       type: 'goerli',
       ticker: 'ETH',
-      chainName: '',
+      nickname: '',
       rpcUrl: '',
       chainId: '0x5',
     },
@@ -1186,17 +1186,17 @@ const state = {
       },
     ],
     networkConfigurations: {
-      'test-uuid-1': {
+      'test-networkConfigurationId-1': {
         rpcUrl: 'https://testrpc.com',
         chainId: '0x1',
-        chainName: 'mainnet',
+        nickname: 'mainnet',
         rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
       },
-      'test-uuid-2': {
+      'test-networkConfigurationId-2': {
         rpcUrl: 'http://localhost:8545',
         chainId: '0x539',
         ticker: 'ETH',
-        chainName: 'Localhost 8545',
+        nickname: 'Localhost 8545',
         rpcPrefs: {},
       },
     },

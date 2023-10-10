@@ -32,6 +32,11 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
+import {
+  ButtonIcon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -49,6 +54,7 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import OpenSeaWhatsNewPopover from '../../components/app/open-sea-whats-new-popover/open-sea-whats-new-popover';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -140,7 +146,7 @@ export default class Home extends PureComponent {
     setNewTokensImported: PropTypes.func.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
     clearNewNetworkAdded: PropTypes.func,
-    setCurrentNetwork: PropTypes.func,
+    setActiveNetwork: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
   };
 
@@ -270,7 +276,7 @@ export default class Home extends PureComponent {
       setNewTokensImported,
       newNetworkAddedConfigurationId,
       clearNewNetworkAdded,
-      setCurrentNetwork,
+      setActiveNetwork,
     } = this.props;
 
     const onAutoHide = () => {
@@ -334,9 +340,10 @@ export default class Home extends PureComponent {
                 >
                   {t('newNftAddedMessage')}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-nft-notification-close"
-                  title={t('close')}
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.SM}
+                  ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
               </Box>
@@ -359,9 +366,10 @@ export default class Home extends PureComponent {
                 >
                   {t('removeNftMessage')}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-nft-notification-close"
-                  title={t('close')}
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.SM}
+                  ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
               </Box>
@@ -381,10 +389,12 @@ export default class Home extends PureComponent {
                 >
                   {t('newNetworkAdded', [newNetworkAddedName])}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-network-notification-close"
-                  title={t('close')}
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.SM}
+                  ariaLabel={t('close')}
                   onClick={() => clearNewNetworkAdded()}
+                  className="home__new-network-notification-close"
                 />
               </Box>
             }
@@ -413,10 +423,13 @@ export default class Home extends PureComponent {
                     {t('newTokensImportedMessage', [newTokensImported])}
                   </Typography>
                 </Box>
-                <button
-                  className="fas fa-times home__new-tokens-imported-notification-close"
-                  title={t('close')}
+
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.SM}
+                  ariaLabel={t('close')}
                   onClick={() => setNewTokensImported('')}
+                  className="home__new-tokens-imported-notification-close"
                 />
               </Box>
             }
@@ -511,7 +524,7 @@ export default class Home extends PureComponent {
                 type="primary"
                 className="home__new-network-added__switch-to-button"
                 onClick={() => {
-                  setCurrentNetwork(newNetworkAddedConfigurationId);
+                  setActiveNetwork(newNetworkAddedConfigurationId);
                   clearNewNetworkAdded();
                 }}
               >
@@ -628,6 +641,7 @@ export default class Home extends PureComponent {
         />
         <div className="home__container">
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
+          {showWhatsNew ? <OpenSeaWhatsNewPopover /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}

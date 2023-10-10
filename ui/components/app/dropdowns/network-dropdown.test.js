@@ -55,9 +55,15 @@ describe('Network Dropdown', () => {
           showTestNetworks: true,
         },
         networkConfigurations: {
-          uuid1: { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
-          uuid2: { rpcUrl: 'http://localhost:7546' },
-          uuid3: { rpcUrl: LOCALHOST_RPC_URL, chainName: 'localhost' },
+          networkConfigurationId1: {
+            chainId: '0x1a',
+            rpcUrl: 'http://localhost:7545',
+          },
+          networkConfigurationId2: { rpcUrl: 'http://localhost:7546' },
+          networkConfigurationId3: {
+            rpcUrl: LOCALHOST_RPC_URL,
+            nickname: 'localhost',
+          },
         },
       },
       appState: {
@@ -121,8 +127,11 @@ describe('Network Dropdown', () => {
           showTestNetworks: false,
         },
         networkConfigurations: {
-          uuid1: { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
-          uuid2: { rpcUrl: 'http://localhost:7546' },
+          networkConfigurationId1: {
+            chainId: '0x1a',
+            rpcUrl: 'http://localhost:7545',
+          },
+          networkConfigurationId2: { rpcUrl: 'http://localhost:7546' },
         },
       },
       appState: {

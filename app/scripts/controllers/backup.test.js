@@ -87,34 +87,34 @@ const jsonData = JSON.stringify({
   },
   network: {
     networkConfigurations: {
-      'test-uuid-1': {
+      'network-configuration-id-1': {
         chainId: '0x539',
-        chainName: 'Localhost 8545',
+        nickname: 'Localhost 8545',
         rpcPrefs: {},
         rpcUrl: 'http://localhost:8545',
         ticker: 'ETH',
       },
-      'test-uuid-2': {
+      'network-configuration-id-2': {
         chainId: '0x38',
-        chainName: 'Binance Smart Chain Mainnet',
+        nickname: 'Binance Smart Chain Mainnet',
         rpcPrefs: {
           blockExplorerUrl: 'https://bscscan.com',
         },
         rpcUrl: 'https://bsc-dataseed1.binance.org',
         ticker: 'BNB',
       },
-      'test-uuid-3': {
+      'network-configuration-id-3': {
         chainId: '0x61',
-        chainName: 'Binance Smart Chain Testnet',
+        nickname: 'Binance Smart Chain Testnet',
         rpcPrefs: {
           blockExplorerUrl: 'https://testnet.bscscan.com',
         },
         rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545',
         ticker: 'tBNB',
       },
-      'test-uuid-4': {
+      'network-configuration-id-4': {
         chainId: '0x89',
-        chainName: 'Polygon Mainnet',
+        nickname: 'Polygon Mainnet',
         rpcPrefs: {
           blockExplorerUrl: 'https://polygonscan.com',
         },
@@ -178,15 +178,27 @@ describe('BackupController', function () {
       // check networks backup
       assert.equal(
         backupController.networkController.store.networkConfigurations[
-          'test-uuid-1'
+          'network-configuration-id-1'
         ].chainId,
         '0x539',
       );
       assert.equal(
         backupController.networkController.store.networkConfigurations[
-          'test-uuid-2'
+          'network-configuration-id-2'
         ].chainId,
         '0x38',
+      );
+      assert.equal(
+        backupController.networkController.store.networkConfigurations[
+          'network-configuration-id-3'
+        ].chainId,
+        '0x61',
+      );
+      assert.equal(
+        backupController.networkController.store.networkConfigurations[
+          'network-configuration-id-4'
+        ].chainId,
+        '0x89',
       );
       // make sure identities are not lost after restore
       assert.equal(

@@ -54,16 +54,16 @@ const NetworksTab = ({ addNewNetwork }) => {
   );
 
   const networkConfigurationsList = Object.entries(networkConfigurations).map(
-    ([networkConfigurationId, networkConfig]) => {
+    ([networkConfigurationId, networkConfiguration]) => {
       return {
-        label: networkConfig.chainName,
+        label: networkConfiguration.nickname,
         iconColor: 'var(--color-icon-alternative)',
         providerType: NETWORK_TYPES.RPC,
-        rpcUrl: networkConfig.rpcUrl,
-        chainId: networkConfig.chainId,
-        ticker: networkConfig.ticker,
-        blockExplorerUrl: networkConfig.rpcPrefs?.blockExplorerUrl || '',
-        isATestNetwork: TEST_CHAINS.includes(networkConfig.chainId),
+        rpcUrl: networkConfiguration.rpcUrl,
+        chainId: networkConfiguration.chainId,
+        ticker: networkConfiguration.ticker,
+        blockExplorerUrl: networkConfiguration.rpcPrefs?.blockExplorerUrl || '',
+        isATestNetwork: TEST_CHAINS.includes(networkConfiguration.chainId),
         networkConfigurationId,
       };
     },

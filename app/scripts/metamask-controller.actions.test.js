@@ -225,10 +225,12 @@ describe('MetaMaskController', function () {
   describe('#upsertNetworkConfiguration', function () {
     const customRpc = {
       chainId: '0x1',
-      chainName: 'DUMMY_CHAIN_NAME',
-      rpcUrl: 'DUMMY_RPCURL',
+      nickname: 'DUMMY_CHAIN_NAME',
+      rpcUrl: 'https://test-rpc-url',
       ticker: 'DUMMY_TICKER',
-      blockExplorerUrl: 'DUMMY_EXPLORER',
+      rpcPrefs: {
+        blockExplorerUrl: 'DUMMY_EXPLORER',
+      },
     };
     it('two successive calls with custom RPC details give same result', async function () {
       await metamaskController.upsertNetworkConfiguration(customRpc);

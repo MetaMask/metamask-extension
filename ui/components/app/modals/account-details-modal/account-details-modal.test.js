@@ -79,7 +79,7 @@ describe('Account Details Modal', () => {
       metamask: {
         ...mockState.metamask,
         networkConfigurations: {
-          uuid: {
+          networkConfigurationId: {
             chainId: '0x99',
             rpcPrefs: {
               blockExplorerUrl,

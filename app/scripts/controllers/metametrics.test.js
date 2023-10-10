@@ -119,6 +119,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
   category: 'Unit Test',
   successEvent: 'sample non-persisted event success',
   failureEvent: 'sample non-persisted event failure',
+  uniqueIdentifier: 'sample-non-persisted-event',
   properties: {
     test: true,
   },
@@ -175,7 +176,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
             test: true,
           },
-          messageId: Utils.generateRandomId(),
+          messageId: 'sample-non-persisted-event-failure',
           timestamp: new Date(),
         });
       const metaMetricsController = getMetaMetricsController();
@@ -934,15 +935,15 @@ describe('MetaMetricsController', function () {
         },
         allTokens: MOCK_ALL_TOKENS,
         networkConfigurations: {
-          'test-uuid-1': {
+          'network-configuration-id-1': {
             chainId: CHAIN_IDS.MAINNET,
             ticker: CURRENCY_SYMBOLS.ETH,
           },
-          'test-uuid-2': {
+          'network-configuration-id-2': {
             chainId: CHAIN_IDS.GOERLI,
             ticker: CURRENCY_SYMBOLS.TEST_ETH,
           },
-          'test-uuid-3': { chainId: '0xaf' },
+          'network-configuration-id-3': { chainId: '0xaf' },
         },
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
@@ -950,6 +951,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.deepEqual(traits, {
@@ -967,6 +969,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
         [TRAITS.TOKEN_DETECTION_ENABLED]: true,
+        [TRAITS.DESKTOP_ENABLED]: false,
       });
     });
 
@@ -979,8 +982,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'test-uuid-1': { chainId: CHAIN_IDS.MAINNET },
-          'test-uuid-2': { chainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -988,6 +991,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -999,8 +1003,8 @@ describe('MetaMetricsController', function () {
           '0x1': { '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }] },
         },
         networkConfigurations: {
-          'test-uuid-1': { chainId: CHAIN_IDS.MAINNET },
-          'test-uuid-2': { chainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
@@ -1008,6 +1012,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.deepEqual(updatedTraits, {
@@ -1027,8 +1032,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'test-uuid-1': { chainId: CHAIN_IDS.MAINNET },
-          'test-uuid-2': { chainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1036,6 +1041,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1045,8 +1051,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'test-uuid-1': { chainId: CHAIN_IDS.MAINNET },
-          'test-uuid-2': { chainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1054,6 +1060,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.equal(updatedTraits, null);

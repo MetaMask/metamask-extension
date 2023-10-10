@@ -356,7 +356,14 @@ export default class MetaMetricsController {
       currency: fragment.currency,
       environmentType: fragment.environmentType,
       actionId: fragment.actionId,
-      uniqueIdentifier: fragment.uniqueIdentifier,
+      // We append success or failure to the unique-identifier so that the
+      // messageId can still be idempotent, but so that it differs from the
+      // initial event fired. The initial event was preventing new events from
+      // making it to mixpanel because they were using the same unique ID as
+      // the events processed in other parts of the fragment lifecycle.
+      uniqueIdentifier: fragment.uniqueIdentifier
+        ? `${fragment.uniqueIdentifier}-${abandoned ? 'failure' : 'success'}`
+        : undefined,
     });
     const { fragments } = this.store.getState();
     delete fragments[id];
@@ -692,15 +699,12 @@ export default class MetaMetricsController {
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
       [TRAITS.NETWORKS_ADDED]: Object.values(
         metamaskState.networkConfigurations,
-      ).map((rpc) => rpc.chainId),
+      ).map((networkConfiguration) => networkConfiguration.chainId),
       [TRAITS.NETWORKS_WITHOUT_TICKER]: Object.values(
         metamaskState.networkConfigurations,
-      ).reduce((networkList, currentNetwork) => {
-        if (!currentNetwork.ticker) {
-          networkList.push(currentNetwork.chainId);
-        }
-        return networkList;
-      }, []),
+      )
+        .filter(({ ticker }) => !ticker)
+        .map(({ chainId }) => chainId),
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useNftDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
@@ -714,6 +718,9 @@ export default class MetaMetricsController {
       [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      [TRAITS.DESKTOP_ENABLED]: metamaskState.desktopEnabled || false,
+      ///: END:ONLY_INCLUDE_IN
     };
 
     if (!previousUserTraits) {

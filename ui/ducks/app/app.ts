@@ -338,10 +338,10 @@ export default function reduceApp(
       };
 
     case actionConstants.SET_NEW_NETWORK_ADDED: {
-      const { networkConfigurationId, chainName } = action.payload;
+      const { networkConfigurationId, nickname } = action.payload;
       return {
         ...appState,
-        newNetworkAddedName: chainName,
+        newNetworkAddedName: nickname,
         newNetworkAddedConfigurationId: networkConfigurationId,
       };
     }

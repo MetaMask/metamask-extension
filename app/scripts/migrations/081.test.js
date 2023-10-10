@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import migration81 from './081';
+import { migrate, version } from './081';
 
 jest.mock('uuid', () => {
   const actual = jest.requireActual('uuid');
@@ -12,10 +12,10 @@ jest.mock('uuid', () => {
 
 describe('migration #81', () => {
   beforeEach(() => {
-    v4.mockImplementationOnce(() => 'uuid-1')
-      .mockImplementationOnce(() => 'uuid-2')
-      .mockImplementationOnce(() => 'uuid-3')
-      .mockImplementationOnce(() => 'uuid-4');
+    v4.mockImplementationOnce(() => 'network-configuration-id-1')
+      .mockImplementationOnce(() => 'network-configuration-id-2')
+      .mockImplementationOnce(() => 'network-configuration-id-3')
+      .mockImplementationOnce(() => 'network-configuration-id-4');
   });
 
   afterEach(() => {
@@ -26,14 +26,16 @@ describe('migration #81', () => {
       meta: {
         version: 80,
       },
+      data: {},
     };
 
-    const newStorage = await migration81.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(newStorage.meta).toStrictEqual({
-      version: 81,
+      version,
     });
   });
-  it('should migrate the network configurations from an array on the PreferencesController to an object on the NetworkController and change property `nickname` to `chainName`', async () => {
+
+  it('should migrate the network configurations from an array on the PreferencesController to an object on the NetworkController', async () => {
     const oldStorage = {
       meta: {
         version: 80,
@@ -83,25 +85,25 @@ describe('migration #81', () => {
         NetworkController: {},
       },
     };
-    const newStorage = await migration81.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
-        version: 81,
+        version,
       },
       data: {
         PreferencesController: {},
         NetworkController: {
           networkConfigurations: {
-            'uuid-1': {
+            'network-configuration-id-1': {
               chainId: '0x539',
-              chainName: 'Localhost 8545',
+              nickname: 'Localhost 8545',
               rpcPrefs: {},
               rpcUrl: 'http://localhost:8545',
               ticker: 'ETH',
             },
-            'uuid-2': {
+            'network-configuration-id-2': {
               chainId: '0xa4b1',
-              chainName: 'Arbitrum One',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -109,9 +111,9 @@ describe('migration #81', () => {
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
             },
-            'uuid-3': {
+            'network-configuration-id-3': {
               chainId: '0x4e454152',
-              chainName: 'Aurora Mainnet',
+              nickname: 'Aurora Mainnet',
               rpcPrefs: {
                 blockExplorerUrl: 'https://aurorascan.dev/',
               },
@@ -119,9 +121,9 @@ describe('migration #81', () => {
                 'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'Aurora ETH',
             },
-            'uuid-4': {
+            'network-configuration-id-4': {
               chainId: '0x38',
-              chainName:
+              nickname:
                 'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
@@ -135,7 +137,7 @@ describe('migration #81', () => {
     });
   });
 
-  it('should not change data other than the frequentRpcListDetail/networkConfigurations on either the PreferencesController or NetworkController', async () => {
+  it('should not change data other than removing `frequentRpcListDetail` and adding `networkConfigurations` on the PreferencesController and NetworkController respectively', async () => {
     const oldStorage = {
       meta: {
         version: 80,
@@ -215,10 +217,10 @@ describe('migration #81', () => {
         },
       },
     };
-    const newStorage = await migration81.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
-        version: 81,
+        version,
       },
       data: {
         PreferencesController: {
@@ -254,16 +256,16 @@ describe('migration #81', () => {
             type: 'mainnet',
           },
           networkConfigurations: {
-            'uuid-1': {
+            'network-configuration-id-1': {
               chainId: '0x539',
-              chainName: 'Localhost 8545',
+              nickname: 'Localhost 8545',
               rpcPrefs: {},
               rpcUrl: 'http://localhost:8545',
               ticker: 'ETH',
             },
-            'uuid-2': {
+            'network-configuration-id-2': {
               chainId: '0xa4b1',
-              chainName: 'Arbitrum One',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -271,9 +273,9 @@ describe('migration #81', () => {
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
             },
-            'uuid-3': {
+            'network-configuration-id-3': {
               chainId: '0x4e454152',
-              chainName: 'Aurora Mainnet',
+              nickname: 'Aurora Mainnet',
               rpcPrefs: {
                 blockExplorerUrl: 'https://aurorascan.dev/',
               },
@@ -281,9 +283,9 @@ describe('migration #81', () => {
                 'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'Aurora ETH',
             },
-            'uuid-4': {
+            'network-configuration-id-4': {
               chainId: '0x38',
-              chainName:
+              nickname:
                 'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
@@ -296,6 +298,183 @@ describe('migration #81', () => {
       },
     });
   });
+
+  it('should migrate the network configurations from an array on the PreferencesController to an object on the NetworkController and not include any properties on the frequentRpcListDetail objects that are not included in the list: [chainId, nickname, rpcPrefs, rpcUrl, ticker]', async () => {
+    const oldStorage = {
+      meta: {
+        version: 80,
+      },
+      data: {
+        PreferencesController: {
+          frequentRpcListDetail: [
+            {
+              chainId: '0x539',
+              nickname: 'Localhost 8545',
+              rpcPrefs: {},
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+              invalidKey: 'invalidKey',
+              anotherInvalidKey: 'anotherInvalidKey',
+            },
+            {
+              chainId: '0xa4b1',
+              nickname: 'Arbitrum One',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://explorer.arbitrum.io',
+              },
+              rpcUrl:
+                'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
+              ticker: 'ETH',
+              randomInvalidKey: 'randomInvalidKey',
+              randomInvalidKey2: 'randomInvalidKey2',
+            },
+          ],
+        },
+        NetworkController: {},
+      },
+    };
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version,
+      },
+      data: {
+        PreferencesController: {},
+        NetworkController: {
+          networkConfigurations: {
+            'network-configuration-id-1': {
+              chainId: '0x539',
+              nickname: 'Localhost 8545',
+              rpcPrefs: {},
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+            },
+            'network-configuration-id-2': {
+              chainId: '0xa4b1',
+              nickname: 'Arbitrum One',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://explorer.arbitrum.io',
+              },
+              rpcUrl:
+                'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
+              ticker: 'ETH',
+            },
+          },
+        },
+      },
+    });
+  });
+
+  it('should migrate the network configurations from an array on the PreferencesController to an object on the NetworkController even if frequentRpcListDetail entries do not include all members of list [chainId, nickname, rpcPrefs, rpcUrl, ticker]', async () => {
+    const oldStorage = {
+      meta: {
+        version: 80,
+      },
+      data: {
+        PreferencesController: {
+          frequentRpcListDetail: [
+            {
+              chainId: '0x539',
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+            },
+            {
+              chainId: '0xa4b1',
+              rpcUrl:
+                'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
+              ticker: 'ETH',
+            },
+          ],
+        },
+        NetworkController: {},
+      },
+    };
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version,
+      },
+      data: {
+        PreferencesController: {},
+        NetworkController: {
+          networkConfigurations: {
+            'network-configuration-id-1': {
+              chainId: '0x539',
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+              nickname: undefined,
+              rpcPrefs: undefined,
+            },
+            'network-configuration-id-2': {
+              chainId: '0xa4b1',
+              rpcUrl:
+                'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
+              ticker: 'ETH',
+              nickname: undefined,
+              rpcPrefs: undefined,
+            },
+          },
+        },
+      },
+    });
+  });
+
+  it('should not change anything if any PreferencesController.frequentRpcListDetail entries are not objects', async () => {
+    const oldStorage = {
+      meta: {
+        version: 80,
+      },
+      data: {
+        PreferencesController: {
+          transactionSecurityCheckEnabled: false,
+          useBlockie: false,
+          useCurrencyRateCheck: true,
+          useMultiAccountBalanceChecker: true,
+          useNftDetection: false,
+          useNonceField: false,
+          frequentRpcListDetail: [
+            {
+              chainId: '0x539',
+              nickname: 'Localhost 8545',
+              rpcPrefs: {},
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+            },
+            'invalid entry type',
+            1,
+          ],
+        },
+        NetworkController: {
+          network: '1',
+          networkDetails: {
+            EIPS: {
+              1559: true,
+            },
+          },
+          previousProviderStore: {
+            chainId: '0x89',
+            nickname: 'Polygon Mainnet',
+            rpcPrefs: {},
+            rpcUrl:
+              'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
+            ticker: 'MATIC',
+            type: 'rpc',
+          },
+          provider: {
+            chainId: '0x1',
+            nickname: '',
+            rpcPrefs: {},
+            rpcUrl: '',
+            ticker: 'ETH',
+            type: 'mainnet',
+          },
+        },
+      },
+    };
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
   it('should not change anything if there is no frequentRpcListDetail property on PreferencesController', async () => {
     const oldStorage = {
       meta: {
@@ -335,16 +514,16 @@ describe('migration #81', () => {
             type: 'mainnet',
           },
           networkConfigurations: {
-            'uuid-1': {
+            'network-configuration-id-1': {
               chainId: '0x539',
-              chainName: 'Localhost 8545',
+              nickname: 'Localhost 8545',
               rpcPrefs: {},
               rpcUrl: 'http://localhost:8545',
               ticker: 'ETH',
             },
-            'uuid-2': {
+            'network-configuration-id-2': {
               chainId: '0xa4b1',
-              chainName: 'Arbitrum One',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -352,9 +531,9 @@ describe('migration #81', () => {
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
             },
-            'uuid-3': {
+            'network-configuration-id-3': {
               chainId: '0x4e454152',
-              chainName: 'Aurora Mainnet',
+              nickname: 'Aurora Mainnet',
               rpcPrefs: {
                 blockExplorerUrl: 'https://aurorascan.dev/',
               },
@@ -362,9 +541,9 @@ describe('migration #81', () => {
                 'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'Aurora ETH',
             },
-            'uuid-4': {
+            'network-configuration-id-4': {
               chainId: '0x38',
-              chainName:
+              nickname:
                 'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
@@ -376,20 +555,16 @@ describe('migration #81', () => {
         },
       },
     };
-    const newStorage = await migration81.migrate(oldStorage);
-    expect(newStorage).toStrictEqual({
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
+  it('should change nothing if PreferencesController is undefined', async () => {
+    const oldStorage = {
       meta: {
-        version: 81,
+        version: 80,
       },
       data: {
-        PreferencesController: {
-          transactionSecurityCheckEnabled: false,
-          useBlockie: false,
-          useCurrencyRateCheck: true,
-          useMultiAccountBalanceChecker: true,
-          useNftDetection: false,
-          useNonceField: false,
-        },
         NetworkController: {
           network: '1',
           networkDetails: {
@@ -414,47 +589,10 @@ describe('migration #81', () => {
             ticker: 'ETH',
             type: 'mainnet',
           },
-          networkConfigurations: {
-            'uuid-1': {
-              chainId: '0x539',
-              chainName: 'Localhost 8545',
-              rpcPrefs: {},
-              rpcUrl: 'http://localhost:8545',
-              ticker: 'ETH',
-            },
-            'uuid-2': {
-              chainId: '0xa4b1',
-              chainName: 'Arbitrum One',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://explorer.arbitrum.io',
-              },
-              rpcUrl:
-                'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'ETH',
-            },
-            'uuid-3': {
-              chainId: '0x4e454152',
-              chainName: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
-            },
-            'uuid-4': {
-              chainId: '0x38',
-              chainName:
-                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://bscscan.com/',
-              },
-              rpcUrl: 'https://bsc-dataseed.binance.org/',
-              ticker: 'BNB',
-            },
-          },
         },
       },
-    });
+    };
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 });

@@ -70,36 +70,58 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-const CUSTOM_RPC_URL = 'http://localhost:8545';
-const CUSTOM_RPC_CHAIN_ID = '0x539';
-const ALT_MAINNET_RPC_URL = 'https://testrpc.com';
-const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-const NETWORK_CONFIGURATION_ID_1 = 'test1';
-const NETWORK_CONFIGURATION_ID_2 = 'test2';
+
+const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
+const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
+const POLYGON_RPC_URL_2 = 'https://polygon-rpc.com';
+
+const NETWORK_CONFIGURATION_ID_1 = 'networkConfigurationId1';
+const NETWORK_CONFIGURATION_ID_2 = 'networkConfigurationId2';
+const NETWORK_CONFIGURATION_ID_3 = 'networkConfigurationId3';
+
+const ETH = 'ETH';
+const MATIC = 'MATIC';
+
+const POLYGON_CHAIN_ID = '0x89';
+const MAINNET_CHAIN_ID = '0x1';
+
 const firstTimeState = {
   config: {},
   NetworkController: {
     provider: {
       type: NETWORK_TYPES.RPC,
-      rpcUrl: CUSTOM_RPC_URL,
-      chainId: CUSTOM_RPC_CHAIN_ID,
+      rpcUrl: ALT_MAINNET_RPC_URL,
+      chainId: MAINNET_CHAIN_ID,
+      ticker: ETH,
+      nickname: 'Alt Mainnet',
+      id: NETWORK_CONFIGURATION_ID_1,
     },
     networkConfigurations: {
       [NETWORK_CONFIGURATION_ID_1]: {
         rpcUrl: ALT_MAINNET_RPC_URL,
         type: NETWORK_TYPES.RPC,
-        chainId: '0x1',
-        ticker: 'ETH',
-        chainName: 'alt mainnet',
+        chainId: MAINNET_CHAIN_ID,
+        ticker: ETH,
+        nickname: 'Alt Mainnet',
+        id: NETWORK_CONFIGURATION_ID_1,
       },
       [NETWORK_CONFIGURATION_ID_2]: {
         rpcUrl: POLYGON_RPC_URL,
         type: NETWORK_TYPES.RPC,
-        chainId: '0x89',
-        ticker: 'MATIC',
-        chainName: 'Polygon',
+        chainId: POLYGON_CHAIN_ID,
+        ticker: MATIC,
+        nickname: 'Polygon',
+        id: NETWORK_CONFIGURATION_ID_2,
+      },
+      [NETWORK_CONFIGURATION_ID_3]: {
+        rpcUrl: POLYGON_RPC_URL_2,
+        type: NETWORK_TYPES.RPC,
+        chainId: POLYGON_CHAIN_ID,
+        ticker: MATIC,
+        nickname: 'Alt Polygon',
+        id: NETWORK_CONFIGURATION_ID_1,
       },
     },
     networkDetails: {
@@ -1269,6 +1291,98 @@ describe('MetaMaskController', function () {
       assert.ok(
         !Object.values(state).includes(NOTIFICATION_ID),
         'Object should not include the deleted notification',
+      );
+    });
+  });
+
+  describe('findNetworkConfigurationBy', function () {
+    it('returns null if passed an object containing a valid networkConfiguration key but no matching value is found', function () {
+      assert.strictEqual(
+        metamaskController.findNetworkConfigurationBy({
+          chainId: '0xnone',
+        }),
+        null,
+      );
+    });
+    it('returns null if passed an object containing an invalid networkConfiguration key', function () {
+      assert.strictEqual(
+        metamaskController.findNetworkConfigurationBy({
+          invalidKey: '0xnone',
+        }),
+        null,
+      );
+    });
+
+    it('returns matching networkConfiguration when passed a chainId that matches an existing configuration', function () {
+      assert.deepStrictEqual(
+        metamaskController.findNetworkConfigurationBy({
+          chainId: MAINNET_CHAIN_ID,
+        }),
+        {
+          chainId: MAINNET_CHAIN_ID,
+          nickname: 'Alt Mainnet',
+          id: NETWORK_CONFIGURATION_ID_1,
+          rpcUrl: ALT_MAINNET_RPC_URL,
+          ticker: ETH,
+          type: NETWORK_TYPES.RPC,
+        },
+      );
+    });
+
+    it('returns matching networkConfiguration when passed a ticker that matches an existing configuration', function () {
+      assert.deepStrictEqual(
+        metamaskController.findNetworkConfigurationBy({
+          ticker: MATIC,
+        }),
+        {
+          rpcUrl: POLYGON_RPC_URL,
+          type: NETWORK_TYPES.RPC,
+          chainId: POLYGON_CHAIN_ID,
+          ticker: MATIC,
+          nickname: 'Polygon',
+          id: NETWORK_CONFIGURATION_ID_2,
+        },
+      );
+    });
+
+    it('returns matching networkConfiguration when passed a nickname that matches an existing configuration', function () {
+      assert.deepStrictEqual(
+        metamaskController.findNetworkConfigurationBy({
+          nickname: 'Alt Mainnet',
+        }),
+        {
+          chainId: MAINNET_CHAIN_ID,
+          nickname: 'Alt Mainnet',
+          id: NETWORK_CONFIGURATION_ID_1,
+          rpcUrl: ALT_MAINNET_RPC_URL,
+          ticker: ETH,
+          type: NETWORK_TYPES.RPC,
+        },
+      );
+    });
+
+    it('returns null if passed an object containing mismatched networkConfiguration key/value combination', function () {
+      assert.deepStrictEqual(
+        metamaskController.findNetworkConfigurationBy({
+          nickname: MAINNET_CHAIN_ID,
+        }),
+        null,
+      );
+    });
+
+    it('returns the first networkConfiguration added if passed an key/value combination for which there are multiple matching configurations', function () {
+      assert.deepStrictEqual(
+        metamaskController.findNetworkConfigurationBy({
+          chainId: POLYGON_CHAIN_ID,
+        }),
+        {
+          rpcUrl: POLYGON_RPC_URL,
+          type: NETWORK_TYPES.RPC,
+          chainId: POLYGON_CHAIN_ID,
+          ticker: MATIC,
+          nickname: 'Polygon',
+          id: NETWORK_CONFIGURATION_ID_2,
+        },
       );
     });
   });

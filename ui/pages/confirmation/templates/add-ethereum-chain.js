@@ -318,7 +318,7 @@ function getValues(pendingApproval, t, actions, history) {
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:
-              pendingApproval.requestData.blockExplorerUrl,
+              pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
           },
           prefaceKeys: [
             t('networkName'),
@@ -337,7 +337,15 @@ function getValues(pendingApproval, t, actions, history) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        actions.upsertNetworkConfiguration(pendingApproval.requestData);
+        actions.upsertNetworkConfiguration(
+          {
+            ...pendingApproval.requestData,
+            nickname: pendingApproval.requestData.chainName,
+          },
+          {
+            source: pendingApproval.requestData.source,
+          },
+        );
         history.push(DEFAULT_ROUTE);
       }
     },
