@@ -1,26 +1,36 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
+import { SelectButton, SelectWrapper } from '..';
 import README from './README.mdx';
 
-import { SelectOption as SelectOptionComponent } from '.';
+import { SelectOption } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/SelectOption',
-  component: SelectOptionComponent,
+  component: SelectOption,
   parameters: {
     docs: {
       page: README,
     },
   },
   argTypes: {},
-} as Meta<typeof SelectOptionComponent>;
+  args: {
+    children: 'Option 1',
+  },
+} as Meta<typeof SelectOption>;
 
-const SelectOption: StoryFn<typeof SelectOptionComponent> = (args) => {
-  return <SelectOptionComponent {...args} />;
+const SelectOptionStory: StoryFn<typeof SelectOption> = (args) => {
+  return (
+    <SelectWrapper
+      triggerComponent={<SelectButton>Select Option</SelectButton>}
+    >
+      <SelectOption {...args} />
+    </SelectWrapper>
+  );
 };
 
-export const DefaultStory = SelectOption.bind({});
+export const DefaultStory = SelectOptionStory.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Demo = SelectOption.bind({});
+export const Demo = SelectOptionStory.bind({});
 Demo.args = {};

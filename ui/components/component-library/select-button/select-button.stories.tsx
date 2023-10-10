@@ -1,26 +1,34 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
+import { SelectWrapper } from '../select-wrapper';
 import README from './README.mdx';
 
-import { SelectButton as SelectButtonComponent } from '.';
+import { SelectButton } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/SelectButton',
-  component: SelectButtonComponent,
+  component: SelectButton,
   parameters: {
     docs: {
       page: README,
     },
   },
   argTypes: {},
-} as Meta<typeof SelectButtonComponent>;
+  args: {
+    children: 'SelectButton',
+  },
+} as Meta<typeof SelectButton>;
 
-const SelectButton: StoryFn<typeof SelectButtonComponent> = (args) => {
-  return <SelectButtonComponent {...args} />;
+const SelectButtonStory: StoryFn<typeof SelectButton> = (args) => {
+  return (
+    <SelectWrapper triggerComponent={<SelectButton {...args} />}>
+      Demo
+    </SelectWrapper>
+  );
 };
 
-export const DefaultStory = SelectButton.bind({});
+export const DefaultStory = SelectButtonStory.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Demo = SelectButton.bind({});
+export const Demo = SelectButtonStory.bind({});
 Demo.args = {};
