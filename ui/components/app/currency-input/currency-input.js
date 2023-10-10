@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
+import {
+  getValueFromWeiHex,
+  getWeiHexFromDecimalValue,
+} from '../../../helpers/utils/conversions.util';
+import { ETH } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getConversionRate,
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
 import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
-import {
-  getValueFromWeiHex,
-  getWeiHexFromDecimalValue,
-} from '../../../../shared/modules/conversion.utils';
-import { EtherDenomination } from '../../../../shared/constants/common';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -39,7 +39,7 @@ export default function CurrencyInput({
   const conversionRate = useSelector(getConversionRate);
   const showFiat = useSelector(getShouldShowFiat);
   const hideSecondary = !showFiat;
-  const primarySuffix = preferredCurrency || EtherDenomination.ETH;
+  const primarySuffix = preferredCurrency || ETH;
   const secondarySuffix = secondaryCurrency.toUpperCase();
 
   const [isSwapped, setSwapped] = useState(false);
@@ -57,7 +57,7 @@ export default function CurrencyInput({
         })
       : getValueFromWeiHex({
           value: hexValue,
-          toCurrency: EtherDenomination.ETH,
+          toCurrency: ETH,
           numberOfDecimals: 8,
         });
 
@@ -82,8 +82,8 @@ export default function CurrencyInput({
         })
       : getWeiHexFromDecimalValue({
           value: newDecimalValue,
-          fromCurrency: EtherDenomination.ETH,
-          fromDenomination: EtherDenomination.ETH,
+          fromCurrency: ETH,
+          fromDenomination: ETH,
           conversionRate,
         });
 
@@ -116,7 +116,7 @@ export default function CurrencyInput({
 
     if (shouldUseFiat) {
       // Display ETH
-      currency = preferredCurrency || EtherDenomination.ETH;
+      currency = preferredCurrency || ETH;
       numberOfDecimals = 8;
     } else {
       // Display Fiat
@@ -146,16 +146,11 @@ export default function CurrencyInput({
         onChange,
         onPreferenceToggle,
       }}
-      dataTestId="currency-input"
       suffix={shouldUseFiat ? secondarySuffix : primarySuffix}
       onChange={handleChange}
       value={initialDecimalValue}
       actionComponent={
-        <button
-          className="currency-input__swap-component"
-          data-testid="currency-swap"
-          onClick={swap}
-        >
+        <button className="currency-input__swap-component" onClick={swap}>
           <i className="fa fa-retweet fa-lg" />
         </button>
       }
