@@ -12,6 +12,7 @@
 @import 'qr-scanner/index';
 @import 'transaction-confirmed/index';
 @import 'customize-nonce/index';
+@import 'transaction-error-details-modal/index';
 
 .modal {
   z-index: 1050;
