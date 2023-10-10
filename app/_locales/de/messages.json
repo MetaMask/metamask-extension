@@ -5036,12 +5036,6 @@
   "transactionResubmitted": {
     "message": "Erneutes Absenden der Transaktion mit Erhöhung der geschätzten Gas-Gebühr auf $1 zu $2."
   },
-  "transactionSecurityCheck": {
-    "message": "Sicherheitsbenachrichtigungen aktivieren"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um Risiken bei nicht unterzeichneten Transaktionen und Signaturanfragen zu erkennen und anzuzeigen, bevor Sie diese signieren. Diese Dienste haben Zugriff auf Ihre unsignierten Transaktions- und Signaturanfragen, Ihre Kontoadresse und Ihre bevorzugte Sprache."
-  },
   "transactionSettings": {
     "message": "Transaktionseinstellungen"
   },
