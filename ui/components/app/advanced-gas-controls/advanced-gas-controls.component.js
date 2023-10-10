@@ -3,13 +3,23 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { I18nContext } from '../../../contexts/i18n';
+import Typography from '../../ui/typography/typography';
+import {
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+  COLORS,
+} from '../../../helpers/constants/design-system';
 import FormField from '../../ui/form-field';
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
-import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
-import { getNetworkSupportsSettingGasPrice } from '../../../selectors/selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 
 export default function AdvancedGasControls({
+  estimateToUse,
+  gasFeeEstimates,
   gasEstimateType,
   maxPriorityFee,
   maxFee,
@@ -24,20 +34,38 @@ export default function AdvancedGasControls({
   maxFeeFiat,
   gasErrors,
   minimumGasLimit,
-  supportsEIP1559,
 }) {
   const t = useContext(I18nContext);
-  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  const networkAndAccountSupport1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
+
+  const suggestedValues = {};
+
+  if (networkAndAccountSupport1559) {
+    suggestedValues.maxFeePerGas =
+      gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas ||
+      gasFeeEstimates?.gasPrice;
+    suggestedValues.maxPriorityFeePerGas =
+      gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas ||
+      suggestedValues.maxFeePerGas;
+  } else {
+    switch (gasEstimateType) {
+      case GAS_ESTIMATE_TYPES.LEGACY:
+        suggestedValues.gasPrice = gasFeeEstimates?.[estimateToUse];
+        break;
+      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+        suggestedValues.gasPrice = gasFeeEstimates?.gasPrice;
+        break;
+      default:
+        break;
+    }
+  }
 
   const showFeeMarketFields =
-    supportsEIP1559 &&
+    networkAndAccountSupport1559 &&
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-      gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE ||
-      isGasEstimatesLoading);
-
-  const networkSupportsSettingGasPrice = useSelector(
-    getNetworkSupportsSettingGasPrice,
-  );
+      gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE);
 
   return (
     <div className="advanced-gas-controls">
@@ -48,14 +76,12 @@ export default function AdvancedGasControls({
             ? getGasFormErrorText(gasErrors.gasLimit, t, { minimumGasLimit })
             : null
         }
-        onChange={(value) => {
-          onManualChange?.();
-          setGasLimit(value);
-        }}
+        onChange={setGasLimit}
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
         allowDecimals={false}
         numeric
+        autoFocus
       />
       {showFeeMarketFields ? (
         <>
@@ -94,30 +120,64 @@ export default function AdvancedGasControls({
             }
           />
         </>
-      ) : null}
-      {networkSupportsSettingGasPrice ? (
-        <FormField
-          titleText={t('advancedGasPriceTitle')}
-          titleUnit="(GWEI)"
-          onChange={(value) => {
-            onManualChange?.();
-            setGasPrice(value);
-          }}
-          tooltipText={t('editGasPriceTooltip')}
-          value={gasPrice}
-          numeric
-          error={
-            gasErrors?.gasPrice
-              ? getGasFormErrorText(gasErrors.gasPrice, t)
-              : null
-          }
-        />
-      ) : null}
+      ) : (
+        <>
+          <FormField
+            titleText={t('advancedGasPriceTitle')}
+            titleUnit="(GWEI)"
+            onChange={(value) => {
+              onManualChange?.();
+              setGasPrice(value);
+            }}
+            tooltipText={t('editGasPriceTooltip')}
+            value={gasPrice}
+            numeric
+            titleDetail={
+              suggestedValues.gasPrice && (
+                <>
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('gasFeeEstimate')}:
+                  </Typography>{' '}
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                  >
+                    {suggestedValues.gasPrice}
+                  </Typography>
+                </>
+              )
+            }
+          />
+        </>
+      )}
     </div>
   );
 }
 
 AdvancedGasControls.propTypes = {
+  estimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
+  gasFeeEstimates: PropTypes.oneOf([
+    PropTypes.shape({
+      gasPrice: PropTypes.string,
+    }),
+    PropTypes.shape({
+      low: PropTypes.string,
+      medium: PropTypes.string,
+      high: PropTypes.string,
+    }),
+    PropTypes.shape({
+      low: PropTypes.object,
+      medium: PropTypes.object,
+      high: PropTypes.object,
+      estimatedBaseFee: PropTypes.string,
+    }),
+  ]),
   gasEstimateType: PropTypes.oneOf(Object.values(GAS_ESTIMATE_TYPES)),
   setMaxPriorityFee: PropTypes.func,
   setMaxFee: PropTypes.func,
@@ -131,6 +191,5 @@ AdvancedGasControls.propTypes = {
   maxPriorityFeeFiat: PropTypes.string,
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
-  minimumGasLimit: PropTypes.string,
-  supportsEIP1559: PropTypes.bool,
+  minimumGasLimit: PropTypes.number,
 };

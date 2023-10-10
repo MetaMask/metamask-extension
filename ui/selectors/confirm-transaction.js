@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { addHexPrefix } from 'ethereumjs-util';
 import txHelper from '../helpers/utils/tx-helper';
 import { calcTokenAmount } from '../helpers/utils/token-util';
 import {
@@ -9,7 +8,6 @@ import {
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
-import { conversionUtil } from '../../shared/modules/conversion.utils';
 import { sumHexes } from '../helpers/utils/transactions.util';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
@@ -19,16 +17,11 @@ import {
 } from '../ducks/metamask/metamask';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
-import {
-  GAS_ESTIMATE_TYPES,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
-import { isEqualCaseInsensitive } from '../helpers/utils/util';
-import { getEstimatedOptimismL1Fee } from '../ducks/optimism';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';
@@ -229,12 +222,7 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
 export const contractExchangeRateSelector = createSelector(
   contractExchangeRatesSelector,
   tokenAddressSelector,
-  (contractExchangeRates, tokenAddress) =>
-    contractExchangeRates[
-      Object.keys(contractExchangeRates).find((address) =>
-        isEqualCaseInsensitive(address, tokenAddress),
-      )
-    ],
+  (contractExchangeRates, tokenAddress) => contractExchangeRates[tokenAddress],
 );
 
 export const transactionFeeSelector = function (state, txData) {
@@ -247,54 +235,25 @@ export const transactionFeeSelector = function (state, txData) {
     state,
   );
 
-  const estimatedL1Fee = getEstimatedOptimismL1Fee(state);
-  const ethEstimatedL1Fee = conversionUtil(estimatedL1Fee, {
-    fromNumericBase: 'BN',
-    toNumericBase: 'dec',
-  });
-  const hexEstimatedL1Fee = addHexPrefix(
-    conversionUtil(ethEstimatedL1Fee, {
-      fromNumericBase: 'dec',
-      toNumericBase: 'hex',
-    }),
-  );
-  const fiatEstimatedL1Fee = conversionUtil(ethEstimatedL1Fee, {
-    fromNumericBase: 'dec',
-    toNumericBase: 'dec',
-    fromCurrency: nativeCurrency,
-    toCurrency: currentCurrency,
-    numberOfDecimals: 2,
-    conversionRate,
-  });
-
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
   };
 
   if (networkAndAccountSupportsEIP1559) {
-    const { gasPrice = '0' } = gasFeeEstimates;
-    const selectedGasEstimates = gasFeeEstimates[txData.userFeeLevel] || {};
+    const { medium = {}, gasPrice = '0' } = gasFeeEstimates;
     if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {
       gasEstimationObject.gasPrice =
         txData.txParams?.gasPrice ?? decGWEIToHexWEI(gasPrice);
     } else {
-      const {
-        suggestedMaxPriorityFeePerGas,
-        suggestedMaxFeePerGas,
-      } = selectedGasEstimates;
+      const { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = medium;
       gasEstimationObject.maxFeePerGas =
-        txData.txParams?.maxFeePerGas &&
-        (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE || !suggestedMaxFeePerGas)
-          ? txData.txParams?.maxFeePerGas
-          : decGWEIToHexWEI(suggestedMaxFeePerGas || gasPrice);
+        txData.txParams?.maxFeePerGas ??
+        decGWEIToHexWEI(suggestedMaxFeePerGas || gasPrice);
       gasEstimationObject.maxPriorityFeePerGas =
-        txData.txParams?.maxPriorityFeePerGas &&
-        (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
-          !suggestedMaxPriorityFeePerGas)
-          ? txData.txParams?.maxPriorityFeePerGas
-          : (suggestedMaxPriorityFeePerGas &&
-              decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||
-            gasEstimationObject.maxFeePerGas;
+        txData.txParams?.maxPriorityFeePerGas ??
+        ((suggestedMaxPriorityFeePerGas &&
+          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||
+          gasEstimationObject.maxFeePerGas);
       gasEstimationObject.baseFeePerGas = decGWEIToHexWEI(
         gasFeeEstimates.estimatedBaseFee,
       );
@@ -370,19 +329,10 @@ export const transactionFeeSelector = function (state, txData) {
 
   const fiatTransactionTotal = addFiat(
     fiatMinimumTransactionFee,
-    fiatEstimatedL1Fee,
     fiatTransactionAmount,
   );
-  const ethTransactionTotal = addEth(
-    ethTransactionFee,
-    ethTransactionAmount,
-    ethEstimatedL1Fee,
-  );
-  const hexTransactionTotal = sumHexes(
-    value,
-    hexMinimumTransactionFee,
-    hexEstimatedL1Fee,
-  );
+  const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount);
+  const hexTransactionTotal = sumHexes(value, hexMinimumTransactionFee);
 
   return {
     hexTransactionAmount: value,
@@ -390,13 +340,11 @@ export const transactionFeeSelector = function (state, txData) {
     ethTransactionAmount,
     hexMinimumTransactionFee,
     fiatMinimumTransactionFee,
-    hexEstimatedL1Fee,
     hexMaximumTransactionFee,
     fiatMaximumTransactionFee,
     ethTransactionFee,
     fiatTransactionTotal,
     ethTransactionTotal,
     hexTransactionTotal,
-    gasEstimationObject,
   };
 };

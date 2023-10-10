@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+import contractMap from '@metamask/contract-metadata';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -13,10 +14,6 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import {
-  fetchEstimatedOptimismL1Fee,
-  getIsOptimism,
-} from '../../ducks/optimism';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
@@ -31,30 +28,19 @@ import {
   getIsEthGasPriceFetched,
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
-  getPreferences,
-  doesAddressRequireLedgerHidConnection,
-  getUseTokenDetection,
-  getTokenList,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import {
-  isAddressLedger,
-  updateTransactionGasFees,
-  getIsGasEstimatesLoading,
-  getNativeCurrency,
-} from '../../ducks/metamask/metamask';
-
-import {
-  transactionMatchesNetwork,
-  txParamsAreDappSuggested,
-} from '../../../shared/modules/transaction.utils';
+import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-
-import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
-import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
-import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
-import { addHexes } from '../../helpers/utils/conversions.util';
+import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
+
+const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
+  return {
+    ...acc,
+    [base.toLowerCase()]: contractMap[base],
+  };
+}, {});
 
 let customNonceValue = '';
 const customNonceMerge = (txData) =>
@@ -73,16 +59,14 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
-
-  const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
-  const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
-
+  const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
+    assetImages,
     network,
     unapprovedTxs,
     nextNonce,
@@ -103,24 +87,15 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
+  const assetImage = assetImages[txParamsToAddress];
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
   const toAddress = propsToAddress || txParamsToAddress;
 
-  const tokenList = getTokenList(state);
-  const useTokenDetection = getUseTokenDetection(state);
-  const casedTokenList = useTokenDetection
-    ? tokenList
-    : Object.keys(tokenList).reduce((acc, base) => {
-        return {
-          ...acc,
-          [base.toLowerCase()]: tokenList[base],
-        };
-      }, {});
   const toName =
     identities[toAddress]?.name ||
-    casedTokenList[toAddress]?.name ||
+    casedContractMap[toAddress]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
@@ -128,16 +103,12 @@ const mapStateToProps = (state, ownProps) => {
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
-  const supportsEIP1559 =
-    checkNetworkAndAccountSupports1559(state) && !isLegacyTransaction(txParams);
 
   const {
     hexTransactionAmount,
     hexMinimumTransactionFee,
-    hexEstimatedL1Fee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
-    gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
 
   if (transaction && transaction.simulationFails) {
@@ -172,26 +143,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
-  const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
-  const gasFeeIsCustom =
-    fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
-    txParamsAreDappSuggested(fullTxData);
-  const fromAddressIsLedger = isAddressLedger(state, fromAddress);
-  const nativeCurrency = getNativeCurrency(state);
-
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    fromAddress,
-  );
-
-  const isOptimism = getIsOptimism(state);
-  const isStandardNetwork = !isOptimism;
-
-  let multilayerTotal;
-  if (!isStandardNetwork) {
-    multilayerTotal = addHexes(hexEstimatedL1Fee, hexMinimumTransactionFee);
-  }
+  const noGasPrice = getNoGasPriceFetched(state);
 
   return {
     balance,
@@ -212,6 +164,7 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     transactionStatus,
     nonce,
+    assetImage,
     unapprovedTxs,
     unapprovedTxCount,
     currentNetworkUnapprovedTxs,
@@ -231,20 +184,7 @@ const mapStateToProps = (state, ownProps) => {
     isMainnet,
     isEthGasPrice,
     noGasPrice,
-    supportsEIP1559,
-    gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
-    useNativeCurrencyAsPrimaryCurrency,
-    maxFeePerGas: gasEstimationObject.maxFeePerGas,
-    maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
-    baseFeePerGas: gasEstimationObject.baseFeePerGas,
-    gasFeeIsCustom,
-    showLedgerSteps: fromAddressIsLedger,
-    nativeCurrency,
-    hardwareWalletRequiresConnection,
-    isOptimism,
-    isStandardNetwork,
-    hexEstimatedL1Fee,
-    multilayerTotal,
+    supportsEIP1599,
   };
 };
 
@@ -278,9 +218,6 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
-    },
-    fetchOptimismL1Fee: (txMeta) => {
-      dispatch(fetchEstimatedOptimismL1Fee(txMeta));
     },
   };
 };

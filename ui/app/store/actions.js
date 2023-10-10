@@ -1,5 +1,6 @@
 import pify from 'pify';
 import log from 'loglevel';
+import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
 import {
@@ -1056,6 +1057,18 @@ export function updateMetamaskState(newState) {
       });
     }
 
+    // track when gasFeeEstimates change
+    if (
+      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
+    ) {
+      dispatch({
+        type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
+        payload: {
+          gasFeeEstimates: newState.gasFeeEstimates,
+          gasEstimateType: newState.gasEstimateType,
+        },
+      });
+    }
     if (provider.chainId !== newProvider.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
@@ -1324,7 +1337,7 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
+export function createCancelTransaction(txId, customGasSettings) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -1332,8 +1345,7 @@ export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
     return new Promise((resolve, reject) => {
       background.createCancelTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1353,7 +1365,7 @@ export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
   };
 }
 
-export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
+export function createSpeedUpTransaction(txId, customGasSettings) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
@@ -1361,8 +1373,7 @@ export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
     return new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1381,16 +1392,14 @@ export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
   };
 }
 
-export function createRetryTransaction(txId, customGasPrice, customGasLimit) {
-  log.debug('background.createRetryTransaction');
+export function createRetryTransaction(txId, customGasSettings) {
   let newTx;
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -2034,6 +2043,19 @@ export function setUsePhishDetect(val) {
   };
 }
 
+export function setUseStaticTokenList(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseStaticTokenList`);
+    background.setUseStaticTokenList(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2109,9 +2131,9 @@ export function setPendingTokens(pendingTokens) {
 
 // Swaps
 
-export function setSwapsLiveness(swapsFeatureIsLive) {
+export function setSwapsLiveness(swapsLiveness) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsLiveness(swapsFeatureIsLive);
+    await promisifiedBackground.setSwapsLiveness(swapsLiveness);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2169,6 +2191,23 @@ export function setSwapsTxGasPrice(gasPrice) {
 export function setSwapsTxGasLimit(gasLimit) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function updateCustomSwapsEIP1559GasParams({
+  gasLimit,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+}) {
+  return async (dispatch) => {
+    await Promise.all([
+      promisifiedBackground.setSwapsTxGasLimit(gasLimit),
+      promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas),
+      promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
+        maxPriorityFeePerGas,
+      ),
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2690,6 +2729,19 @@ export function setLedgerLivePreference(value) {
   };
 }
 
+export function captureSingleException(error) {
+  return async (dispatch, getState) => {
+    const { singleExceptions } = getState().appState;
+    if (!(error in singleExceptions)) {
+      dispatch({
+        type: actionConstants.CAPTURE_SINGLE_EXCEPTION,
+        value: error,
+      });
+      captureException(Error(error));
+    }
+  };
+}
+
 // Wrappers around promisifedBackground
 /**
  * The "actions" below are not actions nor action creators. They cannot use
@@ -2710,6 +2762,36 @@ export async function updateTokenType(tokenAddress) {
     log.error(error);
   }
   return token;
+}
+
+/**
+ * initiates polling for gas fee estimates.
+ *
+ * @returns {string} a unique identify of the polling request that can be used
+ *  to remove that request from consideration of whether polling needs to
+ *  continue.
+ */
+export function getGasFeeEstimatesAndStartPolling() {
+  return promisifiedBackground.getGasFeeEstimatesAndStartPolling();
+}
+
+/**
+ * Informs the GasFeeController that a specific token is no longer requiring
+ * gas fee estimates. If all tokens unsubscribe the controller stops polling.
+ *
+ * @param {string} pollToken - Poll token received from calling
+ *  `getGasFeeEstimatesAndStartPolling`.
+ * @returns {void}
+ */
+export function disconnectGasFeeEstimatePoller(pollToken) {
+  return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
+}
+
+export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
+  return promisifiedBackground.getGasFeeTimeEstimate(
+    maxPriorityFeePerGas,
+    maxFeePerGas,
+  );
 }
 
 // MetaMetrics
@@ -2754,34 +2836,4 @@ export async function setUnconnectedAccountAlertShown(origin) {
 
 export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
-}
-
-export function resetBlockList() {
-  return async (dispatch) => {
-    try {
-      await promisifiedBackground.resetBlockList();
-    } catch (err) {
-      dispatch(displayWarning(err.message));
-      throw err;
-    }
-  };
-}
-
-export function removeBlock(block) {
-  return async (dispatch) => {
-    console.log(block);
-  };
-}
-
-
-export function sortBlockList(sortProperty) {
-  return async (dispatch) => {
-    console.log(sortProperty);
-  };
-}
-
-export function toggleBlockNumericInfoFormat() {
-  return async (dispatch) => {
-    console.log('toggle!');
-  };
 }
