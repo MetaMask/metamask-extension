@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectWrapper should render the SelectWrapper without crashing 1`] = `
+<div>
+  <div
+    class="mm-box mm-select-wrapper"
+  >
+    <button>
+      Test Button
+    </button>
+    <div
+      class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden mm-select-wrapper__popover mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+      role="tooltip"
+      style="position: absolute; left: 0px; top: 0px; width: 0px;"
+    >
+      <div>
+        Test
+      </div>
+    </div>
+  </div>
+</div>
+`;
