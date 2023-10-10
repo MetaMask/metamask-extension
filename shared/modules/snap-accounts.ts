@@ -7,5 +7,12 @@
  * @returns true if the current date is after the specified date, false otherwise.
  */
 export function showSnapAccountExperimentalToggle(): boolean {
-  return new Date().getTime() > Date.UTC(2023, 10, 2, 15);
+  // eslint-disable-next-line prefer-destructuring
+  const KEYRING_SNAPS_DATE = process.env.KEYRING_SNAPS_DATE;
+
+  if (!KEYRING_SNAPS_DATE) {
+    return false;
+  }
+
+  return new Date().getTime() > new Date(KEYRING_SNAPS_DATE).getTime();
 }
