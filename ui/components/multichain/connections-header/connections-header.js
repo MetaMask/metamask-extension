@@ -46,12 +46,13 @@ export const ConnectionsHeader = ({ hostName }) => {
   );
   const connectedAvatar = connectedSite?.iconUrl;
   return (
+    // TODO: change this to header component when it's ready
     <HeaderBase
       className="connections-header"
       width={BlockSize.Full}
       startAccessory={
         <ButtonIcon
-          ariaLabel="Back"
+          ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
           className="connections-header__start-accessory"
           color={Color.iconDefault}
@@ -67,7 +68,7 @@ export const ConnectionsHeader = ({ hostName }) => {
         padding: 4,
       }}
       endAccessory={
-        <ButtonLink color={TextColor.primaryDefault} onClick>
+        <ButtonLink color={TextColor.primaryDefault}>
           {t('allButtonLink')}
         </ButtonLink>
       }
