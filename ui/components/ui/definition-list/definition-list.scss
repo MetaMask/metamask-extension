@@ -1,11 +1,17 @@
 .definition-list {
-  $self: &;
+  $self : &;
 
   &__term {
     display: flex;
     align-items: center;
 
-    & #{$self}__tooltip-wrapper {
+    & i {
+      color: var(--ui-3);
+      margin-left: 6px;
+      font-size: var(--font-size-h8);
+    }
+
+    & #{  $self }__tooltip-wrapper {
       display: flex !important;
       align-items: center;
     }

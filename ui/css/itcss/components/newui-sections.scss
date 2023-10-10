@@ -1,3 +1,6 @@
+$sub-mid-size-breakpoint: 667px;
+$sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$sub-mid-size-breakpoint})";
+
 /*
   NewUI Container Elements
  */
@@ -9,6 +12,7 @@
   overflow-x: hidden;
   position: relative;
   align-items: center;
+  background: var(--app-background);
 }
 
 // Fix for UI lag on external monitor: https://github.com/MetaMask/metamask-extension/issues/10173
@@ -19,7 +23,7 @@
   left: 0;
   width: 1px;
   height: 1px;
-  background-color: var(--color-background-alternative);
+  background-color: var(--Grey-000);
   animation: emptySpinningDiv 1s infinite linear;
 }
 
@@ -30,7 +34,8 @@
 
 // Main container
 .main-container {
-  z-index: $main-container-z-index;
+  z-index: var(--main-container-z-index);
+  background: var(--main-container-background);
 }
 
 .main-container::-webkit-scrollbar {
@@ -47,7 +52,7 @@
 
 // main-container media queries
 
-@include screen-sm-min {
+@media screen and (min-width: $break-large) {
   .lap-visible {
     display: flex;
   }
@@ -60,27 +65,27 @@
     width: 85vw;
     margin-bottom: 10vh;
     min-height: 90vh;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    box-shadow: 0 0 7px 0 rgba($black, 0.08);
   }
 }
 
-@include screen-md-min {
+@media screen and (min-width: 769px) {
   .main-container {
     width: 80vw;
     min-height: 82vh;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    box-shadow: 0 0 7px 0 rgba($black, 0.08);
   }
 }
 
-@include screen-lg-min {
+@media screen and (min-width: 1281px) {
   .main-container {
     width: 62vw;
     min-height: 82vh;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    box-shadow: 0 0 7px 0 rgba($black, 0.08);
   }
 }
 
-@include screen-sm-max {
+@media screen and (max-width: $break-small) {
   .lap-visible {
     display: none;
   }
@@ -92,7 +97,7 @@
   .main-container {
     width: 100%;
     overflow-y: auto;
-    background-color: var(--color-background-default);
+    background: var(--main-container-background);
   }
 
   .main-container-wrapper {
@@ -114,30 +119,30 @@
   flex-direction: row-reverse;
   justify-content: space-between;
 
-  @include screen-sm-max {
+  @media screen and (max-width: $break-small) {
     height: 100%;
   }
 
-  @include screen-sm-min {
+  @media screen and (min-width: $break-large) {
     width: 85vw;
   }
 
-  @include screen-md-min {
+  @media screen and (min-width: 769px) {
     width: 80vw;
   }
 
-  @include screen-lg-min {
+  @media screen and (min-width: 1281px) {
     width: 62vw;
   }
 }
 
 .unlock-screen-container {
-  z-index: $main-container-z-index;
+  z-index: var(--main-container-z-index);
   display: flex;
   justify-content: center;
   align-items: center;
   flex: 1 0 auto;
-  background: var(--color-background-alternative);
+  background: var(--app-background);
   width: 100%;
 }
 
@@ -155,5 +160,5 @@
   height: 100%;
   justify-content: center;
   padding: 0 10px;
-  background: var(--color-background-default);
+  background: var(--white);
 }

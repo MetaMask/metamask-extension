@@ -10,7 +10,7 @@ $sizes: (
 );
 
 .color-indicator {
-  $self: &;
+  $self : &;
 
   border: 1px solid transparent;
   display: flex;
@@ -23,17 +23,17 @@ $sizes: (
 
   @each $variant, $size in $sizes {
     &--size-#{$variant} {
-      height: #{2 * $size}px;
-      width: #{2 * $size}px;
+      height: #{2 *  $size}px;
+      width: #{2 *  $size}px;
       border-radius: #{$size}px;
 
-      #{$self}__inner-circle {
-        border-radius: #{$size}px;
-        height: #{$size}px;
-        width: #{$size}px;
+      #{  $self }__inner-circle {
+        border-radius: #{ $size}px;
+        height: #{ $size}px;
+        width: #{ $size}px;
       }
 
-      #{$self}__icon {
+      #{  $self }__icon {
         font-size: #{1.25 * $size}px;
       }
     }

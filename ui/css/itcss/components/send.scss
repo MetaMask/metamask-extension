@@ -3,7 +3,7 @@
   flex-flow: column nowrap;
   z-index: 25;
 
-  @include screen-sm-max {
+  @media screen and (max-width: $break-small) {
     width: 100%;
     overflow-y: auto;
   }
@@ -14,8 +14,8 @@
 }
 
 .send-screen-card {
-  background-color: var(--color-background-default);
-  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  background-color: var(--white);
+  box-shadow: 0 2px 4px 0 rgba($black, 0.08);
   padding: 46px 40.5px 26px;
   position: relative;
   align-items: center;
@@ -24,7 +24,7 @@
   width: 498px;
   flex: 1 0 auto;
 
-  @include screen-sm-max {
+  @media screen and (max-width: $break-small) {
     top: 0;
     width: 100%;
     box-shadow: none;
@@ -48,15 +48,15 @@
   border-radius: 50%;
   width: 70px;
   height: 70px;
-  border: 1px solid var(--color-border-muted);
-  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  border: 1px solid var(--alto);
+  box-shadow: 0 0 4px 0 rgba($black, 0.2);
   position: absolute;
   top: -35px;
   z-index: 25;
   padding: 4px;
-  background-color: var(--color-background-default);
+  background-color: var(--white);
 
-  @include screen-sm-max {
+  @media screen and (max-width: $break-small) {
     position: relative;
     top: 0;
   }
@@ -73,7 +73,7 @@
   .large-input {
     @include Paragraph;
 
-    border: 1px solid var(--color-border-default);
+    border: 1px solid var(--dusty-gray);
     border-radius: 4px;
     margin: 4px 0 20px;
   }
@@ -89,7 +89,7 @@
   &--error {
     input,
     .send-screen-gas-input {
-      border-color: var(--color-error-default) !important;
+      border-color: var(--red) !important;
     }
 
     .send-screen-input-wrapper__error-message {
@@ -99,7 +99,7 @@
       position: absolute;
       bottom: 4px;
       left: 8px;
-      color: var(--color-error-default);
+      color: var(--red);
     }
   }
 
@@ -110,7 +110,7 @@
     position: absolute;
     bottom: 4px;
     left: 8px;
-    color: var(--color-error-default);
+    color: var(--red);
   }
 }
 
@@ -124,7 +124,7 @@
   width: 100%;
   height: 41px;
   border-radius: 3px;
-  background-color: var(--color-background-default);
+  background-color: #f3f3f3;
   border-width: 0;
   border-style: none;
   display: flex;
@@ -132,7 +132,7 @@
   align-items: center;
   padding-left: 10px;
   padding-right: 12px;
-  color: var(--color-text-alternative);
+  color: var(--scorpion);
 }
 
 .send-screen-amount-labels {
@@ -149,11 +149,11 @@
 
 .currency-toggle {
   &__item {
-    color: var(--color-primary-default);
+    color: var(--primary-blue);
     cursor: pointer;
 
     &--selected {
-      color: var(--color-text-default);
+      color: var(--primary-text-emphasized);
       cursor: default;
     }
   }
@@ -162,7 +162,7 @@
 .send-screen-gas-input-customize {
   @include H7;
 
-  color: var(--color-primary-default);
+  color: var(--primary-blue);
   cursor: pointer;
 }
 
@@ -175,16 +175,46 @@
   height: 100%;
 }
 
+.customize-gas-tooltip-container {
+  @include Paragraph;
+
+  position: absolute;
+  bottom: 50px;
+  width: 237px;
+  height: 307px;
+  background-color: var(--white);
+  opacity: 1;
+  box-shadow: var(--alto) 0 0 5px;
+  z-index: 1050;
+  padding: 13px 19px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
 .gas-tooltip-arrow {
   height: 25px;
   width: 25px;
   z-index: 1200;
-  background: var(--color-background-default);
+  background: var(--white);
   position: absolute;
   transform: rotate(45deg);
   left: 107px;
   top: 294px;
-  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  box-shadow: 2px 2px 2px var(--alto);
+}
+
+.customize-gas-tooltip-container input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: none;
+}
+
+.customize-gas-tooltip-container input[type="number"]:hover::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: none;
+}
+
+.customize-gas-tooltip {
+  position: relative;
 }
 
 .gas-tooltip {
@@ -195,7 +225,7 @@
 .gas-tooltip-label {
   @include Paragraph;
 
-  color: var(--color-text-alternative);
+  color: var(--tundora);
 }
 
 .gas-tooltip-header {
@@ -207,8 +237,22 @@
 }
 
 .gas-tooltip-input-label i {
-  color: var(--color-icon-muted);
+  color: var(--silver-chalice);
   margin-left: 6px;
+}
+
+.customize-gas-input {
+  @include Paragraph;
+
+  width: 178px;
+  height: 28px;
+  border: 1px solid var(--alto);
+  color: var(--nile-blue);
+  padding-left: 8px;
+}
+
+.customize-gas-input-wrapper {
+  position: relative;
 }
 
 .gas-tooltip-input-detail {
@@ -217,7 +261,7 @@
   position: absolute;
   top: 4px;
   right: 26px;
-  color: var(--color-text-muted);
+  color: var(--silver-chalice);
 }
 
 .gas-tooltip-input-arrows {
@@ -228,11 +272,11 @@
   right: 4px;
   width: 17px;
   height: 28px;
-  border: 1px solid var(--color-icon-muted);
+  border: 1px solid #dadada;
   border-left: 0;
   display: flex;
   flex-direction: column;
-  color: var(--color-text-muted);
+  color: #9b9b9b;
   padding: 1px 4px;
   cursor: pointer;
 }
@@ -252,7 +296,7 @@
   &__title {
     @include H4;
 
-    color: var(--color-text-alternative);
+    color: var(--scorpion);
   }
 
   &__subtitle {
@@ -281,8 +325,8 @@
   &__content {
     width: 498px;
     height: 605px;
-    background-color: var(--color-background-default);
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    background-color: var(--white);
+    box-shadow: 0 2px 4px 0 rgba($black, 0.08);
     padding: 46px 40.5px 26px;
     position: relative;
     align-items: center;
@@ -290,7 +334,7 @@
     flex-flow: column nowrap;
     flex: 1 0 auto;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       top: 0;
       width: 100%;
       box-shadow: none;
@@ -303,7 +347,7 @@
     top: -35px;
     z-index: 25;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       position: relative;
       top: 0;
       flex: 0 0 auto;
@@ -313,7 +357,7 @@
   &__title {
     @include H4;
 
-    color: var(--color-text-alternative);
+    color: var(--scorpion);
   }
 
   &__description,
@@ -341,7 +385,7 @@
     align-items: center;
     flex: 0 0 auto;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       margin-top: 24px;
     }
 
@@ -361,15 +405,15 @@
   &__container {
     width: 380px;
     border-radius: 8px;
-    background-color: var(--color-background-default);
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    background-color: var(--white);
+    box-shadow: 0 2px 4px 0 rgba($black, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
     align-items: center;
     position: relative;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       width: 100%;
       top: 0;
       box-shadow: none;
@@ -380,7 +424,7 @@
   &__send-header-icon-container {
     z-index: 25;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       position: relative;
       top: 0;
     }
@@ -390,14 +434,24 @@
     border-radius: 50%;
     width: 48px;
     height: 48px;
-    border: 1px solid var(--color-border-muted);
+    border: 1px solid var(--alto);
     z-index: 25;
     padding: 4px;
-    background-color: var(--color-background-default);
+    background-color: var(--white);
+  }
+
+  &__send-arrow-icon {
+    @include H4;
+
+    color: #f28930;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: -2px;
+    left: 0;
   }
 
   &__arrow-background {
-    background-color: var(--color-background-default);
+    background-color: var(--white);
     height: 14px;
     width: 14px;
     position: absolute;
@@ -406,7 +460,7 @@
     border-radius: 50%;
     z-index: 100;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       top: 36px;
     }
   }
@@ -414,13 +468,13 @@
   &__header {
     height: 88px;
     width: 380px;
-    background-color: var(--color-background-alternative);
+    background-color: var(--athens-grey);
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       height: 59px;
       width: 100vw;
     }
@@ -429,13 +483,13 @@
   &__header-tip {
     height: 25px;
     width: 25px;
-    background-color: var(--color-background-alternative);
+    background: var(--athens-grey);
     position: absolute;
     transform: rotate(45deg);
     left: 178px;
     top: 75px;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       top: 46px;
       left: 0;
       right: 0;
@@ -446,7 +500,7 @@
   &__title {
     @include H3;
 
-    color: var(--color-text-alternative);
+    color: var(--scorpion);
     text-align: center;
     margin-top: 25px;
   }
@@ -454,7 +508,7 @@
   &__copy {
     @include H6;
 
-    color: var(--color-text-alternative);
+    color: var(--gray);
     text-align: center;
     margin-top: 10px;
     width: 287px;
@@ -464,7 +518,7 @@
     @include H7;
 
     left: 8px;
-    color: var(--color-error-default);
+    color: var(--red);
   }
 
   &__error-amount {
@@ -475,15 +529,15 @@
     @include H7;
 
     left: 8px;
-    color: var(--color-warning-default);
+    color: var(--orange);
   }
 
   &__error-border {
-    color: var(--color-error-default);
+    color: var(--red);
   }
 
   &__form {
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       margin: 0;
       flex: 1 1 auto;
     }
@@ -518,21 +572,21 @@
     min-width: 0;
 
     .currency-display {
-      color: var(--color-text-alternative);
+      color: var(--tundora);
 
       &__currency-symbol {
-        color: var(--color-text-alternative);
+        color: var(--tundora);
       }
 
       &__converted-value,
       &__converted-currency {
-        color: var(--color-text-alternative);
+        color: var(--tundora);
       }
     }
 
     .account-list-item {
       &__account-secondary-balance {
-        color: var(--color-text-alternative);
+        color: var(--tundora);
       }
     }
   }
@@ -540,7 +594,7 @@
   &__form-label {
     @include Paragraph;
 
-    color: var(--color-text-alternative);
+    color: var(--scorpion);
     width: 95px;
     flex: 0 0 auto;
   }
@@ -550,10 +604,10 @@
     @include H7;
 
     width: 100%;
-    border: 1px solid var(--color-border-muted);
+    border: 1px solid var(--alto);
     border-radius: 4px;
-    background-color: var(--color-background-default);
-    color: var(--color-text-default);
+    background-color: var(--white);
+    color: var(--tundora);
     position: relative;
 
     &__close-area {
@@ -570,10 +624,10 @@
       position: absolute;
       height: 220px;
       width: 100%;
-      border: 1px solid var(--color-border-muted);
+      border: 1px solid var(--geyser);
       border-radius: 4px;
-      background-color: var(--color-background-default);
-      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+      background-color: var(--white);
+      box-shadow: 0 3px 6px 0 rgba($black, 0.11);
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
@@ -594,10 +648,14 @@
       flex-flow: row nowrap;
       align-items: center;
       padding: 8px 8px;
+
+      &:hover {
+        background-color: rgba($alto, 0.2);
+      }
     }
 
     &__caret {
-      color: var(--color-icon-default);
+      color: var(--silver);
       padding: 0 10px;
     }
 
@@ -608,14 +666,14 @@
       padding: 0 8px;
       cursor: pointer;
 
-      /* Prevents the contents of the asset from going outside the dropdown area  */
-      max-width: 100%;
-      overflow: hidden;
+      &:hover {
+        background-color: rgba($alto, 0.2);
+      }
     }
 
     &__asset-icon {
       .identicon {
-        border: 1px solid var(--color-border-muted);
+        border: 1px solid var(--alto);
       }
     }
 
@@ -624,38 +682,22 @@
       flex-flow: column nowrap;
       margin-left: 8px;
       flex-grow: 1;
-
-      /* Keeps the down arrow on screen */
-      overflow: hidden;
-    }
-
-    @include screen-sm-max {
-      &__asset-data {
-        width: 60%;
-      }
     }
 
     &__symbol {
       @include Paragraph;
 
       margin-bottom: 2px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
     &__name {
       @include H7;
 
-      /* Prevents the token balance or NFT title from wrapping or silently truncating */
       display: flex;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      flex-flow: row nowrap;
 
       &__label {
         margin-right: 0.25rem;
-        min-width: 52px;
       }
     }
 
@@ -668,10 +710,10 @@
       position: absolute;
       height: 220px;
       width: 100%;
-      border: 1px solid var(--color-border-muted);
+      border: 1px solid var(--geyser);
       border-radius: 4px;
-      background-color: var(--color-background-default);
-      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+      background-color: var(--white);
+      box-shadow: 0 3px 6px 0 rgba($black, 0.11);
       top: 65px;
       left: 0;
       box-sizing: content-box;
@@ -685,7 +727,7 @@
     }
 
     &__input-wrapper {
-      border: 1px solid var(--color-border-muted);
+      border: 1px solid var(--alto);
       border-radius: 4px;
       height: 100%;
 
@@ -698,7 +740,7 @@
         height: 100%;
 
         &:hover {
-          background-color: var(--color-background-default-hover);
+          background-color: var(--white);
         }
       }
     }
@@ -712,8 +754,8 @@
       width: 100%;
       border: none;
       border-radius: 4px;
-      background-color: var(--color-background-default);
-      color: var(--color-text-alternative);
+      background-color: var(--white);
+      color: var(--tundora);
       padding: 10px;
     }
   }
@@ -727,10 +769,10 @@
       position: relative;
       height: 54px;
       width: 100%;
-      border: 1px solid var(--color-border-muted);
+      border: 1px solid var(--alto);
       border-radius: 4px;
-      background-color: var(--color-background-default);
-      color: var(--color-text-alternative);
+      background-color: var(--white);
+      color: var(--tundora);
       padding: 10px;
     }
   }
@@ -749,7 +791,7 @@
       width: 56px;
       height: 20px;
       position: absolute;
-      border: 1px solid var(--color-primary-default);
+      border: 1px solid #b0d7f2;
       border-radius: 100px;
       cursor: pointer;
       top: 0;
@@ -759,19 +801,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--color-primary-default);
-      background: var(--color-background-default);
+      color: #2f9ae0;
+      background: var(--white);
 
       &__disabled {
-        opacity: 0.5;
+        color: #b0d7f2;
         cursor: auto;
       }
     }
 
     input:checked + &__button {
-      background-color: var(--color-primary-default);
-      border: 1px solid var(--color-primary-default);
-      color: var(--color-primary-inverse);
+      background-color: var(--primary-blue);
+      border: 1px solid var(--primary-blue);
+      color: var(--white);
     }
   }
 
@@ -779,6 +821,17 @@
     opacity: 0;
     width: 0;
     height: 0;
+  }
+
+  &__gas-fee-display {
+    width: 100%;
+    position: relative;
+
+    .currency-display--message {
+      padding: 8px 38px 8px 10px;
+      display: flex;
+      align-items: center;
+    }
   }
 
   &__sliders-icon-container {
@@ -789,9 +842,9 @@
     justify-content: center;
     height: 24px;
     width: 24px;
-    border: 1px solid var(--color-primary-default);
+    border: 1px solid var(--primary-blue);
     border-radius: 4px;
-    background-color: var(--color-background-default);
+    background-color: var(--white);
     position: absolute;
     right: 15px;
     top: 14px;
@@ -799,7 +852,7 @@
   }
 
   &__sliders-icon {
-    color: var(--color-primary-default);
+    color: var(--primary-blue);
   }
 
   &__memo-text-area {
@@ -814,8 +867,8 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    border-top: 1px solid var(--color-border-muted);
-    background: var(--color-background-default);
+    border-top: 1px solid var(--alto);
+    background: var(--white);
     padding: 0 12px;
     flex-shrink: 0;
   }
@@ -824,6 +877,129 @@
   &__cancel-btn {
     width: 163px;
     margin: 0 4px;
+  }
+
+  &__customize-gas {
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    background-color: var(--white);
+    box-shadow: 0 2px 4px 0 rgba($black, 0.14);
+    display: flex;
+    flex-flow: column;
+
+    @media screen and (max-width: $break-small) {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    &__header {
+      @include H3;
+
+      height: 52px;
+      border-bottom: 1px solid var(--alto);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      @media screen and (max-width: $break-small) {
+        flex: 0 0 auto;
+      }
+    }
+
+    &__title {
+      margin-left: 19.25px;
+    }
+
+    &__close::after {
+      content: '\00D7';
+      font-size: 1.8em;
+      color: var(--dusty-gray);
+      cursor: pointer;
+      margin-right: 19.25px;
+    }
+
+    &__content {
+      display: flex;
+      flex-flow: column nowrap;
+      height: 100%;
+    }
+
+    &__body {
+      display: flex;
+      margin-bottom: 24px;
+
+      @media screen and (max-width: $break-small) {
+        flex-flow: column;
+        flex: 1 1 auto;
+      }
+    }
+
+    &__footer {
+      @include H3;
+
+      height: 75px;
+      border-top: 1px solid var(--alto);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+
+      @media screen and (max-width: $break-small) {
+        flex: 0 0 auto;
+      }
+    }
+
+    &__buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-right: 21.25px;
+    }
+
+    &__revert,
+    &__cancel,
+    &__save,
+    &__save__error {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 3px;
+      cursor: pointer;
+    }
+
+    &__revert {
+      @include Paragraph;
+
+      color: var(--silver-chalice);
+      margin-left: 21.25px;
+    }
+
+    &__cancel,
+    &__save,
+    &__save__error {
+      width: 85.74px;
+      min-width: initial;
+    }
+
+    &__save__error {
+      opacity: 0.5;
+      cursor: auto;
+    }
+
+    &__error-message {
+      @include H7;
+
+      display: block;
+      position: absolute;
+      top: -18px;
+      right: 0;
+      color: var(--red);
+      width: 100%;
+      text-align: center;
+    }
+
+    &__cancel {
+      margin-right: 10px;
+    }
   }
 
   &__gas-modal-card {
@@ -837,7 +1013,7 @@
       @include H4;
 
       height: 26px;
-      color: var(--color-text-alternative);
+      color: var(--tundora);
       margin-top: 17px;
     }
 
@@ -846,8 +1022,20 @@
 
       height: 38px;
       width: 314px;
-      color: var(--color-text-alternative);
+      color: var(--tundora);
       margin-top: 17px;
+    }
+
+    .customize-gas-input-wrapper {
+      margin-top: 17px;
+    }
+
+    .customize-gas-input {
+      height: 54px;
+      width: 315px;
+      border: 1px solid var(--geyser);
+      background-color: var(--white);
+      padding-left: 15px;
     }
 
     .gas-tooltip-input-arrows {
@@ -855,8 +1043,8 @@
 
       width: 32px;
       height: 54px;
-      border-left: 1px solid var(--color-border-muted);
-      color: var(--color-text-alternative);
+      border-left: 1px solid #dadada;
+      color: var(--tundora);
       right: 0;
       padding: 0;
       display: flex;
@@ -873,12 +1061,12 @@
       justify-content: center;
     }
 
-    input[type='number']::-webkit-inner-spin-button {
+    input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
       display: none;
     }
 
-    input[type='number']:hover::-webkit-inner-spin-button {
+    input[type="number"]:hover::-webkit-inner-spin-button {
       -webkit-appearance: none;
       display: none;
     }
@@ -890,7 +1078,7 @@
 
   display: flex;
   justify-content: flex-end;
-  color: var(--color-primary-default);
+  color: #2f9ae0;
   cursor: pointer;
   margin-top: 5px;
 }
@@ -903,9 +1091,9 @@
   justify-content: center;
   height: 24px;
   width: 24px;
-  border: 1px solid var(--color-primary-default);
+  border: 1px solid var(--primary-blue);
   border-radius: 4px;
-  background-color: var(--color-background-default);
+  background-color: var(--white);
   position: absolute;
   right: 15px;
   top: 14px;
@@ -920,14 +1108,14 @@
   justify-content: center;
   height: 24px;
   border-radius: 4px;
-  background-color: var(--color-background-default);
+  background-color: var(--white);
   position: absolute;
   right: 12px;
   top: 14px;
   cursor: pointer;
-  color: var(--color-primary-default);
+  color: #2f9ae0;
 }
 
 .sliders-icon {
-  color: var(--color-primary-default);
+  color: var(--primary-blue);
 }

@@ -2,25 +2,26 @@
   width: 100%;
   min-height: 86px;
   margin: 0;
-  background: var(--color-background-default);
+  background: var(--asset-list-background-hover-color);
   padding: 24px 16px;
 
   @include Paragraph;
 
-  border-bottom: 1px solid var(--color-border-muted);
-  color: var(--color-text-default);
+  border-top: 1px solid var(--mercury);
+  border-bottom: 1px solid var(--mercury);
+  color: var(--Black-100);
   display: grid;
   grid-template-columns: 0fr repeat(11, 1fr);
   grid-template-areas:
     'icon head     head     head     head     head     head     head     right right right right'
     'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
     '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
-  align-items: flex-start;
+  align-items: start;
   cursor: pointer;
 
   &:hover,
   &:focus-within {
-    background-color: var(--color-background-default-hover);
+    background-color: var(--asset-list-background-hover-color);
   }
 
   &__icon {
@@ -48,6 +49,7 @@
       background: unset;
       font-size: unset;
       padding-inline-start: 0;
+      color: unset;
     }
 
     &-wrap {
@@ -66,7 +68,7 @@
     @include H7;
 
     grid-area: sub;
-    color: var(--color-text-alternative);
+    color: var(--Grey-500);
     margin-top: 4px;
     // all direct descendants should be truncated with ellipses
     // allows flexibility in consuming components to use h3/other tag
@@ -85,7 +87,7 @@
     @include H7;
 
     grid-area: mid;
-    color: var(--color-text-muted);
+    color: var(--Grey-500);
   }
 
   &__right-content {
@@ -96,13 +98,13 @@
     white-space: nowrap;
   }
 
-  @include screen-sm-max {
+  @media (max-width: $break-small) {
     &__mid-content {
       display: none;
     }
   }
 
-  @include screen-sm-min {
+  @media (min-width: $break-large) {
     grid-template-areas:
       'icon head     head     head     head     mid mid mid mid right right right'
       'icon sub      sub      sub      sub      mid mid mid mid right right right'
@@ -114,7 +116,7 @@
   grid-template-areas: 'icon head     head     head     head     head     head     head     right right right right';
   align-items: center;
 
-  @include screen-sm-min {
+  @media (min-width: $break-large) {
     grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
   }
 }

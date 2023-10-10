@@ -4,53 +4,34 @@
   justify-content: center;
 
   &__result {
+    @include H3;
+
     position: absolute;
     top: 30%;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     text-align: center;
-    color: var(--color-text-default);
+    color: var(--Black-100);
   }
 
   &__icons {
     display: flex;
-    position: relative;
-  }
-
-  .icon-border {
-    max-width: 64px;
-    flex: 0 0 64px;
   }
 
   &__center-icon {
-    position: relative;
-    height: 64px;
-  }
+    @include H7;
 
-  &__icon {
-    width: 64px;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
   }
 
   &__check {
-    width: 32px;
-    height: 32px;
-    color: var(--color-success-inverse);
-    background-color: var(--color-success-default);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--white) url("/images/permissions-check.svg") no-repeat;
     position: absolute;
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 18%;
-      top: 25%;
-    }
-  }
-
-  &__dashed-line {
-    width: 130px;
-    border-bottom: 1px solid var(--color-border-muted);
-    border-style: dashed;
   }
 }

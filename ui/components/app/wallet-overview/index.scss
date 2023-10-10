@@ -46,48 +46,45 @@
     align-items: center;
     margin: 16px 0;
     padding: 0 16px;
-    max-width: 326px;
+    max-width: 100%;
   }
 
   &__primary-container {
     display: flex;
-    max-width: inherit;
-    justify-content: center;
-    flex-wrap: wrap;
   }
 
   &__primary-balance {
     @include H2;
 
-    color: var(--color-text-default);
+    color: var(--primary-text-emphasized);
+    width: 100%;
+    justify-content: center;
   }
 
   &__cached-star {
     margin-left: 4px;
   }
 
-  &__portfolio-button {
-    height: inherit;
-    padding-inline-start: 16px;
-  }
-
   &__cached-balance,
   &__cached-star {
-    color: var(--color-warning-default);
+    color: var(--web-orange);
   }
 
   &__cached-secondary-balance {
     @include Paragraph;
 
-    color: var(--color-warning-muted);
+    color: rgba(220, 153, 18, 0.6901960784313725);
   }
 
   &__secondary-balance {
     @include Paragraph;
 
-    color: var(--color-text-alternative);
+    color: var(--Grey-400);
   }
 
+  &__button {
+    margin-right: 24px;
+  }
 
   &__button:last-of-type {
     margin-right: 0;
@@ -99,7 +96,7 @@
     align-items: center;
     height: 36px;
     width: 36px;
-    background: var(--color-primary-default);
+    background: #037dd6;
     border-radius: 18px;
     margin-top: 6px;
   }
@@ -114,20 +111,13 @@
     align-items: center;
     margin: 16px 0;
     padding: 0 16px;
-    max-width: 326px;
-  }
-
-  &__primary-container {
-    display: flex;
-    max-width: inherit;
-    justify-content: center;
-    flex-wrap: wrap;
+    max-width: 100%;
   }
 
   &__primary-balance {
     @include H2;
 
-    color: var(--color-text-default);
+    color: var(--primary-text-emphasized);
     width: 100%;
     justify-content: center;
   }
@@ -135,12 +125,11 @@
   &__secondary-balance {
     @include H5;
 
-    color: var(--color-text-alternative);
+    color: var(--Grey-400);
   }
 
-  &__portfolio-button {
-    height: inherit;
-    padding-inline-start: 16px;
+  &__button {
+    margin-right: 24px;
   }
 
   &__button:last-of-type {

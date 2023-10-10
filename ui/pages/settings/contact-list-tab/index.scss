@@ -1,13 +1,13 @@
 .address-book-wrapper {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   height: 100%;
 }
 
 .address-book {
   flex: 0.4 1 100%;
 
-  @include screen-sm-max {
+  @media screen and (max-width: $break-small) {
     flex: 1;
     max-width: 100%;
 
@@ -16,9 +16,34 @@
     }
   }
 
-  &__header {
+  &__entry {
     display: flex;
-    align-items: center;
+    flex-flow: row nowrap;
+    padding: 16px 14px;
+    flex: 0 0 auto;
+    border-bottom: 1px solid #dedede;
+
+    &:hover {
+      border: 1px solid var(--primary-blue);
+      cursor: pointer;
+    }
+  }
+
+  &__name {
+    padding: 3px;
+  }
+
+  &__header,
+  &__header--edit {
+    &__name {
+      @include H3;
+
+      margin-left: 24px;
+      max-width: 8em;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
   }
 
   &__header--edit {
@@ -29,7 +54,7 @@
       @include H6;
 
       justify-content: flex-end;
-      color: var(--color-error-default);
+      color: var(--accent-red);
     }
   }
 
@@ -40,11 +65,6 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-  }
-
-  &__icon {
-    margin: 0 auto 16px auto;
-    display: block;
   }
 
   &__title {
@@ -61,19 +81,19 @@
 
   &__link {
     background-color: transparent;
-    color: var(--color-primary-default);
+    color: #037dd6;
   }
 
   &__input {
     @include H4;
 
-    border: 1px solid var(--color-border-muted);
+    border: 1px solid var(--Grey-200);
     border-radius: 6px;
-    color: var(--color-text-muted);
+    color: var(--Grey-800);
     padding: 0.875rem 1rem;
 
     &:focus-within {
-      border-color: var(--color-primary-default);
+      border-color: var(--Blue-500);
     }
 
     margin-top: 0.25rem;
@@ -93,7 +113,7 @@
     }
 
     &__address {
-      height: 90px !important;
+      height: 60px !important;
 
       textarea {
         padding-top: 10px !important;
@@ -109,8 +129,8 @@
       &__label--capitalized {
         @include H7;
 
-        color: var(--color-text-alternative);
-        margin-top: 0.75rem;
+        color: var(--Grey-500);
+        margin-bottom: 0.25rem;
       }
 
       &__label--capitalized {
@@ -123,7 +143,7 @@
 
         display: flex;
         flex-flow: row nowrap;
-        color: var(--color-text-muted);
+        color: var(--Grey-800);
         word-break: break-word;
 
         &--address {
@@ -148,7 +168,7 @@
           cursor: pointer;
 
           &:hover {
-            color: var(--color-text-default);
+            color: black;
           }
         }
       }
@@ -173,6 +193,10 @@
         padding-top: 0;
       }
     }
+
+    .page-container__footer {
+      border-top: none;
+    }
   }
 
   &__add-contact {
@@ -180,30 +204,72 @@
     flex-flow: column nowrap;
     padding-bottom: 0 !important;
     height: 100%;
-    padding-top: 0;
 
     &__content {
       flex: 1 1 auto;
       height: 100%;
-      padding-top: 0;
-
-      &__username {
-        padding-top: 0;
-      }
     }
 
     &__error {
       @include H7;
 
       left: 8px;
-      color: var(--color-error-default);
+      color: var(--red);
+    }
+  }
+
+  &__my-accounts-button {
+    display: flex;
+    flex-flow: column;
+    cursor: pointer;
+    padding: 15px;
+
+    &:hover {
+      background-color: rgba(222, 222, 222, 0.2);
+    }
+
+    &__header {
+      @include H4;
+
+      color: #000;
+    }
+
+    &__content {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__text {
+      @include Paragraph;
+
+      color: #6a737d;
+    }
+
+    &__caret {
+      display: block;
+      background-image: url(/images/caret-right.svg);
+      width: 30px;
+      opacity: 0.5;
+      background-repeat: no-repeat;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 }
 
 .address-book-add-button {
   &__button {
-    @include screen-sm-max {
+    position: absolute;
+    top: 85px;
+    right: 16px;
+    width: auto;
+
+    @media screen and (max-width: $break-small) {
+      top: 16px;
+      right: 60px;
+
       &--hidden {
         display: none;
       }
@@ -218,7 +284,7 @@
 .address-book-contact-content {
   flex: 0.4 1 100%;
 
-  @include screen-sm-max {
+  @media screen and (max-width: $break-small) {
     flex: 1;
   }
 }

@@ -2,14 +2,13 @@
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  background: var(--color-background-default);
-  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
-  border: 1px solid var(--color-border-muted);
+  background: rgba(36, 41, 46, 0.9);
+  box-shadow: 0 2px 10px rgba($black, 0.12);
   border-radius: 8px;
   min-height: 116px;
   padding: 16px;
 
-  @include screen-sm-min {
+  @media screen and (min-width: $break-large) {
     min-width: 472px;
   }
 
@@ -26,38 +25,42 @@
   &__text {
     @include H7;
 
-    color: var(--color-text-default);
+    color: var(--white);
   }
 
   &__text-link {
     @include H7;
 
-    color: var(--color-primary-default);
+    color: var(--primary-blue);
     cursor: pointer;
   }
 
-  &__checkbox-wrapper {
+  .fa-info-circle {
+    color: #6a737d;
+  }
+
+  & &__checkbox-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       width: 160px;
     }
   }
 
-  &__checkbox {
+  & &__checkbox {
     height: 13px;
     width: 13px;
     font-size: 16px;
     cursor: pointer;
   }
 
-  &__checkbox-label {
+  & &__checkbox-label {
     @include H7;
 
-    color: var(--color-text-default);
-    margin-left: 8px;
+    color: var(--white);
+    margin-left: 10px;
     margin-top: 1px;
     user-select: none;
     -moz-user-select: none;
@@ -65,20 +68,57 @@
     cursor: pointer;
   }
 
-  &__ignore-button.button {
-    width: auto;
-    padding: 8px 16px;
+  & &__ignore-button {
+    border-color: #6a737d;
+    box-sizing: border-box;
+    color: var(--white);
+    background-color: inherit;
+    height: 34px;
+    width: 155px;
+    padding: 0;
+
+    @media screen and (max-width: $break-small) {
+      width: 135px;
+    }
+
+    &:hover {
+      border-color: #6a737d;
+      background-color: #6a737d;
+    }
+
+    &:active {
+      background-color: #141618;
+    }
   }
 
-  &__accept-button.button {
-    width: auto;
-    padding: 8px 16px;
+  & &__accept-button {
+    border-color: #6a737d;
+    box-sizing: border-box;
+    color: var(--white);
+    background-color: inherit;
+    height: 34px;
+    width: 155px;
+    padding: 0;
+    margin-left: 4px;
+
+    @media screen and (max-width: $break-small) {
+      width: 135px;
+    }
+
+    &:hover {
+      border-color: #6a737d;
+      background-color: #6a737d;
+    }
+
+    &:active {
+      background-color: #141618;
+    }
   }
 
   &__buttons {
     display: flex;
     width: 100%;
-    padding-top: 8px;
+    padding-top: 10px;
     align-items: center;
     justify-content: space-between;
     flex-direction: row-reverse;
@@ -86,6 +126,6 @@
 
   &__tooltip-wrapper {
     display: flex;
-    margin-left: 8px;
+    margin-left: 10px;
   }
 }

@@ -14,7 +14,7 @@
 
     width: 100%;
     font-weight: 500;
-    color: var(--color-text-default);
+    color: var(--primary-text-emphasized);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -25,7 +25,7 @@
   &__address {
     @include H7;
 
-    color: var(--color-text-alternative);
+    color: #989a9b;
     display: flex;
     align-items: center;
   }
@@ -42,14 +42,18 @@
     width: 100%;
     background-color: unset;
 
-    &:hover,
+    &:hover {
+      background-color: var(--account-button-background-hover-color);
+    }
+
     &:active {
-      background-color: var(--color-background-default-hover);
+      background-color: #d9d7da;
     }
   }
 
   &__copy {
-    display: flex;
+    height: 13px;
+    display: inline-block;
     margin-inline-start: 3px;
   }
 }

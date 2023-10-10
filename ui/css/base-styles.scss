@@ -6,7 +6,7 @@
 
 html,
 body {
-  color: var(--color-text-default);
+  color: var(--primary-text);
   width: 100%;
   height: 100%;
   margin: 0;
@@ -17,30 +17,6 @@ body {
 
 html {
   min-height: 500px;
-
-  @include screen-sm-max {
-    &:not([data-theme]) {
-      background-color: var(--color-background-default);
-    }
-  }
-
-  /*
-    Until we get the user's preference from React state,
-    assume the user is in dark mode, because the default
-    theme is system preference
-  */
-  @media (prefers-color-scheme: dark) {
-    &:not([data-theme]) {
-      color: var(--brand-colors-white-white000);
-      background-color: var(--brand-colors-grey-grey900);
-    }
-
-    @include screen-sm-max {
-      &:not([data-theme]) {
-        background-color: var(--brand-colors-grey-grey800);
-      }
-    }
-  }
 }
 
 .mouse-user-styles {
@@ -55,14 +31,25 @@ html {
 
 /*
   This error class is used in the following files still:
+  /ui/pages/create-account/connect-hardware/index.js
   /ui/pages/create-account/import-account/json.js
   /ui/pages/create-account/import-account/private-key.js
+  /ui/pages/first-time-flow/create-password/import-with-seed-phrase/import-with-seed-phrase.component.js
+  /ui/pages/keychains/restore-vault.js
 */
 .error {
-  color: var(--color-error-default);
+  color: #f7861c;
   margin-top: 3px;
   margin-bottom: 9px;
-  overflow-wrap: anywhere;
+}
+
+/*
+  This warning class is used in the following files still:
+  /ui/pages/create-account/import-account/json.js
+  /ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.component.js
+*/
+.warning {
+  color: #ffae00;
 }
 
 /* stylelint-disable */
@@ -71,15 +58,10 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: var(--app-background);
 
-  html[data-theme] & {
-    background: var(--color-background-alternative);
-  }
-
-  @include screen-sm-max {
-    html[data-theme] & {
-      background-color: var(--color-background-default);
-    }
+  @media screen and (max-width: $break-small) {
+    background-color: var(--white);
   }
 }
 /* stylelint-enable */
@@ -90,7 +72,7 @@ a {
 }
 
 a:hover {
-  color: var(--color-primary-alternative);
+  color: #df6b0e;
 }
 
 input.large-input,
@@ -116,38 +98,46 @@ input.form-control {
   padding-left: 10px;
   font-size: 14px;
   height: 40px;
-  border: 1px solid var(--color-border-default);
-  color: 1px solid var(--color-text-default);
-  background: transparent;
+  border: 1px solid var(--alto);
   border-radius: 3px;
   width: 100%;
 
   &::-webkit-input-placeholder {
     font-weight: 100;
-    color: var(--color-text-muted);
+    color: var(--dusty-gray);
   }
 
   &::-moz-placeholder {
     font-weight: 100;
-    color: var(--color-text-muted);
+    color: var(--dusty-gray);
   }
 
   &:-ms-input-placeholder {
     font-weight: 100;
-    color: var(--color-text-muted);
+    color: var(--dusty-gray);
   }
 
   &:-moz-placeholder {
     font-weight: 100;
-    color: var(--color-text-muted);
+    color: var(--dusty-gray);
   }
 
   &--error {
-    border: 1px solid var(--color-error-default);
+    border: 1px solid var(--monzo);
   }
+}
+
+input,
+input.MuiInputBase-input {
+  color: var(--primary-text);
+}
+
+select {
+  color: var(--select-color);
 }
 
 /** Default Typography on base elements **/
 * {
-  font-family: $font-family;
+  font-family: var(--font-family);
 }
+

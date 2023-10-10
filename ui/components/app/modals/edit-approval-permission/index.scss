@@ -7,7 +7,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    border-bottom: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid #d2d8dd;
   }
 
   &__header {
@@ -16,8 +16,10 @@
     &__close {
       position: absolute;
       right: 24px;
+      background-image: url("/images/close-gray.svg");
+      width: 0.75rem;
+      height: 0.75rem;
       cursor: pointer;
-      display: block;
     }
   }
 
@@ -36,7 +38,7 @@
       @include H6;
 
       font-weight: normal;
-      color: var(--color-text-default);
+      color: #24292e;
     }
 
     &__account {
@@ -50,7 +52,7 @@
     }
 
     &__balance {
-      color: var(--color-text-alternative);
+      color: #6a737d;
       margin-left: 8px;
     }
   }
@@ -62,14 +64,14 @@
       @include H6;
 
       font-weight: bold;
-      color: var(--color-text-default);
+      color: #24292e;
     }
 
     &__description {
       @include H7;
 
       font-weight: normal;
-      color: var(--color-text-alternative);
+      color: #6a737d;
       margin-top: 8px;
     }
 
@@ -93,17 +95,17 @@
       @include H6;
 
       font-weight: normal;
-      color: var(--color-text-alternative);
+      color: #474b4d;
     }
 
     &__option-label--selected {
-      color: var(--color-primary-default);
+      color: var(--primary-blue);
     }
 
     &__option-description {
       @include H7;
 
-      color: var(--color-text-alternative);
+      color: #6a737d;
       margin-top: 8px;
       margin-bottom: 6px;
     }
@@ -111,7 +113,7 @@
     &__option-value {
       @include H4;
 
-      color: var(--color-text-default);
+      color: #24292e;
     }
 
     &__radio-button {
@@ -128,19 +130,19 @@
     &__radio-button-outline--selected {
       width: 18px;
       height: 18px;
-      background: var(--color-border-default);
+      background: #dadcdd;
       border-radius: 9px;
       position: absolute;
     }
 
     &__radio-button-outline--selected {
-      background: var(--color-primary-default);
+      background: var(--primary-blue);
     }
 
     &__radio-button-fill {
       width: 14px;
       height: 14px;
-      background: var(--color-background-default);
+      background: var(--white);
       border-radius: 7px;
       position: absolute;
     }
@@ -148,7 +150,7 @@
     &__radio-button-dot {
       width: 8px;
       height: 8px;
-      background: var(--color-primary-default);
+      background: var(--primary-blue);
       border-radius: 4px;
       position: absolute;
     }

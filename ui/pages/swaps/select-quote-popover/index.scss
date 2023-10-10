@@ -9,7 +9,7 @@
   &__popover-wrap {
     height: 100%;
 
-    @include screen-sm-min {
+    @media screen and (min-width: $break-large) {
       height: 620px;
       width: 348px;
     }
@@ -28,10 +28,10 @@
   &__popover-bg {
     height: 100%;
     width: 100%;
-    background: var(--color-background-alternative);
+    background: var(--Grey-100);
     opacity: 1;
 
-    @include screen-sm-min {
+    @media screen and (min-width: $break-large) {
       opacity: 0.5;
     }
   }
@@ -58,7 +58,7 @@
     @include H8;
 
     font-weight: bold;
-    color: var(--color-text-default);
+    color: var(--Black-100);
     height: 43px;
     margin-bottom: 4px;
   }
@@ -72,23 +72,25 @@
     @include H6;
 
     cursor: pointer;
-    color: var(--color-text-default);
+    color: var(--primary-text-emphasized);
     height: 49px;
-    border: 1px solid transparent;
+    border-bottom: 1px solid var(--Grey-100);
     margin-bottom: 8px;
     border-radius: 8px;
-    background: var(--color-background-alternative);
+    background: var(--Grey-000);
     padding-right: 12px;
+    border: none;
 
     &:hover {
-      border: 1px solid var(--color-primary-default);
+      border: 1px solid var(--Blue-500);
+      width: 101%;
       padding-right: 11px;
       padding-left: 19.5px;
     }
 
     &--no-hover {
       &:hover {
-        border: 1px solid var(--color-background-alternative);
+        border: 1px solid var(--Grey-100);
         width: 100%;
         padding-right: 12px;
         padding-left: 20px;
@@ -96,29 +98,32 @@
     }
 
     &--selected {
-      color: var(--color-primary-inverse);
-      background: linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-alternative) 101.32%);
-      box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+      color: var(--white);
+      background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
+      box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
       border-radius: 8px;
+      border-bottom: none;
+      border-top: none;
       height: 64px;
 
       &:hover {
-        background: linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-alternative) 101.32%);
+        background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
         width: 100%;
         padding-left: 20px;
         padding-right: 12px;
+        border: none;
       }
 
       .select-quote-popover__caret-right {
-        color: var(--color-primary-inverse);
+        color: var(--white);
 
         &:hover {
-          color: var(--color-icon-alternative);
+          color: var(--Grey-500);
         }
       }
 
       .select-quote-popover__zero-slippage {
-        color: var(--color-primary-inverse);
+        color: var(--white);
       }
     }
   }
@@ -141,7 +146,7 @@
   }
 
   &__caret-right {
-    color: var(--color-text-alternative);
+    color: var(--Grey-500);
     width: 32px;
     height: 32px;
     display: flex;
@@ -154,8 +159,8 @@
 
     &:hover {
       border-radius: 8px;
-      background: var(--color-primary-inverse);
-      border: 1px solid var(--color-primary-default);
+      background: var(--white);
+      border: 1px solid var(--Blue-500);
     }
   }
 
@@ -177,7 +182,7 @@
   &__zero-slippage {
     font-size: 12px;
     line-height: 100%;
-    color: var(--color-text-muted);
+    color: #6a737d;
     font-weight: normal;
   }
 
@@ -206,7 +211,7 @@
 
 
   &__receiving-symbol {
-    color: var(--color-text-alternative);
+    color: var(--Grey-500);
 
     > div {
       width: 12px;
@@ -234,7 +239,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--color-primary-inverse);
+    color: white;
     border-radius: 5px;
     padding: 4px;
     font-size: 10px;
@@ -242,15 +247,15 @@
     padding-bottom: 2px;
 
     &--blue {
-      background: var(--color-primary-default);
+      background: var(--Blue-300);
     }
 
     &--orange {
-      background: var(--color-warning-default);
+      background: var(--Orange-400);
     }
 
     &--green {
-      background: var(--color-success-default);
+      background: var(--Green-500);
     }
   }
 }

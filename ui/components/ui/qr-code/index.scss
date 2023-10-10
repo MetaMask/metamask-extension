@@ -8,41 +8,58 @@
     @include Paragraph;
 
     margin-top: 18px;
-    color: var(--color-text-muted);
+    color: var(--primary-text);
   }
 
   &__message {
     @include H7;
 
-    color: var(--color-warning-default);
+    color: #f7861c;
   }
 
   &__error {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--color-error-default);
+    color: #f7861c;
     margin-bottom: 9px;
   }
 
   &__address-container {
     display: flex;
     justify-content: center;
-    cursor: pointer;
-    align-items: center;
 
     &__tooltip-wrapper {
       width: 100%;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      .qr-code__copy-icon__svg {
+        fill: var(--primary-1);
+      }
     }
   }
 
   &__address {
     @include H7;
 
-    background-color: var(--color-background-alternative);
+    background-color: var(--Grey-000);
     width: 76%;
     padding: 8px 12px;
     word-break: break-all;
     text-align: center;
+  }
+
+  &__copy-icon {
+    height: 13px;
+    padding: 17px 0;
+    position: absolute;
+    right: 24px;
+
+    &__svg {
+      fill: var(--ui-5);
+    }
   }
 }

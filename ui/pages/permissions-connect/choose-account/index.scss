@@ -1,20 +1,22 @@
 .permissions-connect-choose-account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+
+  @media screen and (min-width: $break-large) {
+    width: 426px;
+  }
+
   &__title {
     @include H4;
   }
 
   &__cancel {
-    color: var(--color-error-default);
-  }
-
-  &__content {
-    display: flex;
-    overflow-y: auto;
-    flex-direction: column;
-    width: 100%;
-    padding-left: 24px;
-    padding-right: 24px;
-    margin-top: 2px;
+    color: var(--Red-400);
   }
 
   &__footer-container {
@@ -24,14 +26,37 @@
     flex-direction: column;
     justify-content: flex-end;
 
-    @include screen-sm-min {
+    @media screen and (min-width: $break-large) {
       flex-direction: column-reverse;
       justify-content: space-between;
       padding-bottom: 20px;
     }
+  }
 
-    .page-container__footer {
-      margin-top: 12px;
+  &__bottom-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    margin-top: 8px;
+    border-top: 1px solid #d6d9dc;
+
+    @media screen and (min-width: $break-large) {
+      border-top: none;
+    }
+
+    button {
+      width: 124px;
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      margin-left: 16px;
+    }
+
+    .btn-primary {
+      margin-right: 16px;
     }
   }
 }

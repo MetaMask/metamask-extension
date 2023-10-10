@@ -1,5 +1,5 @@
 .callout {
-  $self: &;
+  $self : &;
 
   @include H7;
 
@@ -10,12 +10,12 @@
   transition: opacity 0.75s 0s;
 
   a {
-    color: var(--color-primary-default);
+    color: var(--primary-1);
   }
 
   &--dismissible {
-    &#{$self}--first {
-      box-shadow: 0 -5px 5px -5px var(--color-shadow-default);
+    &#{  $self }--first {
+      box-shadow: 0 -5px 5px -5px rgba($black, 0.18);
     }
   }
 
@@ -23,11 +23,11 @@
     padding-top: 8px;
     padding-bottom: 8px;
 
-    &#{$self}--first {
+    &#{  $self }--first {
       padding-top: 16px;
     }
 
-    &#{$self}--last {
+    &#{  $self }--last {
       padding-bottom: 16px;
     }
   }
@@ -37,19 +37,19 @@
   }
 
   &--warning {
-    border-left: 2px solid var(--color-warning-default);
+    border-left: 2px solid var(--alert-1);
   }
 
   &--danger {
-    border-left: 2px solid var(--color-error-default);
+    border-left: 2px solid var(--error-1);
   }
 
   &--info {
-    border-left: 2px solid var(--color-info-default);
+    border-left: 2px solid var(--primary-1);
   }
 
   &--success {
-    border-left: 2px solid var(--color-success-default);
+    border-left: 2px solid var(--success-1);
   }
 
   & .info-icon {

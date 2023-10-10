@@ -1,19 +1,17 @@
+@import 'account-details-modal/index';
+@import 'account-modal-container/index';
+@import 'add-to-addressbook-modal/index';
 @import 'cancel-transaction/index';
 @import 'confirm-remove-account/index';
+@import 'deposit-ether-modal/index';
 @import 'edit-approval-permission/index';
+@import 'export-private-key-modal/index';
 @import 'hide-token-confirmation-modal/index';
+@import 'metametrics-opt-in-modal/index';
 @import 'new-account-modal/index';
 @import 'qr-scanner/index';
 @import 'transaction-confirmed/index';
 @import 'customize-nonce/index';
-@import 'convert-token-to-nft-modal/index';
-@import 'contract-details-modal/index';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-@import '../../institutional/confirm-remove-jwt-modal/index';
-@import '../../institutional/custody-confirm-link-modal/index';
-@import '../../institutional/transaction-failed-modal/index';
-///: END:ONLY_INCLUDE_IN
-@import 'eth-sign-modal/index';
 
 .modal {
   z-index: 1050;
@@ -25,7 +23,7 @@
 
   &__content {
     margin: 0;
-    background-color: var(--color-background-default);
+    background-color: var(--white);
     animation-fill-mode: forwards;
   }
 
@@ -36,7 +34,7 @@
     bottom: 0;
     left: 0;
     z-index: 1040;
-    background-color: var(--color-overlay-alterantive);
+    background-color: #373a47;
     animation-fill-mode: forwards;
     animation-duration: 0.3s;
   }
@@ -45,3 +43,4 @@
     outline: none !important;
   }
 }
+
