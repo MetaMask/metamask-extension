@@ -1,26 +1,26 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { handlers as permittedMethods } from '@metamask/rpc-methods/dist/permitted';
-///: END:ONLY_INCLUDE_IN
-import { selectHooks } from '@metamask/rpc-methods/dist/utils';
+import { permittedMethods, selectHooks } from '@mm-snap/rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
-import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 import handlers from './handlers';
+
+const getImplementation = ({ implementation, hookNames }) => {
+  return (req, res, next, end, hooks) => {
+    implementation(req, res, next, end, selectHooks(hooks, hookNames));
+  };
+};
 
 const handlerMap = handlers.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
-    map.set(methodName, handler);
+    map.set(methodName, getImplementation(handler));
   }
   return map;
 }, new Map());
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-const snapHandlerMap = permittedMethods.reduce((map, handler) => {
+const pluginHandlerMap = permittedMethods.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
-    map.set(methodName, handler);
+    map.set(methodName, getImplementation(handler));
   }
   return map;
 }, new Map());
-///: END:ONLY_INCLUDE_IN
 
 /**
  * Returns a middleware that implements the RPC methods defined in the handlers
@@ -36,39 +36,26 @@ const snapHandlerMap = permittedMethods.reduce((map, handler) => {
  * Eventually, we'll want to extract this middleware into its own package.
  *
  * @param {Object} hooks - The middleware options
+ * @param {Function} hooks.sendMetrics - A function for sending a metrics event
  * @returns {(req: Object, res: Object, next: Function, end: Function) => void}
  */
 export function createMethodMiddleware(hooks) {
   return function methodMiddleware(req, res, next, end) {
-    // Reject unsupported methods.
-    if (UNSUPPORTED_RPC_METHODS.has(req.method)) {
-      return end(ethErrors.rpc.methodNotSupported());
+    if (handlerMap.has(req.method)) {
+      return handlerMap.get(req.method)(req, res, next, end, hooks);
     }
-
-    const handler = handlerMap.get(req.method);
-    if (handler) {
-      const { implementation, hookNames } = handler;
-      return implementation(req, res, next, end, selectHooks(hooks, hookNames));
-    }
-
     return next();
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-export function createSnapMethodMiddleware(isSnap, hooks) {
+export function createPluginMethodMiddleware(isPlugin, hooks) {
   return function methodMiddleware(req, res, next, end) {
-    const handler = snapHandlerMap.get(req.method);
-    if (handler) {
-      if (/^snap_/iu.test(req.method) && !isSnap) {
+    if (pluginHandlerMap.has(req.method)) {
+      if (/^snap_/iu.test(req.method) && !isPlugin) {
         return end(ethErrors.rpc.methodNotFound());
       }
-
-      const { implementation, hookNames } = handler;
-      return implementation(req, res, next, end, selectHooks(hooks, hookNames));
+      return pluginHandlerMap.get(req.method)(req, res, next, end, hooks);
     }
-
     return next();
   };
 }
-///: END:ONLY_INCLUDE_IN

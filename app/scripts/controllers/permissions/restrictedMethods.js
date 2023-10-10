@@ -1,18 +1,7 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
-  restrictedMethods as restrictedSnapMethods,
+  restrictedMethods as restrictedPluginMethods,
   selectHooks,
-} from '@metamask/rpc-methods';
-
-/**
- * @typedef SnapRestrictedMethodHooks
- *
- * @property {Function} addSnap - Installs a requested snap.
- * @property {Function} getSnap - Gets metadata for a specific snap.
- * @property {Function} getSnapRpcHandler - Gets the RPC message handler for a specific snap.
- * @property {Function} showConfirmation - Displays a confirmation for user action.
- */
-///: END:ONLY_INCLUDE_IN
+} from '@mm-snap/rpc-methods';
 
 /**
  * @typedef RestrictedMethodHooks
@@ -20,55 +9,65 @@ import {
  * @property {Function} getIdentities - Gets all account identity abstractions,
  * containing account metadata.
  * @property {Function} getKeyringAccounts - Gets all current keyring accounts.
+ * @property {Function} addPlugin - Installs a requested plugin.
+ * @property {Function} getPlugin - Gets metadata for a specific plugin.
+ * @property {Function} getPluginRpcHandler - Gets the RPC message handler for a specific plugin.
+ * @property {Function} showConfirmation - Displays a confirmation for user action.
+ */
+
+/**
+ * @typedef PluginRestrictedMethodHooks
+ *
+ * @property {Function} addPlugin - Installs a requested plugin.
+ * @property {Function} getPlugin - Gets metadata for a specific plugin.
+ * @property {Function} getPluginRpcHandler - Gets the RPC message handler for a specific plugin.
+ * @property {Function} showConfirmation - Displays a confirmation for user action.
  */
 
 /**
  * @param {RestrictedMethodHooks} hooks - Restricted method hooks.
  */
 export default function getRestrictedMethods({
+  addPlugin,
+  clearSnapState,
   getIdentities,
   getKeyringAccounts,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  addSnap,
-  clearSnapState,
   getMnemonic,
-  getSnap,
-  getSnapRpcHandler,
+  getPlugin,
+  getPluginRpcHandler,
   getSnapState,
+  handleAssetRequest,
   showConfirmation,
   updateSnapState,
-  ///: END:ONLY_INCLUDE_IN
 }) {
   return {
     ...getCommonRestrictedMethods({ getIdentities, getKeyringAccounts }),
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    ...getSnapRestrictedMethods({
-      addSnap,
+    ...getPluginRestrictedMethods({
+      addPlugin,
       clearSnapState,
-      getSnap,
-      getSnapRpcHandler,
+      getPlugin,
+      getPluginRpcHandler,
       getMnemonic,
       getSnapState,
+      handleAssetRequest,
       showConfirmation,
       updateSnapState,
     }),
-    ///: END:ONLY_INCLUDE_IN
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 /**
- * @param {SnapRestrictedMethodHooks} hooks - Snap restricted method hooks.
+ * @param {PluginRestrictedMethodHooks} hooks - Plugin restricted method hooks.
  */
-export function getSnapRestrictedMethods(hooks) {
-  return restrictedSnapMethods.reduce((restrictedMethods, handler) => {
+export function getPluginRestrictedMethods(hooks) {
+  return restrictedPluginMethods.reduce((restrictedMethods, handler) => {
     restrictedMethods[handler.methodNames[0]] = {
+      description: handler.permissionDescription,
       method: handler.getImplementation(selectHooks(hooks, handler.hookNames)),
     };
     return restrictedMethods;
   }, {});
 }
-///: END:ONLY_INCLUDE_IN
 
 export function getCommonRestrictedMethods({
   getIdentities,
@@ -76,6 +75,7 @@ export function getCommonRestrictedMethods({
 }) {
   return {
     eth_accounts: {
+      description: 'View Ethereum accounts',
       method: async (_req, res, _next, end) => {
         try {
           const accounts = await getKeyringAccounts();

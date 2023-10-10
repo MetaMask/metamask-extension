@@ -1,32 +1,20 @@
+import { stripHexPrefix } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
-  OPTIMISM_CHAIN_ID,
-  OPTIMISM_TESTNET_CHAIN_ID,
 } from '../../shared/constants/network';
-import {
-  KEYRING_TYPES,
-  WEBHID_CONNECTED_STATUSES,
-  LEDGER_TRANSPORT_TYPES,
-  TRANSPORT_STATES,
-} from '../../shared/constants/hardware-wallets';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
-
-import {
-  shortenAddress,
-  getAccountByAddress,
-  isEqualCaseInsensitive,
-} from '../helpers/utils/util';
+import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -39,17 +27,8 @@ import { DAY } from '../../shared/constants/time';
 import {
   getNativeCurrency,
   getConversionRate,
-  isNotEIP1559Network,
   isEIP1559Network,
-  getLedgerTransportType,
-  isAddressLedger,
-  findKeyringForAddress,
 } from '../ducks/metamask/metamask';
-import {
-  getLedgerWebHidConnectedStatus,
-  getLedgerTransportStatus,
-} from '../ducks/app/app';
-import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -83,48 +62,6 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
-export function getCurrentQRHardwareState(state) {
-  const { qrHardware } = state.metamask;
-  return qrHardware || {};
-}
-
-export function hasUnsignedQRHardwareTransaction(state) {
-  const { txParams } = state.confirmTransaction.txData;
-  if (!txParams) return false;
-  const { from } = txParams;
-  const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
-  if (!qrKeyring) return false;
-  return Boolean(
-    qrKeyring.accounts.find(
-      (account) => account.toLowerCase() === from.toLowerCase(),
-    ),
-  );
-}
-
-export function hasUnsignedQRHardwareMessage(state) {
-  const { type, msgParams } = state.confirmTransaction.txData;
-  if (!type || !msgParams) {
-    return false;
-  }
-  const { from } = msgParams;
-  const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
-  if (!qrKeyring) return false;
-  switch (type) {
-    case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
-    case MESSAGE_TYPE.ETH_SIGN:
-    case MESSAGE_TYPE.PERSONAL_SIGN:
-      return Boolean(
-        qrKeyring.accounts.find(
-          (account) => account.toLowerCase() === from.toLowerCase(),
-        ),
-      );
-    default:
-      return false;
-  }
-}
-
 export function getCurrentKeyring(state) {
   const identity = getSelectedIdentity(state);
 
@@ -132,41 +69,28 @@ export function getCurrentKeyring(state) {
     return null;
   }
 
-  const keyring = findKeyringForAddress(state, identity.address);
+  const simpleAddress = stripHexPrefix(identity.address).toLowerCase();
+
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return (
+      kr.accounts.includes(simpleAddress) ||
+      kr.accounts.includes(identity.address)
+    );
+  });
 
   return keyring;
 }
 
-export function getParticipateInMetaMetrics(state) {
-  return Boolean(state.metamask.participateInMetaMetrics);
-}
-
 export function isEIP1559Account(state) {
-  // Trezor does not support 1559 at this time
-  const currentKeyring = getCurrentKeyring(state);
-  return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
+  // Neither hardware wallet supports 1559 at this time
+  return !isHardwareWallet(state);
 }
 
-/**
- * The function returns true if network and account details are fetched and
- * both of them support EIP-1559.
- */
 export function checkNetworkAndAccountSupports1559(state) {
   const networkSupports1559 = isEIP1559Network(state);
   const accountSupports1559 = isEIP1559Account(state);
 
   return networkSupports1559 && accountSupports1559;
-}
-
-/**
- * The function returns true if network and account details are fetched and
- * either of them do not support EIP-1559.
- */
-export function checkNetworkOrAccountNotSupports1559(state) {
-  const networkNotSupports1559 = isNotEIP1559Network(state);
-  const accountSupports1559 = isEIP1559Account(state);
-
-  return networkNotSupports1559 || accountSupports1559 === false;
 }
 
 /**
@@ -194,9 +118,8 @@ export function getAccountType(state) {
   const type = currentKeyring && currentKeyring.type;
 
   switch (type) {
-    case KEYRING_TYPES.TREZOR:
-    case KEYRING_TYPES.LEDGER:
-    case KEYRING_TYPES.LATTICE:
+    case 'Trezor Hardware':
+    case 'Ledger Hardware':
       return 'hardware';
     case 'Simple Key Pair':
       return 'imported';
@@ -337,6 +260,11 @@ export function getTargetAccount(state, targetAddress) {
 export const getTokenExchangeRates = (state) =>
   state.metamask.contractExchangeRates;
 
+export function getAssetImages(state) {
+  const assetImages = state.metamask.assetImages || {};
+  return assetImages;
+}
+
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
   if (!state.metamask.addressBook[chainId]) {
@@ -347,19 +275,16 @@ export function getAddressBook(state) {
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
-  const entry = addressBook.find((contact) =>
-    isEqualCaseInsensitive(contact.address, toChecksumHexAddress(address)),
+  const entry = addressBook.find(
+    (contact) => contact.address === toChecksumHexAddress(address),
   );
   return entry;
 }
 
-export function getAddressBookEntryOrAccountName(state, address) {
+export function getAddressBookEntryName(state, address) {
   const entry =
-    getAddressBookEntry(state, address) ||
-    Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
-    );
-  return entry && entry.name !== '' ? entry.name : address;
+    getAddressBookEntry(state, address) || state.metamask.identities[address];
+  return entry && entry.name !== '' ? entry.name : shortenAddress(address);
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
@@ -379,11 +304,7 @@ export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
     ({ address, name, balance }) => ({
       address,
-      addressLabel: `${
-        name.length < TRUNCATED_NAME_CHAR_LIMIT
-          ? name
-          : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
-      } (${shortenAddress(address)})`,
+      addressLabel: `${name} (...${address.slice(address.length - 4)})`,
       label: name,
       balance,
     }),
@@ -432,7 +353,7 @@ export function getTotalUnapprovedCount(state) {
     unapprovedTypedMessagesCount +
     getUnapprovedTxCount(state) +
     pendingApprovalCount +
-    getSuggestedAssetCount(state)
+    getSuggestedTokenCount(state)
   );
 }
 
@@ -453,9 +374,9 @@ export function getUnapprovedTemplatedConfirmations(state) {
   );
 }
 
-function getSuggestedAssetCount(state) {
-  const { suggestedAssets = [] } = state.metamask;
-  return suggestedAssets.length;
+function getSuggestedTokenCount(state) {
+  const { suggestedTokens = {} } = state.metamask;
+  return Object.keys(suggestedTokens).length;
 }
 
 export function getIsMainnet(state) {
@@ -474,11 +395,6 @@ export function getIsNonStandardEthChain(state) {
 
 export function getPreferences({ metamask }) {
   return metamask.preferences;
-}
-
-export function getShowTestNetworks(state) {
-  const { showTestNetworks } = getPreferences(state);
-  return Boolean(showTestNetworks);
 }
 
 export function getShouldShowFiat(state) {
@@ -629,21 +545,13 @@ export function getShowWhatsNewPopup(state) {
  * @returns {Object}
  */
 function getAllowedNotificationIds(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
-  const supportsWebHid = window.navigator.hid !== undefined;
-  const currentlyUsingLedgerLive =
-    getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.LIVE;
-
   return {
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-    5: false,
-    6: false,
-    7: false,
-    8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
+    1: true,
+    2: true,
+    3: true,
+    4: getCurrentChainId(state) === BSC_CHAIN_ID,
+    5: true,
+    6: true,
   };
 }
 
@@ -690,98 +598,8 @@ export function getShowRecoveryPhraseReminder(state) {
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
 
-/**
- * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
- * @param {*} state
- * @returns Boolean
- */
-export function getUseTokenDetection(state) {
-  return Boolean(state.metamask.useTokenDetection);
-}
+// Filsnap
 
-/**
- * To retrieve the tokenList produced by TokenListcontroller
- * @param {*} state
- * @returns {Object}
- */
-export function getTokenList(state) {
-  return state.metamask.tokenList;
-}
-
-export function doesAddressRequireLedgerHidConnection(state, address) {
-  const addressIsLedger = isAddressLedger(state, address);
-  const transportTypePreferenceIsWebHID =
-    getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.WEBHID;
-  const webHidIsNotConnected =
-    getLedgerWebHidConnectedStatus(state) !==
-    WEBHID_CONNECTED_STATUSES.CONNECTED;
-  const ledgerTransportStatus = getLedgerTransportStatus(state);
-  const transportIsNotSuccessfullyCreated =
-    ledgerTransportStatus !== TRANSPORT_STATES.VERIFIED;
-
-  return (
-    addressIsLedger &&
-    transportTypePreferenceIsWebHID &&
-    (webHidIsNotConnected || transportIsNotSuccessfullyCreated)
-  );
-}
-
-export function getNewCollectibleAddedMessage(state) {
-  return state.appState.newCollectibleAddedMessage;
-}
-
-/**
- * To retrieve the name of the new Network added using add network form
- * @param {*} state
- * @returns string
- */
-export function getNewNetworkAdded(state) {
-  return state.appState.newNetworkAdded;
-}
-
-export function getNetworksTabSelectedRpcUrl(state) {
-  return state.appState.networksTabSelectedRpcUrl;
-}
-
-export function getProvider(state) {
-  return state.metamask.provider;
-}
-
-export function getFrequentRpcListDetail(state) {
-  return state.metamask.frequentRpcListDetail;
-}
-
-export function getIsOptimism(state) {
-  return (
-    getCurrentChainId(state) === OPTIMISM_CHAIN_ID ||
-    getCurrentChainId(state) === OPTIMISM_TESTNET_CHAIN_ID
-  );
-}
-
-export function getNetworkSupportsSettingGasPrice(state) {
-  return !getIsOptimism(state);
-}
-
-export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOptimism(state);
-}
-/**
- *  To retrieve the maxBaseFee and priotitFee teh user has set as default
- *  @param {*} state
- *  @returns Boolean
- */
-export function getAdvancedGasFeeValues(state) {
-  return state.metamask.advancedGasFee;
-}
-
-/**
- *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
- *  @param {*} state
- *  @returns Boolean
- */
-export function getIsAdvancedGasFeeDefault(state) {
-  const { advancedGasFee } = state.metamask;
-  return (
-    Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
-  );
+export function isFilsnapRunning(state) {
+  return Boolean(state.metamask.plugins?.filsnap?.isRunning);
 }

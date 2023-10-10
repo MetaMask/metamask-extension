@@ -349,6 +349,15 @@ export function getPermissionsRequests(state) {
   )?.map(({ requestData }) => requestData);
 }
 
+export function getPermissionsDescriptions(state) {
+  return state.metamask.permissionsDescriptions || {};
+}
+
+export function getPermissionsRequestCount(state) {
+  const permissionsRequests = getPermissionsRequests(state);
+  return permissionsRequests.length;
+}
+
 export function getFirstPermissionRequest(state) {
   const requests = getPermissionsRequests(state);
   return requests && requests[0] ? requests[0] : null;

@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { PLUGIN_PREFIX } from '@mm-snap/controllers';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import CheckBox from '../../../ui/check-box';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { getPermissionLocaleMessage } from '../../../../helpers/utils/util';
-///: END:ONLY_INCLUDE_IN
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
+    permissionsDescriptions: PropTypes.object.isRequired,
     domainMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
       icon: PropTypes.string,
@@ -32,23 +31,33 @@ export default class PermissionPageContainerContent extends PureComponent {
   };
 
   renderRequestedPermissions() {
-    const { selectedPermissions, onPermissionToggle } = this.props;
+    const {
+      selectedPermissions,
+      onPermissionToggle,
+      permissionsDescriptions,
+    } = this.props;
     const { t } = this.context;
 
     const items = Object.keys(selectedPermissions).map((permissionName) => {
+      const isPluginPermission = permissionName.startsWith(PLUGIN_PREFIX);
+      const keyablePermissionName = isPluginPermission
+        ? `${PLUGIN_PREFIX}*`
+        : permissionName;
       const isEthAccounts = permissionName === 'eth_accounts';
 
-      let description = t('unknownPermission', [permissionName]);
+      let description;
       if (isEthAccounts) {
         description = t(permissionName);
+      } else if (isPluginPermission) {
+        description = permissionsDescriptions[keyablePermissionName].replace(
+          '$1',
+          permissionName.replace(PLUGIN_PREFIX, ''),
+        );
+      } else {
+        description = permissionsDescriptions[keyablePermissionName];
       }
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      else {
-        description = getPermissionLocaleMessage(t, permissionName);
-      }
-      ///: END:ONLY_INCLUDE_IN
 
-      // Don't allow deselecting eth_accounts
+      // don't allow deselecting eth_accounts
       const isDisabled = isEthAccounts;
       const isChecked = Boolean(selectedPermissions[permissionName]);
       const title = isChecked
@@ -84,6 +93,12 @@ export default class PermissionPageContainerContent extends PureComponent {
     );
   }
 
+  getAccountDescriptor(identity) {
+    return `${identity.label} (...${identity.address.slice(
+      identity.address.length - 4,
+    )})`;
+  }
+
   renderAccountTooltip(textContent) {
     const { selectedIdentities } = this.props;
     const { t } = this.context;
@@ -98,7 +113,7 @@ export default class PermissionPageContainerContent extends PureComponent {
             {selectedIdentities.slice(0, 6).map((identity, index) => {
               return (
                 <div key={`tooltip-identity-${index}`}>
-                  {identity.addressLabel}
+                  {this.getAccountDescriptor(identity)}
                 </div>
               );
             })}
@@ -134,7 +149,7 @@ export default class PermissionPageContainerContent extends PureComponent {
         ),
       ]);
     }
-    return t('connectTo', [selectedIdentities[0]?.addressLabel]);
+    return t('connectTo', [this.getAccountDescriptor(selectedIdentities[0])]);
   }
 
   render() {

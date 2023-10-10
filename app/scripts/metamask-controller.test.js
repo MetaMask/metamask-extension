@@ -205,6 +205,7 @@ describe('MetaMaskController', function () {
       },
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
+      setupFilsnap: () => Promise.resolve(),
     });
 
     // add sinon method spies
