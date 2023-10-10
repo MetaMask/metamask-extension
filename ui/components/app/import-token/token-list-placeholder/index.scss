@@ -1,0 +1,24 @@
+.token-list-placeholder {
+  display: flex;
+  align-items: center;
+  padding-top: 36px;
+  flex-direction: column;
+  line-height: 22px;
+  opacity: .5;
+
+  &__text {
+    color: $silver-chalice;
+    width: 50%;
+    text-align: center;
+    margin-top: 8px;
+
+    @media screen and (max-width: 575px) {
+      width: 60%;
+    }
+  }
+
+  &__link {
+    @extend %link;
+    margin-top: .5rem;
+  }
+}

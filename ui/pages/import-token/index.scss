@@ -1,8 +1,6 @@
-@import 'token-list/index';
+@import 'token-list-placeholder/index';
 
-.import-token {
-  $self: &;
-
+.add-token {
   &__custom-token-form {
     padding: 8px 16px 16px;
 
@@ -15,20 +13,82 @@
       -webkit-appearance: none;
       display: none;
     }
-    & #{ $self }__decimal-warning {
-      margin-top: 5px;
-    }
   }
 
   &__search-token {
-    padding: 16px 16px 16px 16px;
-  }
+    padding: 16px;
 
-  &__token-list {
-    margin-top: 16px;
+    .searchable-item-list {
+      margin-top: 16px;
+
+      &__title {
+        font-size: .75rem;
+      }
+
+      &__list-container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      &__item {
+        transition: 200ms ease-in-out;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        padding: 8px;
+        margin-top: 8px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        position: relative;
+
+        &:hover {
+          border: 2px solid rgba($malibu-blue, .5);
+        }
+
+        &--selected {
+          border: 2px solid $malibu-blue !important;
+        }
+
+        &--disabled {
+          opacity: .4;
+          pointer-events: none;
+        }
+      }
+
+      &__item-icon {
+        width: 48px;
+        height: 48px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        border-radius: 50%;
+        background-color: $white;
+        box-shadow: 0 2px 4px 0 rgba($black, .24);
+        margin-right: 12px;
+        flex: 0 0 auto;
+      }
+
+      &__primary-label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        min-width: 0;
+      }
+
+      &__item-name {
+        /*rtl:ignore*/
+        direction: ltr;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
   }
 
   &__custom-symbol {
+
     &__label-wrapper {
       display: flex;
       flex-flow: row nowrap;
@@ -41,22 +101,9 @@
     &__edit {
       flex: 1 1 auto;
       text-align: right;
-      color: var(--primary-blue);
+      color: $curious-blue;
       padding-right: 4px;
       cursor: pointer;
     }
-  }
-
-  &__link {
-    @include H7;
-
-    display: inline;
-    color: var(--primary-blue);
-    padding-left: 0;
-  }
-
-  &__token-detection-announcement {
-    margin-bottom: 16px;
-    margin-top: 0;
   }
 }

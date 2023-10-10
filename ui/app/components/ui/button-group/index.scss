@@ -1,0 +1,77 @@
+.button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__button {
+    font-family: Roboto;
+    font-size: 1rem;
+    color: $tundora;
+    border-style: solid;
+    border-color: $alto;
+    border-width: 1px 1px 1px;
+    border-left: 0;
+    flex: 1;
+    padding: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:first-child {
+      border-left: 1px solid $alto;
+      border-radius: 4px 0 0 4px;
+    }
+
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+
+    &--active {
+      background-color: $dodger-blue;
+      color: $white;
+    }
+
+    &:disabled {
+      opacity: .5;
+    }
+  }
+}
+
+.small-iso-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  
+  .button-group {
+    &__button {
+      font-family: Roboto,Arial;
+      font-size: 12px;
+      color: #4d4d4d;
+      border: 1px solid #dedede;
+      border-radius: 25px;
+      height: 25px;
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      flex: none;
+      margin-left: 10px;
+
+      &:first-child {
+        border: 1px solid #dedede;
+        border-radius: 25px;
+      }
+
+      &:last-child {
+        border: 1px solid #dedede;
+        border-radius: 25px;
+      }
+
+      &--active {
+        background: #3099f2;
+        color: white;
+      }
+    }
+  }
+}
