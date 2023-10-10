@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { isHexString } from '@metamask/utils';
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import { isValidDomainName } from '../../../../helpers/utils/util';
 import {
@@ -14,7 +15,6 @@ import {
   IconSize,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
-import { isHexString } from '@metamask/utils';
 
 export default class DomainInput extends Component {
   static contextTypes = {
