@@ -8,7 +8,7 @@ const {
   checkNotification,
 } = require('./shared');
 
-describe('Swaps - notifications', function () {
+describe('Swaps - notifications @no-mmi', function () {
   async function mockTradesApiPriceSlippageError(mockServer) {
     await mockServer
       .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
@@ -119,12 +119,11 @@ describe('Swaps - notifications', function () {
           amount: 50,
           skipCounter: true,
         });
-        const swapButton = await driver.waitForSelector({
+        await driver.waitForSelector({
           text: 'Swap',
           tag: 'button',
+          css: '[disabled]',
         });
-        assert.equal(await swapButton.getText(), 'Swap');
-        assert.equal(await swapButton.isEnabled(), false);
       },
     );
   });

@@ -1,6 +1,7 @@
 import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../spinner';
+import { Box } from '../../component-library';
 
 const LoadingScreen = ({
   header,
@@ -20,18 +21,18 @@ const LoadingScreen = ({
   };
 
   return (
-    <div className="loading-overlay">
+    <Box className="loading-overlay">
       {header}
-      <div className="loading-overlay__container">
+      <Box className="loading-overlay__container" marginBottom={3}>
         {showLoadingSpinner && (
           <Spinner
             color="var(--color-warning-default)"
             className="loading-overlay__spinner"
           />
         )}
-        {renderMessage()}
-      </div>
-    </div>
+      </Box>
+      <Box>{renderMessage()}</Box>
+    </Box>
   );
 };
 

@@ -35,13 +35,17 @@ const SnapAuthorshipHeader = ({
   const snapPrefix = snapId && getSnapPrefix(snapId);
   const packageName = snapId && removeSnapIdPrefix(snapId);
   const isNPM = snapPrefix === 'npm:';
-  const url = isNPM
-    ? `https://www.npmjs.com/package/${packageName}`
-    : packageName;
 
   const subjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
   );
+
+  const versionPath = subjectMetadata?.version
+    ? `/v/${subjectMetadata?.version}`
+    : '';
+  const url = isNPM
+    ? `https://www.npmjs.com/package/${packageName}${versionPath}`
+    : packageName;
 
   const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 

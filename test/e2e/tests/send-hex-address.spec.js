@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
@@ -40,7 +39,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           nonHexPrefixedAddress,
         );
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
@@ -49,7 +48,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        const sendTransactionListItem = await driver.waitForSelector(
+        const sendTransactionListItem = await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item',
         );
         await sendTransactionListItem.click();
@@ -57,10 +56,10 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
-        const publicAddress = await driver.findElement(
-          '.nickname-popover__public-address',
-        );
-        assert.equal(await publicAddress.getText(), hexPrefixedAddress);
+        await driver.findElement({
+          css: '.nickname-popover__public-address',
+          text: hexPrefixedAddress,
+        });
       },
     );
   });
@@ -72,10 +71,9 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send ETH
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -85,7 +83,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           nonHexPrefixedAddress,
         );
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
@@ -94,18 +92,17 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        const sendTransactionListItem = await driver.waitForSelector(
+        await driver.clickElement(
           '.transaction-list__completed-transactions .activity-list-item',
         );
-        await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
-        const publicAddress = await driver.findElement(
-          '.nickname-popover__public-address',
-        );
-        assert.equal(await publicAddress.getText(), hexPrefixedAddress);
+        await driver.findElement({
+          css: '.nickname-popover__public-address',
+          text: hexPrefixedAddress,
+        });
       },
     );
   });
@@ -148,27 +145,27 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           nonHexPrefixedAddress,
         );
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '.transaction-detail-item',
           text: '0.000042 ETH',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '.confirm-page-container-summary__title',
           text: '0',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForSelector(
+        await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
-        const sendTransactionListItem = await driver.waitForSelector(
+        const sendTransactionListItem = await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await sendTransactionListItem.click();
@@ -176,10 +173,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
-        const publicAddress = await driver.findElement(
-          '.nickname-popover__public-address',
-        );
-        assert.equal(await publicAddress.getText(), hexPrefixedAddress);
+        await driver.findElement({
+          css: '.nickname-popover__public-address',
+          text: hexPrefixedAddress,
+        });
       },
     );
   });
@@ -209,27 +206,27 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           nonHexPrefixedAddress,
         );
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '.transaction-detail-item',
           text: '0.000042 ETH',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '.confirm-page-container-summary__title',
           text: '0',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForSelector(
+        await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
-        const sendTransactionListItem = await driver.waitForSelector(
+        const sendTransactionListItem = await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await sendTransactionListItem.click();
@@ -237,10 +234,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
-        const publicAddress = await driver.findElement(
-          '.nickname-popover__public-address',
-        );
-        assert.equal(await publicAddress.getText(), hexPrefixedAddress);
+        await driver.findElement({
+          css: '.nickname-popover__public-address',
+          text: hexPrefixedAddress,
+        });
       },
     );
   });
