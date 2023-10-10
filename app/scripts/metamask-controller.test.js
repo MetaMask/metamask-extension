@@ -17,7 +17,11 @@ import {
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { TransactionStatus } from '../../shared/constants/transaction';
+import { MetaMetricsEventCategory } from '../../shared/constants/metametrics';
+import {
+  TransactionMetaMetricsEvent,
+  TransactionStatus,
+} from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -25,7 +29,6 @@ import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import { deferredPromise } from './lib/util';
-import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -104,6 +107,86 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
     return mockIsManifestV3();
   },
 }));
+
+const mockSCHubEvent = jest.fn();
+jest.mock('@metamask/signature-controller', () => {
+  return {
+    SignatureController(...args) {
+      const { SignatureController } = jest.requireActual(
+        '@metamask/signature-controller',
+      );
+      const controller = new SignatureController(...args);
+      controller.hub.on = mockSCHubEvent;
+      return controller;
+    },
+  };
+});
+
+const mockTCEvent = jest.fn();
+jest.mock(
+  './controllers/transactions',
+  () =>
+    function (...args) {
+      const TransactionController = jest.requireActual(
+        './controllers/transactions',
+      ).default;
+
+      jest
+        .spyOn(TransactionController.prototype, 'updateIncomingTransactions')
+        .mockImplementation();
+      jest
+        .spyOn(
+          TransactionController.prototype,
+          'startIncomingTransactionPolling',
+        )
+        .mockImplementation();
+      jest
+        .spyOn(
+          TransactionController.prototype,
+          'stopIncomingTransactionPolling',
+        )
+        .mockImplementation();
+
+      const controller = new TransactionController(...args);
+      controller.on = mockTCEvent;
+
+      return controller;
+    },
+);
+
+// There is only one test that we check existance of the fragment, so we return undefined mostly
+const mockMetaMetricsControllerGetEventFragmentById = jest
+  .fn()
+  .mockReturnValue(undefined);
+jest.mock(
+  './controllers/metametrics',
+  () =>
+    function (...args) {
+      const MetaMetricsController = jest.requireActual(
+        './controllers/metametrics',
+      ).default;
+
+      MetaMetricsController.prototype.getEventFragmentById =
+        mockMetaMetricsControllerGetEventFragmentById;
+      jest
+        .spyOn(MetaMetricsController.prototype, 'createEventFragment')
+        .mockImplementation();
+      jest
+        .spyOn(MetaMetricsController.prototype, 'updateEventFragment')
+        .mockImplementation();
+      jest
+        .spyOn(MetaMetricsController.prototype, 'finalizeEventFragment')
+        .mockImplementation();
+      jest
+        .spyOn(MetaMetricsController.prototype, 'trackEvent')
+        .mockImplementation();
+
+      const controller = new MetaMetricsController(...args);
+      controller.on = mockTCEvent;
+
+      return controller;
+    },
+);
 
 const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
@@ -276,24 +359,6 @@ describe('MetaMaskController', () => {
 
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
-
-      jest
-        .spyOn(TransactionController.prototype, 'updateIncomingTransactions')
-        .mockReturnValue();
-
-      jest
-        .spyOn(
-          TransactionController.prototype,
-          'startIncomingTransactionPolling',
-        )
-        .mockReturnValue();
-
-      jest
-        .spyOn(
-          TransactionController.prototype,
-          'stopIncomingTransactionPolling',
-        )
-        .mockReturnValue();
 
       jest.spyOn(ControllerMessenger.prototype, 'subscribe');
 
@@ -1585,7 +1650,7 @@ describe('MetaMaskController', () => {
     describe('incoming transactions', () => {
       it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
         expect(
-          TransactionController.prototype.startIncomingTransactionPolling,
+          metamaskController.txController.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
         await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
@@ -1597,13 +1662,13 @@ describe('MetaMaskController', () => {
         );
 
         expect(
-          TransactionController.prototype.startIncomingTransactionPolling,
+          metamaskController.txController.startIncomingTransactionPolling,
         ).toHaveBeenCalledTimes(1);
       });
 
       it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainId', async () => {
         expect(
-          TransactionController.prototype.stopIncomingTransactionPolling,
+          metamaskController.txController.stopIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
         await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
@@ -1615,13 +1680,13 @@ describe('MetaMaskController', () => {
         );
 
         expect(
-          TransactionController.prototype.stopIncomingTransactionPolling,
+          metamaskController.txController.stopIncomingTransactionPolling,
         ).toHaveBeenCalledTimes(1);
       });
 
       it('updates incoming transactions when changing account', async () => {
         expect(
-          TransactionController.prototype.updateIncomingTransactions,
+          metamaskController.txController.updateIncomingTransactions,
         ).not.toHaveBeenCalled();
 
         await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
@@ -1631,13 +1696,13 @@ describe('MetaMaskController', () => {
         );
 
         expect(
-          TransactionController.prototype.updateIncomingTransactions,
+          metamaskController.txController.updateIncomingTransactions,
         ).toHaveBeenCalledTimes(1);
       });
 
       it('updates incoming transactions when changing network', async () => {
         expect(
-          TransactionController.prototype.updateIncomingTransactions,
+          metamaskController.txController.updateIncomingTransactions,
         ).not.toHaveBeenCalled();
 
         await ControllerMessenger.prototype.subscribe.mock.calls
@@ -1645,8 +1710,319 @@ describe('MetaMaskController', () => {
           .slice(-1)[0][1]();
 
         expect(
-          TransactionController.prototype.updateIncomingTransactions,
+          metamaskController.txController.updateIncomingTransactions,
         ).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('metametrics events', () => {
+      afterEach(() => {
+        mockTCEvent.mockReset();
+        mockSCHubEvent.mockReset();
+      });
+
+      const createLocalController = () =>
+        new MetaMaskController({
+          initLangCode: 'en_US',
+          platform: {
+            getVersion: jest.fn(),
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+        });
+
+      describe('on transaction-metric', () => {
+        const mockPayload = {
+          actionId: '123',
+          event: TransactionMetaMetricsEvent.added,
+          properties: {
+            test: 'prop',
+          },
+          sensitiveProperties: {
+            very: 'sensitive',
+          },
+          transactionMeta: {
+            id: '1234',
+          },
+        };
+
+        it('should not create event fragment if fragment exists', () => {
+          // We only need it to return something not falsy
+          mockMetaMetricsControllerGetEventFragmentById.mockReturnValueOnce({
+            fragment: 'object',
+          });
+
+          mockTCEvent.mockImplementation((eventName, handler) => {
+            if (eventName === 'transaction-metric') {
+              handler(mockPayload);
+            }
+          });
+
+          const localController = createLocalController();
+
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).not.toHaveBeenCalled();
+        });
+
+        it('should create event fragment when transaction added', () => {
+          mockTCEvent.mockImplementation((eventName, handler) => {
+            if (eventName === 'transaction-metric') {
+              handler(mockPayload);
+            }
+          });
+
+          const localController = createLocalController();
+
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledTimes(1);
+
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledWith({
+            category: MetaMetricsEventCategory.Transactions,
+            initialEvent: TransactionMetaMetricsEvent.added,
+            successEvent: TransactionMetaMetricsEvent.approved,
+            failureEvent: TransactionMetaMetricsEvent.rejected,
+            properties: mockPayload.properties,
+            sensitiveProperties: mockPayload.sensitiveProperties,
+            persist: true,
+            uniqueIdentifier: `transaction-added-${mockPayload.transactionMeta.id}`,
+            actionId: mockPayload.actionId,
+          });
+        });
+
+        it('should create,update & finalize event fragment when transaction approved', () => {
+          mockTCEvent.mockImplementation((eventName, handler) => {
+            if (eventName === 'transaction-metric') {
+              handler({
+                ...mockPayload,
+                event: TransactionMetaMetricsEvent.approved,
+              });
+            }
+          });
+
+          const localController = createLocalController();
+
+          const expectedId = `transaction-added-${mockPayload.transactionMeta.id}`;
+
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledWith({
+            category: MetaMetricsEventCategory.Transactions,
+            successEvent: TransactionMetaMetricsEvent.approved,
+            failureEvent: TransactionMetaMetricsEvent.rejected,
+            properties: mockPayload.properties,
+            sensitiveProperties: mockPayload.sensitiveProperties,
+            persist: true,
+            uniqueIdentifier: expectedId,
+            actionId: mockPayload.actionId,
+          });
+
+          expect(
+            localController.metaMetricsController.updateEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.updateEventFragment,
+          ).toHaveBeenCalledWith(expectedId, {
+            properties: mockPayload.properties,
+            sensitiveProperties: mockPayload.sensitiveProperties,
+          });
+
+          expect(
+            localController.metaMetricsController.finalizeEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.finalizeEventFragment,
+          ).toHaveBeenCalledWith(expectedId);
+        });
+
+        it('should create,update & finalize event fragment when transaction rejected', () => {
+          mockTCEvent.mockImplementation((eventName, handler) => {
+            if (eventName === 'transaction-metric') {
+              handler({
+                ...mockPayload,
+                event: TransactionMetaMetricsEvent.rejected,
+              });
+            }
+          });
+
+          const localController = createLocalController();
+
+          const expectedId = `transaction-added-${mockPayload.transactionMeta.id}`;
+
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledWith({
+            category: MetaMetricsEventCategory.Transactions,
+            successEvent: TransactionMetaMetricsEvent.approved,
+            failureEvent: TransactionMetaMetricsEvent.rejected,
+            properties: mockPayload.properties,
+            sensitiveProperties: mockPayload.sensitiveProperties,
+            persist: true,
+            uniqueIdentifier: expectedId,
+            actionId: mockPayload.actionId,
+          });
+
+          expect(
+            localController.metaMetricsController.updateEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.updateEventFragment,
+          ).toHaveBeenCalledWith(expectedId, {
+            properties: mockPayload.properties,
+            sensitiveProperties: mockPayload.sensitiveProperties,
+          });
+
+          expect(
+            localController.metaMetricsController.finalizeEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.finalizeEventFragment,
+          ).toHaveBeenCalledWith(expectedId, {
+            abandoned: true,
+          });
+        });
+
+        it('should create event fragment when transaction submitted', () => {
+          mockTCEvent.mockImplementation((eventName, handler) => {
+            if (eventName === 'transaction-metric') {
+              handler({
+                ...mockPayload,
+                event: TransactionMetaMetricsEvent.submitted,
+              });
+            }
+          });
+
+          const localController = createLocalController();
+
+          const expectedId = `transaction-submitted-${mockPayload.transactionMeta.id}`;
+
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledWith({
+            category: MetaMetricsEventCategory.Transactions,
+            initialEvent: TransactionMetaMetricsEvent.submitted,
+            successEvent: TransactionMetaMetricsEvent.finalized,
+            properties: mockPayload.properties,
+            sensitiveProperties: mockPayload.sensitiveProperties,
+            persist: true,
+            uniqueIdentifier: expectedId,
+            actionId: mockPayload.actionId,
+          });
+        });
+
+        it('should create,update & finalize event fragment when transaction finalized', () => {
+          mockTCEvent.mockImplementation((eventName, handler) => {
+            if (eventName === 'transaction-metric') {
+              handler({
+                ...mockPayload,
+                event: TransactionMetaMetricsEvent.finalized,
+              });
+            }
+          });
+
+          const localController = createLocalController();
+
+          const expectedId = `transaction-submitted-${mockPayload.transactionMeta.id}`;
+
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.createEventFragment,
+          ).toHaveBeenCalledWith({
+            category: MetaMetricsEventCategory.Transactions,
+            successEvent: TransactionMetaMetricsEvent.finalized,
+            properties: mockPayload.properties,
+            sensitiveProperties: mockPayload.sensitiveProperties,
+            persist: true,
+            uniqueIdentifier: expectedId,
+            actionId: mockPayload.actionId,
+          });
+
+          expect(
+            localController.metaMetricsController.updateEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.updateEventFragment,
+          ).toHaveBeenCalledWith(expectedId, {
+            properties: mockPayload.properties,
+            sensitiveProperties: mockPayload.sensitiveProperties,
+          });
+
+          expect(
+            localController.metaMetricsController.finalizeEventFragment,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.finalizeEventFragment,
+          ).toHaveBeenCalledWith(expectedId);
+        });
+      });
+
+      describe('on transaction-swap-metric', () => {
+        it('should trigger track event', () => {
+          const mockPayload = {
+            event: 'Swap Failed',
+            category: MetaMetricsEventCategory.Swaps,
+          };
+          mockTCEvent.mockImplementation((eventName, handler) => {
+            if (eventName === 'transaction-swap-metric') {
+              handler(mockPayload);
+            }
+          });
+
+          const localController = createLocalController();
+
+          expect(
+            localController.metaMetricsController.trackEvent,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.trackEvent,
+          ).toHaveBeenCalledWith(mockPayload);
+        });
+      });
+
+      describe('on cancelWithReason', () => {
+        it('should trigger track event', () => {
+          const mockMessage = {
+            type: 'SignTypedMessage',
+          };
+          const mockReason = 'User rejected signature';
+
+          mockSCHubEvent.mockImplementationOnce((_event, handler) => {
+            handler({
+              message: mockMessage,
+              reason: mockReason,
+            });
+          });
+
+          const localController = createLocalController();
+
+          expect(
+            localController.metaMetricsController.trackEvent,
+          ).toHaveBeenCalledTimes(1);
+          expect(
+            localController.metaMetricsController.trackEvent,
+          ).toHaveBeenCalledWith({
+            event: mockReason,
+            category: MetaMetricsEventCategory.Transactions,
+            properties: {
+              action: 'Sign Request',
+              type: mockMessage.type,
+            },
+          });
+        });
       });
     });
   });

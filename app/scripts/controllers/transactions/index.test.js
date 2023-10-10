@@ -17,10 +17,7 @@ import {
   getTestAccounts,
 } from '../../../../test/stub/provider';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsTransactionEventSource,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsTransactionEventSource } from '../../../../shared/constants/metametrics';
 import {
   TransactionStatus,
   TransactionType,
@@ -71,7 +68,6 @@ describe('Transaction Controller', function () {
     provider,
     providerResultStub,
     fromAccount,
-    fragmentExists,
     networkStatusStore,
     preferencesStore,
     getCurrentChainId,
@@ -82,7 +78,6 @@ describe('Transaction Controller', function () {
     incomingTransactionHelperEventMock;
 
   beforeEach(function () {
-    fragmentExists = false;
     providerResultStub = {
       // 1 gwei
       eth_gasPrice: '0x0de0b6b3a7640000',
@@ -147,12 +142,6 @@ describe('Transaction Controller', function () {
       getPermittedAccounts: () => undefined,
       getCurrentChainId,
       getParticipateInMetrics: () => false,
-      trackMetaMetricsEvent: () => undefined,
-      createEventFragment: () => undefined,
-      updateEventFragment: () => undefined,
-      finalizeEventFragment: () => undefined,
-      getEventFragmentById: () =>
-        fragmentExists === false ? undefined : { id: 0 },
       getEIP1559GasFeeEstimates: () => undefined,
       getAccountType: () => 'MetaMask',
       getDeviceModel: () => 'N/A',
@@ -2105,416 +2094,78 @@ describe('Transaction Controller', function () {
   });
 
   describe('#_trackTransactionMetricsEvent', function () {
-    let trackMetaMetricsEventSpy;
-    let createEventFragmentSpy;
-    let finalizeEventFragmentSpy;
+    it('should emit a transaction-metric event', async function () {
+      const txMeta = {
+        id: 1,
+        status: TransactionStatus.unapproved,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: TransactionType.simpleSend,
+        origin: ORIGIN_METAMASK,
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+        defaultGasEstimates: {
+          gas: '0x7b0d',
+          gasPrice: '0x77359400',
+        },
+        securityProviderResponse: {
+          flagAsDangerous: 0,
+        },
+      };
 
-    beforeEach(function () {
-      trackMetaMetricsEventSpy = sinon.spy(
-        txController,
-        '_trackMetaMetricsEvent',
+      const expectedPayload = {
+        actionId,
+        event: 'Transaction Added',
+        properties: {
+          chain_id: '0x5',
+          eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
+          network: '5',
+          referrer: ORIGIN_METAMASK,
+          source: MetaMetricsTransactionEventSource.User,
+          transaction_type: TransactionType.simpleSend,
+          account_type: 'MetaMask',
+          asset_type: AssetType.native,
+          token_standard: TokenStandard.none,
+          device_model: 'N/A',
+          transaction_speed_up: false,
+          ui_customizations: null,
+          security_alert_reason: BlockaidReason.notApplicable,
+          security_alert_response: BlockaidResultType.NotApplicable,
+          status: 'unapproved',
+        },
+        sensitiveProperties: {
+          default_gas: '0.000031501',
+          default_gas_price: '2',
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          transaction_contract_method: undefined,
+          transaction_replaced: undefined,
+          first_seen: 1624408066355,
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+        },
+        transactionMeta: txMeta,
+      };
+
+      const listener = sinon.spy();
+      txController.on('transaction-metric', listener);
+
+      await txController._trackTransactionMetricsEvent(
+        txMeta,
+        TransactionMetaMetricsEvent.added,
+        actionId,
       );
 
-      createEventFragmentSpy = sinon.spy(txController, 'createEventFragment');
-
-      finalizeEventFragmentSpy = sinon.spy(
-        txController,
-        'finalizeEventFragment',
-      );
-
-      sinon
-        .stub(txController, '_getEIP1559GasFeeEstimates')
-        .resolves(mockEstimates['fee-market']);
-    });
-
-    afterEach(function () {
-      trackMetaMetricsEventSpy.restore();
-      createEventFragmentSpy.restore();
-      finalizeEventFragmentSpy.restore();
-    });
-
-    describe('On transaction created by the user', function () {
-      let txMeta;
-
-      before(function () {
-        txMeta = {
-          id: 1,
-          status: TransactionStatus.unapproved,
-          txParams: {
-            from: fromAccount.address,
-            to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-            gasPrice: '0x77359400',
-            gas: '0x7b0d',
-            nonce: '0x4b',
-          },
-          type: TransactionType.simpleSend,
-          origin: ORIGIN_METAMASK,
-          chainId: currentChainId,
-          time: 1624408066355,
-          metamaskNetworkId: currentNetworkId,
-          defaultGasEstimates: {
-            gas: '0x7b0d',
-            gasPrice: '0x77359400',
-          },
-          securityProviderResponse: {
-            flagAsDangerous: 0,
-          },
-        };
-      });
-
-      it('should create an event fragment when transaction added', async function () {
-        const expectedPayload = {
-          actionId,
-          initialEvent: 'Transaction Added',
-          successEvent: 'Transaction Approved',
-          failureEvent: 'Transaction Rejected',
-          uniqueIdentifier: 'transaction-added-1',
-          category: MetaMetricsEventCategory.Transactions,
-          persist: true,
-          properties: {
-            chain_id: '0x5',
-            eip_1559_version: '0',
-            gas_edit_attempted: 'none',
-            gas_edit_type: 'none',
-            network: '5',
-            referrer: ORIGIN_METAMASK,
-            source: MetaMetricsTransactionEventSource.User,
-            transaction_type: TransactionType.simpleSend,
-            account_type: 'MetaMask',
-            asset_type: AssetType.native,
-            token_standard: TokenStandard.none,
-            device_model: 'N/A',
-            transaction_speed_up: false,
-            ui_customizations: null,
-            security_alert_reason: BlockaidReason.notApplicable,
-            security_alert_response: BlockaidResultType.NotApplicable,
-            status: 'unapproved',
-          },
-          sensitiveProperties: {
-            default_gas: '0.000031501',
-            default_gas_price: '2',
-            gas_price: '2',
-            gas_limit: '0x7b0d',
-            transaction_contract_method: undefined,
-            transaction_replaced: undefined,
-            first_seen: 1624408066355,
-            transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          },
-        };
-
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.added,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 1);
-        assert.equal(finalizeEventFragmentSpy.callCount, 0);
-        assert.deepEqual(
-          createEventFragmentSpy.getCall(0).args[0],
-          expectedPayload,
-        );
-      });
-
-      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', async function () {
-        fragmentExists = true;
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.rejected,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 0);
-        assert.equal(finalizeEventFragmentSpy.callCount, 1);
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[0],
-          'transaction-added-1',
-        );
-        assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], {
-          abandoned: true,
-        });
-      });
-
-      it('Should finalize the transaction added fragment if user approves transaction', async function () {
-        fragmentExists = true;
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.approved,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 0);
-        assert.equal(finalizeEventFragmentSpy.callCount, 1);
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[0],
-          'transaction-added-1',
-        );
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[1],
-          undefined,
-        );
-      });
-
-      it('should create an event fragment when transaction is submitted', async function () {
-        const expectedPayload = {
-          actionId,
-          initialEvent: 'Transaction Submitted',
-          successEvent: 'Transaction Finalized',
-          uniqueIdentifier: 'transaction-submitted-1',
-          category: MetaMetricsEventCategory.Transactions,
-          persist: true,
-          properties: {
-            chain_id: '0x5',
-            eip_1559_version: '0',
-            gas_edit_attempted: 'none',
-            gas_edit_type: 'none',
-            network: '5',
-            referrer: ORIGIN_METAMASK,
-            source: MetaMetricsTransactionEventSource.User,
-            transaction_type: TransactionType.simpleSend,
-            account_type: 'MetaMask',
-            asset_type: AssetType.native,
-            token_standard: TokenStandard.none,
-            device_model: 'N/A',
-            transaction_speed_up: false,
-            ui_customizations: null,
-            security_alert_reason: BlockaidReason.notApplicable,
-            security_alert_response: BlockaidResultType.NotApplicable,
-            status: 'unapproved',
-          },
-          sensitiveProperties: {
-            default_gas: '0.000031501',
-            default_gas_price: '2',
-            gas_price: '2',
-            gas_limit: '0x7b0d',
-            transaction_contract_method: undefined,
-            transaction_replaced: undefined,
-            first_seen: 1624408066355,
-            transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          },
-        };
-
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.submitted,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 1);
-        assert.equal(finalizeEventFragmentSpy.callCount, 0);
-        assert.deepEqual(
-          createEventFragmentSpy.getCall(0).args[0],
-          expectedPayload,
-        );
-      });
-
-      it('Should finalize the transaction submitted fragment when transaction finalizes', async function () {
-        fragmentExists = true;
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.finalized,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 0);
-        assert.equal(finalizeEventFragmentSpy.callCount, 1);
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[0],
-          'transaction-submitted-1',
-        );
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[1],
-          undefined,
-        );
-      });
-    });
-
-    describe('On transaction suggested by dapp', function () {
-      let txMeta;
-      before(function () {
-        txMeta = {
-          id: 1,
-          status: TransactionStatus.unapproved,
-          txParams: {
-            from: fromAccount.address,
-            to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-            gasPrice: '0x77359400',
-            gas: '0x7b0d',
-            nonce: '0x4b',
-          },
-          type: TransactionType.simpleSend,
-          origin: 'other',
-          chainId: currentChainId,
-          time: 1624408066355,
-          metamaskNetworkId: currentNetworkId,
-          defaultGasEstimates: {
-            gas: '0x7b0d',
-            gasPrice: '0x77359400',
-          },
-          securityProviderResponse: {
-            flagAsDangerous: 0,
-          },
-        };
-      });
-
-      it('should create an event fragment when transaction added', async function () {
-        const expectedPayload = {
-          actionId,
-          initialEvent: 'Transaction Added',
-          successEvent: 'Transaction Approved',
-          failureEvent: 'Transaction Rejected',
-          uniqueIdentifier: 'transaction-added-1',
-          category: MetaMetricsEventCategory.Transactions,
-          persist: true,
-          properties: {
-            chain_id: '0x5',
-            eip_1559_version: '0',
-            gas_edit_attempted: 'none',
-            gas_edit_type: 'none',
-            network: '5',
-            referrer: 'other',
-            source: MetaMetricsTransactionEventSource.Dapp,
-            transaction_type: TransactionType.simpleSend,
-            account_type: 'MetaMask',
-            asset_type: AssetType.native,
-            token_standard: TokenStandard.none,
-            device_model: 'N/A',
-            transaction_speed_up: false,
-            ui_customizations: null,
-            security_alert_reason: BlockaidReason.notApplicable,
-            security_alert_response: BlockaidResultType.NotApplicable,
-            status: 'unapproved',
-          },
-          sensitiveProperties: {
-            default_gas: '0.000031501',
-            default_gas_price: '2',
-            gas_price: '2',
-            gas_limit: '0x7b0d',
-            transaction_contract_method: undefined,
-            transaction_replaced: undefined,
-            first_seen: 1624408066355,
-            transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          },
-        };
-
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.added,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 1);
-        assert.equal(finalizeEventFragmentSpy.callCount, 0);
-        assert.deepEqual(
-          createEventFragmentSpy.getCall(0).args[0],
-          expectedPayload,
-        );
-      });
-
-      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', async function () {
-        fragmentExists = true;
-
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.rejected,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 0);
-        assert.equal(finalizeEventFragmentSpy.callCount, 1);
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[0],
-          'transaction-added-1',
-        );
-        assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], {
-          abandoned: true,
-        });
-      });
-
-      it('Should finalize the transaction added fragment if user approves transaction', async function () {
-        fragmentExists = true;
-
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.approved,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 0);
-        assert.equal(finalizeEventFragmentSpy.callCount, 1);
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[0],
-          'transaction-added-1',
-        );
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[1],
-          undefined,
-        );
-      });
-
-      it('should create an event fragment when transaction is submitted', async function () {
-        const expectedPayload = {
-          actionId,
-          initialEvent: 'Transaction Submitted',
-          successEvent: 'Transaction Finalized',
-          uniqueIdentifier: 'transaction-submitted-1',
-          category: MetaMetricsEventCategory.Transactions,
-          persist: true,
-          properties: {
-            chain_id: '0x5',
-            eip_1559_version: '0',
-            gas_edit_attempted: 'none',
-            gas_edit_type: 'none',
-            network: '5',
-            referrer: 'other',
-            source: MetaMetricsTransactionEventSource.Dapp,
-            transaction_type: TransactionType.simpleSend,
-            account_type: 'MetaMask',
-            asset_type: AssetType.native,
-            token_standard: TokenStandard.none,
-            device_model: 'N/A',
-            transaction_speed_up: false,
-            ui_customizations: null,
-            security_alert_reason: BlockaidReason.notApplicable,
-            security_alert_response: BlockaidResultType.NotApplicable,
-            status: 'unapproved',
-          },
-          sensitiveProperties: {
-            default_gas: '0.000031501',
-            default_gas_price: '2',
-            gas_price: '2',
-            gas_limit: '0x7b0d',
-            transaction_contract_method: undefined,
-            transaction_replaced: undefined,
-            first_seen: 1624408066355,
-            transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          },
-        };
-
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.submitted,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 1);
-        assert.equal(finalizeEventFragmentSpy.callCount, 0);
-        assert.deepEqual(
-          createEventFragmentSpy.getCall(0).args[0],
-          expectedPayload,
-        );
-      });
-
-      it('Should finalize the transaction submitted fragment when transaction finalizes', async function () {
-        fragmentExists = true;
-
-        await txController._trackTransactionMetricsEvent(
-          txMeta,
-          TransactionMetaMetricsEvent.finalized,
-          actionId,
-        );
-        assert.equal(createEventFragmentSpy.callCount, 0);
-        assert.equal(finalizeEventFragmentSpy.callCount, 1);
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[0],
-          'transaction-submitted-1',
-        );
-        assert.deepEqual(
-          finalizeEventFragmentSpy.getCall(0).args[1],
-          undefined,
-        );
-      });
+      assert.equal(listener.callCount, 1, listener.args);
+      const [payload] = listener.args[0];
+      assert.deepEqual(payload, expectedPayload);
     });
 
     it('should create missing fragments when events happen out of order or are missing', async function () {
@@ -2544,11 +2195,7 @@ describe('Transaction Controller', function () {
 
       const expectedPayload = {
         actionId,
-        successEvent: 'Transaction Approved',
-        failureEvent: 'Transaction Rejected',
-        uniqueIdentifier: 'transaction-added-1',
-        category: MetaMetricsEventCategory.Transactions,
-        persist: true,
+        event: 'Transaction Approved',
         properties: {
           chain_id: '0x5',
           eip_1559_version: '0',
@@ -2576,23 +2223,21 @@ describe('Transaction Controller', function () {
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         },
+        transactionMeta: txMeta,
       };
+
+      const listener = sinon.spy();
+      txController.on('transaction-metric', listener);
+
       await txController._trackTransactionMetricsEvent(
         txMeta,
         TransactionMetaMetricsEvent.approved,
         actionId,
       );
-      assert.equal(createEventFragmentSpy.callCount, 1);
-      assert.deepEqual(
-        createEventFragmentSpy.getCall(0).args[0],
-        expectedPayload,
-      );
-      assert.equal(finalizeEventFragmentSpy.callCount, 1);
-      assert.deepEqual(
-        finalizeEventFragmentSpy.getCall(0).args[0],
-        'transaction-added-1',
-      );
-      assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], undefined);
+
+      assert.equal(listener.callCount, 1, listener.args);
+      const [payload] = listener.args[0];
+      assert.deepEqual(payload, expectedPayload);
     });
 
     it('should call _trackMetaMetricsEvent with the correct payload (extra params)', async function () {
@@ -2617,12 +2262,7 @@ describe('Transaction Controller', function () {
       };
       const expectedPayload = {
         actionId,
-        initialEvent: 'Transaction Added',
-        successEvent: 'Transaction Approved',
-        failureEvent: 'Transaction Rejected',
-        uniqueIdentifier: 'transaction-added-1',
-        persist: true,
-        category: MetaMetricsEventCategory.Transactions,
+        event: 'Transaction Added',
         properties: {
           network: '5',
           referrer: 'other',
@@ -2652,7 +2292,11 @@ describe('Transaction Controller', function () {
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         },
+        transactionMeta: txMeta,
       };
+
+      const listener = sinon.spy();
+      txController.on('transaction-metric', listener);
 
       await txController._trackTransactionMetricsEvent(
         txMeta,
@@ -2663,12 +2307,10 @@ describe('Transaction Controller', function () {
           foo: 'bar',
         },
       );
-      assert.equal(createEventFragmentSpy.callCount, 1);
-      assert.equal(finalizeEventFragmentSpy.callCount, 0);
-      assert.deepEqual(
-        createEventFragmentSpy.getCall(0).args[0],
-        expectedPayload,
-      );
+
+      assert.equal(listener.callCount, 1, listener.args);
+      const [payload] = listener.args[0];
+      assert.deepEqual(payload, expectedPayload);
     });
 
     it('should call _trackMetaMetricsEvent with the correct payload when blockaid verification fails', async function () {
@@ -2694,12 +2336,7 @@ describe('Transaction Controller', function () {
       };
       const expectedPayload = {
         actionId,
-        initialEvent: 'Transaction Added',
-        successEvent: 'Transaction Approved',
-        failureEvent: 'Transaction Rejected',
-        uniqueIdentifier: 'transaction-added-1',
-        persist: true,
-        category: MetaMetricsEventCategory.Transactions,
+        event: 'Transaction Added',
         properties: {
           network: '5',
           referrer: 'other',
@@ -2729,7 +2366,11 @@ describe('Transaction Controller', function () {
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         },
+        transactionMeta: txMeta,
       };
+
+      const listener = sinon.spy();
+      txController.on('transaction-metric', listener);
 
       await txController._trackTransactionMetricsEvent(
         txMeta,
@@ -2740,12 +2381,10 @@ describe('Transaction Controller', function () {
           foo: 'bar',
         },
       );
-      assert.equal(createEventFragmentSpy.callCount, 1);
-      assert.equal(finalizeEventFragmentSpy.callCount, 0);
-      assert.deepEqual(
-        createEventFragmentSpy.getCall(0).args[0],
-        expectedPayload,
-      );
+
+      assert.equal(listener.callCount, 1, listener.args);
+      const [payload] = listener.args[0];
+      assert.deepEqual(payload, expectedPayload);
     });
 
     it('should call _trackMetaMetricsEvent with the correct payload (extra params) when flagAsDangerous is malicious', async function () {
@@ -2770,12 +2409,7 @@ describe('Transaction Controller', function () {
       };
       const expectedPayload = {
         actionId,
-        initialEvent: 'Transaction Added',
-        successEvent: 'Transaction Approved',
-        failureEvent: 'Transaction Rejected',
-        uniqueIdentifier: 'transaction-added-1',
-        persist: true,
-        category: MetaMetricsEventCategory.Transactions,
+        event: 'Transaction Added',
         properties: {
           network: '5',
           referrer: 'other',
@@ -2805,7 +2439,11 @@ describe('Transaction Controller', function () {
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         },
+        transactionMeta: txMeta,
       };
+
+      const listener = sinon.spy();
+      txController.on('transaction-metric', listener);
 
       await txController._trackTransactionMetricsEvent(
         txMeta,
@@ -2816,12 +2454,10 @@ describe('Transaction Controller', function () {
           foo: 'bar',
         },
       );
-      assert.equal(createEventFragmentSpy.callCount, 1);
-      assert.equal(finalizeEventFragmentSpy.callCount, 0);
-      assert.deepEqual(
-        createEventFragmentSpy.getCall(0).args[0],
-        expectedPayload,
-      );
+
+      assert.equal(listener.callCount, 1, listener.args);
+      const [payload] = listener.args[0];
+      assert.deepEqual(payload, expectedPayload);
     });
 
     it('should call _trackMetaMetricsEvent with the correct payload (extra params) when flagAsDangerous is unknown', async function () {
@@ -2846,12 +2482,7 @@ describe('Transaction Controller', function () {
       };
       const expectedPayload = {
         actionId,
-        initialEvent: 'Transaction Added',
-        successEvent: 'Transaction Approved',
-        failureEvent: 'Transaction Rejected',
-        uniqueIdentifier: 'transaction-added-1',
-        persist: true,
-        category: MetaMetricsEventCategory.Transactions,
+        event: 'Transaction Added',
         properties: {
           network: '5',
           referrer: 'other',
@@ -2881,7 +2512,11 @@ describe('Transaction Controller', function () {
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         },
+        transactionMeta: txMeta,
       };
+
+      const listener = sinon.spy();
+      txController.on('transaction-metric', listener);
 
       await txController._trackTransactionMetricsEvent(
         txMeta,
@@ -2892,15 +2527,17 @@ describe('Transaction Controller', function () {
           foo: 'bar',
         },
       );
-      assert.equal(createEventFragmentSpy.callCount, 1);
-      assert.equal(finalizeEventFragmentSpy.callCount, 0);
-      assert.deepEqual(
-        createEventFragmentSpy.getCall(0).args[0],
-        expectedPayload,
-      );
+
+      assert.equal(listener.callCount, 1, listener.args);
+      const [payload] = listener.args[0];
+      assert.deepEqual(payload, expectedPayload);
     });
 
     it('should call _trackMetaMetricsEvent with the correct payload (EIP-1559)', async function () {
+      sinon
+        .stub(txController, '_getEIP1559GasFeeEstimates')
+        .resolves(mockEstimates['fee-market']);
+
       const txMeta = {
         id: 1,
         status: TransactionStatus.unapproved,
@@ -2930,12 +2567,7 @@ describe('Transaction Controller', function () {
       };
       const expectedPayload = {
         actionId,
-        initialEvent: 'Transaction Added',
-        successEvent: 'Transaction Approved',
-        failureEvent: 'Transaction Rejected',
-        uniqueIdentifier: 'transaction-added-1',
-        persist: true,
-        category: MetaMetricsEventCategory.Transactions,
+        event: 'Transaction Added',
         properties: {
           chain_id: '0x5',
           eip_1559_version: '2',
@@ -2971,7 +2603,11 @@ describe('Transaction Controller', function () {
           default_max_fee_per_gas: '70',
           default_max_priority_fee_per_gas: '7',
         },
+        transactionMeta: txMeta,
       };
+
+      const listener = sinon.spy();
+      txController.on('transaction-metric', listener);
 
       await txController._trackTransactionMetricsEvent(
         txMeta,
@@ -2982,12 +2618,10 @@ describe('Transaction Controller', function () {
           foo: 'bar',
         },
       );
-      assert.equal(createEventFragmentSpy.callCount, 1);
-      assert.equal(finalizeEventFragmentSpy.callCount, 0);
-      assert.deepEqual(
-        createEventFragmentSpy.getCall(0).args[0],
-        expectedPayload,
-      );
+
+      assert.equal(listener.callCount, 1, listener.args);
+      const [payload] = listener.args[0];
+      assert.deepEqual(payload, expectedPayload);
     });
   });
 
