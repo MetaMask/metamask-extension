@@ -61,7 +61,14 @@ export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
 export const ARBITRUM_IMAGE_URL = './images/arbitrum.svg';
 export const OPTIMISM_IMAGE_URL = './images/optimism.svg';
 
-export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
+export const INFURA_PROVIDER_TYPES = [
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  MAINNET,
+  GOERLI,
+  LOCALHOST,
+];
 
 export const TEST_CHAINS = [
   ROPSTEN_CHAIN_ID,

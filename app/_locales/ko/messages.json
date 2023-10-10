@@ -402,9 +402,6 @@
   "customGasSubTitle": {
     "message": "요금을 올리면 처리 시간이 줄어들 수 있지만 반드시 그렇지는 않습니다."
   },
-  "customRPC": {
-    "message": "맞춤형 RPC"
-  },
   "customSpendLimit": {
     "message": "맞춤형 지출 한도"
   },

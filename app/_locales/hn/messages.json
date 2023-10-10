@@ -22,14 +22,6 @@
     "message": "मेटामास्क/MetaMask",
     "description": "The name of the application"
   },
-  "appNameBeta": {
-    "message": "MetaMask Beta",
-    "description": "The name of the application (Beta)"
-  },
-  "appNameFlask": {
-    "message": "MetaMask Flask",
-    "description": "The name of the application (Flask)"
-  },
   "approve": {
     "message": "मंजूर"
   },
@@ -44,6 +36,9 @@
   },
   "balance": {
     "message": "उपलब्ध बैलेंस।"
+  },
+  "blockiesIdenticon": {
+    "message": "ब्लॉकीज पहचान का उपयोग करें"
   },
   "cancel": {
     "message": "रद्द करें"
@@ -60,11 +55,20 @@
   "copiedExclamation": {
     "message": "कॉपी कर दिया गया!"
   },
+  "copyPrivateKey": {
+    "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)।"
+  },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी करें"
   },
   "create": {
     "message": "बनाएं"
+  },
+  "createAccount": {
+    "message": "खाता बनाएं"
+  },
+  "customGas": {
+    "message": "अनुकूलित करें गैस"
   },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
@@ -72,8 +76,20 @@
   "decimalsMustZerotoTen": {
     "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
   },
+  "defaultNetwork": {
+    "message": "ईथर लेनदेन के लिए डिफ़ॉल्ट नेटवर्क मुख्य नेट है।"
+  },
+  "depositEther": {
+    "message": "जमा - Ether"
+  },
   "details": {
     "message": "संदेश विवरण"
+  },
+  "directDepositEther": {
+    "message": "सीधे ईथर जमा करें"
+  },
+  "directDepositEtherExplainer": {
+    "message": "यदि आपके पास पहले से कुछ ईथर है, तो सीधे जमा द्वारा अपने नए बटुए में ईथर प्राप्त करने का तेज़ तरीका है।"
   },
   "done": {
     "message": "संपन्न"
@@ -84,8 +100,14 @@
   "edit": {
     "message": "संपादित करें"
   },
+  "enterPassword": {
+    "message": "पासवर्ड दर्ज करें"
+  },
   "etherscanView": {
     "message": "ईथरस्कैन पर खाता देखें"
+  },
+  "exportPrivateKey": {
+    "message": "निजी कुंजी निर्यात करें"
   },
   "failed": {
     "message": "विफल"
@@ -109,6 +131,13 @@
   },
   "gasPrice": {
     "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
+  },
+  "getEther": {
+    "message": "ईथर प्राप्त करें"
+  },
+  "getEtherFromFaucet": {
+    "message": "$1 के लिए एक नल से ईथर प्राप्त करें",
+    "description": "Displays network name for Ether faucet"
   },
   "here": {
     "message": "यहां",
@@ -156,6 +185,9 @@
     "message": "JSON फ़ाइल",
     "description": "format for importing an account"
   },
+  "kovan": {
+    "message": "कोवान टेस्ट नेटवर्क"
+  },
   "likeToImportTokens": {
     "message": "क्या आप इन टोकनों को जोड़ना चाहते हैं?"
   },
@@ -177,8 +209,17 @@
   "message": {
     "message": "संदेश"
   },
+  "metamaskDescription": {
+    "message": "मेटामास्क इथीरियम के लिए एक सुरक्षित पहचान वॉल्ट है।"
+  },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना आवश्यक है।"
+  },
+  "myAccounts": {
+    "message": "मेरे खाते"
+  },
+  "needEtherInWallet": {
+    "message": "मेटामास्क का उपयोग करने वाले विकेन्द्रीकृत अनुप्रयोगों के साथ बातचीत करने के लिए, आपको अपने वॉलेट में ईथर की आवश्यकता होगी।"
   },
   "needImportFile": {
     "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",
@@ -244,12 +285,20 @@
   "required": {
     "message": "आवश्यक"
   },
+  "resetAccount": {
+    "message": "खाता रीसेट करें"
+  },
   "revealSeedWords": {
     "message": "बीज शब्द प्रकट करें"
   },
   "revealSeedWordsWarning": {
-    "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।"
+  },
+  "rinkeby": {
+    "message": "रिचीव टेस्ट नेटवर्क"
+  },
+  "ropsten": {
+    "message": "रॉप्स्टेन टेस्ट नेटवर्क"
   },
   "save": {
     "message": "सहेजें"
@@ -272,11 +321,17 @@
   "settings": {
     "message": "सेटिंग्स"
   },
+  "showPrivateKeys": {
+    "message": "निजी कुंजी दिखाएँ"
+  },
   "sigRequest": {
     "message": "हस्ताक्षर अनुरोध"
   },
   "sign": {
     "message": "हस्ताक्षर"
+  },
+  "signNotice": {
+    "message": "इस संदेश पर हस्ताक्षर करने से \n साइड इफेक्ट हो सकते हैं। \n केवल अपने पूरे खाते के साथ पूरी तरह से भरोसेमंद \n साइटों से संदेश पर हस्ताक्षर करें। \n यह खतरनाक विधि भविष्य के संस्करण में निकाल दी जाएगी।"
   },
   "stateLogs": {
     "message": "स्थिति संदेश"
@@ -293,6 +348,9 @@
   "terms": {
     "message": "उपयोग की शर्तें"
   },
+  "testFaucet": {
+    "message": "टेस्ट नलि"
+  },
   "to": {
     "message": "के लिए"
   },
@@ -304,6 +362,13 @@
   },
   "total": {
     "message": "कुल"
+  },
+  "troubleTokenBalances": {
+    "message": "मुसीबत... आपके टोकन शेष राशि को लोड करने में हमें परेशानी हुई थी। आप उन्हें देख सकते हैं",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "typePassword": {
+    "message": "अपना पासवर्ड टाइप करें"
   },
   "unknown": {
     "message": "अज्ञात नेटवर्क"
@@ -320,8 +385,14 @@
   "usedByClients": {
     "message": "विभिन्न क्लाइंट्स द्वारा उपयोग किया जाता है"
   },
+  "viewAccount": {
+    "message": "खाता देखें"
+  },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"
+  },
+  "welcome": {
+    "message": "मेटामास्क बीटा में आपका स्वागत है"
   },
   "youSign": {
     "message": "आप हस्ताक्षर कर रहे हैं"

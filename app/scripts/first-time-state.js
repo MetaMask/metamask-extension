@@ -1,7 +1,7 @@
 /**
- * @typedef {object} FirstTimeState
- * @property {object} config Initial configuration parameters
- * @property {object} NetworkController Network controller state
+ * @typedef {Object} FirstTimeState
+ * @property {Object} config Initial configuration parameters
+ * @property {Object} NetworkController Network controller state
  */
 
 /**
@@ -9,5 +9,9 @@
  */
 const initialState = {
   config: {},
+  PreferencesController: {
+    frequentRpcListDetail: [],
+  },
 };
+
 export default initialState;

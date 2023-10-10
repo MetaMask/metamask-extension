@@ -1,7 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "Afwijzen"
-  },
   "accountDetails": {
     "message": "Accountgegevens"
   },
@@ -22,14 +19,6 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
-  "appNameBeta": {
-    "message": "MetaMask Beta",
-    "description": "The name of the application (Beta)"
-  },
-  "appNameFlask": {
-    "message": "MetaMask Flask",
-    "description": "The name of the application (Flask)"
-  },
   "approve": {
     "message": "Goedkeuren"
   },
@@ -44,6 +33,9 @@
   },
   "balance": {
     "message": "Balans:"
+  },
+  "blockiesIdenticon": {
+    "message": "Gebruik Blockies Identicon"
   },
   "cancel": {
     "message": "Annuleer"
@@ -60,17 +52,38 @@
   "copiedExclamation": {
     "message": "Gekopieerd!"
   },
+  "copyPrivateKey": {
+    "message": "Dit is uw privésleutel (klik om te kopiëren)"
+  },
   "copyToClipboard": {
     "message": "Kopieer naar klembord"
   },
   "create": {
     "message": "creëren"
   },
+  "createAccount": {
+    "message": "Account aanmaken"
+  },
+  "customGas": {
+    "message": "Pas Gas aan"
+  },
   "decimal": {
     "message": "Decimalen van precisie"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
+  },
+  "defaultNetwork": {
+    "message": "Het standaardnetwerk voor Ether-transacties is Mainnet."
+  },
+  "depositEther": {
+    "message": "Stort Ether"
+  },
+  "directDepositEther": {
+    "message": "Directe Ether storten"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Als je al wat Ether hebt, de snelste manier om Ether in je nieuwe portemonnee te krijgen door een directe storting."
   },
   "done": {
     "message": "Gedaan"
@@ -81,8 +94,14 @@
   "edit": {
     "message": "Bewerk"
   },
+  "enterPassword": {
+    "message": "Voer wachtwoord in"
+  },
   "etherscanView": {
     "message": "Bekijk account op Etherscan"
+  },
+  "exportPrivateKey": {
+    "message": "Exporteer privésleutel"
   },
   "failed": {
     "message": "mislukt"
@@ -106,6 +125,13 @@
   },
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
+  },
+  "getEther": {
+    "message": "Krijg Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Haal Ether uit een kraan voor de $1",
+    "description": "Displays network name for Ether faucet"
   },
   "here": {
     "message": "hier",
@@ -153,6 +179,9 @@
     "message": "JSON-bestand",
     "description": "format for importing an account"
   },
+  "kovan": {
+    "message": "Kovan-testnetwerk"
+  },
   "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
@@ -171,8 +200,17 @@
   "message": {
     "message": "Bericht"
   },
+  "metamaskDescription": {
+    "message": "MetaMask is een veilige identiteitskluis voor Ethereum."
+  },
   "mustSelectOne": {
     "message": "Moet ten minste één token selecteren."
+  },
+  "myAccounts": {
+    "message": "Mijn accounts"
+  },
+  "needEtherInWallet": {
+    "message": "Om te communiceren met gedecentraliseerde applicaties met MetaMask, heb je Ether nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -234,12 +272,20 @@
   "required": {
     "message": "Verplicht"
   },
+  "resetAccount": {
+    "message": "Account opnieuw instellen"
+  },
   "revealSeedWords": {
     "message": "Onthul back-up woorden"
   },
   "revealSeedWordsWarning": {
-    "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen).",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
+  },
+  "rinkeby": {
+    "message": "Rinkeby testnetwerk"
+  },
+  "ropsten": {
+    "message": "Ropsten testnetwerk"
   },
   "save": {
     "message": "Opslaan"
@@ -262,11 +308,17 @@
   "settings": {
     "message": "instellingen"
   },
+  "showPrivateKeys": {
+    "message": "Privésleutels weergeven"
+  },
   "sigRequest": {
     "message": "Ondertekeningsverzoek"
   },
   "sign": {
     "message": "Teken"
+  },
+  "signNotice": {
+    "message": "Het ondertekenen van dit bericht kan hebben \ngevaarlijke bijwerkingen. Meld alleen berichten van \nsites die u volledig vertrouwt met uw volledige account.\n Deze gevaarlijke methode wordt in een toekomstige versie verwijderd."
   },
   "signatureRequest": {
     "message": "Ondertekeningsverzoek"
@@ -286,6 +338,9 @@
   "terms": {
     "message": "Gebruiksvoorwaarden"
   },
+  "testFaucet": {
+    "message": "Test de kraan"
+  },
   "to": {
     "message": "Naar"
   },
@@ -294,6 +349,13 @@
   },
   "total": {
     "message": "Totaal"
+  },
+  "troubleTokenBalances": {
+    "message": "We hadden problemen bij het laden van uw tokenbalansen. Je kunt ze bekijken",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "typePassword": {
+    "message": "Typ uw wachtwoord"
   },
   "unknown": {
     "message": "Onbekend"
@@ -310,8 +372,14 @@
   "usedByClients": {
     "message": "Gebruikt door verschillende klanten"
   },
+  "viewAccount": {
+    "message": "Bekijk account"
+  },
   "visitWebSite": {
     "message": "Bezoek onze website"
+  },
+  "welcome": {
+    "message": "Welkom bij MetaMask"
   },
   "youSign": {
     "message": "U ondertekent"

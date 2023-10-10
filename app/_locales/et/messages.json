@@ -263,9 +263,6 @@
   "customGasSubTitle": {
     "message": "Tasu suurendamine võib töötlemisaegu vähendada, kuid see ei ole tagatud."
   },
-  "customRPC": {
-    "message": "Kohandatud RPC"
-  },
   "customToken": {
     "message": "Kohandatud luba"
   },
