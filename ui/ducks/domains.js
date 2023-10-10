@@ -72,7 +72,6 @@ const slice = createSlice({
       ///: END:ONLY_INCLUDE_IN
       const { address, error, network, domainType, domainName, resolvingSnap } =
         action.payload;
-      console.log(domainType);
       state.domainType = domainType;
       if (state.domainType === ENS) {
         if (error) {
@@ -192,21 +191,13 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
   const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
   const subjects = getPermissionSubjects(state);
   const nameLookupSnaps = getNameLookupSnapsIds(state);
-  console.log('nameLookupSnaps:', nameLookupSnaps);
 
   const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
     const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
-    console.log('subjects: ', subjects);
-    console.log('subject:', subjects[snapId]);
-    console.log('subject permissions:', subjects[snapId]?.permissions);
-    console.log('namelookup permission:', permission);
     // TODO: add a caveat getter to the snaps monorepo for name lookup similar to the other caveat getters
     const nameLookupCaveat = permission.caveats[0].value;
-    console.log(nameLookupCaveat);
-    console.log(chainId);
     return nameLookupCaveat.includes(chainId);
   });
-  console.log('filteredNameLookupSnapsIds:', filteredNameLookupSnapsIds);
 
   const snapRequestArgs = domain
     ? {
@@ -230,8 +221,6 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
     }),
   );
 
-  console.log('results:', results);
-
   const filteredResults = results.reduce(
     (successfulResolutions, result, idx) => {
       if (result.status !== 'rejected' && result.value !== null) {
@@ -244,8 +233,6 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
     },
     [],
   );
-
-  console.log('filtered results:', filteredResults);
 
   return filteredResults;
 }
@@ -288,7 +275,6 @@ export function lookupDomainName(domainName) {
           chainId: `eip155:${parseInt(chainId, 16)}`,
           state,
         });
-        console.log('Snap resolution:', fetchedResolutions);
         const resolvedAddress = fetchedResolutions[0]?.resolvedAddress;
         hasSnapResolution = Boolean(resolvedAddress);
         if (hasSnapResolution) {
