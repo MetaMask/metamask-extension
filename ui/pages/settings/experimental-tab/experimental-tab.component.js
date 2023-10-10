@@ -244,11 +244,9 @@ export default class ExperimentalTab extends PureComponent {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
     if (!showSnapAccountExperimentalToggle()) {
       return null;
     }
-    ///: END:ONLY_INCLUDE_IN
 
     return (
       <>
