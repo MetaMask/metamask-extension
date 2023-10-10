@@ -5036,12 +5036,6 @@
   "transactionResubmitted": {
     "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
   },
-  "transactionSecurityCheck": {
-    "message": "Güvenlik uyarılarını etkinleştir"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "İmzalanmamış işleme dahil olan riskleri ve onları imzalamadan önce imza taleplerini algılamak ve göstermek için üçüncü taraf API'lerini kullanırız. Bu hizmetler imzalanmamış işlem ve imza taleplerinize, hesap adresinize ve tercih ettiğiniz dile erişim sağlar."
-  },
   "transactionSettings": {
     "message": "İşlem ayarları"
   },
