@@ -29,7 +29,7 @@ this.store.updateStructure({
   ...,
   GasFeeController: this.gasFeeController,
   TokenListController: this.tokenListController,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SnapController: this.snapController,
   ///: END:ONLY_INCLUDE_IN
 });
@@ -49,7 +49,7 @@ Note that multiple build types can be specified by separating them with
 commands inside the parameter parentheses:
 
 ```javascript
-///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
 ```
 
 ### Gotchas
@@ -114,7 +114,7 @@ only be included in a particular build type, say `beta`, they should be wrapped
 as follows:
 
 ```javascript
-///: BEGIN:ONLY_INCLUDE_IN(build-beta)
+///: BEGIN:ONLY_INCLUDE_IN(beta)
 console.log('I am only included in beta builds.');
 ///: END:ONLY_INCLUDE_IN
 ```

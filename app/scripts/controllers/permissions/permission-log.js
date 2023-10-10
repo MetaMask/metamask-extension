@@ -1,69 +1,75 @@
-import { ObservableStore } from '@metamask/obs-store';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
+import stringify from 'fast-safe-stringify';
+import { CAVEAT_NAMES } from '../../../../shared/constants/permissions';
 import {
+  HISTORY_STORE_KEY,
   LOG_IGNORE_METHODS,
   LOG_LIMIT,
   LOG_METHOD_TYPES,
+  LOG_STORE_KEY,
   WALLET_PREFIX,
 } from './enums';
+
+const DEFAULT_STATE = {
+  [HISTORY_STORE_KEY]: {},
+  [LOG_STORE_KEY]: [],
+};
 
 /**
  * Controller with middleware for logging requests and responses to restricted
  * and permissions-related methods.
  */
-export class PermissionLogController {
-  /**
-   * @param {{ restrictedMethods: Set<string>, initState: Record<string, unknown> }} options - Options bag.
-   */
-  constructor({ restrictedMethods, initState }) {
+export default class PermissionsLogController {
+  constructor({ restrictedMethods, store }) {
     this.restrictedMethods = restrictedMethods;
-    this.store = new ObservableStore({
-      permissionHistory: {},
-      permissionActivityLog: [],
-      ...initState,
-    });
+    this.store = store;
   }
 
   /**
-   * Get the restricted method activity log.
+   * Clears all permissions logs.
+   */
+  clear() {
+    this.store.updateState({ ...DEFAULT_STATE });
+  }
+
+  /**
+   * Get the activity log.
    *
-   * @returns {Array<object>} The activity log.
+   * @returns {Array<Object>} The activity log.
    */
   getActivityLog() {
-    return this.store.getState().permissionActivityLog;
+    return this.store.getState()[LOG_STORE_KEY] || [];
   }
 
   /**
-   * Update the restricted method activity log.
+   * Update the activity log.
    *
-   * @param {Array<object>} logs - The new activity log array.
+   * @param {Array<Object>} logs - The new activity log array.
    */
   updateActivityLog(logs) {
-    this.store.updateState({ permissionActivityLog: logs });
+    this.store.updateState({ [LOG_STORE_KEY]: logs });
   }
 
   /**
-   * Get the permission history log.
+   * Get the permissions history log.
    *
-   * @returns {object} The permissions history log.
+   * @returns {Object} The permissions history log.
    */
   getHistory() {
-    return this.store.getState().permissionHistory;
+    return this.store.getState()[HISTORY_STORE_KEY] || {};
   }
 
   /**
-   * Update the permission history log.
+   * Update the permissions history log.
    *
-   * @param {object} history - The new permissions history log object.
+   * @param {Object} history - The new permissions history log object.
    */
   updateHistory(history) {
-    this.store.updateState({ permissionHistory: history });
+    this.store.updateState({ [HISTORY_STORE_KEY]: history });
   }
 
   /**
    * Updates the exposed account history for the given origin.
    * Sets the 'last seen' time to Date.now() for the given accounts.
-   * Does **not** update the 'lastApproved' time for the permission itself.
    * Returns if the accounts array is empty.
    *
    * @param {string} origin - The origin that the accounts are exposed to.
@@ -102,7 +108,7 @@ export class PermissionLogController {
       // we only log certain methods
       if (
         !LOG_IGNORE_METHODS.includes(method) &&
-        (isInternal || this.restrictedMethods.has(method))
+        (isInternal || this.restrictedMethods.includes(method))
       ) {
         activityEntry = this.logRequest(req, isInternal);
 
@@ -146,7 +152,7 @@ export class PermissionLogController {
   /**
    * Creates and commits an activity log entry, without response data.
    *
-   * @param {object} request - The request object.
+   * @param {Object} request - The request object.
    * @param {boolean} isInternal - Whether the request is internal.
    */
   logRequest(request, isInternal) {
@@ -157,7 +163,9 @@ export class PermissionLogController {
         ? LOG_METHOD_TYPES.internal
         : LOG_METHOD_TYPES.restricted,
       origin: request.origin,
+      request: stringify(request, null, 2),
       requestTime: Date.now(),
+      response: null,
       responseTime: null,
       success: null,
     };
@@ -169,8 +177,8 @@ export class PermissionLogController {
    * Adds response data to an existing activity log entry.
    * Entry assumed already committed (i.e., in the log).
    *
-   * @param {object} entry - The entry to add a response to.
-   * @param {object} response - The response object.
+   * @param {Object} entry - The entry to add a response to.
+   * @param {Object} response - The response object.
    * @param {number} time - Output from Date.now()
    */
   logResponse(entry, response, time) {
@@ -178,19 +186,16 @@ export class PermissionLogController {
       return;
     }
 
-    // The JSON-RPC 2.0 specification defines "success" by the presence of
-    // either the "result" or "error" property. The specification forbids
-    // both properties from being present simultaneously, and our JSON-RPC
-    // stack is spec-compliant at the time of writing.
-    entry.success = Object.hasOwnProperty.call(response, 'result');
+    entry.response = stringify(response, null, 2);
     entry.responseTime = time;
+    entry.success = !response.error;
   }
 
   /**
    * Commit a new entry to the activity log.
    * Removes the oldest entry from the log if it exceeds the log limit.
    *
-   * @param {object} entry - The activity log entry.
+   * @param {Object} entry - The activity log entry.
    */
   commitNewActivity(entry) {
     const logs = this.getActivityLog();
@@ -277,7 +282,7 @@ export class PermissionLogController {
    * with the same key (permission name).
    *
    * @param {string} origin - The requesting origin.
-   * @param {object} newEntries - The new entries to commit.
+   * @param {Object} newEntries - The new entries to commit.
    */
   commitNewHistory(origin, newEntries) {
     // a simple merge updates most permissions
@@ -318,7 +323,7 @@ export class PermissionLogController {
   /**
    * Get all requested methods from a permissions request.
    *
-   * @param {object} request - The request object.
+   * @param {Object} request - The request object.
    * @returns {Array<string>} The names of the requested permissions.
    */
   getRequestedMethods(request) {
@@ -337,7 +342,7 @@ export class PermissionLogController {
    * Get the permitted accounts from an eth_accounts permissions object.
    * Returns an empty array if the permission is not eth_accounts.
    *
-   * @param {object} perm - The permissions object.
+   * @param {Object} perm - The permissions object.
    * @returns {Array<string>} The permitted accounts.
    */
   getAccountsFromPermission(perm) {
@@ -348,7 +353,7 @@ export class PermissionLogController {
     const accounts = new Set();
     for (const caveat of perm.caveats) {
       if (
-        caveat.type === CaveatTypes.restrictReturnedAccounts &&
+        caveat.name === CAVEAT_NAMES.exposedAccounts &&
         Array.isArray(caveat.value)
       ) {
         for (const value of caveat.value) {
@@ -367,7 +372,7 @@ export class PermissionLogController {
  *
  * @param {Array<string>} accounts - An array of addresses.
  * @param {number} time - A time, e.g. Date.now().
- * @returns {object} A string:number map of addresses to time.
+ * @returns {Object} A string:number map of addresses to time.
  */
 function getAccountToTimeMap(accounts, time) {
   return accounts.reduce((acc, account) => ({ ...acc, [account]: time }), {});

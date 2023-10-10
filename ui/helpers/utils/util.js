@@ -3,40 +3,23 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
-import slip44 from '@metamask/slip44';
-import * as lodash from 'lodash';
-import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { getSnapPrefix } from '@metamask/snaps-utils';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-// eslint-disable-next-line import/no-duplicates
-import { isObject } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IN
-// eslint-disable-next-line import/no-duplicates
-import { isStrictHexString } from '@metamask/utils';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
-  toChecksumHexAddress,
-  stripHexPrefix,
-} from '../../../shared/modules/hexstring-utils';
+  GOERLI_CHAIN_ID,
+  KOVAN_CHAIN_ID,
+  LOCALHOST_CHAIN_ID,
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+} from '../../../shared/constants/network';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import {
-  SNAPS_DERIVATION_PATHS,
-  SNAPS_METADATA,
-} from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IN
-// formatData :: ( date: <Unix Timestamp> ) -> String
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 
+// formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
     return '';
@@ -60,23 +43,28 @@ export function formatDateWithYearContext(
 }
 /**
  * Determines if the provided chainId is a default MetaMask chain
- *
  * @param {string} chainId - chainId to check
  */
 export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
-    chainId === CHAIN_IDS.MAINNET ||
-    chainId === CHAIN_IDS.LINEA_MAINNET ||
-    chainId === CHAIN_IDS.GOERLI ||
-    chainId === CHAIN_IDS.SEPOLIA ||
-    chainId === CHAIN_IDS.LINEA_GOERLI ||
-    chainId === CHAIN_IDS.LOCALHOST
+    chainId === MAINNET_CHAIN_ID ||
+    chainId === ROPSTEN_CHAIN_ID ||
+    chainId === RINKEBY_CHAIN_ID ||
+    chainId === KOVAN_CHAIN_ID ||
+    chainId === GOERLI_CHAIN_ID ||
+    chainId === LOCALHOST_CHAIN_ID
   ) {
     return true;
   }
 
   return false;
+}
+
+// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
+export function isEqualCaseInsensitive(value1, value2) {
+  if (typeof value1 !== 'string' || typeof value2 !== 'string') return false;
+  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -99,7 +87,7 @@ export function addressSummary(
   }
   let checked = toChecksumHexAddress(address);
   if (!includeHex) {
-    checked = stripHexPrefix(checked);
+    checked = ethUtil.stripHexPrefix(checked);
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
@@ -133,7 +121,7 @@ export function numericBalance(balance) {
   if (!balance) {
     return new ethUtil.BN(0, 16);
   }
-  const stripped = stripHexPrefix(balance);
+  const stripped = ethUtil.stripHexPrefix(balance);
   return new ethUtil.BN(stripped, 16);
 }
 
@@ -207,12 +195,30 @@ export function getRandomFileName() {
   return fileName;
 }
 
+export function exportAsFile(filename, data, type = 'text/csv') {
+  // eslint-disable-next-line no-param-reassign
+  filename = filename || getRandomFileName();
+  // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
+  const blob = new window.Blob([data], { type });
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(blob, filename);
+  } else {
+    const elem = window.document.createElement('a');
+    elem.target = '_blank';
+    elem.href = window.URL.createObjectURL(blob);
+    elem.download = filename;
+    document.body.appendChild(elem);
+    elem.click();
+    document.body.removeChild(elem);
+  }
+}
+
 /**
  * Shortens an Ethereum address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.
  *
- * Example output: 0xabcde...12345
+ * Example output: 0xabcd...1234
  *
  * @param {string} address - The address to shorten.
  * @returns {string} The shortened address, or the original if it was no longer
@@ -253,21 +259,6 @@ export function stripHttpSchemes(urlString) {
  */
 export function stripHttpsScheme(urlString) {
   return urlString.replace(/^https:\/\//u, '');
-}
-
-/**
- * Strips `https` schemes from URL strings, if the URL does not have a port.
- * This is useful
- *
- * @param {string} urlString - The URL string to strip the scheme from.
- * @returns {string} The URL string, without the scheme, if it was stripped.
- */
-export function stripHttpsSchemeWithoutPort(urlString) {
-  if (getURL(urlString).port) {
-    return urlString;
-  }
-
-  return stripHttpsScheme(urlString);
 }
 
 /**
@@ -313,6 +304,67 @@ export function checkExistingAddresses(address, list = []) {
   return list.some(matchesAddress);
 }
 
+/**
+ * Given a number and specified precision, returns that number in base 10 with a maximum of precision
+ * significant digits, but without any trailing zeros after the decimal point To be used when wishing
+ * to display only as much digits to the user as necessary
+ *
+ * @param {string | number | BigNumber} n - The number to format
+ * @param {number} precision - The maximum number of significant digits in the return value
+ * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
+ */
+export function toPrecisionWithoutTrailingZeros(n, precision) {
+  return new BigNumber(n)
+    .toPrecision(precision)
+    .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
+}
+
+/**
+ * Given and object where all values are strings, returns the same object with all values
+ * now prefixed with '0x'
+ */
+export function addHexPrefixToObjectValues(obj) {
+  return Object.keys(obj).reduce((newObj, key) => {
+    return { ...newObj, [key]: addHexPrefix(obj[key]) };
+  }, {});
+}
+
+/**
+ * Given the standard set of information about a transaction, returns a transaction properly formatted for
+ * publishing via JSON RPC and web3
+ *
+ * @param {boolean} [sendToken] - Indicates whether or not the transaciton is a token transaction
+ * @param {string} data - A hex string containing the data to include in the transaction
+ * @param {string} to - A hex address of the tx recipient address
+ * @param {string} from - A hex address of the tx sender address
+ * @param {string} gas - A hex representation of the gas value for the transaction
+ * @param {string} gasPrice - A hex representation of the gas price for the transaction
+ * @returns {Object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
+ */
+export function constructTxParams({
+  sendToken,
+  data,
+  to,
+  amount,
+  from,
+  gas,
+  gasPrice,
+}) {
+  const txParams = {
+    data,
+    from,
+    value: '0',
+    gas,
+    gasPrice,
+  };
+
+  if (!sendToken) {
+    txParams.value = amount;
+    txParams.to = to;
+  }
+  return addHexPrefixToObjectValues(txParams);
+}
+
 export function bnGreaterThan(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
@@ -349,12 +401,6 @@ export function getURL(url) {
   }
 }
 
-export function getIsBrowserDeprecated(
-  browser = bowser.getParser(window.navigator.userAgent),
-) {
-  return browser.satisfies(OUTDATED_BROWSER_VERSIONS) ?? false;
-}
-
 export function getURLHost(url) {
   return getURL(url)?.host || '';
 }
@@ -363,307 +409,38 @@ export function getURLHostName(url) {
   return getURL(url)?.hostname || '';
 }
 
-// Once we reach this threshold, we switch to higher unit
-const MINUTE_CUTOFF = 90 * 60;
-const SECOND_CUTOFF = 90;
-
-export const toHumanReadableTime = (t, milliseconds) => {
-  if (milliseconds === undefined || milliseconds === null) {
-    return '';
-  }
-  const seconds = Math.ceil(milliseconds / 1000);
-  if (seconds <= SECOND_CUTOFF) {
-    return t('gasTimingSecondsShort', [seconds]);
-  }
-  if (seconds <= MINUTE_CUTOFF) {
-    return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
-  }
-  return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const SNAP_PERMISSION_MESSAGES = {
+  snap_clearState: (t) => t('snap_clearState'),
+  snap_confirm: (t) => t('snap_confirm'),
+  snap_getState: (t) => t('snap_getState'),
+  snap_updateState: (t) => t('snap_updateState'),
 };
-
-export function clearClipboard() {
-  window.navigator.clipboard.writeText('');
-}
-
-const solidityTypes = () => {
-  const types = [
-    'bool',
-    'address',
-    'string',
-    'bytes',
-    'int',
-    'uint',
-    'fixed',
-    'ufixed',
-  ];
-
-  const ints = Array.from(new Array(32)).map(
-    (_, index) => `int${(index + 1) * 8}`,
-  );
-  const uints = Array.from(new Array(32)).map(
-    (_, index) => `uint${(index + 1) * 8}`,
-  );
-  const bytes = Array.from(new Array(32)).map(
-    (_, index) => `bytes${index + 1}`,
-  );
-
-  /**
-   * fixed and ufixed
-   * This value type also can be declared keywords such as ufixedMxN and fixedMxN.
-   * The M represents the amount of bits that the type takes,
-   * with N representing the number of decimal points that are available.
-   *  M has to be divisible by 8, and a number from 8 to 256.
-   * N has to be a value between 0 and 80, also being inclusive.
-   */
-  const fixedM = Array.from(new Array(32)).map(
-    (_, index) => `fixed${(index + 1) * 8}`,
-  );
-  const ufixedM = Array.from(new Array(32)).map(
-    (_, index) => `ufixed${(index + 1) * 8}`,
-  );
-  const fixed = Array.from(new Array(80)).map((_, index) =>
-    fixedM.map((aFixedM) => `${aFixedM}x${index + 1}`),
-  );
-  const ufixed = Array.from(new Array(80)).map((_, index) =>
-    ufixedM.map((auFixedM) => `${auFixedM}x${index + 1}`),
-  );
-
-  return [
-    ...types,
-    ...ints,
-    ...uints,
-    ...bytes,
-    ...fixed.flat(),
-    ...ufixed.flat(),
-  ];
-};
-
-const SOLIDITY_TYPES = solidityTypes();
-
-const stripArrayType = (potentialArrayType) =>
-  potentialArrayType.replace(/\[[[0-9]*\]*/gu, '');
-
-const stripOneLayerofNesting = (potentialArrayType) =>
-  potentialArrayType.replace(/\[[[0-9]*\]/u, '');
-
-const isArrayType = (potentialArrayType) =>
-  potentialArrayType.match(/\[[[0-9]*\]*/u) !== null;
-
-const isSolidityType = (type) => SOLIDITY_TYPES.includes(type);
-
-export const sanitizeMessage = (msg, primaryType, types) => {
-  if (!types) {
-    throw new Error(`Invalid types definition`);
-  }
-
-  // Primary type can be an array.
-  const isArray = primaryType && isArrayType(primaryType);
-  if (isArray) {
-    return {
-      value: msg.map((value) =>
-        sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
-      ),
-      type: primaryType,
-    };
-  } else if (isSolidityType(primaryType)) {
-    return { value: msg, type: primaryType };
-  }
-
-  // If not, assume to be struct
-  const baseType = isArray ? stripArrayType(primaryType) : primaryType;
-
-  const baseTypeDefinitions = types[baseType];
-  if (!baseTypeDefinitions) {
-    throw new Error(`Invalid primary type definition`);
-  }
-
-  const sanitizedStruct = {};
-  const msgKeys = Object.keys(msg);
-  msgKeys.forEach((msgKey) => {
-    const definedType = Object.values(baseTypeDefinitions).find(
-      (baseTypeDefinition) => baseTypeDefinition.name === msgKey,
-    );
-
-    if (!definedType) {
-      return;
-    }
-
-    sanitizedStruct[msgKey] = sanitizeMessage(
-      msg[msgKey],
-      definedType.type,
-      types,
-    );
-  });
-  return { value: sanitizedStruct, type: primaryType };
-};
-
-export function getAssetImageURL(image, ipfsGateway) {
-  if (!image || typeof image !== 'string') {
-    return '';
-  }
-
-  if (ipfsGateway && image.startsWith('ipfs://')) {
-    return getFormattedIpfsUrl(ipfsGateway, image, true);
-  }
-  return image;
-}
-
-export function roundToDecimalPlacesRemovingExtraZeroes(
-  numberish,
-  numberOfDecimalPlaces,
-) {
-  if (numberish === undefined || numberish === null) {
-    return '';
-  }
-  return new Numeric(
-    new Numeric(numberish, 10).toFixed(numberOfDecimalPlaces),
-    10,
-  ).toNumber();
-}
 
 /**
- * Gets the name of the SLIP-44 protocol corresponding to the specified
- * `coin_type`.
+ * A utility function for retrieving Snap-related permission locale messages.
+ * Mainly exists so that our locale message verification script does
+ * not misclassify the related messages as unused.
  *
- * @param {string | number} coinType - The SLIP-44 `coin_type` value whose name
- * to retrieve.
- * @returns {string | undefined} The name of the protocol if found.
+ * @param {Function} t - The translation function.
+ * @param {string} permissionName - The name of the permission to get the locale
+ * message key for.
+ * @returns {string} The locale message for the given permission name, or
+ * the message for unrecognized permissions if the permission name is not
+ * recognized.
  */
-export function coinTypeToProtocolName(coinType) {
-  if (String(coinType) === '1') {
-    return 'Test Networks';
-  }
-  return slip44[coinType]?.name || undefined;
-}
-
-/**
- * Tests "nullishness". Used to guard a section of a component from being
- * rendered based on a value.
- *
- * @param {any} value - A value (literally anything).
- * @returns `true` if the value is null or undefined, `false` otherwise.
- */
-export function isNullish(value) {
-  return value === null || value === undefined;
-}
-
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-/**
- * @param {string[]} path
- * @param {string} curve
- * @returns {string | null}
- */
-export function getSnapDerivationPathName(path, curve) {
-  const pathMetadata = SNAPS_DERIVATION_PATHS.find(
-    (derivationPath) =>
-      derivationPath.curve === curve &&
-      lodash.isEqual(derivationPath.path, path),
-  );
-
-  return pathMetadata?.name ?? null;
-}
-
-export const removeSnapIdPrefix = (snapId) =>
-  snapId?.replace(getSnapPrefix(snapId), '');
-
-export const getSnapName = (snapId, subjectMetadata) => {
-  if (SNAPS_METADATA[snapId]?.name) {
-    return SNAPS_METADATA[snapId].name;
+export function getPermissionLocaleMessage(t, permissionName) {
+  if (permissionName.startsWith('wallet_snap_')) {
+    return t('wallet_snap_', [permissionName.replace('wallet_snap_', '')]);
+  } else if (permissionName.startsWith('snap_getBip44Entropy_')) {
+    // TODO:flask Establish coin_type to protocol name enum per SLIP-44
+    return t('snap_getBip44Entropy_', [
+      permissionName.replace('snap_getBip44Entropy_', ''),
+    ]);
+  } else if (SNAP_PERMISSION_MESSAGES[permissionName]) {
+    return SNAP_PERMISSION_MESSAGES[permissionName](t);
   }
 
-  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
-};
-
-export const getDedupedSnaps = (request, permissions) => {
-  const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY];
-  const requestedSnaps = permission?.caveats[0].value;
-  const currentSnaps =
-    permissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value;
-
-  if (!isObject(currentSnaps) && requestedSnaps) {
-    return Object.keys(requestedSnaps);
-  }
-
-  const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
-  const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
-  const dedupedSnaps = requestedSnapKeys.filter(
-    (snapId) => !currentSnapKeys.includes(snapId),
-  );
-
-  return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
-};
-
+  return t('unknownPermission', [permissionName]);
+}
 ///: END:ONLY_INCLUDE_IN
-
-/**
- * The method escape RTL character in string
- *
- * @param {*} value
- * @returns {(string|*)} escaped string or original param value
- */
-export const sanitizeString = (value) => {
-  if (!value) {
-    return value;
-  }
-  if (!lodash.isString(value)) {
-    return value;
-  }
-  const regex = /\u202E/giu;
-  return value.replace(regex, '\\u202E');
-};
-
-/**
- * This method checks current provider type and returns its string representation
- *
- * @param {*} provider
- * @param {*} t
- * @returns
- */
-
-export const getNetworkNameFromProviderType = (providerName) => {
-  if (providerName === NETWORK_TYPES.RPC) {
-    return '';
-  }
-  return providerName;
-};
-
-/**
- * Checks if the given keyring type is able to export an account.
- *
- * @param keyringType - The type of the keyring.
- * @returns {boolean} `false` if the keyring type includes 'Hardware' or 'Snap', `true` otherwise.
- */
-export const isAbleToExportAccount = (keyringType = '') => {
-  return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
-};
-
-/**
- * Checks if a tokenId in Hex or decimal format already exists in an object.
- *
- * @param {string} address - collection address.
- * @param {string} tokenId - tokenId to search for
- * @param {*} obj - object to look into
- * @returns {boolean} `false` if tokenId does not already exist.
- */
-export const checkTokenIdExists = (address, tokenId, obj) => {
-  // check if input tokenId is hexadecimal
-  // If it is convert to decimal and compare with existing tokens
-  const isHex = isStrictHexString(tokenId);
-  let convertedTokenId = tokenId;
-  if (isHex) {
-    // Convert to decimal
-    convertedTokenId = hexToDecimal(tokenId);
-  }
-
-  if (obj[address]) {
-    const value = obj[address];
-    return lodash.some(value.nfts, (nft) => {
-      return (
-        nft.address === address &&
-        (isEqualCaseInsensitive(nft.tokenId, tokenId) ||
-          isEqualCaseInsensitive(nft.tokenId, convertedTokenId.toString()))
-      );
-    });
-  }
-  return false;
-};
