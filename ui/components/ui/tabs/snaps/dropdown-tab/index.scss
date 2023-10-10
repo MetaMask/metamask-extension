@@ -1,5 +1,5 @@
 %select-box-padding {
-    padding: 8px 20px 0 4px;
+  padding: 8px 20px 0 4px;
 }
 
 %select-box-text-styles {
@@ -10,10 +10,10 @@
 }
 
 .transaction-insight-dropdown-wrapper {
-
   &::before {
     @extend %select-box-padding;
     @extend %select-box-text-styles;
+
     content: attr(title);
     visibility: hidden;
     pointer-events: none;
@@ -25,7 +25,8 @@
 .transaction-insight-dropdown {
   cursor: pointer;
 
-  &, select {
+  &,
+  select {
     position: absolute;
     top: 0;
     left: 0;
@@ -34,6 +35,7 @@
 
   select {
     @extend %select-box-text-styles;
+
     border: none;
     cursor: pointer;
   }
