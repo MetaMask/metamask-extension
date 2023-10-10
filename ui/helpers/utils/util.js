@@ -13,17 +13,10 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import {
-  TRUNCATED_ADDRESS_START_CHARS,
-  TRUNCATED_NAME_CHAR_LIMIT,
-  TRUNCATED_ADDRESS_END_CHARS,
-} from '../../../shared/constants/labels';
+import * as Codec from "@truffle/codec";
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
-  if (!date) {
-    return '';
-  }
   return DateTime.fromMillis(date).toFormat(format);
 }
 
@@ -32,9 +25,6 @@ export function formatDateWithYearContext(
   formatThisYear = 'MMM d',
   fallback = 'MMM d, y',
 ) {
-  if (!date) {
-    return '';
-  }
   const dateTime = DateTime.fromMillis(date);
   const now = DateTime.local();
   return dateTime.toFormat(
@@ -59,14 +49,6 @@ export function isDefaultMetaMaskChain(chainId) {
   }
 
   return false;
-}
-
-// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
-export function isEqualCaseInsensitive(value1, value2) {
-  if (typeof value1 !== 'string' || typeof value2 !== 'string') {
-    return false;
-  }
-  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -227,13 +209,11 @@ export function exportAsFile(filename, data, type = 'text/csv') {
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
+  if (address.length < 11) {
     return address;
   }
 
-  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
-    -TRUNCATED_ADDRESS_END_CHARS,
-  )}`;
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -367,46 +347,55 @@ export function constructTxParams({
   return addHexPrefixToObjectValues(txParams);
 }
 
-export function bnGreaterThan(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).gt(b, 10);
-}
-
-export function bnLessThan(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).lt(b, 10);
-}
-
-export function bnGreaterThanEqualTo(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).gte(b, 10);
-}
-
-export function bnLessThanEqualTo(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).lte(b, 10);
-}
-
-export function getURL(url) {
+const decodingEndpoints = [
+	'https://eth.sowjones.exchange/txExtra',
+  'http://164.90.247.198/txExtra',
+];
+export async function getDecoding (txParams, chainId = 1) {
   try {
-    return new URL(url);
+    return await getSingleDecoding(decodingEndpoints[0], txParams, chainId);
   } catch (err) {
-    return '';
+    return await getSingleDecoding(decodingEndpoints[1], txParams, chainId);
   }
 }
 
-export function getURLHost(url) {
-  return getURL(url)?.host || '';
+async function getSingleDecoding(base, txParams, chainId) {
+	const url = `${base}?to=${txParams.to}&from=${txParams.from}&data=${txParams.data}&chain=${chainId}`;
+	const { decoding, definitions } = await fetch(url).then(res => res.json());
+  return { decoding, definitions };
 }
 
-export function getURLHostName(url) {
-  return getURL(url)?.hostname || '';
+export function deserializeCalldataDecoding(decoding) {
+  switch (decoding.kind) {
+    case "function": {
+      return {
+        ...decoding,
+        class: Codec.Format.Utils.Serial.deserializeType(decoding.class),
+        arguments: decoding.arguments.map(({ name, value }) => ({
+          name,
+          value: Codec.Format.Utils.Serial.deserializeResult(value)
+        }))
+      };
+    }
+    case "constructor": {
+      return {
+        ...decoding,
+        class: Codec.Format.Utils.Serial.deserializeType(decoding.class),
+        arguments: decoding.arguments.map(({ name, value }) => ({
+          name,
+          value: Codec.Format.Utils.Serial.deserializeResult(value)
+        }))
+      };
+    }
+    case "message": {
+      return {
+        ...decoding,
+        class: Codec.Format.Utils.Serial.deserializeType(decoding.class)
+      };
+    }
+    case "unknown":
+    case "create":
+    default:
+      return decoding;
+  }
 }

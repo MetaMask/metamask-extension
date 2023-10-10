@@ -1,0 +1,97 @@
+.eth-tx-params {
+  padding: 8px;
+  width: 343px;
+  background: white;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+
+  font-family: Euclid Circular B, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 172%;
+}
+
+.solidity-value > div {
+  padding-left: 16px;
+}
+
+.eth-tx-params summary::marker {
+  color: #328CF5;
+}
+
+.eth-tx-params .solidity-func-name {
+  width: fit-content;
+  padding: 4px;
+  text-transform: uppercase;
+  border:1px solid rgb(149, 149, 149);
+  color:rgb(149,149,149);
+  border-radius: 4px;
+}
+
+.eth-tx-params .sol-value {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.eth-tx-params .sol-value > {
+  overflow: ellipses;
+}
+
+.eth-tx-params ol {
+  list-style: none;
+  padding: 0px;
+  max-width: inherit;
+}
+
+.eth-tx-params > ol {
+  margin-left: 16px;
+}
+
+/*
+Use this parameter to change the indentation!! */
+.eth-tx-params ol ol:not(:first-child) {
+  padding-left: 8px;
+}
+
+pre.solidity-raw {
+  text-align: left;
+}
+
+.solidity-address {
+  display: flex;
+  flex-direction: row;
+}
+
+.solidity-address :first-child {
+  width: 16px;
+  height: 16px;
+  margin: 0px 8px;
+}
+
+.solidity-item .param-name {
+  padding-right: 4px;
+  color: black;
+}
+
+.solidity-value {
+  color: #6A737D;
+  overflow-x: hidden;
+}
+
+.eth-tx-params details > summary {
+  color: black;
+  font-family: sans-serif;
+}
+
+.eth-tx-params footer {
+  text-align: center;
+  color: #8d959e;
+}
+
+.eth-tx-params footer a {
+  text-align: center;
+  color: #8d959e;
+}

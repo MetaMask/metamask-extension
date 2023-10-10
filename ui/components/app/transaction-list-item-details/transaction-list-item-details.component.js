@@ -3,19 +3,18 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import SenderToRecipient from '../../ui/sender-to-recipient';
-import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
-import Disclosure from '../../ui/disclosure';
+import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
+import { getDecoding, deserializeCalldataDecoding } from '../../../helpers/utils/util';
+import EthTxParams from '../../../../ui/components/ui/eth-tx-params';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
-import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { getURLHostName } from '../../../helpers/utils/util';
-import TransactionDecoding from '../transaction-decoding';
+
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -34,6 +33,7 @@ export default class TransactionListItemDetails extends PureComponent {
     showSpeedUp: PropTypes.bool,
     showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
+    cancelDisabled: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
@@ -45,11 +45,14 @@ export default class TransactionListItemDetails extends PureComponent {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string,
-    transactionStatus: PropTypes.func,
   };
 
   state = {
     justCopied: false,
+    decoding: null,
+    definitions: null,
+    loading: false,
+    failedToLoadDecoding: false,
   };
 
   handleBlockExplorerClick = () => {
@@ -68,7 +71,9 @@ export default class TransactionListItemDetails extends PureComponent {
       properties: {
         link_type: 'Transaction Block Explorer',
         action: 'Transaction Details',
-        block_explorer_domain: getURLHostName(blockExplorerLink),
+        block_explorer_domain: blockExplorerLink
+          ? new URL(blockExplorerLink)?.hostname
+          : '',
       },
     });
 
@@ -109,10 +114,63 @@ export default class TransactionListItemDetails extends PureComponent {
   };
 
   componentDidMount() {
-    const { recipientAddress, tryReverseResolveAddress } = this.props;
+    const {
+      recipientAddress,
+      tryReverseResolveAddress,
+      transactionGroup,
+    } = this.props;
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
+    }
+
+    const { loading, definitions, decoding, failedToLoadDecoding } = this.state;
+
+    if (!definitions && !decoding && !loading && !failedToLoadDecoding) {
+      const txParams = transactionGroup.initialTransaction.txParams;
+      this.getDecoding(txParams);
+    }
+  }
+
+  renderCancel() {
+    const { t } = this.context;
+    const { showCancel, cancelDisabled } = this.props;
+
+    if (!showCancel) {
+      return null;
+    }
+
+    return cancelDisabled ? (
+      <Tooltip title={t('notEnoughGas')} position="bottom">
+        <div>
+          <Button
+            type="raised"
+            onClick={this.handleCancel}
+            className="transaction-list-item-details__header-button"
+            disabled
+          >
+            {t('cancel')}
+          </Button>
+        </div>
+      </Tooltip>
+    ) : (
+      <Button
+        type="raised"
+        onClick={this.handleCancel}
+        className="transaction-list-item-details__header-button"
+      >
+        {t('cancel')}
+      </Button>
+    );
+  }
+
+  async getDecoding (txParams, chainId) {
+    this.setState({ loading: true, failedToLoadDecoding: false });
+    try {
+      const { decoding, definitions } = await getDecoding(txParams, chainId);
+      this.setState({ decoding, definitions, loading: false });
+    } catch (err) {
+      this.setState({ loading: false, failedToLoadDecoding: true });
     }
   }
 
@@ -133,8 +191,6 @@ export default class TransactionListItemDetails extends PureComponent {
       title,
       onClose,
       recipientNickname,
-      showCancel,
-      transactionStatus: TransactionStatus,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -142,27 +198,60 @@ export default class TransactionListItemDetails extends PureComponent {
     } = transactionGroup;
     const { hash } = transaction;
 
+    const { decoding, definitions, loading, failedToLoadDecoding } = this.state;
+    let data;
+    if (decoding && definitions) {
+      data = deserializeCalldataDecoding(decoding);
+    }
+
     return (
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
-          <div className="transaction-list-item-details__operations">
+          <div className="transaction-list-item-details__header">
+            <div>{t('details')}</div>
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
-                  type="primary"
+                  type="raised"
                   onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button-rounded-button"
+                  className="transaction-list-item-details__header-button"
                 >
                   {t('speedUp')}
                 </Button>
               )}
-              {showCancel && (
-                <CancelButton
-                  transaction={transaction}
-                  cancelTransaction={this.handleCancel}
-                  detailsModal
-                />
-              )}
+              {this.renderCancel()}
+              <Tooltip
+                wrapperClassName="transaction-list-item-details__header-button"
+                containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                title={
+                  justCopied ? t('copiedTransactionId') : t('copyTransactionId')
+                }
+              >
+                <Button
+                  type="raised"
+                  onClick={this.handleCopyTxId}
+                  disabled={!hash}
+                >
+                  <Copy size={10} color="#3098DC" />
+                </Button>
+              </Tooltip>
+              <Tooltip
+                wrapperClassName="transaction-list-item-details__header-button"
+                containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                title={
+                  blockExplorerUrl
+                    ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
+                    : t('viewOnEtherscan')
+                }
+              >
+                <Button
+                  type="raised"
+                  onClick={this.handleBlockExplorerClick}
+                  disabled={!hash}
+                >
+                  <img src="./images/arrow-popout.svg" alt="" />
+                </Button>
+              </Tooltip>
               {showRetry && (
                 <Tooltip title={t('retryTransaction')}>
                   <Button
@@ -176,49 +265,11 @@ export default class TransactionListItemDetails extends PureComponent {
               )}
             </div>
           </div>
-          <div className="transaction-list-item-details__header">
-            <div className="transaction-list-item-details__tx-status">
-              <div>Status</div>
-              <div>
-                <TransactionStatus />
-              </div>
-            </div>
-            <div className="transaction-list-item-details__tx-hash">
-              <div>
-                <Button
-                  type="link"
-                  onClick={this.handleBlockExplorerClick}
-                  disabled={!hash}
-                >
-                  {t('viewOnBlockExplorer')}
-                </Button>
-              </div>
-              <div>
-                <Tooltip
-                  wrapperClassName="transaction-list-item-details__header-button"
-                  containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                  title={justCopied ? t('copiedExclamation') : null}
-                >
-                  <Button
-                    type="link"
-                    onClick={this.handleCopyTxId}
-                    disabled={!hash}
-                  >
-                    {t('copyTransactionId')}
-                  </Button>
-                </Tooltip>
-              </div>
-            </div>
-          </div>
           <div className="transaction-list-item-details__body">
-            <div className="transaction-list-item-details__sender-to-recipient-header">
-              <div>t('from')</div>
-              <div>t('to')</div>
-            </div>
             <div className="transaction-list-item-details__sender-to-recipient-container">
               <SenderToRecipient
                 warnUserOnAccountMismatch={false}
-                variant={DEFAULT_VARIANT}
+                variant={FLAT_VARIANT}
                 addressOnly
                 recipientEns={recipientEns}
                 recipientAddress={recipientAddress}
@@ -253,26 +304,16 @@ export default class TransactionListItemDetails extends PureComponent {
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
-              <Disclosure title="Activity log" size="small">
-                <TransactionActivityLog
-                  transactionGroup={transactionGroup}
-                  className="transaction-list-item-details__transaction-activity-log"
-                  onCancel={this.handleCancel}
-                  onRetry={this.handleRetry}
-                  isEarliestNonce={isEarliestNonce}
-                />
-              </Disclosure>
-              {transactionGroup.initialTransaction?.txParams?.data ? (
-                <Disclosure title="Transaction data" size="small">
-                  <TransactionDecoding
-                    title={t('transactionData')}
-                    to={transactionGroup.initialTransaction.txParams?.to}
-                    inputData={
-                      transactionGroup.initialTransaction.txParams?.data
-                    }
-                  />
-                </Disclosure>
-              ) : null}
+              { data ? <div>
+                <EthTxParams decoding={data} definitions={definitions} showName="true"></EthTxParams>
+              </div> : undefined }
+              <TransactionActivityLog
+                transactionGroup={transactionGroup}
+                className="transaction-list-item-details__transaction-activity-log"
+                onCancel={this.handleCancel}
+                onRetry={this.handleRetry}
+                isEarliestNonce={isEarliestNonce}
+              />
             </div>
           </div>
         </div>
