@@ -15,7 +15,7 @@ export const isBlockedUrl = async (
   try {
     // check if the URL is HTTPS
     const parsedUrl = new URL(url);
-    if (ALLOWED_PROTOCOLS.includes(parsedUrl.protocol)) {
+    if (!ALLOWED_PROTOCOLS.includes(parsedUrl.protocol)) {
       return true;
     }
 
