@@ -39,6 +39,8 @@ const SnapAccountRedirectContent = ({
     >
       <Box
         gap={4}
+        paddingLeft={2}
+        paddingRight={2}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
@@ -48,7 +50,7 @@ const SnapAccountRedirectContent = ({
           textAlign={TextAlign.Center}
           variant={TextVariant.headingLg}
         >
-          {t('snapAccountRedirectContinueInSiteTitle')}
+          {t('snapAccountRedirectFinishSigningTitle')}
         </Text>
         {isBlockedUrl ? (
           <Box display={Display.Flex} paddingLeft={4} paddingRight={4}>
@@ -79,11 +81,13 @@ const SnapAccountRedirectContent = ({
         >
           {t('snapAccountRedirectSiteDescription', [snapName])}
         </Text>
-        <SnapAccountRedirectMessage
-          snapName={snapName}
-          url={url}
-          message={message}
-        />
+        {url !== '' || message !== '' ? (
+          <SnapAccountRedirectMessage
+            snapName={snapName}
+            url={url}
+            message={message}
+          />
+        ) : null}
       </Box>
     </Box>
   );

@@ -14,41 +14,51 @@ const SnapAccountRedirectMessage = ({
   url,
   message,
 }: Pick<SnapAccountRedirectProps, 'snapName' | 'url' | 'message'>) => {
+  /* eslint-disable no-negated-condition */
   return (
     <SnapDelineator snapName={snapName}>
-      <Text variant={TextVariant.bodySm}>{message}</Text>
-      <Box paddingTop={2} display={Display.Flex}>
-        <TextField
-          id="snap-account-redirect-url"
-          value={url}
-          autoComplete={false}
-          autoFocus={false}
-          readOnly
-          margin="normal"
-          largeLabel
-          startAccessory={null}
-          endAccessory={<RedirectUrlIcon url={url} />}
-          inputProps={{
-            color: TextColor.primaryDefault,
-          }}
-          truncate={false}
-          className=""
-          defaultValue=""
-          disabled={false}
-          error={false}
-          inputRef={null}
-          maxLength={undefined}
-          name=""
-          placeholder=""
-          required={false}
-          testId=""
-          type="text"
-          onBlur={null}
-          onChange={null}
-          onClick={null}
-          onFocus={null}
-        />
-      </Box>
+      {message !== '' ? (
+        <Text
+          variant={TextVariant.bodySm}
+          data-testid="snap-account-redirect-message"
+        >
+          {message}
+        </Text>
+      ) : null}
+      {url !== '' ? (
+        <Box paddingTop={2} display={Display.Block}>
+          <TextField
+            id="snap-account-redirect-url"
+            testId="snap-account-redirect-url"
+            value={url}
+            autoComplete={false}
+            autoFocus={false}
+            readOnly
+            margin="normal"
+            largeLabel
+            startAccessory={null}
+            endAccessory={<RedirectUrlIcon url={url} />}
+            inputProps={{
+              color: TextColor.primaryDefault,
+            }}
+            truncate={false}
+            className=""
+            defaultValue=""
+            disabled={false}
+            error={false}
+            inputRef={null}
+            maxLength={undefined}
+            name=""
+            placeholder=""
+            required={false}
+            type="text"
+            onBlur={null}
+            onChange={null}
+            onClick={null}
+            onFocus={null}
+          />
+        </Box>
+      ) : null}
     </SnapDelineator>
   );
 };

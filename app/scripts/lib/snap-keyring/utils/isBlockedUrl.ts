@@ -1,4 +1,5 @@
 import { PhishingController } from '@metamask/phishing-controller';
+import { ALLOWED_PROTOCOLS } from '../../keyring-snaps-permissions';
 
 /**
  * Checks whether a given URL is blocked due to not using HTTPS or being recognized as a phishing URL.
@@ -14,7 +15,7 @@ export const isBlockedUrl = async (
   try {
     // check if the URL is HTTPS
     const parsedUrl = new URL(url);
-    if (parsedUrl.protocol !== 'https:') {
+    if (ALLOWED_PROTOCOLS.includes(parsedUrl.protocol)) {
       return true;
     }
 

@@ -4167,11 +4167,11 @@
   "snapAccountCreated": {
     "message": "Your account is ready!"
   },
-  "snapAccountRedirectContinueInSiteTitle": {
-    "message": "Continue in site"
+  "snapAccountRedirectFinishSigningTitle": {
+    "message": "Finish signing"
   },
   "snapAccountRedirectSiteDescription": {
-    "message": "You’ll need to finish signing on the $1 site:"
+    "message": "Follow the instructions from $1"
   },
   "snapAccountRemoved": {
     "message": "Account removed"

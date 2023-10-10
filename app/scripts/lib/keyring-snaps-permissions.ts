@@ -38,7 +38,7 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
 /**
  * List of allowed protocols. On Flask, HTTP is also allowed for testing.
  */
-const ALLOWED_PROTOCOLS: string[] = [
+export const ALLOWED_PROTOCOLS: string[] = [
   'https:',
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   'http:',
