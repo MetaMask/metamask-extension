@@ -28,6 +28,14 @@ export function getCustomGasPrice(state) {
   return state.gas.customData.price;
 }
 
+export function getCustomMaxFeePerGas(state) {
+  return state.gas.customData.maxFeePerGas;
+}
+
+export function getCustomMaxPriorityFeePerGas(state) {
+  return state.gas.customData.maxPriorityFeePerGas;
+}
+
 export function getBasicGasEstimateLoadingStatus(state) {
   return state.gas.basicEstimateStatus === 'LOADING';
 }

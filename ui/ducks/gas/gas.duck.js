@@ -3,13 +3,23 @@ import BigNumber from 'bignumber.js';
 import {
   getStorageItem,
   setStorageItem,
-} from '../../../shared/modules/storage-helpers';
+} from '../../helpers/utils/storage-helpers';
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
 } from '../../helpers/utils/conversions.util';
 import { getIsMainnet, getCurrentChainId } from '../../selectors';
-import fetchWithCache from '../../../shared/modules/fetch-with-cache';
+import fetchWithCache from '../../helpers/utils/fetch-with-cache';
+import {
+  BASIC_GAS_ESTIMATE_STATUS,
+  RESET_CUSTOM_DATA,
+  SET_BASIC_GAS_ESTIMATE_DATA,
+  SET_CUSTOM_GAS_LIMIT,
+  SET_CUSTOM_GAS_PRICE,
+  SET_ESTIMATE_SOURCE,
+  SET_CUSTOM_MAX_FEE_PER_GAS,
+  SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS,
+} from './gas-action-constants';
 
 export const BASIC_ESTIMATE_STATES = {
   LOADING: 'LOADING',
@@ -22,18 +32,12 @@ export const GAS_SOURCE = {
   ETHGASPRICE: 'eth_gasprice',
 };
 
-// Actions
-const BASIC_GAS_ESTIMATE_STATUS = 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS';
-const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA';
-const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA';
-const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT';
-const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE';
-const SET_ESTIMATE_SOURCE = 'metamask/gas/SET_ESTIMATE_SOURCE';
-
 const initState = {
   customData: {
     price: null,
     limit: null,
+    maxFeePerGas: null,
+    maxPriorityFeePerGas: null,
   },
   basicEstimates: {
     safeLow: null,
@@ -71,6 +75,22 @@ export default function reducer(state = initState, action) {
         customData: {
           ...state.customData,
           limit: action.value,
+        },
+      };
+    case SET_CUSTOM_MAX_FEE_PER_GAS:
+      return {
+        ...state,
+        customData: {
+          ...state.customData,
+          maxFeePerGas: action.value,
+        },
+      };
+    case SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS:
+      return {
+        ...state,
+        customData: {
+          ...state.customData,
+          maxPriorityFeePerGas: action.value,
         },
       };
     case RESET_CUSTOM_DATA:
@@ -218,9 +238,24 @@ export function setCustomGasPrice(newPrice) {
 }
 
 export function setCustomGasLimit(newLimit) {
+  console.log('newLimit', newLimit);
   return {
     type: SET_CUSTOM_GAS_LIMIT,
     value: newLimit,
+  };
+}
+
+export function setCustomMaxFeePerGas(newMaxFeePerGas) {
+  return {
+    type: SET_CUSTOM_MAX_FEE_PER_GAS,
+    value: newMaxFeePerGas,
+  };
+}
+
+export function setCustomMaxPriorityFeePerGas(newMaxPriorityFeePerGas) {
+  return {
+    type: SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS,
+    value: newMaxPriorityFeePerGas,
   };
 }
 
