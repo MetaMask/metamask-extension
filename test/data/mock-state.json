@@ -1,105 +1,25 @@
 {
-  "DNS": {
-    "resolution": null
-  },
   "appState": {
-    "networkDropdownOpen": false,
-    "gasIsLoading": false,
     "isLoading": false,
-    "modal": {
-      "open": false,
-      "modalState": {
-        "name": null,
-        "props": {}
-      },
-      "previousModalState": {
-        "name": null
-      }
-    },
-    "warning": null
-  },
-  "history": {
-    "mostRecentOverviewPage": "/mostRecentOverviewPage"
+    "gasIsLoading": false,
+    "currentView": {
+      "name": "accountDetail",
+      "detailView": null,
+      "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+    }
   },
   "metamask": {
-    "ipfsGateway": "dweb.link",
-    "dismissSeedBackUpReminder": false,
-    "usePhishDetect": true,
-    "useMultiAccountBalanceChecker": false,
-    "participateInMetaMetrics": false,
-    "gasEstimateType": "fee-market",
-    "showBetaHeader": false,
-    "gasFeeEstimates": {
-      "low": {
-        "minWaitTimeEstimate": 180000,
-        "maxWaitTimeEstimate": 300000,
-        "suggestedMaxPriorityFeePerGas": "3",
-        "suggestedMaxFeePerGas": "53"
-      },
-      "medium": {
-        "minWaitTimeEstimate": 15000,
-        "maxWaitTimeEstimate": 60000,
-        "suggestedMaxPriorityFeePerGas": "7",
-        "suggestedMaxFeePerGas": "70"
-      },
-      "high": {
-        "minWaitTimeEstimate": 0,
-        "maxWaitTimeEstimate": 15000,
-        "suggestedMaxPriorityFeePerGas": "10",
-        "suggestedMaxFeePerGas": "100"
-      },
-      "estimatedBaseFee": "50",
-      "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
-      "baseFeeTrend": "up",
-      "latestPriorityFeeRange": ["1", "40"],
-      "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
-      "priorityFeeTrend": "down",
-      "networkCongestion": 0.90625
-    },
-    "snaps": [{}],
-    "preferences": {
-      "hideZeroBalanceTokens": false,
-      "showFiatInTestnets": false,
-      "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
-    },
-    "ensResolutionsByAddress": {},
-    "isAccountMenuOpen": false,
-    "isUnlocked": true,
-    "alertEnabledness": {
-      "unconnectedAccount": true
-    },
     "featureFlags": {
       "showIncomingTransactions": true
     },
-    "network": "5",
+    "network": "4",
     "provider": {
-      "type": "rpc",
-      "chainId": "0x5",
-      "ticker": "ETH",
-      "id": "testNetworkConfigurationId"
-    },
-    "networkConfigurations": {
-      "testNetworkConfigurationId": {
-        "rpcUrl": "https://testrpc.com",
-        "chainId": "0x1"
-      }
+      "chainId": "0x4"
     },
     "keyrings": [
       {
-        "type": "HD Key Tree",
-        "accounts": [
-          "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-          "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
-        ]
-      },
-      {
         "type": "Ledger Hardware",
-        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"]
-      },
-      {
-        "type": "Simple Key Pair",
-        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+        "accounts": ["0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"]
       }
     ],
     "identities": {
@@ -107,17 +27,9 @@
         "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
         "name": "Test Account"
       },
-      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
-        "name": "Test Account 2"
-      },
       "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
         "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "name": "Test Ledger 1"
-      },
-      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-        "name": "Test Account 3",
-        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+        "name": "Test Account 2"
       }
     },
     "networkDetails": {
@@ -125,35 +37,16 @@
         "1559": true
       }
     },
-    "frequentRpcListDetail": [],
-    "subjectMetadata": {},
-    "notifications": {
-      "test": {
-        "id": "test",
-        "origin": "local:http://localhost:8086/",
-        "createdDate": 1652967897732,
-        "readDate": null,
-        "message": "Hello, http://localhost:8086!"
-      },
-      "test2": {
-        "id": "test2",
-        "origin": "local:http://localhost:8086/",
-        "createdDate": 1652967897732,
-        "readDate": 1652967897732,
-        "message": "Hello, http://localhost:8086!"
-      }
-    },
     "cachedBalances": {},
     "incomingTransactions": {},
     "unapprovedTxs": {
       "8393540981007587": {
-        "chainId": "0x5",
         "id": 8393540981007587,
         "time": 1536268017676,
         "status": "unapproved",
         "metamaskNetworkId": "4",
+        "loadingDefaults": false,
         "txParams": {
-          "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
           "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
           "value": "0x0",
@@ -166,6 +59,7 @@
             "time": 1536268017676,
             "status": "unapproved",
             "metamaskNetworkId": "4",
+            "loadingDefaults": true,
             "txParams": {
               "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
               "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
@@ -176,6 +70,14 @@
           },
           [
             {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1536268017685
+            }
+          ],
+          [
+            {
               "op": "add",
               "path": "/origin",
               "value": "MetaMask",
@@ -184,25 +86,17 @@
             }
           ]
         ],
-        "origin": "metamask"
+        "origin": "MetaMask"
       }
     },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "balance": "0x346ba7725f412cbfdb",
+        "balance": "0x0",
         "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
-      },
-      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
-        "balance": "0x0"
       },
       "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
         "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "balance": "0x0"
-      },
-      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
         "balance": "0x0"
       }
     },
@@ -232,10 +126,10 @@
     "nativeCurrency": "ETH",
     "conversionRate": 556.12,
     "addressBook": {
-      "0x5": {
+      "0x4": {
         "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
           "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-          "chainId": "0x5",
+          "chainId": "0x4",
           "isEns": false,
           "memo": "",
           "name": "Address Book Account 1"
@@ -252,246 +146,25 @@
     "unapprovedEncryptionPublicKeyMsgCount": 0,
     "unapprovedTypedMessages": {},
     "unapprovedTypedMessagesCount": 0,
+    "send": {
+      "gasLimit": "0x5208",
+      "gasPrice": "0xee6b2800",
+      "gasTotal": "0x4c65c6294000",
+      "tokenBalance": null,
+      "from": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+      "to": "",
+      "amount": "1bc16d674ec80000",
+      "memo": "",
+      "errors": {},
+      "maxModeOn": false,
+      "editingTransactionId": null,
+      "toNickname": ""
+    },
     "useTokenDetection": true,
-    "useCurrencyRateCheck": true,
     "advancedGasFee": {
-      "maxBaseFee": "75",
+      "maxBaseFeeMultiplier": "1.5",
+      "maxBaseFeeGWEI": "100",
       "priorityFee": "2"
-    },
-    "nftsDropdownState": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "0x5": {
-          "0x495f947276749Ce646f68AC8c248420045cb7b5e": false
-        }
-      }
-    },
-    "allNftContracts": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "1": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "description": null,
-            "name": "Munk Generator",
-            "logo": null,
-            "symbol": "MUNK",
-            "assetContractType": "non-fungible",
-            "createdDate": null,
-            "schemaName": "ERC721",
-            "externalLink": null
-          }
-        ],
-        "137": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "description": null,
-            "name": "Munk Generator",
-            "logo": null,
-            "symbol": "MUNK",
-            "assetContractType": "non-fungible",
-            "createdDate": null,
-            "schemaName": "ERC721",
-            "externalLink": null
-          }
-        ],
-        "11155111": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "description": null,
-            "name": "Munk Generator",
-            "logo": null,
-            "symbol": "MUNK",
-            "assetContractType": "non-fungible",
-            "createdDate": null,
-            "schemaName": "ERC721",
-            "externalLink": null
-          }
-        ],
-        "5": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "description": null,
-            "name": "Munk Generator",
-            "logo": null,
-            "symbol": "MUNK",
-            "assetContractType": "non-fungible",
-            "createdDate": null,
-            "schemaName": "ERC721",
-            "externalLink": null
-          },
-          {
-            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-            "description": null,
-            "name": "Punk Generator",
-            "logo": null,
-            "symbol": "PUNK",
-            "assetContractType": "non-fungible",
-            "createdDate": null,
-            "schemaName": "ERC1155",
-            "externalLink": null
-          }
-        ],
-        "153": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "description": null,
-            "name": "Munk Generator",
-            "logo": null,
-            "symbol": "MUNK",
-            "assetContractType": "non-fungible",
-            "createdDate": null,
-            "schemaName": "ERC721",
-            "externalLink": null
-          }
-        ]
-      }
-    },
-    "allNfts": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "1": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "tokenId": "1",
-            "name": "MUNK #1",
-            "description": null,
-            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
-          }
-        ],
-        "137": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "tokenId": "1",
-            "name": "MUNK #1",
-            "description": null,
-            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
-          }
-        ],
-        "11155111": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "tokenId": "1",
-            "name": "MUNK #1",
-            "description": null,
-            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
-          }
-        ],
-        "5": [
-          {
-            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-            "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
-            "name": "Punk #4",
-            "creator": {
-              "user": {
-                "username": null
-              },
-              "profile_img_url": null,
-              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
-              "config": ""
-            },
-            "description": "Red Mohawk bam!",
-            "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
-            "standard": "ERC1155"
-          },
-          {
-            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-            "tokenId": "58076532811975507823669075598676816378162417803895263482849101574415147073537",
-            "name": "Punk #3",
-            "creator": {
-              "user": {
-                "username": null
-              },
-              "profile_img_url": null,
-              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
-              "config": ""
-            },
-            "description": "Clown PUNK!!!",
-            "image": "https://lh3.googleusercontent.com/H7VrxaalZv4PF1B8U7ADuc8AfuqTVyzmMEDQ5OXKlx0Tqu5XiwsKYj4j_pAF6wUJjLMQbSN_0n3fuj84lNyRhFW9hyrxqDfY1IiQEQ",
-            "standard": "ERC1155"
-          },
-          {
-            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-            "tokenId": "58076532811975507823669075598676816378162417803895263482849101573315635445761",
-            "name": "Punk #2",
-            "creator": {
-              "user": {
-                "username": null
-              },
-              "profile_img_url": null,
-              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
-              "config": ""
-            },
-            "description": "Got glasses and black hair!",
-            "image": "https://lh3.googleusercontent.com/CHNTSlKB_Gob-iwTq8jcag6XwBkTqBMLt_vEKeBv18Q4AoPFAEPceqK6mRzkad2s5djx6CT5zbGQwDy81WwtNzViK5dQbG60uAWv",
-            "standard": "ERC1155"
-          },
-          {
-            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-            "tokenId": "58076532811975507823669075598676816378162417803895263482849101572216123817985",
-            "name": "Punk #1",
-            "creator": {
-              "user": {
-                "username": null
-              },
-              "profile_img_url": null,
-              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
-              "config": ""
-            },
-            "image": "https://lh3.googleusercontent.com/4jfPi-nQNWCUXD5qVNVWX7LX2UufU_elEJcvICFlsTdcBXv70asnDEOlI8oKECZxlXq1wseeIXMwmP5tLyOUxMKk",
-            "standard": "ERC1155"
-          },
-          {
-            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
-            "tokenId": "58076532811975507823669075598676816378162417803895263482849101571116612190209",
-            "name": "Punk #4651",
-            "creator": {
-              "user": {
-                "username": null
-              },
-              "profile_img_url": null,
-              "address": "0x806627172af48bd5b0765d3449a7def80d6576ff",
-              "config": ""
-            },
-            "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
-            "standard": "ERC1155"
-          },
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "tokenId": "1",
-            "name": "MUNK #1",
-            "description": null,
-            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
-          },
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "tokenId": "2",
-            "name": "MUNK #2",
-            "description": null,
-            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
-          },
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "tokenId": "3",
-            "name": "MUNK #3",
-            "description": null,
-            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
-          }
-        ],
-        "153": [
-          {
-            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
-            "tokenId": "1",
-            "name": "MUNK #1",
-            "description": null,
-            "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
-          }
-        ]
-      }
     },
     "tokenList": {
       "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
@@ -545,6 +218,7 @@
         "time": 1528133130531,
         "status": "confirmed",
         "metamaskNetworkId": "4",
+        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -559,6 +233,7 @@
             "time": 1528133130531,
             "status": "unapproved",
             "metamaskNetworkId": "4",
+            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -567,6 +242,14 @@
               "gasPrice": "0x3b9aca00"
             }
           },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133130666
+            }
+          ],
           [
             {
               "op": "add",
@@ -715,6 +398,7 @@
         "time": 1528133149983,
         "status": "confirmed",
         "metamaskNetworkId": "4",
+        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -729,6 +413,7 @@
             "time": 1528133149983,
             "status": "unapproved",
             "metamaskNetworkId": "4",
+            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -737,6 +422,14 @@
               "gasPrice": "0x3b9aca00"
             }
           },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133150011
+            }
+          ],
           [
             {
               "op": "add",
@@ -885,6 +578,7 @@
         "time": 1528133180635,
         "status": "confirmed",
         "metamaskNetworkId": "4",
+        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -899,6 +593,7 @@
             "time": 1528133180635,
             "status": "unapproved",
             "metamaskNetworkId": "4",
+            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -907,6 +602,14 @@
               "gasPrice": "0x12a05f200"
             }
           },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133180720
+            }
+          ],
           [
             {
               "op": "add",
@@ -1055,6 +758,7 @@
         "time": 1528133223918,
         "status": "confirmed",
         "metamaskNetworkId": "4",
+        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
@@ -1070,6 +774,7 @@
             "time": 1528133223918,
             "status": "unapproved",
             "metamaskNetworkId": "4",
+            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
@@ -1084,6 +789,11 @@
               "path": "/txParams/gas",
               "value": "0x6169e",
               "timestamp": 1528133225488
+            },
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false
             }
           ],
           [
@@ -1233,6 +943,7 @@
         "time": 1528133291381,
         "status": "confirmed",
         "metamaskNetworkId": "4",
+        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
@@ -1248,6 +959,7 @@
             "time": 1528133291381,
             "status": "unapproved",
             "metamaskNetworkId": "4",
+            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
@@ -1257,6 +969,14 @@
               "gasPrice": "0x3b9aca00"
             }
           },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133291486
+            }
+          ],
           [
             {
               "op": "add",
@@ -1405,6 +1125,7 @@
         "time": 1528133318440,
         "status": "rejected",
         "metamaskNetworkId": "4",
+        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1418,6 +1139,7 @@
             "time": 1528133318440,
             "status": "unapproved",
             "metamaskNetworkId": "4",
+            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62"
@@ -1439,6 +1161,11 @@
               "op": "add",
               "path": "/txParams/gas",
               "value": "0x5208"
+            },
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false
             }
           ],
           [
@@ -1462,26 +1189,6 @@
         ],
         "origin": "tmashuang.github.io"
       }
-    ],
-    "desktopEnabled": false
-  },
-  "send": {
-    "amountMode": "INPUT",
-    "currentTransactionUUID": null,
-    "draftTransactions": {},
-    "eip1559support": false,
-    "gasEstimateIsLoading": true,
-    "gasEstimatePollToken": null,
-    "gasIsSetInModal": false,
-    "gasPriceEstimate": "0x0",
-    "gasLimitMinimum": "0x5208",
-    "gasTotalForLayer1": "0x0",
-    "recipientMode": "CONTACT_LIST",
-    "recipientInput": "",
-    "selectedAccount": {
-      "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-      "balance": "0x0"
-    },
-    "stage": "INACTIVE"
+    ]
   }
 }

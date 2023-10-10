@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
-import {
-  EditGasModes,
-  PriorityLevels,
-} from '../../../../../../shared/constants/gas';
-import { PRIMARY } from '../../../../../helpers/constants/common';
+import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
+import { SECONDARY } from '../../../../../helpers/constants/common';
+import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -18,10 +16,10 @@ import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import { decGWEIToHexWEI } from '../../../../../../shared/modules/conversion.utils';
+import { renderFeeRange } from '../utils';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
-  if (value < 0) {
+  if (value <= 0) {
     return 'editGasMaxPriorityFeeBelowMinimumV2';
   }
   if (
@@ -46,32 +44,37 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
 const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  const { gasLimit, setErrorValue, setMaxPriorityFeePerGas } =
-    useAdvancedGasFeePopoverContext();
-  const { editGasMode, estimateUsed, gasFeeEstimates, maxPriorityFeePerGas } =
-    useGasFeeContext();
+  const {
+    setErrorValue,
+    setMaxPriorityFeePerGas,
+  } = useAdvancedGasFeePopoverContext();
+  const {
+    estimateUsed,
+    gasFeeEstimates,
+    maxPriorityFeePerGas,
+  } = useGasFeeContext();
   const {
     latestPriorityFeeRange,
     historicalPriorityFeeRange,
     priorityFeeTrend,
   } = gasFeeEstimates;
+  const [feeTrend, setFeeTrend] = useState(priorityFeeTrend);
+
   const [priorityFeeError, setPriorityFeeError] = useState();
 
   const [priorityFee, setPriorityFee] = useState(() => {
     if (
-      estimateUsed !== PriorityLevels.custom &&
-      advancedGasFeeValues?.priorityFee &&
-      editGasMode !== EditGasModes.swaps
-    ) {
+      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      advancedGasFeeValues?.priorityFee
+    )
       return advancedGasFeeValues.priorityFee;
-    }
     return maxPriorityFeePerGas;
   });
 
-  const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
 
-  const [priorityFeeInPrimaryCurrency] = useCurrencyDisplay(
-    decGWEIToHexWEI(priorityFee * gasLimit),
+  const [, { value: priorityFeeInFiat }] = useCurrencyDisplay(
+    decGWEIToHexWEI(priorityFee),
     { currency, numberOfDecimals },
   );
 
@@ -87,37 +90,36 @@ const PriorityFeeInput = () => {
       error === 'editGasMaxPriorityFeeBelowMinimumV2',
     );
     setPriorityFeeError(error);
+    if (priorityFeeTrend !== 'level' && priorityFeeTrend !== feeTrend) {
+      setFeeTrend(priorityFeeTrend);
+    }
   }, [
+    feeTrend,
+    priorityFeeTrend,
     gasFeeEstimates,
     priorityFee,
     setErrorValue,
     setMaxPriorityFeePerGas,
     setPriorityFeeError,
+    setFeeTrend,
   ]);
 
   return (
-    <Box
-      marginTop={4}
-      marginLeft={2}
-      marginRight={2}
-      className="priority-fee-input"
-    >
+    <Box margin={[0, 2]}>
       <FormField
-        dataTestId="priority-fee-input"
         error={priorityFeeError ? t(priorityFeeError) : ''}
         onChange={updatePriorityFee}
         titleText={t('priorityFeeProperCase')}
-        titleUnit={`(${t('gwei')})`}
+        titleUnit="(GWEI)"
         tooltipText={t('advancedPriorityFeeToolTip')}
         value={priorityFee}
-        detailText={`≈ ${priorityFeeInPrimaryCurrency}`}
-        allowDecimals
+        detailText={`≈ ${priorityFeeInFiat}`}
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={latestPriorityFeeRange}
-        historical={historicalPriorityFeeRange}
-        trend={priorityFeeTrend}
+        latest={renderFeeRange(latestPriorityFeeRange)}
+        historical={renderFeeRange(historicalPriorityFeeRange)}
+        feeTrend={feeTrend}
       />
     </Box>
   );

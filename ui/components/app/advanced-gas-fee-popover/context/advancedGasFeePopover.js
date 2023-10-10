@@ -10,7 +10,6 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
   const [errors, setErrors] = useState({
     maxFeePerGas: false,
     maxPriorityFeePerGas: false,
-    gasLimit: false,
   });
 
   const setErrorValue = useCallback(
@@ -21,23 +20,24 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
     },
     [errors, setErrors],
   );
-  const [maxBaseFee, setMaxBaseFee] = useState();
+  const [baseFeeMultiplier, setBaseFeeMultiplier] = useState();
+  const [baseFeeGWEI, setBaseFeeGWEI] = useState();
 
   return (
     <AdvancedGasFeePopoverContext.Provider
       value={{
         gasLimit,
-        hasErrors:
-          errors.maxFeePerGas || errors.maxPriorityFeePerGas || errors.gasLimit,
-        gasErrors: errors,
+        hasErrors: errors.maxFeePerGas || errors.maxPriorityFeePerGas,
+        baseFeeGWEI,
+        baseFeeMultiplier,
         maxFeePerGas,
         maxPriorityFeePerGas,
         setErrorValue,
-        maxBaseFee,
         setGasLimit,
         setMaxPriorityFeePerGas,
         setMaxFeePerGas,
-        setMaxBaseFee,
+        setBaseFeeGWEI,
+        setBaseFeeMultiplier,
       }}
     >
       {children}
