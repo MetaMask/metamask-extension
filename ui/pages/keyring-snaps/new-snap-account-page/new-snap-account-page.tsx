@@ -3,7 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import semver from 'semver';
-import { Box, Text } from '../../../components/component-library';
+import {
+  Box,
+  Text,
+  ButtonLink,
+  ButtonLinkSize,
+} from '../../../components/component-library';
 import {
   AlignItems,
   Display,
@@ -25,6 +30,7 @@ import {
 } from '../../../store/actions';
 import AddSnapAccountModal from '../add-snap-account-modal';
 import SnapCard from '../snap-card/snap-card';
+import { FEEDBACK_FORM } from '../constants';
 
 export interface SnapDetails {
   id: string;
@@ -134,6 +140,20 @@ export default function NewSnapAccountPage() {
             );
           },
         )}
+      </Box>
+      <Box className="snap-account-footer">
+        <ButtonLink
+          size={ButtonLinkSize.Md}
+          data-testid="snap-account-link"
+          href={FEEDBACK_FORM}
+          display={Display.Flex}
+          justifyContent={JustifyContent.flexStart}
+          paddingLeft={4}
+          marginBottom={4}
+          externalLink
+        >
+          {t('snapFeedback')}
+        </ButtonLink>
       </Box>
     </Box>
   );
