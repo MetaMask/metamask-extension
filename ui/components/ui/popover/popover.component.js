@@ -15,16 +15,13 @@ import {
   Size,
   BorderColor,
   IconColor,
-  TextAlign,
-  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
-
 import {
   ButtonIcon,
-  Icon,
-  IconName,
-  IconSize,
   Text,
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
 } from '../../component-library';
 
 const defaultHeaderProps = {
@@ -49,15 +46,6 @@ const defaultFooterProps = {
   padding: [4, 6, 6],
 };
 
-/**
- * @deprecated The `<Popover>` component has been deprecated in favor of the new `<Modal>` component from the component-library.
- * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
- * You can find documentation for the new Modal component in the MetaMask Storybook:
- * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
- * If you would like to help with the replacement of the old Modal component, please submit a pull request against this GitHub issue:
- * {@link https://github.com/MetaMask/metamask-extension/issues/19555}
- */
-
 const Popover = ({
   title,
   subtitle = '',
@@ -66,7 +54,6 @@ const Popover = ({
   footerClassName,
   onBack,
   onClose,
-  onScroll,
   className,
   contentClassName,
   showArrow,
@@ -89,33 +76,26 @@ const Popover = ({
       <Box
         display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
-        justifyContent={centerTitle ? null : JustifyContent.spaceBetween}
-        className={classnames('popover-header__title', {
-          'popover-header__title--center': centerTitle,
-        })}
+        justifyContent={
+          centerTitle ? JustifyContent.center : JustifyContent.spaceBetween
+        }
         marginBottom={2}
       >
         {onBack ? (
           <ButtonIcon
-            iconName={IconName.ArrowLeft}
+            iconName={ICON_NAMES.ARROW_LEFT}
             ariaLabel={t('back')}
             onClick={onBack}
             color={Color.iconDefault}
             size={Size.SM}
           />
         ) : null}
-        <Text
-          textAlign={centerTitle ? TextAlign.Center : TextAlign.Start}
-          ellipsis
-          variant={TextVariant.headingSm}
-          as="h2"
-          width={BLOCK_SIZES.FULL}
-        >
+        <Text ellipsis variant={TextVariant.headingSm} as="h2">
           {title}
         </Text>
         {onClose ? (
           <ButtonIcon
-            iconName={IconName.Close}
+            iconName={ICON_NAMES.CLOSE}
             ariaLabel={t('close')}
             data-testid="popover-close"
             onClick={onClose}
@@ -138,17 +118,6 @@ const Popover = ({
         className={classnames('popover-wrap', className)}
         ref={popoverRef}
       >
-        {showArrow ? <div className="popover-arrow" /> : null}
-        {showHeader && <Header />}
-        {children ? (
-          <Box
-            className={classnames('popover-content', contentClassName)}
-            onScroll={onScroll}
-            {...{ ...defaultContentProps, ...contentProps }}
-          >
-            {children}
-          </Box>
-        ) : null}
         {showScrollDown ? (
           <Box
             display={DISPLAY.FLEX}
@@ -158,16 +127,25 @@ const Popover = ({
             backgroundColor={BackgroundColor.backgroundDefault}
             color={Color.iconDefault}
             onClick={onScrollDownButtonClick}
-            className="popover-scroll-button"
-            style={{ bottom: footer ? '140px' : '12px' }}
-            data-testid="popover-scroll-button"
+            className="whats-new-popup__scroll-button"
+            data-testid="whats-new-popup-scroll-button"
           >
             <Icon
-              name={IconName.ArrowDown}
+              name={ICON_NAMES.ARROW_DOWN}
               color={IconColor.primaryDefault}
-              size={IconSize.Md}
+              size={ICON_SIZES.MD}
               aria-label={t('scrollDown')}
             />
+          </Box>
+        ) : null}
+        {showArrow ? <div className="popover-arrow" /> : null}
+        {showHeader && <Header />}
+        {children ? (
+          <Box
+            className={classnames('popover-content', contentClassName)}
+            {...{ ...defaultContentProps, ...contentProps }}
+          >
+            {children}
           </Box>
         ) : null}
         {footer ? (
@@ -212,10 +190,6 @@ Popover.propTypes = {
    * onClose handler
    */
   onClose: PropTypes.func,
-  /**
-   * onScroll handler
-   */
-  onScroll: PropTypes.func,
   CustomBackground: PropTypes.func,
   /**
    * Add custom CSS class for content
@@ -261,14 +235,6 @@ Popover.propTypes = {
   footerProps: PropTypes.shape({ ...Box.propTypes }),
 };
 
-/**
- * @deprecated The `<Popover>` component has been deprecated in favor of the new `<Modal>` component from the component-library.
- * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
- * You can find documentation for the new Modal component in the MetaMask Storybook:
- * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
- * If you would like to help with the replacement of the old Modal component, please submit a pull request against this GitHub issue:
- * {@link https://github.com/MetaMask/metamask-extension/issues/19555}
- */
 export default class PopoverPortal extends PureComponent {
   static propTypes = Popover.propTypes;
 
