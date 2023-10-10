@@ -4739,10 +4739,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/slip44@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/slip44@npm:3.0.0"
-  checksum: 01e94279922d8e3fcad2e809003ce5045e9f05ee67ce111d6a490f513f11469a3804b70988663cd19ce282a29f27be5046bec8cb66c925bc2e26177884a22ba3
+"@metamask/slip44@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/slip44@npm:3.1.0"
+  checksum: 83f902c455468f1ec252d0554cd4ebf8da1fc9a27ec7199b81e265e5e8710fad86eaa71d86f24500f9db6626007ad71b1380b239e2104e7e558a061393b066fa
   languageName: node
   linkType: hard
 
@@ -23847,7 +23847,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^1.0.0"
     "@metamask/signature-controller": "npm:^6.0.0"
-    "@metamask/slip44": "npm:^3.0.0"
+    "@metamask/slip44": "npm:^3.1.0"
     "@metamask/smart-transactions-controller": "npm:^4.0.0"
     "@metamask/snaps-controllers": "npm:^3.0.0"
     "@metamask/snaps-ui": "npm:^3.0.0"
