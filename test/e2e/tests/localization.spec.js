@@ -29,6 +29,18 @@ describe('Localization', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
+        // TODO: Add runtime handler for this request
+        // await driver.addRequestHandlers(function () {
+        //   globalThis.msw.worker.use(
+        //     globalThis.msw.rest.get(
+        //       'https://min-api.cryptocompare.com/data/price',
+        //       (_request, response, context) => {
+        //         return response(context.json({ PHP: 400 }));
+        //       },
+        //     ),
+        //   );
+        // });
+
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);

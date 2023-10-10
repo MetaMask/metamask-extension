@@ -401,6 +401,22 @@ class Driver {
         ),
     );
   }
+
+  // Fetch mocks
+
+  /**
+   * Add runtime request handlers to the mock service worker.
+   *
+   * @param {() => void} setupRequestHandlers - The function that sets up request handlers.
+   */
+  async addRequestHandlers(setupRequestHandlers) {
+    const currentWindowHandle = await this.driver.getWindowHandle();
+    await this.openNewPage(`${this.extensionUrl}/background.html`);
+    await this.delay(1000);
+    await this.driver.executeScript(setupRequestHandlers);
+    await this.driver.close();
+    await this.driver.switchTo().window(currentWindowHandle);
+  }
 }
 
 function collectMetrics() {
@@ -433,6 +449,7 @@ Driver.PAGES = {
   HOME: 'home',
   NOTIFICATION: 'notification',
   POPUP: 'popup',
+  BACKGROUND: 'background',
 };
 
 module.exports = Driver;
