@@ -5,7 +5,6 @@ ignores:
   #
 
   - '@lavamoat/snow'
-  - '@lavamoat/allow-scripts'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
@@ -34,29 +33,21 @@ ignores:
   - 'lavamoat-viz'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
-  - 'playwright'
-  - 'wait-on'
   # development tool
-  - 'nyc'
+  - 'yarn-deduplicate'
+  - 'improved-yarn-audit'
   # storybook
-  - '@storybook/cli'
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
-  - '@storybook/addon-mdx-gfm'
-  - '@storybook/builder-webpack5'
-  - '@storybook/manager-webpack5'
-  - '@storybook/react-webpack5'
   - 'storybook-dark-mode'
-  - '@whitespace/storybook-addon-html'
-  - 'react-syntax-highlighter'
   - 'style-loader'
   - 'css-loader'
   - 'sass-loader'
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
-  - '@jazzer.js/jest-runner'
+  - 'execution-apis'
 
 # files depcheck should not parse
 ignorePatterns:
