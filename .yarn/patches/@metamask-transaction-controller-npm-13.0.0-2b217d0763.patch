@@ -202,20 +202,21 @@ index 0000000000000000000000000000000000000000..e06b36dd9d5219159ad6f668af03b75c
 +//# sourceMappingURL=PendingTransactionTracker.js.map
 \ No newline at end of file
 diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
-index d8fa996c21bc45df84598be8aa7f870910184244..7ddb669112c576b1a48535e61422985adaaf6336 100644
+index d8fa996c21bc45df84598be8aa7f870910184244..94e6f45c53ef61338d07c59dc006f96f66e4aaa0 100644
 --- a/dist/TransactionController.d.ts
 +++ b/dist/TransactionController.d.ts
-@@ -7,8 +7,10 @@ import { BaseController } from '@metamask/base-controller';
+@@ -4,9 +4,11 @@ import type { TypedTransaction } from '@ethereumjs/tx';
+ import type { AddApprovalRequest } from '@metamask/approval-controller';
+ import type { BaseConfig, BaseState, RestrictedControllerMessenger } from '@metamask/base-controller';
+ import { BaseController } from '@metamask/base-controller';
++import type { GasFeeState } from '@metamask/gas-fee-controller';
  import type { BlockTracker, NetworkState, Provider } from '@metamask/network-controller';
  import type { Hex } from '@metamask/utils';
  import { EventEmitter } from 'events';
-+import { GasFeeState } from '@metamask/gas-fee-controller';
++import type { NonceLock } from 'nonce-tracker/dist/NonceTracker';
  import type { TransactionParams, TransactionMeta, TransactionReceipt, SendFlowHistoryEntry, WalletDevice } from './types';
  import { TransactionType } from './types';
-+import { NonceLock } from 'nonce-tracker/dist/NonceTracker';
  export declare const HARDFORK = Hardfork.London;
- /**
-  * @type Result
 @@ -101,6 +103,7 @@ export declare class TransactionController extends BaseController<TransactionCon
      private readonly getNetworkState;
      private readonly getCurrentAccountEIP1559Compatibility;
@@ -224,7 +225,15 @@ index d8fa996c21bc45df84598be8aa7f870910184244..7ddb669112c576b1a48535e61422985a
      private readonly messagingSystem;
      private readonly incomingTransactionHelper;
      private failTransaction;
-@@ -139,12 +142,13 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -126,6 +129,7 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @param options.disableSendFlowHistory - Explicitly disable transaction metadata history.
+      * @param options.getCurrentAccountEIP1559Compatibility - Whether or not the account supports EIP-1559.
+      * @param options.getCurrentNetworkEIP1559Compatibility - Whether or not the network supports EIP-1559.
++     * @param options.getGasFeeEstimates -
+      * @param options.getNetworkState - Gets the state of the network controller.
+      * @param options.getSelectedAddress - Gets the address of the currently selected account.
+      * @param options.incomingTransactions - Configuration options for incoming transaction support.
+@@ -139,12 +143,13 @@ export declare class TransactionController extends BaseController<TransactionCon
       * @param config - Initial options used to configure this controller.
       * @param state - Initial state to set on this controller.
       */
@@ -239,7 +248,13 @@ index d8fa996c21bc45df84598be8aa7f870910184244..7ddb669112c576b1a48535e61422985a
          getNetworkState: () => NetworkState;
          getSelectedAddress: () => string;
          incomingTransactions: {
-@@ -186,13 +190,17 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -183,16 +188,23 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @param opts.requireApproval - Whether the transaction requires approval by the user, defaults to true unless explicitly disabled.
+      * @param opts.securityAlertResponse - Response from security validator.
+      * @param opts.sendFlowHistory - The sendFlowHistory entries to add.
++     * @param opts.swaps -
++     * @param opts.swaps.hasApproveTx -
++     * @param opts.swaps.meta -
       * @param opts.type - Type of transaction to add, such as 'cancel' or 'swap'.
       * @returns Object containing a promise resolving to the transaction hash if approved.
       */
@@ -258,27 +273,28 @@ index d8fa996c21bc45df84598be8aa7f870910184244..7ddb669112c576b1a48535e61422985a
          type?: TransactionType;
      }): Promise<Result>;
      startIncomingTransactionPolling(): void;
-@@ -237,10 +245,19 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -235,12 +247,15 @@ export declare class TransactionController extends BaseController<TransactionCon
+      */
+     estimateGas(transaction: TransactionParams): Promise<{
          gas: string;
-         gasPrice: any;
-         estimateGasError?: undefined;
-+        simulationFails?: undefined;
-     } | {
-         gas: string;
-         gasPrice: any;
+-        gasPrice: any;
+-        estimateGasError?: undefined;
+-    } | {
+-        gas: string;
+-        gasPrice: any;
          estimateGasError: string | undefined;
 +        simulationFails: {
 +            reason: any;
 +            errorKey: any;
 +            debug: {
-+                blockNumber: any;
-+                blockGasLimit: any;
++                blockNumber: string;
++                blockGasLimit: string;
 +            };
 +        } | undefined;
      }>;
      /**
       * Check the status of submitted transactions on the network to determine whether they have
-@@ -431,6 +448,29 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -431,6 +446,26 @@ export declare class TransactionController extends BaseController<TransactionCon
       */
      private updateTransactionMetaRSV;
      private getEIP1559Compatibility;
@@ -298,13 +314,10 @@ index d8fa996c21bc45df84598be8aa7f870910184244..7ddb669112c576b1a48535e61422985a
 +        maxPriorityFeePerGas?: string;
 +        gasLimit?: string;
 +    }): TransactionMeta | undefined;
-+    private getDefaultGasLimit;
-+    private getDefaultGasFees;
 +    private addTxGasDefaults;
 +    private createSwapsTransaction;
 +    private updateSwapApprovalTransaction;
 +    private updateSwapTransaction;
-+    private throwErrorIfNotUnapprovedTx;
  }
  export default TransactionController;
  //# sourceMappingURL=TransactionController.d.ts.map
@@ -318,18 +331,18 @@ index 083b07c332887c5dc2bca0074f22794962934600..00000000000000000000000000000000
 -{"version":3,"file":"TransactionController.d.ts","sourceRoot":"","sources":["../src/TransactionController.ts"],"names":[],"mappings":"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"}
 \ No newline at end of file
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882f530f9cf 100644
+index bfa28719cf6450321d54123b47563ae0c102f1e4..79e2a48afd421f37f3444f99c363777df297339d 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
-@@ -26,6 +26,7 @@ const events_1 = require("events");
- const lodash_1 = require("lodash");
- const nonce_tracker_1 = __importDefault(require("nonce-tracker"));
+@@ -28,11 +28,15 @@ const nonce_tracker_1 = __importDefault(require("nonce-tracker"));
  const uuid_1 = require("uuid");
-+const gas_fee_controller_1 = require("@metamask/gas-fee-controller");
  const EtherscanRemoteTransactionSource_1 = require("./EtherscanRemoteTransactionSource");
  const external_transactions_1 = require("./external-transactions");
++const gas_1 = require("./gas");
++const gasFees_1 = require("./gasFees");
  const history_1 = require("./history");
-@@ -33,6 +34,7 @@ const IncomingTransactionHelper_1 = require("./IncomingTransactionHelper");
+ const IncomingTransactionHelper_1 = require("./IncomingTransactionHelper");
++const logger_1 = require("./logger");
  const transaction_type_1 = require("./transaction-type");
  const types_1 = require("./types");
  const utils_1 = require("./utils");
@@ -337,7 +350,15 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
  exports.HARDFORK = common_1.Hardfork.London;
  /**
   * Multiplier used to determine a transaction's increased gas fee during cancellation
-@@ -72,7 +74,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -59,6 +63,7 @@ class TransactionController extends base_controller_1.BaseController {
+      * @param options.disableSendFlowHistory - Explicitly disable transaction metadata history.
+      * @param options.getCurrentAccountEIP1559Compatibility - Whether or not the account supports EIP-1559.
+      * @param options.getCurrentNetworkEIP1559Compatibility - Whether or not the network supports EIP-1559.
++     * @param options.getGasFeeEstimates -
+      * @param options.getNetworkState - Gets the state of the network controller.
+      * @param options.getSelectedAddress - Gets the address of the currently selected account.
+      * @param options.incomingTransactions - Configuration options for incoming transaction support.
+@@ -72,7 +77,7 @@ class TransactionController extends base_controller_1.BaseController {
       * @param config - Initial options used to configure this controller.
       * @param state - Initial state to set on this controller.
       */
@@ -346,7 +367,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
          super(config, state);
          this.mutex = new async_mutex_1.Mutex();
          /**
-@@ -104,6 +106,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -104,6 +109,7 @@ class TransactionController extends base_controller_1.BaseController {
              getCurrentAccountEIP1559Compatibility;
          this.getCurrentNetworkEIP1559Compatibility =
              getCurrentNetworkEIP1559Compatibility;
@@ -354,7 +375,21 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
          this.nonceTracker = new nonce_tracker_1.default({
              provider,
              blockTracker,
-@@ -200,18 +203,18 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -133,6 +139,7 @@ class TransactionController extends base_controller_1.BaseController {
+     }
+     failTransaction(transactionMeta, error) {
+         const newTransactionMeta = Object.assign(Object.assign({}, transactionMeta), { error, status: types_1.TransactionStatus.failed });
++        (0, logger_1.projectLogger)('Transaction failed', { transactionMeta, error });
+         this.updateTransaction(newTransactionMeta, 'TransactionController#failTransaction - Add error message and set status to failed');
+         this.hub.emit(`${transactionMeta.id}:finished`, newTransactionMeta);
+     }
+@@ -197,21 +204,24 @@ class TransactionController extends base_controller_1.BaseController {
+      * @param opts.requireApproval - Whether the transaction requires approval by the user, defaults to true unless explicitly disabled.
+      * @param opts.securityAlertResponse - Response from security validator.
+      * @param opts.sendFlowHistory - The sendFlowHistory entries to add.
++     * @param opts.swaps -
++     * @param opts.swaps.hasApproveTx -
++     * @param opts.swaps.meta -
       * @param opts.type - Type of transaction to add, such as 'cancel' or 'swap'.
       * @returns Object containing a promise resolving to the transaction hash if approved.
       */
@@ -376,7 +411,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
                  // Add actionId to txMeta to check if same actionId is seen again
                  actionId,
                  chainId,
-@@ -227,15 +230,9 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -227,15 +237,9 @@ class TransactionController extends base_controller_1.BaseController {
                  verifiedOnBlockchain: false,
                  type: transactionType,
              };
@@ -389,13 +424,13 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
 -            catch (error) {
 -                this.failTransaction(transactionMeta, error);
 -                return Promise.reject(error);
-+            yield this.addTxGasDefaults(transactionMeta);
++            yield this.addTxGasDefaults(transactionMeta, isEIP1559Compatible);
 +            if ([types_1.TransactionType.swap, types_1.TransactionType.swapApproval].includes(transactionType)) {
 +                transactionMeta = yield this.createSwapsTransaction(swaps, transactionType, transactionMeta);
              }
              // Checks if a transaction already exists with a given actionId
              if (!existingTransactionMeta) {
-@@ -287,6 +284,14 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -287,6 +291,14 @@ class TransactionController extends base_controller_1.BaseController {
                  console.error('Error during persisted transaction approval', error);
              });
          }
@@ -410,73 +445,81 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
      }
      /**
       * Attempts to cancel a transaction based on its ID by setting its status to "rejected"
-@@ -443,10 +448,7 @@ class TransactionController extends base_controller_1.BaseController {
-             if (typeof gas !== 'undefined') {
-                 return { gas, gasPrice };
-             }
+@@ -432,67 +444,12 @@ class TransactionController extends base_controller_1.BaseController {
+      */
+     estimateGas(transaction) {
+         return __awaiter(this, void 0, void 0, function* () {
+-            const estimatedTransaction = Object.assign({}, transaction);
+-            const { gas, gasPrice: providedGasPrice, to, value, data, } = estimatedTransaction;
+-            const gasPrice = typeof providedGasPrice === 'undefined'
+-                ? yield (0, controller_utils_1.query)(this.ethQuery, 'gasPrice')
+-                : providedGasPrice;
+-            const { providerConfig } = this.getNetworkState();
+-            const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
+-            // 1. If gas is already defined on the transaction, use it
+-            if (typeof gas !== 'undefined') {
+-                return { gas, gasPrice };
+-            }
 -            const { gasLimit } = yield (0, controller_utils_1.query)(this.ethQuery, 'getBlockByNumber', [
 -                'latest',
 -                false,
 -            ]);
-+            const { gasLimit, number: blockNumber } = yield (0, controller_utils_1.query)(this.ethQuery, 'getBlockByNumber', ['latest', false]);
-             // 2. If to is not defined or this is not a contract address, and there is no data use 0x5208 / 21000.
-             // If the network is a custom network then bypass this check and fetch 'estimateGas'.
-             /* istanbul ignore next */
-@@ -465,8 +467,9 @@ class TransactionController extends base_controller_1.BaseController {
-                 typeof value === 'undefined' ? '0x0' : /* istanbul ignore next */ value;
-             const gasLimitBN = (0, controller_utils_1.hexToBN)(gasLimit);
-             estimatedTransaction.gas = (0, controller_utils_1.BNToHex)((0, controller_utils_1.fractionBN)(gasLimitBN, 19, 20));
+-            // 2. If to is not defined or this is not a contract address, and there is no data use 0x5208 / 21000.
+-            // If the network is a custom network then bypass this check and fetch 'estimateGas'.
+-            /* istanbul ignore next */
+-            const code = to ? yield (0, controller_utils_1.query)(this.ethQuery, 'getCode', [to]) : undefined;
+-            /* istanbul ignore next */
+-            if (!isCustomNetwork &&
+-                (!to || (to && !data && (!code || code === '0x')))) {
+-                return { gas: '0x5208', gasPrice };
+-            }
+-            // if data, should be hex string format
+-            estimatedTransaction.data = !data
+-                ? data
+-                : /* istanbul ignore next */ (0, ethereumjs_util_1.addHexPrefix)(data);
+-            // 3. If this is a contract address, safely estimate gas using RPC
+-            estimatedTransaction.value =
+-                typeof value === 'undefined' ? '0x0' : /* istanbul ignore next */ value;
+-            const gasLimitBN = (0, controller_utils_1.hexToBN)(gasLimit);
+-            estimatedTransaction.gas = (0, controller_utils_1.BNToHex)((0, controller_utils_1.fractionBN)(gasLimitBN, 19, 20));
 -            let gasHex;
-+            let gasHex = estimatedTransaction.gas;
-             let estimateGasError;
-+            let simulationFails;
-             try {
-                 gasHex = yield (0, controller_utils_1.query)(this.ethQuery, 'estimateGas', [
-                     estimatedTransaction,
-@@ -474,6 +477,11 @@ class TransactionController extends base_controller_1.BaseController {
-             }
-             catch (error) {
-                 estimateGasError = utils_1.ESTIMATE_GAS_ERROR;
-+                simulationFails = {
-+                    reason: error.message,
-+                    errorKey: error.errorKey,
-+                    debug: { blockNumber, blockGasLimit: gasLimit },
-+                };
-             }
-             // 4. Pad estimated gas without exceeding the most recent block gasLimit. If the network is a
-             // a custom network then return the eth_estimateGas value.
-@@ -482,7 +490,12 @@ class TransactionController extends base_controller_1.BaseController {
-             const paddedGasBN = gasBN.muln(1.5);
-             /* istanbul ignore next */
-             if (gasBN.gt(maxGasBN) || isCustomNetwork) {
+-            let estimateGasError;
+-            try {
+-                gasHex = yield (0, controller_utils_1.query)(this.ethQuery, 'estimateGas', [
+-                    estimatedTransaction,
+-                ]);
+-            }
+-            catch (error) {
+-                estimateGasError = utils_1.ESTIMATE_GAS_ERROR;
+-            }
+-            // 4. Pad estimated gas without exceeding the most recent block gasLimit. If the network is a
+-            // a custom network then return the eth_estimateGas value.
+-            const gasBN = (0, controller_utils_1.hexToBN)(gasHex);
+-            const maxGasBN = gasLimitBN.muln(0.9);
+-            const paddedGasBN = gasBN.muln(1.5);
+-            /* istanbul ignore next */
+-            if (gasBN.gt(maxGasBN) || isCustomNetwork) {
 -                return { gas: (0, ethereumjs_util_1.addHexPrefix)(gasHex), gasPrice, estimateGasError };
-+                return {
-+                    gas: (0, ethereumjs_util_1.addHexPrefix)(gasHex),
-+                    gasPrice,
-+                    estimateGasError,
-+                    simulationFails,
-+                };
-             }
-             /* istanbul ignore next */
-             if (paddedGasBN.lt(maxGasBN)) {
-@@ -490,9 +503,15 @@ class TransactionController extends base_controller_1.BaseController {
-                     gas: (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN)),
-                     gasPrice,
-                     estimateGasError,
-+                    simulationFails,
-                 };
-             }
+-            }
+-            /* istanbul ignore next */
+-            if (paddedGasBN.lt(maxGasBN)) {
+-                return {
+-                    gas: (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN)),
+-                    gasPrice,
+-                    estimateGasError,
+-                };
+-            }
 -            return { gas: (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN)), gasPrice, estimateGasError };
++            const { estimatedGas: gas, estimateGasError, simulationFails, } = yield (0, gas_1.estimateGas)(transaction, this.ethQuery);
 +            return {
-+                gas: (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN)),
-+                gasPrice,
++                gas,
 +                estimateGasError,
 +                simulationFails,
 +            };
          });
      }
      /**
-@@ -530,7 +549,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -530,7 +487,7 @@ class TransactionController extends base_controller_1.BaseController {
      updateTransaction(transactionMeta, note) {
          const { transactions } = this.state;
          transactionMeta.txParams = (0, utils_1.normalizeTxParams)(transactionMeta.txParams);
@@ -485,7 +528,38 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
          if (!this.isHistoryDisabled) {
              (0, history_1.updateTransactionHistory)(transactionMeta, note);
          }
-@@ -1182,6 +1201,262 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -739,6 +696,7 @@ class TransactionController extends base_controller_1.BaseController {
+      */
+     approveTransaction(transactionId) {
+         return __awaiter(this, void 0, void 0, function* () {
++            (0, logger_1.projectLogger)('Approved transaction', transactionId);
+             const { transactions } = this.state;
+             const releaseLock = yield this.mutex.acquire();
+             const chainId = this.getChainId();
+@@ -771,13 +729,9 @@ class TransactionController extends base_controller_1.BaseController {
+                 const baseTxParams = Object.assign(Object.assign({}, transactionMeta.txParams), { gasLimit: transactionMeta.txParams.gas });
+                 const isEIP1559 = (0, utils_1.isEIP1559Transaction)(transactionMeta.txParams);
+                 const txParams = isEIP1559
+-                    ? Object.assign(Object.assign({}, baseTxParams), { maxFeePerGas: transactionMeta.txParams.maxFeePerGas, maxPriorityFeePerGas: transactionMeta.txParams.maxPriorityFeePerGas, estimatedBaseFee: transactionMeta.txParams.estimatedBaseFee, 
++                    ? Object.assign(Object.assign({}, baseTxParams), { estimatedBaseFee: transactionMeta.txParams.estimatedBaseFee, 
+                         // specify type 2 if maxFeePerGas and maxPriorityFeePerGas are set
+                         type: 2 }) : baseTxParams;
+-                // delete gasPrice if maxFeePerGas and maxPriorityFeePerGas are set
+-                if (isEIP1559) {
+-                    delete txParams.gasPrice;
+-                }
+                 const unsignedEthTx = this.prepareUnsignedEthTx(txParams);
+                 const signedTx = yield this.sign(unsignedEthTx, from);
+                 yield this.updateTransactionMetaRSV(transactionMeta, signedTx);
+@@ -788,6 +742,7 @@ class TransactionController extends base_controller_1.BaseController {
+                 this.updateTransaction(transactionMeta, 'TransactionController#approveTransaction - RawTransaction added');
+                 const hash = yield (0, controller_utils_1.query)(this.ethQuery, 'sendRawTransaction', [rawTx]);
+                 transactionMeta.hash = hash;
++                (0, logger_1.projectLogger)('Submitted transaction', { txParams, rawTx, hash });
+                 transactionMeta.status = types_1.TransactionStatus.submitted;
+                 transactionMeta.submittedTime = new Date().getTime();
+                 this.updateTransaction(transactionMeta, 'TransactionController#approveTransaction - Transaction submitted');
+@@ -1182,6 +1137,135 @@ class TransactionController extends base_controller_1.BaseController {
              return (currentNetworkIsEIP1559Compatible && currentAccountIsEIP1559Compatible);
          });
      }
@@ -542,140 +616,21 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
 +        this.updateTransaction(transactionMeta, note);
 +        return this.getTransaction(txId);
 +    }
-+    getDefaultGasLimit(txMeta) {
++    addTxGasDefaults(txMeta, eip1559) {
 +        return __awaiter(this, void 0, void 0, function* () {
-+            const { gas, estimateGasError, simulationFails } = yield this.estimateGas(txMeta.txParams);
-+            return { gasLimit: gas, estimateGasError, simulationFails };
-+        });
-+    }
-+    getDefaultGasFees(txMeta, eip1559Compatibility) {
-+        return __awaiter(this, void 0, void 0, function* () {
-+            if ((!eip1559Compatibility && txMeta.txParams.gasPrice) ||
-+                (eip1559Compatibility &&
-+                    txMeta.txParams.maxFeePerGas &&
-+                    txMeta.txParams.maxPriorityFeePerGas)) {
-+                return {};
-+            }
-+            try {
-+                const { gasFeeEstimates, gasEstimateType } = yield this.getGasFeeEstimates();
-+                if (eip1559Compatibility &&
-+                    gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.FEE_MARKET) {
-+                    const { medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {}, } = gasFeeEstimates;
-+                    if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
-+                        return {
-+                            maxFeePerGas: (0, controller_utils_1.toHex)((0, controller_utils_1.gweiDecToWEIBN)(suggestedMaxFeePerGas)),
-+                            maxPriorityFeePerGas: (0, controller_utils_1.toHex)((0, controller_utils_1.gweiDecToWEIBN)(suggestedMaxPriorityFeePerGas)),
-+                        };
-+                    }
-+                }
-+                else if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.LEGACY) {
-+                    // The LEGACY type includes low, medium and high estimates of
-+                    // gas price values.
-+                    return {
-+                        gasPrice: (0, controller_utils_1.toHex)((0, controller_utils_1.gweiDecToWEIBN)(gasFeeEstimates.medium)),
-+                    };
-+                }
-+                else if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-+                    // The ETH_GASPRICE type just includes a single gas price property,
-+                    // which we can assume was retrieved from eth_gasPrice
-+                    return {
-+                        gasPrice: (0, controller_utils_1.toHex)((0, controller_utils_1.gweiDecToWEIBN)(gasFeeEstimates.gasPrice)),
-+                    };
-+                }
-+            }
-+            catch (e) {
-+                console.error(e);
-+            }
-+            const gasPrice = (yield (0, controller_utils_1.query)(this.ethQuery, 'gasPrice'));
-+            return { gasPrice: gasPrice && (0, ethereumjs_util_1.addHexPrefix)(gasPrice.toString(16)) };
-+        });
-+    }
-+    addTxGasDefaults(txMeta) {
-+        return __awaiter(this, void 0, void 0, function* () {
-+            const eip1559Compatibility = txMeta.txParams.type !== types_1.TransactionEnvelopeType.legacy &&
-+                (yield this.getEIP1559Compatibility());
-+            const { gasPrice: defaultGasPrice, maxFeePerGas: defaultMaxFeePerGas, maxPriorityFeePerGas: defaultMaxPriorityFeePerGas, } = yield this.getDefaultGasFees(txMeta, eip1559Compatibility);
-+            const { gasLimit: defaultGasLimit, simulationFails, estimateGasError, } = yield this.getDefaultGasLimit(txMeta);
-+            txMeta.txParams.estimateGasError = estimateGasError;
-+            if (simulationFails) {
-+                txMeta.simulationFails = simulationFails;
-+            }
-+            if (eip1559Compatibility) {
-+                //TxMigrationToDo - Advanced gas fee defaults.
-+                if (txMeta.txParams.gasPrice &&
-+                    !txMeta.txParams.maxFeePerGas &&
-+                    !txMeta.txParams.maxPriorityFeePerGas) {
-+                    // If the dapp has suggested a gas price, but no maxFeePerGas or maxPriorityFeePerGas
-+                    //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
-+                    txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
-+                    txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-+                    if (txMeta.origin === controller_utils_1.ORIGIN_METAMASK) {
-+                        txMeta.userFeeLevel = types_1.UserFeeLevel.MEDIUM;
-+                    }
-+                    else {
-+                        txMeta.userFeeLevel = types_1.UserFeeLevel.DAPP_SUGGESTED;
-+                    }
-+                }
-+                else {
-+                    if ((defaultMaxFeePerGas &&
-+                        defaultMaxPriorityFeePerGas &&
-+                        !txMeta.txParams.maxFeePerGas &&
-+                        !txMeta.txParams.maxPriorityFeePerGas) ||
-+                        txMeta.origin === controller_utils_1.ORIGIN_METAMASK) {
-+                        txMeta.userFeeLevel = types_1.UserFeeLevel.MEDIUM;
-+                    }
-+                    else {
-+                        txMeta.userFeeLevel = types_1.UserFeeLevel.DAPP_SUGGESTED;
-+                    }
-+                    if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
-+                        // If the dapp has not set the gasPrice or the maxFeePerGas, then we set maxFeePerGas
-+                        // with the one returned by the gasFeeController, if that is available.
-+                        txMeta.txParams.maxFeePerGas = defaultMaxFeePerGas;
-+                    }
-+                    if (defaultMaxPriorityFeePerGas &&
-+                        !txMeta.txParams.maxPriorityFeePerGas) {
-+                        // If the dapp has not set the gasPrice or the maxPriorityFeePerGas, then we set maxPriorityFeePerGas
-+                        // with the one returned by the gasFeeController, if that is available.
-+                        txMeta.txParams.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
-+                    }
-+                    if (defaultGasPrice && !txMeta.txParams.maxFeePerGas) {
-+                        // If the dapp has not set the gasPrice or the maxFeePerGas, and no maxFeePerGas is available
-+                        // from the gasFeeController, then we set maxFeePerGas to the defaultGasPrice, assuming it is
-+                        // available.
-+                        txMeta.txParams.maxFeePerGas = defaultGasPrice;
-+                    }
-+                    if (txMeta.txParams.maxFeePerGas &&
-+                        !txMeta.txParams.maxPriorityFeePerGas) {
-+                        // If the dapp has not set the gasPrice or the maxPriorityFeePerGas, and no maxPriorityFeePerGas is
-+                        // available from the gasFeeController, then we set maxPriorityFeePerGas to
-+                        // txMeta.txParams.maxFeePerGas, which will either be the gasPrice from the controller, the maxFeePerGas
-+                        // set by the dapp, or the maxFeePerGas from the controller.
-+                        txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.maxFeePerGas;
-+                    }
-+                }
-+                // We remove the gasPrice param entirely when on an eip1559 compatible network
-+                delete txMeta.txParams.gasPrice;
-+            }
-+            else {
-+                // We ensure that maxFeePerGas and maxPriorityFeePerGas are not in the transaction params
-+                // when not on a EIP1559 compatible network
-+                delete txMeta.txParams.maxPriorityFeePerGas;
-+                delete txMeta.txParams.maxFeePerGas;
-+            }
-+            // If we have gotten to this point, and none of gasPrice, maxPriorityFeePerGas or maxFeePerGas are
-+            // set on txParams, it means that either we are on a non-EIP1559 network and the dapp didn't suggest
-+            // a gas price, or we are on an EIP1559 network, and none of gasPrice, maxPriorityFeePerGas or maxFeePerGas
-+            // were available from either the dapp or the network.
-+            if (defaultGasPrice &&
-+                !txMeta.txParams.gasPrice &&
-+                !txMeta.txParams.maxPriorityFeePerGas &&
-+                !txMeta.txParams.maxFeePerGas) {
-+                txMeta.txParams.gasPrice = defaultGasPrice;
-+            }
-+            if (defaultGasLimit && !txMeta.txParams.gas) {
-+                txMeta.txParams.gas = defaultGasLimit;
-+                txMeta.originalGasEstimate = defaultGasLimit;
-+            }
++            const eip1559Compatibility = txMeta.txParams.type !== types_1.TransactionEnvelopeType.legacy && eip1559;
++            const { providerConfig } = this.getNetworkState();
++            yield (0, gasFees_1.updateGasFees)({
++                eip1559: eip1559Compatibility,
++                ethQuery: this.ethQuery,
++                getGasFeeEstimates: this.getGasFeeEstimates.bind(this),
++                txMeta,
++            });
++            yield (0, gas_1.updateGas)({
++                ethQuery: this.ethQuery,
++                txMeta,
++                providerConfig,
++            });
 +            // txMeta.defaultGasEstimates = {
 +            //   estimateType: txMeta.userFeeLevel,
 +            //   gas: txMeta.txParams.gas,
@@ -737,14 +692,6 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..16cd1fe06acb39779d28e37122fc0882
 +        });
 +        return (0, lodash_1.merge)(txMeta, swapTransaction);
 +    }
-+    throwErrorIfNotUnapprovedTx(txId, methodName) {
-+        const transactionMeta = this.getTransaction(txId);
-+        if (!transactionMeta) {
-+            throw new Error(`Method ${methodName} failed as no transaction metadata found`);
-+        }
-+        (0, utils_1.validateIfTransactionUnapproved)(transactionMeta, methodName);
-+        return transactionMeta;
-+    }
  }
  exports.TransactionController = TransactionController;
  exports.default = TransactionController;
@@ -803,6 +750,390 @@ index d92c9fcb12b13fc2100858b5eb5bb081ae31eeb9..00000000000000000000000000000000
 +++ /dev/null
 @@ -1 +0,0 @@
 -{"version":3,"file":"external-transactions.js","sourceRoot":"","sources":["../src/external-transactions.ts"],"names":[],"mappings":";;;AAAA,oGAAoG;AACpG,qDAAiD;AAEjD,mCAA4C;AAG5C;;;;;;GAMG;AACH,SAAgB,oCAAoC,CAClD,eAAiC,EACjC,YAAgC,EAChC,UAA8B;IAE9B,IAAI,CAAC,eAAe,IAAI,CAAC,eAAe,CAAC,QAAQ,EAAE;QACjD,MAAM,sBAAS,CAAC,aAAa,CAC3B,4DAA4D,CAC7D,CAAC;KACH;IAED,IAAI,eAAe,CAAC,MAAM,KAAK,yBAAiB,CAAC,SAAS,EAAE;QAC1D,MAAM,sBAAS,CAAC,aAAa,CAC3B,mDAAmD,CACpD,CAAC;KACH;IAED,MAAM,eAAe,GAAG,eAAe,CAAC,QAAQ,CAAC,KAAK,CAAC;IACvD,IAAI,UAAU,IAAI,UAAU,CAAC,MAAM,GAAG,CAAC,EAAE;QACvC,MAAM,qBAAqB,GAAG,UAAU,CAAC,IAAI,CAC3C,CAAC,EAAE,EAAE,EAAE,WAAC,OAAA,CAAA,MAAA,EAAE,CAAC,QAAQ,0CAAE,KAAK,MAAK,eAAe,CAAA,EAAA,CAC/C,CAAC;QACF,IAAI,qBAAqB,EAAE;YACzB,MAAM,sBAAS,CAAC,aAAa,CAC3B,yDAAyD,CAC1D,CAAC;SACH;KACF;IAED,IAAI,YAAY,IAAI,YAAY,CAAC,MAAM,GAAG,CAAC,EAAE;QAC3C,MAAM,uBAAuB,GAAG,YAAY,CAAC,IAAI,CAC/C,CAAC,EAAE,EAAE,EAAE,WAAC,OAAA,CAAA,MAAA,EAAE,CAAC,QAAQ,0CAAE,KAAK,MAAK,eAAe,CAAA,EAAA,CAC/C,CAAC;QACF,IAAI,uBAAuB,EAAE;YAC3B,MAAM,sBAAS,CAAC,aAAa,CAC3B,2DAA2D,CAC5D,CAAC;SACH;KACF;AACH,CAAC;AAvCD,oFAuCC","sourcesContent":["// These utility functions are exclusively used by `confirmExternalTransaction` method in controller\nimport { rpcErrors } from '@metamask/rpc-errors';\n\nimport { TransactionStatus } from './types';\nimport type { TransactionMeta } from './types';\n\n/**\n * Validates the external provided transaction meta.\n *\n * @param transactionMeta - The transaction meta to validate.\n * @param confirmedTxs - The confirmed transactions in controller state.\n * @param pendingTxs - The submitted transactions in controller state.\n */\nexport function validateConfirmedExternalTransaction(\n  transactionMeta?: TransactionMeta,\n  confirmedTxs?: TransactionMeta[],\n  pendingTxs?: TransactionMeta[],\n) {\n  if (!transactionMeta || !transactionMeta.txParams) {\n    throw rpcErrors.invalidParams(\n      '\"transactionMeta\" or \"transactionMeta.txParams\" is missing',\n    );\n  }\n\n  if (transactionMeta.status !== TransactionStatus.confirmed) {\n    throw rpcErrors.invalidParams(\n      'External transaction status should be \"confirmed\"',\n    );\n  }\n\n  const externalTxNonce = transactionMeta.txParams.nonce;\n  if (pendingTxs && pendingTxs.length > 0) {\n    const foundPendingTxByNonce = pendingTxs.find(\n      (tx) => tx.txParams?.nonce === externalTxNonce,\n    );\n    if (foundPendingTxByNonce) {\n      throw rpcErrors.invalidParams(\n        'External transaction nonce should not be in pending txs',\n      );\n    }\n  }\n\n  if (confirmedTxs && confirmedTxs.length > 0) {\n    const foundConfirmedTxByNonce = confirmedTxs.find(\n      (tx) => tx.txParams?.nonce === externalTxNonce,\n    );\n    if (foundConfirmedTxByNonce) {\n      throw rpcErrors.invalidParams(\n        'External transaction nonce should not be in confirmed txs',\n      );\n    }\n  }\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/gas.d.ts b/dist/gas.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..bc833c77e5506469a0142d51a86757606d8275a3
+--- /dev/null
++++ b/dist/gas.d.ts
+@@ -0,0 +1,25 @@
++/// <reference types="debug" />
++import type EthQuery from '@metamask/eth-query';
++import type { ProviderConfig } from '@metamask/network-controller';
++import type { TransactionMeta, TransactionParams } from './types';
++export declare type UpdateGasRequest = {
++    ethQuery: EthQuery;
++    txMeta: TransactionMeta;
++    providerConfig: ProviderConfig;
++};
++export declare const log: import("debug").Debugger;
++export declare function updateGas(request: UpdateGasRequest): Promise<void>;
++export declare function estimateGas(txParams: TransactionParams, ethQuery: EthQuery): Promise<{
++    blockGasLimit: string;
++    estimatedGas: string;
++    estimateGasError: string | undefined;
++    simulationFails: {
++        reason: any;
++        errorKey: any;
++        debug: {
++            blockNumber: string;
++            blockGasLimit: string;
++        };
++    } | undefined;
++}>;
++//# sourceMappingURL=gas.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas.js b/dist/gas.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..f34cc5aba74a1517cd44edfcca6530d3a38f9c99
+--- /dev/null
++++ b/dist/gas.js
+@@ -0,0 +1,122 @@
++"use strict";
++/* eslint-disable jsdoc/require-jsdoc */
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.estimateGas = exports.updateGas = exports.log = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const utils_1 = require("@metamask/utils");
++const ethereumjs_util_1 = require("ethereumjs-util");
++const logger_1 = require("./logger");
++const utils_2 = require("./utils");
++exports.log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas');
++const FIXED_GAS = '0x5208';
++function updateGas(request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { txMeta } = request;
++        const { blockGasLimit, estimateGasError, estimatedGas, simulationFails } = yield estimateGas(txMeta.txParams, request.ethQuery);
++        txMeta.txParams.gas = yield getGas(Object.assign(Object.assign({}, request), { blockGasLimit,
++            estimatedGas }));
++        txMeta.txParams.estimateGasError = estimateGasError;
++        txMeta.simulationFails = simulationFails;
++    });
++}
++exports.updateGas = updateGas;
++function getGas(request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { blockGasLimit, estimatedGas, providerConfig, txMeta } = request;
++        if (txMeta.txParams.gas) {
++            (0, exports.log)('Using value from request', txMeta.txParams.gas);
++            return txMeta.txParams.gas;
++        }
++        if (yield requiresFixedGas(request)) {
++            (0, exports.log)('Using fixed value', FIXED_GAS);
++            return FIXED_GAS;
++        }
++        const estimatedGasBN = (0, controller_utils_1.hexToBN)(estimatedGas);
++        const maxGasBN = (0, controller_utils_1.hexToBN)(blockGasLimit).muln(0.9);
++        const paddedGasBN = estimatedGasBN.muln(1.5);
++        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
++        if (estimatedGasBN.gt(maxGasBN) || isCustomNetwork) {
++            const estimatedGasHex = (0, ethereumjs_util_1.addHexPrefix)(estimatedGas);
++            (0, exports.log)('Using estimated value', estimatedGasHex);
++            return estimatedGasHex;
++        }
++        if (paddedGasBN.lt(maxGasBN)) {
++            const paddedHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN));
++            (0, exports.log)('Using 150% of estimated value', paddedHex);
++            return paddedHex;
++        }
++        const maxHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN));
++        (0, exports.log)('Using 90% of block gas limit', maxHex);
++        return maxHex;
++    });
++}
++function estimateGas(txParams, ethQuery) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const request = Object.assign({}, txParams);
++        const { data, value } = request;
++        const { gasLimit: gasLimitHex, number: blockNumber } = yield getLatestBlock(ethQuery);
++        const gasLimitBN = (0, controller_utils_1.hexToBN)(gasLimitHex);
++        request.data = data ? (0, ethereumjs_util_1.addHexPrefix)(data) : data;
++        request.gas = (0, controller_utils_1.BNToHex)((0, controller_utils_1.fractionBN)(gasLimitBN, 19, 20));
++        request.value = value || '0x0';
++        let estimatedGas = request.gas;
++        let estimateGasError;
++        let simulationFails;
++        try {
++            estimatedGas = yield (0, controller_utils_1.query)(ethQuery, 'estimateGas', [request]);
++        }
++        catch (error) {
++            estimateGasError = utils_2.ESTIMATE_GAS_ERROR;
++            simulationFails = {
++                reason: error.message,
++                errorKey: error.errorKey,
++                debug: {
++                    blockNumber,
++                    blockGasLimit: gasLimitHex,
++                },
++            };
++            (0, exports.log)('Estimation failed', Object.assign(Object.assign({}, simulationFails), { fallback: estimateGas }));
++        }
++        return {
++            blockGasLimit: gasLimitHex,
++            estimatedGas,
++            estimateGasError,
++            simulationFails,
++        };
++    });
++}
++exports.estimateGas = estimateGas;
++function requiresFixedGas({ ethQuery, txMeta, providerConfig, }) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
++        const { txParams: { to, data }, } = txMeta;
++        if (isCustomNetwork) {
++            return false;
++        }
++        if (!to) {
++            return true;
++        }
++        const code = yield getCode(ethQuery, to);
++        return !data && (!code || code === '0x');
++    });
++}
++function getCode(ethQuery, address) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(ethQuery, 'getCode', [address]);
++    });
++}
++function getLatestBlock(ethQuery) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(ethQuery, 'getBlockByNumber', ['latest', false]);
++    });
++}
++//# sourceMappingURL=gas.js.map
+\ No newline at end of file
+diff --git a/dist/gasFees.d.ts b/dist/gasFees.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..4a6ce751663091dc58bea20f0658d05221622873
+--- /dev/null
++++ b/dist/gasFees.d.ts
+@@ -0,0 +1,26 @@
++import type EthQuery from '@metamask/eth-query';
++import type { GasFeeState } from '@metamask/gas-fee-controller';
++import type { TransactionParams } from './types';
++import { type TransactionMeta } from './types';
++export declare type UpdateGasFeesRequest = {
++    eip1559: boolean;
++    ethQuery: EthQuery;
++    getGasFeeEstimates: () => Promise<GasFeeState>;
++    txMeta: TransactionMeta;
++};
++export declare type GetGasFeeRequest = UpdateGasFeesRequest & {
++    initialParams: TransactionParams;
++    suggestedGasFees: Awaited<ReturnType<typeof getSuggestedGasFees>>;
++};
++export declare function updateGasFees(request: UpdateGasFeesRequest): Promise<void>;
++declare function getSuggestedGasFees(request: UpdateGasFeesRequest): Promise<{
++    maxFeePerGas: `0x${string}`;
++    maxPriorityFeePerGas: `0x${string}`;
++    gasPrice?: undefined;
++} | {
++    gasPrice: string | undefined;
++    maxFeePerGas?: undefined;
++    maxPriorityFeePerGas?: undefined;
++}>;
++export {};
++//# sourceMappingURL=gasFees.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gasFees.js b/dist/gasFees.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..412f1fbe88eb169056a0f980e3675246f170118a
+--- /dev/null
++++ b/dist/gasFees.js
+@@ -0,0 +1,183 @@
++"use strict";
++/* eslint-disable jsdoc/require-jsdoc */
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.updateGasFees = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const gas_fee_controller_1 = require("@metamask/gas-fee-controller");
++const utils_1 = require("@metamask/utils");
++const ethereumjs_util_1 = require("ethereumjs-util");
++const logger_1 = require("./logger");
++const types_1 = require("./types");
++const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas-fees');
++function updateGasFees(request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { txMeta } = request;
++        const initialParams = Object.assign({}, txMeta.txParams);
++        const suggestedGasFees = yield getSuggestedGasFees(request);
++        log('Suggested gas fees', suggestedGasFees);
++        const getGasFeeRequest = Object.assign(Object.assign({}, request), { initialParams, suggestedGasFees });
++        txMeta.txParams.maxFeePerGas = getMaxFeePerGas(getGasFeeRequest);
++        txMeta.txParams.maxPriorityFeePerGas =
++            getMaxPriorityFeePerGas(getGasFeeRequest);
++        txMeta.txParams.gasPrice = getGasPrice(getGasFeeRequest);
++        txMeta.userFeeLevel = getUserFeeLevel(getGasFeeRequest);
++        log('Updated gas fee properties', {
++            maxFeePerGas: txMeta.txParams.maxFeePerGas,
++            maxPriorityFeePerGas: txMeta.txParams.maxPriorityFeePerGas,
++            gasPrice: txMeta.txParams.gasPrice,
++        });
++        if (txMeta.txParams.maxFeePerGas || txMeta.txParams.maxPriorityFeePerGas) {
++            delete txMeta.txParams.gasPrice;
++        }
++        if (txMeta.txParams.gasPrice) {
++            delete txMeta.txParams.maxFeePerGas;
++            delete txMeta.txParams.maxPriorityFeePerGas;
++        }
++    });
++}
++exports.updateGasFees = updateGasFees;
++function getMaxFeePerGas(request) {
++    const { eip1559, initialParams, suggestedGasFees } = request;
++    if (!eip1559) {
++        return undefined;
++    }
++    if (initialParams.maxFeePerGas) {
++        log('Using maxFeePerGas from request', initialParams.maxFeePerGas);
++        return initialParams.maxFeePerGas;
++    }
++    if (initialParams.gasPrice && !initialParams.maxPriorityFeePerGas) {
++        log('Setting maxFeePerGas to gasPrice from request', initialParams.gasPrice);
++        return initialParams.gasPrice;
++    }
++    if (suggestedGasFees.maxFeePerGas) {
++        log('Using suggested maxFeePerGas', suggestedGasFees.maxFeePerGas);
++        return suggestedGasFees.maxFeePerGas;
++    }
++    if (suggestedGasFees.gasPrice) {
++        log('Setting maxFeePerGas to suggested gasPrice', suggestedGasFees.gasPrice);
++        return suggestedGasFees.gasPrice;
++    }
++    log('maxFeePerGas not set');
++    return undefined;
++}
++function getMaxPriorityFeePerGas(request) {
++    const { eip1559, initialParams, suggestedGasFees, txMeta } = request;
++    if (!eip1559) {
++        return undefined;
++    }
++    if (initialParams.maxPriorityFeePerGas) {
++        log('Using maxPriorityFeePerGas from request', initialParams.maxPriorityFeePerGas);
++        return initialParams.maxPriorityFeePerGas;
++    }
++    if (initialParams.gasPrice && !initialParams.maxFeePerGas) {
++        log('Setting maxPriorityFeePerGas to gasPrice from request', initialParams.gasPrice);
++        return initialParams.gasPrice;
++    }
++    if (suggestedGasFees.maxPriorityFeePerGas) {
++        log('Using suggested maxPriorityFeePerGas', suggestedGasFees.maxPriorityFeePerGas);
++        return suggestedGasFees.maxPriorityFeePerGas;
++    }
++    if (txMeta.txParams.maxFeePerGas) {
++        log('Setting maxPriorityFeePerGas to maxFeePerGas', txMeta.txParams.maxFeePerGas);
++        return txMeta.txParams.maxFeePerGas;
++    }
++    log('maxPriorityFeePerGas not set');
++    return undefined;
++}
++function getGasPrice(request) {
++    const { eip1559, initialParams, suggestedGasFees, txMeta } = request;
++    if (eip1559) {
++        if (!txMeta.txParams.maxFeePerGas &&
++            !txMeta.txParams.maxPriorityFeePerGas &&
++            suggestedGasFees.gasPrice) {
++            log('Using suggested gasPrice as fallback', suggestedGasFees.gasPrice);
++            return suggestedGasFees.gasPrice;
++        }
++        return undefined;
++    }
++    if (initialParams.gasPrice) {
++        log('Using gasPrice from request', initialParams.gasPrice);
++        return initialParams.gasPrice;
++    }
++    if (suggestedGasFees.gasPrice) {
++        log('Using suggested gasPrice', suggestedGasFees.gasPrice);
++        return suggestedGasFees.gasPrice;
++    }
++    log('gasPrice not set');
++    return undefined;
++}
++function getUserFeeLevel(request) {
++    const { eip1559, initialParams, suggestedGasFees, txMeta } = request;
++    if (!eip1559) {
++        return undefined;
++    }
++    if (!initialParams.maxFeePerGas &&
++        !initialParams.maxPriorityFeePerGas &&
++        initialParams.gasPrice) {
++        return txMeta.origin === controller_utils_1.ORIGIN_METAMASK
++            ? types_1.UserFeeLevel.MEDIUM
++            : types_1.UserFeeLevel.DAPP_SUGGESTED;
++    }
++    if (!initialParams.maxFeePerGas &&
++        !initialParams.maxPriorityFeePerGas &&
++        suggestedGasFees.maxFeePerGas &&
++        suggestedGasFees.maxPriorityFeePerGas) {
++        return types_1.UserFeeLevel.MEDIUM;
++    }
++    if (txMeta.origin === controller_utils_1.ORIGIN_METAMASK) {
++        return types_1.UserFeeLevel.MEDIUM;
++    }
++    return types_1.UserFeeLevel.DAPP_SUGGESTED;
++}
++function getSuggestedGasFees(request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { eip1559, ethQuery, getGasFeeEstimates } = request;
++        try {
++            const { gasFeeEstimates, gasEstimateType } = yield getGasFeeEstimates();
++            if (eip1559 && gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.FEE_MARKET) {
++                const { medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {}, } = gasFeeEstimates;
++                if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
++                    return {
++                        maxFeePerGas: gweiDecimalToWeiHex(suggestedMaxFeePerGas),
++                        maxPriorityFeePerGas: gweiDecimalToWeiHex(suggestedMaxPriorityFeePerGas),
++                    };
++                }
++            }
++            if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.LEGACY) {
++                // The LEGACY type includes low, medium and high estimates of
++                // gas price values.
++                return {
++                    gasPrice: gweiDecimalToWeiHex(gasFeeEstimates.medium),
++                };
++            }
++            if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
++                // The ETH_GASPRICE type just includes a single gas price property,
++                // which we can assume was retrieved from eth_gasPrice
++                return {
++                    gasPrice: gweiDecimalToWeiHex(gasFeeEstimates.gasPrice),
++                };
++            }
++        }
++        catch (e) {
++            console.error(e);
++        }
++        const gasPriceDecimal = (yield (0, controller_utils_1.query)(ethQuery, 'gasPrice'));
++        const gasPrice = gasPriceDecimal
++            ? (0, ethereumjs_util_1.addHexPrefix)(gasPriceDecimal.toString(16))
++            : undefined;
++        return { gasPrice };
++    });
++}
++function gweiDecimalToWeiHex(value) {
++    return (0, controller_utils_1.toHex)((0, controller_utils_1.gweiDecToWEIBN)(value));
++}
++//# sourceMappingURL=gasFees.js.map
 \ No newline at end of file
 diff --git a/dist/history.d.ts.map b/dist/history.d.ts.map
 deleted file mode 100644

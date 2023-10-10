@@ -195,19 +195,22 @@ export default class ExtensionPlatform {
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
+
     let message = t(
       'notificationTransactionFailedMessage',
       nonce,
-      errorMessage || txMeta.err.message,
+      errorMessage || txMeta.error?.message,
     );
+
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (isNaN(nonce)) {
       message = t(
         'notificationTransactionFailedMessageMMI',
-        errorMessage || txMeta.err.message,
+        errorMessage || txMeta.error?.message,
       );
     }
     ///: END:ONLY_INCLUDE_IN
+
     await this._showNotification(title, message);
   }
 
