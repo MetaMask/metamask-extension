@@ -4,10 +4,9 @@
   "initialTransaction": {
     "id": 6854191329910881,
     "time": 1631558469046,
-    "status": "submitted",
-    "metamaskNetworkId": "42",
-    "chainId": "0x2a",
-    "loadingDefaults": false,
+    "status": "approved",
+    "metamaskNetworkId": "5",
+    "chainId": "0x5",
     "dappSuggestedGasFees": null,
     "txParams": {
       "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -19,15 +18,14 @@
       "type": "0x2"
     },
     "origin": "metamask",
-    "type": "sentEther",
+    "type": "simpleSend",
     "history": [
       {
         "id": 6854191329910881,
         "time": 1631558469046,
         "status": "unapproved",
-        "metamaskNetworkId": "42",
-        "chainId": "0x2a",
-        "loadingDefaults": true,
+        "metamaskNetworkId": "5",
+        "chainId": "0x5",
         "dappSuggestedGasFees": null,
         "txParams": {
           "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -39,16 +37,9 @@
           "type": "0x2"
         },
         "origin": "metamask",
-        "type": "sentEther"
+        "type": "simpleSend"
       },
       [
-        {
-          "op": "replace",
-          "path": "/loadingDefaults",
-          "value": false,
-          "note": "Added new unapproved transaction.",
-          "timestamp": 1631558469059
-        },
         {
           "op": "add",
           "path": "/userFeeLevel",
@@ -80,10 +71,10 @@
   "primaryTransaction": {
     "id": 6854191329910881,
     "time": 1631558469046,
-    "status": "submitted",
-    "metamaskNetworkId": "42",
-    "chainId": "0x2a",
-    "loadingDefaults": false,
+    "status": "approved",
+    "metamaskNetworkId": "5",
+    "chainId": "0x5",
+
     "dappSuggestedGasFees": null,
     "txParams": {
       "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -95,15 +86,14 @@
       "type": "0x2"
     },
     "origin": "metamask",
-    "type": "sentEther",
+    "type": "simpleSend",
     "history": [
       {
         "id": 6854191329910881,
         "time": 1631558469046,
         "status": "unapproved",
-        "metamaskNetworkId": "42",
-        "chainId": "0x2a",
-        "loadingDefaults": true,
+        "metamaskNetworkId": "5",
+        "chainId": "0x5",
         "dappSuggestedGasFees": null,
         "txParams": {
           "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -115,16 +105,9 @@
           "type": "0x2"
         },
         "origin": "metamask",
-        "type": "sentEther"
+        "type": "simpleSend"
       },
       [
-        {
-          "op": "replace",
-          "path": "/loadingDefaults",
-          "value": false,
-          "note": "Added new unapproved transaction.",
-          "timestamp": 1631558469059
-        },
         {
           "op": "add",
           "path": "/userFeeLevel",
@@ -158,9 +141,8 @@
       "id": 6854191329910881,
       "time": 1631558469046,
       "status": "approved",
-      "metamaskNetworkId": "42",
-      "chainId": "0x2a",
-      "loadingDefaults": false,
+      "metamaskNetworkId": "5",
+      "chainId": "0x5",
       "dappSuggestedGasFees": null,
       "txParams": {
         "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -172,15 +154,14 @@
         "type": "0x2"
       },
       "origin": "metamask",
-      "type": "sentEther",
+      "type": "simpleSend",
       "history": [
         {
           "id": 6854191329910881,
           "time": 1631558469046,
           "status": "unapproved",
-          "metamaskNetworkId": "42",
-          "chainId": "0x2a",
-          "loadingDefaults": true,
+          "metamaskNetworkId": "5",
+          "chainId": "0x5",
           "dappSuggestedGasFees": null,
           "txParams": {
             "from": "0x0853dccd30e0582df80b16ec014092160b48e797",
@@ -192,16 +173,9 @@
             "type": "0x2"
           },
           "origin": "metamask",
-          "type": "sentEther"
+          "type": "simpleSend"
         },
         [
-          {
-            "op": "replace",
-            "path": "/loadingDefaults",
-            "value": false,
-            "note": "Added new unapproved transaction.",
-            "timestamp": 1631558469059
-          },
           {
             "op": "add",
             "path": "/userFeeLevel",

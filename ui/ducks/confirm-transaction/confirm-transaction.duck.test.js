@@ -275,7 +275,6 @@ describe('Confirm Transaction Duck', () => {
       const txData = {
         history: [],
         id: 2603411941761054,
-        loadingDefaults: false,
         metamaskNetworkId: '5',
         origin: 'faucet.metamask.io',
         status: TransactionStatus.unapproved,
@@ -360,7 +359,6 @@ describe('Confirm Transaction Duck', () => {
             {
               history: [],
               id: 2603411941761054,
-              loadingDefaults: false,
               metamaskNetworkId: '5',
               origin: 'faucet.metamask.io',
               status: TransactionStatus.unapproved,

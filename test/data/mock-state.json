@@ -152,7 +152,6 @@
         "time": 1536268017676,
         "status": "unapproved",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
         "txParams": {
           "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
           "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -167,7 +166,6 @@
             "time": 1536268017676,
             "status": "unapproved",
             "metamaskNetworkId": "4",
-            "loadingDefaults": true,
             "txParams": {
               "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
               "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
@@ -176,14 +174,6 @@
               "gasPrice": "0x3b9aca00"
             }
           },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1536268017685
-            }
-          ],
           [
             {
               "op": "add",
@@ -555,7 +545,6 @@
         "time": 1528133130531,
         "status": "confirmed",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -570,7 +559,6 @@
             "time": 1528133130531,
             "status": "unapproved",
             "metamaskNetworkId": "4",
-            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -579,14 +567,6 @@
               "gasPrice": "0x3b9aca00"
             }
           },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1528133130666
-            }
-          ],
           [
             {
               "op": "add",
@@ -735,7 +715,6 @@
         "time": 1528133149983,
         "status": "confirmed",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -750,7 +729,6 @@
             "time": 1528133149983,
             "status": "unapproved",
             "metamaskNetworkId": "4",
-            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -759,14 +737,6 @@
               "gasPrice": "0x3b9aca00"
             }
           },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1528133150011
-            }
-          ],
           [
             {
               "op": "add",
@@ -915,7 +885,6 @@
         "time": 1528133180635,
         "status": "confirmed",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -930,7 +899,6 @@
             "time": 1528133180635,
             "status": "unapproved",
             "metamaskNetworkId": "4",
-            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
@@ -939,14 +907,6 @@
               "gasPrice": "0x12a05f200"
             }
           },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1528133180720
-            }
-          ],
           [
             {
               "op": "add",
@@ -1095,7 +1055,6 @@
         "time": 1528133223918,
         "status": "confirmed",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
@@ -1111,7 +1070,6 @@
             "time": 1528133223918,
             "status": "unapproved",
             "metamaskNetworkId": "4",
-            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
@@ -1126,11 +1084,6 @@
               "path": "/txParams/gas",
               "value": "0x6169e",
               "timestamp": 1528133225488
-            },
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false
             }
           ],
           [
@@ -1280,7 +1233,6 @@
         "time": 1528133291381,
         "status": "confirmed",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
@@ -1296,7 +1248,6 @@
             "time": 1528133291381,
             "status": "unapproved",
             "metamaskNetworkId": "4",
-            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
@@ -1306,14 +1257,6 @@
               "gasPrice": "0x3b9aca00"
             }
           },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1528133291486
-            }
-          ],
           [
             {
               "op": "add",
@@ -1462,7 +1405,6 @@
         "time": 1528133318440,
         "status": "rejected",
         "metamaskNetworkId": "4",
-        "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
           "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1476,7 +1418,6 @@
             "time": 1528133318440,
             "status": "unapproved",
             "metamaskNetworkId": "4",
-            "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
               "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62"
@@ -1498,11 +1439,6 @@
               "op": "add",
               "path": "/txParams/gas",
               "value": "0x5208"
-            },
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false
             }
           ],
           [

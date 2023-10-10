@@ -50,62 +50,13 @@ describe('migration #97', () => {
     expect(transformedState.data).toEqual({});
   });
 
-  it('removes nonceDetail from transactions', async () => {
+  it('removes loadingDefaults property from transactions', async () => {
     const oldState = {
       TransactionController: {
         transactions: {
-          tx1: {
-            nonceDetails: {
-              local: {
-                details: {
-                  highest: 347,
-                  startPoint: 347,
-                },
-                name: 'local',
-                nonce: 347,
-              },
-              network: {
-                details: {
-                  baseCount: 347,
-                  blockNumber: '0x9c2682',
-                },
-                name: 'network',
-                nonce: 347,
-              },
-              params: {
-                highestLocallyConfirmed: 327,
-                highestSuggested: 347,
-                nextNetworkNonce: 347,
-              },
-            },
-            otherProp: 'value',
-          },
-          tx2: {
-            nonceDetails: {
-              local: {
-                details: {
-                  highest: 347,
-                  startPoint: 347,
-                },
-                name: 'local',
-                nonce: 347,
-              },
-              network: {
-                details: {
-                  baseCount: 347,
-                  blockNumber: '0x9c2682',
-                },
-                name: 'network',
-                nonce: 347,
-              },
-              params: {
-                highestLocallyConfirmed: 327,
-                highestSuggested: 347,
-                nextNetworkNonce: 347,
-              },
-            },
-            otherProp: 'value',
-          },
+          tx1: { loadingDefaults: true, otherProp: 'value' },
+          tx2: { loadingDefaults: true, otherProp: 'value' },
+          tx3: { otherProp: 'value' },
         },
       },
     };
@@ -121,6 +72,7 @@ describe('migration #97', () => {
         transactions: {
           tx1: { otherProp: 'value' },
           tx2: { otherProp: 'value' },
+          tx3: { otherProp: 'value' },
         },
       },
     });

@@ -8,7 +8,7 @@ type VersionedData = {
 export const version = 97;
 
 /**
- * Remove `nonceDetail` from transactions
+ * Remove unused `loadingDefaults` property from TransactionMeta
  *
  * @param originalVersionedData
  */
@@ -22,17 +22,17 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, any>) {
-  const transactionControllerState = state?.TransactionController || {};
-  const transactions = transactionControllerState?.transactions || {};
+  const TransactionController = state?.TransactionController || {};
+  const transactions = state?.TransactionController?.transactions || {};
 
-  if (isEmpty(transactions)) {
+  if (isEmpty(TransactionController) || isEmpty(transactions)) {
     return;
   }
 
   const newTxs = Object.keys(transactions).reduce((txs, txId) => {
     const transaction = transactions[txId];
-    if (transaction?.nonceDetails) {
-      delete transaction.nonceDetails;
+    if (transaction?.loadingDefaults) {
+      delete transaction.loadingDefaults;
     }
     return {
       ...txs,
@@ -41,7 +41,9 @@ function transformState(state: Record<string, any>) {
   }, {});
 
   state.TransactionController = {
-    ...transactionControllerState,
-    transactions: newTxs,
+    ...TransactionController,
+    transactions: {
+      ...newTxs,
+    },
   };
 }
