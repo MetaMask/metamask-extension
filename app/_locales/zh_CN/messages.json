@@ -5030,12 +5030,6 @@
   "transactionResubmitted": {
     "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
   },
-  "transactionSecurityCheck": {
-    "message": "启用安全提醒"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "我们使用第三方 API 来检测和显示未签名交易和签名请求中涉及的风险，然后您再进行签名。这些服务将访问您的未签名交易和签名请求、您的账户地址以及首选语言。"
-  },
   "transactionSettings": {
     "message": "交易设置"
   },
