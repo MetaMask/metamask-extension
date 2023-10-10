@@ -36,6 +36,27 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
 ];
 
 /**
+ * List of allowed protocols. On Flask, HTTP is also allowed for testing.
+ */
+const ALLOWED_PROTOCOLS: string[] = [
+  'https:',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  'http:',
+  ///: END:ONLY_INCLUDE_IN
+];
+
+/**
+ * Checks if the protocol of the origin is allowed.
+ *
+ * @param origin - The origin to check.
+ * @returns `true` if the protocol of the origin is allowed, `false` otherwise.
+ */
+function isProtocolAllowed(origin: string): boolean {
+  const url = new URL(origin);
+  return ALLOWED_PROTOCOLS.includes(url.protocol);
+}
+
+/**
  * Builds a function that returns the list of keyring methods an origin can
  * call.
  *
@@ -53,7 +74,7 @@ export function keyringSnapPermissionsBuilder(
 
     const originMetadata = controller.getSubjectMetadata(origin);
     if (originMetadata?.subjectType === SubjectType.Website) {
-      return WEBSITE_ALLOWED_METHODS;
+      return isProtocolAllowed(origin) ? WEBSITE_ALLOWED_METHODS : [];
     }
 
     return [];
