@@ -60,10 +60,15 @@ export const DropdownTab = ({
   return (
     <Box
       as="li"
-      className={classnames('tab', className, {
-        'tab--active': isActive,
-        [activeClassName]: activeClassName && isActive,
-      })}
+      className={classnames(
+        'tab',
+        className,
+        'transaction-insight-dropdown-wrapper',
+        {
+          'tab--active': isActive,
+          [activeClassName]: activeClassName && isActive,
+        },
+      )}
       data-testid={dataTestId}
       onClick={onTabClick}
       dataTestId={dataTestId}
