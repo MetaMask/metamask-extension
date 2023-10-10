@@ -7,7 +7,6 @@ meta:
     - "refs/heads/develop"
     - "refs/heads/main"
     - "refs/heads/master"
-  full_clean_on_configuration_change: false
 source_code:
   encoding: "UTF-8"
   line_ending: "GIT"
