@@ -17,6 +17,10 @@ describe('Add snap account experimental settings', function () {
 
         // Make sure the "Add snap account" button is not visible.
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Add account or hardware wallet',
+        });
         await driver.assertElementNotPresent({
           text: 'Add snap account',
           tag: 'button',
@@ -39,6 +43,10 @@ describe('Add snap account experimental settings', function () {
 
         // Make sure the "Add snap account" button is visible.
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Add account or hardware wallet',
+        });
         assert.equal(
           await driver.isElementPresentAndVisible({
             text: 'Add snap account',
