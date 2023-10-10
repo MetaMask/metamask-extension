@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -5038,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "推定のガス代を$2で$1に増加し、トランザクションを再送信しました"
-  },
-  "transactionSecurityCheck": {
-    "message": "セキュリティアラートを有効にする"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "当社はサードパーティAPIを使用して、ユーザーが署名する前に未署名のトランザクションおよび署名のリクエストに関するリスクを検出・表示します。このようなサービスは、ユーザーの未署名のトランザクションおよび署名のリクエスト、アカウントアドレス、希望言語にアクセスできます。"
   },
   "transactionSettings": {
     "message": "トランザクション設定"
