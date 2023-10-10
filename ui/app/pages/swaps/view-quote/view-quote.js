@@ -11,6 +11,7 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent'
 import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken'
 import { MetaMetricsContext } from '../../../contexts/metametrics.new'
 import FeeCard from '../fee-card'
+import { setCustomGasLimit } from '../../../ducks/gas/gas.duck'
 import {
   getQuotes,
   getSelectedQuote,
@@ -26,7 +27,6 @@ import {
   navigateBackToBuildQuote,
   signAndSendTransactions,
   getBackgroundSwapRouteState,
-  swapsQuoteSelected,
 } from '../../../ducks/swaps/swaps'
 import {
   conversionRateSelector,
@@ -39,6 +39,8 @@ import { getTokens } from '../../../ducks/metamask/metamask'
 import {
   safeRefetchQuotes,
   setCustomApproveTxData,
+  setSwapsTxGasLimit,
+  setSelectedQuoteAggId,
   setSwapsErrorKey,
   showModal,
 } from '../../../store/actions'
@@ -73,6 +75,7 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker'
 import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps'
 import CountdownTimer from '../countdown-timer'
 import SwapsFooter from '../swaps-footer'
+import InfoTooltip from '../../../components/ui/info-tooltip'
 
 export default function ViewQuote() {
   const history = useHistory()
@@ -112,9 +115,7 @@ export default function ViewQuote() {
   const selectedQuote = useSelector(getSelectedQuote)
   const topQuote = useSelector(getTopQuote)
   const usedQuote = selectedQuote || topQuote
-  const tradeValue = usedQuote?.trade?.value ?? '0x0'
-
-  const { isBestQuote } = usedQuote
+  const { value: tradeValue = '0x0' } = usedQuote?.trade?.value || {}
 
   const fetchParamsSourceToken = fetchParams?.sourceToken
 
@@ -299,10 +300,9 @@ export default function ViewQuote() {
     available_quotes: numberOfQuotes,
   }
 
-  const allAvailableQuotesOpened = useNewMetricEvent({
+  const anonymousAllAvailableQuotesOpened = useNewMetricEvent({
     event: 'All Available Quotes Opened',
-    category: 'swaps',
-    sensitiveProperties: {
+    properties: {
       ...eventObjectBase,
       other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
       other_quote_selected_source:
@@ -310,34 +310,55 @@ export default function ViewQuote() {
           ? null
           : usedQuote?.aggregator,
     },
+    excludeMetaMetricsId: true,
+    category: 'swaps',
+  })
+  const allAvailableQuotesOpened = useNewMetricEvent({
+    event: 'All Available Quotes Opened',
+    category: 'swaps',
+  })
+  const anonymousQuoteDetailsOpened = useNewMetricEvent({
+    event: 'Quote Details Opened',
+    properties: {
+      ...eventObjectBase,
+      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
+      other_quote_selected_source:
+        usedQuote?.aggregator === topQuote?.aggregator
+          ? null
+          : usedQuote?.aggregator,
+    },
+    excludeMetaMetricsId: true,
+    category: 'swaps',
   })
   const quoteDetailsOpened = useNewMetricEvent({
     event: 'Quote Details Opened',
     category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
-      other_quote_selected_source:
-        usedQuote?.aggregator === topQuote?.aggregator
-          ? null
-          : usedQuote?.aggregator,
-    },
   })
-  const editSpendLimitOpened = useNewMetricEvent({
+  const anonymousEditSpendLimitOpened = useNewMetricEvent({
     event: 'Edit Spend Limit Opened',
-    category: 'swaps',
-    sensitiveProperties: {
+    properties: {
       ...eventObjectBase,
       custom_spend_limit_set: originalApproveAmount === approveAmount,
       custom_spend_limit_amount:
         originalApproveAmount === approveAmount ? null : approveAmount,
     },
+    excludeMetaMetricsId: true,
+    category: 'swaps',
+  })
+  const editSpendLimitOpened = useNewMetricEvent({
+    event: 'Edit Spend Limit Opened',
+    category: 'swaps',
   })
 
+  const anonymousBestQuoteReviewedEvent = useNewMetricEvent({
+    event: 'Best Quote Reviewed',
+    properties: { ...eventObjectBase, network_fees: feeInFiat },
+    excludeMetaMetricsId: true,
+    category: 'swaps',
+  })
   const bestQuoteReviewedEvent = useNewMetricEvent({
     event: 'Best Quote Reviewed',
     category: 'swaps',
-    sensitiveProperties: { ...eventObjectBase, network_fees: feeInFiat },
   })
   useEffect(() => {
     if (
@@ -355,6 +376,7 @@ export default function ViewQuote() {
     ) {
       bestQuoteReviewedEventSent.current = true
       bestQuoteReviewedEvent()
+      anonymousBestQuoteReviewedEvent()
     }
   }, [
     sourceTokenSymbol,
@@ -366,11 +388,13 @@ export default function ViewQuote() {
     numberOfQuotes,
     feeInFiat,
     bestQuoteReviewedEvent,
+    anonymousBestQuoteReviewedEvent,
   ])
 
   const metaMaskFee = usedQuote.fee
 
   const onFeeCardTokenApprovalClick = () => {
+    anonymousEditSpendLimitOpened()
     editSpendLimitOpened()
     dispatch(
       showModal({
@@ -431,7 +455,7 @@ export default function ViewQuote() {
     dispatch(
       showModal({
         name: 'CUSTOMIZE_METASWAP_GAS',
-        value: tradeValue,
+        value: usedQuote.value,
         customGasLimitMessage: approveGas
           ? t('extraApprovalGas', [hexToDecimal(approveGas)])
           : '',
@@ -444,7 +468,6 @@ export default function ViewQuote() {
           : null,
         initialGasPrice: gasPrice,
         initialGasLimit: maxGasLimit,
-        minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toNumber(),
       }),
     )
 
@@ -470,10 +493,17 @@ export default function ViewQuote() {
           <SelectQuotePopover
             quoteDataRows={renderablePopoverData}
             onClose={() => setSelectQuotePopoverShown(false)}
-            onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
+            onSubmit={(aggId) => {
+              dispatch(setSelectedQuoteAggId(aggId))
+              dispatch(setCustomGasLimit(null))
+              dispatch(setSwapsTxGasLimit(''))
+            }}
             swapToSymbol={destinationTokenSymbol}
             initialAggId={usedQuote.aggregator}
-            onQuoteDetailsIsOpened={quoteDetailsOpened}
+            onQuoteDetailsIsOpened={() => {
+              anonymousQuoteDetailsOpened()
+              quoteDetailsOpened()
+            }}
           />
         )}
         <div className="view-quote__insufficient-eth-warning-wrapper">
@@ -484,7 +514,11 @@ export default function ViewQuote() {
             />
           )}
         </div>
-        <div className={classnames('view-quote__countdown-timer-container')}>
+        <div
+          className={classnames('view-quote__countdown-timer-container', {
+            'view-quote__countdown-timer-container--thin': showWarning,
+          })}
+        >
           <CountdownTimer
             timeStarted={quotesLastFetched}
             warningTime="0:30"
@@ -505,6 +539,33 @@ export default function ViewQuote() {
           sourceIconUrl={sourceTokenIconUrl}
           destinationIconUrl={destinationIconUrl}
         />
+        <div className="view-quote__view-other-button-container">
+          <div className="view-quote__view-other-button">
+            {t('swapNQuotesAvailable', [Object.values(quotes).length])}
+            <i className="fa fa-arrow-right" />
+          </div>
+          <div
+            className="view-quote__view-other-button-fade"
+            onClick={() => {
+              anonymousAllAvailableQuotesOpened()
+              allAvailableQuotesOpened()
+              setSelectQuotePopoverShown(true)
+            }}
+          >
+            {t('swapNQuotesAvailable', [Object.values(quotes).length])}
+            <i className="fa fa-arrow-right" />
+          </div>
+        </div>
+        <div className="view-quote__metamask-rate">
+          <p className="view-quote__metamask-rate-text">
+            {t('swapQuoteIncludesRate', [metaMaskFee])}
+          </p>
+          <InfoTooltip
+            position="top"
+            contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
+            wrapperClassName="view-quote__metamask-rate-info-icon"
+          />
+        </div>
         <div
           className={classnames('view-quote__fee-card-container', {
             'view-quote__fee-card-container--thin': showWarning,
@@ -528,21 +589,6 @@ export default function ViewQuote() {
             tokenApprovalTextComponent={tokenApprovalTextComponent}
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
-            metaMaskFee={metaMaskFee}
-            isBestQuote={isBestQuote}
-            numberOfQuotes={Object.values(quotes).length}
-            onQuotesClick={() => {
-              allAvailableQuotesOpened()
-              setSelectQuotePopoverShown(true)
-            }}
-            savings={usedQuote?.savings}
-            conversionRate={conversionRate}
-            currentCurrency={currentCurrency}
-            tokenConversionRate={
-              destinationTokenSymbol === 'ETH'
-                ? 1
-                : memoizedTokenConversionRates[destinationToken.address]
-            }
           />
         </div>
       </div>
@@ -559,7 +605,6 @@ export default function ViewQuote() {
         submitText={t('swap')}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         disabled={balanceError || gasPrice === null || gasPrice === undefined}
-        className={showWarning && 'view-quote__thin-swaps-footer'}
         showTermsOfService
         showTopBorder
       />

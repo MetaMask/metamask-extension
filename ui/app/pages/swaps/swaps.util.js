@@ -1,43 +1,124 @@
-import BigNumber from 'bignumber.js';
-import abi from 'human-standard-token-abi';
+import log from 'loglevel'
+import BigNumber from 'bignumber.js'
+import abi from 'human-standard-token-abi'
+import { isValidAddress } from 'ethereumjs-util'
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps'
+import { calcTokenValue, calcTokenAmount } from '../../helpers/utils/token-util'
 import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
-  ETH_WETH_CONTRACT_ADDRESS,
-} from '../../../shared/constants/swaps';
-import {
-  getBaseApi,
-  isSwapsDefaultTokenAddress,
-  isSwapsDefaultTokenSymbol,
-  validateData,
-} from '../../../shared/modules/swaps.utils';
-import {
-  ETH_SYMBOL,
-  WETH_SYMBOL,
-  MAINNET_CHAIN_ID,
-} from '../../../shared/constants/network';
-import { getValueFromWeiHex } from '../../helpers/utils/conversions.util';
-
+  constructTxParams,
+  toPrecisionWithoutTrailingZeros,
+} from '../../helpers/utils/util'
 import {
   decimalToHex,
-  toPrecisionWithoutTrailingZeros,
-} from '../../../shared/modules/conversion-util';
-import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
-import fetchWithCache from '../../../shared/modules/fetch-with-cache';
+  getValueFromWeiHex,
+} from '../../helpers/utils/conversions.util'
 
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
-import { calcGasTotal } from '../../../shared/modules/gas-utils';
-import { calcTokenAmount } from '../../../shared/modules/token-utils';
+import { subtractCurrencies } from '../../helpers/utils/conversion-util'
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util'
+import fetchWithCache from '../../helpers/utils/fetch-with-cache'
 
-const CACHE_REFRESH_FIVE_MINUTES = 300000;
+import { calcGasTotal } from '../send/send.utils'
 
-const truthyString = (string) => Boolean(string?.length);
+const TOKEN_TRANSFER_LOG_TOPIC_HASH =
+  '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+
+const CACHE_REFRESH_ONE_HOUR = 3600000
+
+const getBaseApi = function (type) {
+  switch (type) {
+    case 'trade':
+      return `https://api.metaswap.codefi.network/trades?`
+    case 'tokens':
+      return `https://api.metaswap.codefi.network/tokens`
+    case 'topAssets':
+      return `https://api.metaswap.codefi.network/topAssets`
+    case 'featureFlag':
+      return `https://api.metaswap.codefi.network/featureFlag`
+    case 'aggregatorMetadata':
+      return `https://api.metaswap.codefi.network/aggregatorMetadata`
+    case 'gasPrices':
+      return `https://api.metaswap.codefi.network/gasPrices`
+    default:
+      throw new Error('getBaseApi requires an api call type')
+  }
+}
+
+const validHex = (string) => Boolean(string?.match(/^0x[a-f0-9]+$/u))
+const truthyString = (string) => Boolean(string?.length)
+const truthyDigitString = (string) =>
+  truthyString(string) && Boolean(string.match(/^\d+$/u))
+
+const QUOTE_VALIDATORS = [
+  {
+    property: 'trade',
+    type: 'object',
+    validator: (trade) =>
+      trade &&
+      validHex(trade.data) &&
+      isValidAddress(trade.to) &&
+      isValidAddress(trade.from) &&
+      truthyString(trade.value),
+  },
+  {
+    property: 'approvalNeeded',
+    type: 'object',
+    validator: (approvalTx) =>
+      approvalTx === null ||
+      (approvalTx &&
+        validHex(approvalTx.data) &&
+        isValidAddress(approvalTx.to) &&
+        isValidAddress(approvalTx.from)),
+  },
+  {
+    property: 'sourceAmount',
+    type: 'string',
+    validator: truthyDigitString,
+  },
+  {
+    property: 'destinationAmount',
+    type: 'string',
+    validator: truthyDigitString,
+  },
+  {
+    property: 'sourceToken',
+    type: 'string',
+    validator: isValidAddress,
+  },
+  {
+    property: 'destinationToken',
+    type: 'string',
+    validator: isValidAddress,
+  },
+  {
+    property: 'aggregator',
+    type: 'string',
+    validator: truthyString,
+  },
+  {
+    property: 'aggType',
+    type: 'string',
+    validator: truthyString,
+  },
+  {
+    property: 'error',
+    type: 'object',
+    validator: (error) => error === null || typeof error === 'object',
+  },
+  {
+    property: 'averageGas',
+    type: 'number',
+  },
+  {
+    property: 'maxGas',
+    type: 'number',
+  },
+]
 
 const TOKEN_VALIDATORS = [
   {
     property: 'address',
     type: 'string',
-    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
+    validator: isValidAddress,
   },
   {
     property: 'symbol',
@@ -49,9 +130,9 @@ const TOKEN_VALIDATORS = [
     type: 'string|number',
     validator: (string) => Number(string) >= 0 && Number(string) <= 36,
   },
-];
+]
 
-const TOP_ASSET_VALIDATORS = TOKEN_VALIDATORS.slice(0, 2);
+const TOP_ASSET_VALIDATORS = TOKEN_VALIDATORS.slice(0, 2)
 
 const AGGREGATOR_METADATA_VALIDATORS = [
   {
@@ -69,10 +150,10 @@ const AGGREGATOR_METADATA_VALIDATORS = [
     type: 'string',
     validator: (string) => Boolean(string.match(/^data:image/u)),
   },
-];
+]
 
 const isValidDecimalNumber = (string) =>
-  !isNaN(string) && string.match(/^[.0-9]+$/u) && !isNaN(parseFloat(string));
+  !isNaN(string) && string.match(/^[.0-9]+$/u) && !isNaN(parseFloat(string))
 
 const SWAP_GAS_PRICE_VALIDATOR = [
   {
@@ -90,48 +171,119 @@ const SWAP_GAS_PRICE_VALIDATOR = [
     type: 'string',
     validator: isValidDecimalNumber,
   },
-];
+]
 
-export async function fetchToken(contractAddress, chainId) {
-  const tokenUrl = getBaseApi('token', chainId);
-  const token = await fetchWithCache(
-    `${tokenUrl}?address=${contractAddress}`,
-    { method: 'GET' },
-    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-  );
-  return token;
+function validateData(validators, object, urlUsed) {
+  return validators.every(({ property, type, validator }) => {
+    const types = type.split('|')
+
+    const valid =
+      types.some((_type) => typeof object[property] === _type) &&
+      (!validator || validator(object[property]))
+    if (!valid) {
+      log.error(
+        `response to GET ${urlUsed} invalid for property ${property}; value was:`,
+        object[property],
+        '| type was: ',
+        typeof object[property],
+      )
+    }
+    return valid
+  })
 }
 
-export async function fetchTokens(chainId) {
-  const tokensUrl = getBaseApi('tokens', chainId);
+export async function fetchTradesInfo({
+  slippage,
+  sourceToken,
+  sourceDecimals,
+  destinationToken,
+  value,
+  fromAddress,
+  exchangeList,
+}) {
+  const urlParams = {
+    destinationToken,
+    sourceToken,
+    sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
+    slippage,
+    timeout: 10000,
+    walletAddress: fromAddress,
+  }
+
+  if (exchangeList) {
+    urlParams.exchangeList = exchangeList
+  }
+
+  const queryString = new URLSearchParams(urlParams).toString()
+  const tradeURL = `${getBaseApi('trade')}${queryString}`
+  const tradesResponse = await fetchWithCache(
+    tradeURL,
+    { method: 'GET' },
+    { cacheRefreshTime: 0, timeout: 15000 },
+  )
+  const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
+    if (
+      quote.trade &&
+      !quote.error &&
+      validateData(QUOTE_VALIDATORS, quote, tradeURL)
+    ) {
+      const constructedTrade = constructTxParams({
+        to: quote.trade.to,
+        from: quote.trade.from,
+        data: quote.trade.data,
+        amount: decimalToHex(quote.trade.value),
+        gas: decimalToHex(quote.maxGas),
+      })
+
+      let { approvalNeeded } = quote
+
+      if (approvalNeeded) {
+        approvalNeeded = constructTxParams({
+          ...approvalNeeded,
+        })
+      }
+
+      return {
+        ...aggIdTradeMap,
+        [quote.aggregator]: {
+          ...quote,
+          slippage,
+          trade: constructedTrade,
+          approvalNeeded,
+        },
+      }
+    }
+    return aggIdTradeMap
+  }, {})
+
+  return newQuotes
+}
+
+export async function fetchTokens() {
+  const tokenUrl = getBaseApi('tokens')
   const tokens = await fetchWithCache(
-    tokensUrl,
+    tokenUrl,
     { method: 'GET' },
-    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-  );
-  const filteredTokens = [
-    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId],
-    ...tokens.filter((token) => {
-      return (
-        validateData(TOKEN_VALIDATORS, token, tokensUrl) &&
-        !(
-          isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
-          isSwapsDefaultTokenAddress(token.address, chainId)
-        )
-      );
-    }),
-  ];
-  return filteredTokens;
+    { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
+  )
+  const filteredTokens = tokens.filter((token) => {
+    return (
+      validateData(TOKEN_VALIDATORS, token, tokenUrl) &&
+      token.address !== ETH_SWAPS_TOKEN_OBJECT.address
+    )
+  })
+  filteredTokens.push(ETH_SWAPS_TOKEN_OBJECT)
+  return filteredTokens
 }
 
-export async function fetchAggregatorMetadata(chainId) {
-  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
+export async function fetchAggregatorMetadata() {
+  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata')
   const aggregators = await fetchWithCache(
     aggregatorMetadataUrl,
     { method: 'GET' },
-    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-  );
-  const filteredAggregators = {};
+    { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
+  )
+  const filteredAggregators = {}
   for (const aggKey in aggregators) {
     if (
       validateData(
@@ -140,79 +292,88 @@ export async function fetchAggregatorMetadata(chainId) {
         aggregatorMetadataUrl,
       )
     ) {
-      filteredAggregators[aggKey] = aggregators[aggKey];
+      filteredAggregators[aggKey] = aggregators[aggKey]
     }
   }
-  return filteredAggregators;
+  return filteredAggregators
 }
 
-export async function fetchTopAssets(chainId) {
-  const topAssetsUrl = getBaseApi('topAssets', chainId);
+export async function fetchTopAssets() {
+  const topAssetsUrl = getBaseApi('topAssets')
   const response = await fetchWithCache(
     topAssetsUrl,
     { method: 'GET' },
-    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-  );
+    { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
+  )
   const topAssetsMap = response.reduce((_topAssetsMap, asset, index) => {
     if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
-      return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
+      return { ..._topAssetsMap, [asset.address]: { index: String(index) } }
     }
-    return _topAssetsMap;
-  }, {});
-  return topAssetsMap;
+    return _topAssetsMap
+  }, {})
+  return topAssetsMap
+}
+
+export async function fetchSwapsFeatureLiveness() {
+  const status = await fetchWithCache(
+    getBaseApi('featureFlag'),
+    { method: 'GET' },
+    { cacheRefreshTime: 600000 },
+  )
+  return status?.active
 }
 
 export async function fetchTokenPrice(address) {
-  const query = `contract_addresses=${address}&vs_currencies=eth`;
+  const query = `contract_addresses=${address}&vs_currencies=eth`
 
   const prices = await fetchWithCache(
     `https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`,
     { method: 'GET' },
     { cacheRefreshTime: 60000 },
-  );
-  return prices && prices[address]?.eth;
+  )
+  return prices && prices[address]?.eth
 }
 
 export async function fetchTokenBalance(address, userAddress) {
-  const tokenContract = global.eth.contract(abi).at(address);
+  const tokenContract = global.eth.contract(abi).at(address)
   const tokenBalancePromise = tokenContract
     ? tokenContract.balanceOf(userAddress)
-    : Promise.resolve();
-  const usersToken = await tokenBalancePromise;
-  return usersToken;
+    : Promise.resolve()
+  const usersToken = await tokenBalancePromise
+  return usersToken
 }
 
-export async function fetchSwapsGasPrices(chainId) {
-  const gasPricesUrl = getBaseApi('gasPrices', chainId);
+export async function fetchSwapsGasPrices() {
+  const gasPricesUrl = getBaseApi('gasPrices')
   const response = await fetchWithCache(
     gasPricesUrl,
     { method: 'GET' },
-    { cacheRefreshTime: 30000 },
-  );
+    { cacheRefreshTime: 15000 },
+  )
   const responseIsValid = validateData(
     SWAP_GAS_PRICE_VALIDATOR,
     response,
     gasPricesUrl,
-  );
+  )
 
   if (!responseIsValid) {
-    throw new Error(`${gasPricesUrl} response is invalid`);
+    throw new Error(`${gasPricesUrl} response is invalid`)
   }
 
   const {
     SafeGasPrice: safeLow,
     ProposeGasPrice: average,
     FastGasPrice: fast,
-  } = response;
+  } = response
 
   return {
     safeLow,
     average,
     fast,
-  };
+  }
 }
 
-export function getRenderableNetworkFeesForQuote({
+export function getRenderableNetworkFeesForQuote(
   tradeGas,
   approveGas,
   gasPrice,
@@ -221,48 +382,39 @@ export function getRenderableNetworkFeesForQuote({
   tradeValue,
   sourceSymbol,
   sourceAmount,
-  chainId,
-  nativeCurrencySymbol,
-}) {
+) {
   const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
     .plus(approveGas || '0x0', 16)
-    .toString(16);
-  const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);
+    .toString(16)
+  const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice)
 
   const nonGasFee = new BigNumber(tradeValue, 16)
-    .minus(
-      isSwapsDefaultTokenSymbol(sourceSymbol, chainId) ? sourceAmount : 0,
-      10,
-    )
-    .toString(16);
+    .minus(sourceSymbol === 'ETH' ? sourceAmount : 0, 10)
+    .toString(16)
 
   const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
     .plus(nonGasFee, 16)
-    .toString(16);
+    .toString(16)
 
   const ethFee = getValueFromWeiHex({
     value: totalWeiCost,
     toDenomination: 'ETH',
     numberOfDecimals: 5,
-  });
+  })
   const rawNetworkFees = getValueFromWeiHex({
     value: totalWeiCost,
     toCurrency: currentCurrency,
     conversionRate,
     numberOfDecimals: 2,
-  });
-  const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
-
-  const chainCurrencySymbolToUse =
-    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
-
+  })
+  const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency)
   return {
     rawNetworkFees,
     rawEthFee: ethFee,
     feeInFiat: formattedNetworkFee,
-    feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
+    feeInEth: `${ethFee} ETH`,
     nonGasFee,
-  };
+  }
 }
 
 export function quotesToRenderableData(
@@ -272,7 +424,6 @@ export function quotesToRenderableData(
   currentCurrency,
   approveGas,
   tokenConversionRates,
-  chainId,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -287,67 +438,67 @@ export function quotesToRenderableData(
       averageGas,
       fee,
       trade,
-    } = quote;
+    } = quote
     const sourceValue = calcTokenAmount(
       sourceAmount,
-      sourceTokenInfo.decimals,
-    ).toString(10);
+      sourceTokenInfo.decimals || 18,
+    ).toString(10)
     const destinationValue = calcTokenAmount(
       destinationAmount,
-      destinationTokenInfo.decimals,
-    ).toPrecision(8);
+      destinationTokenInfo.decimals || 18,
+    ).toPrecision(8)
 
     const {
       feeInFiat,
       rawNetworkFees,
       rawEthFee,
       feeInEth,
-    } = getRenderableNetworkFeesForQuote({
-      tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
+    } = getRenderableNetworkFeesForQuote(
+      gasEstimateWithRefund || decimalToHex(averageGas || 800000),
       approveGas,
       gasPrice,
       currentCurrency,
       conversionRate,
-      tradeValue: trade.value,
-      sourceSymbol: sourceTokenInfo.symbol,
+      trade.value,
+      sourceTokenInfo.symbol,
       sourceAmount,
-      chainId,
-    });
+    )
 
-    const slippageMultiplier = new BigNumber(100 - slippage).div(100);
+    const slippageMultiplier = new BigNumber(100 - slippage).div(100)
     const minimumAmountReceived = new BigNumber(destinationValue)
       .times(slippageMultiplier)
-      .toFixed(6);
+      .toFixed(6)
 
     const tokenConversionRate =
-      tokenConversionRates[destinationTokenInfo.address];
-    const ethValueOfTrade = isSwapsDefaultTokenSymbol(
-      destinationTokenInfo.symbol,
-      chainId,
-    )
-      ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals).minus(
-          rawEthFee,
-          10,
-        )
-      : new BigNumber(tokenConversionRate || 0, 10)
-          .times(
-            calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
-            10,
-          )
-          .minus(rawEthFee, 10);
+      tokenConversionRates[destinationTokenInfo.address]
+    const ethValueOfTrade =
+      destinationTokenInfo.symbol === 'ETH'
+        ? calcTokenAmount(
+            destinationAmount,
+            destinationTokenInfo.decimals || 18,
+          ).minus(rawEthFee, 10)
+        : new BigNumber(tokenConversionRate || 0, 10)
+            .times(
+              calcTokenAmount(
+                destinationAmount,
+                destinationTokenInfo.decimals || 18,
+              ),
+              10,
+            )
+            .minus(rawEthFee, 10)
 
-    let liquiditySourceKey;
-    let renderedSlippage = slippage;
+    let liquiditySourceKey
+    let renderedSlippage = slippage
 
     if (aggType === 'AGG') {
-      liquiditySourceKey = 'swapAggregator';
+      liquiditySourceKey = 'swapAggregator'
     } else if (aggType === 'RFQ') {
-      liquiditySourceKey = 'swapRequestForQuotation';
-      renderedSlippage = 0;
+      liquiditySourceKey = 'swapRequestForQuotation'
+      renderedSlippage = 0
     } else if (aggType === 'DEX') {
-      liquiditySourceKey = 'swapDecentralizedExchange';
+      liquiditySourceKey = 'swapDecentralizedExchange'
     } else {
-      liquiditySourceKey = 'swapUnknown';
+      liquiditySourceKey = 'swapUnknown'
     }
 
     return {
@@ -372,50 +523,97 @@ export function quotesToRenderableData(
       ethValueOfTrade,
       minimumAmountReceived,
       metaMaskFee: fee,
-    };
-  });
+    }
+  })
+}
+
+export function getSwapsTokensReceivedFromTxMeta(
+  tokenSymbol,
+  txMeta,
+  tokenAddress,
+  accountAddress,
+  tokenDecimals,
+  approvalTxMeta,
+) {
+  const txReceipt = txMeta?.txReceipt
+  if (tokenSymbol === 'ETH') {
+    if (
+      !txReceipt ||
+      !txMeta ||
+      !txMeta.postTxBalance ||
+      !txMeta.preTxBalance
+    ) {
+      return null
+    }
+
+    let approvalTxGasCost = '0x0'
+    if (approvalTxMeta && approvalTxMeta.txReceipt) {
+      approvalTxGasCost = calcGasTotal(
+        approvalTxMeta.txReceipt.gasUsed,
+        approvalTxMeta.txParams.gasPrice,
+      )
+    }
+
+    const gasCost = calcGasTotal(txReceipt.gasUsed, txMeta.txParams.gasPrice)
+    const totalGasCost = new BigNumber(gasCost, 16)
+      .plus(approvalTxGasCost, 16)
+      .toString(16)
+
+    const preTxBalanceLessGasCost = subtractCurrencies(
+      txMeta.preTxBalance,
+      totalGasCost,
+      {
+        aBase: 16,
+        bBase: 16,
+        toNumericBase: 'hex',
+      },
+    )
+
+    const ethReceived = subtractCurrencies(
+      txMeta.postTxBalance,
+      preTxBalanceLessGasCost,
+      {
+        aBase: 16,
+        bBase: 16,
+        fromDenomination: 'WEI',
+        toDenomination: 'ETH',
+        toNumericBase: 'dec',
+        numberOfDecimals: 6,
+      },
+    )
+    return ethReceived
+  }
+  const txReceiptLogs = txReceipt?.logs
+  if (txReceiptLogs && txReceipt?.status !== '0x0') {
+    const tokenTransferLog = txReceiptLogs.find((txReceiptLog) => {
+      const isTokenTransfer =
+        txReceiptLog.topics &&
+        txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH
+      const isTransferFromGivenToken = txReceiptLog.address === tokenAddress
+      const isTransferFromGivenAddress =
+        txReceiptLog.topics &&
+        txReceiptLog.topics[2] &&
+        txReceiptLog.topics[2].match(accountAddress.slice(2))
+      return (
+        isTokenTransfer &&
+        isTransferFromGivenToken &&
+        isTransferFromGivenAddress
+      )
+    })
+    return tokenTransferLog
+      ? toPrecisionWithoutTrailingZeros(
+          calcTokenAmount(tokenTransferLog.data, tokenDecimals).toString(10),
+          6,
+        )
+      : ''
+  }
+  return null
 }
 
 export function formatSwapsValueForDisplay(destinationAmount) {
-  let amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12);
+  let amountToDisplay = toPrecisionWithoutTrailingZeros(destinationAmount, 12)
   if (amountToDisplay.match(/e[+-]/u)) {
-    amountToDisplay = new BigNumber(amountToDisplay).toFixed();
+    amountToDisplay = new BigNumber(amountToDisplay).toFixed()
   }
-  return amountToDisplay;
+  return amountToDisplay
 }
-
-/**
- * Checks whether a contract address is valid before swapping tokens.
- *
- * @param {string} contractAddress - E.g. "0x881d40237659c251811cec9c364ef91dc08d300c" for mainnet
- * @param {object} swapMetaData - We check the following 2 fields, e.g. { token_from: "ETH", token_to: "WETH" }
- * @param {string} chainId - The hex encoded chain ID to check
- * @returns {boolean} Whether a contract address is valid or not
- */
-export const isContractAddressValid = (
-  contractAddress,
-  swapMetaData,
-  chainId = MAINNET_CHAIN_ID,
-) => {
-  const contractAddressForChainId = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
-  if (!contractAddress || !contractAddressForChainId) {
-    return false;
-  }
-  if (
-    (swapMetaData.token_from === ETH_SYMBOL &&
-      swapMetaData.token_to === WETH_SYMBOL) ||
-    (swapMetaData.token_from === WETH_SYMBOL &&
-      swapMetaData.token_to === ETH_SYMBOL)
-  ) {
-    // Sometimes we get a contract address with a few upper-case chars and since addresses are
-    // case-insensitive, we compare uppercase versions for validity.
-    return (
-      contractAddress.toUpperCase() ===
-        ETH_WETH_CONTRACT_ADDRESS.toUpperCase() ||
-      contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
-    );
-  }
-  return (
-    contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
-  );
-};
