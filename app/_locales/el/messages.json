@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Άνοιγμα στο Block Explorer"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Δοκιμαστικά)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Όροι παροχής υπηρεσιών"
   },
-  "termsOfUse": {
-    "message": "όροι χρήσης"
-  },
   "termsOfUseAgreeText": {
     "message": " Συμφωνώ με τους Όρους Χρήσης, οι οποίοι ισχύουν για τη χρήση του MetaMask και όλων των λειτουργιών του"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "αυτή η συλλογή"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Η υπηρεσία αυτή είναι πειραματική. Ενεργοποιώντας αυτή τη λειτουργία, συμφωνείτε με τους $1 του OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Ώρα"

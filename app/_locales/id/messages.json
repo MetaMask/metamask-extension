@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Buka di block explorer"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Ketentuan layanan"
   },
-  "termsOfUse": {
-    "message": "ketentuan penggunaan"
-  },
   "termsOfUseAgreeText": {
     "message": " Saya menyetujui Syarat Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "koleksi ini"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental. Dengan mengaktifkan fitur ini, Anda menyetujui $1 OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Waktu"
