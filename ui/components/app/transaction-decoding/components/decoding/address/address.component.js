@@ -5,10 +5,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import { shortenAddress } from '../../../../../../helpers/utils/util';
 import Identicon from '../../../../../ui/identicon';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import {
-  getMemoizedMetadataContractName,
-  getMemoizedAddressBook,
-} from '../../../../../../selectors';
+import { getAddressBook } from '../../../../../../selectors';
 import NicknamePopovers from '../../../../modals/nickname-popovers';
 
 const Address = ({
@@ -21,27 +18,11 @@ const Address = ({
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
 
-  const addressBook = useSelector(getMemoizedAddressBook);
+  const addressBook = useSelector(getAddressBook);
   const addressBookEntryObject = addressBook.find(
-    (entry) =>
-      entry.address.toLowerCase() === checksummedRecipientAddress.toLowerCase(),
+    (entry) => entry.address === checksummedRecipientAddress,
   );
   const recipientNickname = addressBookEntryObject?.name;
-  const recipientMetadataName = useSelector((state) =>
-    getMemoizedMetadataContractName(state, checksummedRecipientAddress),
-  );
-
-  const recipientToRender = addressOnly
-    ? recipientName ||
-      recipientNickname ||
-      recipientMetadataName ||
-      recipientEns ||
-      shortenAddress(checksummedRecipientAddress)
-    : recipientName ||
-      recipientNickname ||
-      recipientMetadataName ||
-      recipientEns ||
-      t('newContract');
 
   return (
     <div
@@ -58,10 +39,17 @@ const Address = ({
       </div>
 
       <div
-        className="tx-insight-component-address__name"
+        className="address__name"
         onClick={() => setShowNicknamePopovers(true)}
       >
-        {recipientToRender}
+        {addressOnly
+          ? recipientNickname ||
+            recipientEns ||
+            shortenAddress(checksummedRecipientAddress)
+          : recipientNickname ||
+            recipientEns ||
+            recipientName ||
+            t('newContract')}
       </div>
       {showNicknamePopovers ? (
         <NicknamePopovers

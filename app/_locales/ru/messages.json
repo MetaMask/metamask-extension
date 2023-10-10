@@ -360,9 +360,6 @@
   "copiedExclamation": {
     "message": "Скопировано!"
   },
-  "copiedTransactionId": {
-    "message": "Скопированный идентификатор транзакции"
-  },
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
   },

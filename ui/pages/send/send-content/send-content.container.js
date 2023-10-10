@@ -1,43 +1,40 @@
 import { connect } from 'react-redux';
 import {
+  accountsWithSendEtherInfoSelector,
+  getAddressBookEntry,
   getIsEthGasPriceFetched,
   getNoGasPriceFetched,
   checkNetworkOrAccountNotSupports1559,
-  getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
 import {
+  getIsAssetSendable,
   getIsBalanceInsufficient,
+  getSendTo,
   getSendAsset,
-  getAssetError,
-  getRecipient,
-  acknowledgeRecipientWarning,
-  getRecipientWarningAcknowledgement,
 } from '../../../ducks/send';
+
 import SendContent from './send-content.component';
 
 function mapStateToProps(state) {
-  const recipient = getRecipient(state);
-  const recipientWarningAcknowledged =
-    getRecipientWarningAcknowledgement(state);
-
+  const ownedAccounts = accountsWithSendEtherInfoSelector(state);
+  const to = getSendTo(state);
   return {
+    isAssetSendable: getIsAssetSendable(state),
+    isOwnedAccount: Boolean(
+      ownedAccounts.find(
+        ({ address }) => address.toLowerCase() === to.toLowerCase(),
+      ),
+    ),
+    contact: getAddressBookEntry(state, to),
     isEthGasPrice: getIsEthGasPriceFetched(state),
     noGasPrice: getNoGasPriceFetched(state),
-    networkOrAccountNotSupports1559:
-      checkNetworkOrAccountNotSupports1559(state),
+    to,
+    networkOrAccountNotSupports1559: checkNetworkOrAccountNotSupports1559(
+      state,
+    ),
     getIsBalanceInsufficient: getIsBalanceInsufficient(state),
     asset: getSendAsset(state),
-    assetError: getAssetError(state),
-    recipient,
-    recipientWarningAcknowledged,
-    isMultiLayerFeeNetwork: getIsMultiLayerFeeNetwork(state),
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    acknowledgeRecipientWarning: () => dispatch(acknowledgeRecipientWarning()),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SendContent);
+export default connect(mapStateToProps)(SendContent);

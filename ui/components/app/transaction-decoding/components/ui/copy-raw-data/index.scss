@@ -12,19 +12,19 @@
     background-color: transparent;
 
     &:hover {
-      background-color: var(--color-background-default-hover);
+      background-color: $Grey-000;
     }
 
     &:active {
-      background-color: var(--color-background-default-hover);
+      background-color: #ededed;
     }
   }
 
   &__icon {
-    padding-inline-end: 6px;
+    padding-right: 6px;
   }
 
   &__label {
-    color: var(--color-text-alternative);
+    color: #6a737d;
   }
 }

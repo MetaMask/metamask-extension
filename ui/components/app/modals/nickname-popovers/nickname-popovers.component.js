@@ -43,7 +43,7 @@ const NicknamePopovers = ({ address, onClose }) => {
       <UpdateNicknamePopover
         address={address}
         nickname={recipientNickname || null}
-        memo={addressBookEntryObject?.memo || null}
+        memo={addressBookEntryObject?.memo}
         onClose={() => setPopoverToDisplay(SHOW_NICKNAME_POPOVER)}
         onAdd={(recipient, nickname, memo) =>
           dispatch(addToAddressBook(recipient, nickname, memo))

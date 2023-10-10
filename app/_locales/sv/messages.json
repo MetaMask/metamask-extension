@@ -221,9 +221,6 @@
   "copiedExclamation": {
     "message": "Kopierades!"
   },
-  "copiedTransactionId": {
-    "message": "Kopierade transaktions-ID"
-  },
   "copyAddress": {
     "message": "Kopiera adress till urklipp"
   },

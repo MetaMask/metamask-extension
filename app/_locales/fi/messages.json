@@ -227,9 +227,6 @@
   "copiedExclamation": {
     "message": "Kopioitu"
   },
-  "copiedTransactionId": {
-    "message": "Kopioitu tapahtuman tunnus"
-  },
   "copyAddress": {
     "message": "Kopioi osoite leikepöydälle"
   },

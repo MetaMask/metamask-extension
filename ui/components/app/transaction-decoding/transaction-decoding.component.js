@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux';
 import * as Codec from '@truffle/codec';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
 import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
+import { hexToDecimal } from '../../../helpers/utils/conversions.util';
 import { I18nContext } from '../../../contexts/i18n';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { transformTxDecoding } from './transaction-decoding.util';
 import {
   FETCH_PROJECT_INFO_URI,
@@ -19,14 +19,10 @@ import {
 
 import Address from './components/decoding/address';
 import CopyRawData from './components/ui/copy-raw-data';
-import Accreditation from './components/ui/accreditation';
 
 export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
   const [tx, setTx] = useState([]);
-  const [sourceAddress, setSourceAddress] = useState('');
-  const [sourceFetchedVia, setSourceFetchedVia] = useState('');
-
   const { address: from } = useSelector(getSelectedAccount);
   const network = hexToDecimal(useSelector(getCurrentChainId));
 
@@ -38,10 +34,8 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     (async () => {
       setLoading(true);
       try {
-        const networks = await fetchWithCache({
-          url: FETCH_SUPPORTED_NETWORKS_URI,
-          fetchOptions: { method: 'GET' },
-          functionName: 'fetchSupportedNetworks',
+        const networks = await fetchWithCache(FETCH_SUPPORTED_NETWORKS_URI, {
+          method: 'GET',
         });
 
         if (
@@ -59,22 +53,9 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           'network-id': network,
         })}`;
 
-        const response = await fetchWithCache({
-          url: requestUrl,
-          fetchOptions: { method: 'GET' },
-          functionName: 'fetchProject',
-        });
+        const response = await fetchWithCache(requestUrl, { method: 'GET' });
 
-        const { info: projectInfo, fetchedVia, address } = response;
-
-        // update source information
-        if (address) {
-          setSourceAddress(address);
-        }
-
-        if (fetchedVia) {
-          setSourceFetchedVia(fetchedVia);
-        }
+        const { info: projectInfo } = response;
 
         // creating instance of the truffle decoder
         const decoder = await forAddress(to, {
@@ -90,6 +71,11 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           blockNumber: null,
         });
 
+        // fake await
+        await new Promise((resolve) => {
+          setTimeout(() => resolve(true), 500);
+        });
+
         // transform tx decoding arguments into tree data
         const params = transformTxDecoding(decoding?.arguments);
         setTx(params);
@@ -98,11 +84,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       } catch (error) {
         setLoading(false);
         setError(true);
-        if (error?.message.match('400')) {
-          setErrorMessage(t('txInsightsNotSupported'));
-        } else {
-          setErrorMessage(error?.message);
-        }
+        setErrorMessage(error?.message);
       }
     })();
   }, [t, from, to, network, data]);
@@ -115,7 +97,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       case 'error':
         return (
           <span className="sol-item solidity-error">
-            <span>{t('malformedData')}</span>
+            <span>Malformed data</span>
           </span>
         );
 
@@ -135,17 +117,9 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
               </span>
             );
 
-          case 'bool':
-            return <span className="sol-item">{String(value.asBoolean)}</span>;
-
           case 'bytes':
             return (
               <span className="sol-item solidity-bytes">{value.asHex}</span>
-            );
-
-          case 'string':
-            return (
-              <span className="sol-item solidity-string">{value.asString}</span>
             );
 
           case 'array':
@@ -199,7 +173,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         </details>
       </li>
     ) : (
-      <li className="solidity-value" key={`solidity-value-${index}`}>
+      <li className="solidity-value">
         <div className="solidity-named-item solidity-item">
           {typeClass !== 'array' && !Array.isArray(value) ? (
             <span className="param-name typography--color-black">{name}: </span>
@@ -216,7 +190,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     if (loading) {
       return (
         <div className="tx-insight-loading">
-          <Spinner color="var(--color-warning-default)" />
+          <Spinner color="#F7C06C" />
         </div>
       );
     }
@@ -237,14 +211,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         <div className="tx-insight-content__copy-raw-tx">
           <CopyRawData data={data} />
         </div>
-        {sourceFetchedVia && sourceAddress ? (
-          <div className="tx-insight-content__accreditation">
-            <Accreditation
-              address={sourceAddress}
-              fetchVia={sourceFetchedVia}
-            />
-          </div>
-        ) : null}
       </div>
     );
   };
@@ -253,6 +219,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
 }
 
 TransactionDecoding.propTypes = {
-  to: PropTypes.string,
+  to: PropTypes.string.isRequired,
   inputData: PropTypes.string.isRequired,
 };

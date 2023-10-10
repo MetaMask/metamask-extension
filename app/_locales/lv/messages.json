@@ -227,9 +227,6 @@
   "copiedExclamation": {
     "message": "Nokopēts!"
   },
-  "copiedTransactionId": {
-    "message": "Nokopētais darījuma ID"
-  },
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"
   },

@@ -57,7 +57,7 @@ export default function TransactionStatus({
   const statusText =
     statusKey === TRANSACTION_STATUSES.CONFIRMED && !statusOnly
       ? date
-      : statusKey && t(statusKey);
+      : t(statusKey);
 
   return (
     <Tooltip

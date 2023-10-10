@@ -4,8 +4,12 @@ import classnames from 'classnames';
 import CurrencyDisplay from '../../ui/currency-display';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import HexToDecimal from '../../ui/hex-to-decimal';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { EtherDenomination } from '../../../../shared/constants/common';
+import {
+  GWEI,
+  PRIMARY,
+  SECONDARY,
+  ETH,
+} from '../../../helpers/constants/common';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
 export default class TransactionBreakdown extends PureComponent {
@@ -70,12 +74,9 @@ export default class TransactionBreakdown extends PureComponent {
           )}
         </TransactionBreakdownRow>
         <TransactionBreakdownRow
-          title={isTokenApprove ? t('spendingCap') : t('amount')}
+          title={isTokenApprove ? t('spendLimitAmount') : t('amount')}
         >
-          <span
-            className="transaction-breakdown__value transaction-breakdown__value--amount"
-            data-testid="transaction-breakdown-value-amount"
-          >
+          <span className="transaction-breakdown__value transaction-breakdown__value--amount">
             {primaryCurrency}
           </span>
         </TransactionBreakdownRow>
@@ -113,7 +114,7 @@ export default class TransactionBreakdown extends PureComponent {
               className="transaction-breakdown__value"
               data-testid="transaction-breakdown__base-fee"
               currency={nativeCurrency}
-              denomination={EtherDenomination.GWEI}
+              denomination={GWEI}
               value={baseFee}
               numberOfDecimals={10}
               hideLabel
@@ -126,7 +127,7 @@ export default class TransactionBreakdown extends PureComponent {
               className="transaction-breakdown__value"
               data-testid="transaction-breakdown__priority-fee"
               currency={nativeCurrency}
-              denomination={EtherDenomination.GWEI}
+              denomination={GWEI}
               value={priorityFee}
               numberOfDecimals={10}
               hideLabel
@@ -148,7 +149,7 @@ export default class TransactionBreakdown extends PureComponent {
                 className="transaction-breakdown__value"
                 data-testid="transaction-breakdown__gas-price"
                 currency={nativeCurrency}
-                denomination={EtherDenomination.GWEI}
+                denomination={GWEI}
                 value={gasPrice}
                 numberOfDecimals={9}
                 hideLabel
@@ -162,7 +163,7 @@ export default class TransactionBreakdown extends PureComponent {
               className="transaction-breakdown__value"
               data-testid="transaction-breakdown__effective-gas-price"
               currency={nativeCurrency}
-              denomination={EtherDenomination.ETH}
+              denomination={ETH}
               numberOfDecimals={6}
               value={hexGasTotal}
               type={PRIMARY}
@@ -184,7 +185,7 @@ export default class TransactionBreakdown extends PureComponent {
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
               currency={nativeCurrency}
-              denomination={EtherDenomination.ETH}
+              denomination={ETH}
               numberOfDecimals={9}
               value={maxFeePerGas}
               type={PRIMARY}

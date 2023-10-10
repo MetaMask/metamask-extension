@@ -8,8 +8,8 @@
   display: flex;
   flex-direction: column;
 
-  &--with-top-border {
-    border-top: 1px solid var(--color-border-muted);
+  &__error-container {
+    padding: 0 16px 16px 16px;
   }
 
   &__details {
@@ -17,41 +17,73 @@
     padding: 0 24px;
   }
 
+  &__data {
+    padding: 16px;
+    color: $oslo-gray;
+
+    & > .disclosure {
+      margin-top: 0;
+    }
+  }
+
+  &__data-box {
+    @include H7;
+
+    background-color: #f9fafa;
+    padding: 12px;
+    word-wrap: break-word;
+    overflow-y: auto;
+
+    &-label {
+      @include H7;
+
+      text-transform: uppercase;
+      padding: 8px 0 12px;
+    }
+  }
+
+  &__data-field {
+    display: flex;
+    flex-direction: row;
+
+    &-label {
+      font-weight: 500;
+      padding-right: 16px;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+  }
+
   &__gas-fee {
-    border-bottom: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid $geyser;
 
     .advanced-gas-inputs__gas-edit-rows {
       margin-bottom: 16px;
     }
   }
 
+  &__function-type {
+    @include H6;
+
+    font-weight: 500;
+    text-transform: capitalize;
+    color: $black;
+    padding-left: 5px;
+  }
+
   &__tab {
     @include H7;
 
-    color: var(--color-text-alternative);
+    color: #8c8e94;
     text-transform: uppercase;
+    margin: 0 8px;
 
     & button {
       font-size: unset;
-      color: var(--color-text-alternative);
+      color: #8c8e94;
       text-transform: uppercase;
-      max-width: 170px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    & .dropdown__select {
-      color: var(--color-text-alternative);
-      text-transform: uppercase;
-
-      option {
-        text-transform: none;
-      }
-    }
-
-    & .dropdown__icon-caret-down {
-      top: 40%;
     }
   }
 
@@ -59,18 +91,7 @@
     margin-top: auto;
   }
 
-  &__currency-container,
-  &__total-amount,
-  &__total-value {
+  &__currency-container {
     position: relative;
-  }
-
-  &__small-fee-label {
-    font-weight: bold;
-    margin-right: 2px;
-  }
-
-  &__sub-text-container {
-    display: flex;
   }
 }

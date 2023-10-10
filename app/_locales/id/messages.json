@@ -360,9 +360,6 @@
   "copiedExclamation": {
     "message": "Disalin!"
   },
-  "copiedTransactionId": {
-    "message": "ID Transaksi yang Disalin"
-  },
   "copyAddress": {
     "message": "Salin alamat ke clipboard"
   },

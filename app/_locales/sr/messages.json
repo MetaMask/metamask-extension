@@ -224,9 +224,6 @@
   "copiedExclamation": {
     "message": "Kopirano!"
   },
-  "copiedTransactionId": {
-    "message": "Kopiran identifikator transakcije"
-  },
   "copyAddress": {
     "message": "Kopirajte adresu u ostavu"
   },
