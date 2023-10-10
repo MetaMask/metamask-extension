@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import NftDetails from '../../components/app/nft-details/nft-details';
-import { getNfts, getTokens } from '../../ducks/metamask/metamask';
+import CollectibleDetails from '../../components/app/collectible-details/collectible-details';
+import { getCollectibles, getTokens } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
@@ -12,16 +12,16 @@ import TokenAsset from './components/token-asset';
 const Asset = () => {
   const nativeCurrency = useSelector((state) => state.metamask.nativeCurrency);
   const tokens = useSelector(getTokens);
-  const nfts = useSelector(getNfts);
+  const collectibles = useSelector(getCollectibles);
   const { asset, id } = useParams();
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, asset),
   );
 
-  const nft = nfts.find(
+  const collectible = collectibles.find(
     ({ address, tokenId }) =>
-      isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
+      isEqualCaseInsensitive(address, asset) && Number(id) === tokenId,
   );
 
   useEffect(() => {
@@ -30,8 +30,8 @@ const Asset = () => {
   }, []);
 
   let content;
-  if (nft) {
-    content = <NftDetails nft={nft} />;
+  if (collectible) {
+    content = <CollectibleDetails collectible={collectible} />;
   } else if (token) {
     content = <TokenAsset token={token} />;
   } else if (asset === nativeCurrency) {
