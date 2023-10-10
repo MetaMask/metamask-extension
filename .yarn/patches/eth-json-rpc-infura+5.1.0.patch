@@ -1,0 +1,12 @@
+diff --git a/node_modules/eth-json-rpc-infura/src/index.js b/node_modules/eth-json-rpc-infura/src/index.js
+index 72fbdd4..af4d0b8 100644
+--- a/node_modules/eth-json-rpc-infura/src/index.js
++++ b/node_modules/eth-json-rpc-infura/src/index.js
+@@ -43,6 +43,7 @@ function createInfuraMiddleware (opts = {}) {
+         // an error was caught while performing the request
+         // if not retriable, resolve with the encountered error
+         if (!isRetriableError(err)) {
++          console.error('Fetch Error. req', req, 'res', res)
+           // abort with error
+           throw err
+         }
