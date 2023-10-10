@@ -11,9 +11,9 @@ import {
 } from '../../../helpers/constants/error-keys';
 import { ASSET_TYPES } from '../../../ducks/send';
 import SendAmountRow from './send-amount-row';
-import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
 import SendGasRow from './send-gas-row';
+import SendHexDataRow from './send-hex-data-row/send-hex-data-row';
 
 export default class SendContent extends Component {
   static contextTypes = {
