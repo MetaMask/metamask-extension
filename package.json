@@ -255,7 +255,7 @@
     "@metamask/gas-fee-controller": "^6.0.1",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^9.0.0",
-    "@metamask/keyring-api": "github:MetaMask/keyring-api#v1.0.0-rc.1",
+    "@metamask/keyring-api": "^1.0.0-rc.1",
     "@metamask/keyring-controller": "^8.0.1",
     "@metamask/logging-controller": "^1.0.1",
     "@metamask/logo": "^3.1.2",
