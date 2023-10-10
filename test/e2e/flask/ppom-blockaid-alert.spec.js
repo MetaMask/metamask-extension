@@ -130,7 +130,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   /**
    * Disclaimer: This test does not test all reason types. e.g. 'blur_farming',
    * 'malicious_domain', 'unfair_trade'. Some other tests are found in other files:
-   * e.g. test/e2e/snaps/ppom-malicious-<name>.spec.js
+   * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
   it('should show security alerts for malicious requests', async function () {
     await withFixtures(
