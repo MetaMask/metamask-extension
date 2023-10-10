@@ -5326,12 +5326,6 @@
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Enable security alerts"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
-  },
   "transactionSettings": {
     "message": "Transaction settings"
   },
