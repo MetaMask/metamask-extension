@@ -1,24 +1,19 @@
-import { strict as assert } from 'assert';
+import assert from 'assert';
 import sinon from 'sinon';
 
-import { BigNumber } from '@ethersproject/bignumber';
+import { ethers } from 'ethers';
 import { mapValues } from 'lodash';
-import BigNumberjs from 'bignumber.js';
-import { NetworkType } from '@metamask/controller-utils';
+import BigNumber from 'bignumber.js';
+import { ObservableStore } from '@metamask/obs-store';
 import {
-  CHAIN_IDS,
-  NETWORK_IDS,
-  NetworkStatus,
+  ROPSTEN_NETWORK_ID,
+  MAINNET_NETWORK_ID,
+  MAINNET_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
-import { SECOND } from '../../../shared/constants/time';
-import { GasEstimateTypes } from '../../../shared/constants/gas';
-import {
-  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-} from '../../../shared/constants/smartTransactions';
 import SwapsController, { utils } from './swaps';
+import { NETWORK_EVENTS } from './network';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -39,10 +34,9 @@ const TEST_AGG_ID_6 = 'TEST_AGG_6';
 const TEST_AGG_ID_BEST = 'TEST_AGG_BEST';
 const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 
-const POLLING_TIMEOUT = SECOND * 1000;
-
 const MOCK_APPROVAL_NEEDED = {
-  data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
+  data:
+    '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
   to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   amount: '0',
   from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
@@ -82,10 +76,10 @@ const MOCK_FETCH_METADATA = {
     symbol: 'FOO',
     decimals: 18,
   },
-  chainId: CHAIN_IDS.MAINNET,
+  chainId: MAINNET_CHAIN_ID,
 };
 
-const MOCK_TOKEN_RATES_STORE = () => ({
+const MOCK_TOKEN_RATES_STORE = new ObservableStore({
   contractExchangeRates: {
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
     '0x1111111111111111111111111111111111111111': 0.1,
@@ -101,77 +95,61 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 
 function getMockNetworkController() {
   return {
-    state: {
-      networkId: NETWORK_IDS.GOERLI,
-      selectedNetworkClientId: NetworkType.goerli,
-      networksMetadata: {
-        [NetworkType.goerli]: {
-          EIPS: {},
-          status: NetworkStatus.Available,
-        },
+    store: {
+      getState: () => {
+        return {
+          network: ROPSTEN_NETWORK_ID,
+        };
       },
     },
+    on: sinon
+      .stub()
+      .withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE)
+      .callsArgAsync(1),
   };
 }
 
 const EMPTY_INIT_STATE = {
   swapsState: {
     quotes: {},
-    quotesPollingLimitEnabled: false,
     fetchParams: null,
     tokens: null,
     tradeTxId: null,
     approveTxId: null,
     quotesLastFetched: null,
-    customMaxFeePerGas: null,
     customMaxGas: '',
-    customMaxPriorityFeePerGas: null,
     customGasPrice: null,
     selectedAggId: null,
     customApproveTxData: '',
     errorKey: '',
     topAggId: null,
     routeState: '',
-    swapsFeatureIsLive: true,
-    swapsFeatureFlags: {},
+    swapsFeatureIsLive: false,
     swapsQuoteRefreshTime: 60000,
-    swapsQuotePrefetchingRefreshTime: 60000,
-    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime:
-      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-    swapsUserFeeLevel: '',
-    saveFetchedQuotes: false,
   },
 };
 
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
+const fetchSwapsFeatureLivenessStub = sandbox.stub();
+const fetchSwapsQuoteRefreshTimeStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
-getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
-const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
-  return {
-    gasFeeEstimates: {
-      high: '150',
-    },
-    gasEstimateType: GasEstimateTypes.legacy,
-  };
-});
+getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
 
 describe('SwapsController', function () {
   let provider;
 
-  const getSwapsController = (_provider = provider) => {
+  const getSwapsController = () => {
     return new SwapsController({
       getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
       networkController: getMockNetworkController(),
-      onNetworkStateChange: sinon.stub(),
-      provider: _provider,
+      provider,
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-      getTokenRatesState: MOCK_TOKEN_RATES_STORE,
+      tokenRatesStore: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
+      fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+      fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
       getCurrentChainId: getCurrentChainIdStub,
-      getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
     });
   };
 
@@ -213,33 +191,20 @@ describe('SwapsController', function () {
 
     it('should replace ethers instance when network changes', function () {
       const networkController = getMockNetworkController();
-      let networkStateChangeListener;
-      const onNetworkStateChange = (listener) => {
-        networkStateChangeListener = listener;
-      };
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
-        onNetworkStateChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
+        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
+        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
+      const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      networkController.state = {
-        networkId: NETWORK_IDS.MAINNET,
-        selectedNetworkClientId: NetworkType.mainnet,
-        networksMetadata: {
-          [NetworkType.mainnet]: {
-            EIPS: {},
-            status: NetworkStatus.Available,
-          },
-        },
-      };
-      networkStateChangeListener();
+      onNetworkDidChange(MAINNET_NETWORK_ID);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.notStrictEqual(
@@ -251,33 +216,20 @@ describe('SwapsController', function () {
 
     it('should not replace ethers instance when network changes to loading', function () {
       const networkController = getMockNetworkController();
-      let networkStateChangeListener;
-      const onNetworkStateChange = (listener) => {
-        networkStateChangeListener = listener;
-      };
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
-        onNetworkStateChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
+        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
+        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
+      const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      networkController.state = {
-        networkId: null,
-        selectedNetworkClientId: NetworkType.goerli,
-        networksMetadata: {
-          [NetworkType.goerli]: {
-            EIPS: {},
-            status: NetworkStatus.Unknown,
-          },
-        },
-      };
-      networkStateChangeListener();
+      onNetworkDidChange('loading');
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -289,33 +241,20 @@ describe('SwapsController', function () {
 
     it('should not replace ethers instance when network changes to the same network', function () {
       const networkController = getMockNetworkController();
-      let networkStateChangeListener;
-      const onNetworkStateChange = (listener) => {
-        networkStateChangeListener = listener;
-      };
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
-        onNetworkStateChange,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
+        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
+        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
+      const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
-      networkController.state = {
-        networkId: NETWORK_IDS.GOERLI,
-        selectedNetworkClientId: NetworkType.goerli,
-        networksMetadata: {
-          [NetworkType.goerli]: {
-            EIPS: {},
-            status: NetworkStatus.Available,
-          },
-        },
-      };
-      networkStateChangeListener();
+      onNetworkDidChange(ROPSTEN_NETWORK_ID);
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -412,16 +351,17 @@ describe('SwapsController', function () {
           baseGasEstimate,
         );
 
-        const { gasLimit: bufferedGasLimit } =
-          await swapsController.getBufferedGasLimit();
-        const { gasEstimate, gasEstimateWithRefund } =
-          swapsController.store.getState().swapsState.quotes[initialAggId];
+        const {
+          gasLimit: bufferedGasLimit,
+        } = await swapsController.getBufferedGasLimit();
+        const {
+          gasEstimate,
+          gasEstimateWithRefund,
+        } = swapsController.store.getState().swapsState.quotes[initialAggId];
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
-          `0x${new BigNumberjs(maxGas, 10)
-            .minus(estimatedRefund, 10)
-            .toString(16)}`,
+          new BigNumber(maxGas, 10).minus(estimatedRefund, 10).toString(16),
         );
       });
 
@@ -455,10 +395,12 @@ describe('SwapsController', function () {
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
-        const [topAggId, resultQuotes] =
-          await swapsController._findTopQuoteAndCalculateSavings(
-            getTopQuoteAndSavingsMockQuotes(),
-          );
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController._findTopQuoteAndCalculateSavings(
+          getTopQuoteAndSavingsMockQuotes(),
+        );
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(
           resultQuotes,
@@ -472,15 +414,17 @@ describe('SwapsController', function () {
         const expectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
         delete expectedResultQuotes[TEST_AGG_ID_6];
         expectedResultQuotes[TEST_AGG_ID_1].savings = {
-          total: '0.0092',
+          total: '0.0292',
           performance: '0.0297',
-          fee: '0',
+          fee: '0.02',
           metaMaskFee: '0.0205',
           medianMetaMaskFee: '0.0202',
         };
 
-        const [topAggId, resultQuotes] =
-          await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -496,32 +440,34 @@ describe('SwapsController', function () {
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...testInput[TEST_AGG_ID_1],
-            ethFee: '0.25',
+            ethFee: '0.01',
           },
           [TEST_AGG_ID_2]: {
             ...testInput[TEST_AGG_ID_2],
-            ethFee: '0.25',
+            ethFee: '0.02',
           },
           [TEST_AGG_ID_3]: {
             ...testInput[TEST_AGG_ID_3],
-            ethFee: '0.25',
+            ethFee: '0.03',
           },
           [TEST_AGG_ID_4]: {
             ...testInput[TEST_AGG_ID_4],
-            ethFee: '0.25',
+            ethFee: '0.04',
           },
           [TEST_AGG_ID_5]: {
             ...testInput[TEST_AGG_ID_5],
-            ethFee: '0.25',
+            ethFee: '0.05',
           },
           [TEST_AGG_ID_6]: {
             ...testInput[TEST_AGG_ID_6],
-            ethFee: '0.25',
+            ethFee: '0.06',
           },
         };
 
-        const [topAggId, resultQuotes] =
-          await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -536,55 +482,56 @@ describe('SwapsController', function () {
             trade: { value: '0x8ac7230489e80000' },
           }),
         );
-        const baseExpectedResultQuotes =
-          getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.7795',
+            overallValueOfQuote: '2.0195',
           },
           [TEST_AGG_ID_2]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_2],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.7696',
+            overallValueOfQuote: '1.9996',
           },
           [TEST_AGG_ID_3]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_3],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.7498',
+            overallValueOfQuote: '1.9698',
           },
           [TEST_AGG_ID_4]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_4],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.73',
+            overallValueOfQuote: '1.94',
           },
           [TEST_AGG_ID_5]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_5],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.7102',
+            overallValueOfQuote: '1.9102',
           },
           [TEST_AGG_ID_6]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_6],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.6805',
+            overallValueOfQuote: '1.8705',
           },
         };
 
-        const [topAggId, resultQuotes] =
-          await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -601,30 +548,29 @@ describe('SwapsController', function () {
         );
         // 0.04 ETH fee included in trade value
         testInput[TEST_AGG_ID_1].trade.value = '0x8b553ece48ec0000';
-        const baseExpectedResultQuotes =
-          getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8b553ece48ec0000' },
-            overallValueOfQuote: '1.7395',
-            ethFee: '0.29',
+            overallValueOfQuote: '1.9795',
+            ethFee: '0.05',
           },
           [TEST_AGG_ID_2]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_2],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.7696',
+            overallValueOfQuote: '1.9996',
             isBestQuote: true,
             savings: {
-              total: '0.01445',
-              performance: '0.01485',
-              fee: '0.02',
+              total: '0.0243',
+              performance: '0.0297',
+              fee: '0.015',
               metaMaskFee: '0.0204',
-              medianMetaMaskFee: '0.02025',
+              medianMetaMaskFee: '0.0201',
             },
           },
           [TEST_AGG_ID_3]: {
@@ -632,35 +578,37 @@ describe('SwapsController', function () {
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.7498',
+            overallValueOfQuote: '1.9698',
           },
           [TEST_AGG_ID_4]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_4],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.73',
+            overallValueOfQuote: '1.94',
           },
           [TEST_AGG_ID_5]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_5],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.7102',
+            overallValueOfQuote: '1.9102',
           },
           [TEST_AGG_ID_6]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_6],
             sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
-            overallValueOfQuote: '1.6805',
+            overallValueOfQuote: '1.8705',
           },
         };
         delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
-        const [topAggId, resultQuotes] =
-          await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_2);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -669,34 +617,35 @@ describe('SwapsController', function () {
         const testInput = getTopQuoteAndSavingsMockQuotes();
         // 0.04 ETH fee included in trade value
         testInput[TEST_AGG_ID_1].trade.value = '0x8e1bc9bf040000';
-        const baseExpectedResultQuotes =
-          getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           ...baseExpectedResultQuotes,
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
             trade: { value: '0x8e1bc9bf040000' },
-            overallValueOfQuote: '1.7395',
-            ethFee: '0.29',
+            overallValueOfQuote: '1.9795',
+            ethFee: '0.05',
           },
           [TEST_AGG_ID_2]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_2],
             isBestQuote: true,
             savings: {
-              total: '0.01445',
-              performance: '0.01485',
-              fee: '0.02',
+              total: '0.0243',
+              performance: '0.0297',
+              fee: '0.015',
               metaMaskFee: '0.0204',
-              medianMetaMaskFee: '0.02025',
+              medianMetaMaskFee: '0.0201',
             },
           },
         };
         delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
-        const [topAggId, resultQuotes] =
-          await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        assert.equal(topAggId, TEST_AGG_ID_2);
+        const [
+          topAggId,
+          resultQuotes,
+        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        assert.equal(topAggId, [TEST_AGG_ID_2]);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
     });
@@ -706,14 +655,14 @@ describe('SwapsController', function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined);
         assert.strictEqual(quotes, null);
       });
-
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+          .resolves(ethers.BigNumber.from(1));
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -730,100 +679,36 @@ describe('SwapsController', function () {
           isBestQuote: true,
           // TODO: find a way to calculate these values dynamically
           gasEstimate: 2000000,
-          gasEstimateWithRefund: '0xb8cae',
+          gasEstimateWithRefund: 'b8cae',
           savings: {
-            fee: '-0.061067',
+            fee: '0',
             metaMaskFee: '0.5050505050505050505',
             performance: '6',
-            total: '5.4338824949494949495',
+            total: '5.4949494949494949495',
             medianMetaMaskFee: '0.44444444444444444444',
           },
-          ethFee: '0.113536',
-          overallValueOfQuote: '49.886464',
+          ethFee: '33554432',
+          overallValueOfQuote: '-33554382',
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
         });
+
         assert.strictEqual(
-          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
-            ...MOCK_FETCH_METADATA,
-          }),
+          fetchTradesInfoStub.calledOnceWithExactly(
+            MOCK_FETCH_PARAMS,
+            MOCK_FETCH_METADATA,
+          ),
           true,
         );
       });
-
-      it('calls returns the correct quotes on the optimism chain', async function () {
-        fetchTradesInfoStub.resetHistory();
-        const OPTIMISM_MOCK_FETCH_METADATA = {
-          ...MOCK_FETCH_METADATA,
-          chainId: CHAIN_IDS.OPTIMISM,
-        };
-        const optimismProviderResultStub = {
-          // 1 gwei
-          eth_gasPrice: '0x0de0b6b3a7640000',
-          // by default, all accounts are external accounts (not contracts)
-          eth_getCode: '0x',
-          eth_call:
-            '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
-        };
-        const optimismProvider = createTestProviderTools({
-          scaffold: optimismProviderResultStub,
-          networkId: 10,
-          chainId: 10,
-        }).provider;
-
-        swapsController = getSwapsController(optimismProvider);
-
-        fetchTradesInfoStub.resolves(getMockQuotes());
-
-        // Make it so approval is not required
-        sandbox
-          .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
-
-        const [newQuotes] = await swapsController.fetchAndSetQuotes(
-          MOCK_FETCH_PARAMS,
-          OPTIMISM_MOCK_FETCH_METADATA,
-        );
-
-        assert.deepStrictEqual(newQuotes[TEST_AGG_ID_BEST], {
-          ...getMockQuotes()[TEST_AGG_ID_BEST],
-          sourceTokenInfo: undefined,
-          destinationTokenInfo: {
-            symbol: 'FOO',
-            decimals: 18,
-          },
-          isBestQuote: true,
-          // TODO: find a way to calculate these values dynamically
-          gasEstimate: 2000000,
-          gasEstimateWithRefund: '0xb8cae',
-          savings: {
-            fee: '-0.061067',
-            metaMaskFee: '0.5050505050505050505',
-            performance: '6',
-            total: '5.4338824949494949495',
-            medianMetaMaskFee: '0.44444444444444444444',
-          },
-          ethFee: '0.113822',
-          multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
-          overallValueOfQuote: '49.886178',
-          metaMaskFeeInEth: '0.5050505050505050505',
-          ethValueOfTokens: '50',
-        });
-        assert.strictEqual(
-          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
-            ...OPTIMISM_MOCK_FETCH_METADATA,
-          }),
-          true,
-        );
-      });
-
       it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         const allowanceStub = sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+          .resolves(ethers.BigNumber.from(1));
 
         await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -834,7 +719,6 @@ describe('SwapsController', function () {
           allowanceStub.calledOnceWithExactly(
             MOCK_FETCH_PARAMS.sourceToken,
             MOCK_FETCH_PARAMS.fromAddress,
-            CHAIN_IDS.MAINNET,
           ),
           true,
         );
@@ -842,11 +726,12 @@ describe('SwapsController', function () {
 
       it('gets the gas limit if approval is required', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED);
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Ensure approval is required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(0));
+          .resolves(ethers.BigNumber.from(0));
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnStub = sandbox
@@ -860,21 +745,19 @@ describe('SwapsController', function () {
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
         assert.strictEqual(
-          timedoutGasReturnStub.calledOnceWithExactly(
-            MOCK_APPROVAL_NEEDED,
-            TEST_AGG_ID_APPROVAL,
-          ),
+          timedoutGasReturnStub.calledOnceWithExactly(MOCK_APPROVAL_NEEDED),
           true,
         );
       });
 
       it('marks the best quote', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+          .resolves(ethers.BigNumber.from(1));
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -892,7 +775,7 @@ describe('SwapsController', function () {
         const bestQuote = {
           ...getMockQuotes()[TEST_AGG_ID_1],
           aggregator: bestAggId,
-          destinationAmount: BigNumber.from(
+          destinationAmount: ethers.BigNumber.from(
             getMockQuotes()[TEST_AGG_ID_1].destinationAmount,
           )
             .add((100e18).toString())
@@ -900,11 +783,12 @@ describe('SwapsController', function () {
         };
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote };
         fetchTradesInfoStub.resolves(quotes);
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+          .resolves(ethers.BigNumber.from(1));
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -917,16 +801,16 @@ describe('SwapsController', function () {
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
+        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(BigNumber.from(1));
+          .resolves(ethers.BigNumber.from(1));
 
-        swapsController.getTokenRatesState = () => ({
+        swapsController.tokenRatesStore.updateState({
           contractExchangeRates: {},
         });
-
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
@@ -945,18 +829,13 @@ describe('SwapsController', function () {
           ...EMPTY_INIT_STATE.swapsState,
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
-          swapsQuotePrefetchingRefreshTime:
-            old.swapsQuotePrefetchingRefreshTime,
-          swapsStxGetTransactionsRefreshTime:
-            old.swapsStxGetTransactionsRefreshTime,
-          swapsStxBatchStatusRefreshTime: old.swapsStxBatchStatusRefreshTime,
         });
       });
 
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          POLLING_TIMEOUT,
+          1000000,
         );
         swapsController.resetSwapsState();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -967,7 +846,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          POLLING_TIMEOUT,
+          1000000,
         );
         swapsController.stopPollingForQuotes();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -985,7 +864,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          POLLING_TIMEOUT,
+          1000000,
         );
         swapsController.resetPostFetchState();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -995,21 +874,13 @@ describe('SwapsController', function () {
         const tokens = 'test';
         const fetchParams = 'test';
         const swapsFeatureIsLive = false;
-        const swapsFeatureFlags = {};
         const swapsQuoteRefreshTime = 0;
-        const swapsQuotePrefetchingRefreshTime = 0;
-        const swapsStxBatchStatusRefreshTime = 0;
-        const swapsStxGetTransactionsRefreshTime = 0;
         swapsController.store.updateState({
           swapsState: {
             tokens,
             fetchParams,
             swapsFeatureIsLive,
-            swapsFeatureFlags,
             swapsQuoteRefreshTime,
-            swapsQuotePrefetchingRefreshTime,
-            swapsStxBatchStatusRefreshTime,
-            swapsStxGetTransactionsRefreshTime,
           },
         });
 
@@ -1022,8 +893,282 @@ describe('SwapsController', function () {
           fetchParams,
           swapsFeatureIsLive,
           swapsQuoteRefreshTime,
-          swapsQuotePrefetchingRefreshTime,
         });
+      });
+    });
+
+    describe('_setupSwapsLivenessFetching ', function () {
+      let clock;
+      const EXPECTED_TIME = 600000;
+
+      const getLivenessState = () => {
+        return swapsController.store.getState().swapsState.swapsFeatureIsLive;
+      };
+
+      // We have to do this to overwrite window.navigator.onLine
+      const stubWindow = () => {
+        sandbox.replace(global, 'window', {
+          addEventListener: window.addEventListener,
+          navigator: { onLine: true },
+          dispatchEvent: window.dispatchEvent,
+          Event: window.Event,
+        });
+      };
+
+      beforeEach(function () {
+        stubWindow();
+        clock = sandbox.useFakeTimers();
+        sandbox.spy(clock, 'setInterval');
+
+        sandbox
+          .stub(SwapsController.prototype, '_fetchAndSetSwapsLiveness')
+          .resolves(undefined);
+
+        sandbox.spy(SwapsController.prototype, '_setupSwapsLivenessFetching');
+
+        sandbox.spy(window, 'addEventListener');
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('calls _setupSwapsLivenessFetching in constructor', function () {
+        swapsController = getSwapsController();
+
+        assert.ok(
+          swapsController._setupSwapsLivenessFetching.calledOnce,
+          'should have called _setupSwapsLivenessFetching once',
+        );
+        assert.ok(window.addEventListener.calledWith('online'));
+        assert.ok(window.addEventListener.calledWith('offline'));
+        assert.ok(
+          clock.setInterval.calledOnceWithExactly(
+            sinon.match.func,
+            EXPECTED_TIME,
+          ),
+          'should have set an interval',
+        );
+      });
+
+      it('handles browser being offline on boot, then coming online', async function () {
+        window.navigator.onLine = false;
+
+        swapsController = getSwapsController();
+        assert.ok(
+          swapsController._setupSwapsLivenessFetching.calledOnce,
+          'should have called _setupSwapsLivenessFetching once',
+        );
+        assert.ok(
+          swapsController._fetchAndSetSwapsLiveness.notCalled,
+          'should not have called _fetchAndSetSwapsLiveness',
+        );
+        assert.ok(
+          clock.setInterval.notCalled,
+          'should not have set an interval',
+        );
+        assert.strictEqual(
+          getLivenessState(),
+          false,
+          'swaps feature should be disabled',
+        );
+
+        const fetchPromise = new Promise((resolve) => {
+          const originalFunction = swapsController._fetchAndSetSwapsLiveness;
+          swapsController._fetchAndSetSwapsLiveness = () => {
+            originalFunction();
+            resolve();
+            swapsController._fetchAndSetSwapsLiveness = originalFunction;
+          };
+        });
+
+        // browser comes online
+        window.navigator.onLine = true;
+        window.dispatchEvent(new window.Event('online'));
+        await fetchPromise;
+
+        assert.ok(
+          swapsController._fetchAndSetSwapsLiveness.calledOnce,
+          'should have called _fetchAndSetSwapsLiveness once',
+        );
+        assert.ok(
+          clock.setInterval.calledOnceWithExactly(
+            sinon.match.func,
+            EXPECTED_TIME,
+          ),
+          'should have set an interval',
+        );
+      });
+
+      it('clears interval if browser goes offline', async function () {
+        swapsController = getSwapsController();
+
+        // set feature to live
+        const { swapsState } = swapsController.store.getState();
+        swapsController.store.updateState({
+          swapsState: { ...swapsState, swapsFeatureIsLive: true },
+        });
+
+        sandbox.spy(swapsController.store, 'updateState');
+
+        assert.ok(
+          clock.setInterval.calledOnceWithExactly(
+            sinon.match.func,
+            EXPECTED_TIME,
+          ),
+          'should have set an interval',
+        );
+
+        const clearIntervalPromise = new Promise((resolve) => {
+          const originalFunction = clock.clearInterval;
+          clock.clearInterval = (intervalId) => {
+            originalFunction(intervalId);
+            clock.clearInterval = originalFunction;
+            resolve();
+          };
+        });
+
+        // browser goes offline
+        window.navigator.onLine = false;
+        window.dispatchEvent(new window.Event('offline'));
+
+        // if this resolves, clearInterval was called
+        await clearIntervalPromise;
+
+        assert.ok(
+          swapsController._fetchAndSetSwapsLiveness.calledOnce,
+          'should have called _fetchAndSetSwapsLiveness once',
+        );
+        assert.ok(
+          swapsController.store.updateState.calledOnce,
+          'should have called updateState once',
+        );
+        assert.strictEqual(
+          getLivenessState(),
+          false,
+          'swaps feature should be disabled',
+        );
+      });
+    });
+
+    describe('_fetchAndSetSwapsLiveness', function () {
+      const getLivenessState = () => {
+        return swapsController.store.getState().swapsState.swapsFeatureIsLive;
+      };
+
+      beforeEach(function () {
+        fetchSwapsFeatureLivenessStub.reset();
+        sandbox.stub(SwapsController.prototype, '_setupSwapsLivenessFetching');
+        swapsController = getSwapsController();
+      });
+
+      afterEach(function () {
+        sandbox.restore();
+      });
+
+      it('fetches feature liveness as expected when API is live', async function () {
+        fetchSwapsFeatureLivenessStub.resolves(true);
+
+        assert.strictEqual(
+          getLivenessState(),
+          false,
+          'liveness should be false on boot',
+        );
+
+        await swapsController._fetchAndSetSwapsLiveness();
+
+        assert.ok(
+          fetchSwapsFeatureLivenessStub.calledOnce,
+          'should have called fetch function once',
+        );
+        assert.strictEqual(
+          getLivenessState(),
+          true,
+          'liveness should be true after call',
+        );
+      });
+
+      it('does not update state if fetched value is same as state value', async function () {
+        fetchSwapsFeatureLivenessStub.resolves(false);
+        sandbox.spy(swapsController.store, 'updateState');
+
+        assert.strictEqual(
+          getLivenessState(),
+          false,
+          'liveness should be false on boot',
+        );
+
+        await swapsController._fetchAndSetSwapsLiveness();
+
+        assert.ok(
+          fetchSwapsFeatureLivenessStub.calledOnce,
+          'should have called fetch function once',
+        );
+        assert.ok(
+          swapsController.store.updateState.notCalled,
+          'should not have called store.updateState',
+        );
+        assert.strictEqual(
+          getLivenessState(),
+          false,
+          'liveness should remain false after call',
+        );
+      });
+
+      it('tries three times before giving up if fetching fails', async function () {
+        const clock = sandbox.useFakeTimers();
+        fetchSwapsFeatureLivenessStub.rejects(new Error('foo'));
+        sandbox.spy(swapsController.store, 'updateState');
+
+        assert.strictEqual(
+          getLivenessState(),
+          false,
+          'liveness should be false on boot',
+        );
+
+        swapsController._fetchAndSetSwapsLiveness();
+        await clock.runAllAsync();
+
+        assert.ok(
+          fetchSwapsFeatureLivenessStub.calledThrice,
+          'should have called fetch function three times',
+        );
+        assert.ok(
+          swapsController.store.updateState.notCalled,
+          'should not have called store.updateState',
+        );
+        assert.strictEqual(
+          getLivenessState(),
+          false,
+          'liveness should remain false after call',
+        );
+      });
+
+      it('sets state after fetching on successful retry', async function () {
+        const clock = sandbox.useFakeTimers();
+        fetchSwapsFeatureLivenessStub.onCall(0).rejects(new Error('foo'));
+        fetchSwapsFeatureLivenessStub.onCall(1).rejects(new Error('foo'));
+        fetchSwapsFeatureLivenessStub.onCall(2).resolves(true);
+
+        assert.strictEqual(
+          getLivenessState(),
+          false,
+          'liveness should be false on boot',
+        );
+
+        swapsController._fetchAndSetSwapsLiveness();
+        await clock.runAllAsync();
+
+        assert.strictEqual(
+          fetchSwapsFeatureLivenessStub.callCount,
+          3,
+          'should have called fetch function three times',
+        );
+        assert.strictEqual(
+          getLivenessState(),
+          true,
+          'liveness should be true after call',
+        );
       });
     });
   });
@@ -1452,52 +1597,56 @@ function getTopQuoteAndSavingsBaseExpectedResults() {
     [TEST_AGG_ID_1]: {
       ...baseTestInput[TEST_AGG_ID_1],
       isBestQuote: true,
-      ethFee: '0.25',
-      overallValueOfQuote: '1.7795',
+      ethFee: '0.01',
+      overallValueOfQuote: '2.0195',
       metaMaskFeeInEth: '0.0205',
       ethValueOfTokens: '2.0295',
       savings: {
-        total: '0.0191',
+        total: '0.0441',
         performance: '0.0396',
-        fee: '0',
+        fee: '0.025',
         metaMaskFee: '0.0205',
         medianMetaMaskFee: '0.0201',
       },
     },
     [TEST_AGG_ID_2]: {
       ...baseTestInput[TEST_AGG_ID_2],
-      ethFee: '0.25',
-      overallValueOfQuote: '1.7696',
+      ethFee: '0.02',
+      overallValueOfQuote: '1.9996',
       metaMaskFeeInEth: '0.0204',
       ethValueOfTokens: '2.0196',
     },
     [TEST_AGG_ID_3]: {
       ...baseTestInput[TEST_AGG_ID_3],
-      ethFee: '0.25',
-      overallValueOfQuote: '1.7498',
+      ethFee: '0.03',
+      overallValueOfQuote: '1.9698',
       metaMaskFeeInEth: '0.0202',
       ethValueOfTokens: '1.9998',
     },
     [TEST_AGG_ID_4]: {
       ...baseTestInput[TEST_AGG_ID_4],
-      ethFee: '0.25',
-      overallValueOfQuote: '1.73',
+      ethFee: '0.04',
+      overallValueOfQuote: '1.94',
       metaMaskFeeInEth: '0.02',
       ethValueOfTokens: '1.98',
     },
     [TEST_AGG_ID_5]: {
       ...baseTestInput[TEST_AGG_ID_5],
-      ethFee: '0.25',
-      overallValueOfQuote: '1.7102',
+      ethFee: '0.05',
+      overallValueOfQuote: '1.9102',
       metaMaskFeeInEth: '0.0198',
       ethValueOfTokens: '1.9602',
     },
     [TEST_AGG_ID_6]: {
       ...baseTestInput[TEST_AGG_ID_6],
-      ethFee: '0.25',
-      overallValueOfQuote: '1.6805',
+      ethFee: '0.06',
+      overallValueOfQuote: '1.8705',
       metaMaskFeeInEth: '0.0195',
       ethValueOfTokens: '1.9305',
     },
   };
+}
+
+function getMockQuoteRefreshTime() {
+  return 45000;
 }
