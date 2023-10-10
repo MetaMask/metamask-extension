@@ -1,10 +1,9 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
-import { isValidSIWEOrigin } from '@metamask/controller-utils';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { parseDomainParts } from '@metamask/controller-utils';
 import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
@@ -19,7 +18,6 @@ import {
   unconfirmedMessagesHashSelector,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
-import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 
@@ -27,32 +25,93 @@ import {
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  resolvePendingApproval,
-  rejectPendingApproval,
-  rejectAllMessages,
-  completedTx,
-  showModal,
-} from '../../../store/actions';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IN
+import { showModal, cancelMsgs } from '../../../store/actions';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
-export default function SignatureRequestSIWE({ txData }) {
+export const isValidSIWEOrigin = (req, signableDomains) => {
+  try {
+    const { origin, siwe } = req;
+
+    // origin = scheme://[user[:password]@]domain[:port]
+    // origin is supplied by environment and must match domain claim in message
+    if (!origin || !siwe?.parsedMessage?.domain) {
+      return false;
+    }
+
+    const originParts = new URL(origin);
+    const domainParts = parseDomainParts(
+      siwe.parsedMessage.domain,
+      originParts.protocol,
+    );
+
+    console.log("isValidSIWEOrigin", originParts, domainParts)
+
+    const substitutes = {
+      ".eth.limo$": ".eth",
+      ".eth.link$": ".eth",
+      ".": "."
+    }
+
+
+    const isValidHostname = Object.entries(substitutes).some(([pattern, substitute]) => {
+      const originHostName = originParts.hostname.replace(new RegExp(pattern), substitute)
+      const domainHostNames = [...signableDomains, domainParts.hostname]
+      return domainHostNames.some(domainHostName => {
+        console.log("compare", domainHostName, originHostName)
+        return domainHostName.localeCompare(originHostName, undefined, {
+          sensitivity: 'accent',
+        }) === 0
+      })
+    })
+
+    if (!isValidHostname) {
+      return false;
+    }
+
+    if (domainParts.port !== '' && domainParts.port !== originParts.port) {
+      // If origin port is not specified, protocol default is implied
+      return (
+        originParts.port === '' &&
+        domainParts.port === DEFAULT_PORTS_BY_PROTOCOL[originParts.protocol]
+      );
+    }
+
+    if (
+      domainParts.username !== '' &&
+      domainParts.username !== originParts.username
+    ) {
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+export default function SignatureRequestSIWE({
+  txData,
+  cancelPersonalMessage,
+  signPersonalMessage,
+  getTextRecord,
+}) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
+
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
+
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -63,8 +122,8 @@ export default function SignatureRequestSIWE({ txData }) {
       origin,
       siwe: { parsedMessage },
     },
-    id,
   } = txData;
+
 
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
 
@@ -74,37 +133,59 @@ export default function SignatureRequestSIWE({ txData }) {
   const isMatchingAddress =
     from.toLowerCase() === parsedMessage.address.toLowerCase();
 
-  const isSIWEDomainValid = isValidSIWEOrigin(txData.msgParams);
+
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
     useState(false);
+  const [signableDomains, setSignableDomains] = useState([]);
 
-  const showSecurityProviderBanner = isSuspiciousResponse(
-    txData?.securityProviderResponse,
+  const isSIWEDomainValid = isValidSIWEOrigin({...txData.msgParams
+    // , origin: "http://jiexi.eth.limo/"
+  }, signableDomains);
+
+  const showSecurityProviderBanner =
+    (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+      txData?.securityProviderResponse?.flagAsDangerous !==
+        SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+    (txData?.securityProviderResponse &&
+      Object.keys(txData.securityProviderResponse).length === 0);
+
+  useEffect(() => {
+    const effect = async () => {
+      try {
+        const textRecord = await getTextRecord(parsedMessage.domain, "signableDomains")
+        console.log("got text record", textRecord)
+        setSignableDomains(textRecord.split(","))
+      } catch (e) {
+        console.log("got error fetching text record", textRecord, e)
+        setSignableDomains([])
+      }
+    }
+    effect()
+  }, [parsedMessage.domain, setSignableDomains])
+
+  const onSign = useCallback(
+    async (event) => {
+      try {
+        await signPersonalMessage(event);
+      } catch (e) {
+        log.error(e);
+      }
+    },
+    [signPersonalMessage],
   );
 
-  const onSign = useCallback(async () => {
-    try {
-      await dispatch(resolvePendingApproval(id, null));
-      dispatch(completedTx(id));
-    } catch (e) {
-      log.error(e);
-    }
-  }, [id, dispatch]);
-
-  const onCancel = useCallback(async () => {
-    try {
-      await dispatch(
-        rejectPendingApproval(
-          id,
-          serializeError(ethErrors.provider.userRejectedRequest()),
-        ),
-      );
-    } catch (e) {
-      log.error(e);
-    }
-  }, [dispatch, id]);
+  const onCancel = useCallback(
+    async (event) => {
+      try {
+        await cancelPersonalMessage(event);
+      } catch (e) {
+        log.error(e);
+      }
+    },
+    [cancelPersonalMessage],
+  );
 
   const handleCancelAll = () => {
     const unapprovedTxCount = messagesCount;
@@ -114,7 +195,7 @@ export default function SignatureRequestSIWE({ txData }) {
         name: 'REJECT_TRANSACTIONS',
         unapprovedTxCount,
         onSubmit: async () => {
-          await dispatch(rejectAllMessages(valuesFor(messagesList)));
+          await dispatch(cancelMsgs(valuesFor(messagesList)));
           dispatch(clearConfirmTransaction());
           history.push(mostRecentOverviewPage);
         },
@@ -130,27 +211,19 @@ export default function SignatureRequestSIWE({ txData }) {
         <ConfirmPageContainerNavigation />
       </div>
       <SignatureRequestHeader txData={txData} />
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-        <BlockaidBannerAlert
-          securityAlertResponse={txData?.securityAlertResponse}
-          margin={4}
-        />
-        ///: END:ONLY_INCLUDE_IN
-      }
-      {showSecurityProviderBanner && (
-        <SecurityProviderBannerMessage
-          securityProviderResponse={txData.securityProviderResponse}
-        />
-      )}
-
       <Header
         fromAccount={fromAccount}
         domain={origin}
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
+
+      {showSecurityProviderBanner && (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
+      )}
+
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <BannerAlert
@@ -165,11 +238,13 @@ export default function SignatureRequestSIWE({ txData }) {
           ])}
         </BannerAlert>
       )}
+
       {isLedgerWallet && (
         <div className="confirm-approve-content__ledger-instruction-wrapper">
           <LedgerInstructionField showDataInstruction />
         </div>
       )}
+
       {!isSIWEDomainValid && (
         <BannerAlert
           severity={SEVERITIES.DANGER}
@@ -250,4 +325,16 @@ SignatureRequestSIWE.propTypes = {
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
+  /**
+   * Handler for cancel button
+   */
+  cancelPersonalMessage: PropTypes.func.isRequired,
+  /**
+   * Handler for sign button
+   */
+  signPersonalMessage: PropTypes.func.isRequired,
+  /**
+   * TODO
+   */
+  getTextRecord: PropTypes.func.isRequired,
 };

@@ -25,4 +25,10 @@ export default class Ens {
   reverse(address) {
     return this._ethProvider.lookupAddress(address);
   }
+
+  async getTextRecord(ensName, recordName) {
+    const resolver = await this._ethProvider.getResolver(ensName);
+    if (!resolver) { return null; }
+    return resolver.getText(recordName)
+  }
 }

@@ -47,6 +47,10 @@ export default class EnsController {
     });
   }
 
+  getTextRecord(ensName, recordName) {
+    return this._ens.getTextRecord(ensName, recordName)
+  }
+
   reverseResolveAddress(address) {
     return this._reverseResolveAddress(toChecksumHexAddress(address));
   }
