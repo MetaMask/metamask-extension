@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Mở trên trình khám phá khối"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Điều khoản dịch vụ"
   },
-  "termsOfUse": {
-    "message": "điều khoản sử dụng"
-  },
   "termsOfUseAgreeText": {
     "message": " Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng MetaMask và tất cả các tính năng của MetaMask"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "bộ sưu tập này"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Đây là dịch vụ thử nghiệm. Bằng cách bật tính năng này, bạn đồng ý với $1 của OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Thời gian"
@@ -5272,9 +5259,6 @@
   },
   "viewOnOpensea": {
     "message": "Xem trên Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Xem Trang tổng quan Danh mục đầu tư"
   },
   "viewinCustodianApp": {
     "message": "Xem trong ứng dụng lưu ký"
