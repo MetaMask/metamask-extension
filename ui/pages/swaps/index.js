@@ -36,10 +36,7 @@ import {
   getUseNewSwapsApi,
   getFromToken,
 } from '../../ducks/swaps/swaps';
-import {
-  checkNetworkAndAccountSupports1559,
-  currentNetworkTxListSelector,
-} from '../../selectors';
+import { isEIP1559Network } from '../../ducks/metamask/metamask';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
@@ -65,7 +62,7 @@ import {
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
-
+import { currentNetworkTxListSelector } from '../../selectors';
 import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
@@ -115,16 +112,10 @@ export default function Swap() {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const useNewSwapsApi = useSelector(getUseNewSwapsApi);
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
+  const EIP1559NetworkEnabled = useSelector(isEIP1559Network);
   const fromToken = useSelector(getFromToken);
 
-  if (networkAndAccountSupports1559) {
-    // This will pre-load gas fees before going to the View Quote page.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGasFeeEstimates();
-  }
+  useGasFeeEstimates(); // This will pre-load gas fees before going to the View Quote page.
 
   const {
     balance: ethBalance,
@@ -200,7 +191,7 @@ export default function Swap() {
           dispatch(setAggregatorMetadata(newAggregatorMetadata));
         },
       );
-      if (!networkAndAccountSupports1559) {
+      if (!EIP1559NetworkEnabled) {
         dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
       }
       return () => {
@@ -212,7 +203,7 @@ export default function Swap() {
     chainId,
     isFeatureFlagLoaded,
     useNewSwapsApi,
-    networkAndAccountSupports1559,
+    EIP1559NetworkEnabled,
   ]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);

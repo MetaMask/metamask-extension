@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 
 import Typography from '../../ui/typography/typography';
 import {
@@ -16,22 +15,21 @@ export default function TransactionDetailItem({
   detailTotal = '',
   subTitle = '',
   subText = '',
-  className = '',
 }) {
   return (
-    <div className={classnames('transaction-detail-item', className)}>
+    <div className="transaction-detail-item">
       <div className="transaction-detail-item__row">
         <Typography
           color={detailTitleColor}
           fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H6}
+          variant={TYPOGRAPHY.H7}
           className="transaction-detail-item__title"
         >
           {detailTitle}
         </Typography>
         {detailText && (
           <Typography
-            variant={TYPOGRAPHY.H6}
+            variant={TYPOGRAPHY.H7}
             className="transaction-detail-item__detail-text"
             color={COLORS.UI4}
           >
@@ -41,35 +39,33 @@ export default function TransactionDetailItem({
         <Typography
           color={COLORS.BLACK}
           fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H6}
+          variant={TYPOGRAPHY.H7}
           className="transaction-detail-item__total"
         >
           {detailTotal}
         </Typography>
       </div>
-      {subTitle && subText ? (
-        <div className="transaction-detail-item__row">
-          {React.isValidElement(subTitle) ? (
-            <div className="transaction-detail-item__subtitle">{subTitle}</div>
-          ) : (
-            <Typography
-              variant={TYPOGRAPHY.H7}
-              className="transaction-detail-item__subtitle"
-              color={COLORS.UI4}
-            >
-              {subTitle}
-            </Typography>
-          )}
-
+      <div className="transaction-detail-item__row">
+        {React.isValidElement(subTitle) ? (
+          <div className="transaction-detail-item__subtitle">{subTitle}</div>
+        ) : (
           <Typography
             variant={TYPOGRAPHY.H7}
+            className="transaction-detail-item__subtitle"
             color={COLORS.UI4}
-            className="transaction-detail-item__subtext"
           >
-            {subText}
+            {subTitle}
           </Typography>
-        </div>
-      ) : null}
+        )}
+
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.UI4}
+          className="transaction-detail-item__subtext"
+        >
+          {subText}
+        </Typography>
+      </div>
     </div>
   );
 }
@@ -81,5 +77,4 @@ TransactionDetailItem.propTypes = {
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  className: PropTypes.string,
 };

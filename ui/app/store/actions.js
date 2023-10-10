@@ -21,7 +21,10 @@ import {
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  getUnconnectedAccountAlertEnabledness,
+  isEIP1559Network,
+} from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
@@ -1066,6 +1069,7 @@ export function updateMetamaskState(newState) {
         payload: {
           gasFeeEstimates: newState.gasFeeEstimates,
           gasEstimateType: newState.gasEstimateType,
+          isEIP1559Network: isEIP1559Network({ metamask: newState }),
         },
       });
     }
@@ -2201,13 +2205,12 @@ export function updateCustomSwapsEIP1559GasParams({
   maxPriorityFeePerGas,
 }) {
   return async (dispatch) => {
-    await Promise.all([
-      promisifiedBackground.setSwapsTxGasLimit(gasLimit),
-      promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas),
-      promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
-        maxPriorityFeePerGas,
-      ),
-    ]);
+    // TODO:Why do we pass true as the 2nd param? It seems the fn only supports gasLimit.
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true);
+    await promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas);
+    await promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
+      maxPriorityFeePerGas,
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2785,13 +2788,6 @@ export function getGasFeeEstimatesAndStartPolling() {
  */
 export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
-}
-
-export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
-  return promisifiedBackground.getGasFeeTimeEstimate(
-    maxPriorityFeePerGas,
-    maxFeePerGas,
-  );
 }
 
 // MetaMetrics
