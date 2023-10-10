@@ -119,6 +119,9 @@ import NewNetworkInfo from '../../components/ui/new-network-info/new-network-inf
 import { ThemeType } from '../../../shared/constants/preferences';
 import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
+///: END:ONLY_INCLUDE_IN
 
 export default class Routes extends Component {
   static propTypes = {
@@ -167,6 +170,10 @@ export default class Routes extends Component {
     hideImportTokensModal: PropTypes.func.isRequired,
     isSelectActionModalOpen: PropTypes.bool.isRequired,
     hideSelectActionModal: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
+    hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -522,6 +529,10 @@ export default class Routes extends Component {
       hideIpfsModal,
       hideImportTokensModal,
       hideSelectActionModal,
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      isShowKeyringSnapRemovalResultModal,
+      hideShowKeyringSnapRemovalResultModal,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     const loadMessage =
@@ -593,6 +604,16 @@ export default class Routes extends Component {
         {isSelectActionModalOpen ? (
           <SelectActionModal onClose={() => hideSelectActionModal()} />
         ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          isShowKeyringSnapRemovalResultModal && (
+            <KeyringSnapRemovalResult
+              isOpen={isShowKeyringSnapRemovalResultModal}
+              onClose={() => hideShowKeyringSnapRemovalResultModal()}
+            />
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}

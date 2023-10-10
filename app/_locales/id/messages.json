@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Buka di block explorer"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Ketentuan layanan"
   },
-  "termsOfUse": {
-    "message": "ketentuan penggunaan"
-  },
   "termsOfUseAgreeText": {
     "message": " Saya menyetujui Syarat Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "koleksi ini"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental. Dengan mengaktifkan fitur ini, Anda menyetujui $1 OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Waktu"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Aktifkan peringatan keamanan"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan berbagai risiko yang muncul dalam transaksi yang belum ditandatangani dan permintaan tanda tangan sebelum Anda menandatanganinya. Layanan ini akan dapat mengakses transaksi yang belum ditandatangani dan permintaan tanda tangan, alamat akun, serta bahasa pilihan Anda."
   },
   "transactionSettings": {
     "message": "Pengaturan transaksi"

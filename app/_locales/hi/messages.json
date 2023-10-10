@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "गोएर्ली"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "बहुभुज"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर में खोलें"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (बीटा)"
   },
   "openSeaNew": {
     "message": "ओपनसी"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "सेवा की शर्तें"
   },
-  "termsOfUse": {
-    "message": "इस्तेमाल की शर्तें"
-  },
   "termsOfUseAgreeText": {
     "message": " मैं इस्तेमाल की शर्तों से सहमत हूं, जो MetaMask और इसकी सभी फीचर्स के मेरे इस्तेमाल पर लागू होती हैं"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "यह संग्रह"
-  },
-  "thisServiceIsExperimental": {
-    "message": "यह सेवा प्रायोगिक है। इस सुविधा को इनेबल करके, आप OpenSea के $1 से सहमत होते हैं।",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "समय"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "$2 गैस फ़ीस में $1 वृद्धि के साथ ट्रांसेक्शन फिर से सबमिट किया गया"
-  },
-  "transactionSecurityCheck": {
-    "message": "सुरक्षा अलर्ट एनेबल करें"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "आपके हस्ताक्षर करने से पहले अहस्ताक्षरित ट्रांसेक्शन और हस्ताक्षर रिक्वेस्ट्स में शामिल जोखिमों का पता लगाने और दिखाने के लिए हम थर्ड-पार्टी एपीआई का इस्तेमाल करते हैं। इन सेवाओं के पास आपके अहस्ताक्षरित ट्रांसेक्शन और हस्ताक्षर अनुरोध, आपके अकाउंट का एड्रेस और आपकी पसंदीदा भाषा तक पहुंच होगी।"
   },
   "transactionSettings": {
     "message": "ट्रांसेक्शन संबंधी सेटिंग्स"

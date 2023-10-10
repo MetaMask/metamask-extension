@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Mở trên trình khám phá khối"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Điều khoản dịch vụ"
   },
-  "termsOfUse": {
-    "message": "điều khoản sử dụng"
-  },
   "termsOfUseAgreeText": {
     "message": " Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng MetaMask và tất cả các tính năng của MetaMask"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "bộ sưu tập này"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Đây là dịch vụ thử nghiệm. Bằng cách bật tính năng này, bạn đồng ý với $1 của OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Thời gian"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "Đã gửi lại giao dịch với mức phí gas ước tính tăng lên $1 lúc $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Bật cảnh báo bảo mật"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện và hiển thị những rủi ro liên quan đến các yêu cầu chữ ký và giao dịch chưa ký trước khi bạn ký. Những dịch vụ này sẽ có quyền truy cập vào các yêu cầu chữ ký và giao dịch chưa ký, địa chỉ tài khoản và ngôn ngữ yêu thích của bạn."
   },
   "transactionSettings": {
     "message": "Cài đặt giao dịch"

@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "在区块浏览器上打开"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid（测试版）"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "服务条款"
   },
-  "termsOfUse": {
-    "message": "使用条款"
-  },
   "termsOfUseAgreeText": {
     "message": "我同意适用于我使用MetaMask及其所有功能的使用条款"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "这个收藏品"
-  },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的。启用此功能，即表示您同意OpenSea的$1。",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "时间"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
-  },
-  "transactionSecurityCheck": {
-    "message": "启用安全提醒"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "我们使用第三方 API 来检测和显示未签名交易和签名请求中涉及的风险，然后您再进行签名。这些服务将访问您的未签名交易和签名请求、您的账户地址以及首选语言。"
   },
   "transactionSettings": {
     "message": "交易设置"

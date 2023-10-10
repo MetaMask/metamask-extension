@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "블록 탐색기 열기"
-  },
-  "openSea": {
-    "message": "OpenSea+ Blockaid(베타)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "서비스 약관"
   },
-  "termsOfUse": {
-    "message": "이용약관"
-  },
   "termsOfUseAgreeText": {
     "message": " 본인은 MetaMask의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "이 컬렉션"
-  },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 기능입니다. 이 기능을 활성화하면 OpenSea의 $1에 동의하는 것입니다.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "시간"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "$2에서 가스비를 $1(으)로 올린 트랜잭션이 다시 제출되었습니다."
-  },
-  "transactionSecurityCheck": {
-    "message": "보안 경고 활성화"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "서명하기 전에 해당 트랜잭션과 서명 요청 관련 위험을 탐지하고 표시하기 위해 타사 API를 이용합니다. 이러한 서비스는 해당 서비스가 아직 서명하지 않은 트랜잭션, 서명 요청, 계정 주소 및 기본 언어에 액세스할 수 있습니다."
   },
   "transactionSettings": {
     "message": "트랜잭션 설정"

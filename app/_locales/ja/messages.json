@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "ブロックエクスプローラーで開く"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (ベータ)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "サービス規約"
   },
-  "termsOfUse": {
-    "message": "利用規約"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します。"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "このコレクション"
-  },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは試験運用中です。この機能を有効にすることで、OpenSeaの$1に同意したものとみなされます。",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "時間"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "推定のガス代を$2で$1に増加し、トランザクションを再送信しました"
-  },
-  "transactionSecurityCheck": {
-    "message": "セキュリティアラートを有効にする"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "当社はサードパーティAPIを使用して、ユーザーが署名する前に未署名のトランザクションおよび署名のリクエストに関するリスクを検出・表示します。このようなサービスは、ユーザーの未署名のトランザクションおよび署名のリクエスト、アカウントアドレス、希望言語にアクセスできます。"
   },
   "transactionSettings": {
     "message": "トランザクション設定"

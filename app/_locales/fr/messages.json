@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Ouvrir dans l’explorateur de blocs"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Conditions de service"
   },
-  "termsOfUse": {
-    "message": "conditions d’utilisation"
-  },
   "termsOfUseAgreeText": {
     "message": " J’accepte les conditions d’utilisation de MetaMask et de ses fonctionnalités"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "cette collection"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Ce service est expérimental. En activant cette fonctionnalité, vous acceptez les $1 d’OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Temps"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "La transaction a été soumise à nouveau avec une augmentation du prix du gaz, désormais de $1 à $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Autoriser les fournisseurs de services de vérification des transactions"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Nous utilisons des API tierces pour détecter et afficher les risques liés aux transactions non signées et aux demandes de signature avant que vous ne les signiez. Ces services auront accès à vos transactions non signées et à vos demandes de signature, à l’adresse de votre compte et à la langue que vous préférez."
   },
   "transactionSettings": {
     "message": "Paramètres de la transaction"

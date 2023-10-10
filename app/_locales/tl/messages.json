@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Buksan sa block explorer"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "termsOfUse": {
-    "message": "mga tuntunin ng paggamit"
-  },
   "termsOfUseAgreeText": {
     "message": " Sumasang-ayon ako sa Mga Tuntunin sa Paggamit, na nalalapat sa aking paggamit ng MetaMask at lahat ng feature nito"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "koleksyong ito"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Ang serbisyong ito ay pang-eksperimento. Sa pamamagitan ng pagpapagana ng feature na ito, sumasang-ayon ka sa $1 ng OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Oras"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "Isinumite ulit ang transaksyon na may tinantyang bayad sa gas na itinaas sa $1 sa $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Paganahin ang mga alerto sa seguridad"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Gumagamit kami ng mga third-party na API para tumuklas at ipakita ang mga panganib na kasangkot sa hindi napirmahang mga kahilingan sa transaksyon at paglagda bago mo pirmahan ang mga ito. Ang mga serbisyong ito ay magkakaroon ng access sa iyong hindi pa napirmahang mga kahilingan sa transaksyon at paglagda, address ng iyong account, at iyong nais na wika."
   },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"

@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Blok gezgininde aç"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockad (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Hizmet şartları"
   },
-  "termsOfUse": {
-    "message": "kullanım şartları"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "bu koleksiyon"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Hizmet deneyseldir. Bu özelliği etkinleştirerek OpenSea'nin $1 bölümünü kabul edersiniz.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Zaman"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
-  },
-  "transactionSecurityCheck": {
-    "message": "Güvenlik uyarılarını etkinleştir"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "İmzalanmamış işleme dahil olan riskleri ve onları imzalamadan önce imza taleplerini algılamak ve göstermek için üçüncü taraf API'lerini kullanırız. Bu hizmetler imzalanmamış işlem ve imza taleplerinize, hesap adresinize ve tercih ettiğiniz dile erişim sağlar."
   },
   "transactionSettings": {
     "message": "İşlem ayarları"

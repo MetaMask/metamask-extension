@@ -507,6 +507,9 @@
   "backupApprovalNotice": {
     "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
   },
+  "backupKeyringSnapReminder": {
+    "message": "Be sure you can access any accounts created by this Snap on your own before removing it"
+  },
   "backupNow": {
     "message": "Backup now"
   },
@@ -598,6 +601,9 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
+  "blockaidMessage": {
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -2161,6 +2167,24 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keyringAccountName": {
+    "message": "Account name"
+  },
+  "keyringAccountPublicAddress": {
+    "message": "Public Address"
+  },
+  "keyringSnapRemovalResult1": {
+    "message": "$1 $2removed",
+    "description": "Displays the result after removal of a keyring snap. $1 is the snap name, $2 is whether it is successful or not"
+  },
+  "keyringSnapRemovalResultNotSuccessful": {
+    "message": "not ",
+    "description": "Displays the `not` word in $2."
+  },
+  "keyringSnapRemoveConfirmation": {
+    "message": "Type $1 to confirm you want to remove this snap:",
+    "description": "Asks user to input the name nap prior to deleting the snap. $1 is the snap name"
+  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2526,8 +2550,8 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
+  "networkNameOpMainnet": {
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -3195,8 +3219,11 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
+  "openSeaLabel": {
+    "message": "OpenSea + Blockaid"
+  },
+  "openSeaMessage": {
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests."
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3500,6 +3527,9 @@
     "message": "Preferred Ledger connection type",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
+  "preferredProvider": {
+    "message": "Select your preferred provider"
+  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -3639,6 +3669,12 @@
   },
   "removeJWTDescription": {
     "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
+  },
+  "removeKeyringSnap": {
+    "message": "Removing this Snap removes these accounts from MetaMask:"
+  },
+  "removeKeyringSnapToolTip": {
+    "message": "The snap controls the accounts, and by removing it, the accounts will be removed from MetaMask, too, but they will remain in the blockchain."
   },
   "removeNFT": {
     "message": "Remove NFT"
@@ -3849,7 +3885,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -5044,9 +5080,6 @@
   "termsOfService": {
     "message": "Terms of service"
   },
-  "termsOfUse": {
-    "message": "terms of use"
-  },
   "termsOfUseAgreeText": {
     "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
   },
@@ -5074,10 +5107,6 @@
   },
   "thisCollection": {
     "message": "this collection"
-  },
-  "thisServiceIsExperimental": {
-    "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Time"
@@ -5293,12 +5322,6 @@
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Enable security alerts"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
   },
   "transactionSettings": {
     "message": "Transaction settings"

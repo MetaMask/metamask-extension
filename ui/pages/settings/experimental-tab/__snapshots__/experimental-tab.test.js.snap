@@ -16,26 +16,53 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
       <div
         class="settings-page__content-item"
       >
-        <span>
+        <span
+          class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
+        >
           Security alerts
         </span>
         <div
           class="settings-page__content-description"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
           >
-            This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
+            This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-top-4 mm-box--color-text-alternative"
+          >
+            Select your preferred provider
           </p>
           <div
             class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
             data-testid="settings-toggle-security-alert-blockaid"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-            >
-              Blockaid
-            </p>
+            <div>
+              <div
+                class="mm-box mm-box--display-flex"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  Blockaid
+                </p>
+                <div
+                  class="mm-box mm-tag mm-box--margin-left-2 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+                  >
+                    Recommended
+                  </p>
+                </div>
+              </div>
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
+              >
+                Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet.
+              </h6>
+            </div>
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -78,39 +105,34 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               </div>
             </label>
           </div>
-        </div>
-      </div>
-    </div>
-    <h4
-      class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-bold mm-box--margin-bottom-2 mm-box--color-text-alternative"
-    >
-      Privacy
-    </h4>
-    <div
-      class="mm-box settings-page__content-row settings-page__content-row-experimental mm-box--margin-bottom-3"
-    >
-      <div
-        class="settings-page__content-item"
-      >
-        <span>
-          Enable security alerts
-        </span>
-        <div
-          class="settings-page__content-description"
-        >
-          <h6
-            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          >
-            We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language.
-          </h6>
           <div
             class="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
           >
-            <h5
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-0 mm-box--color-text-default"
-            >
-              OpenSea + Blockaid (Beta)
-            </h5>
+            <div>
+              <div
+                class="mm-box mm-box--display-flex"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  OpenSea + Blockaid
+                </p>
+                <div
+                  class="mm-box mm-tag mm-box--margin-left-2 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+                  >
+                    Beta
+                  </p>
+                </div>
+              </div>
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
+              >
+                Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests.
+              </h6>
+            </div>
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -153,23 +175,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               </div>
             </label>
           </div>
-          <h6
-            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--color-text-alternative"
-          >
-            <span>
-               
-              This service is experimental. By enabling this feature, you agree to OpenSea's 
-              <a
-                href="http://opensea.io/securityproviderterms"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                terms of use
-              </a>
-              .
-               
-            </span>
-          </h6>
         </div>
       </div>
     </div>

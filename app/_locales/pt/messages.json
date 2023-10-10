@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3021,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Abrir no explorador de blocos"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4799,9 +4793,6 @@
   "termsOfService": {
     "message": "Termos de Serviço"
   },
-  "termsOfUse": {
-    "message": "termos de uso"
-  },
   "termsOfUseAgreeText": {
     "message": " Eu concordo com os Termos de Uso, que se aplicam ao meu uso da MetaMask e de todos os seus recursos"
   },
@@ -4829,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "esta coleção"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Esse serviço é experimental. Ao ativar esse recurso, você concorda com os $1 da OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Hora"
@@ -5048,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Ativar alertas de segurança"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Usamos APIs de terceiros para detectar e exibir riscos envolvidos em solicitações de assinatura e de transações não assinadas antes que você as assine. Esses serviços terão acesso às suas solicitações de assinatura e de transações não assinadas, ao endereço de sua conta e ao seu idioma preferencial."
   },
   "transactionSettings": {
     "message": "Configurações da transação"
