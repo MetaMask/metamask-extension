@@ -56,18 +56,18 @@ describe('keyringSnapPermissionsBuilder', () => {
   });
 
   it.each([
-    [''],
-    ['null'],
-    ['sftp://some-dapp.com'],
-    ['0'],
-    [undefined],
-    [null],
-    [true],
-    [false],
-    [1],
-    [0],
-    [-1],
-    ['http://some-dapp.com'],
+    '',
+    'null',
+    'sftp://some-dapp.com',
+    'http://some-dapp.com',
+    '0',
+    undefined,
+    null,
+    true,
+    false,
+    1,
+    0,
+    -1,
   ])('"%s" cannot call any methods', (origin) => {
     const permissions = keyringSnapPermissionsBuilder(mockController);
     expect(permissions(origin as any)).toStrictEqual([]);
