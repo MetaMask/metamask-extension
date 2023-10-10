@@ -66,6 +66,7 @@ function ViewSnap() {
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  // eslint-disable-next-line no-unused-vars -- Main build does not use setIsRemovingKeyringSnap
   const [isRemovingKeyringSnap, setIsRemovingKeyringSnap] = useState(false);
 
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
