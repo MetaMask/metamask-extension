@@ -10,11 +10,20 @@ import {
   cancelTxs,
   updateAndApproveTx,
   showModal,
+  setMetaMetricsSendCount,
+  updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
+import {
+  INSUFFICIENT_FUNDS_ERROR_KEY,
+  GAS_LIMIT_TOO_LOW_ERROR_KEY,
+} from '../../helpers/constants/error-keys';
+import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
+import { isBalanceSufficient } from '../send/send.utils';
+import { conversionGreaterThan } from '../../../shared/modules/conversion-util';
+import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
@@ -23,16 +32,15 @@ import {
   getKnownMethodData,
   getMetaMaskAccounts,
   getUseNonceField,
+  getPreferences,
   transactionFeeSelector,
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
-  getShouldShowFiat,
-  checkNetworkAndAccountSupports1559,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
+import { calcGasTotal } from '../../../shared/modules/gas-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -58,8 +66,8 @@ const mapStateToProps = (state, ownProps) => {
     match: { params = {} },
   } = ownProps;
   const { id: paramsTransactionId } = params;
+  const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
-  const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,
@@ -69,11 +77,12 @@ const mapStateToProps = (state, ownProps) => {
     assetImages,
     network,
     unapprovedTxs,
+    metaMetricsSendCount,
     nextNonce,
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const { txParams = {}, id: transactionId, type } = txData;
+  const { txParams = {}, lastGasPrice, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
@@ -102,12 +111,12 @@ const mapStateToProps = (state, ownProps) => {
   const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
+  const isTxReprice = Boolean(lastGasPrice);
   const transactionStatus = transaction ? transaction.status : '';
 
   const {
     hexTransactionAmount,
-    hexMinimumTransactionFee,
-    hexMaximumTransactionFee,
+    hexTransactionFee,
     hexTransactionTotal,
   } = transactionFeeSelector(state, transaction);
 
@@ -154,13 +163,13 @@ const mapStateToProps = (state, ownProps) => {
     toName,
     toNickname,
     hexTransactionAmount,
-    hexMinimumTransactionFee,
-    hexMaximumTransactionFee,
+    hexTransactionFee,
     hexTransactionTotal,
     txData: fullTxData,
     tokenData,
     methodData,
     tokenProps,
+    isTxReprice,
     conversionRate,
     transactionStatus,
     nonce,
@@ -176,15 +185,15 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state),
-    hideFiatConversion: !getShouldShowFiat(state),
+    hideSubtitle: !isMainnet && !showFiatInTestnets,
+    hideFiatConversion: !isMainnet && !showFiatInTestnets,
+    metaMetricsSendCount,
     type,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
     isEthGasPrice,
     noGasPrice,
-    supportsEIP1599,
   };
 };
 
@@ -201,6 +210,19 @@ export const mapDispatchToProps = (dispatch) => {
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
     },
+    showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
+      return dispatch(
+        showModal({
+          name: 'CUSTOMIZE_GAS',
+          txData,
+          onSubmit,
+          validate,
+        }),
+      );
+    },
+    updateGasAndCalculate: (updatedTx) => {
+      return dispatch(updateTransaction(updatedTx));
+    },
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
       unapprovedTxCount,
@@ -213,36 +235,97 @@ export const mapDispatchToProps = (dispatch) => {
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: (txData) =>
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
+    setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
-    updateTransactionGasFees: (gasFees) => {
-      dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
-    },
+  };
+};
+
+const getValidateEditGas = ({ balance, conversionRate, txData }) => {
+  const { txParams: { value: amount } = {} } = txData;
+
+  return ({ gasLimit, gasPrice }) => {
+    const gasTotal = getHexGasTotal({ gasLimit, gasPrice });
+    const hasSufficientBalance = isBalanceSufficient({
+      amount,
+      gasTotal,
+      balance,
+      conversionRate,
+    });
+
+    if (!hasSufficientBalance) {
+      return {
+        valid: false,
+        errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
+      };
+    }
+
+    const gasLimitTooLow =
+      gasLimit &&
+      conversionGreaterThan(
+        {
+          value: MIN_GAS_LIMIT_DEC,
+          fromNumericBase: 'dec',
+          conversionRate,
+        },
+        {
+          value: gasLimit,
+          fromNumericBase: 'hex',
+        },
+      );
+
+    if (gasLimitTooLow) {
+      return {
+        valid: false,
+        errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
+      };
+    }
+
+    return {
+      valid: true,
+    };
   };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { txData, unapprovedTxs } = stateProps;
+  const { balance, conversionRate, txData, unapprovedTxs } = stateProps;
 
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
-    updateTransactionGasFees: dispatchUpdateTransactionGasFees,
+    showCustomizeGasModal: dispatchShowCustomizeGasModal,
+    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
     ...otherDispatchProps
   } = dispatchProps;
+
+  const validateEditGas = getValidateEditGas({
+    balance,
+    conversionRate,
+    txData,
+  });
 
   return {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
+    showCustomizeGasModal: () =>
+      dispatchShowCustomizeGasModal({
+        txData,
+        onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
+        validate: validateEditGas,
+      }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
-      dispatchUpdateTransactionGasFees({
-        gasLimit,
-        gasPrice,
-        transaction: txData,
-      });
+      const updatedTx = {
+        ...txData,
+        txParams: {
+          ...txData.txParams,
+          gas: gasLimit,
+          gasPrice,
+        },
+      };
+      dispatchUpdateGasAndCalculate(updatedTx);
     },
   };
 };

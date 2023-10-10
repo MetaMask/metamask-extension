@@ -1,16 +1,18 @@
 import { MethodRegistry } from 'eth-method-registry';
+import abi from 'human-standard-token-abi';
+import { ethers } from 'ethers';
 import log from 'loglevel';
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
-  TransactionType,
-  TransactionGroupStatus,
-  TransactionStatus,
-  TransactionEnvelopeType,
+  TRANSACTION_TYPES,
+  TRANSACTION_GROUP_STATUSES,
+  TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
-import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { addCurrencies } from '../../../shared/modules/conversion-util';
+import fetchWithCache from '../../../shared/modules/fetch-with-cache';
+
+const hstInterface = new ethers.utils.Interface(abi);
 
 /**
  * @typedef EthersContractCall
@@ -25,53 +27,63 @@ import fetchWithCache from '../../../shared/lib/fetch-with-cache';
  * representation of the function.
  */
 
+/**
+ * @returns {EthersContractCall | undefined}
+ */
+export function getTokenData(data) {
+  try {
+    return hstInterface.parseTransaction({ data });
+  } catch (error) {
+    log.debug('Failed to parse transaction data.', error, data);
+    return undefined;
+  }
+}
+
 async function getMethodFrom4Byte(fourBytePrefix) {
-  const fourByteResponse = await fetchWithCache({
-    url: `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
-    fetchOptions: {
+  const fourByteResponse = await fetchWithCache(
+    `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
+    {
       referrerPolicy: 'no-referrer-when-downgrade',
       body: null,
       method: 'GET',
       mode: 'cors',
     },
-    functionName: 'getMethodFrom4Byte',
-  });
-  fourByteResponse.results.sort((a, b) => {
-    return new Date(a.created_at).getTime() < new Date(b.created_at).getTime()
-      ? -1
-      : 1;
-  });
-  return fourByteResponse.results[0].text_signature;
-}
+  );
 
+  if (fourByteResponse.count === 1) {
+    return fourByteResponse.results[0].text_signature;
+  }
+  return null;
+}
 let registry;
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
- *
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
- * @param {boolean} allow4ByteRequests - Whether or not to allow 4byte.directory requests, toggled by the user in privacy settings
- * @returns {object}
+ * @returns {Object}
  */
-export async function getMethodDataAsync(fourBytePrefix, allow4ByteRequests) {
+export async function getMethodDataAsync(fourBytePrefix) {
   try {
-    let fourByteSig = null;
-    if (allow4ByteRequests) {
-      fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
-        log.error(e);
-        return null;
-      });
-    }
+    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+      log.error(e);
+      return null;
+    });
 
     if (!registry) {
       registry = new MethodRegistry({ provider: global.ethereumProvider });
     }
 
-    if (!fourByteSig) {
+    let sig = await registry.lookup(fourBytePrefix);
+
+    if (!sig) {
+      sig = await fourByteSig;
+    }
+
+    if (!sig) {
       return {};
     }
 
-    const parsedResult = registry.parse(fourByteSig);
+    const parsedResult = registry.parse(sig);
 
     return {
       name: parsedResult.name,
@@ -103,11 +115,9 @@ export function getFourBytePrefix(data = '') {
  */
 export function isTokenMethodAction(type) {
   return [
-    TransactionType.tokenMethodTransfer,
-    TransactionType.tokenMethodApprove,
-    TransactionType.tokenMethodSetApprovalForAll,
-    TransactionType.tokenMethodTransferFrom,
-    TransactionType.tokenMethodSafeTransferFrom,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
   ].includes(type);
 }
 
@@ -133,23 +143,29 @@ export function getLatestSubmittedTxWithNonce(
 }
 
 export async function isSmartContractAddress(address) {
-  const { isContractAddress } = await readAddressAsContract(
-    global.eth,
-    address,
-  );
-  return isContractAddress;
+  const code = await global.eth.getCode(address);
+  // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+  const codeIsEmpty = !code || code === '0x' || code === '0x0';
+  return !codeIsEmpty;
 }
 
-export function isLegacyTransaction(txParams) {
-  return txParams?.type === TransactionEnvelopeType.legacy;
+export function sumHexes(...args) {
+  const total = args.reduce((acc, hexAmount) => {
+    return addCurrencies(acc, hexAmount, {
+      toNumericBase: 'hex',
+      aBase: 16,
+      bBase: 16,
+    });
+  });
+
+  return addHexPrefix(total);
 }
 
 /**
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
- *
- * @param {object} transaction - The txMeta object of a transaction.
- * @param {object} transaction.txReceipt - The transaction receipt.
+ * @param {Object} transaction - The txMeta object of a transaction.
+ * @param {Object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
  */
 export function getStatusKey(transaction) {
@@ -161,14 +177,14 @@ export function getStatusKey(transaction) {
 
   // There was an on-chain failure
   if (receiptStatus === '0x0') {
-    return TransactionStatus.failed;
+    return TRANSACTION_STATUSES.FAILED;
   }
 
   if (
-    status === TransactionStatus.confirmed &&
-    type === TransactionType.cancel
+    status === TRANSACTION_STATUSES.CONFIRMED &&
+    type === TRANSACTION_TYPES.CANCEL
   ) {
-    return TransactionGroupStatus.cancelled;
+    return TRANSACTION_GROUP_STATUSES.CANCELLED;
   }
 
   return transaction.status;
@@ -178,42 +194,34 @@ export function getStatusKey(transaction) {
  * Returns a title for the given transaction category.
  *
  * This will throw an error if the transaction category is unrecognized and no default is provided.
- *
- * @param {Function} t - The translation function
+ * @param {function} t - The translation function
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
- * @param {string} nativeCurrency - The native currency of the currently selected network
  * @returns {string} The transaction category title
  */
-export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
+export function getTransactionTypeTitle(t, type) {
   switch (type) {
-    case TransactionType.tokenMethodTransfer: {
+    case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
       return t('transfer');
     }
-    case TransactionType.tokenMethodTransferFrom: {
+    case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM: {
       return t('transferFrom');
     }
-    case TransactionType.tokenMethodSafeTransferFrom: {
-      return t('safeTransferFrom');
-    }
-    case TransactionType.tokenMethodApprove: {
+    case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');
     }
-    case TransactionType.tokenMethodSetApprovalForAll: {
-      return t('setApprovalForAll');
+    case TRANSACTION_TYPES.SENT_ETHER: {
+      return t('sentEther');
     }
-    case TransactionType.simpleSend: {
-      return t('sendingNativeAsset', [nativeCurrency]);
-    }
-    case TransactionType.contractInteraction: {
+    case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
       return t('contractInteraction');
     }
-    case TransactionType.deployContract: {
+    case TRANSACTION_TYPES.DEPLOY_CONTRACT: {
       return t('contractDeployment');
     }
-    case TransactionType.swap: {
+    case TRANSACTION_TYPES.SWAP: {
       return t('swap');
     }
-    case TransactionType.swapApproval: {
+    case TRANSACTION_TYPES.SWAP_APPROVAL: {
       return t('swapApproval');
     }
     default: {
@@ -221,12 +229,3 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
   }
 }
-
-/**
- * Method to check if asset standard passed is NFT
- *
- * @param {*} assetStandard - string
- * @returns boolean
- */
-export const isNFTAssetStandard = (assetStandard) =>
-  assetStandard === ERC1155 || assetStandard === ERC721;

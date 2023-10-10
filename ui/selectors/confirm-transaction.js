@@ -1,30 +1,19 @@
 import { createSelector } from 'reselect';
 import txHelper from '../helpers/utils/tx-helper';
-import { calcTokenAmount } from '../helpers/utils/token-util';
 import {
   roundExponential,
   getValueFromWeiHex,
+  getHexGasTotal,
   getTransactionFee,
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
 import { sumHexes } from '../helpers/utils/transactions.util';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
-import {
-  getGasEstimateType,
-  getGasFeeEstimates,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
-import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
-import {
-  getMaximumGasTotalInHexWei,
-  getMinimumGasTotalInHexWei,
-} from '../../shared/modules/gas.utils';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
+import { calcTokenValue } from '../../shared/modules/token-utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { checkNetworkAndAccountSupports1559 } from '.';
 
 const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -170,7 +159,7 @@ const contractExchangeRatesSelector = (state) =>
 
 const tokenDecimalsSelector = createSelector(
   tokenPropsSelector,
-  (tokenProps) => tokenProps && tokenProps.decimals,
+  (tokenProps) => tokenProps && tokenProps.tokenDecimals,
 );
 
 const tokenDataArgsSelector = createSelector(
@@ -206,7 +195,7 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
 
       if (tokenDecimals) {
         // bignumber.js return value
-        value = calcTokenAmount(value, tokenDecimals).toFixed();
+        value = calcTokenValue(value, tokenDecimals).toFixed();
       }
 
       tokenAmount = roundExponential(value);
@@ -229,57 +218,17 @@ export const transactionFeeSelector = function (state, txData) {
   const currentCurrency = currentCurrencySelector(state);
   const conversionRate = conversionRateSelector(state);
   const nativeCurrency = getNativeCurrency(state);
-  const gasFeeEstimates = getGasFeeEstimates(state) || {};
-  const gasEstimateType = getGasEstimateType(state);
-  const networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(
-    state,
-  );
 
-  const gasEstimationObject = {
-    gasLimit: txData.txParams?.gas ?? '0x0',
-  };
+  const { txParams: { value = '0x0', gas: gasLimit = '0x0' } = {} } = txData;
 
-  if (networkAndAccountSupportsEIP1559) {
-    const { medium = {}, gasPrice = '0' } = gasFeeEstimates;
-    if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {
-      gasEstimationObject.gasPrice =
-        txData.txParams?.gasPrice ?? decGWEIToHexWEI(gasPrice);
-    } else {
-      const { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = medium;
-      gasEstimationObject.maxFeePerGas =
-        txData.txParams?.maxFeePerGas ??
-        decGWEIToHexWEI(suggestedMaxFeePerGas || gasPrice);
-      gasEstimationObject.maxPriorityFeePerGas =
-        txData.txParams?.maxPriorityFeePerGas ??
-        ((suggestedMaxPriorityFeePerGas &&
-          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||
-          gasEstimationObject.maxFeePerGas);
-      gasEstimationObject.baseFeePerGas = decGWEIToHexWEI(
-        gasFeeEstimates.estimatedBaseFee,
-      );
-    }
-  } else {
-    switch (gasEstimateType) {
-      case GAS_ESTIMATE_TYPES.NONE:
-        gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? '0x0';
-        break;
-      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
-        gasEstimationObject.gasPrice =
-          txData.txParams?.gasPrice ??
-          decGWEIToHexWEI(gasFeeEstimates.gasPrice);
-        break;
-      case GAS_ESTIMATE_TYPES.LEGACY:
-        gasEstimationObject.gasPrice =
-          txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
-        break;
-      case GAS_ESTIMATE_TYPES.FEE_MARKET:
-        break;
-      default:
-        break;
-    }
+  // if the gas price from our infura endpoint is null or undefined
+  // use the metaswap average price estimation as a fallback
+  let {
+    txParams: { gasPrice },
+  } = txData;
+  if (!gasPrice) {
+    gasPrice = getAveragePriceEstimateInHexWEI(state) || '0x0';
   }
-
-  const { txParams: { value = '0x0' } = {} } = txData;
 
   const fiatTransactionAmount = getValueFromWeiHex({
     value,
@@ -296,31 +245,17 @@ export const transactionFeeSelector = function (state, txData) {
     numberOfDecimals: 6,
   });
 
-  const hexMinimumTransactionFee = getMinimumGasTotalInHexWei(
-    gasEstimationObject,
-  );
-  const hexMaximumTransactionFee = getMaximumGasTotalInHexWei(
-    gasEstimationObject,
-  );
+  const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice });
 
-  const fiatMinimumTransactionFee = getTransactionFee({
-    value: hexMinimumTransactionFee,
+  const fiatTransactionFee = getTransactionFee({
+    value: hexTransactionFee,
     fromCurrency: nativeCurrency,
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
   });
-
-  const fiatMaximumTransactionFee = getTransactionFee({
-    value: hexMaximumTransactionFee,
-    fromCurrency: nativeCurrency,
-    toCurrency: currentCurrency,
-    numberOfDecimals: 2,
-    conversionRate,
-  });
-
   const ethTransactionFee = getTransactionFee({
-    value: hexMinimumTransactionFee,
+    value: hexTransactionFee,
     fromCurrency: nativeCurrency,
     toCurrency: nativeCurrency,
     numberOfDecimals: 6,
@@ -328,20 +263,18 @@ export const transactionFeeSelector = function (state, txData) {
   });
 
   const fiatTransactionTotal = addFiat(
-    fiatMinimumTransactionFee,
+    fiatTransactionFee,
     fiatTransactionAmount,
   );
   const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount);
-  const hexTransactionTotal = sumHexes(value, hexMinimumTransactionFee);
+  const hexTransactionTotal = sumHexes(value, hexTransactionFee);
 
   return {
     hexTransactionAmount: value,
     fiatTransactionAmount,
     ethTransactionAmount,
-    hexMinimumTransactionFee,
-    fiatMinimumTransactionFee,
-    hexMaximumTransactionFee,
-    fiatMaximumTransactionFee,
+    hexTransactionFee,
+    fiatTransactionFee,
     ethTransactionFee,
     fiatTransactionTotal,
     ethTransactionTotal,

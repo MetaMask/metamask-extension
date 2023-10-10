@@ -10,10 +10,8 @@ import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import FeeCard from '../fee-card';
-import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
 import {
   FALLBACK_GAS_MULTIPLIER,
   getQuotes,
@@ -23,9 +21,7 @@ import {
   setBalanceError,
   getQuotesLastFetched,
   getBalanceError,
-  getCustomSwapsGas, // Gas limit.
-  getCustomMaxFeePerGas,
-  getCustomMaxPriorityFeePerGas,
+  getCustomSwapsGas,
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
@@ -45,13 +41,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors';
-import {
-  getNativeCurrency,
-  getTokens,
-  isEIP1559Network,
-} from '../../../ducks/metamask/metamask';
-
-import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
+import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
 import {
   safeRefetchQuotes,
@@ -67,32 +57,29 @@ import {
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getTokenData } from '../../../helpers/utils/transactions.util';
-import {
-  calcTokenAmount,
-  calcTokenValue,
-  getTokenValueParam,
-} from '../../../helpers/utils/token-util';
-import {
-  decimalToHex,
-  hexToDecimal,
-  getValueFromWeiHex,
-  decGWEIToHexWEI,
-  hexWEIToDecGWEI,
-  addHexes,
-} from '../../../helpers/utils/conversions.util';
+import { getTokenValueParam } from '../../../helpers/utils/token-util';
+import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
-import { calcGasTotal } from '../../send/send.utils';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
-import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import ActionableMessage from '../actionable-message';
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
+import { calcGasTotal } from '../../../../shared/modules/gas-utils';
+import {
+  calcTokenAmount,
+  calcTokenValue,
+} from '../../../../shared/modules/token-utils';
+import {
+  decimalToHex,
+  hexToDecimal,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../../shared/modules/conversion-util';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 export default function ViewQuote() {
@@ -106,7 +93,6 @@ export default function ViewQuote() {
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
-  const [showEditGasPopover, setShowEditGasPopover] = useState(false);
 
   const [
     acknowledgedPriceDifference,
@@ -129,15 +115,12 @@ export default function ViewQuote() {
   // Select necessary data
   const gasPrice = useSelector(getUsedSwapsGasPrice);
   const customMaxGas = useSelector(getCustomSwapsGas);
-  const customMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
-  const customMaxPriorityFeePerGas = useSelector(getCustomMaxPriorityFeePerGas);
   const tokenConversionRates = useSelector(getTokenExchangeRates);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
   const { balance: ethBalance } = useSelector(getSelectedAccount);
   const conversionRate = useSelector(conversionRateSelector);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens);
-  const EIP1559NetworkEnabled = useSelector(isEIP1559Network);
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams);
   const approveTxParams = useSelector(getApproveTxParams);
@@ -149,8 +132,6 @@ export default function ViewQuote() {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
-
-  const gasFeeInputs = useGasFeeInputs('high');
 
   const { isBestQuote } = usedQuote;
 
@@ -172,31 +153,7 @@ export default function ViewQuote() {
     : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
-  let maxFeePerGas;
-  let maxPriorityFeePerGas;
-  let baseAndPriorityFeePerGas;
-
-  // TODO: Verify that this is correct.
-  if (EIP1559NetworkEnabled) {
-    const {
-      maxFeePerGas: suggestedMaxFeePerGas,
-      maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
-      gasFeeEstimates: { estimatedBaseFee },
-    } = gasFeeInputs;
-    maxFeePerGas = customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
-    maxPriorityFeePerGas =
-      customMaxPriorityFeePerGas ||
-      decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-    baseAndPriorityFeePerGas = addHexes(
-      decGWEIToHexWEI(estimatedBaseFee),
-      maxPriorityFeePerGas,
-    );
-  }
-
-  const gasTotalInWeiHex = calcGasTotal(
-    maxGasLimit,
-    EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
-  );
+  const gasTotalInWeiHex = calcGasTotal(maxGasLimit, gasPrice);
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
   const balanceToken =
@@ -227,7 +184,7 @@ export default function ViewQuote() {
   const renderablePopoverData = useMemo(() => {
     return quotesToRenderableData(
       quotes,
-      EIP1559NetworkEnabled ? baseAndPriorityFeePerGas : gasPrice,
+      gasPrice,
       conversionRate,
       currentCurrency,
       approveGas,
@@ -237,8 +194,6 @@ export default function ViewQuote() {
   }, [
     quotes,
     gasPrice,
-    baseAndPriorityFeePerGas,
-    EIP1559NetworkEnabled,
     conversionRate,
     currentCurrency,
     approveGas,
@@ -265,7 +220,7 @@ export default function ViewQuote() {
   const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
     tradeGas: usedGasLimit,
     approveGas,
-    gasPrice: EIP1559NetworkEnabled ? baseAndPriorityFeePerGas : gasPrice,
+    gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
@@ -282,7 +237,7 @@ export default function ViewQuote() {
   } = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
     approveGas,
-    gasPrice: EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
+    gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
@@ -499,10 +454,7 @@ export default function ViewQuote() {
   };
 
   const nonGasFeeIsPositive = new BigNumber(nonGasFee, 16).gt(0);
-  const approveGasTotal = calcGasTotal(
-    approveGas || '0x0',
-    EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
-  );
+  const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice);
   const extraNetworkFeeTotalInHexWEI = new BigNumber(nonGasFee, 16)
     .plus(approveGasTotal, 16)
     .toString(16);
@@ -521,29 +473,26 @@ export default function ViewQuote() {
     extraInfoRowLabel = t('aggregatorFeeCost');
   }
 
-  const onFeeCardMaxRowClick = () => {
-    EIP1559NetworkEnabled
-      ? setShowEditGasPopover(true)
-      : dispatch(
-          showModal({
-            name: 'CUSTOMIZE_METASWAP_GAS',
-            value: tradeValue,
-            customGasLimitMessage: approveGas
-              ? t('extraApprovalGas', [hexToDecimal(approveGas)])
-              : '',
-            customTotalSupplement: approveGasTotal,
-            extraInfoRow: extraInfoRowLabel
-              ? {
-                  label: extraInfoRowLabel,
-                  value: `${extraNetworkFeeTotalInEth} ${nativeCurrencySymbol}`,
-                }
-              : null,
-            initialGasPrice: gasPrice,
-            initialGasLimit: maxGasLimit,
-            minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toNumber(),
-          }),
-        );
-  };
+  const onFeeCardMaxRowClick = () =>
+    dispatch(
+      showModal({
+        name: 'CUSTOMIZE_METASWAP_GAS',
+        value: tradeValue,
+        customGasLimitMessage: approveGas
+          ? t('extraApprovalGas', [hexToDecimal(approveGas)])
+          : '',
+        customTotalSupplement: approveGasTotal,
+        extraInfoRow: extraInfoRowLabel
+          ? {
+              label: extraInfoRowLabel,
+              value: `${extraNetworkFeeTotalInEth} ${nativeCurrencySymbol}`,
+            }
+          : null,
+        initialGasPrice: gasPrice,
+        initialGasLimit: maxGasLimit,
+        minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toNumber(),
+      }),
+    );
 
   const tokenApprovalTextComponent = (
     <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
@@ -640,10 +589,6 @@ export default function ViewQuote() {
   const isShowingWarning =
     showInsufficientWarning || shouldShowPriceDifferenceWarning;
 
-  const onCloseEditGasPopover = () => {
-    setShowEditGasPopover(false);
-  };
-
   return (
     <div className="view-quote">
       <div
@@ -661,25 +606,6 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
-
-        {showEditGasPopover && EIP1559NetworkEnabled && (
-          <EditGasPopover
-            popoverTitle={t('customGas')}
-            transaction={{
-              txParams: {
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-                gasLimit: maxGasLimit,
-              },
-            }}
-            minimumGasLimit={usedGasLimit}
-            defaultEstimateToUse="high"
-            mode={EDIT_GAS_MODES.SWAPS}
-            confirmButtonText={t('submit')}
-            onClose={onCloseEditGasPopover}
-          />
-        )}
-
         <div
           className={classnames('view-quote__warning-wrapper', {
             'view-quote__warning-wrapper--thin': !isShowingWarning,
@@ -749,8 +675,6 @@ export default function ViewQuote() {
                 : memoizedTokenConversionRates[destinationToken.address]
             }
             chainId={chainId}
-            EIP1559NetworkEnabled={EIP1559NetworkEnabled}
-            maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
           />
         </div>
       </div>
@@ -772,9 +696,8 @@ export default function ViewQuote() {
           balanceError ||
           tokenBalanceUnavailable ||
           disableSubmissionDueToPriceWarning ||
-          (EIP1559NetworkEnabled && baseAndPriorityFeePerGas === undefined) ||
-          (!EIP1559NetworkEnabled &&
-            (gasPrice === null || gasPrice === undefined))
+          gasPrice === null ||
+          gasPrice === undefined
         }
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTopBorder

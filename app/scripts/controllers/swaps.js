@@ -4,13 +4,7 @@ import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
-import { calcTokenAmount } from '../../../ui/helpers/utils/token-util';
-import { calcGasTotal } from '../../../ui/pages/send/send.utils';
-import {
-  conversionUtil,
-  decGWEIToHexWEI,
-  addCurrencies,
-} from '../../../shared/modules/conversion.utils';
+import { conversionUtil } from '../../../shared/modules/conversion-util';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
@@ -18,15 +12,17 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
-
-import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
+  fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
   fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
-} from '../../../ui/pages/swaps/swaps.util';
+  isSwapsDefaultTokenAddress,
+} from '../../../shared/modules/swaps.utils';
+
 import { MINUTE, SECOND } from '../../../shared/constants/time';
+import { calcGasTotal } from '../../../shared/modules/gas-utils';
+import { calcTokenAmount } from '../../../shared/modules/token-utils';
 import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
@@ -71,15 +67,12 @@ const initialState = {
     quotesLastFetched: null,
     customMaxGas: '',
     customGasPrice: null,
-    customMaxFeePerGas: null,
-    customMaxPriorityFeePerGas: null,
     selectedAggId: null,
     customApproveTxData: '',
     errorKey: '',
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: true,
-    useNewSwapsApi: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
 };
@@ -92,18 +85,18 @@ export default class SwapsController {
     getProviderConfig,
     tokenRatesStore,
     fetchTradesInfo = defaultFetchTradesInfo,
+    fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
     fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
     getCurrentChainId,
-    getEIP1559GasFeeEstimates,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
     });
 
     this._fetchTradesInfo = fetchTradesInfo;
+    this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness;
     this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime;
     this._getCurrentChainId = getCurrentChainId;
-    this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
     this.tokenRatesStore = tokenRatesStore;
@@ -126,23 +119,17 @@ export default class SwapsController {
   // Sets the refresh rate for quote updates from the MetaSwap API
   async _setSwapsQuoteRefreshTime() {
     const chainId = this._getCurrentChainId();
-    const { swapsState } = this.store.getState();
-
     // Default to fallback time unless API returns valid response
     let swapsQuoteRefreshTime = FALLBACK_QUOTE_REFRESH_TIME;
     try {
-      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(
-        chainId,
-        swapsState.useNewSwapsApi,
-      );
+      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(chainId);
     } catch (e) {
       console.error('Request for swaps quote refresh time failed: ', e);
     }
 
-    const { swapsState: latestSwapsState } = this.store.getState();
-
+    const { swapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...latestSwapsState, swapsQuoteRefreshTime },
+      swapsState: { ...swapsState, swapsQuoteRefreshTime },
     });
   }
 
@@ -175,9 +162,6 @@ export default class SwapsController {
     isPolledRequest,
   ) {
     const { chainId } = fetchParamsMetaData;
-    const {
-      swapsState: { useNewSwapsApi },
-    } = this.store.getState();
 
     if (!fetchParams) {
       return null;
@@ -198,10 +182,7 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
     let [newQuotes] = await Promise.all([
-      this._fetchTradesInfo(fetchParams, {
-        ...fetchParamsMetaData,
-        useNewSwapsApi,
-      }),
+      this._fetchTradesInfo(fetchParams, fetchParamsMetaData),
       this._setSwapsQuoteRefreshTime(),
     ]);
 
@@ -449,23 +430,6 @@ export default class SwapsController {
     });
   }
 
-  setSwapsTxMaxFeePerGas(maxFeePerGas) {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({
-      swapsState: { ...swapsState, customMaxFeePerGas: maxFeePerGas },
-    });
-  }
-
-  setSwapsTxMaxFeePriorityPerGas(maxPriorityFeePerGas) {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({
-      swapsState: {
-        ...swapsState,
-        customMaxPriorityFeePerGas: maxPriorityFeePerGas,
-      },
-    });
-  }
-
   setSwapsTxGasLimit(gasLimit) {
     const { swapsState } = this.store.getState();
     this.store.updateState({
@@ -485,23 +449,22 @@ export default class SwapsController {
     this.store.updateState({ swapsState: { ...swapsState, routeState } });
   }
 
-  setSwapsLiveness(swapsLiveness) {
+  setSwapsLiveness(swapsFeatureIsLive) {
     const { swapsState } = this.store.getState();
-    const { swapsFeatureIsLive, useNewSwapsApi } = swapsLiveness;
     this.store.updateState({
-      swapsState: { ...swapsState, swapsFeatureIsLive, useNewSwapsApi },
+      swapsState: { ...swapsState, swapsFeatureIsLive },
     });
   }
 
   resetPostFetchState() {
     const { swapsState } = this.store.getState();
+
     this.store.updateState({
       swapsState: {
         ...initialState.swapsState,
         tokens: swapsState.tokens,
         fetchParams: swapsState.fetchParams,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
-        useNewSwapsApi: swapsState.useNewSwapsApi,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     });
@@ -510,6 +473,7 @@ export default class SwapsController {
 
   resetSwapsState() {
     const { swapsState } = this.store.getState();
+
     this.store.updateState({
       swapsState: {
         ...initialState.swapsState,
@@ -520,11 +484,16 @@ export default class SwapsController {
     clearTimeout(this.pollingTimeout);
   }
 
+  async _getEthersGasPrice() {
+    const ethersGasPrice = await this.ethersProvider.getGasPrice();
+    return ethersGasPrice.toHexString();
+  }
+
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
     const tokenConversionRates = this.tokenRatesStore.getState()
       .contractExchangeRates;
     const {
-      swapsState: { customGasPrice, customMaxPriorityFeePerGas },
+      swapsState: { customGasPrice },
     } = this.store.getState();
     const chainId = this._getCurrentChainId();
 
@@ -535,38 +504,7 @@ export default class SwapsController {
 
     const newQuotes = cloneDeep(quotes);
 
-    const {
-      gasFeeEstimates,
-      gasEstimateType,
-    } = await this._getEIP1559GasFeeEstimates();
-
-    let usedGasPrice;
-
-    if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-      const {
-        high: { suggestedMaxPriorityFeePerGas },
-        estimatedBaseFee,
-      } = gasFeeEstimates;
-
-      usedGasPrice = addCurrencies(
-        customMaxPriorityFeePerGas || // Is already in hex WEI.
-          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
-        decGWEIToHexWEI(estimatedBaseFee),
-        {
-          aBase: 16,
-          bBase: 16,
-          toNumericBase: 'hex',
-          numberOfDecimals: 6,
-        },
-      );
-    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
-      usedGasPrice = customGasPrice || decGWEIToHexWEI(gasFeeEstimates.high);
-    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-      usedGasPrice =
-        customGasPrice || decGWEIToHexWEI(gasFeeEstimates.gasPrice);
-    } else {
-      usedGasPrice = '0x0';
-    }
+    const usedGasPrice = customGasPrice || (await this._getEthersGasPrice());
 
     let topAggId = null;
     let overallValueOfBestQuoteForSorting = null;

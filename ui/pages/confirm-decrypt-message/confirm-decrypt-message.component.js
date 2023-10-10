@@ -2,26 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
-import log from 'loglevel';
 
 import AccountListItem from '../../components/app/account-list-item';
+import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import Tooltip from '../../components/ui/tooltip';
-import { PageContainerFooter } from '../../components/ui/page-container';
+import Copy from '../../components/ui/icon/copy-icon.component';
 
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { SECOND } from '../../../shared/constants/time';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
-import { Icon, IconName } from '../../components/component-library';
-import { IconColor } from '../../helpers/constants/design-system';
-import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
-import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { conversionUtil } from '../../../shared/modules/conversion-util';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    trackEvent: PropTypes.func.isRequired,
+    metricsEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
@@ -34,29 +30,65 @@ export default class ConfirmDecryptMessage extends Component {
     cancelDecryptMessage: PropTypes.func.isRequired,
     decryptMessage: PropTypes.func.isRequired,
     decryptMessageInline: PropTypes.func.isRequired,
+    conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
-    subjectMetadata: PropTypes.object,
-    nativeCurrency: PropTypes.string.isRequired,
-    currentCurrency: PropTypes.string.isRequired,
-    conversionRate: PropTypes.number,
+    domainMetadata: PropTypes.object,
   };
 
   state = {
+    fromAccount: this.props.fromAccount,
     copyToClipboardPressed: false,
     hasCopied: false,
   };
 
+  componentDidMount = () => {
+    if (
+      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
+      window.addEventListener('beforeunload', this._beforeUnload);
+    }
+  };
+
+  componentWillUnmount = () => {
+    this._removeBeforeUnload();
+  };
+
+  _beforeUnload = async (event) => {
+    const {
+      clearConfirmTransaction,
+      cancelDecryptMessage,
+      txData,
+    } = this.props;
+    const { metricsEvent } = this.context;
+    await cancelDecryptMessage(txData, event);
+    metricsEvent({
+      eventOpts: {
+        category: 'Messages',
+        action: 'Decrypt Message Request',
+        name: 'Cancel Via Notification Close',
+      },
+    });
+    clearConfirmTransaction();
+  };
+
+  _removeBeforeUnload = () => {
+    if (
+      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
+    ) {
+      window.removeEventListener('beforeunload', this._beforeUnload);
+    }
+  };
+
   copyMessage = () => {
     copyToClipboard(this.state.rawMessage);
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Messages,
-      event: 'Copy',
-      properties: {
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Messages',
         action: 'Decrypt Message Copy',
-        legacy_event: true,
+        name: 'Copy',
       },
     });
     this.setState({ hasCopied: true });
@@ -80,7 +112,7 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderAccount = () => {
-    const { fromAccount } = this.props;
+    const { fromAccount } = this.state;
     const { t } = this.context;
 
     return (
@@ -97,31 +129,19 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderBalance = () => {
+    const { conversionRate } = this.props;
     const {
-      conversionRate,
-      nativeCurrency,
-      currentCurrency,
       fromAccount: { balance },
-    } = this.props;
+    } = this.state;
     const { t } = this.context;
 
-    const nativeCurrencyBalance = conversionRate
-      ? formatCurrency(
-          getValueFromWeiHex({
-            value: balance,
-            fromCurrency: nativeCurrency,
-            toCurrency: currentCurrency,
-            conversionRate,
-            numberOfDecimals: 6,
-            toDenomination: EtherDenomination.ETH,
-          }),
-          currentCurrency,
-        )
-      : new Numeric(balance, 16, EtherDenomination.WEI)
-          .toDenomination(EtherDenomination.ETH)
-          .round(6)
-          .toBase(10)
-          .toString();
+    const balanceInEther = conversionUtil(balance, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromDenomination: 'WEI',
+      numberOfDecimals: 6,
+      conversionRate,
+    });
 
     return (
       <div className="request-decrypt-message__balance">
@@ -129,9 +149,7 @@ export default class ConfirmDecryptMessage extends Component {
           {`${t('balance')}:`}
         </div>
         <div className="request-decrypt-message__balance-value">
-          {`${nativeCurrencyBalance} ${
-            conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
-          }`}
+          {`${balanceInEther} ETH`}
         </div>
       </div>
     );
@@ -158,11 +176,11 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderBody = () => {
-    const { decryptMessageInline, subjectMetadata, txData } = this.props;
+    const { decryptMessageInline, domainMetadata, txData } = this.props;
     const { t } = this.context;
 
-    const targetSubjectMetadata = subjectMetadata[txData.msgParams.origin];
-    const name = targetSubjectMetadata?.name || txData.msgParams.origin;
+    const originMetadata = domainMetadata[txData.msgParams.origin];
+    const name = originMetadata?.hostname || txData.msgParams.origin;
     const notice = t('decryptMessageNotice', [txData.msgParams.origin]);
 
     const {
@@ -179,10 +197,10 @@ export default class ConfirmDecryptMessage extends Component {
         {this.renderAccountInfo()}
         <div className="request-decrypt-message__visual">
           <section>
-            {targetSubjectMetadata?.iconUrl ? (
+            {originMetadata?.icon ? (
               <img
                 className="request-decrypt-message__visual-identicon"
-                src={targetSubjectMetadata.iconUrl}
+                src={originMetadata.icon}
                 alt=""
               />
             ) : (
@@ -199,13 +217,15 @@ export default class ConfirmDecryptMessage extends Component {
             {hasError ? errorMessage : ''}
           </div>
           <div
-            className={classnames('request-decrypt-message__message-cover', {
+            className={classnames({
+              'request-decrypt-message__message-cover': true,
               'request-decrypt-message__message-lock--pressed':
                 hasDecrypted || hasError,
             })}
           />
           <div
-            className={classnames('request-decrypt-message__message-lock', {
+            className={classnames({
+              'request-decrypt-message__message-lock': true,
               'request-decrypt-message__message-lock--pressed':
                 hasDecrypted || hasError,
             })}
@@ -221,17 +241,15 @@ export default class ConfirmDecryptMessage extends Component {
                 } else {
                   this.setState({
                     hasDecrypted: true,
-                    rawMessage: result.rawSig,
+                    rawMessage: result.rawData,
                   });
                 }
               });
             }}
           >
-            <div className="request-decrypt-message__message-lock__container">
-              <i className="fa fa-lock fa-lg request-decrypt-message__message-lock__container__icon" />
-              <div className="request-decrypt-message__message-lock__container__text">
-                {t('decryptMetamask')}
-              </div>
+            <img src="images/lock.svg" alt="" />
+            <div className="request-decrypt-message__message-lock-text">
+              {t('decryptMetamask')}
             </div>
           </div>
         </div>
@@ -239,8 +257,7 @@ export default class ConfirmDecryptMessage extends Component {
           <div
             className={classnames({
               'request-decrypt-message__message-copy': true,
-              'request-decrypt-message__message-copy--pressed':
-                copyToClipboardPressed,
+              'request-decrypt-message__message-copy--pressed': copyToClipboardPressed,
             })}
             onClick={() => this.copyMessage()}
             onMouseDown={() => this.setState({ copyToClipboardPressed: true })}
@@ -255,14 +272,11 @@ export default class ConfirmDecryptMessage extends Component {
               <div className="request-decrypt-message__message-copy-text">
                 {t('decryptCopy')}
               </div>
-              <Icon
-                name={hasCopied ? IconName.CopySuccess : IconName.Copy}
-                color={IconColor.primaryDefault}
-              />
+              <Copy size={17} color="#3098DC" />
             </Tooltip>
           </div>
         ) : (
-          <div />
+          <div></div>
         )}
       </div>
     );
@@ -277,48 +291,55 @@ export default class ConfirmDecryptMessage extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props;
-    const { trackEvent, t } = this.context;
+    const { metricsEvent, t } = this.context;
 
     return (
-      <PageContainerFooter
-        cancelText={t('cancel')}
-        submitText={t('decrypt')}
-        onCancel={async (event) => {
-          await cancelDecryptMessage(txData, event);
-          trackEvent({
-            category: MetaMetricsEventCategory.Messages,
-            event: 'Cancel',
-            properties: {
-              action: 'Decrypt Message Request',
-              legacy_event: true,
-            },
-          });
-          clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
-        }}
-        onSubmit={async (event) => {
-          await decryptMessage(txData, event);
-          trackEvent({
-            category: MetaMetricsEventCategory.Messages,
-            event: 'Confirm',
-            properties: {
-              action: 'Decrypt Message Request',
-              legacy_event: true,
-            },
-          });
-          clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
-        }}
-      />
+      <div className="request-decrypt-message__footer">
+        <Button
+          type="default"
+          large
+          className="request-decrypt-message__footer__cancel-button"
+          onClick={async (event) => {
+            this._removeBeforeUnload();
+            await cancelDecryptMessage(txData, event);
+            metricsEvent({
+              eventOpts: {
+                category: 'Messages',
+                action: 'Decrypt Message Request',
+                name: 'Cancel',
+              },
+            });
+            clearConfirmTransaction();
+            history.push(mostRecentOverviewPage);
+          }}
+        >
+          {t('cancel')}
+        </Button>
+        <Button
+          type="secondary"
+          large
+          className="request-decrypt-message__footer__sign-button"
+          onClick={async (event) => {
+            this._removeBeforeUnload();
+            await decryptMessage(txData, event);
+            metricsEvent({
+              eventOpts: {
+                category: 'Messages',
+                action: 'Decrypt Message Request',
+                name: 'Confirm',
+              },
+            });
+            clearConfirmTransaction();
+            history.push(mostRecentOverviewPage);
+          }}
+        >
+          {t('decrypt')}
+        </Button>
+      </div>
     );
   };
 
   render = () => {
-    if (!this.props.txData) {
-      log.warn('ConfirmDecryptMessage Page: Missing txData prop.');
-      return null;
-    }
-
     return (
       <div className="request-decrypt-message__container">
         {this.renderHeader()}

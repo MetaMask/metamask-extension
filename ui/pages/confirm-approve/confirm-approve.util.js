@@ -1,18 +1,18 @@
-import { calcTokenValue } from '../../../shared/lib/swaps-utils';
-import { TransactionType } from '../../../shared/constants/transaction';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { decimalToHex } from '../../../shared/modules/conversion-util';
+import { calcTokenValue } from '../../../shared/modules/token-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { getTokenData } from '../../helpers/utils/transactions.util';
 
 export function getCustomTxParamsData(
   data,
   { customPermissionAmount, decimals },
 ) {
-  const tokenData = parseStandardTokenTransactionData(data);
+  const tokenData = getTokenData(data);
 
   if (!tokenData) {
     throw new Error('Invalid data');
-  } else if (tokenData.name !== TransactionType.tokenMethodApprove) {
+  } else if (tokenData.name !== TRANSACTION_TYPES.TOKEN_METHOD_APPROVE) {
     throw new Error(
       `Invalid data; should be 'approve' method, but instead is '${tokenData.name}'`,
     );

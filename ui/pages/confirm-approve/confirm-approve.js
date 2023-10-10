@@ -1,108 +1,82 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import ConfirmTransactionBase from '../confirm-transaction-base';
-import { EditGasModes } from '../../../shared/constants/gas';
 import {
   showModal,
   updateCustomNonce,
   getNextNonce,
 } from '../../store/actions';
-import { getTokenApprovedParam } from '../../helpers/utils/token-util';
-import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-import { GasFeeContextProvider } from '../../contexts/gasFee';
-import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
+import { getTokenData } from '../../helpers/utils/transactions.util';
 import {
-  getNativeCurrency,
-  isAddressLedger,
-} from '../../ducks/metamask/metamask';
-import ConfirmContractInteraction from '../confirm-contract-interaction';
+  getTokenAddressParam,
+  getTokenValueParam,
+} from '../../helpers/utils/token-util';
+import { useTokenTracker } from '../../hooks/useTokenTracker';
+import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
 import {
+  transactionFeeSelector,
+  txDataSelector,
   getCurrentCurrency,
-  getSubjectMetadata,
+  getDomainMetadata,
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getCurrentChainId,
-  getRpcPrefsForCurrentProvider,
-  getIsMultiLayerFeeNetwork,
-  checkNetworkAndAccountSupports1559,
-  getUseCurrencyRateCheck,
-  getPreferences,
+  getNoGasPriceFetched,
+  getIsEthGasPriceFetched,
+  getIsMainnet,
 } from '../../selectors';
-import { useApproveTransaction } from '../../hooks/useApproveTransaction';
-import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
-import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
-import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
-import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
+
+import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import Loading from '../../components/ui/loading-screen';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { TokenStandard } from '../../../shared/constants/transaction';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import TokenAllowance from '../token-allowance/token-allowance';
+import { calcTokenAmount } from '../../../shared/modules/token-utils';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
-const isAddressLedgerByFromAddress = (address) => (state) => {
-  return isAddressLedger(state, address);
-};
-
-export default function ConfirmApprove({
-  assetStandard,
-  assetName,
-  userBalance,
-  tokenSymbol,
-  decimals,
-  tokenImage,
-  tokenAmount,
-  tokenId,
-  userAddress,
-  toAddress,
-  tokenAddress,
-  transaction,
-  ethTransactionTotal,
-  fiatTransactionTotal,
-  hexTransactionTotal,
-  hexMinimumTransactionFee,
-  isSetApproveForAll,
-}) {
+export default function ConfirmApprove() {
   const dispatch = useDispatch();
-  const { txParams: { data: transactionData } = {} } = transaction;
+  const { id: paramsTransactionId } = useParams();
+  const {
+    id: transactionId,
+    txParams: { to: tokenAddress, data } = {},
+  } = useSelector(txDataSelector);
 
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const subjectMetadata = useSelector(getSubjectMetadata);
+  const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
+  const domainMetadata = useSelector(getDomainMetadata);
+  const tokens = useSelector(getTokens);
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-  const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
-  const fromAddressIsLedger = useSelector(
-    isAddressLedgerByFromAddress(userAddress),
-  );
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const [customPermissionAmount, setCustomPermissionAmount] = useState('');
-  const [submitWarning, setSubmitWarning] = useState('');
-  const [isContract, setIsContract] = useState(false);
-  const [userAcknowledgedGasMissing, setUserAcknowledgedGasMissing] =
-    useState(false);
 
-  const supportsEIP1559 = networkAndAccountSupports1559;
+  const transaction =
+    currentNetworkTxList.find(
+      ({ id }) => id === (Number(paramsTransactionId) || transactionId),
+    ) || {};
+  const { ethTransactionTotal, fiatTransactionTotal } = useSelector((state) =>
+    transactionFeeSelector(state, transaction),
+  );
+
+  const currentToken = (tokens &&
+    tokens.find(({ address }) => tokenAddress === address)) || {
+    address: tokenAddress,
+  };
+
+  const { tokensWithBalances } = useTokenTracker([currentToken]);
+  const tokenTrackerBalance = tokensWithBalances[0]?.balance || '';
+
+  const tokenSymbol = currentToken?.symbol;
+  const decimals = Number(currentToken?.decimals);
+  const tokenData = getTokenData(data);
+  const tokenValue = getTokenValueParam(tokenData);
+  const toAddress = getTokenAddressParam(tokenData);
+  const tokenAmount =
+    tokenData && calcTokenAmount(tokenValue, decimals).toString(10);
+
+  const [customPermissionAmount, setCustomPermissionAmount] = useState('');
 
   const previousTokenAmount = useRef(tokenAmount);
-  const {
-    approveTransaction,
-    showCustomizeGasPopover,
-    closeCustomizeGasPopover,
-  } = useApproveTransaction();
-  const renderSimulationFailureWarning = useSimulationFailureWarning(
-    userAcknowledgedGasMissing,
-  );
 
   useEffect(() => {
     if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
@@ -111,6 +85,7 @@ export default function ConfirmApprove({
     previousTokenAmount.current = tokenAmount;
   }, [customPermissionAmount, tokenAmount]);
 
+  const [submitWarning, setSubmitWarning] = useState('');
   const prevNonce = useRef(nextNonce);
   const prevCustomNonce = useRef(customNonceValue);
   useEffect(() => {
@@ -129,234 +104,115 @@ export default function ConfirmApprove({
     prevCustomNonce.current = customNonceValue;
     prevNonce.current = nextNonce;
   }, [customNonceValue, nextNonce]);
-
-  const checkIfContract = useCallback(async () => {
-    const { isContractAddress } = await readAddressAsContract(
-      global.eth,
-      toAddress,
-    );
-    setIsContract(isContractAddress);
-  }, [setIsContract, toAddress]);
-
-  useEffect(() => {
-    checkIfContract();
-  }, [checkIfContract]);
-
   const { origin } = transaction;
-  const formattedOrigin = origin || '';
+  const formattedOrigin = origin
+    ? origin[0].toUpperCase() + origin.slice(1)
+    : '';
+  const txData = transaction;
 
-  const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
+  const { icon: siteImage = '' } = domainMetadata[origin] || {};
 
-  // Code below may need a additional look as ERC1155 tokens do not have a name
-  let tokensText;
-  if (
-    assetStandard === TokenStandard.ERC721 ||
-    assetStandard === TokenStandard.ERC1155
-  ) {
-    tokensText = assetName;
-  }
-
-  const tokenBalance = userBalance
-    ? calcTokenAmount(userBalance, decimals).toString(10)
+  const tokensText = `${Number(tokenAmount)} ${tokenSymbol}`;
+  const tokenBalance = tokenTrackerBalance
+    ? calcTokenAmount(tokenTrackerBalance, decimals).toString(10)
     : '';
   const customData = customPermissionAmount
-    ? getCustomTxParamsData(transactionData, {
-        customPermissionAmount,
-        decimals,
-      })
+    ? getCustomTxParamsData(data, { customPermissionAmount, decimals })
     : null;
-
-  const parsedTransactionData =
-    parseStandardTokenTransactionData(transactionData);
-  const isApprovalOrRejection = getTokenApprovedParam(parsedTransactionData);
-
-  if (tokenSymbol === undefined && assetName === undefined) {
-    return <Loading />;
-  }
-  if (assetStandard === undefined) {
-    return <ConfirmContractInteraction />;
-  }
-
-  let tokenAllowanceImprovements = true;
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  tokenAllowanceImprovements = false;
-  ///: END:ONLY_INCLUDE_IN
-
-  if (tokenAllowanceImprovements && assetStandard === TokenStandard.ERC20) {
-    return (
-      <GasFeeContextProvider transaction={transaction}>
-        <TransactionModalContextProvider>
-          <TokenAllowance
-            origin={formattedOrigin}
-            siteImage={siteImage}
-            showCustomizeGasModal={approveTransaction}
-            useNonceField={useNonceField}
-            currentCurrency={currentCurrency}
-            nativeCurrency={nativeCurrency}
-            ethTransactionTotal={ethTransactionTotal}
-            fiatTransactionTotal={fiatTransactionTotal}
-            hexTransactionTotal={hexTransactionTotal}
-            hexMinimumTransactionFee={hexMinimumTransactionFee}
-            txData={transaction}
-            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
-            supportsEIP1559={supportsEIP1559}
-            userAddress={userAddress}
-            tokenAddress={tokenAddress}
-            data={transactionData}
-            isSetApproveForAll={isSetApproveForAll}
-            isApprovalOrRejection={isApprovalOrRejection}
-            dappProposedTokenAmount={tokenAmount}
-            currentTokenBalance={tokenBalance}
-            toAddress={toAddress}
-            tokenSymbol={tokenSymbol}
-            decimals={decimals}
-            fromAddressIsLedger={fromAddressIsLedger}
-            warning={submitWarning}
-          />
-          {showCustomizeGasPopover && !supportsEIP1559 && (
-            <EditGasPopover
-              onClose={closeCustomizeGasPopover}
-              mode={EditGasModes.modifyInPlace}
-              transaction={transaction}
-            />
-          )}
-          {supportsEIP1559 && (
-            <>
-              <EditGasFeePopover />
-              <AdvancedGasFeePopover />
-            </>
-          )}
-        </TransactionModalContextProvider>
-      </GasFeeContextProvider>
-    );
-  }
-
-  return (
-    <GasFeeContextProvider transaction={transaction}>
-      <ConfirmTransactionBase
-        toAddress={toAddress}
-        identiconAddress={toAddress}
-        showAccountInHeader
-        title={tokensText}
-        tokenAddress={tokenAddress}
-        customTokenAmount={String(customPermissionAmount)}
-        dappProposedTokenAmount={tokenAmount}
-        currentTokenBalance={tokenBalance}
-        isApprovalOrRejection={isApprovalOrRejection}
-        contentComponent={
-          <TransactionModalContextProvider>
-            <ConfirmApproveContent
-              userAddress={userAddress}
-              isSetApproveForAll={isSetApproveForAll}
-              isApprovalOrRejection={isApprovalOrRejection}
-              siteImage={siteImage}
-              origin={formattedOrigin}
-              tokenSymbol={tokenSymbol}
-              tokenImage={tokenImage}
-              tokenId={tokenId}
-              assetName={assetName}
-              assetStandard={assetStandard}
-              tokenAddress={tokenAddress}
-              showCustomizeGasModal={approveTransaction}
-              data={customData || transactionData}
-              toAddress={toAddress}
-              currentCurrency={currentCurrency}
-              nativeCurrency={nativeCurrency}
-              ethTransactionTotal={ethTransactionTotal}
-              fiatTransactionTotal={fiatTransactionTotal}
-              hexTransactionTotal={hexTransactionTotal}
-              hexMinimumTransactionFee={hexMinimumTransactionFee}
-              useNonceField={useNonceField}
-              nextNonce={nextNonce}
-              customNonceValue={customNonceValue}
-              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-              setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
-              renderSimulationFailureWarning={renderSimulationFailureWarning}
-              updateCustomNonce={(value) => {
-                dispatch(updateCustomNonce(value));
-              }}
-              getNextNonce={() => dispatch(getNextNonce())}
-              showCustomizeNonceModal={({
-                /* eslint-disable no-shadow */
+  const isEthGasPrice = useSelector(getIsEthGasPriceFetched);
+  const noGasPrice = useSelector(getNoGasPriceFetched);
+  const isMainnet = useSelector(getIsMainnet);
+  const hideBasic =
+    isEthGasPrice || noGasPrice || !(isMainnet || process.env.IN_TEST);
+  return tokenSymbol === undefined ? (
+    <Loading />
+  ) : (
+    <ConfirmTransactionBase
+      toAddress={toAddress}
+      identiconAddress={tokenAddress}
+      showAccountInHeader
+      title={tokensText}
+      contentComponent={
+        <ConfirmApproveContent
+          decimals={decimals}
+          siteImage={siteImage}
+          setCustomAmount={setCustomPermissionAmount}
+          customTokenAmount={String(customPermissionAmount)}
+          tokenAmount={tokenAmount}
+          origin={formattedOrigin}
+          tokenSymbol={tokenSymbol}
+          tokenBalance={tokenBalance}
+          showCustomizeGasModal={() =>
+            dispatch(
+              showModal({
+                name: 'CUSTOMIZE_GAS',
+                txData,
+                hideBasic,
+              }),
+            )
+          }
+          showEditApprovalPermissionModal={({
+            /* eslint-disable no-shadow */
+            customTokenAmount,
+            decimals,
+            origin,
+            setCustomAmount,
+            tokenAmount,
+            tokenBalance,
+            tokenSymbol,
+            /* eslint-enable no-shadow */
+          }) =>
+            dispatch(
+              showModal({
+                name: 'EDIT_APPROVAL_PERMISSION',
+                customTokenAmount,
+                decimals,
+                origin,
+                setCustomAmount,
+                tokenAmount,
+                tokenBalance,
+                tokenSymbol,
+              }),
+            )
+          }
+          data={customData || data}
+          toAddress={toAddress}
+          currentCurrency={currentCurrency}
+          nativeCurrency={nativeCurrency}
+          ethTransactionTotal={ethTransactionTotal}
+          fiatTransactionTotal={fiatTransactionTotal}
+          useNonceField={useNonceField}
+          nextNonce={nextNonce}
+          customNonceValue={customNonceValue}
+          updateCustomNonce={(value) => {
+            dispatch(updateCustomNonce(value));
+          }}
+          getNextNonce={() => dispatch(getNextNonce())}
+          showCustomizeNonceModal={({
+            /* eslint-disable no-shadow */
+            useNonceField,
+            nextNonce,
+            customNonceValue,
+            updateCustomNonce,
+            getNextNonce,
+            /* eslint-disable no-shadow */
+          }) =>
+            dispatch(
+              showModal({
+                name: 'CUSTOMIZE_NONCE',
                 useNonceField,
                 nextNonce,
                 customNonceValue,
                 updateCustomNonce,
                 getNextNonce,
-                /* eslint-disable no-shadow */
-              }) =>
-                dispatch(
-                  showModal({
-                    name: 'CUSTOMIZE_NONCE',
-                    useNonceField,
-                    nextNonce,
-                    customNonceValue,
-                    updateCustomNonce,
-                    getNextNonce,
-                  }),
-                )
-              }
-              warning={submitWarning}
-              txData={transaction}
-              fromAddressIsLedger={fromAddressIsLedger}
-              chainId={chainId}
-              rpcPrefs={rpcPrefs}
-              isContract={isContract}
-              isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
-              supportsEIP1559={supportsEIP1559}
-              useCurrencyRateCheck={useCurrencyRateCheck}
-              useNativeCurrencyAsPrimaryCurrency={
-                useNativeCurrencyAsPrimaryCurrency
-              }
-            />
-            {showCustomizeGasPopover && !supportsEIP1559 && (
-              <EditGasPopover
-                onClose={closeCustomizeGasPopover}
-                mode={EditGasModes.modifyInPlace}
-                transaction={transaction}
-              />
-            )}
-            {supportsEIP1559 && (
-              <>
-                <EditGasFeePopover />
-                <AdvancedGasFeePopover />
-              </>
-            )}
-          </TransactionModalContextProvider>
-        }
-        hideSenderToRecipient
-        customTxParamsData={customData}
-        assetStandard={assetStandard}
-        displayAccountBalanceHeader
-      />
-    </GasFeeContextProvider>
+              }),
+            )
+          }
+          warning={submitWarning}
+        />
+      }
+      hideSenderToRecipient
+      customTxParamsData={customData}
+    />
   );
 }
-
-ConfirmApprove.propTypes = {
-  assetStandard: PropTypes.string,
-  assetName: PropTypes.string,
-  tokenAddress: PropTypes.string,
-  userBalance: PropTypes.string,
-  tokenSymbol: PropTypes.string,
-  decimals: PropTypes.string,
-  tokenImage: PropTypes.string,
-  tokenAmount: PropTypes.string,
-  tokenId: PropTypes.string,
-  userAddress: PropTypes.string,
-  toAddress: PropTypes.string,
-  transaction: PropTypes.shape({
-    origin: PropTypes.string,
-    txParams: PropTypes.shape({
-      data: PropTypes.string,
-      to: PropTypes.string,
-      from: PropTypes.string,
-    }),
-  }),
-  ethTransactionTotal: PropTypes.string,
-  fiatTransactionTotal: PropTypes.string,
-  hexTransactionTotal: PropTypes.string,
-  hexMinimumTransactionFee: PropTypes.string,
-  isSetApproveForAll: PropTypes.bool,
-};

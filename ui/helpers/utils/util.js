@@ -1,6 +1,5 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
-import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
@@ -13,17 +12,9 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import {
-  TRUNCATED_ADDRESS_START_CHARS,
-  TRUNCATED_NAME_CHAR_LIMIT,
-  TRUNCATED_ADDRESS_END_CHARS,
-} from '../../../shared/constants/labels';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
-  if (!date) {
-    return '';
-  }
   return DateTime.fromMillis(date).toFormat(format);
 }
 
@@ -32,9 +23,6 @@ export function formatDateWithYearContext(
   formatThisYear = 'MMM d',
   fallback = 'MMM d, y',
 ) {
-  if (!date) {
-    return '';
-  }
   const dateTime = DateTime.fromMillis(date);
   const now = DateTime.local();
   return dateTime.toFormat(
@@ -59,12 +47,6 @@ export function isDefaultMetaMaskChain(chainId) {
   }
 
   return false;
-}
-
-// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
-export function isEqualCaseInsensitive(value1, value2) {
-  if (typeof value1 !== 'string' || typeof value2 !== 'string') return false;
-  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -225,13 +207,11 @@ export function exportAsFile(filename, data, type = 'text/csv') {
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
+  if (address.length < 11) {
     return address;
   }
 
-  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
-    -TRUNCATED_ADDRESS_END_CHARS,
-  )}`;
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -303,144 +283,3 @@ export function checkExistingAddresses(address, list = []) {
 
   return list.some(matchesAddress);
 }
-
-/**
- * Given a number and specified precision, returns that number in base 10 with a maximum of precision
- * significant digits, but without any trailing zeros after the decimal point To be used when wishing
- * to display only as much digits to the user as necessary
- *
- * @param {string | number | BigNumber} n - The number to format
- * @param {number} precision - The maximum number of significant digits in the return value
- * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
- */
-export function toPrecisionWithoutTrailingZeros(n, precision) {
-  return new BigNumber(n)
-    .toPrecision(precision)
-    .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
-}
-
-/**
- * Given and object where all values are strings, returns the same object with all values
- * now prefixed with '0x'
- */
-export function addHexPrefixToObjectValues(obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: addHexPrefix(obj[key]) };
-  }, {});
-}
-
-/**
- * Given the standard set of information about a transaction, returns a transaction properly formatted for
- * publishing via JSON RPC and web3
- *
- * @param {boolean} [sendToken] - Indicates whether or not the transaciton is a token transaction
- * @param {string} data - A hex string containing the data to include in the transaction
- * @param {string} to - A hex address of the tx recipient address
- * @param {string} from - A hex address of the tx sender address
- * @param {string} gas - A hex representation of the gas value for the transaction
- * @param {string} gasPrice - A hex representation of the gas price for the transaction
- * @returns {Object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
- */
-export function constructTxParams({
-  sendToken,
-  data,
-  to,
-  amount,
-  from,
-  gas,
-  gasPrice,
-}) {
-  const txParams = {
-    data,
-    from,
-    value: '0',
-    gas,
-    gasPrice,
-  };
-
-  if (!sendToken) {
-    txParams.value = amount;
-    txParams.to = to;
-  }
-  return addHexPrefixToObjectValues(txParams);
-}
-
-export function bnGreaterThan(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).gt(b, 10);
-}
-
-export function bnLessThan(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).lt(b, 10);
-}
-
-export function bnGreaterThanEqualTo(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).gte(b, 10);
-}
-
-export function bnLessThanEqualTo(a, b) {
-  if (a === null || a === undefined || b === null || b === undefined) {
-    return null;
-  }
-  return new BigNumber(a, 10).lte(b, 10);
-}
-
-export function getURL(url) {
-  try {
-    return new URL(url);
-  } catch (err) {
-    return '';
-  }
-}
-
-export function getURLHost(url) {
-  return getURL(url)?.host || '';
-}
-
-export function getURLHostName(url) {
-  return getURL(url)?.hostname || '';
-}
-
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-const SNAP_PERMISSION_MESSAGES = {
-  snap_clearState: (t) => t('snap_clearState'),
-  snap_confirm: (t) => t('snap_confirm'),
-  snap_getState: (t) => t('snap_getState'),
-  snap_updateState: (t) => t('snap_updateState'),
-};
-
-/**
- * A utility function for retrieving Snap-related permission locale messages.
- * Mainly exists so that our locale message verification script does
- * not misclassify the related messages as unused.
- *
- * @param {Function} t - The translation function.
- * @param {string} permissionName - The name of the permission to get the locale
- * message key for.
- * @returns {string} The locale message for the given permission name, or
- * the message for unrecognized permissions if the permission name is not
- * recognized.
- */
-export function getPermissionLocaleMessage(t, permissionName) {
-  if (permissionName.startsWith('wallet_snap_')) {
-    return t('wallet_snap_', [permissionName.replace('wallet_snap_', '')]);
-  } else if (permissionName.startsWith('snap_getBip44Entropy_')) {
-    // TODO:flask Establish coin_type to protocol name enum per SLIP-44
-    return t('snap_getBip44Entropy_', [
-      permissionName.replace('snap_getBip44Entropy_', ''),
-    ]);
-  } else if (SNAP_PERMISSION_MESSAGES[permissionName]) {
-    return SNAP_PERMISSION_MESSAGES[permissionName](t);
-  }
-
-  return t('unknownPermission', [permissionName]);
-}
-///: END:ONLY_INCLUDE_IN

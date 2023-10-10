@@ -15,20 +15,14 @@ import {
 } from '../../shared/constants/swaps';
 
 import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../helpers/utils/conversions.util';
+import { getValueFromWeiHex } from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
-import {
-  getNativeCurrency,
-  getConversionRate,
-  isEIP1559Network,
-} from '../ducks/metamask/metamask';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
+import { hexToDecimal } from '../../shared/modules/conversion-util';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -81,18 +75,6 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
-export function isEIP1559Account(state) {
-  // Neither hardware wallet supports 1559 at this time
-  return !isHardwareWallet(state);
-}
-
-export function checkNetworkAndAccountSupports1559(state) {
-  const networkSupports1559 = isEIP1559Network(state);
-  const accountSupports1559 = isEIP1559Account(state);
-
-  return networkSupports1559 && accountSupports1559;
-}
-
 /**
  * Checks if the current wallet is a hardware wallet.
  * @param {Object} state
@@ -100,7 +82,7 @@ export function checkNetworkAndAccountSupports1559(state) {
  */
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
-  return Boolean(keyring?.type?.includes('Hardware'));
+  return keyring.type.includes('Hardware');
 }
 
 /**
@@ -110,7 +92,7 @@ export function isHardwareWallet(state) {
  */
 export function getHardwareWalletType(state) {
   const keyring = getCurrentKeyring(state);
-  return isHardwareWallet(state) ? keyring.type : undefined;
+  return keyring.type.includes('Hardware') ? keyring.type : undefined;
 }
 
 export function getAccountType(state) {
@@ -389,19 +371,14 @@ export function getIsTestnet(state) {
   return TEST_CHAINS.includes(chainId);
 }
 
-export function getIsNonStandardEthChain(state) {
-  return !(getIsMainnet(state) || getIsTestnet(state) || process.env.IN_TEST);
-}
-
 export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
-  const conversionRate = getConversionRate(state);
   const { showFiatInTestnets } = getPreferences(state);
-  return Boolean((isMainNet || showFiatInTestnets) && conversionRate);
+  return Boolean(isMainNet || showFiatInTestnets);
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
@@ -596,10 +573,4 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
-}
-
-// Filsnap
-
-export function isFilsnapRunning(state) {
-  return Boolean(state.metamask.plugins?.filsnap?.isRunning);
 }

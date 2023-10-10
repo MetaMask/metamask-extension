@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
+import { decimalToHex } from '../../../../../shared/modules/conversion-util';
 import {
   decGWEIToHexWEI,
-  decimalToHex,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
 import { getNetworkSupportsSettingGasPrice } from '../../../../selectors/selectors';
