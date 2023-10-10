@@ -15,6 +15,5 @@ The ENS address is shown in the recipient field.
 The hexadecimal address is shown in the recipient field.",
 7,Enter an amount.,e.g. 0.1.,,
 8,Proceed to the confirmation screen.,,The recipient's ENS address is shown.,
-9,Confirm the transaction.,,"The transaction appears in the activity list.
-The recipient's hexadecimal address is shown in the activity list item.",
+9,Confirm the transaction.,,"The transaction appears in the activity list.",
 10,Open the activity list item.,,The recipient's ENS address is shown in the item details.,
