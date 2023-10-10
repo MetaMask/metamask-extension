@@ -7,6 +7,10 @@
     display: inline-block;
   }
 
+  .form-field {
+    margin-bottom: 12px;
+  }
+
   .form-field__row--error .form-field__heading-title h6 {
     color: var(--color-error-default);
 
@@ -22,5 +26,9 @@
 
   path {
     fill: var(--color-icon-alternative);
+  }
+
+  &--wide-bottom {
+    margin-bottom: 28px;
   }
 }

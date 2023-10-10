@@ -1,41 +1,42 @@
 import { createSelector } from 'reselect';
 import txHelper from '../helpers/utils/tx-helper';
+import { calcTokenAmount } from '../helpers/utils/token-util';
 import {
   roundExponential,
+  getValueFromWeiHex,
   getTransactionFee,
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
+import { sumHexes } from '../helpers/utils/transactions.util';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
-import { TransactionEnvelopeType } from '../../shared/constants/transaction';
-import {
-  GasEstimateTypes,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../shared/constants/gas';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
+import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
+import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import {
-  decGWEIToHexWEI,
-  getValueFromWeiHex,
-  sumHexes,
-} from '../../shared/modules/conversion.utils';
-import { getAveragePriceEstimateInHexWEI } from './custom-gas';
+  getAveragePriceEstimateInHexWEI,
+  getCustomMaxFeePerGas,
+  getCustomMaxPriorityFeePerGas,
+  getCustomGasPrice,
+  getCustomGasLimit,
+  getEstimateLevelToUse,
+} from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import {
-  checkNetworkAndAccountSupports1559,
-  getUnapprovedTransactions,
-} from '.';
+import { checkNetworkAndAccountSupports1559 } from '.';
 
-const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
+const decGWEIToHexWEIOrNull = (value) =>
+  value === null ? null : decGWEIToHexWEI(value);
+
+const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
@@ -122,30 +123,50 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   },
 );
 
-export const unconfirmedMessagesHashSelector = createSelector(
-  unapprovedMsgsSelector,
-  unapprovedPersonalMsgsSelector,
-  unapprovedDecryptMsgsSelector,
-  unapprovedEncryptionPublicKeyMsgsSelector,
-  unapprovedTypedMessagesSelector,
+const unapprovedMsgCountSelector = (state) => state.metamask.unapprovedMsgCount;
+const unapprovedPersonalMsgCountSelector = (state) =>
+  state.metamask.unapprovedPersonalMsgCount;
+const unapprovedDecryptMsgCountSelector = (state) =>
+  state.metamask.unapprovedDecryptMsgCount;
+const unapprovedEncryptionPublicKeyMsgCountSelector = (state) =>
+  state.metamask.unapprovedEncryptionPublicKeyMsgCount;
+const unapprovedTypedMessagesCountSelector = (state) =>
+  state.metamask.unapprovedTypedMessagesCount;
+
+export const unconfirmedTransactionsCountSelector = createSelector(
+  unapprovedTxsSelector,
+  unapprovedMsgCountSelector,
+  unapprovedPersonalMsgCountSelector,
+  unapprovedDecryptMsgCountSelector,
+  unapprovedEncryptionPublicKeyMsgCountSelector,
+  unapprovedTypedMessagesCountSelector,
+  deprecatedGetCurrentNetworkId,
+  getCurrentChainId,
   (
-    unapprovedMsgs = {},
-    unapprovedPersonalMsgs = {},
-    unapprovedDecryptMsgs = {},
-    unapprovedEncryptionPublicKeyMsgs = {},
-    unapprovedTypedMessages = {},
+    unapprovedTxs = {},
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
+    unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+    network,
+    chainId,
   ) => {
-    return {
-      ...unapprovedMsgs,
-      ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
-      ...unapprovedEncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
-    };
+    const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter((txId) =>
+      transactionMatchesNetwork(unapprovedTxs[txId], chainId, network),
+    );
+
+    return (
+      filteredUnapprovedTxIds.length +
+      unapprovedTypedMessagesCount +
+      unapprovedMsgCount +
+      unapprovedPersonalMsgCount +
+      unapprovedDecryptMsgCount +
+      unapprovedEncryptionPublicKeyMsgCount
+    );
   },
 );
-export const use4ByteResolutionSelector = (state) =>
-  state.metamask.use4ByteResolution;
+
 export const currentCurrencySelector = (state) =>
   state.metamask.currentCurrency;
 export const conversionRateSelector = (state) => state.metamask.conversionRate;
@@ -211,12 +232,7 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
 export const contractExchangeRateSelector = createSelector(
   contractExchangeRatesSelector,
   tokenAddressSelector,
-  (contractExchangeRates, tokenAddress) =>
-    contractExchangeRates[
-      Object.keys(contractExchangeRates).find((address) =>
-        isEqualCaseInsensitive(address, tokenAddress),
-      )
-    ],
+  (contractExchangeRates, tokenAddress) => contractExchangeRates[tokenAddress],
 );
 
 export const transactionFeeSelector = function (state, txData) {
@@ -225,54 +241,95 @@ export const transactionFeeSelector = function (state, txData) {
   const nativeCurrency = getNativeCurrency(state);
   const gasFeeEstimates = getGasFeeEstimates(state) || {};
   const gasEstimateType = getGasEstimateType(state);
-  const networkAndAccountSupportsEIP1559 =
-    checkNetworkAndAccountSupports1559(state);
+  const networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(
+    state,
+  );
+  const estimateToUse = getEstimateLevelToUse(state);
+  const selectedMaxFeePerGas = decGWEIToHexWEIOrNull(
+    getCustomMaxFeePerGas(state),
+  );
+  const selectedMaxPriorityFeePerGas = decGWEIToHexWEIOrNull(
+    getCustomMaxPriorityFeePerGas(state),
+  );
+  const selectedGasPrice = decGWEIToHexWEIOrNull(getCustomGasPrice(state));
+  const selectedGasLimit = getCustomGasLimit(state);
 
   const gasEstimationObject = {
-    gasLimit: txData.txParams?.gas ?? '0x0',
+    gasLimit: selectedGasLimit ?? txData.txParams?.gas ?? '0x0',
   };
 
   if (networkAndAccountSupportsEIP1559) {
     const { gasPrice = '0' } = gasFeeEstimates;
     const selectedGasEstimates = gasFeeEstimates[txData.userFeeLevel] || {};
-    if (txData.txParams?.type === TransactionEnvelopeType.legacy) {
+    if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {
       gasEstimationObject.gasPrice =
-        txData.txParams?.gasPrice ?? decGWEIToHexWEI(gasPrice);
+        selectedGasPrice ??
+        txData.txParams?.gasPrice ??
+        decGWEIToHexWEI(gasPrice);
     } else {
-      const { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } =
-        selectedGasEstimates;
-      gasEstimationObject.maxFeePerGas =
+      const {
+        suggestedMaxPriorityFeePerGas,
+        suggestedMaxFeePerGas,
+      } = selectedGasEstimates;
+      const txDataGasFeesAreCustom = txData.userFeeLevel === 'custom';
+      const selectedGasFeesAreCustom = estimateToUse === 'custom';
+
+      const useCustomTxMaxFeePerGas =
         txData.txParams?.maxFeePerGas &&
-        (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE || !suggestedMaxFeePerGas)
-          ? txData.txParams?.maxFeePerGas
-          : decGWEIToHexWEI(suggestedMaxFeePerGas || gasPrice);
-      gasEstimationObject.maxPriorityFeePerGas =
+        !selectedGasFeesAreCustom &&
+        (txDataGasFeesAreCustom || !suggestedMaxFeePerGas);
+      const useSelectedMaxFeePerGas =
+        selectedMaxFeePerGas &&
+        (selectedGasFeesAreCustom || !suggestedMaxFeePerGas);
+
+      const useCustomTxMaxPriorityFeePerGas =
         txData.txParams?.maxPriorityFeePerGas &&
-        (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
-          !suggestedMaxPriorityFeePerGas)
-          ? txData.txParams?.maxPriorityFeePerGas
-          : (suggestedMaxPriorityFeePerGas &&
-              decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||
-            gasEstimationObject.maxFeePerGas;
+        !selectedGasFeesAreCustom &&
+        (txDataGasFeesAreCustom || !suggestedMaxPriorityFeePerGas);
+      const useSelectedMaxPriorityFeePerGas =
+        selectedMaxPriorityFeePerGas &&
+        (selectedGasFeesAreCustom || !suggestedMaxPriorityFeePerGas);
+
+      if (useSelectedMaxFeePerGas) {
+        gasEstimationObject.maxFeePerGas = selectedMaxFeePerGas;
+      } else if (useCustomTxMaxFeePerGas) {
+        gasEstimationObject.maxFeePerGas = txData.txParams.maxFeePerGas;
+      } else {
+        gasEstimationObject.maxFeePerGas = decGWEIToHexWEI(
+          suggestedMaxFeePerGas || gasPrice,
+        );
+      }
+
+      if (useSelectedMaxPriorityFeePerGas) {
+        gasEstimationObject.maxPriorityFeePerGas = selectedMaxPriorityFeePerGas;
+      } else if (useCustomTxMaxPriorityFeePerGas) {
+        gasEstimationObject.maxPriorityFeePerGas =
+          txData.txParams.maxPriorityFeePerGas;
+      } else {
+        gasEstimationObject.maxPriorityFeePerGas =
+          (suggestedMaxPriorityFeePerGas &&
+            decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||
+          gasEstimationObject.maxFeePerGas;
+      }
+
       gasEstimationObject.baseFeePerGas = decGWEIToHexWEI(
         gasFeeEstimates.estimatedBaseFee,
       );
     }
   } else {
     switch (gasEstimateType) {
-      case GasEstimateTypes.none:
-        gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? '0x0';
+      case GAS_ESTIMATE_TYPES.NONE:
+        gasEstimationObject.gasPrice = selectedGasPrice ?? '0x0';
         break;
-      case GasEstimateTypes.ethGasPrice:
+      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
         gasEstimationObject.gasPrice =
-          txData.txParams?.gasPrice ??
-          decGWEIToHexWEI(gasFeeEstimates.gasPrice);
+          selectedGasPrice ?? decGWEIToHexWEI(gasFeeEstimates.gasPrice);
         break;
-      case GasEstimateTypes.legacy:
+      case GAS_ESTIMATE_TYPES.LEGACY:
         gasEstimationObject.gasPrice =
-          txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
+          selectedGasPrice ?? getAveragePriceEstimateInHexWEI(state);
         break;
-      case GasEstimateTypes.feeMarket:
+      case GAS_ESTIMATE_TYPES.FEE_MARKET:
         break;
       default:
         break;
@@ -296,10 +353,12 @@ export const transactionFeeSelector = function (state, txData) {
     numberOfDecimals: 6,
   });
 
-  const hexMinimumTransactionFee =
-    getMinimumGasTotalInHexWei(gasEstimationObject);
-  const hexMaximumTransactionFee =
-    getMaximumGasTotalInHexWei(gasEstimationObject);
+  const hexMinimumTransactionFee = getMinimumGasTotalInHexWei(
+    gasEstimationObject,
+  );
+  const hexMaximumTransactionFee = getMaximumGasTotalInHexWei(
+    gasEstimationObject,
+  );
 
   const fiatMinimumTransactionFee = getTransactionFee({
     value: hexMinimumTransactionFee,

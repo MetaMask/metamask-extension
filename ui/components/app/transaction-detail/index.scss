@@ -3,12 +3,12 @@
 
   .transaction-detail-edit {
     text-align: end;
-    padding-top: 20px;
+    padding-top: 12px;
 
     button {
       @include H7;
 
-      color: var(--color-primary-default);
+      color: $primary-1;
       background: transparent;
       border: 0;
       padding-inline-end: 0;
@@ -16,7 +16,7 @@
     }
   }
 
-  &-rows {
-    margin-top: 10px;
+  &-rows &-item:first-child {
+    padding-top: 0;
   }
 }

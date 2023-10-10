@@ -7,3 +7,9 @@
 export const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA';
 export const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT';
 export const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE';
+export const SET_CUSTOM_MAX_FEE_PER_GAS =
+  'metamask/gas/SET_CUSTOM_MAX_FEE_PER_GAS';
+export const SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS =
+  'metamask/gas/SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS';
+export const SET_ESTIMATE_LEVEL_TO_USE =
+  'metamask/gas/SET_ESTIMATE_LEVEL_TO_USE';

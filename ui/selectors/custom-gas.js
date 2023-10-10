@@ -23,6 +23,18 @@ export function getCustomGasPrice(state) {
   return state.gas.customData.price;
 }
 
+export function getCustomMaxFeePerGas(state) {
+  return state.gas.customData.maxFeePerGas;
+}
+
+export function getCustomMaxPriorityFeePerGas(state) {
+  return state.gas.customData.maxPriorityFeePerGas;
+}
+
+export function getEstimateLevelToUse(state) {
+  return state.gas.customData.estimateLevelToUse;
+}
+
 export function getBasicGasEstimateLoadingStatus(state) {
   return getIsGasEstimatesFetched(state) === false;
 }

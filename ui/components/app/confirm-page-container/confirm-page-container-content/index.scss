@@ -64,4 +64,13 @@
   &__total-value {
     position: relative;
   }
+
+  &__small-fee-label {
+    font-weight: bold;
+    margin-right: 2px;
+  }
+
+  &__sub-text-container {
+    display: flex;
+  }
 }

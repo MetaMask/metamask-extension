@@ -225,6 +225,8 @@ const mapStateToProps = (state, ownProps) => {
     useNativeCurrencyAsPrimaryCurrency,
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
+    gasLimit: gasEstimationObject.gasLimit,
+    gasPrice: gasEstimationObject.gasPrice,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
     showLedgerSteps: fromAddressIsLedger,

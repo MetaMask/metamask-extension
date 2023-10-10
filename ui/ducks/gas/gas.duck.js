@@ -3,12 +3,18 @@ import {
   RESET_CUSTOM_DATA,
   SET_CUSTOM_GAS_LIMIT,
   SET_CUSTOM_GAS_PRICE,
+  SET_CUSTOM_MAX_FEE_PER_GAS,
+  SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS,
+  SET_ESTIMATE_LEVEL_TO_USE,
 } from './gas-action-constants';
 
 const initState = {
   customData: {
     price: null,
     limit: null,
+    maxFeePerGas: null,
+    maxPriorityFeePerGas: null,
+    estimateLevelToUse: null,
   },
 };
 
@@ -31,6 +37,30 @@ export default function reducer(state = initState, action) {
           limit: action.value,
         },
       };
+    case SET_CUSTOM_MAX_FEE_PER_GAS:
+      return {
+        ...state,
+        customData: {
+          ...state.customData,
+          maxFeePerGas: action.value,
+        },
+      };
+    case SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS:
+      return {
+        ...state,
+        customData: {
+          ...state.customData,
+          maxPriorityFeePerGas: action.value,
+        },
+      };
+    case SET_ESTIMATE_LEVEL_TO_USE:
+      return {
+        ...state,
+        customData: {
+          ...state.customData,
+          estimateLevelToUse: action.value,
+        },
+      };
     case RESET_CUSTOM_DATA:
       return {
         ...state,
@@ -41,6 +71,7 @@ export default function reducer(state = initState, action) {
   }
 }
 
+// Action Creators
 export function setCustomGasPrice(newPrice) {
   return {
     type: SET_CUSTOM_GAS_PRICE,
@@ -53,4 +84,29 @@ export function setCustomGasLimit(newLimit) {
     type: SET_CUSTOM_GAS_LIMIT,
     value: newLimit,
   };
+}
+
+export function setCustomMaxFeePerGas(newMaxFeePerGas) {
+  return {
+    type: SET_CUSTOM_MAX_FEE_PER_GAS,
+    value: newMaxFeePerGas,
+  };
+}
+
+export function setCustomMaxPriorityFeePerGas(newMaxPriorityFeePerGas) {
+  return {
+    type: SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS,
+    value: newMaxPriorityFeePerGas,
+  };
+}
+
+export function setEstimateLevelToUse(estimateLevel) {
+  return {
+    type: SET_ESTIMATE_LEVEL_TO_USE,
+    value: estimateLevel,
+  };
+}
+
+export function resetCustomData() {
+  return { type: RESET_CUSTOM_DATA };
 }
