@@ -1270,11 +1270,13 @@ export function addToken(
       dispatch(showLoadingIndication());
     }
     try {
+      console.log('adding token', symbol);
       await promisifiedBackground.addToken(address, symbol, decimals, image);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
     } finally {
+      console.log('force metamask state');
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
     }

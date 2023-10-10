@@ -21,6 +21,8 @@ export function useTokenTracker(
 
   const updateBalances = useCallback(
     (tokenWithBalances) => {
+      console.log('receiving new balances', tokenWithBalances);
+
       const matchingTokens = hideZeroBalanceTokens
         ? tokenWithBalances.filter((token) => Number(token.balance) > 0)
         : tokenWithBalances;
@@ -44,6 +46,7 @@ export function useTokenTracker(
   );
 
   const showError = useCallback((err) => {
+    console.log('had an error', err);
     setError(err);
     setLoading(false);
   }, []);
@@ -59,6 +62,8 @@ export function useTokenTracker(
 
   const buildTracker = useCallback(
     (address, tokenList) => {
+      console.log('Building token tracker');
+
       // clear out previous tracker, if it exists.
       teardownTracker();
       tokenTracker.current = new TokenTracker({
@@ -72,6 +77,7 @@ export function useTokenTracker(
 
       tokenTracker.current.on('update', updateBalances);
       tokenTracker.current.on('error', showError);
+      console.log('Updating balances for', tokenList);
       tokenTracker.current.updateBalances();
     },
     [updateBalances, includeFailedTokens, showError, teardownTracker],

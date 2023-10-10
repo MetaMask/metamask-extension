@@ -16,7 +16,10 @@ const WalletOverview = ({
   const selectedIdentity = useSelector(getSelectedIdentity);
   const checksummedAddress = toChecksumHexAddress(selectedIdentity?.address);
   return (
-    <div className={classnames('wallet-overview', className)}>
+    <div
+      className={classnames('wallet-overview', className)}
+      data-testid="wallet-overview"
+    >
       <div className="wallet-overview__balance">
         {showAddress ? (
           <Box marginTop={2}>
