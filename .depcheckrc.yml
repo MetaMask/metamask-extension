@@ -44,6 +44,3 @@ ignorePatterns:
   # self-contained bundle used for testing
   - "**/send-eth-with-private-key-test/web3js.js"
   - "**/send-eth-with-private-key-test/ethereumjs-tx.js"
-  # snaps-related
-  - "app/vendor/filsnap/filsnap-bundle.js"
-  
