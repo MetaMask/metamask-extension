@@ -321,7 +321,7 @@ export default class ExperimentalTab extends PureComponent {
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-main)
     if (!showSnapAccountExperimentalToggle()) {
-      return null;
+      toggle = null;
     }
     ///: END:ONLY_INCLUDE_IN
 
