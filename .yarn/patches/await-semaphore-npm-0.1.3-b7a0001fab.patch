@@ -1,8 +1,7 @@
 diff --git a/index.ts b/index.ts
-deleted file mode 100644
 index 69ce92ac081f182b5123409021e1b1028255c7f3..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/index.ts
-+++ /dev/null
++++ b/index.ts
 @@ -1,62 +0,0 @@
 -export class Semaphore {
 -    private tasks: (() => void)[] = [];

@@ -1,8 +1,7 @@
 diff --git a/src/Bytes.ts b/src/Bytes.ts
-deleted file mode 100644
-index a5f9f7d4facaf06bd2dc9deedb85cd331c9e75a0..0000000000000000000000000000000000000000
+index a5f9f7d4facaf06bd2dc9deedb85cd331c9e75a0..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/Bytes.ts
-+++ /dev/null
++++ b/src/Bytes.ts
 @@ -1,34 +0,0 @@
 -import { decodeToDataItem, DataItem } from './lib';
 -import { RegistryItem } from './RegistryItem';
@@ -39,10 +38,9 @@ index a5f9f7d4facaf06bd2dc9deedb85cd331c9e75a0..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/CryptoAccount.ts b/src/CryptoAccount.ts
-deleted file mode 100644
-index e6efeeb44a0b23428d172bd5aee99621d7469d19..0000000000000000000000000000000000000000
+index e6efeeb44a0b23428d172bd5aee99621d7469d19..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/CryptoAccount.ts
-+++ /dev/null
++++ b/src/CryptoAccount.ts
 @@ -1,58 +0,0 @@
 -import { CryptoOutput } from '.';
 -import { decodeToDataItem, DataItem } from './lib';
@@ -103,10 +101,9 @@ index e6efeeb44a0b23428d172bd5aee99621d7469d19..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/CryptoCoinInfo.ts b/src/CryptoCoinInfo.ts
-deleted file mode 100644
-index 843b50cb0551def4be3ba8293f34ab94063c85a7..0000000000000000000000000000000000000000
+index 843b50cb0551def4be3ba8293f34ab94063c85a7..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/CryptoCoinInfo.ts
-+++ /dev/null
++++ b/src/CryptoCoinInfo.ts
 @@ -1,59 +0,0 @@
 -import { decodeToDataItem, DataItem } from './lib';
 -import { RegistryItem } from './RegistryItem';
@@ -168,10 +165,9 @@ index 843b50cb0551def4be3ba8293f34ab94063c85a7..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/CryptoECKey.ts b/src/CryptoECKey.ts
-deleted file mode 100644
-index 54c3c4b0aabe13bdaff7821dd8524a6a789ed008..0000000000000000000000000000000000000000
+index 54c3c4b0aabe13bdaff7821dd8524a6a789ed008..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/CryptoECKey.ts
-+++ /dev/null
++++ b/src/CryptoECKey.ts
 @@ -1,68 +0,0 @@
 -import { decodeToDataItem, DataItem } from './lib';
 -import { RegistryItem } from './RegistryItem';
@@ -242,10 +238,9 @@ index 54c3c4b0aabe13bdaff7821dd8524a6a789ed008..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/CryptoHDKey.ts b/src/CryptoHDKey.ts
-deleted file mode 100644
-index 8fc2a82970fd2f639cb3912940c328308ec4ea2c..0000000000000000000000000000000000000000
+index 8fc2a82970fd2f639cb3912940c328308ec4ea2c..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/CryptoHDKey.ts
-+++ /dev/null
++++ b/src/CryptoHDKey.ts
 @@ -1,237 +0,0 @@
 -// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 -// @ts-ignore
@@ -485,10 +480,9 @@ index 8fc2a82970fd2f639cb3912940c328308ec4ea2c..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/CryptoOutput.ts b/src/CryptoOutput.ts
-deleted file mode 100644
-index 90abf6f108c05315ee2b255465dd39c90ee0f459..0000000000000000000000000000000000000000
+index 90abf6f108c05315ee2b255465dd39c90ee0f459..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/CryptoOutput.ts
-+++ /dev/null
++++ b/src/CryptoOutput.ts
 @@ -1,127 +0,0 @@
 -import { CryptoECKey } from './CryptoECKey';
 -import { CryptoHDKey } from './CryptoHDKey';
@@ -618,10 +612,9 @@ index 90abf6f108c05315ee2b255465dd39c90ee0f459..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/CryptoPSBT.ts b/src/CryptoPSBT.ts
-deleted file mode 100644
-index 626b647098f04039755a1396511076ce2a0112a4..0000000000000000000000000000000000000000
+index 626b647098f04039755a1396511076ce2a0112a4..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/CryptoPSBT.ts
-+++ /dev/null
++++ b/src/CryptoPSBT.ts
 @@ -1,32 +0,0 @@
 -import { decodeToDataItem, DataItem } from './lib';
 -import { RegistryItem } from './RegistryItem';
@@ -656,10 +649,9 @@ index 626b647098f04039755a1396511076ce2a0112a4..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/Decoder/index.ts b/src/Decoder/index.ts
-deleted file mode 100644
-index 5d7e3fe5aaef44fae3c39ac002bd2add9278a201..0000000000000000000000000000000000000000
+index 5d7e3fe5aaef44fae3c39ac002bd2add9278a201..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/Decoder/index.ts
-+++ /dev/null
++++ b/src/Decoder/index.ts
 @@ -1,41 +0,0 @@
 -import { URDecoder } from '@ngraveio/bc-ur';
 -import {
@@ -703,10 +695,9 @@ index 5d7e3fe5aaef44fae3c39ac002bd2add9278a201..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/MultiKey.ts b/src/MultiKey.ts
-deleted file mode 100644
-index ced19dc364fae1ad5b9147710cdb2195e17b4582..0000000000000000000000000000000000000000
+index ced19dc364fae1ad5b9147710cdb2195e17b4582..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/MultiKey.ts
-+++ /dev/null
++++ b/src/MultiKey.ts
 @@ -1,60 +0,0 @@
 -import { CryptoECKey } from './CryptoECKey';
 -import { CryptoHDKey } from './CryptoHDKey';
@@ -769,10 +760,9 @@ index ced19dc364fae1ad5b9147710cdb2195e17b4582..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/PathComponent.ts b/src/PathComponent.ts
-deleted file mode 100644
-index d41cb067e383f29986a7d84bc88b0e4b7b71fb0b..0000000000000000000000000000000000000000
+index d41cb067e383f29986a7d84bc88b0e4b7b71fb0b..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/PathComponent.ts
-+++ /dev/null
++++ b/src/PathComponent.ts
 @@ -1,28 +0,0 @@
 -export class PathComponent {
 -  public static readonly HARDENED_BIT = 0x80000000;
@@ -803,10 +793,9 @@ index d41cb067e383f29986a7d84bc88b0e4b7b71fb0b..00000000000000000000000000000000
 -  public isHardened = () => this.hardened;
 -}
 diff --git a/src/RegistryItem.ts b/src/RegistryItem.ts
-deleted file mode 100644
-index 99139f7001b596add08be3332526264c39693279..0000000000000000000000000000000000000000
+index 99139f7001b596add08be3332526264c39693279..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/RegistryItem.ts
-+++ /dev/null
++++ b/src/RegistryItem.ts
 @@ -1,35 +0,0 @@
 -import { UR, UREncoder } from '@ngraveio/bc-ur';
 -import { encodeDataItem, DataItem } from './lib';
@@ -844,10 +833,9 @@ index 99139f7001b596add08be3332526264c39693279..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/RegistryType.ts b/src/RegistryType.ts
-deleted file mode 100644
-index 64637bca3626b0db586563d5dcffd44f61e39520..0000000000000000000000000000000000000000
+index 64637bca3626b0db586563d5dcffd44f61e39520..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/RegistryType.ts
-+++ /dev/null
++++ b/src/RegistryType.ts
 @@ -1,20 +0,0 @@
 -// cbor registry types: https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-006-urtypes.md
 -// Map<name, tag>
@@ -870,10 +858,9 @@ index 64637bca3626b0db586563d5dcffd44f61e39520..00000000000000000000000000000000
 -  CRYPTO_ACCOUNT: new RegistryType('crypto-account', 311),
 -};
 diff --git a/src/ScriptExpression.ts b/src/ScriptExpression.ts
-deleted file mode 100644
-index 8fbf0db679040337a5d9e6af8c8ecf734faa00d5..0000000000000000000000000000000000000000
+index 8fbf0db679040337a5d9e6af8c8ecf734faa00d5..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/ScriptExpression.ts
-+++ /dev/null
++++ b/src/ScriptExpression.ts
 @@ -1,26 +0,0 @@
 -export class ScriptExpression {
 -  constructor(private tag: number, private expression: string) {}
@@ -901,11 +888,20 @@ index 8fbf0db679040337a5d9e6af8c8ecf734faa00d5..00000000000000000000000000000000
 -  ADDRESS: new ScriptExpression(307, 'addr'),
 -  RAW_SCRIPT: new ScriptExpression(408, 'raw'),
 -};
+diff --git a/src/errors/index.ts b/src/errors/index.ts
+index dd2b0bdc4b7c7a5601f48fa3b1c16f65adb13556..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
+--- a/src/errors/index.ts
++++ b/src/errors/index.ts
+@@ -1,5 +0,0 @@
+-export class UnknownURTypeError extends Error {
+-  constructor(message: string) {
+-    super(message);
+-  }
+-}
 diff --git a/src/index.ts b/src/index.ts
-deleted file mode 100644
-index bb07bc8c2a62c2c0afc28bce0f8c4d968b7c93ee..0000000000000000000000000000000000000000
+index bb07bc8c2a62c2c0afc28bce0f8c4d968b7c93ee..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/index.ts
-+++ /dev/null
++++ b/src/index.ts
 @@ -1,110 +0,0 @@
 -import './patchCBOR';
 -
@@ -1018,10 +1014,9 @@ index bb07bc8c2a62c2c0afc28bce0f8c4d968b7c93ee..00000000000000000000000000000000
 -
 -export default URlib;
 diff --git a/src/lib/DataItem.ts b/src/lib/DataItem.ts
-deleted file mode 100644
-index 9727f7eb100756076732b137402e22efad73727c..0000000000000000000000000000000000000000
+index 9727f7eb100756076732b137402e22efad73727c..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/lib/DataItem.ts
-+++ /dev/null
++++ b/src/lib/DataItem.ts
 @@ -1,25 +0,0 @@
 -export class DataItem {
 -  private tag?: number;
@@ -1049,10 +1044,9 @@ index 9727f7eb100756076732b137402e22efad73727c..00000000000000000000000000000000
 -  };
 -}
 diff --git a/src/lib/cbor-sync.d.ts b/src/lib/cbor-sync.d.ts
-deleted file mode 100644
-index 6374ba78fb23af2b8773820250e1183ed36c978e..0000000000000000000000000000000000000000
+index 6374ba78fb23af2b8773820250e1183ed36c978e..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/lib/cbor-sync.d.ts
-+++ /dev/null
++++ b/src/lib/cbor-sync.d.ts
 @@ -1,36 +0,0 @@
 -export namespace config {
 -    const useToJSON: boolean;
@@ -1091,10 +1085,9 @@ index 6374ba78fb23af2b8773820250e1183ed36c978e..00000000000000000000000000000000
 -};
 -//# sourceMappingURL=cbor-sync.d.ts.map
 diff --git a/src/lib/cbor-sync.js b/src/lib/cbor-sync.js
-deleted file mode 100644
-index df8db9040ddb2fffed53bc980181097b97cab8d6..0000000000000000000000000000000000000000
+index df8db9040ddb2fffed53bc980181097b97cab8d6..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/lib/cbor-sync.js
-+++ /dev/null
++++ b/src/lib/cbor-sync.js
 @@ -1,693 +0,0 @@
 -(function (global, factory) {
 -  if (typeof define === 'function' && define.amd) {
@@ -1790,10 +1783,9 @@ index df8db9040ddb2fffed53bc980181097b97cab8d6..00000000000000000000000000000000
 -  return CBOR;
 -});
 diff --git a/src/lib/index.ts b/src/lib/index.ts
-deleted file mode 100644
-index deb01562dbf2ce9ea2da105c3271ad6ae573b6f6..0000000000000000000000000000000000000000
+index deb01562dbf2ce9ea2da105c3271ad6ae573b6f6..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/lib/index.ts
-+++ /dev/null
++++ b/src/lib/index.ts
 @@ -1,9 +0,0 @@
 -export {
 -  encodeDataItem,
@@ -1805,10 +1797,9 @@ index deb01562dbf2ce9ea2da105c3271ad6ae573b6f6..00000000000000000000000000000000
 -} from './cbor-sync';
 -export { DataItem } from './DataItem';
 diff --git a/src/patchCBOR.ts b/src/patchCBOR.ts
-deleted file mode 100644
-index 218e912870e98872677bb1b167c9ab67a18fbb00..0000000000000000000000000000000000000000
+index 218e912870e98872677bb1b167c9ab67a18fbb00..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/patchCBOR.ts
-+++ /dev/null
++++ b/src/patchCBOR.ts
 @@ -1,11 +0,0 @@
 -import { patchTags } from './utils';
 -import { RegistryTypes } from './RegistryType';
@@ -1822,10 +1813,9 @@ index 218e912870e98872677bb1b167c9ab67a18fbb00..00000000000000000000000000000000
 -);
 -patchTags(registryTags.concat(scriptExpressionTags) as number[]);
 diff --git a/src/types.ts b/src/types.ts
-deleted file mode 100644
-index 29aa370267a20a0b50f01604c014d52145194b00..0000000000000000000000000000000000000000
+index 29aa370267a20a0b50f01604c014d52145194b00..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/types.ts
-+++ /dev/null
++++ b/src/types.ts
 @@ -1,6 +0,0 @@
 -export interface ICryptoKey {
 -  isECKey: () => boolean;
@@ -1834,10 +1824,9 @@ index 29aa370267a20a0b50f01604c014d52145194b00..00000000000000000000000000000000
 -
 -export type DataItemMap = Record<string, any>;
 diff --git a/src/utils.ts b/src/utils.ts
-deleted file mode 100644
-index e38112bfad6326399f71526ac1de00384c47fd49..0000000000000000000000000000000000000000
+index e38112bfad6326399f71526ac1de00384c47fd49..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
 --- a/src/utils.ts
-+++ /dev/null
++++ b/src/utils.ts
 @@ -1,19 +0,0 @@
 -import { addSemanticDecode, addSemanticEncode, DataItem } from './lib';
 -
