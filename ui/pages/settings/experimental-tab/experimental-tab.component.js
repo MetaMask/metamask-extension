@@ -239,15 +239,10 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IN
 
-  renderKeyringSnapsToggle() {
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  keyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-    if (!showSnapAccountExperimentalToggle()) {
-      return null;
-    }
-    ///: END:ONLY_INCLUDE_IN
 
     return (
       <>
@@ -315,6 +310,19 @@ export default class ExperimentalTab extends PureComponent {
         </Box>
       </>
     );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  renderKeyringSnapsToggle() {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+    if (!showSnapAccountExperimentalToggle()) {
+      return null;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    return this.keyringSnapsToggle();
+    ///: END:ONLY_INCLUDE_IN
   }
 
   render() {
