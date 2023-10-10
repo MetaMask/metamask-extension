@@ -3,7 +3,7 @@ import { showSnapAccountExperimentalToggle } from './snap-accounts';
 describe('showSnapAccountExperimentalToggle', () => {
   beforeEach(() => {
     process.env = Object.assign(process.env, {
-      KEYRING_SNAPS_DATE: 'Thu, 02 Nov 2023 15:00:00 GMT',
+      KEYRING_SNAPS_DATE: '02 Nov 2023 15:00:00 GMT',
     });
   });
 
