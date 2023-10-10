@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test site!</title>
+    <script>
+window.addEventListener('load', () => {
+  testButton.addEventListener('click', async () => {
+    console.log('clicked', cProvider)
+    const { E, getBootstrap } = cProvider
+    const a = await E(getBootstrap()).getControllers();
+    console.dir(`a: ${JSON.stringify(a)}`)
+  })
+})
+    </script>
+  </head>
+  <body>
+    <h1>Welcome!</h1>
+    <button id="testButton">Test!</button>
+  </body>
+</html>
