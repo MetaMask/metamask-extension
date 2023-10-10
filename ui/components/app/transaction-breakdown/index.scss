@@ -5,9 +5,9 @@
     padding-bottom: 4px;
     padding-top: 8px;
     font-size: 14px;
-    color: $Black-100;
+    color: var(--color-text-default);
     font-weight: bold;
-    text-transform: capitalize; 
+    text-transform: capitalize;
   }
 
   &__row-title {
@@ -23,12 +23,12 @@
 
     &--eth-total {
       font-weight: bold;
-      color: $Black-100;
+      color: var(--color-text-default);
     }
 
     &--amount {
       font-weight: bold;
-      color: $Black-100;
+      color: var(--color-text-default);
     }
   }
 }

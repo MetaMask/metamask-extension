@@ -3,7 +3,7 @@
   flex-flow: column nowrap;
   background-color: var(--color-background-default);
   border-radius: 10px;
-  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  box-shadow: 0 5px 16px rgba($black, 0.25);
 
   &__content {
     @extend %col-nowrap;
@@ -23,7 +23,7 @@
     &__header-close {
       @include H4;
 
-      color: var(--color-icon-default);
+      color: #24292e;
       background: none;
     }
   }
@@ -38,7 +38,6 @@
 
     background: var(--color-background-default);
     border: 1px solid var(--color-border-muted);
-    color: var(--color-text-default);
     box-sizing: border-box;
     border-radius: 8px;
     padding: 0.625rem 0.75rem;

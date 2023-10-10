@@ -1,0 +1,33 @@
+.enableEIP1559V2-notice {
+  &__dialog {
+    position: relative;
+  }
+
+  &__close-button {
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &::after {
+      position: absolute;
+      content: '\00D7';
+      font-size: 29px;
+      font-weight: 200;
+      color: var(--color-text-default);
+      background-color: transparent;
+      top: 0;
+      right: 12px;
+      cursor: pointer;
+    }
+  }
+
+  a.enableEIP1559V2-notice__link {
+    @include H7;
+
+    padding: 0;
+    justify-content: flex-start;
+    font-weight: bold;
+    font-size: 0.75rem;
+  }
+}

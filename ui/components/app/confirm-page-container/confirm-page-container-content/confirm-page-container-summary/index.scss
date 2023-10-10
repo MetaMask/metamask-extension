@@ -23,9 +23,9 @@
   &__action {
     @include H7;
 
-    color: var(--color-text-alternative);
+    color: var(--color-icon-default);
     padding: 3px 8px;
-    border: 1px solid var(--color-border-default);
+    border: 1px solid var(--color-icon-default);
     border-radius: 4px;
     display: inline-flex;
     align-items: center;
@@ -51,12 +51,12 @@
       border: none;
       padding: 0;
       margin-inline-end: 4px;
-      color: var(--color-primary-default);
+      color: var(--primary-1);
     }
   }
 
   &__nonce {
-    color: var(--color-text-alternative);
+    color: var(--color-icon-default);
   }
 
   &__title {
@@ -67,6 +67,31 @@
   &__icon {
     flex: 0 0 auto;
     margin-right: 8px;
+  }
+
+  &__title-text {
+    @include H1;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__title-text-long {
+    @include H3;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__subtitle {
+    @include H5;
+
+    color: var(--color-icon-default);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &--border {

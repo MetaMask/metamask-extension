@@ -3,8 +3,8 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
-@import 'snaps/snaps-list-tab/index';
-@import 'snaps/view-snap/index';
+@import 'flask/snaps-list-tab/index';
+@import 'flask/view-snap/index';
 
 .settings-page {
   position: relative;
@@ -12,54 +12,37 @@
   display: flex;
   flex-flow: column nowrap;
 
-  &__content-padded {
-    padding: 16px;
-  }
-
-  &__error-text {
-    @include H7;
-
-    color: var(--color-error-default);
-  }
-
   &__header {
+    padding: 8px 24px 8px 24px;
+    position: relative;
+
+    @media screen and (max-width: $break-small) {
+      background: var(--color-background-alternative);
+    }
+
     &__title-container {
-      display: grid;
+      display: flex;
+      flex-flow: row nowrap;
       align-items: center;
-      grid-template-columns: 197px 1fr 1fr;
+      flex: 0 0 auto;
 
-      @include screen-sm-max {
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 0.5fr 2fr 0.5fr;
-        gap: 16px;
-        grid-template-areas:
-          'back title close'
-          'search search search';
+      &__close-button {
+        margin-left: auto;
+      }
 
-        &__back-button {
-          grid-area: back;
-        }
-
-        &__title {
-          grid-area: title;
-          text-align: center;
-        }
-
-        &__close-button {
-          grid-area: close;
-        }
-
-        &__search {
-          grid-area: search;
-        }
+      &__close-button::after {
+        content: '\00D7';
+        font-size: 40px;
+        color: var(--color-icon-default);
+        cursor: pointer;
       }
 
       &__title {
-        @include screen-sm-min {
-          width: 197px;
-        }
+        @include H3;
 
-        @include screen-sm-max {
+        flex: 1 0 auto;
+
+        @media screen and (max-width: $break-small) {
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
@@ -69,20 +52,33 @@
     }
 
     &__search {
-      width: 330px;
+      @media screen and (max-width: $break-small) {
+        position: relative;
+      }
+
+      @media screen and (min-width: $break-large) {
+        position: absolute;
+        right: 57px;
+        top: 10px;
+        width: 300px;
+      }
+
+      @media screen and (min-width: $break-midpoint) {
+        width: 400px;
+      }
 
       &__list {
         background: var(--color-background-default);
         box-sizing: border-box;
-        box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+        box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
         border-radius: 6px;
         position: absolute;
-        width: 330px;
+        width: 100%;
         z-index: 10;
 
         > div {
           &:hover {
-            background: var(--color-background-default-hover);
+            background: var(--color-background-alternative);
           }
         }
 
@@ -113,7 +109,7 @@
           }
 
           &__section-multiple-lines {
-            @include screen-sm-max {
+            @media screen and (max-width: $break-small) {
               margin-left: 10px;
             }
           }
@@ -134,19 +130,21 @@
         }
       }
     }
-
-    .app-header__logo-container {
-      display: flex;
-    }
-
-    .app-header__metafox-logo--icon {
-      height: 24px;
-    }
   }
 
   &__subheader,
   &__subheader--link {
-    @include screen-sm-max {
+    @include H4;
+
+    padding: 16px 4px;
+    border-bottom: 1px solid var(--color-border-muted);
+    margin-right: 24px;
+    height: 72px;
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+
+    @media screen and (max-width: $break-small) {
       display: none;
     }
   }
@@ -163,22 +161,17 @@
 
   &__subheader--break {
     margin-inline-start: 4px;
-    white-space: nowrap;
-    width: 100%;
-    max-width: calc(100% - 125px - 85px);
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   &__sub-header {
     height: 72px;
-    border-bottom: 1px solid var(--color-border-muted);
+    border-bottom: 1px solid #d8d8d8;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 0;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       height: 69px;
       position: relative;
       text-align: center;
@@ -188,31 +181,31 @@
   &__sub-header-text {
     @include H4;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       @include H5;
 
       width: 100%;
     }
   }
 
-  &__security-tab-sub-header {
-    font-weight: 500;
-    font-size: 16px;
-    color: var(--color-icon-alternative);
-
-    &__bold {
-      font-weight: 700;
-      font-size: 18px;
-      color: var(--color-text-default);
-    }
-  }
-
   &__back-button {
-    margin-right: 8px;
+    display: none;
 
-    [dir='rtl'] & {
-      margin: 0 0 0 8px;
-      transform: rotate(180deg);
+    @media screen and (max-width: $break-small) {
+      display: block;
+      background-image: url('/images/caret-left-black.svg');
+      width: 18px;
+      height: 18px;
+      opacity: 0.5;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-right: 16px;
+      cursor: pointer;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -221,26 +214,22 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
+    border-top: 1px solid var(--color-border-muted);
 
     &__tabs {
       display: flex;
       flex-direction: column;
       flex: 1 1 auto;
 
-      @include screen-sm-min {
+      @media screen and (min-width: $break-large) {
         flex: 0 0 40%;
         max-width: 197px;
+        padding-top: 13px;
       }
 
       .tab-bar__tab {
-        @include screen-sm-min {
+        @media screen and (min-width: $break-large) {
           max-height: 50px;
-        }
-
-        &__caret {
-          @include screen-sm-min {
-            display: none;
-          }
         }
       }
     }
@@ -251,27 +240,45 @@
       display: flex;
       flex-flow: column;
 
-      @include screen-sm-max {
+      @media screen and (max-width: $break-small) {
         display: none;
       }
     }
   }
 
   &__body {
-    padding: 24px;
+    padding: 12px 24px;
+
+    @media screen and (min-width: $break-large) {
+      padding: 12px;
+    }
   }
 
   &__content-row {
+    display: flex;
+    flex-direction: column;
     padding: 10px 0 20px;
+
+    &--parent {
+      padding: 10px 0 10px;
+    }
+
+    &--dependent {
+      margin-left: 48px;
+      padding: 0 0 20px;
+    }
   }
 
   &__content-item {
+    flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
+    margin-bottom: 20px;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       height: initial;
+      padding: 5px 0;
     }
 
     &--without-height {
@@ -297,8 +304,6 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        background: unset;
-        border: 1px solid transparent;
 
         &__icon {
           &--active {
@@ -319,30 +324,19 @@
 
       margin-top: 8px;
       margin-bottom: 12px;
-      color: var(--color-text-default);
-      font-size: 14px;
-      font-weight: 400;
+      color: var(--color-icon-default);
     }
-  }
-
-  &__content-row-experimental {
-    padding: 16px 0 16px 12px;
   }
 
   &__content-label {
     text-transform: capitalize;
   }
 
-  &__content-unordered-list {
-    padding-left: 2.5rem;
-    margin-top: 1rem;
-    list-style: disc;
-  }
-
   &__content-description {
     @include H6;
 
-    color: var(--color-text-alternative);
+    color: var(--color-icon-default);
+    padding-top: 5px;
 
     a {
       color: var(--color-primary-default);
@@ -353,27 +347,11 @@
     max-width: 300px;
     display: flex;
     flex-direction: column;
-    margin-top: 8px;
 
-    @include screen-sm-max {
+    @media screen and (max-width: $break-small) {
       max-width: 100%;
+      width: 100%;
     }
-
-    .eth-sign-toggle .toggle-button__status {
-      // for eth_sign we need to override the uppercase property of toggle button text
-      text-transform: capitalize;
-    }
-  }
-
-  &__content-item-col__security-toggle-option {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    margin-top: 16px;
-  }
-
-  &__button {
-    cursor: pointer;
   }
 
   &__copy-icon {
@@ -406,13 +384,13 @@
     .settings-page {
       &__content {
         &__tabs {
-          @include screen-sm-max {
+          @media screen and (max-width: $break-small) {
             display: none;
           }
         }
 
         &__modules {
-          @include screen-sm-max {
+          @media screen and (max-width: $break-small) {
             display: block;
           }
         }

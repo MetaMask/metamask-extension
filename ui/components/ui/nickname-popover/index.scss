@@ -2,7 +2,7 @@
   &__popover-wrap {
     height: 232px;
     border-radius: 4px;
-    background: $ui-white;
+    background: var(--color-background-default);
     display: flex;
     justify-content: center;
     width: auto;
@@ -23,7 +23,7 @@
     font-weight: bold;
     display: flex;
     align-items: center;
-    color: $Black-100;
+    color: var(--color-text-default);
     padding-top: 8px;
   }
 
@@ -34,7 +34,7 @@
     flex-direction: row;
     align-items: center;
     min-height: 25px;
-    background: $Grey-000;
+    background: var(--color-background-alternative);
     border-radius: 40px;
     padding-left: 8px;
     padding-right: 2px;
@@ -47,19 +47,20 @@
     &__constant {
       @include H8;
 
-      color: $Grey-500;
+      color: var(--colro-icon-default);
     }
   }
 
   &__view-on-block-explorer {
     @include H7;
 
-    color: $primary-1;
+    color: var(--color-primary-default);
     margin-top: 12px;
   }
 
   &__etherscan-link {
     @include H7;
+
     padding: 0;
   }
 
@@ -68,6 +69,6 @@
     width: 152px;
     height: 40px;
     border-radius: 100px;
-    background: $primary-1;
+    background: var(--color-primary-default);
   }
 }

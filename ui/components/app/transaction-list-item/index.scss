@@ -1,6 +1,4 @@
 .transaction-list-item {
-  border-top: none;
-
   &__primary-currency {
     color: var(--color-text-default);
     overflow: hidden;
@@ -11,24 +9,26 @@
     @include H7;
 
     margin-top: 4px;
-    color: var(--color-text-alternative);
+    color: var(--color-icon-default);
   }
 
   & &--unconfirmed {
-    color: var(--color-text-alternative);
+    color: var(--color-icon-default);
   }
 
   &--unconfirmed &__primary-currency {
-    color: var(--color-text-alternative);
+    color: var(--color-icon-default);
   }
 
   &__pending-actions {
+    padding-top: 12px;
     display: flex;
 
     .button {
-      @include H6;
+      @include H8;
 
-      width: 90px;
+      padding: 8px;
+      width: 75px;
       white-space: nowrap;
     }
 
@@ -41,13 +41,6 @@
     }
   }
 
-  .list-item__subheading {
-    overflow: hidden;
-    max-width: 100%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
   .list-item__subheading > h3 {
     overflow: visible;
     display: flex;
@@ -55,18 +48,20 @@
     text-overflow: initial;
   }
 
+  .transaction-status::after {
+    content: "·";
+    margin: 0 4px;
+  }
+
+  &__origin,
   &__address {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  &__icon-badge {
-    position: absolute;
-    top: 18px;
-    left: 18px;
-    transform: scale(0.8);
+  &__origin {
+    /*rtl:ignore*/
+    direction: rtl;
   }
-  ///: END:ONLY_INCLUDE_IN
 }

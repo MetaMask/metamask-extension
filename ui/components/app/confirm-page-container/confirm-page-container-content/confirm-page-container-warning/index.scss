@@ -7,13 +7,12 @@
 
   &__icon {
     flex: 0 0 auto;
-    margin-right: 8px;
-    color: var(--color-warning-default);
+    margin-right: 16px;
   }
 
   &__warning {
     @include H7;
 
-    color: var(--color-text-default);
+    color: var(--color-warning-muted);
   }
 }
