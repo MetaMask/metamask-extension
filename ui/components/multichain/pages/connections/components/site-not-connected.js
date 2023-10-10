@@ -25,9 +25,7 @@ export const SiteNotConnected = () => {
       <Text>{t('metamaskNotConnected1')}</Text>
       <Text color={TextColor.textAlternative}>
         {t('metamaskNotConnected2')}{' '}
-        <Text color={TextColor.textAlternative} as="strong">
-          {t('metamaskNotConnected3')}
-        </Text>
+        <strong>{t('metamaskNotConnected3')}</strong>
       </Text>
     </Box>
   );

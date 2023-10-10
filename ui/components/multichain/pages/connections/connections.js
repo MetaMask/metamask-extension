@@ -13,6 +13,7 @@ export const Connections = () => (
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
     width={BlockSize.Full}
+    height={BlockSize.Full}
   >
     <ConnectionsHeader />
     <SiteNotConnected />
