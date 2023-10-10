@@ -42,7 +42,7 @@
     @include H5;
 
     font-weight: bold;
-    color: var(--Black-100);
+    color: $Black-100;
     margin-top: 3px;
   }
 
@@ -67,7 +67,7 @@
   &__max-button {
     @include H7;
 
-    color: var(--Blue-500);
+    color: $Blue-500;
     cursor: pointer;
   }
 
@@ -75,26 +75,20 @@
     @include H7;
 
     width: 100%;
-    color: var(--Grey-500);
+    color: $Grey-500;
     margin-top: 4px;
     display: flex;
     flex-flow: column;
-    height: 18px;
 
     &--error {
       div:first-of-type {
         font-weight: bold;
-        color: var(--Black-100);
-      }
-
-      .build-quote__form-error:first-of-type {
-        font-weight: bold;
-        color: var(--Red-500);
+        color: $Black-100;
       }
 
       div:last-of-type {
         font-weight: normal;
-        color: var(--Grey-500);
+        color: $Grey-500;
       }
     }
   }
@@ -109,31 +103,15 @@
   &__open-dropdown,
   &__open-to-dropdown {
     max-height: 330px;
-    box-shadow: 0 0 14px rgba($black, 0.18);
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
     position: absolute;
     width: 100%;
-  }
-
-  .dropdown-input-pair {
-    .searchable-item-list {
-      &__item--add-token {
-        display: none;
-      }
-    }
-
-    &__to {
-      .searchable-item-list {
-        &__item--add-token {
-          display: flex;
-        }
-      }
-    }
   }
 
   &__open-to-dropdown {
     max-height: 194px;
 
-    @media screen and (min-width: $break-large) {
+    @media screen and (min-width: 576px) {
       max-height: 276px;
     }
   }
@@ -142,30 +120,21 @@
     @include H7;
 
     width: 100%;
-    color: var(--Grey-500);
+    color: $Grey-500;
     margin-top: 4px;
-
-    .info-tooltip {
-      display: inline-block;
-    }
+    display: flex;
+    align-items: center;
   }
 
   &__token-etherscan-link {
-    color: var(--Blue-500);
+    color: $Blue-500;
     cursor: pointer;
+    margin-right: 4px;
   }
 
   &__token-tooltip-container {
     // Needed to override the style property added by the react-tippy library
     display: flex !important;
-  }
-
-  &__bold {
-    font-weight: bold;
-  }
-
-  &__underline {
-    text-decoration: underline;
   }
 
   /* Prevents the swaps "Swap to" field from overflowing */
