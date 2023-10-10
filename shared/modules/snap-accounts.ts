@@ -1,3 +1,4 @@
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
 /**
  * Compares the current date to a specific date in UTC.
  * This method is meant to be used in a specific case related to the
@@ -16,3 +17,4 @@ export function showSnapAccountExperimentalToggle(): boolean {
 
   return new Date().getTime() > new Date(KEYRING_SNAPS_DATE).getTime();
 }
+///: END:ONLY_INCLUDE_IN

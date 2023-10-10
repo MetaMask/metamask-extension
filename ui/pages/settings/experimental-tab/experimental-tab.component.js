@@ -11,7 +11,7 @@ import {
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
 import { showSnapAccountExperimentalToggle } from '../../../../shared/modules/snap-accounts';
 ///: END:ONLY_INCLUDE_IN
 
@@ -244,10 +244,6 @@ export default class ExperimentalTab extends PureComponent {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
 
-    if (!showSnapAccountExperimentalToggle()) {
-      return null;
-    }
-
     return (
       <>
         <Text
@@ -322,8 +318,11 @@ export default class ExperimentalTab extends PureComponent {
       <div className="settings-page__body">
         {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-          this.renderKeyringSnapsToggle()
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+          showSnapAccountExperimentalToggle() &&
+            ///: END:ONLY_INCLUDE_IN
+            ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+            this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IN
         }
         {
