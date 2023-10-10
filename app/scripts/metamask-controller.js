@@ -49,11 +49,9 @@ import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
   PermissionController,
   PermissionsRequestNotFoundError,
-} from '@metamask/permission-controller';
-import {
   SubjectMetadataController,
   SubjectType,
-} from '@metamask/subject-metadata-controller';
+} from '@metamask/permission-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import {
   SelectedNetworkController,
@@ -875,12 +873,14 @@ export default class MetamaskController extends EventEmitter {
     const getSnapController = () => this.snapController;
     const getApprovalController = () => this.approvalController;
     const getKeyringController = () => this.keyringController;
+    const getPreferencesController = () => this.preferencesController;
 
     additionalKeyrings.push(
       snapKeyringBuilder(
         getSnapController,
         getApprovalController,
         getKeyringController,
+        getPreferencesController,
         (address) => this.removeAccount(address),
       ),
     );
