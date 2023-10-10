@@ -4423,6 +4423,14 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
+        installSnaps: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:install',
+          origin,
+        ),
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,
         ),
@@ -4434,14 +4442,6 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:handleRequest',
         ),
-        getAccounts: this.getPermittedAccounts.bind(this, origin),
-        installSnaps: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:install',
-          origin,
-        ),
-        ///: END:ONLY_INCLUDE_IN
-        ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
           this.subjectMetadataController,
         ),
