@@ -379,7 +379,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   async _checkInfuraAvailability(network) {
-    const rpcUrl = `https://${network}.infura.io/v3/${this._infuraProjectId}`;
+    const rpcUrl = `http://localhost:9091`;
 
     let networkChanged = false;
     this.once(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
