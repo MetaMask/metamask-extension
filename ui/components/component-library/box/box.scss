@@ -230,7 +230,9 @@ $attributesToApplyExtraProperties: margin;
   &--width-full {
     width: 100%;
   }
-
+  &--min-width-full {
+    min-width: 100%;
+  }
 
   &--height-full {
     height: 100%;
@@ -239,6 +241,9 @@ $attributesToApplyExtraProperties: margin;
   @each $fraction, $value in design-system.$fractions {
     &--width-#{$fraction} {
       width: $value;
+    }
+    &--min-width-#{$fraction} {
+      min-width: $value;
     }
 
     &--height-#{$fraction} {
@@ -252,6 +257,10 @@ $attributesToApplyExtraProperties: margin;
         &--#{$breakpoint}\:width-#{$fraction} {
           width: $value;
         }
+        &--#{$breakpoint}\:min-width-#{$fraction} {
+          min-width: $value;
+        }
+
         &--#{$breakpoint}\:height-#{$fraction} {
           height: $value;
         }
@@ -264,6 +273,13 @@ $attributesToApplyExtraProperties: margin;
     @media screen and (min-width: $min-width) {
       &--#{$breakpoint}\:width-full {
         width: 100%;
+      }
+    }
+  }
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:min-width-full {
+        min-width: 100%;
       }
     }
   }
@@ -301,6 +317,18 @@ $attributesToApplyExtraProperties: margin;
     }
   }
 
+  &--min-width-screen {
+    min-width: 100vw;
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:min-width-screen {
+        min-width: 100vw;
+      }
+    }
+  }
+
   &--height-max {
     height: max-content;
   }
@@ -325,6 +353,18 @@ $attributesToApplyExtraProperties: margin;
     }
   }
 
+  &--min-width-max {
+    min-width: max-content;
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:min-width-max {
+        min-width: max-content;
+      }
+    }
+  }
+
   &--height-min {
     height: min-content;
   }
@@ -345,6 +385,18 @@ $attributesToApplyExtraProperties: margin;
     @media screen and (min-width: $min-width) {
       &--#{$breakpoint}\:width-min {
         width: min-content;
+      }
+    }
+  }
+
+  &--min-width-min {
+    min-width: min-content;
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:min-width-min {
+        min-width: min-content;
       }
     }
   }
