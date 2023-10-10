@@ -1,10 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import {
-  getDetectedTokensInCurrentNetwork,
-  getKnownMethodData,
-  getTokenList,
-} from '../selectors/selectors';
+import { getKnownMethodData } from '../selectors/selectors';
 import {
   getStatusKey,
   getTransactionTypeTitle,
@@ -12,9 +7,8 @@ import {
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
-  getAssetDetails,
   getTokenAddressParam,
-  getTokenIdParam,
+  getTokenValueParam,
 } from '../helpers/utils/token-util';
 import {
   formatDateWithYearContext,
@@ -26,15 +20,14 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getNfts, getTokens } from '../ducks/metamask/metamask';
+import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
 import {
-  TransactionType,
-  TransactionGroupCategory,
-  TransactionStatus,
+  TRANSACTION_TYPES,
+  TRANSACTION_GROUP_CATEGORIES,
+  TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -45,40 +38,16 @@ import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
 
 /**
- *  There are seven types of transaction entries that are currently differentiated in the design:
- *  1. Signature request
- *  2. Send (sendEth sendTokens)
- *  3. Deposit
- *  4. Site interaction
- *  5. Approval
- *  6. Swap
- *  7. Swap Approval
- */
-const signatureTypes = [
-  null,
-  undefined,
-  TransactionType.sign,
-  TransactionType.personalSign,
-  TransactionType.signTypedData,
-  TransactionType.ethDecrypt,
-  TransactionType.ethGetEncryptionPublicKey,
-];
-
-/**
- * @typedef {(import('../../selectors/transactions').TransactionGroup} TransactionGroup
- */
-
-/**
- * @typedef {object} TransactionDisplayData
- * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
+ * @typedef {Object} TransactionDisplayData
+ * @property {string} title - primary description of the transaction
+ * @property {string} subtitle - supporting text describing the transaction
+ * @property {bool} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
+ * @property {string} category - the transaction category
  * @property {string} primaryCurrency - the currency string to display in the primary position
- * @property {string} recipientAddress - the Ethereum address of the recipient
- * @property {string} senderAddress - the Ethereum address of the sender
- * @property {string} status - the status of the transaction
- * @property {string} subtitle - the supporting text describing the transaction
- * @property {boolean} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
- * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
+ * @property {string} status - the status of the transaction
+ * @property {string} senderAddress - the Ethereum address of the sender
+ * @property {string} recipientAddress - the Ethereum address of the recipient
  */
 
 /**
@@ -89,7 +58,7 @@ const signatureTypes = [
  * of data that can power all views related to a transaction. Presently the main
  * case is for shared logic between transaction-list-item and transaction-detail-view
  *
- * @param {TransactionGroup} transactionGroup - group of transactions of the same nonce
+ * @param {Object} transactionGroup - group of transactions
  * @returns {TransactionDisplayData}
  */
 export function useTransactionDisplayData(transactionGroup) {
@@ -98,14 +67,12 @@ export function useTransactionDisplayData(transactionGroup) {
   const dispatch = useDispatch();
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getTokens);
-  const knownNfts = useSelector(getNfts);
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const tokenList = useSelector(getTokenList);
+  const knownCollectibles = useSelector(getCollectibles);
   const t = useI18nContext();
-
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
   const { type } = initialTransaction;
+
   const { from: senderAddress, to } = initialTransaction.txParams || {};
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
@@ -116,12 +83,11 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const displayedStatusKey = getStatusKey(primaryTransaction);
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
-  const isSubmitted = displayedStatusKey === TransactionStatus.submitted;
+  const isSubmitted = displayedStatusKey === TRANSACTION_STATUSES.SUBMITTED;
 
   const primaryValue = primaryTransaction.txParams?.value;
-  const date = formatDateWithYearContext(initialTransaction.time);
-
   let prefix = '-';
+  const date = formatDateWithYearContext(initialTransaction.time);
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
@@ -129,76 +95,38 @@ export function useTransactionDisplayData(transactionGroup) {
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information
   const isTokenCategory = TOKEN_CATEGORY_HASH[type];
+
   // these values are always instantiated because they are either
   // used by or returned from hooks. Hooks must be called at the top level,
   // so as an additional safeguard against inappropriately associating token
   // transfers, we pass an additional argument to these hooks that will be
   // false for non-token transactions. This additional argument forces the
   // hook to return null
-  let token = null;
-  const [currentAssetDetails, setCurrentAssetDetails] = useState(null);
-
-  if (isTokenCategory) {
-    token =
-      knownTokens.find(({ address }) =>
-        isEqualCaseInsensitive(address, recipientAddress),
-      ) ||
-      detectedTokens.find(({ address }) =>
-        isEqualCaseInsensitive(address, recipientAddress),
-      ) ||
-      tokenList[recipientAddress.toLowerCase()];
-  }
-  useEffect(() => {
-    async function getAndSetAssetDetails() {
-      if (isTokenCategory && !token) {
-        const assetDetails = await getAssetDetails(
-          to,
-          senderAddress,
-          initialTransaction?.txParams?.data,
-          knownNfts,
-        );
-        setCurrentAssetDetails(assetDetails);
-      }
-    }
-    getAndSetAssetDetails();
-  }, [
-    isTokenCategory,
-    token,
-    recipientAddress,
-    senderAddress,
-    initialTransaction?.txParams?.data,
-    knownNfts,
-    to,
-  ]);
-  if (currentAssetDetails) {
-    token = {
-      address: currentAssetDetails.toAddress,
-      symbol: currentAssetDetails.symbol,
-      decimals: currentAssetDetails.decimals,
-    };
-  }
+  const token =
+    isTokenCategory &&
+    knownTokens.find(({ address }) =>
+      isEqualCaseInsensitive(address, recipientAddress),
+    );
 
   const tokenData = useTokenData(
     initialTransaction?.txParams?.data,
     isTokenCategory,
   );
 
-  // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
-  // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
-  // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
-  const transactionDataTokenId =
-    getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
+  // If this is an ERC20 token transaction this value is equal to the amount sent
+  // If it is an ERC721 token transaction it is the tokenId being sent
+  const tokenAmountOrTokenId = getTokenValueParam(tokenData);
 
-  const nft =
+  const collectible =
     isTokenCategory &&
-    knownNfts.find(
+    knownCollectibles.find(
       ({ address, tokenId }) =>
         isEqualCaseInsensitive(address, recipientAddress) &&
-        tokenId === transactionDataTokenId,
+        tokenId === tokenAmountOrTokenId,
     );
 
   const tokenDisplayValue = useTokenDisplayValue(
-    primaryTransaction?.txParams?.data,
+    initialTransaction?.txParams?.data,
     token,
     isTokenCategory,
   );
@@ -221,8 +149,9 @@ export function useTransactionDisplayData(transactionGroup) {
   // used to display fiat amount of tx. initialized to either tokenFiatAmount or undefined
   // but can later be modified if dealing with a swap
   let secondaryDisplayValue = isTokenCategory ? tokenFiatAmount : undefined;
-
+  // The transaction group category that will be used for rendering the icon in the activity list
   let category;
+  // The primary title of the Tx that will be displayed in the activity list
   let title;
 
   const {
@@ -232,13 +161,32 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
+  // There are seven types of transaction entries that are currently differentiated in the design
+  // 1. Signature request
+  // 2. Send (sendEth sendTokens)
+  // 3. Deposit
+  // 4. Site interaction
+  // 5. Approval
+  // 6. Swap
+  // 7. Swap Approval
+
+  const signatureTypes = [
+    null,
+    undefined,
+    TRANSACTION_TYPES.SIGN,
+    TRANSACTION_TYPES.PERSONAL_SIGN,
+    TRANSACTION_TYPES.SIGN_TYPED_DATA,
+    TRANSACTION_TYPES.ETH_DECRYPT,
+    TRANSACTION_TYPES.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+  ];
+
   if (signatureTypes.includes(type)) {
-    category = TransactionGroupCategory.signatureRequest;
+    category = TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST;
     title = t('signatureRequest');
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.swap) {
-    category = TransactionGroupCategory.swap;
+  } else if (type === TRANSACTION_TYPES.SWAP) {
+    category = TRANSACTION_GROUP_CATEGORIES.SWAP;
     title = t('swapTokenToToken', [
       initialTransaction.sourceTokenSymbol,
       initialTransaction.destinationTokenSymbol,
@@ -257,62 +205,49 @@ export function useTransactionDisplayData(transactionGroup) {
     } else {
       prefix = '-';
     }
-  } else if (type === TransactionType.swapApproval) {
-    category = TransactionGroupCategory.approval;
+  } else if (type === TRANSACTION_TYPES.SWAP_APPROVAL) {
+    category = TRANSACTION_GROUP_CATEGORIES.APPROVAL;
     title = t('swapApproval', [primaryTransaction.sourceTokenSymbol]);
     subtitle = origin;
     subtitleContainsOrigin = true;
     primarySuffix = primaryTransaction.sourceTokenSymbol;
-  } else if (type === TransactionType.tokenMethodApprove) {
-    category = TransactionGroupCategory.approval;
+  } else if (type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE) {
+    category = TRANSACTION_GROUP_CATEGORIES.APPROVAL;
     prefix = '';
-    title = t('approveSpendingCap', [
-      token?.symbol || t('token').toLowerCase(),
-    ]);
+    title = t('approveSpendLimit', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
-    category = TransactionGroupCategory.approval;
-    prefix = '';
-    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
-    subtitle = origin;
-    subtitleContainsOrigin = true;
-  } else if (type === TransactionType.contractInteraction) {
-    category = TransactionGroupCategory.interaction;
+  } else if (type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+    category = TRANSACTION_GROUP_CATEGORIES.INTERACTION;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
       (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
       transactionTypeTitle;
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.deployContract) {
+  } else if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
     // @todo Should perhaps be a separate group?
-    category = TransactionGroupCategory.interaction;
+    category = TRANSACTION_GROUP_CATEGORIES.INTERACTION;
     title = getTransactionTypeTitle(t, type);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.incoming) {
-    category = TransactionGroupCategory.receive;
+  } else if (type === TRANSACTION_TYPES.INCOMING) {
+    category = TRANSACTION_GROUP_CATEGORIES.RECEIVE;
     title = t('receive');
     prefix = '';
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
   } else if (
-    type === TransactionType.tokenMethodTransferFrom ||
-    type === TransactionType.tokenMethodTransfer
+    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
   ) {
-    category = TransactionGroupCategory.send;
+    category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('sendSpecifiedTokens', [
-      token?.symbol || nft?.name || t('token'),
+      token?.symbol || collectible?.name || t('token'),
     ]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
-  } else if (type === TransactionType.tokenMethodSafeTransferFrom) {
-    category = TransactionGroupCategory.send;
-    title = t('safeTransferFrom');
-    recipientAddress = getTokenAddressParam(tokenData);
-    subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
-  } else if (type === TransactionType.simpleSend) {
-    category = TransactionGroupCategory.send;
+  } else if (type === TRANSACTION_TYPES.SIMPLE_SEND) {
+    category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else {
@@ -347,12 +282,12 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle,
     subtitleContainsOrigin,
     primaryCurrency:
-      type === TransactionType.swap && isPending ? '' : primaryCurrency,
+      type === TRANSACTION_TYPES.SWAP && isPending ? '' : primaryCurrency,
     senderAddress,
     recipientAddress,
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
-      (type === TransactionType.swap && !swapTokenFiatAmount)
+      (type === TRANSACTION_TYPES.SWAP && !swapTokenFiatAmount)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,

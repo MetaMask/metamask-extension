@@ -1176,6 +1176,10 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ## [10.14.1]
 ### Changed
 - This version was used to rollback from v10.14.0 to v10.13.0.
+## [10.14.5]
+### Uncategorized
+- Stop using 4bytes for contract deployment ([#14598](https://github.com/MetaMask/metamask-extension/pull/14598))
+- fix cross-fetch moderate vulnerability alert ([#14570](https://github.com/MetaMask/metamask-extension/pull/14570))
 
 ## [10.14.0]
 ### Added
@@ -4396,6 +4400,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [10.14.3]: https://github.com/MetaMask/metamask-extension/compare/v10.14.2...v10.14.3
 [10.14.2]: https://github.com/MetaMask/metamask-extension/compare/v10.14.1...v10.14.2
 [10.14.1]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...v10.14.1
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...HEAD
+[10.14.5]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...v10.14.5
 [10.14.0]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.0
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...HEAD
 [10.12.5]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.12.5
