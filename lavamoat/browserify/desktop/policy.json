@@ -1233,9 +1233,9 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/eth-snap-keyring>uuid": true,
+        "@metamask/keyring-api": true,
         "superstruct": true,
         "webpack>events": true
       }
@@ -1250,13 +1250,6 @@
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "eth-sig-util>tweetnacl": true,
         "eth-sig-util>tweetnacl-util": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/eth-snap-keyring>@metamask/utils": true,
-        "@metamask/eth-snap-keyring>uuid": true,
-        "superstruct": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/utils": {
