@@ -111,7 +111,9 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
 const mockSCHubEvent = jest.fn();
 jest.mock('@metamask/signature-controller', () => {
   return {
-    SignatureController(...args) {
+    // Object shorthand prevents this mock to be used with "new" keyword
+    // eslint-disable-next-line object-shorthand
+    SignatureController: function (...args) {
       const { SignatureController } = jest.requireActual(
         '@metamask/signature-controller',
       );
@@ -131,24 +133,14 @@ jest.mock(
         './controllers/transactions',
       ).default;
 
-      jest
-        .spyOn(TransactionController.prototype, 'updateIncomingTransactions')
-        .mockImplementation();
-      jest
-        .spyOn(
-          TransactionController.prototype,
-          'startIncomingTransactionPolling',
-        )
-        .mockImplementation();
-      jest
-        .spyOn(
-          TransactionController.prototype,
-          'stopIncomingTransactionPolling',
-        )
-        .mockImplementation();
-
       const controller = new TransactionController(...args);
+
+      /* eslint-disable jest/prefer-spy-on */
+      controller.updateIncomingTransactions = jest.fn();
+      controller.startIncomingTransactionPolling = jest.fn();
+      controller.stopIncomingTransactionPolling = jest.fn();
       controller.on = mockTCEvent;
+      /* eslint-enable */
 
       return controller;
     },
@@ -166,23 +158,17 @@ jest.mock(
         './controllers/metametrics',
       ).default;
 
-      MetaMetricsController.prototype.getEventFragmentById =
-        mockMetaMetricsControllerGetEventFragmentById;
-      jest
-        .spyOn(MetaMetricsController.prototype, 'createEventFragment')
-        .mockImplementation();
-      jest
-        .spyOn(MetaMetricsController.prototype, 'updateEventFragment')
-        .mockImplementation();
-      jest
-        .spyOn(MetaMetricsController.prototype, 'finalizeEventFragment')
-        .mockImplementation();
-      jest
-        .spyOn(MetaMetricsController.prototype, 'trackEvent')
-        .mockImplementation();
-
       const controller = new MetaMetricsController(...args);
+
+      /* eslint-disable jest/prefer-spy-on */
+      controller.getEventFragmentById =
+        mockMetaMetricsControllerGetEventFragmentById;
+      controller.createEventFragment = jest.fn();
+      controller.updateEventFragment = jest.fn();
+      controller.finalizeEventFragment = jest.fn();
+      controller.trackEvent = jest.fn();
       controller.on = mockTCEvent;
+      /* eslint-enable */
 
       return controller;
     },
