@@ -8,7 +8,7 @@ describe('showSnapAccountExperimentalToggle', () => {
   });
 
   afterEach(() => {
-    delete process.env.VAR_NAME;
+    delete process.env.KEYRING_SNAPS_DATE;
   });
 
   it('returns false if the current date is before November 2, 2023', () => {
