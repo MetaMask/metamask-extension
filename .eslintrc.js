@@ -52,6 +52,7 @@ module.exports = {
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
+    'curly': 'error',
 
     'import/no-unassigned-import': 'off',
 
