@@ -56,6 +56,7 @@ ignores:
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
+  - '@jazzer.js/jest-runner'
 
 # files depcheck should not parse
 ignorePatterns:
