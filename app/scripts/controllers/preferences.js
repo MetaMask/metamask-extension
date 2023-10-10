@@ -9,7 +9,6 @@ import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
-import { showSnapAccountExperimentalToggle } from '../../../shared/modules/snap-accounts';
 ///: END:ONLY_INCLUDE_IN
 
 const mainNetworks = {
@@ -110,9 +109,6 @@ export default class PreferencesController {
       ///: BEGIN:ONLY_INCLUDE_IN(petnames)
       useExternalNameSources: true,
       ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-      isSnapAccountsReleased: false,
-      ///: END:ONLY_INCLUDE_IN
       ...opts.initState,
     };
 
@@ -130,10 +126,6 @@ export default class PreferencesController {
     };
 
     this._showShouldLineaMainnetNetwork();
-
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-    this._showSnapAccountExperimentalToggle();
-    ///: END:ONLY_INCLUDE_IN
   }
   // PUBLIC METHODS
 
@@ -673,15 +665,4 @@ export default class PreferencesController {
     const showLineaMainnet = shouldShowLineaMainnet();
     this.store.updateState({ isLineaMainnetReleased: showLineaMainnet });
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  /**
-   * A method to check if the Snap Accounts experimental
-   * toggle should be displayed
-   */
-  _showSnapAccountExperimentalToggle() {
-    const showExperimentalToggle = showSnapAccountExperimentalToggle();
-    this.store.updateState({ isSnapAccountsReleased: showExperimentalToggle });
-  }
-  ///: END:ONLY_INCLUDE_IN
 }

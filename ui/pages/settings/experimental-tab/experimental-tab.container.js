@@ -17,7 +17,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getIsAddSnapAccountEnabled,
-  getIsSnapAccountsReleased,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
@@ -33,7 +32,6 @@ const mapStateToProps = (state) => {
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
-    isSnapAccountsReleased: getIsSnapAccountsReleased(state),
     ///: END:ONLY_INCLUDE_IN
   };
 };

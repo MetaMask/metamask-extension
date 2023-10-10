@@ -697,12 +697,6 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerAccountToggleFlag() {
-    return this.withPreferencesController({
-      isSnapAccountsReleased: true,
-    });
-  }
-
   withSmartTransactionsController(data) {
     merge(this.fixture.data.SmartTransactionsController, data);
     return this;
