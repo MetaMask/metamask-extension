@@ -7,7 +7,7 @@ import { KeyringRpcMethod } from '@metamask/keyring-api';
 /**
  * List of keyring methods MetaMask can call.
  */
-const metamaskAllowedMethods: string[] = [
+const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
   KeyringRpcMethod.FilterAccountChains,
@@ -21,7 +21,7 @@ const metamaskAllowedMethods: string[] = [
 /**
  * List of keyring methods a dapp can call.
  */
-const dappAllowedMethods: string[] = [
+const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
   KeyringRpcMethod.CreateAccount,
@@ -48,12 +48,12 @@ export function keyringSnapPermissionsBuilder(
 ): (origin: string) => string[] {
   return (origin: string) => {
     if (origin === 'metamask') {
-      return metamaskAllowedMethods;
+      return METAMASK_ALLOWED_METHODS;
     }
 
     const originMetadata = controller.getSubjectMetadata(origin);
     if (originMetadata?.subjectType === SubjectType.Website) {
-      return dappAllowedMethods;
+      return WEBSITE_ALLOWED_METHODS;
     }
 
     return [];
