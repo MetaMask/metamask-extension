@@ -1,54 +1,40 @@
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-
 import {
-  goHome,
-  encryptionPublicKeyMsg,
   cancelEncryptionPublicKeyMsg,
+  encryptionPublicKeyMsg,
+  goHome,
 } from '../../store/actions';
-
 import {
   conversionRateSelector,
-  unconfirmedTransactionsListSelector,
   getTargetAccountWithSendEtherInfo,
-  getPreferences,
-  getCurrentCurrency,
+  unconfirmedTransactionsListSelector,
 } from '../../selectors';
 
-import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
+import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { withRouter } from 'react-router-dom';
 
 function mapStateToProps(state) {
   const {
-    metamask: { subjectMetadata = {} },
+    metamask: { domainMetadata = {} },
   } = state;
-
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
   const txData = unconfirmedTransactions[0];
 
-  const fromAccount = getTargetAccountWithSendEtherInfo(
-    state,
-    txData?.msgParams,
-  );
-
+  const { txParams: from } = txData;
+  const fromAccount = getTargetAccountWithSendEtherInfo(state, from.from);
   return {
     txData,
-    subjectMetadata,
+    domainMetadata,
     fromAccount,
     requester: null,
     requesterAddress: null,
-    conversionRate: useNativeCurrencyAsPrimaryCurrency
-      ? null
-      : conversionRateSelector(state),
+    conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-    nativeCurrency: getNativeCurrency(state),
-    currentCurrency: getCurrentCurrency(state),
   };
 }
 
