@@ -1,77 +1,57 @@
-const { Builder } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
-const proxy = require('selenium-webdriver/proxy');
-
-/**
- * Proxy host to use for HTTPS requests
- *
- * @type {string}
- */
-const HTTPS_PROXY_HOST = '127.0.0.1:8000';
+const { Builder } = require('selenium-webdriver')
+const chrome = require('selenium-webdriver/chrome')
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build({ openDevToolsForTabs, port }) {
-    const args = [`load-extension=dist/chrome`];
-    if (openDevToolsForTabs) {
-      args.push('--auto-open-devtools-for-tabs');
+  static async build ({ extensionPath, responsive, port }) {
+    const args = [
+      `load-extension=${extensionPath}`,
+      // https://stackoverflow.com/questions/50642308/webdriverexception-unknown-error-devtoolsactiveport-file-doesnt-exist-while-t
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+      // https://stackoverflow.com/questions/56637973/how-to-fix-selenium-devtoolsactiveport-file-doesnt-exist-exception-in-python
+      '--remote-debugging-port=9222',
+    ]
+    if (responsive) {
+      args.push('--auto-open-devtools-for-tabs')
     }
-
-    if (process.env.ENABLE_MV3) {
-      args.push('--log-level=0');
-      args.push('--enable-logging');
-      args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);
-    } else {
-      args.push('--log-level=3');
-    }
-    const options = new chrome.Options().addArguments(args);
-    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
-    options.setAcceptInsecureCerts(true);
-    options.setUserPreferences({
-      'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
-    });
+    const options = new chrome.Options()
+      .addArguments(args)
     const builder = new Builder()
       .forBrowser('chrome')
-      .setChromeOptions(options);
-    const service = new chrome.ServiceBuilder();
-
-    // Enables Chrome logging. Default: enabled
-    // Especially useful for discovering why Chrome has crashed, but can also
-    // be useful for revealing console errors (from the page or background).
-    if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
-      service.setStdio('inherit').enableChromeLogging();
-    }
+      .setChromeOptions(options)
     if (port) {
-      service.setPort(port);
+      const service = new chrome.ServiceBuilder()
+        .setPort(port)
+      builder.setChromeService(service)
     }
-    builder.setChromeService(service);
-    const driver = builder.build();
-    const chromeDriver = new ChromeDriver(driver);
-    const extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
+    const driver = builder.build()
+    const chromeDriver = new ChromeDriver(driver)
+    const extensionId = await chromeDriver.getExtensionIdByName('MetaMask')
 
     return {
       driver,
       extensionUrl: `chrome-extension://${extensionId}`,
-    };
+    }
   }
 
   /**
+   * @constructor
    * @param {!ThenableWebDriver} driver - a {@code WebDriver} instance
    */
-  constructor(driver) {
-    this._driver = driver;
+  constructor (driver) {
+    this._driver = driver
   }
 
   /**
    * Returns the extension ID for the given extension name
-   *
    * @param {string} extensionName - the extension name
-   * @returns {Promise<string|undefined>} the extension ID
+   * @returns {Promise<string|undefined>} - the extension ID
    */
-  async getExtensionIdByName(extensionName) {
-    await this._driver.get('chrome://extensions');
+  async getExtensionIdByName (extensionName) {
+    await this._driver.get('chrome://extensions')
     return await this._driver.executeScript(`
       const extensions = document.querySelector("extensions-manager").shadowRoot
         .querySelector("extensions-item-list").shadowRoot
@@ -80,14 +60,14 @@ class ChromeDriver {
       for (let i = 0; i < extensions.length; i++) {
         const extension = extensions[i].shadowRoot
         const name = extension.querySelector('#name').textContent
-        if (name.startsWith("${extensionName}")) {
+        if (name === "${extensionName}") {
           return extensions[i].getAttribute("id")
         }
       }
 
       return undefined
-    `);
+    `)
   }
 }
 
-module.exports = ChromeDriver;
+module.exports = ChromeDriver
