@@ -33,7 +33,7 @@ export default class TransactionBreakdown extends PureComponent {
     priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     hexGasTotal: PropTypes.string,
     isEIP1559Transaction: PropTypes.bool,
-    isMultiLayerFeeNetwork: PropTypes.bool,
+    isOptimism: PropTypes.bool,
     l1HexGasTotal: PropTypes.string,
   };
 
@@ -59,13 +59,13 @@ export default class TransactionBreakdown extends PureComponent {
       priorityFee,
       hexGasTotal,
       isEIP1559Transaction,
-      isMultiLayerFeeNetwork,
+      isOptimism,
       l1HexGasTotal,
     } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">{t('transaction')}</div>
-        <TransactionBreakdownRow divider title={t('nonce')}>
+        <TransactionBreakdownRow title={t('nonce')}>
           {typeof nonce === 'undefined' ? null : (
             <HexToDecimal
               className="transaction-breakdown__value"
@@ -76,13 +76,13 @@ export default class TransactionBreakdown extends PureComponent {
         <TransactionBreakdownRow
           title={isTokenApprove ? t('spendLimitAmount') : t('amount')}
         >
-          <span className="transaction-breakdown__value transaction-breakdown__value--amount">
+          <span className="transaction-breakdown__value">
             {primaryCurrency}
           </span>
         </TransactionBreakdownRow>
         <TransactionBreakdownRow
           title={
-            isMultiLayerFeeNetwork
+            isOptimism
               ? t('transactionHistoryL2GasLimitLabel')
               : `${t('gasLimit')} (${t('units')})`
           }
@@ -137,7 +137,7 @@ export default class TransactionBreakdown extends PureComponent {
         {!isEIP1559Transaction && (
           <TransactionBreakdownRow
             title={
-              isMultiLayerFeeNetwork
+              isOptimism
                 ? t('transactionHistoryL2GasPriceLabel')
                 : t('advancedGasPriceTitle')
             }
@@ -178,10 +178,7 @@ export default class TransactionBreakdown extends PureComponent {
           </TransactionBreakdownRow>
         )}
         {isEIP1559Transaction && (
-          <TransactionBreakdownRow
-            divider
-            title={t('transactionHistoryMaxFeePerGas')}
-          >
+          <TransactionBreakdownRow title={t('transactionHistoryMaxFeePerGas')}>
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
               currency={nativeCurrency}
@@ -199,7 +196,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        {isMultiLayerFeeNetwork && (
+        {isOptimism && (
           <TransactionBreakdownRow title={t('transactionHistoryL1GasLabel')}>
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
@@ -222,7 +219,7 @@ export default class TransactionBreakdown extends PureComponent {
             className="transaction-breakdown__value transaction-breakdown__value--eth-total"
             type={PRIMARY}
             value={totalInHex}
-            numberOfDecimals={isMultiLayerFeeNetwork ? 18 : null}
+            numberOfDecimals={isOptimism ? 18 : null}
           />
           {showFiat && (
             <UserPreferencedCurrencyDisplay

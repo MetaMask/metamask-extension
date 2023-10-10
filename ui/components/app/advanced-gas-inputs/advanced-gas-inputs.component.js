@@ -133,7 +133,6 @@ export default class AdvancedGasInputs extends Component {
     testId,
     customMessageComponent,
     tooltipTitle,
-    disabled,
   }) {
     return (
       <div className="advanced-gas-inputs__gas-edit-row">
@@ -155,7 +154,6 @@ export default class AdvancedGasInputs extends Component {
             min="0"
             value={value}
             onChange={onChange}
-            disabled={disabled}
             data-testid={testId}
           />
           <div
@@ -166,22 +164,18 @@ export default class AdvancedGasInputs extends Component {
                   errorType === 'error',
                 'advanced-gas-inputs__gas-edit-row__input--warning':
                   errorType === 'warning',
-                'advanced-gas-inputs__gas-edit-row__input-arrows--hidden': disabled,
               },
             )}
           >
             <div
               className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
-              onClick={() =>
-                !disabled && onChange({ target: { value: value + 1 } })
-              }
+              onClick={() => onChange({ target: { value: value + 1 } })}
             >
               <i className="fa fa-sm fa-angle-up" />
             </div>
             <div
               className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
               onClick={() =>
-                !disabled &&
                 onChange({ target: { value: Math.max(value - 1, 0) } })
               }
             >
@@ -244,16 +238,16 @@ export default class AdvancedGasInputs extends Component {
 
     return (
       <div className="advanced-gas-inputs__gas-edit-rows">
-        {this.renderGasInput({
-          label: this.context.t('gasPrice'),
-          testId: 'gas-price',
-          tooltipTitle: this.context.t('gasPriceInfoTooltipContent'),
-          value: this.state.gasPrice,
-          onChange: this.onChangeGasPrice,
-          errorComponent: gasPriceErrorComponent,
-          errorType: gasPriceErrorType,
-          disabled: !networkSupportsSettingGasPrice,
-        })}
+        {networkSupportsSettingGasPrice &&
+          this.renderGasInput({
+            label: this.context.t('gasPrice'),
+            testId: 'gas-price',
+            tooltipTitle: this.context.t('gasPriceInfoTooltipContent'),
+            value: this.state.gasPrice,
+            onChange: this.onChangeGasPrice,
+            errorComponent: gasPriceErrorComponent,
+            errorType: gasPriceErrorType,
+          })}
         {this.renderGasInput({
           label: this.context.t('gasLimit'),
           testId: 'gas-limit',

@@ -1,62 +1,75 @@
 import React from 'react';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
-
-import { TextColor } from '../../../helpers/constants/design-system';
-
-import { Icon, IconName } from '../../component-library';
-import README from './README.mdx';
+import { COLORS } from '../../../helpers/constants/design-system';
+import Typography from '../../ui/typography/typography';
 import TransactionDetailItem from '.';
 
 export default {
-  title: 'Components/App/TransactionDetailItem',
-  component: TransactionDetailItem,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
-  argTypes: {
-    detailTitle: { control: 'object' },
-    detailTitleColor: {
-      control: {
-        type: 'select',
-      },
-      options: Object.values(TextColor),
-    },
-    detailText: { control: 'text' },
-    detailTotal: { control: 'text' },
-    subTitle: { control: 'object' },
-    subText: { control: 'object' },
-  },
+  title: 'Transaction Detail Item',
+  id: __filename,
 };
 
-export const DefaultStory = (args) => {
+export const Minimal = () => {
   return (
     <div style={{ width: '400px' }}>
-      <TransactionDetailItem {...args} />
+      <TransactionDetailItem
+        detailTitle={
+          <>
+            <strong>Estimated gas fee</strong>
+            <InfoTooltip contentText="This is the tooltip text" position="top">
+              <i className="fa fa-info-circle" />
+            </InfoTooltip>
+          </>
+        }
+        detailText="16565.30"
+        detailTotal="0.0089 ETH"
+      />
     </div>
   );
 };
 
-DefaultStory.storyName = 'Default';
+export const WithSubTitleAndTextBasedSubText = () => {
+  return (
+    <div style={{ width: '400px' }}>
+      <TransactionDetailItem
+        detailTitle={
+          <>
+            <strong>Estimated gas fee</strong>
+            <InfoTooltip contentText="This is the tooltip text" position="top">
+              <i className="fa fa-info-circle" />
+            </InfoTooltip>
+          </>
+        }
+        detailText="16565.30"
+        detailTotal="0.0089 ETH"
+        subTitle="Max amount"
+        subText="$12000"
+      />
+    </div>
+  );
+};
 
-DefaultStory.args = {
-  detailTitle: (
-    <>
-      <strong>Estimated gas fee</strong>
-      <InfoTooltip contentText="This is the tooltip text" position="top">
-        <Icon name={IconName.Info} />
-      </InfoTooltip>
-    </>
-  ),
-  detailText: '16565.30',
-  detailTotal: '0.0089 ETH',
-  subTitle: 'Likely in < 30 seconds',
-  boldHeadings: true,
-  flexWidthValues: false,
-  subText: (
-    <span>
-      From <strong>$16565 - $19000</strong>
-    </span>
-  ),
+export const WithSubtitleAndComponentBasedSubText = () => {
+  return (
+    <div style={{ width: '400px' }}>
+      <TransactionDetailItem
+        detailTitle={
+          <>
+            <strong>Estimated gas fee</strong>
+            <InfoTooltip contentText="This is the tooltip text" position="top">
+              <i className="fa fa-info-circle" />
+            </InfoTooltip>
+          </>
+        }
+        detailText="16565.30"
+        detailTotal="0.0089 ETH"
+        subTitle={<Typography color={COLORS.SECONDARY1}>Max amount</Typography>}
+        subText={
+          <>
+            From <strong>$16565 - $19000</strong>
+          </>
+        }
+      />
+    </div>
+  );
 };

@@ -1,9 +1,13 @@
 .transaction-detail-item {
-  padding: 20px 0;
   color: $ui-4;
+  padding: 20px 0;
+  border-bottom: 1px solid $ui-3;
+  margin-bottom: 5px;
 
-  &--thin-bottom {
-    padding-bottom: 12px;
+  &:last-child {
+    border-top: 1px solid $ui-3;
+    padding-top: 20px;
+    margin-top: 20px;
   }
 
   &__row {
@@ -42,18 +46,20 @@
     display: inline;
   }
 
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  &:last-of-type {
+    margin-bottom: 20px;
+  }
+
   &:first-child {
     padding-top: 0;
   }
 
   &:last-child {
     padding-bottom: 0;
-    border-top: 1px solid $ui-3;
-  }
-
-  &--standard-bottom {
-    &:last-child {
-      padding-bottom: 20px;
-    }
+    border-bottom: 0;
   }
 }

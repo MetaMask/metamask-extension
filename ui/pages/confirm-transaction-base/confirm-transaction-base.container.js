@@ -13,6 +13,10 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
+import {
+  fetchEstimatedOptimismL1Fee,
+  getIsOptimism,
+} from '../../ducks/optimism';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
@@ -31,7 +35,6 @@ import {
   doesAddressRequireLedgerHidConnection,
   getUseTokenDetection,
   getTokenList,
-  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -50,6 +53,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+import { addHexes } from '../../helpers/utils/conversions.util';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -120,10 +124,7 @@ const mapStateToProps = (state, ownProps) => {
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
-  const addressBookObject =
-    addressBook &&
-    addressBook[chainId] &&
-    addressBook[chainId][checksummedAddress];
+  const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
@@ -133,6 +134,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     hexTransactionAmount,
     hexMinimumTransactionFee,
+    hexEstimatedL1Fee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     gasEstimationObject,
@@ -183,7 +185,13 @@ const mapStateToProps = (state, ownProps) => {
     fromAddress,
   );
 
-  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
+  const isOptimism = getIsOptimism(state);
+  const isStandardNetwork = !isOptimism;
+
+  let multilayerTotal;
+  if (!isStandardNetwork) {
+    multilayerTotal = addHexes(hexEstimatedL1Fee, hexMinimumTransactionFee);
+  }
 
   return {
     balance,
@@ -228,15 +236,15 @@ const mapStateToProps = (state, ownProps) => {
     useNativeCurrencyAsPrimaryCurrency,
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
-    gasLimit: gasEstimationObject.gasLimit,
-    gasPrice: gasEstimationObject.gasPrice,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
     showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
     hardwareWalletRequiresConnection,
-    isMultiLayerFeeNetwork,
-    chainId,
+    isOptimism,
+    isStandardNetwork,
+    hexEstimatedL1Fee,
+    multilayerTotal,
   };
 };
 
@@ -270,6 +278,9 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+    },
+    fetchOptimismL1Fee: (txMeta) => {
+      dispatch(fetchEstimatedOptimismL1Fee(txMeta));
     },
   };
 };

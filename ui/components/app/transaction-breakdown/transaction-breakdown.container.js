@@ -1,14 +1,11 @@
 import { connect } from 'react-redux';
-import {
-  getShouldShowFiat,
-  getIsMultiLayerFeeNetwork,
-} from '../../../selectors';
+import { getShouldShowFiat } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { subtractHexes } from '../../../helpers/utils/conversions.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
-
+import { getIsOptimism } from '../../../ducks/optimism';
 import TransactionBreakdown from './transaction-breakdown.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -40,10 +37,9 @@ const mapStateToProps = (state, ownProps) => {
 
   let totalInHex = sumHexes(hexGasTotal, value);
 
-  const isMultiLayerFeeNetwork =
-    getIsMultiLayerFeeNetwork(state) && l1HexGasTotal !== undefined;
+  const isOptimism = getIsOptimism(state);
 
-  if (isMultiLayerFeeNetwork) {
+  if (isOptimism) {
     totalInHex = sumHexes(totalInHex, l1HexGasTotal);
   }
 
@@ -60,7 +56,7 @@ const mapStateToProps = (state, ownProps) => {
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
-    isMultiLayerFeeNetwork,
+    isOptimism,
     l1HexGasTotal,
   };
 };
