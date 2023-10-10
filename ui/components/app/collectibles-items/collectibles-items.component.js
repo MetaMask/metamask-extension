@@ -19,12 +19,30 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
-export default function CollectiblesItems({
-  onAddNFT,
-  onRefreshList,
-  collections,
-}) {
+export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
   const t = useI18nContext();
+  const collections = {
+    Opensea: {
+      icon: './images/opensea-icon.svg',
+      collectibles: [
+        { icon: './images/kitty-1.svg', backgroundColor: COLORS.PRIMARY1 },
+        { icon: './images/kitty-2.svg', backgroundColor: COLORS.ALERT3 },
+        { icon: './images/kitty-3.svg', backgroundColor: COLORS.SUCCESS1 },
+        { icon: './images/kitty-1.svg', backgroundColor: COLORS.ERROR3 },
+        { icon: './images/kitty-2.svg', backgroundColor: COLORS.ALERT3 },
+        { icon: './images/kitty-3.svg', backgroundColor: COLORS.SUCCESS1 },
+        { icon: './images/kitty-1.svg', backgroundColor: COLORS.ERROR3 },
+        { icon: './images/kitty-2.svg', backgroundColor: COLORS.ALERT3 },
+      ],
+    },
+    CryptoKitties: {
+      icon: './images/opensea-icon.svg',
+      collectibles: [
+        { icon: './images/kitty-1.svg', backgroundColor: COLORS.PRIMARY1 },
+        { icon: './images/kitty-2.svg', backgroundColor: COLORS.ALERT3 },
+      ],
+    },
+  };
   const defaultDropdownState = {};
 
   Object.keys(collections).forEach((key) => {
@@ -38,8 +56,9 @@ export default function CollectiblesItems({
       <Box padding={[4, 6, 4, 6]} flexDirection={FLEX_DIRECTION.COLUMN}>
         <>
           {Object.keys(collections).map((key, index) => {
-            const { collectibles, collectionName, collectionImage } = collections[key]
+            const { icon, collectibles } = collections[key];
             const isExpanded = dropdownState[key];
+
             return (
               <div key={`collection-${index}`}>
                 <Box
@@ -50,14 +69,13 @@ export default function CollectiblesItems({
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
                 >
                   <Box alignItems={ALIGN_ITEMS.CENTER}>
-                    // todo backup image?
-                    <img width="28" src={collectionImage} />
+                    <img width="28" src={icon} />
                     <Typography
                       color={COLORS.BLACK}
                       variant={TYPOGRAPHY.H4}
                       margin={[0, 0, 0, 2]}
                     >
-                      {`${collectionName} (${collectibles.length})`}
+                      {`${key} (${collectibles.length})`}
                     </Typography>
                   </Box>
                   <Box alignItems={ALIGN_ITEMS.FLEX_END}>
@@ -87,7 +105,7 @@ export default function CollectiblesItems({
                             borderRadius={SIZES.MD}
                             backgroundColor={collectible.backgroundColor}
                           >
-                            <img width="40px" src={collectible.image} />
+                            <img src={collectible.icon} />
                           </Box>
                         </Box>
                       );
