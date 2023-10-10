@@ -14,7 +14,6 @@ import { TransactionStatus } from '../../../shared/constants/transaction';
 import {
   BlockaidReason,
   BlockaidResultType,
-  PPOM_CALL_METRIC_KEY_MAP,
 } from '../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 
@@ -203,7 +202,7 @@ export default function createRPCMethodTrackingMiddleware({
         if (req.securityAlertResponse?.providerRequestsCount) {
           Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
             (key) => {
-              const metricKey = PPOM_CALL_METRIC_KEY_MAP[key];
+              const metricKey = `ppom_${key}_count`;
               eventProperties[metricKey] =
                 req.securityAlertResponse.providerRequestsCount[key];
             },

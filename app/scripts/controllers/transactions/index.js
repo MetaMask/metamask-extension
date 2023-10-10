@@ -60,7 +60,6 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   BlockaidReason,
   BlockaidResultType,
-  PPOM_CALL_METRIC_KEY_MAP,
 } from '../../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -2496,7 +2495,7 @@ export default class TransactionController extends EventEmitter {
     if (securityProviderResponse?.providerRequestsCount) {
       Object.keys(securityProviderResponse.providerRequestsCount).forEach(
         (key) => {
-          const metricKey = PPOM_CALL_METRIC_KEY_MAP[key];
+          const metricKey = `ppom_${key}_count`;
           additionalBlockaidParams[metricKey] =
             securityProviderResponse.providerRequestsCount[key];
         },
