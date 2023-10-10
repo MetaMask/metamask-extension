@@ -2,12 +2,12 @@ import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors } from 'eth-rpc-errors';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import { isValidAddress } from 'ethereumjs-util';
 import ethers from 'ethers';
 import log from 'loglevel';
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens';
 import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
@@ -43,6 +43,7 @@ export default class PreferencesController {
       useBlockie: false,
       useNonceField: false,
       usePhishDetect: true,
+      dismissSeedBackUpReminder: false,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -67,6 +68,7 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
       infuraBlocked: null,
+      useLedgerLive: false,
       ...opts.initState,
     };
 
@@ -666,6 +668,35 @@ export default class PreferencesController {
     return Promise.resolve(domain);
   }
 
+  /**
+   * A setter for the `useLedgerLive` property
+   * @param {bool} useLedgerLive - Value for ledger live support
+   * @returns {Promise<string>} A promise of the update to useLedgerLive
+   */
+  async setLedgerLivePreference(useLedgerLive) {
+    this.store.updateState({ useLedgerLive });
+    return useLedgerLive;
+  }
+
+  /**
+   * A getter for the `useLedgerLive` property
+   * @returns {boolean} User preference of using Ledger Live
+   */
+  getLedgerLivePreference() {
+    return this.store.getState().useLedgerLive;
+  }
+
+  /**
+   * A setter for the user preference to dismiss the seed phrase backup reminder
+   * @param {bool} dismissBackupReminder- User preference for dismissing the back up reminder
+   * @returns {void}
+   */
+  async setDismissSeedBackUpReminder(dismissSeedBackUpReminder) {
+    await this.store.updateState({
+      dismissSeedBackUpReminder,
+    });
+  }
+
   //
   // PRIVATE METHODS
   //
@@ -836,7 +867,7 @@ export default class PreferencesController {
         `Invalid decimals "${decimals}": must be 0 <= 36.`,
       );
     }
-    if (!isValidAddress(address)) {
+    if (!isValidHexAddress(address, { allowNonPrefixed: false })) {
       throw ethErrors.rpc.invalidParams(`Invalid address "${address}".`);
     }
   }

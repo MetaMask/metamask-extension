@@ -1,87 +1,57 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import AdvancedTab from '.';
-
-const mockSetAutoLockTimeLimit = jest.fn();
-const mockSetShowTestNetworks = jest.fn();
-
-jest.mock('../../../store/actions.ts', () => {
-  return {
-    setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
-    setShowTestNetworks: () => mockSetShowTestNetworks,
-  };
-});
+import sinon from 'sinon';
+import { shallow } from 'enzyme';
+import TextField from '../../../components/ui/text-field';
+import AdvancedTab from './advanced-tab.component';
 
 describe('AdvancedTab Component', () => {
-  const mockStore = configureMockStore([thunk])(mockState);
-
-  it('should match snapshot', () => {
-    const { container } = renderWithProvider(<AdvancedTab />, mockStore);
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should render backup button', () => {
-    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-    const backupButton = queryByTestId('backup-button');
-    expect(backupButton).toBeInTheDocument();
-  });
-
-  it('should render restore button', () => {
-    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-    const restoreFile = queryByTestId('restore-file');
-    expect(restoreFile).toBeInTheDocument();
-  });
-
-  it('should default the auto-lockout time to 0', () => {
-    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-    const autoLockoutTime = queryByTestId('auto-lockout-time');
-
-    expect(autoLockoutTime).toHaveValue('0');
-  });
-
-  it('should update the auto-lockout time', () => {
-    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-    const autoLockoutTime = queryByTestId('auto-lockout-time');
-    const autoLockoutButton = queryByTestId('auto-lockout-button');
-
-    fireEvent.change(autoLockoutTime, { target: { value: '1440' } });
-
-    expect(autoLockoutTime).toHaveValue('1440');
-
-    fireEvent.click(autoLockoutButton);
-
-    expect(mockSetAutoLockTimeLimit).toHaveBeenCalled();
-  });
-
-  it('should toggle show test networks', () => {
-    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
-
-    const testNetworkToggle = queryAllByRole('checkbox')[2];
-
-    fireEvent.click(testNetworkToggle);
-
-    expect(mockSetShowTestNetworks).toHaveBeenCalled();
-  });
-
-  it('should not render ledger live control with desktop pairing enabled', () => {
-    const mockStoreWithDesktopEnabled = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        desktopEnabled: true,
+  it('should render correctly when threeBoxFeatureFlag', () => {
+    const root = shallow(
+      <AdvancedTab
+        ipfsGateway=""
+        setAutoLockTimeLimit={() => undefined}
+        setIpfsGateway={() => undefined}
+        setShowFiatConversionOnTestnetsPreference={() => undefined}
+        setThreeBoxSyncingPermission={() => undefined}
+        threeBoxDisabled
+        threeBoxSyncingAllowed={false}
+      />,
+      {
+        context: {
+          t: (s) => `_${s}`,
+        },
       },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <AdvancedTab />,
-      mockStoreWithDesktopEnabled,
     );
 
-    expect(queryByTestId('ledger-live-control')).not.toBeInTheDocument();
+    expect(root.find('.settings-page__content-row')).toHaveLength(12);
+  });
+
+  it('should update autoLockTimeLimit', () => {
+    const setAutoLockTimeLimitSpy = sinon.spy();
+    const root = shallow(
+      <AdvancedTab
+        ipfsGateway=""
+        setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
+        setIpfsGateway={() => undefined}
+        setShowFiatConversionOnTestnetsPreference={() => undefined}
+        setThreeBoxSyncingPermission={() => undefined}
+        threeBoxDisabled
+        threeBoxSyncingAllowed={false}
+      />,
+      {
+        context: {
+          t: (s) => `_${s}`,
+        },
+      },
+    );
+
+    const autoTimeout = root.find('.settings-page__content-row').at(7);
+    const textField = autoTimeout.find(TextField);
+
+    textField.props().onChange({ target: { value: 1440 } });
+    expect(root.state().autoLockTimeLimit).toStrictEqual(1440);
+
+    autoTimeout.find('.settings-tab__rpc-save-button').simulate('click');
+    expect(setAutoLockTimeLimitSpy.args[0][0]).toStrictEqual(1440);
   });
 });

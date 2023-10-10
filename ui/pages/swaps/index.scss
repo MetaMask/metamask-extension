@@ -1,9 +1,7 @@
+@import 'actionable-message/index';
 @import 'awaiting-swap/index';
 @import 'awaiting-signatures/index';
-@import 'smart-transaction-status/index';
 @import 'build-quote/index';
-@import 'prepare-swap-page/index';
-@import 'notification-page/index';
 @import 'countdown-timer/index';
 @import 'dropdown-input-pair/index';
 @import 'dropdown-search-list/index';
@@ -16,30 +14,14 @@
 @import 'slippage-buttons/index';
 @import 'swaps-footer/index';
 @import 'view-quote/index';
-@import 'create-new-swap/index';
-@import 'view-on-block-explorer/index';
-@import 'transaction-settings/index';
-@import 'list-with-search/index';
-@import 'popover-custom-background/index';
-@import 'mascot-background-animation/index';
 
 .swaps {
   display: flex;
   justify-content: center;
   width: 100%;
 
-  @include screen-sm-min {
+  @media screen and (min-width: 576px) {
     z-index: 12;
-  }
-
-  &__error-message {
-    margin-left: 24px;
-    margin-right: 24px;
-
-    @include screen-sm-min {
-      margin-left: 20px;
-      margin-right: 20px;
-    }
   }
 
   &__container {
@@ -51,11 +33,11 @@
     overflow-x: hidden;
     overflow-y: auto;
 
-    @include screen-sm-min {
+    @media screen and (min-width: 576px) {
       width: 460px;
-      background: var(--color-background-default);
-      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-      border: 1px solid var(--color-border-muted);
+      background: white;
+      border: 1px solid $Grey-100;
+      box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
       border-radius: 8px;
       height: 620px;
     }
@@ -69,20 +51,14 @@
     width: 100%;
     height: 100%;
 
-    @include screen-sm-max {
+    @media screen and (max-width: 576px) {
       &--overflow {
         overflow: scroll;
       }
     }
 
-    @include screen-sm-min {
+    @media screen and (min-width: 576px) {
       width: 348px;
-    }
-
-    &--redesign-enabled {
-      @include screen-sm-min {
-        width: 100%;
-      }
     }
   }
 
@@ -90,10 +66,8 @@
     @include H5;
 
     font-weight: bold;
-    color: var(--color-text-default);
+    color: $Black-100;
     margin-top: -5px;
-    flex: 1;
-    text-align: center;
   }
 
   &__header {
@@ -101,18 +75,15 @@
     flex-flow: column;
     justify-content: center;
     align-items: center;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    background: var(--color-background-alternative);
+    padding-top: 0;
+    padding-bottom: 16px;
+    background: $Grey-000;
     width: 100%;
-    flex-direction: row;
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    position: relative;
 
-    @include screen-sm-min {
-      padding-top: 12px;
-      padding-bottom: 12px;
+    @media screen and (min-width: 576px) {
+      padding-top: 8px;
+      padding-bottom: 8px;
       height: 66px;
     }
   }
@@ -120,57 +91,9 @@
   &__header-cancel {
     @include H7;
 
-    color: var(--color-primary-default);
+    color: $Blue-500;
     cursor: pointer;
-    padding-right: 24px;
-    flex: 1;
-    text-align: right;
-  }
-
-  &__header-edit {
-    @include H7;
-
-    color: var(--color-primary-default);
-    cursor: pointer;
-    padding-left: 24px;
-    flex: 1;
-  }
-
-  .actionable-message__message &__notification-close-button {
-    background-color: transparent;
     position: absolute;
-    right: 0;
-    top: 2px;
-
-    &::after {
-      position: absolute;
-      content: '\00D7';
-      font-size: 29px;
-      font-weight: 200;
-      color: var(--color-text-default);
-      background-color: transparent;
-      top: 0;
-      right: 12px;
-      cursor: pointer;
-    }
-  }
-
-  &__notification-title {
-    font-weight: bold;
-    margin-right: 14px;
-  }
-}
-
-.mm-modal {
-  &__custom-scrollbar {
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      -webkit-border-radius: 10px;
-      border-radius: 10px;
-      background: var(--color-icon-muted);
-    }
+    right: 24px;
   }
 }

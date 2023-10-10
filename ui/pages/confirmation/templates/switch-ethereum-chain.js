@@ -1,9 +1,12 @@
 import { ethErrors } from 'eth-rpc-errors';
 import {
-  JustifyContent,
+  CHAIN_ID_TO_TYPE_MAP,
+  NETWORK_TYPE_RPC,
+} from '../../../../shared/constants/network';
+import {
+  JUSTIFY_CONTENT,
   SEVERITIES,
-  TextColor,
-  TypographyVariant,
+  TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 
 const PENDING_TX_DROP_NOTICE = {
@@ -20,12 +23,16 @@ const PENDING_TX_DROP_NOTICE = {
   },
 };
 
-async function getAlerts(_pendingApproval, state) {
-  const alerts = [];
-  if (state.unapprovedTxsCount > 0) {
-    alerts.push(PENDING_TX_DROP_NOTICE);
+async function getAlerts() {
+  return [PENDING_TX_DROP_NOTICE];
+}
+
+function getNetworkType(chainId) {
+  if (chainId in CHAIN_ID_TO_TYPE_MAP) {
+    return CHAIN_ID_TO_TYPE_MAP[chainId];
   }
-  return alerts;
+
+  return NETWORK_TYPE_RPC;
 }
 
 function getValues(pendingApproval, t, actions) {
@@ -36,12 +43,11 @@ function getValues(pendingApproval, t, actions) {
         key: 'title',
         children: t('switchEthereumChainConfirmationTitle'),
         props: {
-          variant: TypographyVariant.H3,
+          variant: TYPOGRAPHY.H3,
           align: 'center',
-          fontWeight: 'normal',
+          fontWeight: 'bold',
           boxProps: {
-            margin: [0, 0, 2],
-            padding: [0, 4, 0, 4],
+            margin: [0, 0, 4],
           },
         },
       },
@@ -50,11 +56,10 @@ function getValues(pendingApproval, t, actions) {
         key: 'description',
         children: t('switchEthereumChainConfirmationDescription'),
         props: {
-          variant: TypographyVariant.H7,
-          color: TextColor.textAlternative,
+          variant: TYPOGRAPHY.H7,
           align: 'center',
           boxProps: {
-            padding: [0, 4, 0, 4],
+            margin: [0, 0, 4],
           },
         },
       },
@@ -62,23 +67,25 @@ function getValues(pendingApproval, t, actions) {
         element: 'Box',
         key: 'status-box',
         props: {
-          justifyContent: JustifyContent.center,
+          justifyContent: JUSTIFY_CONTENT.CENTER,
         },
         children: {
-          element: 'ConfirmationNetworkSwitch',
+          element: 'NetworkDisplay',
           key: 'network-being-switched',
           props: {
-            newNetwork: {
-              chainId: pendingApproval.requestData.chainId,
+            colored: false,
+            outline: true,
+            targetNetwork: {
+              type: getNetworkType(pendingApproval.requestData.chainId),
               nickname: pendingApproval.requestData.nickname,
             },
           },
         },
       },
     ],
+    approvalText: t('switchNetwork'),
     cancelText: t('cancel'),
-    submitText: t('switchNetwork'),
-    onSubmit: () =>
+    onApprove: () =>
       actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,
@@ -87,9 +94,8 @@ function getValues(pendingApproval, t, actions) {
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
-        ethErrors.provider.userRejectedRequest().serialize(),
+        ethErrors.provider.userRejectedRequest(),
       ),
-    networkDisplay: true,
   };
 }
 

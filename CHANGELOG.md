@@ -63,7 +63,42 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Allow easier viewing of all permissions in the dapp permission modal, by making the list of permissions scrollable ([#20409](https://github.com/MetaMask/metamask-extension/pull/20409))
 - Improve spacing and border styling on Snaps details page ([#20854](https://github.com/MetaMask/metamask-extension/pull/20854))
 
+## [9.6.0]
+### Added
+- [#10905](https://github.com/MetaMask/metamask-extension/pull/10905): Implemented basic switchEthereumChain feature
+- [#10967](https://github.com/MetaMask/metamask-extension/pull/10967): Add setting to dismiss seed phrase backup reminder
+- [#10293](https://github.com/MetaMask/metamask-extension/pull/10293): Implement Ledger Live bridge
+- [#11131](https://github.com/MetaMask/metamask-extension/pull/11131): What's New: Adding notification for updated seed phrase wording
+- [#11083](https://github.com/MetaMask/metamask-extension/pull/11083): Adding BSC Swaps notification when a user is on BSC Mainnet
+- [#11088](https://github.com/MetaMask/metamask-extension/pull/11088): Swaps: Add specific error content if Contract data are not enabled on Ledger
+- [#11064](https://github.com/MetaMask/metamask-extension/pull/11064): Supporting EIP-712 signing for Ledger accounts
 
+### Changed
+- [#11007](https://github.com/MetaMask/metamask-extension/pull/11007): Hide basic tab in advanced gas modal when on testnets.
+- [#10994](https://github.com/MetaMask/metamask-extension/pull/10994): Replacing the text "Seed Phrase" with "Secret Recovery Phrase" throughout the application.
+- [#10987](https://github.com/MetaMask/metamask-extension/pull/10987): Swaps: Improve hardware wallet UX
+- [#10936](https://github.com/MetaMask/metamask-extension/pull/10936): Swaps: Allow 0% slippage, show a warning for 0 < slippage <= 1, disallows Reviews when negative slippage occurs.
+- [#10946](https://github.com/MetaMask/metamask-extension/pull/10946): Send user to activity view after transaction is complete
+- [#10767](https://github.com/MetaMask/metamask-extension/pull/10767): Improving error handling when gas prices are unavailable.
+- [#11118](https://github.com/MetaMask/metamask-extension/pull/11118): Removing support survey notification from What's New
+- [#11115](https://github.com/MetaMask/metamask-extension/pull/11115): Hide basic tab in advanced gas modal for speedup and cancel when on testnets
+
+### Fixed
+- [#11025](https://github.com/MetaMask/metamask-extension/pull/11025): Fixed redirection to the build quotes page from the swaps page when failure has occured
+- [#11015](https://github.com/MetaMask/metamask-extension/pull/11015): Prevent an undefined gas price from breaking the transaction list
+- [#11013](https://github.com/MetaMask/metamask-extension/pull/11013): Prevent signature request component from canceling hardware wallet signing
+- [#10982](https://github.com/MetaMask/metamask-extension/pull/10982): Re-validating chain id when rpc url changes [custom network form]
+- [#10988](https://github.com/MetaMask/metamask-extension/pull/10988): Allowing for scroll overflow when swaps content is too tall
+- [#10971](https://github.com/MetaMask/metamask-extension/pull/10971): Removing gray background from contact address input
+- [#10952](https://github.com/MetaMask/metamask-extension/pull/10952): Prevent lag in external monitors when using Mac + Chrome
+- [#11127](https://github.com/MetaMask/metamask-extension/pull/11127): Fixes token removal when cancelling a swaps quote
+- [#10956](https://github.com/MetaMask/metamask-extension/pull/10956): Fixes intermittent token display rounding error, better handling network errors for token fetches.
+- [#11097](https://github.com/MetaMask/metamask-extension/pull/11097): Fixes account search results ordering
+- [#10884](https://github.com/MetaMask/metamask-extension/pull/10884): Fixes localStorage migration error in Firefox response
+- [#10762](https://github.com/MetaMask/metamask-extension/pull/10762): Ensure that priceSlippage fiat amounts are always shown in the quote view
+- [#11031](https://github.com/MetaMask/metamask-extension/pull/11031): Fixes error behavior of addEthereumChain
+
+## [9.5.9]
 ### Fixed
 - Fix display of fiat conversions on Linea network ([#20672](https://github.com/MetaMask/metamask-extension/pull/20672))
 - Fixed the token import flow so that users can import multiple tokens simultaneously ([#20224](https://github.com/MetaMask/metamask-extension/pull/20224))
@@ -4203,6 +4238,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [9.7.1]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...v9.7.1
 [9.7.0]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...v9.7.0
 [9.6.1]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...v9.6.1
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...HEAD
 [9.6.0]: https://github.com/MetaMask/metamask-extension/compare/v9.5.9...v9.6.0
 [9.5.9]: https://github.com/MetaMask/metamask-extension/compare/v9.5.8...v9.5.9
 [9.5.8]: https://github.com/MetaMask/metamask-extension/compare/v9.5.7...v9.5.8
