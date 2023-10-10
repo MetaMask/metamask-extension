@@ -21,6 +21,7 @@ import {
   getSendTokenAddress,
   isCustomPriceExcessive,
   getCurrentChainId,
+  getIsNonStandardEthChain,
 } from '../../selectors';
 
 import { showQrScanner, qrCodeDetected } from '../../store/actions';
@@ -71,6 +72,7 @@ function mapStateToProps(state) {
     tokenContract: getSendTokenContract(state),
     sendTokenAddress: getSendTokenAddress(state),
     gasIsExcessive: isCustomPriceExcessive(state, true),
+    isNonStandardEthChain: getIsNonStandardEthChain(state),
   };
 }
 
@@ -86,6 +88,7 @@ function mapDispatchToProps(dispatch) {
       to,
       value,
       data,
+      isNonStandardEthChain = false,
     }) => {
       editingTransactionId
         ? dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
@@ -98,6 +101,7 @@ function mapDispatchToProps(dispatch) {
               to,
               value,
               data,
+              isNonStandardEthChain,
             }),
           );
     },

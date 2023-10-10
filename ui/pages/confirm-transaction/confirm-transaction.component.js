@@ -25,12 +25,6 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  disconnectGasFeeEstimatePoller,
-  getGasFeeEstimatesAndStartPolling,
-  addPollingTokenToAppState,
-  removePollingTokenFromAppState,
-} from '../../store/actions';
 import ConfTx from './conf-tx';
 
 export default class ConfirmTransaction extends Component {
@@ -41,9 +35,10 @@ export default class ConfirmTransaction extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
-    sendTo: PropTypes.string,
+    send: PropTypes.object,
     setTransactionToConfirm: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
+    fetchBasicGasEstimates: PropTypes.func,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     transaction: PropTypes.object,
     getContractMethodData: PropTypes.func,
@@ -52,30 +47,16 @@ export default class ConfirmTransaction extends Component {
     getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
-    failedTransactionsToDisplayCount: PropTypes.number,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  _beforeUnload = () => {
-    this._isMounted = false;
-    if (this.state.pollingToken) {
-      disconnectGasFeeEstimatePoller(this.state.pollingToken);
-      removePollingTokenFromAppState(this.state.pollingToken);
-    }
   };
 
   componentDidMount() {
-    this._isMounted = true;
     const {
       totalUnapprovedCount = 0,
-      sendTo,
+      send = {},
       history,
       mostRecentOverviewPage,
       transaction: { txParams: { data, to } = {} } = {},
+      fetchBasicGasEstimates,
       getContractMethodData,
       transactionId,
       paramsTransactionId,
@@ -84,23 +65,12 @@ export default class ConfirmTransaction extends Component {
       failedTransactionsToDisplayCount,
     } = this.props;
 
-    getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
-      if (this._isMounted) {
-        this.setState({ pollingToken });
-        addPollingTokenToAppState(pollingToken);
-      } else {
-        disconnectGasFeeEstimatePoller(pollingToken);
-        removePollingTokenFromAppState(pollingToken);
-      }
-    });
-
-    window.addEventListener('beforeunload', this._beforeUnload);
-
-    if (!totalUnapprovedCount && !sendTo && !failedTransactionsToDisplayCount) {
+    if (!totalUnapprovedCount && !send.to && !failedTransactionsToDisplayCount) {
       history.replace(mostRecentOverviewPage);
       return;
     }
 
+    fetchBasicGasEstimates();
     getContractMethodData(data);
     if (isTokenMethodAction) {
       getTokenParams(to);
@@ -109,11 +79,6 @@ export default class ConfirmTransaction extends Component {
     if (txId) {
       this.props.setTransactionToConfirm(txId);
     }
-  }
-
-  componentWillUnmount() {
-    this._beforeUnload();
-    window.removeEventListener('beforeunload', this._beforeUnload);
   }
 
   componentDidUpdate(prevProps) {

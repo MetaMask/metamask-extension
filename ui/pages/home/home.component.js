@@ -1,12 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(main)
-import { SUPPORT_LINK } from '../../helpers/constants/common';
-///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
-import CollectiblesTab from '../../components/app/collectibles-tab';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
@@ -19,9 +15,6 @@ import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
-import Typography from '../../components/ui/typography/typography';
-import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 
 import {
   ASSET_ROUTE,
@@ -36,14 +29,7 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IN(beta)
-import BetaHomeFooter from './beta/beta-home-footer.component';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import FlaskHomeFooter from './flask/flask-home-footer.component';
-///: END:ONLY_INCLUDE_IN
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
@@ -51,18 +37,6 @@ const LEGACY_WEB3_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360053147012';
 const INFURA_BLOCKAGE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360059386712';
-
-function shouldCloseNotificationPopup({
-  isNotification,
-  totalUnapprovedCount,
-  isSigningQRHardwareTransaction,
-}) {
-  return (
-    isNotification &&
-    totalUnapprovedCount === 0 &&
-    !isSigningQRHardwareTransaction
-  );
-}
 
 export default class Home extends PureComponent {
   static contextTypes = {
@@ -72,7 +46,7 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    suggestedAssets: PropTypes.array,
+    suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -86,8 +60,6 @@ export default class Home extends PureComponent {
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
     firstPermissionsRequestId: PropTypes.string,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
@@ -109,57 +81,20 @@ export default class Home extends PureComponent {
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: PropTypes.bool.isRequired,
-    newNetworkAdded: PropTypes.string,
-    setNewNetworkAdded: PropTypes.func.isRequired,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
-    isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
-    newCollectibleAddedMessage: PropTypes.string,
-    setNewCollectibleAddedMessage: PropTypes.func.isRequired,
-    closeNotificationPopup: PropTypes.func.isRequired,
-    failedTransactionsToDisplayCount: PropTypes.number,
   };
 
   state = {
+    mounted: false,
     canShowBlockageNotification: true,
-    notificationClosing: false,
-    redirecting: false,
   };
 
-  constructor(props) {
-    super(props);
-
-    const {
-      closeNotificationPopup,
-      firstPermissionsRequestId,
-      haveSwapsQuotes,
-      isNotification,
-      showAwaitingSwapScreen,
-      suggestedAssets = [],
-      swapsFetchParams,
-      unconfirmedTransactionsCount,
-    } = this.props;
-
-    if (shouldCloseNotificationPopup(props)) {
-      this.state.notificationClosing = true;
-      closeNotificationPopup();
-    } else if (
-      firstPermissionsRequestId ||
-      unconfirmedTransactionsCount > 0 ||
-      suggestedAssets.length > 0 ||
-      (!isNotification &&
-        (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
-    ) {
-      this.state.redirecting = true;
-    }
-  }
-
-  checkStatusAndNavigate() {
+  componentDidMount() {
     const {
       firstPermissionsRequestId,
       history,
       isNotification,
-      suggestedAssets = [],
+      suggestedTokens = {},
+      totalUnapprovedCount,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
@@ -167,7 +102,11 @@ export default class Home extends PureComponent {
       pendingConfirmations,
       failedTransactionsToDisplayCount,
     } = this.props;
-    if (!isNotification && showAwaitingSwapScreen) {
+
+    this.setState({ mounted: true });
+    if (isNotification && totalUnapprovedCount === 0) {
+      global.platform.closeCurrentWindow();
+    } else if (!isNotification && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (!isNotification && haveSwapsQuotes) {
       history.push(VIEW_QUOTE_ROUTE);
@@ -175,49 +114,57 @@ export default class Home extends PureComponent {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
-    } else if (
-      unconfirmedTransactionsCount > 0 ||
-      failedTransactionsToDisplayCount > 0
-    ) {
+    } else if (unconfirmedTransactionsCount > 0 || failedTransactionsToDisplayCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (suggestedAssets.length > 0) {
+    } else if (Object.keys(suggestedTokens).length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
   }
 
-  componentDidMount() {
-    this.checkStatusAndNavigate();
-  }
-
-  static getDerivedStateFromProps(props) {
-    if (shouldCloseNotificationPopup(props)) {
-      return { notificationClosing: true };
+  static getDerivedStateFromProps(
+    {
+      firstPermissionsRequestId,
+      isNotification,
+      suggestedTokens,
+      totalUnapprovedCount,
+      unconfirmedTransactionsCount,
+      haveSwapsQuotes,
+      showAwaitingSwapScreen,
+      swapsFetchParams,
+    },
+    { mounted },
+  ) {
+    if (!mounted) {
+      if (isNotification && totalUnapprovedCount === 0) {
+        return { closing: true };
+      } else if (
+        firstPermissionsRequestId ||
+        unconfirmedTransactionsCount > 0 ||
+        Object.keys(suggestedTokens).length > 0 ||
+        (!isNotification &&
+          (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
+      ) {
+        return { redirecting: true };
+      }
     }
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const {
-      closeNotificationPopup,
       setupThreeBox,
       showRestorePrompt,
       threeBoxLastUpdated,
       threeBoxSynced,
-      isNotification,
     } = this.props;
-    const { notificationClosing } = this.state;
 
-    if (notificationClosing && !prevState.notificationClosing) {
-      closeNotificationPopup();
-    } else if (isNotification) {
-      this.checkStatusAndNavigate();
-    } else if (
-      threeBoxSynced &&
-      showRestorePrompt &&
-      threeBoxLastUpdated === null
-    ) {
+    if (!prevState.closing && this.state.closing) {
+      global.platform.closeCurrentWindow();
+    }
+
+    if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
       setupThreeBox();
     }
   }
@@ -248,69 +195,10 @@ export default class Home extends PureComponent {
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
       infuraBlocked,
-      newNetworkAdded,
-      setNewNetworkAdded,
-      newCollectibleAddedMessage,
-      setNewCollectibleAddedMessage,
     } = this.props;
+
     return (
       <MultipleNotifications>
-        {newCollectibleAddedMessage ? (
-          <ActionableMessage
-            type={newCollectibleAddedMessage === 'success' ? 'info' : 'warning'}
-            className="home__new-network-notification"
-            message={
-              <div className="home__new-network-notification-message">
-                {newCollectibleAddedMessage === 'success' ? (
-                  <img
-                    src="./images/check_circle.svg"
-                    className="home__new-network-notification-message--image"
-                  />
-                ) : null}
-                <Typography
-                  variant={TYPOGRAPHY.H7}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
-                  {newCollectibleAddedMessage === 'success'
-                    ? t('newCollectibleAddedMessage')
-                    : t('newCollectibleAddFailed', [
-                        newCollectibleAddedMessage,
-                      ])}
-                </Typography>
-                <button
-                  className="fas fa-times home__close"
-                  title={t('close')}
-                  onClick={() => setNewCollectibleAddedMessage('')}
-                />
-              </div>
-            }
-          />
-        ) : null}
-        {newNetworkAdded ? (
-          <ActionableMessage
-            type="info"
-            className="home__new-network-notification"
-            message={
-              <div className="home__new-network-notification-message">
-                <img
-                  src="./images/check_circle.svg"
-                  className="home__new-network-notification-message--image"
-                />
-                <Typography
-                  variant={TYPOGRAPHY.H7}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
-                  {t('newNetworkAdded', [newNetworkAdded])}
-                </Typography>
-                <button
-                  className="fas fa-times home__close"
-                  title={t('close')}
-                  onClick={() => setNewNetworkAdded('')}
-                />
-              </div>
-            }
-          />
-        ) : null}
         {shouldShowWeb3ShimUsageNotification ? (
           <HomeNotification
             descriptionText={t('web3ShimUsageNotification', [
@@ -458,7 +346,7 @@ export default class Home extends PureComponent {
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
-    } else if (this.state.notificationClosing || this.state.redirecting) {
+    } else if (this.state.closing || this.state.redirecting) {
       return null;
     }
 
@@ -505,20 +393,6 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
-              {process.env.COLLECTIBLES_V1 ? (
-                <Tab
-                  activeClassName="home__tab--active"
-                  className="home__tab"
-                  data-testid="home__nfts-tab"
-                  name={t('nfts')}
-                >
-                  <CollectiblesTab
-                    onAddNFT={() => {
-                      history.push(ADD_COLLECTIBLE_ROUTE);
-                    }}
-                  />
-                </Tab>
-              ) : null}
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
@@ -529,30 +403,16 @@ export default class Home extends PureComponent {
               </Tab>
             </Tabs>
             <div className="home__support">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(main)
-                t('needHelp', [
-                  <a
-                    href={SUPPORT_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key="need-help-link"
-                  >
-                    {t('needHelpLinkText')}
-                  </a>,
-                ])
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(beta)
-                <BetaHomeFooter />
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(flask)
-                <FlaskHomeFooter />
-                ///: END:ONLY_INCLUDE_IN
-              }
+              {t('needHelp', [
+                <a
+                  href="https://support.metamask.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key="need-help-link"
+                >
+                  {t('needHelpLinkText')}
+                </a>,
+              ])}
             </div>
           </div>
 

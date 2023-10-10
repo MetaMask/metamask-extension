@@ -6,6 +6,7 @@ import {
   clearConfirmTransaction,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
+import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck';
 
 import {
   getContractMethodData,
@@ -18,34 +19,37 @@ import {
   getFailedTransactionsToDisplay,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { getSendTo } from '../../ducks/send';
 import ConfirmTransaction from './confirm-transaction.component';
 
 const mapStateToProps = (state, ownProps) => {
   const {
     metamask: { unapprovedTxs },
+    send,
   } = state;
   const {
     match: { params = {} },
   } = ownProps;
   const { id } = params;
-  const sendTo = getSendTo(state);
-
+  console.log('%%%%%%%%%%%%%%%');
+  console.log('%%% id', id);
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
-  const transactionsToDisplayOnFailure = getFailedTransactionsToDisplay(state);
+  console.log('%%% unconfirmedTransactions', unconfirmedTransactions);
+  const failedTransactionsToDisplay = getFailedTransactionsToDisplay(state);
+  console.log('%%% failedTransactionsToDisplay', failedTransactionsToDisplay);
   const totalUnconfirmed = unconfirmedTransactions.length;
-
+  console.log('%%% totalUnconfirmed', totalUnconfirmed);
   const transaction =
-    totalUnconfirmed || transactionsToDisplayOnFailure[id]
+    totalUnconfirmed || Object.keys(failedTransactionsToDisplay).length
       ? unapprovedTxs[id] ||
-        transactionsToDisplayOnFailure[id] ||
+        failedTransactionsToDisplay[id] ||
         unconfirmedTransactions[0]
       : {};
+  console.log('%%% transaction', transaction);
   const { id: transactionId, type } = transaction;
 
   return {
     totalUnapprovedCount: totalUnconfirmed,
-    sendTo,
+    send,
     unapprovedTxs,
     id,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
@@ -65,6 +69,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setTransactionToConfirm(transactionId));
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
     getContractMethodData: (data) => dispatch(getContractMethodData(data)),
     getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
     setDefaultHomeActiveTabName: (tabName) =>

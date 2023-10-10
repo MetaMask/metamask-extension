@@ -15,11 +15,7 @@ import {
   getShowWhatsNewPopup,
   getSortedNotificationsToShow,
   getShowRecoveryPhraseReminder,
-  getNewNetworkAdded,
-  hasUnsignedQRHardwareTransaction,
-  hasUnsignedQRHardwareMessage,
-  getNewCollectibleAddedMessage,
-  getFailedTransactionsToDisplayCount,
+  getFailedTransactionsToDisplayCount
 } from '../../selectors';
 
 import {
@@ -33,12 +29,10 @@ import {
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
-  setNewNetworkAdded,
-  setNewCollectibleAddedMessage,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
-import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
+import { getSwapsFeatureLiveness } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -53,7 +47,7 @@ import Home from './home.component';
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
-    suggestedAssets,
+    suggestedTokens,
     seedPhraseBackedUp,
     tokens,
     threeBoxSynced,
@@ -67,7 +61,7 @@ const mapStateToProps = (state) => {
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const swapsEnabled = getSwapsFeatureIsLive(state);
+  const swapsEnabled = getSwapsFeatureLiveness(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
 
   const envType = getEnvironmentType();
@@ -88,13 +82,9 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
 
-  const isSigningQRHardwareTransaction =
-    hasUnsignedQRHardwareTransaction(state) ||
-    hasUnsignedQRHardwareMessage(state);
-
   return {
     forgottenPassword,
-    suggestedAssets,
+    suggestedTokens,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder:
@@ -123,12 +113,7 @@ const mapStateToProps = (state) => {
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
-    newNetworkAdded: getNewNetworkAdded(state),
-    isSigningQRHardwareTransaction,
-    newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
-    failedTransactionsToDisplayCount: getFailedTransactionsToDisplayCount(
-      state,
-    ),
+    failedTransactionsToDisplayCount: getFailedTransactionsToDisplayCount(state),
   };
 };
 
@@ -158,12 +143,6 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
     dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
-  setNewNetworkAdded: (newNetwork) => {
-    dispatch(setNewNetworkAdded(newNetwork));
-  },
-  setNewCollectibleAddedMessage: (message) => {
-    dispatch(setNewCollectibleAddedMessage(message));
-  },
 });
 
 export default compose(

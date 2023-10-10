@@ -2,33 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
-import DetailedErrorMessage from '../../../ui/detailed-error-message';
 import ErrorMessage from '../../../ui/error-message';
-import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
-import TransactionErrorDetailsModal from '../../modals/transaction-error-details-modal/transaction-error-details';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
-  static contextTypes = {
-    t: PropTypes.func.isRequired,
-  };
-
-  state = {
-    showTransactionErrorDetails: false,
-  };
-
   static propTypes = {
     action: PropTypes.string,
     dataComponent: PropTypes.node,
-    dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hasSimulationError: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
+    assetImage: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     titleComponent: PropTypes.node,
@@ -40,14 +28,10 @@ export default class ConfirmPageContainerContent extends Component {
     onCancel: PropTypes.func,
     cancelText: PropTypes.string,
     onSubmit: PropTypes.func,
-    setUserAcknowledgedGasMissing: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
-    hideUserAcknowledgedGasMissing: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-    hideTitle: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
     isFailedTransaction: PropTypes.bool,
   };
 
@@ -61,25 +45,15 @@ export default class ConfirmPageContainerContent extends Component {
   }
 
   renderTabs() {
-    const { t } = this.context;
-    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
+    const { detailsComponent, dataComponent } = this.props;
 
     return (
       <Tabs>
-        <Tab
-          className="confirm-page-container-content__tab"
-          name={t('details')}
-        >
+        <Tab className="confirm-page-container-content__tab" name="Details">
           {detailsComponent}
         </Tab>
-        <Tab className="confirm-page-container-content__tab" name={t('data')}>
+        <Tab className="confirm-page-container-content__tab" name="Data">
           {dataComponent}
-        </Tab>
-        <Tab
-          className="confirm-page-container-content__tab"
-          name={t('dataHex')}
-        >
-          {dataHexComponent}
         </Tab>
       </Tabs>
     );
@@ -90,13 +64,13 @@ export default class ConfirmPageContainerContent extends Component {
       action,
       errorKey,
       errorMessage,
-      hasSimulationError,
       title,
       titleComponent,
       subtitleComponent,
       hideSubtitle,
       identiconAddress,
       nonce,
+      assetImage,
       detailsComponent,
       dataComponent,
       warning,
@@ -110,34 +84,14 @@ export default class ConfirmPageContainerContent extends Component {
       rejectNText,
       origin,
       ethGasPriceWarning,
-      hideTitle,
-      setUserAcknowledgedGasMissing,
-      hideUserAcknowledgedGasMissing,
-      supportsEIP1559V2,
       isFailedTransaction,
     } = this.props;
 
-    const primaryAction = hideUserAcknowledgedGasMissing
-      ? null
-      : {
-          label: this.context.t('tryAnywayOption'),
-          onClick: setUserAcknowledgedGasMissing,
-        };
-
     return (
       <div className="confirm-page-container-content">
-        {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
+        {warning && <ConfirmPageContainerWarning warning={warning} />}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
-        )}
-        {hasSimulationError && (
-          <div className="confirm-page-container-content__error-container">
-            <ActionableMessage
-              type="danger"
-              primaryAction={primaryAction}
-              message={this.context.t('simulationErrorMessage')}
-            />
-          </div>
         )}
         <ConfirmPageContainerSummary
           className={classnames({
@@ -151,34 +105,14 @@ export default class ConfirmPageContainerContent extends Component {
           hideSubtitle={hideSubtitle}
           identiconAddress={identiconAddress}
           nonce={nonce}
+          assetImage={assetImage}
           origin={origin}
-          hideTitle={hideTitle}
         />
         {this.renderContent()}
-        {!supportsEIP1559V2 &&
-          !hasSimulationError &&
-          (errorKey || errorMessage) && (
-            <div className="confirm-page-container-content__error-container">
-              {errorKey ? (
-                <ErrorMessage errorKey={errorKey} />
-              ) : (
-                <DetailedErrorMessage
-                  errorMessage={this.context.t('somethingWentWrong')}
-                  linkText={this.context.t('moreDetails')}
-                  onErrorMessageClick={() =>
-                    this.setState({ showTransactionErrorDetails: true })
-                  }
-                />
-              )}
-            </div>
-          )}
-        {this.state.showTransactionErrorDetails && (
-          <TransactionErrorDetailsModal
-            message={errorMessage}
-            closePopover={() => {
-              this.setState({ showTransactionErrorDetails: false });
-            }}
-          />
+        {(errorKey || errorMessage) && (
+          <div className="confirm-page-container-content__error-container">
+            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+          </div>
         )}
         <PageContainerFooter
           onCancel={onCancel}
@@ -189,9 +123,7 @@ export default class ConfirmPageContainerContent extends Component {
           hideCancel={isFailedTransaction}
           submitButtonType={isFailedTransaction ? 'default' : 'confirm'}
         >
-          {unapprovedTxCount > 1 && !isFailedTransaction ? (
-            <a onClick={onCancelAll}>{rejectNText}</a>
-          ) : null}
+          {unapprovedTxCount > 1 && <a onClick={onCancelAll}>{rejectNText}</a>}
         </PageContainerFooter>
       </div>
     );

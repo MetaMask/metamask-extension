@@ -15,14 +15,16 @@ import {
 } from '../../shared/constants/swaps';
 
 import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
-import { getValueFromWeiHex } from '../helpers/utils/conversions.util';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
-import { hexToDecimal } from '../../shared/modules/conversion-util';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -350,11 +352,11 @@ export function getUnapprovedConfirmations(state) {
 }
 
 export function getFailedTransactionsToDisplay(state) {
-  const { currentNetworkTxList } = state.metamask;
-  const { transactionsToDisplayOnFailure } = state.appState;
+  const { currentNetworkTxList = [] } = state.metamask;
+  const { failedTransactionsToDisplay = {} } = state.appState;
   const failedTransactions = currentNetworkTxList.reduce(
     (_failedTransactions, tx) => {
-      if (transactionsToDisplayOnFailure[tx.id]) {
+      if (failedTransactionsToDisplay[tx.id] && tx.err) {
         return { ..._failedTransactions, [tx.id]: tx };
       }
       return _failedTransactions;
@@ -388,6 +390,10 @@ export function getIsMainnet(state) {
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
+}
+
+export function getIsNonStandardEthChain(state) {
+  return !(getIsMainnet(state) || getIsTestnet(state));
 }
 
 export function getPreferences({ metamask }) {

@@ -189,16 +189,21 @@ async function estimateGasForSend({
   data,
   gasPrice,
   estimateGasMethod,
+  isNonStandardEthChain,
 }) {
   const paramsForGasEstimate = { from: selectedAddress, value, gasPrice };
+
+  let isSimpleSendOnNonStandardNetwork = false;
 
   // if recipient has no code, gas is 21k max:
   if (!sendToken && !data) {
     const code = Boolean(to) && (await global.eth.getCode(to));
     // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
     const codeIsEmpty = !code || code === '0x' || code === '0x0';
-    if (codeIsEmpty) {
+    if (codeIsEmpty && !isNonStandardEthChain) {
       return GAS_LIMITS.SIMPLE;
+    } else if (codeIsEmpty && isNonStandardEthChain) {
+      isSimpleSendOnNonStandardNetwork = true;
     }
   } else if (sendToken && !to) {
     return GAS_LIMITS.BASE_TOKEN_ESTIMATE;
@@ -241,10 +246,16 @@ async function estimateGasForSend({
     }),
   );
 
+  const bufferMultiplier = isSimpleSendOnNonStandardNetwork ? 1 : 1.5;
+
   // run tx
   try {
     const estimatedGas = await estimateGasMethod(paramsForGasEstimate);
-    const estimateWithBuffer = addGasBuffer(estimatedGas, blockGasLimit, 1.5);
+    const estimateWithBuffer = addGasBuffer(
+      estimatedGas,
+      blockGasLimit,
+      bufferMultiplier,
+    );
     return addHexPrefix(estimateWithBuffer);
   } catch (error) {
     const simulationFailed =
