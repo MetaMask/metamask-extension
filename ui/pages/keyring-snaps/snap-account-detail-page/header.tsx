@@ -27,22 +27,13 @@ import SnapDetailTag from './snap-detail-tag';
 
 export const SnapDetailHeader = ({
   updateAvailable,
-  snapTitle,
   isInstalled,
-  iconUrl,
-  developer,
-  auditUrls,
-  website,
-}: Pick<
-  SnapCardProps,
-  | 'updateAvailable'
-  | 'snapTitle'
-  | 'isInstalled'
-  | 'iconUrl'
-  | 'developer'
-  | 'auditUrls'
-  | 'website'
->) => {
+  metadata: {
+    name,
+    author: { name: developer, website },
+    audits,
+  },
+}: Pick<SnapCardProps, 'updateAvailable' | 'isInstalled' | 'metadata'>) => {
   const t = useI18nContext();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
   const [showConfigPopoverType, setShowConfigPopoverType] =
@@ -65,7 +56,7 @@ export const SnapDetailHeader = ({
             {t('snapDetailsCreateASnapAccount')}
           </Button>
           <Icon name={IconName.ArrowRight} marginRight={4} />
-          <Text>{snapTitle}</Text>
+          <Text>{name}</Text>
         </Box>
         <Box
           display={Display.Flex}
@@ -77,7 +68,7 @@ export const SnapDetailHeader = ({
             alignItems={AlignItems.center}
           >
             <Text variant={TextVariant.headingLg} marginRight={1}>
-              {snapTitle}
+              {name}
             </Text>
             {isInstalled && (
               <Tag
@@ -144,14 +135,21 @@ export const SnapDetailHeader = ({
             padding={[2, 2, 2, 2]}
             marginRight={1}
           >
-            <img src={iconUrl} className="snap-detail-icon" />
+            <Box
+              className="snap-detail-icon"
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+            >
+              <Text>{name ? name[0] : '?'}</Text>
+            </Box>
           </Box>
           {developer.toLowerCase() === METAMASK_DEVELOPER && (
             <SnapDetailTag icon={IconName.Star}>
               {t('snapCreatedByMetaMask')}
             </SnapDetailTag>
           )}
-          {auditUrls.length > 0 && (
+          {audits.length > 0 && (
             <SnapDetailTag icon={IconName.Star}>
               {t('snapIsAudited')}
             </SnapDetailTag>

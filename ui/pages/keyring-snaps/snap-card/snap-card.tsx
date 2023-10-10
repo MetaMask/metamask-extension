@@ -28,18 +28,20 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
 
 export default function SnapCard({
-  iconUrl,
-  snapTitle,
-  snapSlug,
+  metadata: {
+    name,
+    author: { website },
+    summary,
+  },
   isInstalled,
   updateAvailable,
-  website,
   id,
   onClickFunc,
-}: Pick<
-  SnapCardProps,
-  'iconUrl' | 'snapTitle' | 'snapSlug' | 'isInstalled' | 'website' | 'id'
-> & { onClickFunc: () => void; updateAvailable: boolean }) {
+}: Pick<SnapCardProps, 'id' | 'metadata' | 'versions'> & {
+  onClickFunc: () => void;
+  updateAvailable: boolean;
+  isInstalled: boolean;
+}) {
   const t = useI18nContext();
   const history = useHistory();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
@@ -55,7 +57,7 @@ export default function SnapCard({
       padding={[4, 4, 4, 4]}
       data-testid="key-management-snap"
       onClick={() => {
-        history.push(`/add-snap-account/${id}`);
+        history.push(`/add-snap-account/${encodeURIComponent(id)}`);
       }}
     >
       <Box
@@ -79,19 +81,14 @@ export default function SnapCard({
           padding={[2, 2, 2, 2]}
           marginRight={1}
         >
-          {iconUrl ? (
-            <img src={iconUrl} className="snap-detail-icon" />
-          ) : (
-            // This is the fallback icon based on the first letter of the snap name.
-            <Box
-              className="snap-detail-icon"
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-            >
-              <Text>{snapTitle ? snapTitle[0] : '?'}</Text>
-            </Box>
-          )}
+          <Box
+            className="snap-detail-icon"
+            display={Display.Flex}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+          >
+            <Text>{name ? name[0] : '?'}</Text>
+          </Box>
         </Box>
         {isInstalled ? (
           <Button
@@ -127,10 +124,10 @@ export default function SnapCard({
         color={TextColor.textAlternative}
         marginBottom={2}
       >
-        {snapTitle}
+        {name}
       </Text>
       <Text variant={TextVariant.headingMd} marginBottom="auto">
-        {snapSlug}
+        {summary}
       </Text>
 
       <Box

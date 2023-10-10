@@ -2,25 +2,34 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import semver from 'semver';
 import messages from '../../../../app/_locales/en/messages.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SnapAccountDetailPage from '.';
 
 const snap = {
-  id: 'a51ea3a8-f1b0-4613-9440-b80e2236713b',
-  snapId: 'npm:@metamask/snap-simple-keyring',
-  iconUrl: '',
-  snapTitle: 'Metamask Simple Keyring',
-  snapSlug: 'Secure your account with MetaMask Mobile',
-  snapDescription:
-    'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
-  tags: ['EOA'],
-  developer: 'Metamask',
-  website: 'https://www.consensys.net/',
-  auditUrls: ['auditUrl1', 'auditUrl2'],
-  version: '1.0.0',
-  lastUpdated: 'April 20, 2023',
+  id: 'npm:@metamask/snap-simple-keyring',
+  metadata: {
+    name: 'MetaMask Simple Keyring',
+    author: {
+      name: 'MetaMask',
+      website: 'https://metamask.github.io/snap-simple-keyring/latest/',
+    },
+    summary: 'Secure your account with a Pr',
+    description:
+      'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
+    audits: [{ auditor: 'auditor', report: 'report' }],
+    category: 'key management',
+    support: {},
+    tags: ['EOA'],
+    sourceCode: 'https://github.com/ChainSafe/aleo-snap',
+  },
+  versions: {
+    '2.0.0': {
+      checksum: 'fhKGcx3qfv/93ZWnwW2Q7L0W1STExHOGHDp9VMVZk3Q=',
+    },
+  },
 };
 
 jest.mock('react-router-dom', () => ({
@@ -30,7 +39,7 @@ jest.mock('react-router-dom', () => ({
   }),
   useParams: jest
     .fn()
-    .mockReturnValue({ snapId: 'a51ea3a8-f1b0-4613-9440-b80e2236713b' }),
+    .mockReturnValue({ snapId: 'npm:@metamask/snap-simple-keyring' }),
 }));
 
 const renderComponent = (state, props = {}) => {
@@ -38,7 +47,7 @@ const renderComponent = (state, props = {}) => {
   return renderWithProvider(
     <SnapAccountDetailPage {...props} />,
     mockStore,
-    `/add-snap-account/${snap.id}`,
+    `/add-snap-account/${encodeURIComponent(snap.id)}`,
   );
 };
 describe('SnapAccountDetails', () => {
@@ -50,42 +59,54 @@ describe('SnapAccountDetails', () => {
   it('should render the snap details', async () => {
     const { getAllByText, getByText } = renderComponent(mockState);
 
-    expect(getAllByText(snap.snapTitle).length).toBe(2);
-    expect(getByText(snap.snapSlug)).toBeInTheDocument();
-    expect(getByText(snap.snapDescription)).toBeInTheDocument();
-    snap.tags.forEach((tag) => {
+    const expectedVersion = Object.keys(snap.versions).sort((a, b) => {
+      return semver.compare(a, b);
+    })[0];
+    expect(getAllByText(snap.metadata.name).length).toBe(2);
+    expect(getByText(snap.metadata.summary)).toBeInTheDocument();
+    expect(getByText(snap.metadata.description)).toBeInTheDocument();
+    snap.metadata.tags.forEach((tag) => {
       expect(getByText(tag)).toBeInTheDocument();
     });
 
-    expect(getByText(snap.developer)).toBeInTheDocument();
-    expect(getByText(snap.website)).toBeInTheDocument();
+    expect(getByText(snap.metadata.author.name)).toBeInTheDocument();
+    expect(getByText(snap.metadata.author.website)).toBeInTheDocument();
 
-    snap.auditUrls.forEach((auditUrl) => {
-      expect(getByText(auditUrl)).toBeInTheDocument();
+    snap.metadata.audits.forEach((audit) => {
+      expect(getByText(audit.report)).toBeInTheDocument();
     });
 
-    expect(getByText(snap.version)).toBeInTheDocument();
-    expect(getByText(snap.lastUpdated)).toBeInTheDocument();
+    expect(getByText(expectedVersion)).toBeInTheDocument();
   });
 
   it('it should render configure if snap is already installed', async () => {
     const mockStateForConfig = {
       metamask: {
         snapRegistryList: {
-          'a51ea3a8-f1b0-4613-9440-b80e2236713b': {
-            id: 'a51ea3a8-f1b0-4613-9440-b80e2236713b',
-            snapId: 'npm:@metamask/snap-simple-keyring',
-            iconUrl: '',
-            snapTitle: 'Metamask Simple Keyring',
-            snapSlug: 'Secure your account with MetaMask Mobile',
-            snapDescription:
-              'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
-            tags: ['EOA'],
-            developer: 'Metamask',
-            website: 'https://www.consensys.net/',
-            auditUrls: ['auditUrl1', 'auditUrl2'],
-            version: '1.0.0',
-            lastUpdated: 'April 20, 2023',
+          verifiedSnaps: {
+            'npm:@metamask/snap-simple-keyring': {
+              id: 'npm:@metamask/snap-simple-keyring',
+              metadata: {
+                name: 'MetaMask Simple Keyring',
+                author: {
+                  name: 'MetaMask',
+                  website:
+                    'https://metamask.github.io/snap-simple-keyring/latest/',
+                },
+                summary: 'Secure your account with a Private Key',
+                description:
+                  'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
+                audits: [],
+                category: 'key management',
+                support: {},
+                sourceCode: 'https://github.com/metamask/snap-simple-keyring',
+              },
+              versions: {
+                '0.0.1': {
+                  checksum: 'fhKGcx3qfv/93ZWnwW2Q7L0W1STExHOGHDp9VMVZk3Q=',
+                },
+              },
+            },
           },
         },
         snaps: {
@@ -139,7 +160,41 @@ describe('SnapAccountDetails', () => {
   });
 
   it('it should render install if snap is not installed', async () => {
-    const { queryByText, getByText, getAllByText } = renderComponent(mockState);
+    const mockStateWithoutInstalledSnap = {
+      metamask: {
+        snapRegistryList: {
+          verifiedSnaps: {
+            'npm:@metamask/snap-simple-keyring': {
+              id: 'npm:@metamask/snap-simple-keyring',
+              metadata: {
+                name: 'MetaMask Simple Keyring',
+                author: {
+                  name: 'MetaMask',
+                  website:
+                    'https://metamask.github.io/snap-simple-keyring/latest/',
+                },
+                summary: 'Secure your account with a Private Key',
+                description:
+                  'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
+                audits: [],
+                category: 'key management',
+                support: {},
+                sourceCode: 'https://github.com/metamask/snap-simple-keyring',
+              },
+              versions: {
+                '0.0.1': {
+                  checksum: 'fhKGcx3qfv/93ZWnwW2Q7L0W1STExHOGHDp9VMVZk3Q=',
+                },
+              },
+            },
+          },
+        },
+        snaps: {},
+      },
+    };
+    const { queryByText, getByText, getAllByText } = renderComponent(
+      mockStateWithoutInstalledSnap,
+    );
     expect(
       queryByText(messages.snapUpdateAvailable.message),
     ).not.toBeInTheDocument();
@@ -163,20 +218,31 @@ describe('SnapAccountDetails', () => {
     const mockStateForConfig = {
       metamask: {
         snapRegistryList: {
-          'a51ea3a8-f1b0-4613-9440-b80e2236713b': {
-            id: 'a51ea3a8-f1b0-4613-9440-b80e2236713b',
-            snapId: 'npm:@metamask/snap-simple-keyring',
-            iconUrl: '',
-            snapTitle: 'MetaMask Simple Keyring',
-            snapSlug: 'Secure your account with MetaMask Mobile',
-            snapDescription:
-              'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
-            tags: ['EOA'],
-            developer: 'MetaMask',
-            website: 'https://www.consensys.net/',
-            auditUrls: ['auditUrl1', 'auditUrl2'],
-            version: '1.0.0',
-            lastUpdated: 'April 20, 2023',
+          verifiedSnaps: {
+            'npm:@metamask/snap-simple-keyring': {
+              id: 'npm:@metamask/snap-simple-keyring',
+              metadata: {
+                name: 'MetaMask Simple Keyring',
+                author: {
+                  name: 'MetaMask',
+                  website:
+                    'https://metamask.github.io/snap-simple-keyring/latest/',
+                },
+                summary: 'Secure your account with a Pr',
+                description:
+                  'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
+                audits: [{ auditor: 'auditor', report: 'report' }],
+                category: 'key management',
+                support: {},
+                tags: ['EOA'],
+                sourceCode: 'mock-link',
+              },
+              versions: {
+                '1.0.1': {
+                  checksum: 'fhKGcx3qfv/93ZWnwW2Q7L0W1STExHOGHDp9VMVZk3Q=',
+                },
+              },
+            },
           },
         },
         snaps: {

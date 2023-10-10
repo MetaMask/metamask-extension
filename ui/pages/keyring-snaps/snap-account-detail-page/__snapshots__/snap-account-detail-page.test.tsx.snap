@@ -23,7 +23,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
-          Metamask Simple Keyring
+          MetaMask Simple Keyring
         </p>
       </div>
       <div
@@ -35,16 +35,30 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-box--margin-right-1 mm-box--color-text-default"
           >
-            Metamask Simple Keyring
+            MetaMask Simple Keyring
           </h2>
+          <div
+            class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              Installed
+            </p>
+          </div>
         </div>
         <div
           class="mm-box"
         >
           <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--margin-right-1 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          >
+            Update available
+          </button>
+          <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           >
-            Install snap
+            Configure
           </button>
         </div>
       </div>
@@ -55,10 +69,15 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-right-1 mm-box--padding-2 mm-box--sm:padding-2 mm-box--md:padding-2 mm-box--lg:padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
           style="border-radius: 50%; height: 32px; width: 32px;"
         >
-          <img
-            class="snap-detail-icon"
-            src=""
-          />
+          <div
+            class="mm-box snap-detail-icon mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              M
+            </p>
+          </div>
         </div>
         <div
           class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
@@ -99,7 +118,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md-bold mm-box--margin-bottom-2 mm-box--color-text-alternative"
         >
-          Secure your account with MetaMask Mobile
+          Secure your account with a Pr
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
@@ -139,7 +158,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--color-text-default"
           >
-            Metamask
+            MetaMask
           </p>
         </div>
         <div
@@ -152,11 +171,11 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           </p>
           <a
             class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            href="https://www.consensys.net/"
+            href="https://metamask.github.io/snap-simple-keyring/latest/"
             rel="noopener noreferrer"
             target="_blank"
           >
-            https://www.consensys.net/
+            https://metamask.github.io/snap-simple-keyring/latest/
           </a>
         </div>
         <div
@@ -169,19 +188,11 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           </p>
           <a
             class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            href="auditUrl1"
+            href="report"
             rel="noopener noreferrer"
             target="_blank"
           >
-            auditUrl1
-          </a>
-          <a
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            href="auditUrl2"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            auditUrl2
+            report
           </a>
         </div>
         <div
@@ -195,22 +206,17 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            1.0.0
+            2.0.0
           </p>
         </div>
         <div
-          class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
+          class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           >
-            Updated
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            April 20, 2023
-          </p>
+            Manage snap
+          </button>
         </div>
       </div>
     </div>

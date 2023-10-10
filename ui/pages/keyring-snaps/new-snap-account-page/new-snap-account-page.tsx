@@ -28,17 +28,37 @@ import SnapCard from '../snap-card/snap-card';
 
 export interface SnapDetails {
   id: string;
-  snapId: string;
-  iconUrl: string;
-  snapTitle: string;
-  snapSlug: string;
-  snapDescription: string;
-  tags: string[];
-  developer: string;
-  website: string;
-  auditUrls: string[];
-  version: string;
-  lastUpdated: string;
+  metadata: {
+    name: string;
+    author: {
+      name: string;
+      website: string;
+    };
+    summary: string;
+    description: string;
+    audits: {
+      auditor: string;
+      report: string;
+    }[];
+    category:
+      | 'interoperability'
+      | 'notifications'
+      | 'transaction insights'
+      | 'key management';
+    tags?: string[];
+  };
+  support?: {
+    knowledgeBase?: string;
+    faq?: string;
+    contact?: string;
+  };
+  onboard?: string;
+  sourceCode?: string;
+  versions: {
+    [version: string]: {
+      checksum: string;
+    };
+  };
 }
 
 export interface SnapCardProps extends SnapDetails {
@@ -55,6 +75,7 @@ export default function NewSnapAccountPage() {
     getSnapRegistry,
     shallowEqual,
   );
+
   useEffect(() => {
     updateSnapRegistry().catch((err) =>
       console.log(`Failed to fetch snap list: ${err}`),
@@ -109,16 +130,21 @@ export default function NewSnapAccountPage() {
         padding={[0, 10, 0, 10]}
         className="snap-account-cards"
       >
-        {Object.values(snapRegistryList).map(
-          (snap: SnapDetails, index: number) => {
+        {Object.values(snapRegistryList?.verifiedSnaps || {})
+          .filter((snap) => snap.metadata.category === 'key management')
+          .map((snap: SnapDetails, index: number) => {
             const foundSnap = Object.values(installedSnaps).find(
-              (installedSnap) => installedSnap.id === snap.snapId,
+              (installedSnap) => installedSnap.id === snap.id,
             );
 
             const isInstalled = Boolean(foundSnap);
 
+            const latestVersion = Object.keys(snap?.versions ?? []).sort(
+              (a, b) => semver.compare(a, b),
+            )[0];
+
             const updateAvailable = Boolean(
-              foundSnap?.version && semver.gt(snap.version, foundSnap.version),
+              foundSnap?.version && semver.gt(latestVersion, foundSnap.version),
             );
 
             return (
@@ -128,12 +154,13 @@ export default function NewSnapAccountPage() {
                 isInstalled={isInstalled}
                 updateAvailable={updateAvailable}
                 onClickFunc={() => {
-                  history.push(`/add-snap-account/${snap.id}`);
+                  history.push(
+                    `/add-snap-account/${encodeURIComponent(snap.id)}`,
+                  );
                 }}
               />
             );
-          },
-        )}
+          })}
       </Box>
     </Box>
   );

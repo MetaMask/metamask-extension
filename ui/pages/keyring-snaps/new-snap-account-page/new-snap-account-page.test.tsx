@@ -17,27 +17,36 @@ jest.mock('react-router-dom', () => ({
 const mockState = {
   metamask: {
     snapRegistryList: {
-      'a51ea3a8-f1b0-4613-9440-b80e2236713b': {
-        id: 'a51ea3a8-f1b0-4613-9440-b80e2236713b',
-        snapId: 'npm:@metamask/snap-simple-keyring',
-        iconUrl: '',
-        snapTitle: 'Metamask Simple Keyring',
-        snapSlug: 'Secure your account with MetaMask Mobile',
-        snapDescription:
-          'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
-        tags: ['EOA'],
-        developer: 'Metamask',
-        website: 'https://www.consensys.net/',
-        auditUrls: ['auditUrl1', 'auditUrl2'],
-        version: '1.0.0',
-        lastUpdated: 'April 20, 2023',
+      verifiedSnaps: {
+        'npm:@metamask/snap-simple-keyring': {
+          id: 'npm:@metamask/snap-simple-keyring',
+          metadata: {
+            name: 'MetaMask Simple Keyring',
+            author: {
+              name: 'MetaMask',
+              website: 'https://metamask.github.io/snap-simple-keyring/latest/',
+            },
+            summary: 'Secure your account with a Private Key',
+            description:
+              'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
+            audits: [],
+            category: 'key management',
+            support: {},
+            sourceCode: 'https://github.com/metamask/snap-simple-keyring',
+          },
+          versions: {
+            '2.2.4': {
+              checksum: 'fhKGcx3qfv/93ZWnwW2Q7L0W1STExHOGHDp9VMVZk3Q=',
+            },
+          },
+        },
       },
     },
     snaps: {
       'npm:@metamask/snap-simple-keyring': {
         id: 'npm:@metamask/snap-simple-keyring',
         origin: 'npm:@metamask/snap-simple-keyring',
-        version: '5.1.2',
+        version: '1.0.0',
         iconUrl: null,
         initialPermissions: {
           'endowment:manageAccount': {},

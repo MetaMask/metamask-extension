@@ -39,8 +39,9 @@ export default function SnapAccountDetailPage() {
   const installedSnaps = useSelector(getSnaps);
   const snapRegistryList: Record<string, SnapDetails> =
     useSelector(getSnapRegistry);
-  const currentSnap = Object.values(snapRegistryList).find(
-    (snap) => snap.id === snapId,
+
+  const currentSnap = Object.values(snapRegistryList.verifiedSnaps).find(
+    (snap) => snap.id === decodeURIComponent(snapId),
   );
 
   if (!currentSnap) {
@@ -48,11 +49,16 @@ export default function SnapAccountDetailPage() {
     return null;
   }
 
-  const isInstalled = Boolean(installedSnaps[currentSnap.snapId]);
+  const isInstalled = Boolean(installedSnaps[currentSnap.id]);
+
+  const latestVersion =
+    Object.keys(currentSnap.versions)
+      .sort((a, b) => semver.compare(a, b))
+      .pop() ?? '0.0.0';
 
   const updateAvailable =
     isInstalled &&
-    semver.gt(currentSnap.version, installedSnaps[currentSnap.snapId].version);
+    semver.gt(latestVersion, installedSnaps[currentSnap.id].version);
 
   return (
     <Box
@@ -77,10 +83,10 @@ export default function SnapAccountDetailPage() {
             marginBottom={2}
             color={TextColor.textAlternative}
           >
-            {currentSnap.snapSlug}
+            {currentSnap.metadata.summary}
           </Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {currentSnap.snapDescription}
+            {currentSnap.metadata.description}
           </Text>
         </Box>
         <Box
@@ -90,7 +96,7 @@ export default function SnapAccountDetailPage() {
           paddingLeft={4}
         >
           <Detail title={t('snapDetailTags')}>
-            {currentSnap.tags.map((tag, index) => {
+            {(currentSnap?.metadata?.tags ?? []).map((tag, index) => {
               return (
                 <Tag
                   label={tag}
@@ -109,39 +115,36 @@ export default function SnapAccountDetailPage() {
               variant={TextVariant.bodyMd}
               overflowWrap={OverflowWrap.BreakWord}
             >
-              {currentSnap.developer}
+              {currentSnap.metadata.author.name}
             </Text>
           </Detail>
           <Detail title={t('snapDetailWebsite')}>
             <Button
               variant={ButtonVariant.Link}
               overflowWrap={OverflowWrap.Anywhere}
-              href={currentSnap.website}
+              href={currentSnap.metadata.author.website}
               externalLink
             >
-              {currentSnap.website}
+              {currentSnap.metadata.author.website}
             </Button>
           </Detail>
           <Detail title={t('snapDetailAudits')}>
-            {currentSnap.auditUrls.map((auditLink, index) => {
+            {(currentSnap.metadata.audits ?? []).map((audit, index) => {
               return (
                 <Button
                   key={`audit-link-${index}`}
                   variant={ButtonVariant.Link}
                   overflowWrap={OverflowWrap.Anywhere}
-                  href={auditLink}
+                  href={audit.report}
                   externalLink
                 >
-                  {auditLink}
+                  {audit.report}
                 </Button>
               );
             })}
           </Detail>
           <Detail title={t('snapDetailVersion')}>
-            <Text variant={TextVariant.bodyMd}>{currentSnap.version}</Text>
-          </Detail>
-          <Detail title={t('snapDetailLastUpdated')}>
-            <Text variant={TextVariant.bodyMd}>{currentSnap.lastUpdated}</Text>
+            <Text variant={TextVariant.bodyMd}>{latestVersion}</Text>
           </Detail>
           {isInstalled && (
             <Box>
@@ -149,9 +152,7 @@ export default function SnapAccountDetailPage() {
                 variant={ButtonVariant.Link}
                 onClick={() =>
                   history.push(
-                    `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(
-                      currentSnap.snapId,
-                    )}`,
+                    `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(currentSnap.id)}`,
                   )
                 }
               >

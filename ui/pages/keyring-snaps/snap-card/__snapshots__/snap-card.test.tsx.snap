@@ -33,12 +33,12 @@ exports[`SnapCard should render 1`] = `
     <p
       class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-2 mm-box--color-text-alternative"
     >
-      Metamask Simple Keyring
+      MetaMask Simple Keyring
     </p>
     <h3
       class="mm-box mm-text mm-text--heading-md mm-box--margin-bottom-auto mm-box--color-text-default"
     >
-      Secure your account with MetaMask Mobile
+      Secure your account with a Private Key
     </h3>
     <div
       class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
