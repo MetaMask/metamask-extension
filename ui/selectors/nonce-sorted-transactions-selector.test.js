@@ -74,15 +74,17 @@ const getStateTree = ({
   unapprovedMsgs = [],
 } = {}) => ({
   metamask: {
-    providerConfig: {
-      nickname: 'mainnet',
+    provider: {
+      chainName: 'mainnet',
       chainId: CHAIN_IDS.MAINNET,
     },
     unapprovedMsgs,
     selectedAddress: SENDERS.ONE,
-    featureFlags: {},
-    transactions: [...incomingTxList, ...txList],
-    incomingTransactionsPreferences: {},
+    featureFlags: {
+      showIncomingTransactions: true,
+    },
+    incomingTransactions: [...incomingTxList],
+    currentNetworkTxList: [...txList],
   },
 });
 

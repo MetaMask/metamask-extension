@@ -1,18 +1,21 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import { toHex } from '@metamask/controller-utils';
-import { NameType } from '@metamask/name-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  MetaMetricsUserTrait,
+  TRAITS,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
+import { NETWORK_EVENTS } from './network';
 
 const segment = createSegmentMock(2, 10000);
 
@@ -21,14 +24,6 @@ const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
 const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
-const MOCK_EXTENSION_ID = 'testid';
-
-const MOCK_EXTENSION = {
-  runtime: {
-    id: MOCK_EXTENSION_ID,
-    setUninstallURL: () => undefined,
-  },
-};
 
 const MOCK_TRAITS = {
   test_boolean: true,
@@ -45,11 +40,7 @@ const MOCK_INVALID_TRAITS = {
 };
 
 const DEFAULT_TEST_CONTEXT = {
-  app: {
-    name: 'MetaMask Extension',
-    version: VERSION,
-    extensionId: MOCK_EXTENSION_ID,
-  },
+  app: { name: 'MetaMask Extension', version: VERSION },
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
   userAgent: window.navigator.userAgent,
@@ -66,13 +57,34 @@ const DEFAULT_EVENT_PROPERTIES = {
   revenue: undefined,
   value: undefined,
   currency: undefined,
-  extensionId: MOCK_EXTENSION_ID,
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
 const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
+
+function getMockNetworkController() {
+  let state = {
+    provider: {
+      type: NETWORK_TYPES.GOERLI,
+      chainId: FAKE_CHAIN_ID,
+    },
+    network: 'loading',
+  };
+  const on = sinon.stub().withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE);
+  const updateState = (newState) => {
+    state = { ...state, ...newState };
+    on.getCall(0).args[1]();
+  };
+  return {
+    store: {
+      getState: () => state,
+      updateState,
+    },
+    on,
+  };
+}
 
 function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
   let preferencesStore = {
@@ -107,7 +119,6 @@ const SAMPLE_NON_PERSISTED_EVENT = {
   category: 'Unit Test',
   successEvent: 'sample non-persisted event success',
   failureEvent: 'sample non-persisted event failure',
-  uniqueIdentifier: 'sample-non-persisted-event',
   properties: {
     test: true,
   },
@@ -117,16 +128,17 @@ function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
   preferencesStore = getMockPreferencesStore(),
-  getCurrentChainId = () => FAKE_CHAIN_ID,
-  onNetworkDidChange = () => {
-    // do nothing
-  },
+  networkController = getMockNetworkController(),
   segmentInstance,
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getCurrentChainId,
-    onNetworkDidChange,
+    getCurrentChainId: () =>
+      networkController.store.getState().provider.chainId,
+    onNetworkDidChange: networkController.on.bind(
+      networkController,
+      NETWORK_EVENTS.NETWORK_DID_CHANGE,
+    ),
     preferencesStore,
     version: '0.0.1',
     environment: 'test',
@@ -139,22 +151,12 @@ function getMetaMetricsController({
       },
       events: {},
     },
-    extension: MOCK_EXTENSION,
   });
 }
-
 describe('MetaMetricsController', function () {
   const now = new Date();
   let clock;
   beforeEach(function () {
-    globalThis.sentry = {
-      startSession: sinon.fake(() => {
-        /** NOOP */
-      }),
-      endSession: sinon.fake(() => {
-        /** NOOP */
-      }),
-    };
     clock = sinon.useFakeTimers(now.getTime());
     sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
   });
@@ -173,7 +175,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
             test: true,
           },
-          messageId: 'sample-non-persisted-event-failure',
+          messageId: Utils.generateRandomId(),
           timestamp: new Date(),
         });
       const metaMetricsController = getMetaMetricsController();
@@ -198,20 +200,17 @@ describe('MetaMetricsController', function () {
     });
 
     it('should update when network changes', function () {
-      let chainId = '0x111';
-      let networkDidChangeListener;
-      const onNetworkDidChange = (listener) => {
-        networkDidChangeListener = listener;
-      };
+      const networkController = getMockNetworkController();
       const metaMetricsController = getMetaMetricsController({
-        getCurrentChainId: () => chainId,
-        onNetworkDidChange,
+        networkController,
       });
-
-      chainId = '0x222';
-      networkDidChangeListener();
-
-      assert.strictEqual(metaMetricsController.chainId, '0x222');
+      networkController.store.updateState({
+        provider: {
+          type: 'NEW_NETWORK',
+          chainId: '0xaab',
+        },
+      });
+      assert.strictEqual(metaMetricsController.chainId, '0xaab');
     });
 
     it('should update when preferences changes', function () {
@@ -314,31 +313,29 @@ describe('MetaMetricsController', function () {
   });
 
   describe('setParticipateInMetaMetrics', function () {
-    it('should update the value of participateInMetaMetrics', async function () {
+    it('should update the value of participateInMetaMetrics', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: null,
         metaMetricsId: null,
       });
       assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
-      await metaMetricsController.setParticipateInMetaMetrics(true);
-      assert.ok(globalThis.sentry.startSession.calledOnce);
+      metaMetricsController.setParticipateInMetaMetrics(true);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
-      await metaMetricsController.setParticipateInMetaMetrics(false);
+      metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
     });
-    it('should generate and update the metaMetricsId when set to true', async function () {
+    it('should generate and update the metaMetricsId when set to true', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: null,
         metaMetricsId: null,
       });
       assert.equal(metaMetricsController.state.metaMetricsId, null);
-      await metaMetricsController.setParticipateInMetaMetrics(true);
+      metaMetricsController.setParticipateInMetaMetrics(true);
       assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
     });
-    it('should nullify the metaMetricsId when set to false', async function () {
+    it('should nullify the metaMetricsId when set to false', function () {
       const metaMetricsController = getMetaMetricsController();
-      await metaMetricsController.setParticipateInMetaMetrics(false);
-      assert.ok(globalThis.sentry.endSession.calledOnce);
+      metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.metaMetricsId, null);
     });
   });
@@ -555,80 +552,6 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: DEFAULT_EVENT_PROPERTIES,
-          messageId: Utils.generateRandomId(),
-          timestamp: new Date(),
-        }),
-      );
-    });
-  });
-
-  describe('Change Transaction XXX anonymous event namnes', function () {
-    it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
-      const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
-      metaMetricsController.submitEvent({
-        event: 'Transaction Added',
-        category: 'Unit Test',
-        sensitiveProperties: { foo: 'bar' },
-      });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
-          event: `Transaction Added Anon`,
-          anonymousId: METAMETRICS_ANONYMOUS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            foo: 'bar',
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
-          messageId: Utils.generateRandomId(),
-          timestamp: new Date(),
-        }),
-      );
-    });
-
-    it('should change "Transaction Submitted" anonymous event names to "Transaction Added Anon"', function () {
-      const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
-      metaMetricsController.submitEvent({
-        event: 'Transaction Submitted',
-        category: 'Unit Test',
-        sensitiveProperties: { foo: 'bar' },
-      });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
-          event: `Transaction Submitted Anon`,
-          anonymousId: METAMETRICS_ANONYMOUS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            foo: 'bar',
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
-          messageId: Utils.generateRandomId(),
-          timestamp: new Date(),
-        }),
-      );
-    });
-
-    it('should change "Transaction Finalized" anonymous event names to "Transaction Added Anon"', function () {
-      const metaMetricsController = getMetaMetricsController();
-      const spy = sinon.spy(segment, 'track');
-      metaMetricsController.submitEvent({
-        event: 'Transaction Finalized',
-        category: 'Unit Test',
-        sensitiveProperties: { foo: 'bar' },
-      });
-      assert.ok(spy.calledTwice);
-      assert.ok(
-        spy.calledWith({
-          event: `Transaction Finalized Anon`,
-          anonymousId: METAMETRICS_ANONYMOUS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            foo: 'bar',
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
         }),
@@ -950,7 +873,7 @@ describe('MetaMetricsController', function () {
   describe('_buildUserTraitsObject', function () {
     it('should return full user traits object on first call', function () {
       const MOCK_ALL_TOKENS = {
-        [toHex(1)]: {
+        '0x1': {
           '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
             {
               address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
@@ -965,7 +888,7 @@ describe('MetaMetricsController', function () {
             },
           ],
         },
-        [toHex(4)]: {
+        '0x4': {
           '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
             {
               address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
@@ -985,7 +908,7 @@ describe('MetaMetricsController', function () {
         },
         allNfts: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
-            [toHex(56)]: [
+            56: [
               {
                 address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
                 tokenId: '100',
@@ -1001,7 +924,7 @@ describe('MetaMetricsController', function () {
             ],
           },
           '0xe04AB39684A24D8D4124b114F3bd6FBEB779cacA': {
-            [toHex(59)]: [
+            69: [
               {
                 address: '0x63d646bc7380562376d5de205123a57b1718184d',
                 tokenId: '14',
@@ -1011,15 +934,15 @@ describe('MetaMetricsController', function () {
         },
         allTokens: MOCK_ALL_TOKENS,
         networkConfigurations: {
-          'network-configuration-id-1': {
+          'test-uuid-1': {
             chainId: CHAIN_IDS.MAINNET,
             ticker: CURRENCY_SYMBOLS.ETH,
           },
-          'network-configuration-id-2': {
+          'test-uuid-2': {
             chainId: CHAIN_IDS.GOERLI,
             ticker: CURRENCY_SYMBOLS.TEST_ETH,
           },
-          'network-configuration-id-3': { chainId: '0xaf' },
+          'test-uuid-3': { chainId: '0xaf' },
         },
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
@@ -1027,71 +950,23 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        desktopEnabled: false,
-        security_providers: [],
-        names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            '0x123': {
-              '0x1': {
-                name: 'Test 1',
-              },
-              '0x2': {
-                name: 'Test 2',
-              },
-              '0x3': {
-                name: null,
-              },
-            },
-            '0x456': {
-              '0x1': {
-                name: 'Test 3',
-              },
-            },
-            '0x789': {
-              '0x1': {
-                name: null,
-              },
-            },
-          },
-          otherType: {
-            otherValue: {
-              otherVariation: {
-                name: 'Test 4',
-              },
-            },
-          },
-        },
       });
 
       assert.deepEqual(traits, {
-        [MetaMetricsUserTrait.AddressBookEntries]: 3,
-        [MetaMetricsUserTrait.InstallDateExt]: '',
-        [MetaMetricsUserTrait.LedgerConnectionType]: 'web-hid',
-        [MetaMetricsUserTrait.NetworksAdded]: [
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.GOERLI,
-          '0xaf',
-        ],
-        [MetaMetricsUserTrait.NetworksWithoutTicker]: ['0xaf'],
-        [MetaMetricsUserTrait.NftAutodetectionEnabled]: false,
-        [MetaMetricsUserTrait.NumberOfAccounts]: 2,
-        [MetaMetricsUserTrait.NumberOfNftCollections]: 3,
-        [MetaMetricsUserTrait.NumberOfNfts]: 4,
-        [MetaMetricsUserTrait.NumberOfTokens]: 5,
-        [MetaMetricsUserTrait.OpenseaApiEnabled]: true,
-        [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
-        [MetaMetricsUserTrait.Theme]: 'default',
-        [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
-        [MetaMetricsUserTrait.DesktopEnabled]: false,
-        [MetaMetricsUserTrait.SecurityProviders]: [],
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
-        [MetaMetricsUserTrait.MmiAccountAddress]: null,
-        [MetaMetricsUserTrait.MmiIsCustodian]: false,
-        ///: END:ONLY_INCLUDE_IN
-        ///: BEGIN:ONLY_INCLUDE_IN(petnames)
-        [MetaMetricsUserTrait.PetnameAddressCount]: 3,
-        ///: END:ONLY_INCLUDE_IN
+        [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
+        [TRAITS.INSTALL_DATE_EXT]: '',
+        [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
+        [TRAITS.NETWORKS_ADDED]: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI, '0xaf'],
+        [TRAITS.NETWORKS_WITHOUT_TICKER]: ['0xaf'],
+        [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
+        [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
+        [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: 3,
+        [TRAITS.NUMBER_OF_NFTS]: 4,
+        [TRAITS.NUMBER_OF_TOKENS]: 5,
+        [TRAITS.OPENSEA_API_ENABLED]: true,
+        [TRAITS.THREE_BOX_ENABLED]: false,
+        [TRAITS.THEME]: 'default',
+        [TRAITS.TOKEN_DETECTION_ENABLED]: true,
       });
     });
 
@@ -1104,8 +979,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+          'test-uuid-1': { chainId: CHAIN_IDS.MAINNET },
+          'test-uuid-2': { chainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1113,7 +988,6 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1122,13 +996,11 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {
-          [toHex(1)]: {
-            '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }],
-          },
+          '0x1': { '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }] },
         },
         networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+          'test-uuid-1': { chainId: CHAIN_IDS.MAINNET },
+          'test-uuid-2': { chainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
@@ -1136,14 +1008,13 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
-        desktopEnabled: false,
       });
 
       assert.deepEqual(updatedTraits, {
-        [MetaMetricsUserTrait.AddressBookEntries]: 4,
-        [MetaMetricsUserTrait.NumberOfAccounts]: 3,
-        [MetaMetricsUserTrait.NumberOfTokens]: 1,
-        [MetaMetricsUserTrait.OpenseaApiEnabled]: false,
+        [TRAITS.ADDRESS_BOOK_ENTRIES]: 4,
+        [TRAITS.NUMBER_OF_ACCOUNTS]: 3,
+        [TRAITS.NUMBER_OF_TOKENS]: 1,
+        [TRAITS.OPENSEA_API_ENABLED]: false,
       });
     });
 
@@ -1156,8 +1027,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+          'test-uuid-1': { chainId: CHAIN_IDS.MAINNET },
+          'test-uuid-2': { chainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1165,7 +1036,6 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1175,8 +1045,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+          'test-uuid-1': { chainId: CHAIN_IDS.MAINNET },
+          'test-uuid-2': { chainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1184,7 +1054,6 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
-        desktopEnabled: false,
       });
 
       assert.equal(updatedTraits, null);

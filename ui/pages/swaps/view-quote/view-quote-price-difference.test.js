@@ -9,7 +9,7 @@ describe('View Price Quote Difference', () => {
   const mockState = {
     metamask: {
       tokens: [],
-      providerConfig: { type: NETWORK_TYPES.RPC, nickname: '', rpcUrl: '' },
+      provider: { type: NETWORK_TYPES.RPC, chainName: '', rpcUrl: '' },
       preferences: { showFiatInTestnets: true },
       currentCurrency: 'usd',
       conversionRate: 600.0,

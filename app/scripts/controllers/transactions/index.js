@@ -202,7 +202,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {Common} common configuration object
    */
   async getCommonConfiguration(fromAddress) {
-    const { type, nickname: name } = this.getProviderConfig();
+    const { type, chainName: name } = this.getProviderConfig();
     const supportsEIP1559 = await this.getEIP1559Compatibility(fromAddress);
 
     // This logic below will have to be updated each time a hardfork happens

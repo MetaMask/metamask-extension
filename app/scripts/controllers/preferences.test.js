@@ -1,84 +1,92 @@
-/**
- * @jest-environment node
- */
+import { strict as assert } from 'assert';
+import sinon from 'sinon';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
+import NetworkController from './network';
 
-const NETWORK_CONFIGURATION_DATA = {
-  'test-networkConfigurationId-1': {
-    rpcUrl: 'https://testrpc.com',
-    chainId: CHAIN_IDS.GOERLI,
-    nickname: '0X5',
-    rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
-  },
-  'test-networkConfigurationId-2': {
-    rpcUrl: 'http://localhost:8545',
-    chainId: '0x539',
-    ticker: 'ETH',
-    nickname: 'Localhost 8545',
-    rpcPrefs: {},
-  },
-};
-describe('preferences controller', () => {
+describe('preferences controller', function () {
   let preferencesController;
+  let network;
+  let currentChainId;
+  let provider;
   let tokenListController;
 
-  beforeEach(() => {
+  beforeEach(function () {
+    const sandbox = sinon.createSandbox();
+    currentChainId = CHAIN_IDS.MAINNET;
+    const networkControllerProviderConfig = {
+      getAccounts: () => undefined,
+    };
+    network = new NetworkController({
+      infuraProjectId: 'foo',
+      state: {
+        provider: {
+          type: 'mainnet',
+          chainId: currentChainId,
+        },
+      },
+    });
+    network.initializeProvider(networkControllerProviderConfig);
+    provider = network.getProviderAndBlockTracker().provider;
     const tokenListMessenger = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
       chainId: '1',
       preventPollingOnNetworkRestart: false,
-      onNetworkStateChange: jest.fn(),
-      onPreferencesStateChange: jest.fn(),
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessenger,
     });
 
+    sandbox
+      .stub(network, '_getLatestBlock')
+      .callsFake(() => Promise.resolve({}));
+
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
+      network,
+      provider,
       tokenListController,
-      onAccountRemoved: jest.fn(),
-      networkConfigurations: NETWORK_CONFIGURATION_DATA,
     });
   });
 
-  describe('useBlockie', () => {
-    it('defaults useBlockie to false', () => {
-      expect(preferencesController.store.getState().useBlockie).toStrictEqual(
-        false,
-      );
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  describe('useBlockie', function () {
+    it('defaults useBlockie to false', function () {
+      assert.equal(preferencesController.store.getState().useBlockie, false);
     });
 
-    it('setUseBlockie to true', () => {
+    it('setUseBlockie to true', function () {
       preferencesController.setUseBlockie(true);
-      expect(preferencesController.store.getState().useBlockie).toStrictEqual(
-        true,
-      );
+      assert.equal(preferencesController.store.getState().useBlockie, true);
     });
   });
 
-  describe('setCurrentLocale', () => {
-    it('checks the default currentLocale', () => {
+  describe('setCurrentLocale', function () {
+    it('checks the default currentLocale', function () {
       const { currentLocale } = preferencesController.store.getState();
-      expect(currentLocale).toStrictEqual('en_US');
+      assert.equal(currentLocale, 'en_US');
     });
 
-    it('sets current locale in preferences controller', () => {
+    it('sets current locale in preferences controller', function () {
       preferencesController.setCurrentLocale('ja');
       const { currentLocale } = preferencesController.store.getState();
-      expect(currentLocale).toStrictEqual('ja');
+      assert.equal(currentLocale, 'ja');
     });
   });
 
-  describe('setAddresses', () => {
-    it('should keep a map of addresses to names and addresses in the store', () => {
+  describe('setAddresses', function () {
+    it('should keep a map of addresses to names and addresses in the store', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
 
       const { identities } = preferencesController.store.getState();
-      expect(identities).toStrictEqual({
+      assert.deepEqual(identities, {
         '0xda22le': {
           name: 'Account 1',
           address: '0xda22le',
@@ -90,12 +98,12 @@ describe('preferences controller', () => {
       });
     });
 
-    it('should replace its list of addresses', () => {
+    it('should replace its list of addresses', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
       preferencesController.setAddresses(['0xda22le77', '0x7e57e277']);
 
       const { identities } = preferencesController.store.getState();
-      expect(identities).toStrictEqual({
+      assert.deepEqual(identities, {
         '0xda22le77': {
           name: 'Account 1',
           address: '0xda22le77',
@@ -108,332 +116,218 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('onAccountRemoved', () => {
-    it('should remove an address from state', () => {
-      const testAddress = '0xda22le';
-      let accountRemovedListener;
-      const onAccountRemoved = (callback) => {
-        accountRemovedListener = callback;
-      };
-      preferencesController = new PreferencesController({
-        initLangCode: 'en_US',
-        tokenListController,
-        initState: {
-          identities: {
-            [testAddress]: {
-              name: 'Account 1',
-              address: testAddress,
-            },
-          },
-        },
-        onAccountRemoved,
-        networkConfigurations: NETWORK_CONFIGURATION_DATA,
-      });
-
-      accountRemovedListener(testAddress);
-
-      expect(
-        preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual(undefined);
-    });
-
-    it('should throw an error if address not found', () => {
-      const testAddress = '0xda22le';
-      let accountRemovedListener;
-      const onAccountRemoved = (callback) => {
-        accountRemovedListener = callback;
-      };
-      preferencesController = new PreferencesController({
-        initLangCode: 'en_US',
-        tokenListController,
-        initState: {
-          identities: {
-            '0x7e57e2': {
-              name: 'Account 1',
-              address: '0x7e57e2',
-            },
-          },
-        },
-        onAccountRemoved,
-        networkConfigurations: NETWORK_CONFIGURATION_DATA,
-      });
-      expect(() => {
-        accountRemovedListener(testAddress);
-      }).toThrow(`${testAddress} can't be deleted cause it was not found`);
-    });
-  });
-
-  describe('removeAddress', () => {
-    it('should remove an address from state', () => {
+  describe('removeAddress', function () {
+    it('should remove an address from state', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
 
       preferencesController.removeAddress('0xda22le');
 
-      expect(
+      assert.equal(
         preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual(undefined);
+        undefined,
+      );
     });
 
-    it('should switch accounts if the selected address is removed', () => {
+    it('should switch accounts if the selected address is removed', function () {
       preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
 
       preferencesController.setSelectedAddress('0x7e57e2');
       preferencesController.removeAddress('0x7e57e2');
-      expect(preferencesController.getSelectedAddress()).toStrictEqual(
-        '0xda22le',
+
+      assert.equal(preferencesController.getSelectedAddress(), '0xda22le');
+    });
+  });
+
+  describe('setAccountLabel', function () {
+    it('should update a label for the given account', function () {
+      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
+
+      assert.deepEqual(
+        preferencesController.store.getState().identities['0xda22le'],
+        {
+          name: 'Account 1',
+          address: '0xda22le',
+        },
+      );
+
+      preferencesController.setAccountLabel('0xda22le', 'Dazzle');
+      assert.deepEqual(
+        preferencesController.store.getState().identities['0xda22le'],
+        {
+          name: 'Dazzle',
+          address: '0xda22le',
+        },
       );
     });
   });
 
-  describe('setAccountLabel', () => {
-    it('should update a label for the given account', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
-
-      expect(
-        preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual({
-        name: 'Account 1',
-        address: '0xda22le',
-      });
-
-      preferencesController.setAccountLabel('0xda22le', 'Dazzle');
-      expect(
-        preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual({
-        name: 'Dazzle',
-        address: '0xda22le',
-      });
+  describe('setPasswordForgotten', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.forgottenPassword, false);
     });
-  });
 
-  describe('setPasswordForgotten', () => {
-    it('should default to false', () => {
-      expect(
+    it('should set the forgottenPassword property in state', function () {
+      assert.equal(
         preferencesController.store.getState().forgottenPassword,
-      ).toStrictEqual(false);
-    });
+        false,
+      );
 
-    it('should set the forgottenPassword property in state', () => {
       preferencesController.setPasswordForgotten(true);
-      expect(
+
+      assert.equal(
         preferencesController.store.getState().forgottenPassword,
-      ).toStrictEqual(true);
+        true,
+      );
     });
   });
 
-  describe('setUsePhishDetect', () => {
-    it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().usePhishDetect,
-      ).toStrictEqual(true);
-    });
-
-    it('should set the usePhishDetect property in state', () => {
-      preferencesController.setUsePhishDetect(false);
-      expect(
-        preferencesController.store.getState().usePhishDetect,
-      ).toStrictEqual(false);
-    });
-  });
-
-  describe('setUseMultiAccountBalanceChecker', () => {
-    it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().useMultiAccountBalanceChecker,
-      ).toStrictEqual(true);
-    });
-
-    it('should set the setUseMultiAccountBalanceChecker property in state', () => {
-      preferencesController.setUseMultiAccountBalanceChecker(false);
-      expect(
-        preferencesController.store.getState().useMultiAccountBalanceChecker,
-      ).toStrictEqual(false);
-    });
-  });
-
-  describe('setUseSafeChainsListValidation', function () {
+  describe('setUsePhishDetect', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
-
-      expect(state.useSafeChainsListValidation).toStrictEqual(true);
+      assert.equal(state.usePhishDetect, true);
     });
 
-    it('should set the `setUseSafeChainsListValidation` property in state', function () {
-      expect(
-        preferencesController.store.getState().useSafeChainsListValidation,
-      ).toStrictEqual(true);
+    it('should set the usePhishDetect property in state', function () {
+      assert.equal(preferencesController.store.getState().usePhishDetect, true);
+      preferencesController.setUsePhishDetect(false);
+      assert.equal(
+        preferencesController.store.getState().usePhishDetect,
+        false,
+      );
+    });
+  });
 
-      preferencesController.setUseSafeChainsListValidation(false);
+  describe('setUseMultiAccountBalanceChecker', function () {
+    it('should default to true', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useMultiAccountBalanceChecker, true);
+    });
 
-      expect(
-        preferencesController.store.getState().useSafeChainsListValidation,
-      ).toStrictEqual(false);
+    it('should set the setUseMultiAccountBalanceChecker property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useMultiAccountBalanceChecker,
+        true,
+      );
+
+      preferencesController.setUseMultiAccountBalanceChecker(false);
+
+      assert.equal(
+        preferencesController.store.getState().useMultiAccountBalanceChecker,
+        false,
+      );
     });
   });
 
   describe('setUseTokenDetection', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();
-
-      expect(state.useTokenDetection).toStrictEqual(false);
+      assert.equal(state.useTokenDetection, false);
     });
 
-    it('should set the useTokenDetection property in state', () => {
-      preferencesController.setUseTokenDetection(true);
-      expect(
+    it('should set the useTokenDetection property in state', function () {
+      assert.equal(
         preferencesController.store.getState().useTokenDetection,
-      ).toStrictEqual(true);
-    });
-  });
-
-  describe('setUseNftDetection', () => {
-    it('should default to false', () => {
-      expect(
-        preferencesController.store.getState().useNftDetection,
-      ).toStrictEqual(false);
-    });
-
-    it('should set the useNftDetection property in state', () => {
-      preferencesController.setOpenSeaEnabled(true);
-      preferencesController.setUseNftDetection(true);
-      expect(
-        preferencesController.store.getState().useNftDetection,
-      ).toStrictEqual(true);
-    });
-  });
-
-  describe('setUse4ByteResolution', () => {
-    it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().use4ByteResolution,
-      ).toStrictEqual(true);
-    });
-
-    it('should set the use4ByteResolution property in state', () => {
-      preferencesController.setUse4ByteResolution(false);
-      expect(
-        preferencesController.store.getState().use4ByteResolution,
-      ).toStrictEqual(false);
-    });
-  });
-
-  describe('setOpenSeaEnabled', () => {
-    it('should default to false', () => {
-      expect(
-        preferencesController.store.getState().openSeaEnabled,
-      ).toStrictEqual(false);
-    });
-
-    it('should set the openSeaEnabled property in state', () => {
-      preferencesController.setOpenSeaEnabled(true);
-      expect(
-        preferencesController.store.getState().openSeaEnabled,
-      ).toStrictEqual(true);
-    });
-  });
-
-  describe('setAdvancedGasFee', () => {
-    it('should default to an empty object', () => {
-      expect(
-        preferencesController.store.getState().advancedGasFee,
-      ).toStrictEqual({});
-    });
-
-    it('should set the setAdvancedGasFee property in state', () => {
-      preferencesController.setAdvancedGasFee({
-        chainId: CHAIN_IDS.GOERLI,
-        gasFeePreferences: {
-          maxBaseFee: '1.5',
-          priorityFee: '2',
-        },
-      });
-      expect(
-        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
-          .maxBaseFee,
-      ).toStrictEqual('1.5');
-      expect(
-        preferencesController.store.getState().advancedGasFee[CHAIN_IDS.GOERLI]
-          .priorityFee,
-      ).toStrictEqual('2');
-    });
-  });
-
-  describe('setTheme', () => {
-    it('should default to value "OS"', () => {
-      expect(preferencesController.store.getState().theme).toStrictEqual('os');
-    });
-
-    it('should set the setTheme property in state', () => {
-      preferencesController.setTheme('dark');
-      expect(preferencesController.store.getState().theme).toStrictEqual(
-        'dark',
-      );
-    });
-  });
-
-  describe('setUseCurrencyRateCheck', () => {
-    it('should default to false', () => {
-      expect(
-        preferencesController.store.getState().useCurrencyRateCheck,
-      ).toStrictEqual(true);
-    });
-
-    it('should set the useCurrencyRateCheck property in state', () => {
-      preferencesController.setUseCurrencyRateCheck(false);
-      expect(
-        preferencesController.store.getState().useCurrencyRateCheck,
-      ).toStrictEqual(false);
-    });
-  });
-
-  describe('setIncomingTransactionsPreferences', () => {
-    const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
-
-    it('should have default value combined', () => {
-      const state = preferencesController.store.getState();
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0]].chainId]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
-      });
-    });
-
-    it('should update incomingTransactionsPreferences with given value set', () => {
-      preferencesController.setIncomingTransactionsPreferences(
-        [CHAIN_IDS.LINEA_MAINNET],
         false,
       );
+      preferencesController.setUseTokenDetection(true);
+      assert.equal(
+        preferencesController.store.getState().useTokenDetection,
+        true,
+      );
+    });
+  });
+
+  describe('setUseNftDetection', function () {
+    it('should default to false', function () {
       const state = preferencesController.store.getState();
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: false,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0]].chainId]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
+      assert.equal(state.useNftDetection, false);
+    });
+
+    it('should set the useNftDetection property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useNftDetection,
+        false,
+      );
+      preferencesController.setOpenSeaEnabled(true);
+      preferencesController.setUseNftDetection(true);
+      assert.equal(
+        preferencesController.store.getState().useNftDetection,
+        true,
+      );
+    });
+  });
+
+  describe('setOpenSeaEnabled', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.openSeaEnabled, false);
+    });
+
+    it('should set the openSeaEnabled property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().openSeaEnabled,
+        false,
+      );
+      preferencesController.setOpenSeaEnabled(true);
+      assert.equal(preferencesController.store.getState().openSeaEnabled, true);
+    });
+  });
+
+  describe('setAdvancedGasFee', function () {
+    it('should default to null', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
+    });
+
+    it('should set the setAdvancedGasFee property in state', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
+      preferencesController.setAdvancedGasFee({
+        maxBaseFee: '1.5',
+        priorityFee: '2',
       });
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        '1.5',
+      );
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.priorityFee,
+        '2',
+      );
     });
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
-  describe('setUseExternalNameSources', () => {
-    it('should default to true', () => {
-      expect(
-        preferencesController.store.getState().useExternalNameSources,
-      ).toStrictEqual(true);
+  describe('setTheme', function () {
+    it('should default to value "OS"', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.theme, 'os');
     });
 
-    it('should set the useExternalNameSources property in state', () => {
-      preferencesController.setUseExternalNameSources(false);
-      expect(
-        preferencesController.store.getState().useExternalNameSources,
-      ).toStrictEqual(false);
+    it('should set the setTheme property in state', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.theme, 'os');
+      preferencesController.setTheme('dark');
+      assert.equal(preferencesController.store.getState().theme, 'dark');
     });
   });
-  ///: END:ONLY_INCLUDE_IN
+
+  describe('setUseCurrencyRateCheck', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useCurrencyRateCheck, true);
+    });
+
+    it('should set the useCurrencyRateCheck property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useCurrencyRateCheck,
+        true,
+      );
+      preferencesController.setUseCurrencyRateCheck(false);
+      assert.equal(
+        preferencesController.store.getState().useCurrencyRateCheck,
+        false,
+      );
+    });
+  });
 });

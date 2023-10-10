@@ -1,57 +1,35 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
-import { pubToAddress, bufferToHex } from 'ethereumjs-util';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import browser from 'webextension-polyfill';
+import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
-import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
-import { addHexPrefix } from './lib/util';
+import { NETWORK_TYPES } from '../../shared/constants/network';
+import {
+  HardwareDeviceNames,
+  HardwareKeyringTypes,
+} from '../../shared/constants/hardware-wallets';
+import { deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
 
-const firstTimeState = {
-  config: {},
-  NetworkController: {
-    provider: {
-      type: NETWORK_TYPE_RPC,
-      rpcUrl: 'http://localhost:8545',
-      chainId: '0x539',
-    },
-  },
-};
-
 const ganacheServer = new Ganache();
 
-const threeBoxSpies = {
-  init: sinon.stub(),
-  getThreeBoxSyncingState: sinon.stub().returns(true),
-  turnThreeBoxSyncingOn: sinon.stub(),
-  _registerUpdates: sinon.spy(),
-};
-
-class ThreeBoxControllerMock {
-  constructor() {
-    this.store = {
-      subscribe: () => undefined,
-      getState: () => ({}),
-    };
-    this.init = threeBoxSpies.init;
-    this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState;
-    this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn;
-    this._registerUpdates = threeBoxSpies._registerUpdates;
-  }
-}
-
-const ExtensionizerMock = {
+const browserPolyfillMock = {
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
       addListener: () => undefined,
     },
+    onMessageExternal: {
+      addListener: () => undefined,
+    },
+    getPlatformInfo: async () => 'mac',
   },
 };
 
@@ -79,13 +57,11 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 };
 
 const MetaMaskController = proxyquire('./metamask-controller', {
-  './controllers/threebox': { default: ThreeBoxControllerMock },
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 
-const currentNetworkId = '42';
+const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
-const DEFAULT_LABEL_2 = 'Account 2';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -96,14 +72,65 @@ const TEST_SEED_ALT =
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 const CUSTOM_RPC_URL = 'http://localhost:8545';
 const CUSTOM_RPC_CHAIN_ID = '0x539';
+const ALT_MAINNET_RPC_URL = 'https://testrpc.com';
+const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
+
+const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
+const NETWORK_CONFIGURATION_ID_1 = 'test1';
+const NETWORK_CONFIGURATION_ID_2 = 'test2';
+const firstTimeState = {
+  config: {},
+  NetworkController: {
+    provider: {
+      type: NETWORK_TYPES.RPC,
+      rpcUrl: CUSTOM_RPC_URL,
+      chainId: CUSTOM_RPC_CHAIN_ID,
+    },
+    networkConfigurations: {
+      [NETWORK_CONFIGURATION_ID_1]: {
+        rpcUrl: ALT_MAINNET_RPC_URL,
+        type: NETWORK_TYPES.RPC,
+        chainId: '0x1',
+        ticker: 'ETH',
+        chainName: 'alt mainnet',
+      },
+      [NETWORK_CONFIGURATION_ID_2]: {
+        rpcUrl: POLYGON_RPC_URL,
+        type: NETWORK_TYPES.RPC,
+        chainId: '0x89',
+        ticker: 'MATIC',
+        chainName: 'Polygon',
+      },
+    },
+    networkDetails: {
+      EIPS: {
+        1559: false,
+      },
+    },
+  },
+  NotificationController: {
+    notifications: {
+      [NOTIFICATION_ID]: {
+        id: NOTIFICATION_ID,
+        origin: 'local:http://localhost:8086/',
+        createdDate: 1652967897732,
+        readDate: null,
+        message: 'Hello, http://localhost:8086!',
+      },
+    },
+  },
+};
 
 describe('MetaMaskController', function () {
   let metamaskController;
+
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
   before(async function () {
+    globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
+    sinon.spy(MetaMaskController.prototype, 'resetStates');
   });
 
   beforeEach(function () {
@@ -111,6 +138,31 @@ describe('MetaMaskController', function () {
       .persist()
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
+    nock('https://static.metafi.codefi.network')
+      .persist()
+      .get('/api/v1/lists/stalelist.json')
+      .reply(
+        200,
+        JSON.stringify({
+          version: 2,
+          tolerance: 2,
+          fuzzylist: [],
+          allowlist: [],
+          blocklist: ['127.0.0.1'],
+          lastUpdated: 0,
+        }),
+      )
+      .get('/api/v1/lists/hotlist.json')
+      .reply(
+        200,
+        JSON.stringify([
+          { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
+        ]),
+      );
+
+    sandbox.replace(browser, 'runtime', {
+      sendMessage: sandbox.stub().rejects(),
+    });
 
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
@@ -129,7 +181,7 @@ describe('MetaMaskController', function () {
         showTransactionNotification: () => undefined,
         getVersion: () => 'foo',
       },
-      extension: ExtensionizerMock,
+      browser: browserPolyfillMock,
       infuraProjectId: 'foo',
     });
 
@@ -153,18 +205,15 @@ describe('MetaMaskController', function () {
     await ganacheServer.quit();
   });
 
-  describe('#getAccounts', function () {
-    it('returns first address when dapp calls web3.eth.getAccounts', async function () {
-      const password = 'a-fake-password';
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+  describe('should reset states on first time profile load', function () {
+    it('should reset state', function () {
+      assert(metamaskController.resetStates.calledOnce);
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
 
-      metamaskController.networkController._baseProviderParams.getAccounts(
-        (err, res) => {
-          assert.ifError(err);
-          assert.equal(res.length, 1);
-          assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-        },
-      );
+    it('should not reset states if already set', function () {
+      // global.isFirstTime should also remain false
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
     });
   });
 
@@ -181,20 +230,24 @@ describe('MetaMaskController', function () {
     });
 
     it('adds private key to keyrings in KeyringController', async function () {
-      const simpleKeyrings = metamaskController.keyringController.getKeyringsByType(
-        'Simple Key Pair',
+      const simpleKeyrings =
+        metamaskController.keyringController.getKeyringsByType(
+          HardwareKeyringTypes.imported,
+        );
+      const pubAddressHexArr = await simpleKeyrings[0].getAccounts();
+      const privKeyHex = await simpleKeyrings[0].exportAccount(
+        pubAddressHexArr[0],
       );
-      const privKeyBuffer = simpleKeyrings[0].wallets[0].privateKey;
-      const pubKeyBuffer = simpleKeyrings[0].wallets[0].publicKey;
-      const addressBuffer = pubToAddress(pubKeyBuffer);
-      const privKey = bufferToHex(privKeyBuffer);
-      const pubKey = bufferToHex(addressBuffer);
-      assert.equal(privKey, addHexPrefix(importPrivkey));
-      assert.equal(pubKey, '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc');
+      assert.equal(privKeyHex, importPrivkey);
+      assert.equal(
+        pubAddressHexArr[0],
+        '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+      );
     });
 
     it('adds 1 account', async function () {
-      const keyringAccounts = await metamaskController.keyringController.getAccounts();
+      const keyringAccounts =
+        await metamaskController.keyringController.getAccounts();
       assert.equal(
         keyringAccounts[keyringAccounts.length - 1],
         '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
@@ -203,15 +256,10 @@ describe('MetaMaskController', function () {
   });
 
   describe('submitPassword', function () {
-    const password = 'password';
-
-    beforeEach(async function () {
-      await metamaskController.createNewVaultAndKeychain(password);
-      threeBoxSpies.init.reset();
-      threeBoxSpies.turnThreeBoxSyncingOn.reset();
-    });
-
     it('removes any identities that do not correspond to known accounts.', async function () {
+      const password = 'password';
+      await metamaskController.createNewVaultAndKeychain(password);
+
       const fakeAddress = '0xbad0';
       metamaskController.preferencesController.addAddresses([fakeAddress]);
       await metamaskController.submitPassword(password);
@@ -219,7 +267,8 @@ describe('MetaMaskController', function () {
       const identities = Object.keys(
         metamaskController.preferencesController.store.getState().identities,
       );
-      const addresses = await metamaskController.keyringController.getAccounts();
+      const addresses =
+        await metamaskController.keyringController.getAccounts();
 
       identities.forEach((identity) => {
         assert.ok(
@@ -234,23 +283,6 @@ describe('MetaMaskController', function () {
           `identities should include all Addresses: ${address}`,
         );
       });
-    });
-
-    it('gets the address from threebox and creates a new 3box instance', async function () {
-      await metamaskController.submitPassword(password);
-      assert(threeBoxSpies.init.calledOnce);
-      assert(threeBoxSpies.turnThreeBoxSyncingOn.calledOnce);
-    });
-
-    it('succeeds even if blockTracker or threeBoxController throw', async function () {
-      const throwErr = sinon.fake.throws('foo');
-      metamaskController.blockTracker.checkForLatestBlock = throwErr;
-      metamaskController.threeBoxController.getThreeBoxSyncingState = throwErr;
-      await metamaskController.submitPassword(password);
-      assert.ok(
-        throwErr.calledTwice,
-        'should have called checkForLatestBlock and getThreeBoxSyncingState',
-      );
     });
   });
 
@@ -354,7 +386,7 @@ describe('MetaMaskController', function () {
       });
     });
 
-    it('should restore any consecutive accounts with balances', async function () {
+    it('should restore any consecutive accounts with balances without extra zero balance accounts', async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.withArgs(TEST_ADDRESS).callsFake(() => {
         return Promise.resolve('0x14ced5122ce0a000');
@@ -380,7 +412,6 @@ describe('MetaMaskController', function () {
       delete identities[TEST_ADDRESS].lastSelected;
       assert.deepEqual(identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
-        [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: DEFAULT_LABEL_2 },
       });
     });
   });
@@ -418,35 +449,10 @@ describe('MetaMaskController', function () {
   });
 
   describe('#getApi', function () {
-    it('getState', function (done) {
-      let state;
+    it('getState', function () {
       const getApi = metamaskController.getApi();
-      getApi.getState((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          state = res;
-        }
-      });
+      const state = getApi.getState();
       assert.deepEqual(state, metamaskController.getState());
-      done();
-    });
-  });
-
-  describe('preferencesController', function () {
-    it('defaults useBlockie to false', function () {
-      assert.equal(
-        metamaskController.preferencesController.store.getState().useBlockie,
-        false,
-      );
-    });
-
-    it('setUseBlockie to true', function () {
-      metamaskController.setUseBlockie(true, noop);
-      assert.equal(
-        metamaskController.preferencesController.store.getState().useBlockie,
-        true,
-      );
     });
   });
 
@@ -472,7 +478,8 @@ describe('MetaMaskController', function () {
     });
 
     it('changes preferences controller select address', function () {
-      const preferenceControllerState = metamaskController.preferencesController.store.getState();
+      const preferenceControllerState =
+        metamaskController.preferencesController.store.getState();
       assert.equal(preferenceControllerState.selectedAddress, address);
     });
 
@@ -492,36 +499,67 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
 
     it('should add the Trezor Hardware keyring', async function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring');
-      await metamaskController.connectHardware('trezor', 0).catch(() => null);
-      const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware',
-      );
-      assert.equal(
+      await metamaskController
+        .connectHardware(HardwareDeviceNames.trezor, 0)
+        .catch(() => null);
+      const keyrings =
+        await metamaskController.keyringController.getKeyringsByType(
+          HardwareKeyringTypes.trezor,
+        );
+      assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        'Trezor Hardware',
+        [HardwareKeyringTypes.trezor],
       );
       assert.equal(keyrings.length, 1);
     });
 
     it('should add the Ledger Hardware keyring', async function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring');
-      await metamaskController.connectHardware('ledger', 0).catch(() => null);
-      const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Ledger Hardware',
-      );
-      assert.equal(
+      await metamaskController
+        .connectHardware(HardwareDeviceNames.ledger, 0)
+        .catch(() => null);
+      const keyrings =
+        await metamaskController.keyringController.getKeyringsByType(
+          HardwareKeyringTypes.ledger,
+        );
+      assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        'Ledger Hardware',
+        [HardwareKeyringTypes.ledger],
       );
       assert.equal(keyrings.length, 1);
+    });
+  });
+
+  describe('getPrimaryKeyringMnemonic', function () {
+    it('should return a mnemonic as a Uint8Array', function () {
+      const mockMnemonic =
+        'above mercy benefit hospital call oval domain student sphere interest argue shock';
+      const mnemonicIndices = mockMnemonic
+        .split(' ')
+        .map((word) => englishWordlist.indexOf(word));
+      const uint8ArrayMnemonic = new Uint8Array(
+        new Uint16Array(mnemonicIndices).buffer,
+      );
+
+      const mockHDKeyring = {
+        type: 'HD Key Tree',
+        mnemonic: uint8ArrayMnemonic,
+      };
+      sinon
+        .stub(metamaskController.keyringController, 'getKeyringsByType')
+        .returns([mockHDKeyring]);
+
+      const recoveredMnemonic = metamaskController.getPrimaryKeyringMnemonic();
+
+      assert.equal(recoveredMnemonic, uint8ArrayMnemonic);
     });
   });
 
@@ -534,15 +572,19 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
 
     it('should be locked by default', async function () {
-      await metamaskController.connectHardware('trezor', 0).catch(() => null);
-      const status = await metamaskController.checkHardwareStatus('trezor');
+      await metamaskController
+        .connectHardware(HardwareDeviceNames.trezor, 0)
+        .catch(() => null);
+      const status = await metamaskController.checkHardwareStatus(
+        HardwareDeviceNames.trezor,
+      );
       assert.equal(status, false);
     });
   });
@@ -553,18 +595,21 @@ describe('MetaMaskController', function () {
         await metamaskController.forgetDevice('Some random device name');
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
 
     it('should wipe all the keyring info', async function () {
-      await metamaskController.connectHardware('trezor', 0).catch(() => null);
-      await metamaskController.forgetDevice('trezor');
-      const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware',
-      );
+      await metamaskController
+        .connectHardware(HardwareDeviceNames.trezor, 0)
+        .catch(() => null);
+      await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
+      const keyrings =
+        await metamaskController.keyringController.getKeyringsByType(
+          HardwareKeyringTypes.trezor,
+        );
 
       assert.deepEqual(keyrings[0].accounts, []);
       assert.deepEqual(keyrings[0].page, 0);
@@ -602,12 +647,12 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.preferencesController, 'setSelectedAddress');
       sinon.spy(metamaskController.preferencesController, 'setAccountLabel');
       await metamaskController
-        .connectHardware('trezor', 0, `m/44/0'/0'`)
+        .connectHardware(HardwareDeviceNames.trezor, 0, `m/44'/1'/0'/0`)
         .catch(() => null);
       await metamaskController.unlockHardwareWalletAccount(
         accountToUnlock,
-        'trezor',
-        `m/44/0'/0'`,
+        HardwareDeviceNames.trezor,
+        `m/44'/1'/0'/0`,
       );
     });
 
@@ -621,9 +666,10 @@ describe('MetaMaskController', function () {
     });
 
     it('should set unlockedAccount in the keyring', async function () {
-      const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware',
-      );
+      const keyrings =
+        await metamaskController.keyringController.getKeyringsByType(
+          HardwareKeyringTypes.trezor,
+        );
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock);
     });
 
@@ -648,47 +694,6 @@ describe('MetaMaskController', function () {
     it('should call preferencesController.setAccountLabel', async function () {
       assert(
         metamaskController.preferencesController.setAccountLabel.calledOnce,
-      );
-    });
-  });
-
-  describe('#setCustomRpc', function () {
-    let rpcUrl;
-
-    beforeEach(function () {
-      rpcUrl = metamaskController.setCustomRpc(
-        CUSTOM_RPC_URL,
-        CUSTOM_RPC_CHAIN_ID,
-      );
-    });
-
-    it('returns custom RPC that when called', async function () {
-      assert.equal(await rpcUrl, CUSTOM_RPC_URL);
-    });
-
-    it('changes the network controller rpc', function () {
-      const networkControllerState = metamaskController.networkController.store.getState();
-      assert.equal(networkControllerState.provider.rpcUrl, CUSTOM_RPC_URL);
-    });
-  });
-
-  describe('#setCurrentCurrency', function () {
-    let defaultMetaMaskCurrency;
-
-    beforeEach(function () {
-      defaultMetaMaskCurrency =
-        metamaskController.currencyRateController.state.currentCurrency;
-    });
-
-    it('defaults to usd', function () {
-      assert.equal(defaultMetaMaskCurrency, 'usd');
-    });
-
-    it('sets currency to JPY', function () {
-      metamaskController.setCurrentCurrency('JPY', noop);
-      assert.equal(
-        metamaskController.currencyRateController.state.currentCurrency,
-        'JPY',
       );
     });
   });
@@ -718,13 +723,11 @@ describe('MetaMaskController', function () {
       }
     });
 
-    beforeEach(async function () {
-      await metamaskController.createNewVaultAndKeychain('password');
-    });
-
     it('#addNewAccount', async function () {
-      await metamaskController.addNewAccount();
-      const getAccounts = await metamaskController.keyringController.getAccounts();
+      await metamaskController.createNewVaultAndKeychain('password');
+      await metamaskController.addNewAccount(1);
+      const getAccounts =
+        await metamaskController.keyringController.getAccounts();
       assert.equal(getAccounts.length, 2);
     });
   });
@@ -737,7 +740,7 @@ describe('MetaMaskController', function () {
       );
       const getNetworkstub = sinon.stub(
         metamaskController.txController.txStateManager,
-        'getNetwork',
+        'getNetworkState',
       );
 
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
@@ -746,24 +749,24 @@ describe('MetaMaskController', function () {
       metamaskController.txController.txStateManager._addTransactionsToState([
         createTxMeta({
           id: 1,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
+          status: TransactionStatus.unapproved,
           metamaskNetworkId: currentNetworkId,
           txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
         }),
         createTxMeta({
           id: 1,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
+          status: TransactionStatus.unapproved,
           metamaskNetworkId: currentNetworkId,
           txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
         }),
         createTxMeta({
           id: 2,
-          status: TRANSACTION_STATUSES.REJECTED,
+          status: TransactionStatus.rejected,
           metamaskNetworkId: '32',
         }),
         createTxMeta({
           id: 3,
-          status: TRANSACTION_STATUSES.SUBMITTED,
+          status: TransactionStatus.submitted,
           metamaskNetworkId: currentNetworkId,
           txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
         }),
@@ -780,15 +783,20 @@ describe('MetaMaskController', function () {
   describe('#removeAccount', function () {
     let ret;
     const addressToRemove = '0x1';
+    let mockKeyring;
 
     beforeEach(async function () {
+      mockKeyring = {
+        getAccounts: sinon.stub().returns(Promise.resolve([])),
+        destroy: sinon.stub(),
+      };
       sinon.stub(metamaskController.preferencesController, 'removeAddress');
       sinon.stub(metamaskController.accountTracker, 'removeAccount');
       sinon.stub(metamaskController.keyringController, 'removeAccount');
-      sinon.stub(
-        metamaskController.permissionsController,
-        'removeAllAccountPermissions',
-      );
+      sinon.stub(metamaskController, 'removeAllAccountPermissions');
+      sinon
+        .stub(metamaskController.keyringController, 'getKeyringForAccount')
+        .returns(Promise.resolve(mockKeyring));
 
       ret = await metamaskController.removeAccount(addressToRemove);
     });
@@ -797,7 +805,10 @@ describe('MetaMaskController', function () {
       metamaskController.keyringController.removeAccount.restore();
       metamaskController.accountTracker.removeAccount.restore();
       metamaskController.preferencesController.removeAddress.restore();
-      metamaskController.permissionsController.removeAllAccountPermissions.restore();
+      metamaskController.removeAllAccountPermissions.restore();
+
+      mockKeyring.getAccounts.resetHistory();
+      mockKeyring.destroy.resetHistory();
     });
 
     it('should call preferencesController.removeAddress', async function () {
@@ -821,9 +832,9 @@ describe('MetaMaskController', function () {
         ),
       );
     });
-    it('should call permissionsController.removeAllAccountPermissions', async function () {
+    it('should call metamaskController.removeAllAccountPermissions', async function () {
       assert(
-        metamaskController.permissionsController.removeAllAccountPermissions.calledWith(
+        metamaskController.removeAllAccountPermissions.calledWith(
           addressToRemove,
         ),
       );
@@ -831,20 +842,15 @@ describe('MetaMaskController', function () {
     it('should return address', async function () {
       assert.equal(ret, '0x1');
     });
-  });
-
-  describe('#setCurrentLocale', function () {
-    it('checks the default currentLocale', function () {
-      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState()
-        .currentLocale;
-      assert.equal(preferenceCurrentLocale, 'en_US');
+    it('should call keyringController.getKeyringForAccount', async function () {
+      assert(
+        metamaskController.keyringController.getKeyringForAccount.calledWith(
+          addressToRemove,
+        ),
+      );
     });
-
-    it('sets current locale in preferences controller', function () {
-      metamaskController.setCurrentLocale('ja', noop);
-      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState()
-        .currentLocale;
-      assert.equal(preferenceCurrentLocale, 'ja');
+    it('should call keyring.destroy', async function () {
+      assert(mockKeyring.destroy.calledOnce);
     });
   });
 
@@ -852,7 +858,8 @@ describe('MetaMaskController', function () {
     let msgParams, metamaskMsgs, messages, msgId;
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-    const data = '0x43727970746f6b697474696573';
+    const data =
+      '0x0000000000000000000000000000000000000043727970746f6b697474696573';
 
     beforeEach(async function () {
       sandbox.stub(metamaskController, 'getBalance');
@@ -870,6 +877,10 @@ describe('MetaMaskController', function () {
         data,
       };
 
+      metamaskController.preferencesController.setDisabledRpcMethodPreference(
+        'eth_sign',
+        true,
+      );
       const promise = metamaskController.newUnsignedMessage(msgParams);
       // handle the promise so it doesn't throw an unhandledRejection
       promise.then(noop).catch(noop);
@@ -889,7 +900,7 @@ describe('MetaMaskController', function () {
     });
 
     it('sets the status to unapproved', function () {
-      assert.equal(metamaskMsgs[msgId].status, TRANSACTION_STATUSES.UNAPPROVED);
+      assert.equal(metamaskMsgs[msgId].status, TransactionStatus.unapproved);
     });
 
     it('sets the type to eth_sign', function () {
@@ -899,7 +910,20 @@ describe('MetaMaskController', function () {
     it('rejects the message', function () {
       const msgIdInt = parseInt(msgId, 10);
       metamaskController.cancelMessage(msgIdInt, noop);
-      assert.equal(messages[0].status, TRANSACTION_STATUSES.REJECTED);
+      assert.equal(messages[0].status, TransactionStatus.rejected);
+    });
+
+    it('checks message length', async function () {
+      msgParams = {
+        from: address,
+        data: '0xDEADBEEF',
+      };
+
+      try {
+        await metamaskController.newUnsignedMessage(msgParams);
+      } catch (error) {
+        assert.equal(error.message, 'eth_sign requires 32 byte message hash');
+      }
     });
 
     it('errors when signing a message', async function () {
@@ -940,7 +964,8 @@ describe('MetaMaskController', function () {
       // handle the promise so it doesn't throw an unhandledRejection
       promise.then(noop).catch(noop);
 
-      metamaskPersonalMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs();
+      metamaskPersonalMsgs =
+        metamaskController.personalMessageManager.getUnapprovedMsgs();
       personalMessages = metamaskController.personalMessageManager.messages;
       msgId = Object.keys(metamaskPersonalMsgs)[0];
       personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10);
@@ -971,7 +996,7 @@ describe('MetaMaskController', function () {
     it('sets the status to unapproved', function () {
       assert.equal(
         metamaskPersonalMsgs[msgId].status,
-        TRANSACTION_STATUSES.UNAPPROVED,
+        TransactionStatus.unapproved,
       );
     });
 
@@ -982,7 +1007,7 @@ describe('MetaMaskController', function () {
     it('rejects the message', function () {
       const msgIdInt = parseInt(msgId, 10);
       metamaskController.cancelPersonalMessage(msgIdInt, noop);
-      assert.equal(personalMessages[0].status, TRANSACTION_STATUSES.REJECTED);
+      assert.equal(personalMessages[0].status, TransactionStatus.rejected);
     });
 
     it('errors when signing a message', async function () {
@@ -991,7 +1016,7 @@ describe('MetaMaskController', function () {
       );
       assert.equal(
         metamaskPersonalMsgs[msgId].status,
-        TRANSACTION_STATUSES.SIGNED,
+        TransactionStatus.signed,
       );
       assert.equal(
         metamaskPersonalMsgs[msgId].rawSig,
@@ -1031,10 +1056,10 @@ describe('MetaMaskController', function () {
         cb();
       });
 
-      metamaskController.setupUntrustedCommunication(
-        streamTest,
-        phishingMessageSender,
-      );
+      metamaskController.setupUntrustedCommunication({
+        connectionStream: streamTest,
+        sender: phishingMessageSender,
+      });
       await promise;
       streamTest.end();
     });
@@ -1052,7 +1077,10 @@ describe('MetaMaskController', function () {
         cb();
       });
 
-      metamaskController.setupUntrustedCommunication(streamTest, messageSender);
+      metamaskController.setupUntrustedCommunication({
+        connectionStream: streamTest,
+        sender: messageSender,
+      });
 
       const message = {
         id: 1999133338649204,
@@ -1091,7 +1119,10 @@ describe('MetaMaskController', function () {
         cb();
       });
 
-      metamaskController.setupUntrustedCommunication(streamTest, messageSender);
+      metamaskController.setupUntrustedCommunication({
+        connectionStream: streamTest,
+        sender: messageSender,
+      });
 
       const message = {
         id: 1999133338649204,
@@ -1221,12 +1252,24 @@ describe('MetaMaskController', function () {
       assert.deepEqual(metamaskController.getState(), oldState);
     });
   });
-});
 
-function deferredPromise() {
-  let resolve;
-  const promise = new Promise((_resolve) => {
-    resolve = _resolve;
+  describe('markNotificationsAsRead', function () {
+    it('marks the notification as read', function () {
+      metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
+      const readNotification =
+        metamaskController.getState().notifications[NOTIFICATION_ID];
+      assert.notEqual(readNotification.readDate, null);
+    });
   });
-  return { promise, resolve };
-}
+
+  describe('dismissNotifications', function () {
+    it('deletes the notification from state', function () {
+      metamaskController.dismissNotifications([NOTIFICATION_ID]);
+      const state = metamaskController.getState().notifications;
+      assert.ok(
+        !Object.values(state).includes(NOTIFICATION_ID),
+        'Object should not include the deleted notification',
+      );
+    });
+  });
+});

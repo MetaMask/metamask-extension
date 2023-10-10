@@ -18,18 +18,7 @@ import {
 import Chip from '../../ui/chip/chip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
-import { Icon, IconName, IconSize } from '../../component-library';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
-
-/**
- * @deprecated The `<NetworkDisplay />` component has been deprecated in favor of the new `<PickerNetwork>` component from the component-library.
- * Please update your code to use the new `<PickerNetwork>` component instead, which can be found at ui/components/component-library/picker-network/picker-network.tsx.
- * You can find documentation for the new `PickerNetwork` component in the MetaMask Storybook:
- * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-pickernetwork--docs}
- * If you would like to help with the replacement of the old `NetworkDisplay` component, please submit a pull request against this GitHub issue:
- * {@link https://github.com/MetaMask/metamask-extension/issues/20485}
- */
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 export default function NetworkDisplay({
   indicatorSize,
@@ -39,10 +28,13 @@ export default function NetworkDisplay({
   onClick,
 }) {
   const networkIsLoading = useSelector(isNetworkLoading);
-  const providerConfig = useSelector(getProviderConfig);
+  const currentNetwork = useSelector((state) => ({
+    chainName: state.metamask.provider.chainName,
+    type: state.metamask.provider.type,
+  }));
   const t = useI18nContext();
 
-  const { nickname, type: networkType } = targetNetwork ?? providerConfig;
+  const { chainName, type: networkType } = targetNetwork ?? currentNetwork;
 
   return (
     <Chip
@@ -74,12 +66,14 @@ export default function NetworkDisplay({
         </LoadingIndicator>
       }
       rightIcon={
-        onClick ? <Icon name={IconName.ArrowDown} size={IconSize.Xs} /> : null
+        onClick ? (
+          <Icon name={ICON_NAMES.ARROW_DOWN} size={ICON_SIZES.XS} />
+        ) : null
       }
       label={
         networkType === NETWORK_TYPES.RPC
-          ? nickname ?? t('privateNetwork')
-          : t(getNetworkLabelKey(networkType))
+          ? chainName ?? t('privateNetwork')
+          : t(networkType)
       }
       className={classnames('network-display', {
         'network-display--disabled': disabled,
@@ -109,7 +103,7 @@ NetworkDisplay.propTypes = {
       ...Object.keys(BUILT_IN_NETWORKS),
       NETWORK_TYPES.RPC,
     ]),
-    nickname: PropTypes.string,
+    chainName: PropTypes.string,
   }),
   /**
    * Whether the NetworkDisplay is disabled

@@ -26,20 +26,6 @@ interface AppState {
     values?: { address?: string | null };
   } | null;
   networkDropdownOpen: boolean;
-  importNftsModal: {
-    open: boolean;
-    tokenAddress?: string;
-    tokenId?: string;
-    ignoreErc20Token?: boolean;
-  };
-  showIpfsModalOpen: boolean;
-  keyringRemovalSnapModal: {
-    snapName: string;
-    result: 'success' | 'failure' | 'none';
-  };
-  showKeyringRemovalSnapModal: boolean;
-  importTokensModalOpen: boolean;
-  showSelectActionModal: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -61,7 +47,6 @@ interface AppState {
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
-  showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
   };
@@ -79,11 +64,7 @@ interface AppState {
   newTokensImported: string;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
-  txId: string | null;
-  accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IN
+  txId: number | null;
 }
 
 interface AppSliceState {
@@ -108,15 +89,6 @@ const initialState: AppState = {
   alertMessage: null,
   qrCodeData: null,
   networkDropdownOpen: false,
-  importNftsModal: { open: false },
-  showIpfsModalOpen: false,
-  keyringRemovalSnapModal: {
-    snapName: '',
-    result: 'none',
-  },
-  showKeyringRemovalSnapModal: false,
-  importTokensModalOpen: false,
-  showSelectActionModal: false,
   accountDetail: {
     privateKey: '',
   },
@@ -137,7 +109,6 @@ const initialState: AppState = {
   openMetaMaskTabs: {},
   currentWindowTab: {},
   showWhatsNewPopup: true,
-  showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
   },
@@ -157,10 +128,6 @@ const initialState: AppState = {
   customTokenAmount: '',
   scrollToBottom: true,
   txId: null,
-  accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IN
 };
 
 export default function reduceApp(
@@ -186,59 +153,6 @@ export default function reduceApp(
         networkDropdownOpen: false,
       };
 
-    case actionConstants.IMPORT_NFTS_MODAL_OPEN:
-      return {
-        ...appState,
-        importNftsModal: {
-          open: true,
-          ...action.payload,
-        },
-      };
-
-    case actionConstants.IMPORT_NFTS_MODAL_CLOSE:
-      return {
-        ...appState,
-        importNftsModal: {
-          open: false,
-        },
-      };
-
-    case actionConstants.SHOW_IPFS_MODAL_OPEN:
-      return {
-        ...appState,
-        showIpfsModalOpen: true,
-      };
-
-    case actionConstants.SHOW_IPFS_MODAL_CLOSE:
-      return {
-        ...appState,
-        showIpfsModalOpen: false,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
-      return {
-        ...appState,
-        importTokensModalOpen: true,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
-      return {
-        ...appState,
-        importTokensModalOpen: false,
-      };
-
-    case actionConstants.SELECT_ACTION_MODAL_OPEN:
-      return {
-        ...appState,
-        showSelectActionModal: true,
-      };
-
-    case actionConstants.SELECT_ACTION_MODAL_CLOSE:
-      return {
-        ...appState,
-        showSelectActionModal: false,
-      };
-
     // alert methods
     case actionConstants.ALERT_OPEN:
       return {
@@ -253,13 +167,6 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
-
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
-      return {
-        ...appState,
-        accountDetailsAddress: action.payload,
-      };
-    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
@@ -431,10 +338,10 @@ export default function reduceApp(
       };
 
     case actionConstants.SET_NEW_NETWORK_ADDED: {
-      const { networkConfigurationId, nickname } = action.payload;
+      const { networkConfigurationId, chainName } = action.payload;
       return {
         ...appState,
-        newNetworkAddedName: nickname,
+        newNetworkAddedName: chainName,
         newNetworkAddedConfigurationId: networkConfigurationId,
       };
     }
@@ -505,6 +412,11 @@ export default function reduceApp(
         ...appState,
         sendInputCurrencySwitched: !appState.sendInputCurrencySwitched,
       };
+    case actionConstants.SET_ADDED_NETWORK_CONFIGURATION_ID:
+      return {
+        ...appState,
+        newNetworkAddedConfigurationId: action.value,
+      };
     case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
       return {
         ...appState,
@@ -515,26 +427,6 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-    case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
-      return {
-        ...appState,
-        showKeyringRemovalSnapModal: true,
-        keyringRemovalSnapModal: {
-          ...action.payload,
-        },
-      };
-    case actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT:
-      return {
-        ...appState,
-        showKeyringRemovalSnapModal: false,
-        keyringRemovalSnapModal: {
-          snapName: '',
-          result: 'none',
-        },
-      };
-    ///: END:ONLY_INCLUDE_IN
-
     default:
       return appState;
   }

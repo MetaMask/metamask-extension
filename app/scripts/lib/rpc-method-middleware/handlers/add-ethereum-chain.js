@@ -1,16 +1,16 @@
-import { ApprovalType } from '@metamask/controller-utils';
-import { errorCodes, ethErrors } from 'eth-rpc-errors';
+import { ethErrors, errorCodes } from 'eth-rpc-errors';
+import validUrl from 'valid-url';
 import { omit } from 'lodash';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
 } from '../../../../../shared/constants/app';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { getValidUrl } from '../../util';
+import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -20,10 +20,9 @@ const addEthereumChain = {
     getCurrentChainId: true,
     getCurrentRpcUrl: true,
     findNetworkConfigurationBy: true,
-    setActiveNetwork: true,
+    setCurrentNetwork: true,
     requestUserApproval: true,
-    startApprovalFlow: true,
-    endApprovalFlow: true,
+    sendMetrics: true,
   },
 };
 export default addEthereumChain;
@@ -38,10 +37,9 @@ async function addEthereumChainHandler(
     getCurrentChainId,
     getCurrentRpcUrl,
     findNetworkConfigurationBy,
-    setActiveNetwork,
+    setCurrentNetwork,
     requestUserApproval,
-    startApprovalFlow,
-    endApprovalFlow,
+    sendMetrics,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -83,25 +81,27 @@ async function addEthereumChainHandler(
     );
   }
 
-  function isLocalhostOrHttps(urlString) {
-    const url = getValidUrl(urlString);
-
-    return (
-      url !== null &&
-      (url.hostname === 'localhost' ||
-        url.hostname === '127.0.0.1' ||
-        url.protocol === 'https:')
-    );
-  }
+  const isLocalhost = (strUrl) => {
+    try {
+      const url = new URL(strUrl);
+      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    } catch (error) {
+      return false;
+    }
+  };
 
   const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl))
+    ? rpcUrls.find(
+        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
+      )
     : null;
 
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          isLocalhostOrHttps(blockExplorerUrl),
+      ? blockExplorerUrls.find(
+          (blockExplorerUrl) =>
+            isLocalhost(blockExplorerUrl) ||
+            validUrl.isHttpsUri(blockExplorerUrl),
         )
       : null;
 
@@ -155,22 +155,22 @@ async function addEthereumChainHandler(
     if (currentChainId === _chainId && currentRpcUrl === firstValidRPCUrl) {
       return end();
     }
-
     // If this network is already added with but is not the currently selected network
     // Ask the user to switch the network
     try {
-      await requestUserApproval({
-        origin,
-        type: ApprovalType.SwitchEthereumChain,
-        requestData: {
-          rpcUrl: existingNetwork.rpcUrl,
-          chainId: existingNetwork.chainId,
-          nickname: existingNetwork.nickname,
-          ticker: existingNetwork.ticker,
-        },
-      });
-
-      await setActiveNetwork(existingNetwork.id);
+      await setCurrentNetwork(
+        await requestUserApproval({
+          origin,
+          type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+          requestData: {
+            rpcUrl: existingNetwork.rpcUrl,
+            chainId: existingNetwork.chainId,
+            chainName: existingNetwork.chainName,
+            ticker: existingNetwork.ticker,
+            networkConfigurationId: existingNetwork.networkConfigurationId,
+          },
+        }),
+      );
       res.result = null;
     } catch (error) {
       // For the purposes of this method, it does not matter if the user
@@ -181,6 +181,28 @@ async function addEthereumChainHandler(
       }
     }
     return end();
+  }
+
+  let endpointChainId;
+
+  try {
+    endpointChainId = await jsonRpcRequest(firstValidRPCUrl, 'eth_chainId');
+  } catch (err) {
+    return end(
+      ethErrors.rpc.internal({
+        message: `Request for method 'eth_chainId on ${firstValidRPCUrl} failed`,
+        data: { networkErr: err },
+      }),
+    );
+  }
+
+  if (_chainId !== endpointChainId) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Chain ID returned by RPC URL ${firstValidRPCUrl} does not match ${_chainId}`,
+        data: { chainId: endpointChainId },
+      }),
+    );
   }
 
   if (typeof chainName !== 'string' || !chainName) {
@@ -244,71 +266,62 @@ async function addEthereumChainHandler(
     );
   }
   let networkConfigurationId;
-
-  const { id: approvalFlowId } = await startApprovalFlow();
-
   try {
-    await requestUserApproval({
-      origin,
-      type: ApprovalType.AddEthereumChain,
-      requestData: {
-        chainId: _chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        chainName: _chainName,
-        rpcUrl: firstValidRPCUrl,
-        ticker,
+    networkConfigurationId = await upsertNetworkConfiguration(
+      await requestUserApproval({
+        origin,
+        type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+        requestData: {
+          chainId: _chainId,
+          blockExplorerUrl: firstValidBlockExplorerUrl,
+          chainName: _chainName,
+          rpcUrl: firstValidRPCUrl,
+          ticker,
+        },
+      }),
+    );
+
+    sendMetrics({
+      event: 'Custom Network Added',
+      category: EVENT.CATEGORIES.NETWORK,
+      referrer: {
+        url: origin,
+      },
+      properties: {
+        chain_id: _chainId,
+        symbol: ticker,
+        source: EVENT.SOURCE.TRANSACTION.DAPP,
       },
     });
-
-    networkConfigurationId = await upsertNetworkConfiguration(
-      {
-        chainId: _chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        nickname: _chainName,
-        rpcUrl: firstValidRPCUrl,
-        ticker,
-      },
-      { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
-    );
 
     // Once the network has been added, the requested is considered successful
     res.result = null;
   } catch (error) {
-    endApprovalFlow({ id: approvalFlowId });
     return end(error);
   }
 
   // Ask the user to switch the network
   try {
-    await requestUserApproval({
-      origin,
-      type: ApprovalType.SwitchEthereumChain,
-      requestData: {
-        rpcUrl: firstValidRPCUrl,
-        chainId: _chainId,
-        nickname: _chainName,
-        ticker,
-        networkConfigurationId,
-      },
-    });
+    await setCurrentNetwork(
+      await requestUserApproval({
+        origin,
+        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+        requestData: {
+          rpcUrl: firstValidRPCUrl,
+          chainId: _chainId,
+          chainName: _chainName,
+          ticker,
+          networkConfigurationId,
+        },
+      }),
+    );
   } catch (error) {
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate
     // that something is wrong.
-    return end(
-      error.code === errorCodes.provider.userRejectedRequest
-        ? undefined
-        : error,
-    );
-  } finally {
-    endApprovalFlow({ id: approvalFlowId });
+    if (error.code !== errorCodes.provider.userRejectedRequest) {
+      return end(error);
+    }
   }
-
-  try {
-    await setActiveNetwork(networkConfigurationId);
-  } catch (error) {
-    return end(error);
-  }
-
   return end();
 }

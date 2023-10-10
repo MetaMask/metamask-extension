@@ -1,16 +1,16 @@
-import { capitalize, pick } from 'lodash';
+import { capitalize } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other
  * methods that add or manipulate networks in MetaMask state.
  */
-export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
+export type NetworkType = typeof NETWORK_TYPES[keyof typeof NETWORK_TYPES];
 
 /**
  * A union type of all possible hard-coded chain ids. This type is not
  * exhaustive and cannot be used for typing chainId in areas where the user or
  * dapp may specify any chainId.
  */
-export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
 
 /**
  * A type that is a union type of all possible hardcoded currency symbols.
@@ -18,13 +18,48 @@ export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
  * or dapp may supply their own symbol.
  */
 export type CurrencySymbol =
-  (typeof CURRENCY_SYMBOLS)[keyof typeof CURRENCY_SYMBOLS];
+  typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
+/**
+ * A type that is a union type for the supported symbols on different onramp providers.
+ */
+type SupportedCurrencySymbol =
+  typeof SUPPORTED_CURRENCY_SYMBOLS[keyof typeof SUPPORTED_CURRENCY_SYMBOLS];
 /**
  * Test networks have special symbols that combine the network name and 'ETH'
  * so that they are distinct from mainnet and other networks that use 'ETH'.
  */
 export type TestNetworkCurrencySymbol =
-  (typeof TEST_NETWORK_TICKER_MAP)[keyof typeof TEST_NETWORK_TICKER_MAP];
+  typeof TEST_NETWORK_TICKER_MAP[keyof typeof TEST_NETWORK_TICKER_MAP];
+
+/**
+ * MoonPay is a fiat onramp provider, and there are some special strings that
+ * inform the MoonPay API which network the user is attempting to onramp into.
+ * This type reflects those possible values.
+ */
+type MoonPayNetworkAbbreviation = 'BSC' | 'CCHAIN' | 'POLYGON';
+
+/**
+ * MoonPay requires some settings that are configured per network that it is
+ * enabled on. This type describes those settings.
+ */
+export type MoonPayChainSettings = {
+  /**
+   * What should the default onramp currency be, for example 'eth' on 'mainnet'
+   * This type matches a single SupportedCurrencySymbol or a
+   * SupportedCurrencySymbol and a MoonPayNetworkAbbreviation joined by a '_'.
+   */
+  defaultCurrencyCode:
+    | SupportedCurrencySymbol
+    | `${SupportedCurrencySymbol}_${MoonPayNetworkAbbreviation}`;
+  /**
+   * We must also configure all possible onramp currencies we wish to support.
+   * This type matches either an array of SupportedCurrencySymbol or
+   * an array of SupportedCurrencySymbol and a MoonPayNetworkAbbreviation joined by a '_'.
+   */
+  showOnlyCurrencies:
+    | SupportedCurrencySymbol[]
+    | `${SupportedCurrencySymbol}_${MoonPayNetworkAbbreviation}`[];
+};
 
 /**
  * An object containing preferences for an RPC definition
@@ -49,9 +84,9 @@ export type RPCDefinition = {
    */
   chainId: ChainId;
   /**
-   * The nickname for the network
+   * The chainName for the network
    */
-  nickname: string;
+  chainName: string;
   /**
    * The URL for the client to send network requests to
    */
@@ -64,6 +99,25 @@ export type RPCDefinition = {
    * Additional preferences for the network, such as blockExplorerUrl
    */
   rpcPrefs: RPCPreferences;
+};
+
+/**
+ * Wyre is a fiat onramp provider. We must provide some settings for networks
+ * that support Wyre.
+ */
+export type WyreChainSettings = {
+  /**
+   * The network name
+   */
+  srn: string;
+  /**
+   * The native currency for the network
+   */
+  currencyCode: CurrencySymbol;
+  /**
+   * The list of supported currencies for the Wyre onramp provider
+   */
+  currencies: SupportedCurrencySymbol[];
 };
 
 /**
@@ -80,6 +134,22 @@ type BuyableChainSettings = {
    * The network name or identifier
    */
   network: string;
+  /**
+   * The list of supported currencies for the Transak onramp provider
+   */
+  transakCurrencies?: SupportedCurrencySymbol[];
+  /**
+   * A configuration object for the MoonPay onramp provider
+   */
+  moonPay?: MoonPayChainSettings;
+  /**
+   * A configuration object for the Wyre onramp provider
+   */
+  wyre?: WyreChainSettings;
+  /**
+   * The list of supported currencies for the CoinbasePay onramp provider
+   */
+  coinbasePayCurrencies?: SupportedCurrencySymbol[];
 };
 
 /**
@@ -95,8 +165,6 @@ export const NETWORK_TYPES = {
   MAINNET: 'mainnet',
   RPC: 'rpc',
   SEPOLIA: 'sepolia',
-  LINEA_GOERLI: 'linea-goerli',
-  LINEA_MAINNET: 'linea-mainnet',
 } as const;
 
 /**
@@ -122,8 +190,6 @@ export const NETWORK_IDS = {
   GOERLI: '5',
   LOCALHOST: '1337',
   SEPOLIA: '11155111',
-  LINEA_GOERLI: '59140',
-  LINEA_MAINNET: '59144',
 } as const;
 
 /**
@@ -138,10 +204,6 @@ export const CHAIN_IDS = {
   BSC_TESTNET: '0x61',
   OPTIMISM: '0xa',
   OPTIMISM_TESTNET: '0x1a4',
-  BASE: '0x2105',
-  BASE_TESTNET: '0x14a33',
-  OPBNB: '0xcc',
-  OPBNB_TESTNET: '0x15eb',
   POLYGON: '0x89',
   POLYGON_TESTNET: '0x13881',
   AVALANCHE: '0xa86a',
@@ -153,15 +215,10 @@ export const CHAIN_IDS = {
   HARMONY: '0x63564c40',
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
-  LINEA_GOERLI: '0xe704',
-  LINEA_MAINNET: '0xe708',
   AURORA: '0x4e454152',
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
   MOONRIVER: '0x505',
-  CRONOS: '0x19',
-  GNOSIS: '0x64',
-  ZKSYNC_ERA: '0x144',
 } as const;
 
 /**
@@ -173,21 +230,19 @@ export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
-export const LINEA_GOERLI_DISPLAY_NAME = 'Linea Goerli';
-export const LINEA_MAINNET_DISPLAY_NAME = 'Linea Mainnet';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
 export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
 export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
 export const ARBITRUM_DISPLAY_NAME = 'Arbitrum One';
-export const BNB_DISPLAY_NAME = 'BNB Chain';
-export const OPTIMISM_DISPLAY_NAME = 'OP Mainnet';
+export const BNB_DISPLAY_NAME =
+  'BNB Smart Chain (previously Binance Smart Chain Mainnet)';
+export const OPTIMISM_DISPLAY_NAME = 'Optimism';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
-export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -204,12 +259,6 @@ export const MAINNET_RPC_URL = getRpcUrl({
 });
 export const GOERLI_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.GOERLI });
 export const SEPOLIA_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.SEPOLIA });
-export const LINEA_GOERLI_RPC_URL = getRpcUrl({
-  network: NETWORK_TYPES.LINEA_GOERLI,
-});
-export const LINEA_MAINNET_RPC_URL = getRpcUrl({
-  network: NETWORK_TYPES.LINEA_MAINNET,
-});
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 
 /**
@@ -219,13 +268,12 @@ export const LOCALHOST_RPC_URL = 'http://localhost:8545';
  */
 export const CURRENCY_SYMBOLS = {
   ARBITRUM: 'ETH',
-  AURORA_ETH: 'AURORA ETH',
+  AURORA: 'Aurora ETH',
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
   CELO: 'CELO',
   DAI: 'DAI',
-  GNOSIS: 'XDAI',
   ETH: 'ETH',
   FANTOM: 'FTM',
   HARMONY: 'ONE',
@@ -236,15 +284,136 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'OP',
-  CRONOS: 'CRO',
-  GLIMMER: 'GLMR',
-  MOONRIVER: 'MOVR',
-  ONE: 'ONE',
 } as const;
 
-export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
-export const LINEA_GOERLI_TOKEN_IMAGE_URL = './images/linea-logo-testnet.png';
-export const LINEA_MAINNET_TOKEN_IMAGE_URL = './images/linea-logo-mainnet.png';
+/**
+ * An object containing the token symbols for various tokens that are supported
+ * on different on ramp providers. This object is meant for internal consumption,
+ * hence why it is not exported.
+ */
+const SUPPORTED_CURRENCY_SYMBOLS = {
+  ...CURRENCY_SYMBOLS,
+  '1INCH': '1INCH',
+  AAVE: 'AAVE',
+  ABT: 'ABT',
+  ACH: 'ACH',
+  AGEUR: 'AGEUR',
+  AGLD: 'AGLD',
+  AMP: 'AMP',
+  ANKR: 'ANKR',
+  APE: 'APE',
+  ARPA: 'ARPA',
+  ASM: 'ASM',
+  AUCTION: 'AUCTION',
+  AXS: 'AXS',
+  AVAX: 'AVAX',
+  AVAXC: 'AVAXC',
+  AVAXCUSDC: 'AVAXCUSDC',
+  BADGER: 'BADGER',
+  BAL: 'BAL',
+  BAND: 'BAND',
+  BAT: 'BAT',
+  BNT: 'BNT',
+  BOBA: 'BOBA',
+  BOND: 'BOND',
+  BTRST: 'BTRST',
+  CHAIN: 'CHAIN',
+  CHZ: 'CHZ',
+  CLV: 'CLV',
+  COMP: 'COMP',
+  COTI: 'COTI',
+  CRO: 'CRO',
+  CRV: 'CRV',
+  CTSI: 'CTSI',
+  CVC: 'CVC',
+  DAO: 'DAO',
+  DDX: 'DDX',
+  DNT: 'DNT',
+  ENJ: 'ENJ',
+  ENS: 'ENS',
+  EURT: 'EURT',
+  FARM: 'FARM',
+  FET: 'FET',
+  FORTH: 'FORTH',
+  FX: 'FX',
+  GNO: 'GNO',
+  GRT: 'GRT',
+  GTC: 'GTC',
+  GTH: 'GTH',
+  GUSD: 'GUSD',
+  GYEN: 'GYEN',
+  HEX: 'HEX',
+  IOTX: 'IOTX',
+  IMX: 'IMX',
+  JASMY: 'JASMY',
+  KEEP: 'KEEP',
+  KNC: 'KNC',
+  KRL: 'KRL',
+  LCX: 'LCX',
+  LINK: 'LINK',
+  LPT: 'LPT',
+  LRC: 'LRC',
+  MANA: 'MANA',
+  MASK: 'MASK',
+  MINDS: 'MINDS',
+  MIR: 'MIR',
+  MKR: 'MKR',
+  MLN: 'MLN',
+  MTL: 'MTL',
+  MUSDC: 'mUSDC',
+  NKN: 'NKN',
+  NMR: 'NMR',
+  NU: 'NU',
+  OGN: 'OGN',
+  OMG: 'OMG',
+  ORN: 'ORN',
+  OXT: 'OXT',
+  PAX: 'PAX',
+  PERP: 'PERP',
+  PLA: 'PLA',
+  POLS: 'POLS',
+  POLY: 'POLY',
+  QNT: 'QNT',
+  QUICK: 'QUICK',
+  RAD: 'RAD',
+  RAI: 'RAI',
+  RARI: 'RARI',
+  REN: 'REN',
+  REP: 'REP',
+  REQ: 'REQ',
+  RLC: 'RLC',
+  RLY: 'RLY',
+  SAND: 'SAND',
+  SHIB: 'SHIB',
+  SKL: 'SKL',
+  SNX: 'SNX',
+  SPA: 'SPA',
+  STETH: 'STETH',
+  STORJ: 'STORJ',
+  SUKU: 'SUKU',
+  SUSHI: 'SUSHI',
+  SWAP: 'SWAP',
+  SWFTC: 'SWFTC',
+  TRAC: 'TRAC',
+  TRB: 'TRB',
+  TRIBE: 'TRIBE',
+  TRU: 'TRU',
+  TXL: 'TXL',
+  UMA: 'UMA',
+  UNI: 'UNI',
+  USDS: 'USDS',
+  VRA: 'VRA',
+  WBTC: 'WBTC',
+  WCFG: 'WCFG',
+  XYO: 'XYO',
+  YFII: 'YFII',
+  YFI: 'YFI',
+  YLD: 'YLD',
+  ZRX: 'ZRX',
+  ZUSD: 'ZUSD',
+} as const;
+
+export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
@@ -256,20 +425,16 @@ export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
-export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.GOERLI,
   NETWORK_TYPES.SEPOLIA,
-  NETWORK_TYPES.LINEA_GOERLI,
-  NETWORK_TYPES.LINEA_MAINNET,
-] as const;
+];
 
 export const TEST_CHAINS = [
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.SEPOLIA,
-  CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LOCALHOST,
 ];
 
@@ -279,8 +444,8 @@ const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
 export const TEST_NETWORK_TICKER_MAP: {
   [K in Exclude<
     NetworkType,
-    'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'
-  >]: string;
+    'localhost' | 'mainnet' | 'rpc'
+  >]: `${Capitalize<K>}${typeof CURRENCY_SYMBOLS.ETH}`;
 } = {
   [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
     CURRENCY_SYMBOLS.ETH
@@ -288,7 +453,6 @@ export const TEST_NETWORK_TICKER_MAP: {
   [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
     CURRENCY_SYMBOLS.ETH
   }`,
-  [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
 };
 
 /**
@@ -307,21 +471,10 @@ export const BUILT_IN_NETWORKS = {
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
   },
-  [NETWORK_TYPES.LINEA_GOERLI]: {
-    networkId: NETWORK_IDS.LINEA_GOERLI,
-    chainId: CHAIN_IDS.LINEA_GOERLI,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-    blockExplorerUrl: 'https://goerli.lineascan.build',
-  },
   [NETWORK_TYPES.MAINNET]: {
     networkId: NETWORK_IDS.MAINNET,
     chainId: CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
-  },
-  [NETWORK_TYPES.LINEA_MAINNET]: {
-    networkId: NETWORK_IDS.LINEA_MAINNET,
-    chainId: CHAIN_IDS.LINEA_MAINNET,
-    blockExplorerUrl: 'https://lineascan.build',
   },
   [NETWORK_TYPES.LOCALHOST]: {
     networkId: NETWORK_IDS.LOCALHOST,
@@ -329,41 +482,20 @@ export const BUILT_IN_NETWORKS = {
   },
 } as const;
 
-export const BUILT_IN_INFURA_NETWORKS = pick(
-  BUILT_IN_NETWORKS,
-  INFURA_PROVIDER_TYPES,
-);
-
-export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
-
-// type SupportedNetworksType = {
-//   [key: string]: {
-//     domain: string;
-//     subdomain: string;
-//     networkId: string;
-//   };
-// };
-
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
-  [NETWORK_TYPES.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
-  [NETWORK_TYPES.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
   [NETWORK_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
-  [NETWORK_IDS.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
   [NETWORK_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
-  [NETWORK_IDS.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [NETWORK_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
   [CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
-  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
-  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 } as const;
 
@@ -371,24 +503,18 @@ export const CHAIN_ID_TO_TYPE_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_TYPES.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
-  [CHAIN_IDS.LINEA_GOERLI]: NETWORK_TYPES.LINEA_GOERLI,
-  [CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
   [CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
 } as const;
 
 export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.GOERLI]: GOERLI_RPC_URL,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_RPC_URL,
-  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_RPC_URL,
   [CHAIN_IDS.MAINNET]: MAINNET_RPC_URL,
-  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_RPC_URL,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
 } as const;
 
 export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CHAIN_IDS.BSC]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.POLYGON]: MATIC_TOKEN_IMAGE_URL,
@@ -399,23 +525,18 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [NETWORK_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [NETWORK_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
-  [NETWORK_IDS.LINEA_GOERLI]: NETWORK_TYPES.LINEA_GOERLI,
   [NETWORK_IDS.MAINNET]: NETWORK_NAMES.HOMESTEAD,
-  [NETWORK_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
 } as const;
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_IDS.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_IDS.SEPOLIA,
-  [CHAIN_IDS.LINEA_GOERLI]: NETWORK_IDS.LINEA_GOERLI,
-  [CHAIN_IDS.LINEA_MAINNET]: NETWORK_IDS.LINEA_MAINNET,
   [CHAIN_IDS.LOCALHOST]: NETWORK_IDS.LOCALHOST,
 } as const;
 
@@ -427,15 +548,12 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
-  [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
-  [CURRENCY_SYMBOLS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
 
 const defaultEtherscanDomain = 'etherscan.io';
 const defaultEtherscanSubdomainPrefix = 'api';
-
 /**
  * Map of all Etherscan supported networks.
  */
@@ -458,16 +576,6 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
       CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
     }`,
     networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.SEPOLIA],
-  },
-  [CHAIN_IDS.LINEA_GOERLI]: {
-    domain: 'lineascan.build',
-    subdomain: 'goerli',
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_GOERLI],
-  },
-  [CHAIN_IDS.LINEA_MAINNET]: {
-    domain: 'lineascan.build',
-    subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_MAINNET],
   },
   [CHAIN_IDS.BSC]: {
     domain: 'bscscan.com',
@@ -534,12 +642,28 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonriver`,
     networkId: parseInt(CHAIN_IDS.MOONRIVER, 16).toString(),
   },
-  [CHAIN_IDS.GNOSIS]: {
-    domain: 'gnosisscan.io',
-    subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
-    networkId: parseInt(CHAIN_IDS.GNOSIS, 16).toString(),
-  },
 };
+
+/**
+ * Hardforks are points in the chain where logic is changed significantly
+ * enough where there is a fork and the new fork becomes the active chain.
+ * These constants are presented in chronological order starting with BERLIN
+ * because when we first needed to track the hardfork we had launched support
+ * for EIP-2718 (where transactions can have types and different shapes) and
+ * EIP-2930 (optional access lists), which were included in BERLIN.
+ *
+ * BERLIN - forked at block number 12,244,000, included typed transactions and
+ * optional access lists
+ * LONDON - future, upcoming fork that introduces the baseFeePerGas, an amount
+ * of the ETH transaction fees that will be burned instead of given to the
+ * miner. This change necessitated the third type of transaction envelope to
+ * specify maxFeePerGas and maxPriorityFeePerGas moving the fee bidding system
+ * to a second price auction model.
+ */
+export const HARDFORKS = {
+  BERLIN: 'berlin',
+  LONDON: 'london',
+} as const;
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
   [CHAIN_IDS.OPTIMISM]: 1,
@@ -566,92 +690,309 @@ export const BUYABLE_CHAINS_MAP: {
   [K in Exclude<
     ChainId,
     | typeof CHAIN_IDS.LOCALHOST
+    | typeof CHAIN_IDS.PALM
+    | typeof CHAIN_IDS.HARMONY
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
-    | typeof CHAIN_IDS.BASE_TESTNET
-    | typeof CHAIN_IDS.BASE
-    | typeof CHAIN_IDS.OPBNB_TESTNET
-    | typeof CHAIN_IDS.OPBNB
     | typeof CHAIN_IDS.BSC_TESTNET
     | typeof CHAIN_IDS.POLYGON_TESTNET
     | typeof CHAIN_IDS.AVALANCHE_TESTNET
     | typeof CHAIN_IDS.FANTOM_TESTNET
+    | typeof CHAIN_IDS.MOONBEAM
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
-    | typeof CHAIN_IDS.LINEA_GOERLI
-    | typeof CHAIN_IDS.GOERLI
-    | typeof CHAIN_IDS.SEPOLIA
-    | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.MOONRIVER
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      SUPPORTED_CURRENCY_SYMBOLS['1INCH'],
+      SUPPORTED_CURRENCY_SYMBOLS.AAVE,
+      SUPPORTED_CURRENCY_SYMBOLS.AGEUR,
+      SUPPORTED_CURRENCY_SYMBOLS.BUSD,
+      SUPPORTED_CURRENCY_SYMBOLS.CHAIN,
+      SUPPORTED_CURRENCY_SYMBOLS.CLV,
+      SUPPORTED_CURRENCY_SYMBOLS.COMP,
+      SUPPORTED_CURRENCY_SYMBOLS.CTSI,
+      SUPPORTED_CURRENCY_SYMBOLS.DAI,
+      SUPPORTED_CURRENCY_SYMBOLS.DAO,
+      SUPPORTED_CURRENCY_SYMBOLS.ENJ,
+      SUPPORTED_CURRENCY_SYMBOLS.EURT,
+      SUPPORTED_CURRENCY_SYMBOLS.GTH,
+      SUPPORTED_CURRENCY_SYMBOLS.HEX,
+      SUPPORTED_CURRENCY_SYMBOLS.LINK,
+      SUPPORTED_CURRENCY_SYMBOLS.MANA,
+      SUPPORTED_CURRENCY_SYMBOLS.MASK,
+      SUPPORTED_CURRENCY_SYMBOLS.MINDS,
+      SUPPORTED_CURRENCY_SYMBOLS.MKR,
+      SUPPORTED_CURRENCY_SYMBOLS.PLA,
+      SUPPORTED_CURRENCY_SYMBOLS.POLS,
+      SUPPORTED_CURRENCY_SYMBOLS.SAND,
+      SUPPORTED_CURRENCY_SYMBOLS.STETH,
+      SUPPORTED_CURRENCY_SYMBOLS.SUSHI,
+      SUPPORTED_CURRENCY_SYMBOLS.SWAP,
+      SUPPORTED_CURRENCY_SYMBOLS.TXL,
+      SUPPORTED_CURRENCY_SYMBOLS.UNI,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.USDT,
+      SUPPORTED_CURRENCY_SYMBOLS.VRA,
+      SUPPORTED_CURRENCY_SYMBOLS.WBTC,
+      SUPPORTED_CURRENCY_SYMBOLS.YLD,
+    ],
+    moonPay: {
+      defaultCurrencyCode: SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      showOnlyCurrencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.ETH,
+        SUPPORTED_CURRENCY_SYMBOLS.USDT,
+        SUPPORTED_CURRENCY_SYMBOLS.USDC,
+        SUPPORTED_CURRENCY_SYMBOLS.DAI,
+        SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+        SUPPORTED_CURRENCY_SYMBOLS.ORN,
+        SUPPORTED_CURRENCY_SYMBOLS.WETH,
+        SUPPORTED_CURRENCY_SYMBOLS.IMX,
+      ],
+    },
+    wyre: {
+      srn: 'ethereum',
+      currencyCode: CURRENCY_SYMBOLS.ETH,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.ETH,
+        SUPPORTED_CURRENCY_SYMBOLS.AAVE,
+        SUPPORTED_CURRENCY_SYMBOLS.BAT,
+        SUPPORTED_CURRENCY_SYMBOLS.BUSD,
+        SUPPORTED_CURRENCY_SYMBOLS.COMP,
+        SUPPORTED_CURRENCY_SYMBOLS.CRV,
+        SUPPORTED_CURRENCY_SYMBOLS.DAI,
+        SUPPORTED_CURRENCY_SYMBOLS.GUSD,
+        SUPPORTED_CURRENCY_SYMBOLS.GYEN,
+        SUPPORTED_CURRENCY_SYMBOLS.LINK,
+        SUPPORTED_CURRENCY_SYMBOLS.MKR,
+        SUPPORTED_CURRENCY_SYMBOLS.PAX,
+        SUPPORTED_CURRENCY_SYMBOLS.RAI,
+        SUPPORTED_CURRENCY_SYMBOLS.SNX,
+        SUPPORTED_CURRENCY_SYMBOLS.UMA,
+        SUPPORTED_CURRENCY_SYMBOLS.UNI,
+        SUPPORTED_CURRENCY_SYMBOLS.USDC,
+        SUPPORTED_CURRENCY_SYMBOLS.USDS,
+        SUPPORTED_CURRENCY_SYMBOLS.USDT,
+        SUPPORTED_CURRENCY_SYMBOLS.WBTC,
+        SUPPORTED_CURRENCY_SYMBOLS.WETH,
+        SUPPORTED_CURRENCY_SYMBOLS.YFI,
+        SUPPORTED_CURRENCY_SYMBOLS.ZUSD,
+      ],
+    },
+    coinbasePayCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      SUPPORTED_CURRENCY_SYMBOLS['1INCH'],
+      SUPPORTED_CURRENCY_SYMBOLS.AAVE,
+      SUPPORTED_CURRENCY_SYMBOLS.ABT,
+      SUPPORTED_CURRENCY_SYMBOLS.ACH,
+      SUPPORTED_CURRENCY_SYMBOLS.AGLD,
+      SUPPORTED_CURRENCY_SYMBOLS.AMP,
+      SUPPORTED_CURRENCY_SYMBOLS.ANKR,
+      SUPPORTED_CURRENCY_SYMBOLS.APE,
+      SUPPORTED_CURRENCY_SYMBOLS.ARPA,
+      SUPPORTED_CURRENCY_SYMBOLS.ASM,
+      SUPPORTED_CURRENCY_SYMBOLS.AUCTION,
+      SUPPORTED_CURRENCY_SYMBOLS.AXS,
+      SUPPORTED_CURRENCY_SYMBOLS.BADGER,
+      SUPPORTED_CURRENCY_SYMBOLS.BAL,
+      SUPPORTED_CURRENCY_SYMBOLS.BAND,
+      SUPPORTED_CURRENCY_SYMBOLS.BAT,
+      SUPPORTED_CURRENCY_SYMBOLS.BNT,
+      SUPPORTED_CURRENCY_SYMBOLS.BOBA,
+      SUPPORTED_CURRENCY_SYMBOLS.BOND,
+      SUPPORTED_CURRENCY_SYMBOLS.BTRST,
+      SUPPORTED_CURRENCY_SYMBOLS.CHZ,
+      SUPPORTED_CURRENCY_SYMBOLS.CLV,
+      SUPPORTED_CURRENCY_SYMBOLS.COMP,
+      SUPPORTED_CURRENCY_SYMBOLS.COTI,
+      SUPPORTED_CURRENCY_SYMBOLS.CRO,
+      SUPPORTED_CURRENCY_SYMBOLS.CRV,
+      SUPPORTED_CURRENCY_SYMBOLS.CTSI,
+      SUPPORTED_CURRENCY_SYMBOLS.CVC,
+      SUPPORTED_CURRENCY_SYMBOLS.DAI,
+      SUPPORTED_CURRENCY_SYMBOLS.DDX,
+      SUPPORTED_CURRENCY_SYMBOLS.DNT,
+      SUPPORTED_CURRENCY_SYMBOLS.ENJ,
+      SUPPORTED_CURRENCY_SYMBOLS.ENS,
+      SUPPORTED_CURRENCY_SYMBOLS.FARM,
+      SUPPORTED_CURRENCY_SYMBOLS.FET,
+      SUPPORTED_CURRENCY_SYMBOLS.FORTH,
+      SUPPORTED_CURRENCY_SYMBOLS.FX,
+      SUPPORTED_CURRENCY_SYMBOLS.GNO,
+      SUPPORTED_CURRENCY_SYMBOLS.GRT,
+      SUPPORTED_CURRENCY_SYMBOLS.GTC,
+      SUPPORTED_CURRENCY_SYMBOLS.IOTX,
+      SUPPORTED_CURRENCY_SYMBOLS.JASMY,
+      SUPPORTED_CURRENCY_SYMBOLS.KEEP,
+      SUPPORTED_CURRENCY_SYMBOLS.KNC,
+      SUPPORTED_CURRENCY_SYMBOLS.KRL,
+      SUPPORTED_CURRENCY_SYMBOLS.LCX,
+      SUPPORTED_CURRENCY_SYMBOLS.LINK,
+      SUPPORTED_CURRENCY_SYMBOLS.LPT,
+      SUPPORTED_CURRENCY_SYMBOLS.LRC,
+      SUPPORTED_CURRENCY_SYMBOLS.MANA,
+      SUPPORTED_CURRENCY_SYMBOLS.MASK,
+      SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+      SUPPORTED_CURRENCY_SYMBOLS.MIR,
+      SUPPORTED_CURRENCY_SYMBOLS.MKR,
+      SUPPORTED_CURRENCY_SYMBOLS.MLN,
+      SUPPORTED_CURRENCY_SYMBOLS.MTL,
+      SUPPORTED_CURRENCY_SYMBOLS.NKN,
+      SUPPORTED_CURRENCY_SYMBOLS.NMR,
+      SUPPORTED_CURRENCY_SYMBOLS.NU,
+      SUPPORTED_CURRENCY_SYMBOLS.OGN,
+      SUPPORTED_CURRENCY_SYMBOLS.OMG,
+      SUPPORTED_CURRENCY_SYMBOLS.OXT,
+      SUPPORTED_CURRENCY_SYMBOLS.PAX,
+      SUPPORTED_CURRENCY_SYMBOLS.PERP,
+      SUPPORTED_CURRENCY_SYMBOLS.PLA,
+      SUPPORTED_CURRENCY_SYMBOLS.POLY,
+      SUPPORTED_CURRENCY_SYMBOLS.QNT,
+      SUPPORTED_CURRENCY_SYMBOLS.QUICK,
+      SUPPORTED_CURRENCY_SYMBOLS.RAD,
+      SUPPORTED_CURRENCY_SYMBOLS.RAI,
+      SUPPORTED_CURRENCY_SYMBOLS.RARI,
+      SUPPORTED_CURRENCY_SYMBOLS.REN,
+      SUPPORTED_CURRENCY_SYMBOLS.REP,
+      SUPPORTED_CURRENCY_SYMBOLS.REQ,
+      SUPPORTED_CURRENCY_SYMBOLS.RLC,
+      SUPPORTED_CURRENCY_SYMBOLS.RLY,
+      SUPPORTED_CURRENCY_SYMBOLS.SAND,
+      SUPPORTED_CURRENCY_SYMBOLS.SHIB,
+      SUPPORTED_CURRENCY_SYMBOLS.SKL,
+      SUPPORTED_CURRENCY_SYMBOLS.SNX,
+      SUPPORTED_CURRENCY_SYMBOLS.STORJ,
+      SUPPORTED_CURRENCY_SYMBOLS.SUKU,
+      SUPPORTED_CURRENCY_SYMBOLS.SUSHI,
+      SUPPORTED_CURRENCY_SYMBOLS.SWFTC,
+      SUPPORTED_CURRENCY_SYMBOLS.TRAC,
+      SUPPORTED_CURRENCY_SYMBOLS.TRB,
+      SUPPORTED_CURRENCY_SYMBOLS.TRIBE,
+      SUPPORTED_CURRENCY_SYMBOLS.TRU,
+      SUPPORTED_CURRENCY_SYMBOLS.UMA,
+      SUPPORTED_CURRENCY_SYMBOLS.UNI,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.USDT,
+      SUPPORTED_CURRENCY_SYMBOLS.WBTC,
+      SUPPORTED_CURRENCY_SYMBOLS.WCFG,
+      SUPPORTED_CURRENCY_SYMBOLS.XYO,
+      SUPPORTED_CURRENCY_SYMBOLS.YFII,
+      SUPPORTED_CURRENCY_SYMBOLS.ZRX,
+    ],
+  },
+  [CHAIN_IDS.GOERLI]: {
+    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+  },
+  [CHAIN_IDS.SEPOLIA]: {
+    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [CHAIN_IDS.BSC]: {
     nativeCurrency: CURRENCY_SYMBOLS.BNB,
     network: 'bsc',
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.BNB,
+      SUPPORTED_CURRENCY_SYMBOLS.BUSD,
+    ],
+    moonPay: {
+      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_BSC`,
+      showOnlyCurrencies: [
+        `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_BSC`,
+        `${SUPPORTED_CURRENCY_SYMBOLS.BUSD}_BSC`,
+      ],
+    },
   },
   [CHAIN_IDS.POLYGON]: {
     nativeCurrency: CURRENCY_SYMBOLS.MATIC,
     network: 'polygon',
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+      SUPPORTED_CURRENCY_SYMBOLS.USDT,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.DAI,
+    ],
+    moonPay: {
+      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_POLYGON`,
+      showOnlyCurrencies: [
+        `${SUPPORTED_CURRENCY_SYMBOLS.MATIC}_POLYGON`,
+        `${SUPPORTED_CURRENCY_SYMBOLS.USDC}_POLYGON`,
+      ],
+    },
+    wyre: {
+      srn: 'matic',
+      currencyCode: CURRENCY_SYMBOLS.MATIC,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+        SUPPORTED_CURRENCY_SYMBOLS.MUSDC,
+      ],
+    },
   },
   [CHAIN_IDS.AVALANCHE]: {
     nativeCurrency: CURRENCY_SYMBOLS.AVALANCHE,
     network: 'avaxcchain',
+    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
+    moonPay: {
+      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.AVAX}_CCHAIN`,
+      showOnlyCurrencies: [`${SUPPORTED_CURRENCY_SYMBOLS.AVAX}_CCHAIN`],
+    },
+    wyre: {
+      srn: 'avalanche',
+      currencyCode: CURRENCY_SYMBOLS.AVALANCHE,
+      currencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE,
+        SUPPORTED_CURRENCY_SYMBOLS.AVAXC,
+        SUPPORTED_CURRENCY_SYMBOLS.AVAXCUSDC,
+      ],
+    },
+    coinbasePayCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
   },
   [CHAIN_IDS.FANTOM]: {
     nativeCurrency: CURRENCY_SYMBOLS.FANTOM,
     network: 'fantom',
+    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.FANTOM],
   },
   [CHAIN_IDS.CELO]: {
     nativeCurrency: CURRENCY_SYMBOLS.CELO,
     network: 'celo',
+    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.CELO],
+    moonPay: {
+      defaultCurrencyCode: SUPPORTED_CURRENCY_SYMBOLS.CELO,
+      showOnlyCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.CELO],
+    },
   },
   [CHAIN_IDS.OPTIMISM]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'optimism',
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+    ],
   },
   [CHAIN_IDS.ARBITRUM]: {
     nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
     network: 'arbitrum',
-  },
-  [CHAIN_IDS.CRONOS]: {
-    nativeCurrency: CURRENCY_SYMBOLS.CRONOS,
-    network: 'cronos',
-  },
-  [CHAIN_IDS.MOONBEAM]: {
-    nativeCurrency: CURRENCY_SYMBOLS.GLIMMER,
-    network: 'moonbeam',
-  },
-  [CHAIN_IDS.MOONRIVER]: {
-    nativeCurrency: CURRENCY_SYMBOLS.MOONRIVER,
-    network: 'moonriver',
+    transakCurrencies: [
+      SUPPORTED_CURRENCY_SYMBOLS.ARBITRUM,
+      SUPPORTED_CURRENCY_SYMBOLS.SPA,
+      SUPPORTED_CURRENCY_SYMBOLS.USDC,
+      SUPPORTED_CURRENCY_SYMBOLS.USDS,
+    ],
   },
   [CHAIN_IDS.AURORA]: {
-    nativeCurrency: CURRENCY_SYMBOLS.AURORA_ETH,
+    nativeCurrency: CURRENCY_SYMBOLS.AURORA,
     network: 'aurora',
-  },
-  [CHAIN_IDS.HARMONY]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ONE,
-    network: 'harmony',
-  },
-  [CHAIN_IDS.PALM]: {
-    nativeCurrency: CURRENCY_SYMBOLS.PALM,
-    network: 'palm',
-  },
-  [CHAIN_IDS.LINEA_MAINNET]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: 'linea',
-  },
-  [CHAIN_IDS.ZKSYNC_ERA]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: 'zksync',
+    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AURORA],
   },
 };
 
 export const FEATURED_RPCS: RPCDefinition[] = [
   {
     chainId: CHAIN_IDS.ARBITRUM,
-    nickname: ARBITRUM_DISPLAY_NAME,
+    chainName: ARBITRUM_DISPLAY_NAME,
     rpcUrl: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.ARBITRUM,
     rpcPrefs: {
@@ -661,9 +1002,9 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.AURORA,
-    nickname: AURORA_DISPLAY_NAME,
+    chainName: AURORA_DISPLAY_NAME,
     rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.AURORA_ETH,
+    ticker: CURRENCY_SYMBOLS.AURORA,
     rpcPrefs: {
       blockExplorerUrl: 'https://aurorascan.dev/',
       imageUrl: AURORA_TOKEN_IMAGE_URL,
@@ -671,7 +1012,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.AVALANCHE,
-    nickname: AVALANCHE_DISPLAY_NAME,
+    chainName: AVALANCHE_DISPLAY_NAME,
     rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.AVALANCHE,
     rpcPrefs: {
@@ -681,7 +1022,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.BSC,
-    nickname: BNB_DISPLAY_NAME,
+    chainName: BNB_DISPLAY_NAME,
     rpcUrl: 'https://bsc-dataseed.binance.org/',
     ticker: CURRENCY_SYMBOLS.BNB,
     rpcPrefs: {
@@ -691,7 +1032,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.FANTOM,
-    nickname: FANTOM_DISPLAY_NAME,
+    chainName: FANTOM_DISPLAY_NAME,
     rpcUrl: 'https://rpc.ftm.tools/',
     ticker: CURRENCY_SYMBOLS.FANTOM,
     rpcPrefs: {
@@ -701,7 +1042,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.HARMONY,
-    nickname: HARMONY_DISPLAY_NAME,
+    chainName: HARMONY_DISPLAY_NAME,
     rpcUrl: 'https://api.harmony.one/',
     ticker: CURRENCY_SYMBOLS.HARMONY,
     rpcPrefs: {
@@ -711,7 +1052,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.OPTIMISM,
-    nickname: OPTIMISM_DISPLAY_NAME,
+    chainName: OPTIMISM_DISPLAY_NAME,
     rpcUrl: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.ETH,
     rpcPrefs: {
@@ -721,7 +1062,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.PALM,
-    nickname: PALM_DISPLAY_NAME,
+    chainName: PALM_DISPLAY_NAME,
     rpcUrl: `https://palm-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.PALM,
     rpcPrefs: {
@@ -731,7 +1072,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.POLYGON,
-    nickname: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
+    chainName: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
     rpcUrl: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.MATIC,
     rpcPrefs: {
@@ -741,7 +1082,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
   },
   {
     chainId: CHAIN_IDS.CELO,
-    nickname: CELO_DISPLAY_NAME,
+    chainName: CELO_DISPLAY_NAME,
     rpcUrl: `https://celo-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.CELO,
     rpcPrefs: {
@@ -749,41 +1090,4 @@ export const FEATURED_RPCS: RPCDefinition[] = [
       imageUrl: CELO_TOKEN_IMAGE_URL,
     },
   },
-  {
-    chainId: CHAIN_IDS.GNOSIS,
-    nickname: GNOSIS_DISPLAY_NAME,
-    rpcUrl: `https://rpc.gnosischain.com`,
-    ticker: CURRENCY_SYMBOLS.GNOSIS,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://gnosisscan.io',
-      imageUrl: GNOSIS_TOKEN_IMAGE_URL,
-    },
-  },
 ];
-
-/**
- * Represents the availability state of the currently selected network.
- */
-export enum NetworkStatus {
-  /**
-   * The network may or may not be able to receive requests, but either no
-   * attempt has been made to determine this, or an attempt was made but was
-   * unsuccessful.
-   */
-  Unknown = 'unknown',
-  /**
-   * The network is able to receive and respond to requests.
-   */
-  Available = 'available',
-  /**
-   * The network is unable to receive and respond to requests for unknown
-   * reasons.
-   */
-  Unavailable = 'unavailable',
-  /**
-   * The network is not only unavailable, but is also inaccessible for the user
-   * specifically based on their location. This state only applies to Infura
-   * networks.
-   */
-  Blocked = 'blocked',
-}

@@ -8,7 +8,7 @@ const mockState = {
   metamask: {
     providerConfig: {
       chainId: '0x539',
-      nickname: '',
+      chainName: '',
       rpcPrefs: {},
       rpcUrl: 'http://localhost:8545',
       ticker: 'ETH',

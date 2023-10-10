@@ -1,6 +1,6 @@
 import { prependZero } from '../../../shared/modules/string-utils';
 
-export default class Backup {
+export default class BackupController {
   constructor(opts = {}) {
     const {
       preferencesController,
@@ -31,10 +31,10 @@ export default class Backup {
     }
 
     if (network) {
-      this.networkController.loadBackup(network);
+      this.networkController.store.updateState(network);
     }
 
-    if (preferences || addressBook || network) {
+    if (preferences && addressBook && network) {
       this._trackMetaMetricsEvent({
         event: 'User Data Imported',
         category: 'Backup',
@@ -46,10 +46,7 @@ export default class Backup {
     const userData = {
       preferences: { ...this.preferencesController.store.getState() },
       addressBook: { ...this.addressBookController.state },
-      network: {
-        networkConfigurations:
-          this.networkController.state.networkConfigurations,
-      },
+      network: { ...this.networkController.store.getState() },
     };
 
     /**

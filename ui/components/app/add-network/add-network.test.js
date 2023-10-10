@@ -9,14 +9,14 @@ jest.mock('../../../selectors', () => ({
   getNetworkConfigurations: () => ({
     networkConfigurationId: {
       chainId: '0x539',
-      nickname: 'Localhost 8545',
+      chainName: 'Localhost 8545',
       rpcPrefs: {},
       rpcUrl: 'http://localhost:8545',
       ticker: 'ETH',
     },
     networkConfigurationId2: {
       chainId: '0xA4B1',
-      nickname: 'Arbitrum One',
+      chainName: 'Arbitrum One',
       rpcPrefs: { blockExplorerUrl: 'https://explorer.arbitrum.io' },
       rpcUrl:
         'https://arbitrum-mainnet.infura.io/v3/7e127583378c4732a858df2550aff333',
@@ -51,7 +51,7 @@ describe('AddNetwork', () => {
     expect(screen.getByText('Popular custom networks')).toBeInTheDocument();
   });
 
-  it('should show Arbitrum One network nickname', () => {
+  it('should show Arbitrum One network chainName', () => {
     render();
     expect(screen.getByText('Arbitrum One')).toBeInTheDocument();
   });

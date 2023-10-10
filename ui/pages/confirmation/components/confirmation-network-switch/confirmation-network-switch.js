@@ -6,39 +6,42 @@ import SiteIcon from '../../../../components/ui/site-icon';
 import Typography from '../../../../components/ui/typography/typography';
 import {
   TypographyVariant,
-  FontWeight,
-  Display,
+  FONT_WEIGHT,
+  DISPLAY,
   JustifyContent,
-  BlockSize,
+  BLOCK_SIZES,
   AlignItems,
-  TextAlign,
+  TEXT_ALIGN,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
 export default function ConfirmationNetworkSwitch({ newNetwork }) {
-  const { chainId, nickname, type } = useSelector(getProviderConfig);
+  const currentNetwork = useSelector((state) => ({
+    chainName: state.metamask.provider.chainName,
+    type: state.metamask.provider.type,
+    chainId: state.metamask.provider.chainId,
+  }));
 
   return (
     <Box
       className="confirmation-network-switch"
-      display={Display.Flex}
-      height={BlockSize.Full}
+      display={DISPLAY.FLEX}
+      height={BLOCK_SIZES.FULL}
       justifyContent={JustifyContent.center}
       marginTop={8}
     >
       <Box
         className="confirmation-network-switch__icon"
-        display={Display.Block}
+        display={DISPLAY.BLOCK}
       >
-        {chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {currentNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-            name={nickname}
+            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[currentNetwork.chainId]}
+            name={currentNetwork.chainName}
             size={64}
           />
         ) : (
@@ -49,19 +52,19 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         <Typography
           color={TextColor.textDefault}
           variant={TypographyVariant.H6}
-          fontWeight={FontWeight.Normal}
-          align={TextAlign.Center}
+          fontWeight={FONT_WEIGHT.NORMAL}
+          align={TEXT_ALIGN.CENTER}
           boxProps={{
-            display: Display.Flex,
+            display: DISPLAY.FLEX,
             justifyContent: JustifyContent.center,
           }}
         >
-          {nickname || NETWORK_TO_NAME_MAP[type]}
+          {currentNetwork.chainName || NETWORK_TO_NAME_MAP[currentNetwork.type]}
         </Typography>
       </Box>
       <Box
         className="confirmation-network-switch__center-icon"
-        display={Display.Flex}
+        display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
       >
@@ -70,12 +73,12 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
       </Box>
       <Box
         className="confirmation-network-switch__icon"
-        display={Display.Block}
+        display={DISPLAY.BLOCK}
       >
         {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
             icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
-            name={newNetwork.nickname}
+            name={newNetwork.name}
             size={64}
           />
         ) : (
@@ -86,14 +89,14 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         <Typography
           color={TextColor.textDefault}
           variant={TypographyVariant.H6}
-          fontWeight={FontWeight.Normal}
-          align={TextAlign.Center}
+          fontWeight={FONT_WEIGHT.NORMAL}
+          align={TEXT_ALIGN.CENTER}
           boxProps={{
-            display: Display.Flex,
+            display: DISPLAY.FLEX,
             justifyContent: JustifyContent.center,
           }}
         >
-          {newNetwork.nickname}
+          {newNetwork.name}
         </Typography>
       </Box>
     </Box>
@@ -103,6 +106,6 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
 ConfirmationNetworkSwitch.propTypes = {
   newNetwork: PropTypes.shape({
     chainId: PropTypes.string.isRequired,
-    nickname: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
   }),
 };
