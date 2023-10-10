@@ -816,7 +816,7 @@
     "message": "Max fee is higher than necessary"
   },
   "editGasMaxFeeLow": {
-    "message": "Max fee too low for network conditions"
+    "message": "Max fee too low for network conditions, can lead to longer wait times and clog your transaction queue."
   },
   "editGasMaxFeePriorityImbalance": {
     "message": "Max fee cannot be lower than max priority fee"
