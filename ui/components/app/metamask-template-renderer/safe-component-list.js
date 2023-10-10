@@ -19,6 +19,7 @@ import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
+import { SnapUIImage } from '../snaps/snap-ui-image';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
@@ -53,6 +54,7 @@ export const safeComponentList = {
   Copyable,
   SnapDelineator,
   SnapUIMarkdown,
+  SnapUIImage,
   Spinner,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
