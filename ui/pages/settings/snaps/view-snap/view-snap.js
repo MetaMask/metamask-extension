@@ -66,6 +66,7 @@ function ViewSnap() {
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const [isRemovingKeyringSnap, setIsRemovingKeyringSnap] = useState(false);
 
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
@@ -230,7 +231,8 @@ function ViewSnap() {
           <SnapRemoveWarning
             isOpen={
               isShowingRemoveWarning &&
-              (!isKeyringSnap || keyringAccounts.length === 0)
+              (!isKeyringSnap || keyringAccounts.length === 0) &&
+              !isRemovingKeyringSnap
             }
             onCancel={() => setIsShowingRemoveWarning(false)}
             onSubmit={async () => {
@@ -250,6 +252,7 @@ function ViewSnap() {
                 onBack={() => setIsShowingRemoveWarning(false)}
                 onSubmit={async () => {
                   try {
+                    setIsRemovingKeyringSnap(true);
                     await dispatch(removeSnap(snap.id));
                     setIsShowingRemoveWarning(false);
                     dispatch(
@@ -266,12 +269,14 @@ function ViewSnap() {
                         result: KeyringSnapRemovalResultStatus.Failed,
                       }),
                     );
+                  } finally {
+                    setIsRemovingKeyringSnap(false);
                   }
                 }}
                 isOpen={
                   isShowingRemoveWarning &&
                   isKeyringSnap &&
-                  keyringAccounts.length > 0
+                  keyringAccounts.length >= 0
                 }
               />
             </>
