@@ -2,9 +2,6 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// polyfills
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
-
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
@@ -39,7 +36,7 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
 
@@ -51,14 +48,6 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
-
-window.onload = () => {
-  platform.getActiveTabs().then((tabs) => {
-    const storedOpenMetamaskTabsIDs = JSON.parse(sessionStorage.getItem("openMetamaskTabsIDs") || '{}');
-    const activeMetaMaskTab = tabs.find(tab => storedOpenMetamaskTabsIDs[tab.id])
-    activeMetaMaskTab && platform.reloadTab(activeMetaMaskTab.id)
-  });
-};
 
 // state persistence
 const inTest = process.env.IN_TEST === 'true';
@@ -134,7 +123,10 @@ async function initialize() {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
   await setupController(initState, initLangCode);
-  log.debug('MetaMask initialization complete.');
+  log.info('MetaMask initialization complete.');
+  setTimeout(() => {
+    throw new Error('TEST');
+  }, 0);
 }
 
 //
@@ -310,6 +302,24 @@ function setupController(initState, initLangCode) {
     );
   };
 
+  const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
+    // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
+    if (isClientOpen === false) {
+      controller.onClientClosed();
+      // otherwise we want to only remove the polling tokens for the environment type that has closed
+    } else {
+      // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
+      // its corresponding polling tokens unless all tabs are closed.
+      if (
+        environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
+        Boolean(Object.keys(openMetamaskTabsIDs).length)
+      ) {
+        return;
+      }
+      controller.onEnvironmentTypeClosed(environmentType);
+    }
+  };
+
   /**
    * A runtime.Port object, as provided by the browser:
    * @see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
@@ -338,10 +348,11 @@ function setupController(initState, initLangCode) {
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
-
         endOfStream(portStream, () => {
           popupIsOpen = false;
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
 
@@ -350,23 +361,27 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           notificationIsOpen = false;
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_NOTIFICATION,
+          );
         });
       }
 
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
-        const storedOpenMetamaskTabsIDs = JSON.parse(sessionStorage.getItem("openMetamaskTabsIDs") || '{}');
-        storedOpenMetamaskTabsIDs[tabId] = true;
-        sessionStorage.setItem("openMetamaskTabsIDs", JSON.stringify(storedOpenMetamaskTabsIDs));
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
-          const storedOpenMetamaskTabsIDsForDeletion = JSON.parse(sessionStorage.getItem("openMetamaskTabsIDs") || '{}');
-          delete storedOpenMetamaskTabsIDsForDeletion[tabId];
-          sessionStorage.setItem("openMetamaskTabsIDs", JSON.stringify(storedOpenMetamaskTabsIDsForDeletion));
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_FULLSCREEN,
+          );
         });
       }
     } else {
@@ -420,9 +435,13 @@ function setupController(initState, initLangCode) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.approvalController.subscribe(updateBadge);
   controller.appStateController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
     updateBadge,
   );
 
