@@ -276,7 +276,7 @@ function ViewSnap() {
                 isOpen={
                   isShowingRemoveWarning &&
                   isKeyringSnap &&
-                  keyringAccounts.length >= 0
+                  keyringAccounts.length > 0
                 }
               />
             </>
