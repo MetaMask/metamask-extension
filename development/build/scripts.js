@@ -29,10 +29,16 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const metamaskrc = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+  INFURA_BETA_PROJECT_ID: process.env.INFURA_BETA_PROJECT_ID,
+  INFURA_FLASK_PROJECT_ID: process.env.INFURA_FLASK_PROJECT_ID,
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
+  COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
+  SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
+  SEGMENT_FLASK_WRITE_KEY: process.env.SEGMENT_FLASK_WRITE_KEY,
+  SEGMENT_PROD_WRITE_KEY: process.env.SEGMENT_PROD_WRITE_KEY,
   SENTRY_DSN_DEV:
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
@@ -50,6 +56,7 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
+const { BuildType } = require('./utils');
 
 /**
  * The build environment. This describes the environment this build was produced in.
@@ -83,27 +90,63 @@ function getConfigValue(key) {
  * Get the appropriate Infura project ID.
  *
  * @param {object} options - The Infura project ID options.
+ * @param {BuildType} options.buildType - The current build type.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  * @param {boolean} options.testing - Whether the current build is a test build or not.
  * @returns {string} The Infura project ID.
  */
-function getInfuraProjectId({ environment, testing }) {
+function getInfuraProjectId({ buildType, environment, testing }) {
   if (testing) {
     return '00000000000000000000000000000000';
-  } else if (environment === ENVIRONMENT.PRODUCTION) {
+  } else if (environment !== ENVIRONMENT.PRODUCTION) {
+    // Skip validation because this is unset on PRs from forks.
+    return metamaskrc.INFURA_PROJECT_ID;
+  } else if (buildType === BuildType.main) {
     return getConfigValue('INFURA_PROD_PROJECT_ID');
+  } else if (buildType === BuildType.beta) {
+    return getConfigValue('INFURA_BETA_PROJECT_ID');
+  } else if (buildType === BuildType.flask) {
+    return getConfigValue('INFURA_FLASK_PROJECT_ID');
   }
-  return getConfigValue('INFURA_PROJECT_ID');
+  throw new Error(`Invalid build type: '${buildType}'`);
 }
+
+/**
+ * Get the appropriate Segment write key.
+ *
+ * @param {object} options - The Segment write key options.
+ * @param {BuildType} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @returns {string} The Segment write key.
+ */
+function getSegmentWriteKey({ buildType, environment }) {
+  if (environment !== ENVIRONMENT.PRODUCTION) {
+    // Skip validation because this is unset on PRs from forks, and isn't necessary for development builds.
+    return metamaskrc.SEGMENT_WRITE_KEY;
+  } else if (buildType === BuildType.main) {
+    return getConfigValue('SEGMENT_PROD_WRITE_KEY');
+  } else if (buildType === BuildType.beta) {
+    return getConfigValue('SEGMENT_BETA_WRITE_KEY');
+  } else if (buildType === BuildType.flask) {
+    return getConfigValue('SEGMENT_FLASK_WRITE_KEY');
+  }
+  throw new Error(`Invalid build type: '${buildType}'`);
+}
+
+const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
+  callback(),
+);
 
 module.exports = createScriptTasks;
 
 function createScriptTasks({
   browserPlatforms,
   buildType,
+  ignoredFiles,
   isLavaMoat,
   livereload,
   shouldLintFenceFiles,
+  policyOnly,
 }) {
   // internal tasks
   const core = {
@@ -132,11 +175,7 @@ function createScriptTasks({
   return { dev, test, testDev, prod };
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardEntryPoints = [
-      testing ? 'setup-e2e-fetch-mocks' : 'background',
-      'ui',
-      'content-script',
-    ];
+    const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -149,8 +188,10 @@ function createScriptTasks({
           }
           return `./app/scripts/${label}.js`;
         }),
-        testing,
+        ignoredFiles,
+        policyOnly,
         shouldLintFenceFiles,
+        testing,
       }),
     );
 
@@ -164,18 +205,18 @@ function createScriptTasks({
     // this can run whenever
     const disableConsoleSubtask = createTask(
       `${taskPrefix}:disable-console`,
-      createTaskForBundleDisableConsole({ devMode }),
+      createTaskForBundleDisableConsole({ devMode, testing }),
     );
 
     // this can run whenever
     const installSentrySubtask = createTask(
       `${taskPrefix}:sentry`,
-      createTaskForBundleSentry({ devMode }),
+      createTaskForBundleSentry({ devMode, testing }),
     );
 
     const phishingDetectSubtask = createTask(
       `${taskPrefix}:phishing-detect`,
-      createTaskForBundlePhishingDetect({ devMode }),
+      createTaskForBundlePhishingDetect({ devMode, testing }),
     );
 
     // task for initiating browser livereload
@@ -205,6 +246,7 @@ function createScriptTasks({
       runInChildProcess(subtask, {
         buildType,
         isLavaMoat,
+        policyOnly,
         shouldLintFenceFiles,
       }),
     );
@@ -212,7 +254,7 @@ function createScriptTasks({
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
 
-  function createTaskForBundleDisableConsole({ devMode }) {
+  function createTaskForBundleDisableConsole({ devMode, testing }) {
     const label = 'disable-console';
     return createNormalBundle({
       browserPlatforms,
@@ -220,12 +262,15 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
+      testing,
+      policyOnly,
       shouldLintFenceFiles,
     });
   }
 
-  function createTaskForBundleSentry({ devMode }) {
+  function createTaskForBundleSentry({ devMode, testing }) {
     const label = 'sentry-install';
     return createNormalBundle({
       browserPlatforms,
@@ -233,12 +278,15 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
+      testing,
+      policyOnly,
       shouldLintFenceFiles,
     });
   }
 
-  function createTaskForBundlePhishingDetect({ devMode }) {
+  function createTaskForBundlePhishingDetect({ devMode, testing }) {
     const label = 'phishing-detect';
     return createNormalBundle({
       buildType,
@@ -246,7 +294,10 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
+      testing,
+      policyOnly,
       shouldLintFenceFiles,
     });
   }
@@ -263,8 +314,10 @@ function createScriptTasks({
         devMode,
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
-        testing,
+        ignoredFiles,
+        policyOnly,
         shouldLintFenceFiles,
+        testing,
       }),
       createNormalBundle({
         buildType,
@@ -273,8 +326,10 @@ function createScriptTasks({
         devMode,
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
-        testing,
+        ignoredFiles,
+        policyOnly,
         shouldLintFenceFiles,
+        testing,
       }),
     );
   }
@@ -285,14 +340,20 @@ function createFactoredBuild({
   buildType,
   devMode,
   entryFiles,
-  testing,
+  ignoredFiles,
+  policyOnly,
   shouldLintFenceFiles,
+  testing,
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration();
-    buildConfiguration.label = 'primary';
-    const { bundlerOpts, events } = buildConfiguration;
+    const buildConfiguration = createBuildConfiguration({ label: 'primary' });
+    const {
+      addDirectOptions,
+      addEntry,
+      addPlugin,
+      events,
+    } = buildConfiguration;
 
     // devMode options
     const reloadOnChange = Boolean(devMode);
@@ -303,32 +364,39 @@ function createFactoredBuild({
       buildType,
       devMode,
       envVars,
+      ignoredFiles,
+      policyOnly,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      testing,
     });
 
     // set bundle entries
-    bundlerOpts.entries = [...entryFiles];
+    addEntry(...entryFiles);
 
     // setup lavamoat
     // lavamoat will add lavapack but it will be removed by bify-module-groups
     // we will re-add it later by installing a lavapack runtime
     const lavamoatOpts = {
-      policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
+      policy: path.resolve(
+        __dirname,
+        `../../lavamoat/browserify/${buildType}/policy.json`,
+      ),
+      policyName: buildType,
       policyOverride: path.resolve(
         __dirname,
-        '../../lavamoat/browserify/policy-override.json',
+        `../../lavamoat/browserify/${buildType}/policy-override.json`,
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
     };
-    Object.assign(bundlerOpts, lavamoatBrowserify.args);
-    bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
+    addDirectOptions(lavamoatBrowserify.args);
+    addPlugin(lavamoatBrowserify, lavamoatOpts);
 
     // setup bundle factoring with bify-module-groups plugin
     // note: this will remove lavapack, but its ok bc we manually readd it later
-    Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
-    bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
+    addDirectOptions(bifyModuleGroups.plugin.args);
+    addPlugin(bifyModuleGroups.plugin);
 
     // instrument pipeline
     let sizeGroupMap;
@@ -370,17 +438,24 @@ function createFactoredBuild({
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
         const dest = `./dist/${platform}/`;
-        pipeline.get('dest').push(gulp.dest(dest));
+        const destination = policyOnly ? noopWriteStream : gulp.dest(dest);
+        pipeline.get('dest').push(destination);
       });
     });
 
     // wait for bundle completion for postprocessing
     events.on('bundleDone', () => {
+      // Skip HTML generation if nothing is to be written to disk
+      if (policyOnly) {
+        return;
+      }
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
         // skip "common" group, they are added to all other groups
-        if (groupSet === commonSet) continue;
+        if (groupSet === commonSet) {
+          continue;
+        }
 
         switch (groupLabel) {
           case 'ui': {
@@ -413,17 +488,7 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
-            });
-            break;
-          }
-          case 'setup-e2e-fetch-mocks': {
-            renderHtmlFile({
-              htmlName: 'background',
-              groupSet,
-              commonSet,
-              browserPlatforms,
-              useLavamoat: false,
+              useLavamoat: true,
             });
             break;
           }
@@ -457,16 +522,17 @@ function createNormalBundle({
   devMode,
   entryFilepath,
   extraEntries = [],
+  ignoredFiles,
   label,
+  policyOnly,
   modulesToExpose,
   shouldLintFenceFiles,
   testing,
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration();
-    buildConfiguration.label = label;
-    const { bundlerOpts, events } = buildConfiguration;
+    const buildConfiguration = createBuildConfiguration({ label });
+    const { addEntry, addRequire, events } = buildConfiguration;
 
     // devMode options
     const reloadOnChange = Boolean(devMode);
@@ -477,19 +543,22 @@ function createNormalBundle({
       buildType,
       devMode,
       envVars,
+      ignoredFiles,
+      policyOnly,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      testing,
     });
 
     // set bundle entries
-    bundlerOpts.entries = [...extraEntries];
+    addEntry(...extraEntries);
     if (entryFilepath) {
-      bundlerOpts.entries.push(entryFilepath);
+      addEntry(entryFilepath);
     }
 
     if (modulesToExpose) {
-      bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
+      addRequire(...modulesToExpose);
     }
 
     // instrument pipeline
@@ -501,7 +570,8 @@ function createNormalBundle({
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
         const dest = `./dist/${platform}/`;
-        pipeline.get('dest').push(gulp.dest(dest));
+        const destination = policyOnly ? noopWriteStream : gulp.dest(dest);
+        pipeline.get('dest').push(destination);
       });
     });
 
@@ -509,37 +579,119 @@ function createNormalBundle({
   };
 }
 
-function createBuildConfiguration() {
-  const label = '(unnamed bundle)';
+function createBuildConfiguration({ label = '(unnamed bundle)' } = {}) {
+  const directOptions = {};
+  const entries = [];
+  const requires = [];
+  const externals = [];
+  const ignores = [];
+  const excludes = [];
+  const transformsAndPlugins = [];
   const events = new EventEmitter();
-  const bundlerOpts = {
-    entries: [],
-    transform: [],
-    plugin: [],
-    require: [],
-    // non-standard bify options
-    manualExternal: [],
-    manualIgnore: [],
+
+  const addDirectOptions = (options) => {
+    for (const [key, value] of Object.entries(options)) {
+      directOptions[key] = value;
+    }
   };
-  return { label, bundlerOpts, events };
+
+  const addEntry = (...givenEntries) => {
+    entries.push(...givenEntries);
+  };
+
+  const addRequire = (...givenRequires) => {
+    requires.push(...givenRequires);
+  };
+
+  const addExternal = (...givenExternals) => {
+    externals.push(...givenExternals);
+  };
+
+  const addIgnore = (...givenIgnores) => {
+    ignores.push(...givenIgnores);
+  };
+
+  const addExclude = (...givenExcludes) => {
+    excludes.push(...givenExcludes);
+  };
+
+  const addTransform = (transform, transformOptions = {}) => {
+    transformsAndPlugins.push({
+      type: 'transform',
+      value: transform,
+      options: transformOptions,
+    });
+  };
+
+  const addPlugin = (plugin, pluginOptions = {}) => {
+    transformsAndPlugins.push({
+      type: 'plugin',
+      value: plugin,
+      options: pluginOptions,
+    });
+  };
+
+  const buildBundler = () => {
+    const bundler = browserify(directOptions);
+    entries.forEach((entry) => bundler.add(entry));
+    externals.forEach((external) => bundler.external(external));
+    ignores.forEach((ignore) => bundler.ignore(ignore));
+    excludes.forEach((exclude) => bundler.exclude(exclude));
+    transformsAndPlugins.forEach((transformOrPlugin) => {
+      bundler[transformOrPlugin.type](
+        transformOrPlugin.value,
+        transformOrPlugin.options,
+      );
+    });
+    return bundler;
+  };
+
+  return {
+    label,
+    addDirectOptions,
+    addEntry,
+    addRequire,
+    addExternal,
+    addIgnore,
+    addExclude,
+    addTransform,
+    addPlugin,
+    buildBundler,
+    events,
+  };
 }
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { buildType, devMode, envVars, minify, reloadOnChange, shouldLintFenceFiles },
+  {
+    buildType,
+    devMode,
+    envVars,
+    ignoredFiles,
+    policyOnly,
+    minify,
+    reloadOnChange,
+    shouldLintFenceFiles,
+    testing,
+  },
 ) {
-  const { bundlerOpts } = buildConfiguration;
+  const {
+    addDirectOptions,
+    addIgnore,
+    addExclude,
+    addTransform,
+  } = buildConfiguration;
 
-  Object.assign(bundlerOpts, {
-    // Source transforms
-    transform: [
-      // Remove code that should be excluded from builds of the current type
-      createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
-      // Transpile top-level code
-      babelify,
-      // Inline `fs.readFileSync` files
-      brfs,
-    ],
+  // Remove code that should be excluded from builds of the current type
+  addTransform(
+    createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
+  );
+  // Transpile top-level code
+  addTransform(babelify);
+  // Inline `fs.readFileSync` files
+  addTransform(brfs);
+
+  addDirectOptions({
     // Use entryFilepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
     // For sourcemaps
@@ -547,13 +699,18 @@ function setupBundlerDefaults(
   });
 
   // Ensure react-devtools are not included in non-dev builds
-  if (!devMode) {
-    bundlerOpts.manualIgnore.push('react-devtools');
+  if (!devMode || testing) {
+    addIgnore('react-devtools', 'remote-redux-devtools');
   }
 
   // Inject environment variables via node-style `process.env`
   if (envVars) {
-    bundlerOpts.transform.push([envify(envVars), { global: true }]);
+    addTransform(envify(envVars), { global: true });
+  }
+
+  // Ensure that any files that should be ignored are excluded from the build
+  if (ignoredFiles) {
+    addExclude(...ignoredFiles);
   }
 
   // Setup reload on change
@@ -561,18 +718,20 @@ function setupBundlerDefaults(
     setupReloadOnChange(buildConfiguration);
   }
 
-  if (minify) {
-    setupMinification(buildConfiguration);
-  }
+  if (!policyOnly) {
+    if (minify) {
+      setupMinification(buildConfiguration);
+    }
 
-  // Setup source maps
-  setupSourcemaps(buildConfiguration, { devMode });
+    // Setup source maps
+    setupSourcemaps(buildConfiguration, { devMode });
+  }
 }
 
-function setupReloadOnChange({ bundlerOpts, events }) {
+function setupReloadOnChange({ addPlugin, addDirectOptions, events }) {
   // Add plugin to options
-  Object.assign(bundlerOpts, {
-    plugin: [...bundlerOpts.plugin, watchify],
+  addPlugin(watchify);
+  addDirectOptions({
     // Required by watchify
     cache: {},
     packageCache: {},
@@ -587,13 +746,12 @@ function setupReloadOnChange({ bundlerOpts, events }) {
   });
 }
 
-function setupMinification(buildConfiguration) {
+function setupMinification({ events }) {
   const minifyOpts = {
     mangle: {
       reserved: ['MetamaskInpageProvider'],
     },
   };
-  const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('minify').push(
       // this is the "gulp-terser-js" wrapper around the latest version of terser
@@ -619,8 +777,7 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupSourcemaps(buildConfiguration, { devMode }) {
-  const { events } = buildConfiguration;
+function setupSourcemaps({ events }, { devMode }) {
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
     pipeline
@@ -636,50 +793,47 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 }
 
 async function bundleIt(buildConfiguration) {
-  const { label, bundlerOpts, events } = buildConfiguration;
-  const bundler = browserify(bundlerOpts);
-  // manually apply non-standard options
-  bundler.external(bundlerOpts.manualExternal);
-  bundler.ignore(bundlerOpts.manualIgnore);
+  const { label, buildBundler, events } = buildConfiguration;
+  const bundler = buildBundler();
   // output build logs to terminal
   bundler.on('log', log);
   // forward update event (used by watchify)
-  bundler.on('update', () => performBundle());
+  bundler.on('update', () => performBundle({ bundler, events }));
 
   console.log(`Bundle start: "${label}"`);
-  await performBundle();
+  await performBundle({ bundler, events });
   console.log(`Bundle end: "${label}"`);
+}
 
-  async function performBundle() {
-    // this pipeline is created for every bundle
-    // the labels are all the steps you can hook into
-    const pipeline = labeledStreamSplicer([
-      'groups',
-      [],
-      'vinyl',
-      [],
-      'sourcemaps:init',
-      [],
-      'minify',
-      [],
-      'sourcemaps:write',
-      [],
-      'dest',
-      [],
-    ]);
-    const bundleStream = bundler.bundle();
-    // trigger build pipeline instrumentations
-    events.emit('configurePipeline', { pipeline, bundleStream });
-    // start bundle, send into pipeline
-    bundleStream.pipe(pipeline);
-    // nothing will consume pipeline, so let it flow
-    pipeline.resume();
+async function performBundle({ bundler, events }) {
+  // this pipeline is created for every bundle
+  // the labels are all the steps you can hook into
+  const pipeline = labeledStreamSplicer([
+    'groups',
+    [],
+    'vinyl',
+    [],
+    'sourcemaps:init',
+    [],
+    'minify',
+    [],
+    'sourcemaps:write',
+    [],
+    'dest',
+    [],
+  ]);
+  const bundleStream = bundler.bundle();
+  // trigger build pipeline instrumentations
+  events.emit('configurePipeline', { pipeline, bundleStream });
+  // start bundle, send into pipeline
+  bundleStream.pipe(pipeline);
+  // nothing will consume pipeline, so let it flow
+  pipeline.resume();
 
-    await endOfStream(pipeline);
+  await endOfStream(pipeline);
 
-    // call the completion event to handle any post-processing
-    events.emit('bundleDone');
-  }
+  // call the completion event to handle any post-processing
+  events.emit('bundleDone');
 }
 
 function getEnvironmentVariables({ buildType, devMode, testing }) {
@@ -693,25 +847,18 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    IN_TEST: testing ? 'true' : false,
+    IN_TEST: testing,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
-    INFURA_PROJECT_ID: getInfuraProjectId({ environment, testing }),
+    INFURA_PROJECT_ID: getInfuraProjectId({ buildType, environment, testing }),
     SEGMENT_HOST: metamaskrc.SEGMENT_HOST,
-    // When we're in the 'production' environment we will use a specific key only set in CI
-    // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
-    // the value of SEGMENT_WRITE_KEY that we envify is undefined then no events will be tracked
-    // in the build. This is intentional so that developers can contribute to MetaMask without
-    // inflating event volume.
-    SEGMENT_WRITE_KEY:
-      environment === ENVIRONMENT.PRODUCTION
-        ? process.env.SEGMENT_PROD_WRITE_KEY
-        : metamaskrc.SEGMENT_WRITE_KEY,
+    SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, environment }),
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
+    COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
   };
 }
 
@@ -752,10 +899,7 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, {
-    jsBundles,
-    useLavamoat,
-  });
+  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, useLavamoat });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
