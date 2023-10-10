@@ -1,17 +1,20 @@
 import testData from '../test-data';
 
-const initialState = { ...testData.send };
+const initialState = { send: testData.send };
 export default function sendSBReducer(state = initialState, action) {
   switch (action.type) {
-    case 'send/updateSendStage':
+    case 'send/updateSendStatus':
       return {
         ...state,
-        stage: action.payload,
+        send: { ...state.send, status: action.payload },
       };
-    case 'send/updateSendAsset':
+    case 'send/updateAmountMode':
       return {
         ...state,
-        asset: { ...state.asset, type: action.payload },
+        send: {
+          ...state.send,
+          amount: { ...state.send.amount, mode: action.payload },
+        },
       };
     default:
       return state;
