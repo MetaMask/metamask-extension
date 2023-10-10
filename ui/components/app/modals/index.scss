@@ -12,6 +12,7 @@
 @import 'qr-scanner/index';
 @import 'transaction-confirmed/index';
 @import 'customize-nonce/index';
+@import 'convert-token-to-nft-modal/index';
 @import 'transaction-error-details-modal/index';
 
 .modal {
@@ -24,7 +25,7 @@
 
   &__content {
     margin: 0;
-    background-color: var(--white);
+    background-color: white;
     animation-fill-mode: forwards;
   }
 

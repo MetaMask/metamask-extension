@@ -1,3 +1,7 @@
+import {
+  WEBHID_CONNECTED_STATUSES,
+  TRANSPORT_STATES,
+} from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
 // actionConstants
@@ -18,12 +22,6 @@ export default function reduceApp(state = {}, action) {
         name: null,
       },
     },
-    sidebar: {
-      isOpen: false,
-      transitionName: '',
-      type: '',
-      props: {},
-    },
     alertOpen: false,
     alertMessage: null,
     qrCodeData: null,
@@ -40,9 +38,9 @@ export default function reduceApp(state = {}, action) {
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
+      lattice: `m/44'/60'/0'/0`,
     },
     networksTabSelectedRpcUrl: '',
-    networksTabIsInAddMode: false,
     loadingMethodData: false,
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
@@ -50,7 +48,17 @@ export default function reduceApp(state = {}, action) {
     openMetaMaskTabs: {},
     currentWindowTab: {},
     showWhatsNewPopup: true,
-    failedTransactionsToDisplay: {},
+    singleExceptions: {
+      testKey: null,
+    },
+    gasLoadingAnimationIsShowing: false,
+    ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
+    ledgerTransportStatus: TRANSPORT_STATES.NONE,
+    newNetworkAdded: '',
+    newCollectibleAddedMessage: '',
+    sendInputCurrencySwitched: false,
+    showTestnetMessageInDropdown: true,
+    transactionsToDisplayOnFailure: {},
     ...state,
   };
 
@@ -66,25 +74,6 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         networkDropdownOpen: false,
-      };
-
-    // sidebar methods
-    case actionConstants.SIDEBAR_OPEN:
-      return {
-        ...appState,
-        sidebar: {
-          ...action.value,
-          isOpen: true,
-        },
-      };
-
-    case actionConstants.SIDEBAR_CLOSE:
-      return {
-        ...appState,
-        sidebar: {
-          ...appState.sidebar,
-          isOpen: false,
-        },
       };
 
     // alert methods
@@ -299,10 +288,16 @@ export default function reduceApp(state = {}, action) {
         networksTabSelectedRpcUrl: action.value,
       };
 
-    case actionConstants.SET_NETWORKS_TAB_ADD_MODE:
+    case actionConstants.SET_NEW_NETWORK_ADDED:
       return {
         ...appState,
-        networksTabIsInAddMode: action.value,
+        newNetworkAdded: action.value,
+      };
+
+    case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
+      return {
+        ...appState,
+        newCollectibleAddedMessage: action.value,
       };
 
     case actionConstants.LOADING_METHOD_DATA_STARTED:
@@ -347,25 +342,52 @@ export default function reduceApp(state = {}, action) {
         showWhatsNewPopup: false,
       };
 
-    case actionConstants.ADD_TX_TO_FAILED_TXES_TO_DISPLAY:
+    case actionConstants.CAPTURE_SINGLE_EXCEPTION:
       return {
         ...appState,
-        failedTransactionsToDisplay: {
-          ...appState.failedTransactionsToDisplay,
+        singleExceptions: {
+          ...appState.singleExceptions,
+          [action.value]: null,
+        },
+      };
+
+    case actionConstants.TOGGLE_GAS_LOADING_ANIMATION:
+      return {
+        ...appState,
+        gasLoadingAnimationIsShowing: action.value,
+      };
+    case actionConstants.ADD_TRANSACTION_TO_DISPLAY_ON_FAILURE:
+      return {
+        ...appState,
+        transactionsToDisplayOnFailure: {
+          ...appState.transactionsToDisplayOnFailure,
           [action.value]: true,
         },
       };
 
-    case actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY:
-      const { failedTransactionsToDisplay } = appState;
-      const newFailedTransactionsToDisplay = { ...failedTransactionsToDisplay };
-      delete newFailedTransactionsToDisplay[action.value];
+    case actionConstants.REMOVE_TRANSACTION_TO_DISPLAY_ON_FAILURE:
+      delete appState.transactionsToDisplayOnFailure[action.value];
       return {
         ...appState,
-        failedTransactionsToDisplay: newFailedTransactionsToDisplay,
+        transactionsToDisplayOnFailure: appState.transactionsToDisplayOnFailure,
       };
 
+    case actionConstants.SET_WEBHID_CONNECTED_STATUS:
+      return {
+        ...appState,
+        ledgerWebHidConnectedStatus: action.value,
+      };
 
+    case actionConstants.SET_LEDGER_TRANSPORT_STATUS:
+      return {
+        ...appState,
+        ledgerTransportStatus: action.value,
+      };
+    case actionConstants.SET_CURRENCY_INPUT_SWITCH:
+      return {
+        ...appState,
+        sendInputCurrencySwitched: action.value,
+      };
     default:
       return appState;
   }
@@ -385,21 +407,48 @@ export function hideWhatsNewPopup() {
   };
 }
 
-export function addTxToFailedTxesToDisplay(txId) {
+export function toggleGasLoadingAnimation(value) {
+  return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
+}
+export function addTransactionToDisplayOnFailure(txId) {
   return {
-    type: actionConstants.ADD_TX_TO_FAILED_TXES_TO_DISPLAY,
+    type: actionConstants.ADD_TRANSACTION_TO_DISPLAY_ON_FAILURE,
     value: txId,
   };
 }
 
-export function removeTxFromFailedTxesToDisplay(txId) {
+export function removeTransactionToDisplayOnFailure(txId) {
   return {
-    type: actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY,
+    type: actionConstants.REMOVE_TRANSACTION_TO_DISPLAY_ON_FAILURE,
     value: txId,
   };
+}
+
+export function setLedgerWebHidConnectedStatus(value) {
+  return { type: actionConstants.SET_WEBHID_CONNECTED_STATUS, value };
+}
+
+export function setLedgerTransportStatus(value) {
+  return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, value };
 }
 
 // Selectors
 export function getQrCodeData(state) {
   return state.appState.qrCodeData;
+}
+
+export function getGasLoadingAnimationIsShowing(state) {
+  return state.appState.gasLoadingAnimationIsShowing;
+}
+
+export function getLedgerWebHidConnectedStatus(state) {
+  return state.appState.ledgerWebHidConnectedStatus;
+}
+
+export function getLedgerTransportStatus(state) {
+  return state.appState.ledgerTransportStatus;
+}
+
+export function toggleCurrencySwitch(value) {
+  return { type: actionConstants.SET_CURRENCY_INPUT_SWITCH, value };
 }

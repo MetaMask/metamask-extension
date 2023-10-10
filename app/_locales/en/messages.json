@@ -1005,6 +1005,9 @@
   "mobileSyncText": {
     "message": "Please enter your password to confirm it's you!"
   },
+  "moreDetails": {
+    "message": "More details"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
