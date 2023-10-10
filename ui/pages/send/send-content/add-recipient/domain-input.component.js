@@ -14,6 +14,7 @@ import {
   IconSize,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
+import { isHexString } from '@metamask/utils';
 
 export default class DomainInput extends Component {
   static contextTypes = {
@@ -76,7 +77,7 @@ export default class DomainInput extends Component {
     isFlask = true;
     ///: END:ONLY_INCLUDE_IN
 
-    if (isFlask || isValidDomainName(input)) {
+    if ((isFlask && !isHexString(input)) || isValidDomainName(input)) {
       lookupDomainName(input);
     } else {
       resetDomainResolution();
