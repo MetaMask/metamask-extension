@@ -19,8 +19,9 @@ const NicknamePopover = ({
   const t = useContext(I18nContext);
 
   const onAddClick = useCallback(() => {
-    onAdd();
-  }, [onAdd]);
+    onClose();
+    onAdd(address, nickname);
+  }, [address, onClose, onAdd]);
 
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -33,7 +34,7 @@ const NicknamePopover = ({
           className="nickname-popover__identicon"
         />
         <div className="nickname-popover__address">
-          {nickname || shortenAddress(address)}
+          {nickname ? nickname : shortenAddress(address)}
         </div>
         <div className="nickname-popover__public-address">
           <div className="nickname-popover__public-address__constant">

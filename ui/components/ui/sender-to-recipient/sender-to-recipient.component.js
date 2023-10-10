@@ -8,7 +8,6 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import NicknamePopovers from '../../app/modals/nickname-popovers';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -102,42 +101,38 @@ export function RecipientWithAddress({
   recipientNickname,
   recipientEns,
   recipientName,
+  showNicknameModal,
 }) {
   const t = useI18nContext();
-  const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
 
   return (
-    <>
-      <div
-        className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
-        onClick={() => {
-          setShowNicknamePopovers(true);
-          if (onRecipientClick) {
-            onRecipientClick();
-          }
-        }}
-      >
-        <div className="sender-to-recipient__sender-icon">
-          <Identicon address={checksummedRecipientAddress} diameter={24} />
-        </div>
-        <div className="sender-to-recipient__name">
-          {addressOnly
-            ? recipientNickname ||
-              recipientEns ||
-              shortenAddress(checksummedRecipientAddress)
-            : recipientNickname ||
-              recipientEns ||
-              recipientName ||
-              t('newContract')}
-        </div>
+    <div
+      className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+      onClick={() => {
+        // show account nickname popover
+        showNicknameModal(
+          checksummedRecipientAddress,
+          recipientNickname ? recipientNickname : null,
+        );
+        if (onRecipientClick) {
+          onRecipientClick();
+        }
+      }}
+    >
+      <div className="sender-to-recipient__sender-icon">
+        <Identicon address={checksummedRecipientAddress} diameter={24} />
       </div>
-      {showNicknamePopovers ? (
-        <NicknamePopovers
-          onClose={() => setShowNicknamePopovers(false)}
-          address={checksummedRecipientAddress}
-        />
-      ) : null}
-    </>
+      <div className="sender-to-recipient__name">
+        {addressOnly
+          ? recipientNickname ||
+            recipientEns ||
+            shortenAddress(checksummedRecipientAddress)
+          : recipientNickname ||
+            recipientEns ||
+            recipientName ||
+            t('newContract')}
+      </div>
+    </div>
   );
 }
 
@@ -148,6 +143,7 @@ RecipientWithAddress.propTypes = {
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
+  showNicknameModal: PropTypes.func,
 };
 
 function Arrow({ variant }) {
@@ -180,6 +176,7 @@ export default function SenderToRecipient({
   recipientAddress,
   variant,
   warnUserOnAccountMismatch,
+  showNicknameModal,
 }) {
   const t = useI18nContext();
   const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
@@ -204,6 +201,7 @@ export default function SenderToRecipient({
           recipientNickname={recipientNickname}
           recipientEns={recipientEns}
           recipientName={recipientName}
+          showNicknameModal={showNicknameModal}
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
@@ -232,4 +230,5 @@ SenderToRecipient.propTypes = {
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
+  showNicknameModal: PropTypes.func,
 };

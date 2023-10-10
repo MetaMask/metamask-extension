@@ -2,44 +2,43 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
+import * as actions from '../../../store/actions';
+import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.duck';
+import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import isMobileView from '../../../helpers/utils/is-mobile-view';
-import * as actions from '../../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IN
 
 // Modal Components
-import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
-import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
-import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
-import TransactionFailed from '../../institutional/transaction-failed-modal';
-///: END:ONLY_INCLUDE_IN
+import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
+import SwapsGasCustomizationModal from '../../../pages/swaps/swaps-gas-customization-modal';
+import DepositEtherModal from './deposit-ether-modal';
+import AccountDetailsModal from './account-details-modal';
+import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
 import TransactionConfirmed from './transaction-confirmed';
+import CancelTransaction from './cancel-transaction';
 
-import ConfirmDeleteNetwork from './confirm-delete-network';
-import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
-import CustomizeNonceModal from './customize-nonce';
-import EditApprovalPermission from './edit-approval-permission';
-import EthSignModal from './eth-sign-modal/eth-sign-modal';
 import FadeModal from './fade-modal';
-import NewAccountModal from './new-account-modal';
+import MetaMetricsOptInModal from './metametrics-opt-in-modal';
 import RejectTransactions from './reject-transactions';
+import ConfirmDeleteNetwork from './confirm-delete-network';
+import AddToAddressBookModal from './add-to-addressbook-modal';
+import EditApprovalPermission from './edit-approval-permission';
+import NewAccountModal from './new-account-modal';
+import CustomizeNonceModal from './customize-nonce';
+import AccountNicknameModal from './account-nickname-modal';
+import UpdateAccountNicknameModal from './update-account-nickname-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
-  border: '1px solid var(--color-border-default)',
+  border: '1px solid #CCCFD1',
   borderRadius: '8px',
-  backgroundColor: 'var(--color-background-default)',
-  boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
+  backgroundColor: '#FFFFFF',
+  boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
 };
 
 const modalContainerLaptopStyle = {
@@ -58,7 +57,7 @@ const accountModalStyle = {
   mobileModalStyle: {
     width: '95%',
     // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
+    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     borderRadius: '4px',
     top: '10%',
     transform: 'none',
@@ -69,7 +68,7 @@ const accountModalStyle = {
   laptopModalStyle: {
     width: '335px',
     // top: 'calc(33% + 45px)',
-    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
+    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     borderRadius: '4px',
     top: '10%',
     transform: 'none',
@@ -82,45 +81,46 @@ const accountModalStyle = {
   },
 };
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-const custodyConfirmModalStyle = {
-  mobileModalStyle: {
-    width: '95%',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-    borderRadius: '4px',
-    top: '30%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  laptopModalStyle: {
-    width: '360px',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-    borderRadius: '4px',
-    top: '30%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  contentStyle: {
-    borderRadius: '4px',
-  },
-};
-///: END:ONLY_INCLUDE_IN
-
 const MODALS = {
-  ONBOARDING_ADD_NETWORK: {
-    contents: <AddNetworkModal />,
-    ...accountModalStyle,
+  DEPOSIT_ETHER: {
+    contents: <DepositEtherModal />,
+    onHide: (props) => props.hideWarning(),
+    mobileModalStyle: {
+      width: '100%',
+      height: '100%',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
+      top: '0',
+      display: 'flex',
+    },
+    laptopModalStyle: {
+      width: 'initial',
+      maxWidth: '850px',
+      top: 'calc(10% + 10px)',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      boxShadow: '0 0 6px 0 rgba(0,0,0,0.3)',
+      borderRadius: '7px',
+      transform: 'none',
+      height: 'calc(80% - 20px)',
+      overflowY: 'hidden',
+    },
+    contentStyle: {
+      borderRadius: '7px',
+      height: '100%',
+    },
   },
-  NEW_ACCOUNT: {
-    contents: <NewAccountModal />,
+
+  ADD_TO_ADDRESSBOOK: {
+    contents: <AddToAddressBookModal />,
     mobileModalStyle: {
       width: '95%',
       top: '10%',
-      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       transform: 'none',
       left: '0',
       right: '0',
@@ -130,7 +130,7 @@ const MODALS = {
     laptopModalStyle: {
       width: '375px',
       top: '10%',
-      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       transform: 'none',
       left: '0',
       right: '0',
@@ -140,6 +140,51 @@ const MODALS = {
     contentStyle: {
       borderRadius: '10px',
     },
+  },
+
+  SHOW_NICKNAME_MODAL: {
+    contents: <AccountNicknameModal />,
+  },
+
+  ADD_UPDATE_NICKNAME_MODAL: {
+    contents: <UpdateAccountNicknameModal />,
+  },
+
+  NEW_ACCOUNT: {
+    contents: <NewAccountModal />,
+    mobileModalStyle: {
+      width: '95%',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    laptopModalStyle: {
+      width: '375px',
+      top: '10%',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      borderRadius: '10px',
+    },
+    contentStyle: {
+      borderRadius: '10px',
+    },
+  },
+
+  ACCOUNT_DETAILS: {
+    contents: <AccountDetailsModal />,
+    ...accountModalStyle,
+  },
+
+  EXPORT_PRIVATE_KEY: {
+    contents: <ExportPrivateKeyModal />,
+    ...accountModalStyle,
   },
 
   HIDE_TOKEN_CONFIRMATION: {
@@ -159,6 +204,23 @@ const MODALS = {
     },
   },
 
+  METAMETRICS_OPT_IN_MODAL: {
+    contents: <MetaMetricsOptInModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+      width: '100%',
+      height: '100%',
+      top: '0px',
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+      top: '10%',
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   CONFIRM_RESET_ACCOUNT: {
     contents: <ConfirmResetAccount />,
     mobileModalStyle: {
@@ -172,33 +234,8 @@ const MODALS = {
     },
   },
 
-  ETH_SIGN: {
-    contents: <EthSignModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
   CONFIRM_REMOVE_ACCOUNT: {
     contents: <ConfirmRemoveAccount />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CONVERT_TOKEN_TO_NFT: {
-    contents: <ConvertTokenToNftModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -217,6 +254,60 @@ const MODALS = {
     },
     laptopModalStyle: {
       ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  LEGACY_CUSTOMIZE_GAS: {
+    contents: <ConfirmCustomizeGasModal />,
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: 'auto',
+      height: '0px',
+      top: '80px',
+      left: '0px',
+      transform: 'none',
+      margin: '0 auto',
+      position: 'relative',
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+    customOnHideOpts: {
+      action: resetCustomGasData,
+      args: [],
+    },
+  },
+
+  CUSTOMIZE_METASWAP_GAS: {
+    contents: <SwapsGasCustomizationModal />,
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: 'auto',
+      height: '0px',
+      top: '80px',
+      left: '0px',
+      transform: 'none',
+      margin: '0 auto',
+      position: 'relative',
     },
     contentStyle: {
       borderRadius: '8px',
@@ -275,6 +366,19 @@ const MODALS = {
     },
   },
 
+  CANCEL_TRANSACTION: {
+    contents: <CancelTransaction />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   REJECT_TRANSACTIONS: {
     contents: <RejectTransactions />,
     mobileModalStyle: {
@@ -301,53 +405,6 @@ const MODALS = {
     },
   },
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  CONFIRM_REMOVE_JWT: {
-    contents: <ConfirmRemoveJWT />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_FAILED: {
-    disableBackdropClick: true,
-    contents: <TransactionFailed />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CUSTODY_CONFIRM_LINK: {
-    contents: <CustodyConfirmLink />,
-    ...custodyConfirmModalStyle,
-  },
-
-  INTERACTIVE_REPLACEMENT_TOKEN_MODAL: {
-    contents: <InteractiveReplacementTokenModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-  ///: END:ONLY_INCLUDE_IN
-
   DEFAULT: {
     contents: [],
     mobileModalStyle: {},
@@ -356,7 +413,7 @@ const MODALS = {
 };
 
 const BACKDROPSTYLE = {
-  backgroundColor: 'var(--color-overlay-default)',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
 };
 
 function mapStateToProps(state) {
@@ -367,9 +424,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
   return {
     hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal());
@@ -380,29 +434,15 @@ function mapDispatchToProps(dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning());
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IN
   };
 }
 
-/**
- * @deprecated The `<Modal />` and the dispatch method of displaying modals has been deprecated in favor of local state and the `<Modal>` component from the component-library.
- * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
- * You can find documentation for the new Modal component in the MetaMask Storybook:
- * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
- * If you would like to help with the replacement of the old Modal component, please submit a pull request
- */
 class Modal extends Component {
   static propTypes = {
     active: PropTypes.bool.isRequired,
     hideModal: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
   };
 
   hide() {
@@ -433,11 +473,6 @@ class Modal extends Component {
         keyboard={false}
         onHide={() => {
           if (modal.onHide) {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            if (this.props.modalState.name === 'CUSTODY_CONFIRM_LINK') {
-              this.props.setWaitForConfirmDeepLinkDialog(false);
-            }
-            ///: END:ONLY_INCLUDE_IN
             modal.onHide({
               hideWarning: this.props.hideWarning,
             });

@@ -10,8 +10,6 @@ import Dialog from '../../ui/dialog';
 import ErrorMessage from '../../ui/error-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
-import NicknamePopovers from '../modals/nickname-popovers';
-
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
@@ -23,10 +21,6 @@ import {
 } from '.';
 
 export default class ConfirmPageContainer extends Component {
-  state = {
-    showNicknamePopovers: false,
-  };
-
   static contextTypes = {
     t: PropTypes.func,
   };
@@ -82,6 +76,7 @@ export default class ConfirmPageContainer extends Component {
     handleCloseEditGas: PropTypes.func,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
+    addNicknameModal: PropTypes.func,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
@@ -133,6 +128,7 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
+      addNicknameModal,
       contact = {},
       isOwnedAccount,
       supportsEIP1559V2,
@@ -183,23 +179,13 @@ export default class ConfirmPageContainer extends Component {
           </ConfirmPageContainerHeader>
           <div>
             {showAddToAddressDialog && (
-              <>
-                <Dialog
-                  type="message"
-                  className="send__dialog"
-                  onClick={() => this.setState({ showNicknamePopovers: true })}
-                >
-                  {this.context.t('newAccountDetectedDialogMessage')}
-                </Dialog>
-                {this.state.showNicknamePopovers ? (
-                  <NicknamePopovers
-                    onClose={() =>
-                      this.setState({ showNicknamePopovers: false })
-                    }
-                    address={toAddress}
-                  />
-                ) : null}
-              </>
+              <Dialog
+                type="message"
+                className="send__dialog"
+                onClick={() => addNicknameModal()}
+              >
+                {this.context.t('newAccountDetectedDialogMessage')}
+              </Dialog>
             )}
           </div>
           {contentComponent || (

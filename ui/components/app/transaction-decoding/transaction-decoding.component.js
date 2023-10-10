@@ -1,24 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import inspect from 'browser-util-inspect';
-import { forAddress } from '@truffle/decoder';
-import { useSelector } from 'react-redux';
-import * as Codec from '@truffle/codec';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
+import { useSelector } from 'react-redux';
+import * as Codec from '@truffle/codec';
+import { forAddress } from '@truffle/decoder';
+import inspect from 'browser-util-inspect';
 import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
-import { hexToDecimal } from '../../../helpers/utils/conversions.util';
-import { I18nContext } from '../../../contexts/i18n';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { transformTxDecoding } from './transaction-decoding.util';
 import {
   FETCH_PROJECT_INFO_URI,
   FETCH_SUPPORTED_NETWORKS_URI,
 } from './constants';
+import { hexToDecimal } from '../../../helpers/utils/conversions.util';
+import { I18nContext } from '../../../contexts/i18n';
+import { transformTxDecoding } from './transaction-decoding.util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 import Address from './components/decoding/address';
-import CopyRawData from './components/ui/copy-raw-data';
+import CopyRawData from './components/ui/copy-raw-data/';
 
 export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
@@ -27,7 +27,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const network = hexToDecimal(useSelector(getCurrentChainId));
 
   const [loading, setLoading] = useState(false);
-  const [hasError, setError] = useState(false);
+  const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
@@ -48,12 +48,15 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           );
         }
 
-        const requestUrl = `${FETCH_PROJECT_INFO_URI}?${new URLSearchParams({
-          to,
-          'network-id': network,
-        })}`;
+        const request_url =
+          FETCH_PROJECT_INFO_URI +
+          '?' +
+          new URLSearchParams({
+            to,
+            ['network-id']: network,
+          });
 
-        const response = await fetchWithCache(requestUrl, { method: 'GET' });
+        const response = await fetchWithCache(request_url, { method: 'GET' });
 
         const { info: projectInfo } = response;
 
@@ -87,7 +90,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         setErrorMessage(error?.message);
       }
     })();
-  }, [t, from, to, network, data]);
+  }, [to, network, data]);
 
   // ***********************************************************
   // component rendering methods
@@ -142,15 +145,15 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
               </details>
             );
 
-          case 'address': {
+          case 'address':
             const address = value?.asAddress;
             return (
               <Address
-                addressOnly
+                addressOnly={true}
                 checksummedRecipientAddress={toChecksumHexAddress(address)}
               />
             );
-          }
+
           default:
             return (
               <pre className="sol-item solidity-raw">
@@ -187,23 +190,15 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   };
 
   const renderTransactionDecoding = () => {
-    if (loading) {
-      return (
-        <div className="tx-insight-loading">
-          <Spinner color="#F7C06C" />
-        </div>
-      );
-    }
-
-    if (hasError) {
-      return (
-        <div className="tx-insight-error">
-          <ErrorMessage errorMessage={errorMessage} />
-        </div>
-      );
-    }
-
-    return (
+    return loading ? (
+      <div className="tx-insight-loading">
+        <Spinner color="#F7C06C" />
+      </div>
+    ) : error ? (
+      <div className="tx-insight-error">
+        <ErrorMessage errorMessage={errorMessage} />
+      </div>
+    ) : (
       <div className="tx-insight-content">
         <div className="tx-insight-content__tree-component">
           <ol>{tx.map(renderTree)}</ol>

@@ -56,12 +56,7 @@ export default function UpdateNicknamePopover({
           >
             {t('cancel')}
           </Button>
-          <Button
-            className="update-nickname__save"
-            type="primary"
-            onClick={onSubmit}
-            disabled={!nicknameInput}
-          >
+          <Button type="primary" onClick={onSubmit} disabled={!nicknameInput}>
             {t('save')}
           </Button>
         </>
