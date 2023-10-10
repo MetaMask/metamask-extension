@@ -8,22 +8,13 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-const mainnetProviderConfig = {
-  providerConfig: {
-    chainId: '0x1',
-    nickname: '',
-    rpcUrl: '',
-    type: 'mainnet',
-  },
-};
-
 describe('PPOM Settings', function () {
   it('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(mainnetProviderConfig)
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -51,7 +42,7 @@ describe('PPOM Settings', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkController(mainnetProviderConfig)
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
