@@ -31,7 +31,6 @@ export default function InfoTooltip({
         tooltipInnerClassName="info-tooltip__tooltip-content"
         tooltipArrowClassName={positionArrowClassMap[position]}
         html={contentText}
-        theme="tippy-tooltip-info"
       >
         <InfoTooltipIcon fillColor={iconFillColor} />
       </Tooltip>
