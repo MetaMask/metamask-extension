@@ -274,7 +274,7 @@ export function lookupDomainName(domainName) {
       let hasSnapResolution = false;
       let error;
       try {
-        address = await web3Provider.resolveName(trimmedDomainName);
+        address = await web3Provider?.resolveName(trimmedDomainName);
       } catch (err) {
         error = err;
       }
