@@ -800,6 +800,26 @@
         "through2": true
       }
     },
+    "@lavamoat/lavapack": {
+      "builtin": {
+        "assert": true,
+        "buffer.Buffer.from": true,
+        "path.join": true,
+        "path.relative": true
+      },
+      "globals": {
+        "__dirname": true,
+        "process.cwd": true
+      },
+      "packages": {
+        "JSONStream": true,
+        "combine-source-map": true,
+        "convert-source-map": true,
+        "json-stable-stringify": true,
+        "through2": true,
+        "umd": true
+      }
+    },
     "@nodelib/fs.scandir": {
       "builtin": {
         "fs.lstat": true,
@@ -1070,6 +1090,13 @@
         "isobject": true,
         "mixin-deep": true,
         "pascalcase": true
+      }
+    },
+    "bify-module-groups": {
+      "packages": {
+        "pify": true,
+        "pump": true,
+        "through2": true
       }
     },
     "bl": {
@@ -3700,6 +3727,15 @@
     "split-string": {
       "packages": {
         "extend-shallow": true
+      }
+    },
+    "squirrelly": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.resolve": true
       }
     },
     "static-eval": {

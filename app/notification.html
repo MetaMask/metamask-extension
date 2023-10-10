@@ -4,9 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <title>MetaMask Notification</title>
-    {{@if(it.isMMI)}}
-    <title>MetaMask Institutional</title>
-    {{/if}}
     <style>
       #app-content {
         display: flex;
@@ -36,6 +33,13 @@
       <img id="loading__spinner" src="./images/spinner.gif" alt="" />
     </div>
     <div id="popover-content"></div>
-    <script src="./load-app.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./globalthis.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./sentry-install.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./lockdown-install.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./lockdown-run.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./runtime-cjs.js" type="text/javascript" charset="utf-8"></script>
+    {{@each(it.jsBundles) => val}}
+    <script src="{{val}}" type="text/javascript" charset="utf-8"></script>
+    {{/each}}
   </body>
 </html>

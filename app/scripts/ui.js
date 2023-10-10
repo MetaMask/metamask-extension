@@ -7,6 +7,8 @@ import './lib/setup-initial-state-hooks';
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
 
+import 'react-devtools';
+
 import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 

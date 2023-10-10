@@ -34,6 +34,7 @@ function asyncGeneratorToStream(factoryFn) {
       for await (const item of asyncIter) {
         readableStream.write(item);
       }
+      console.log('ending');
       readableStream.end();
     } catch (err) {
       readableStream.destroy(err);
