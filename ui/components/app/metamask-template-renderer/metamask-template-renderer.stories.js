@@ -1,18 +1,11 @@
 import React from 'react';
-import {
-  TextColor,
-  TypographyVariant,
-} from '../../../helpers/constants/design-system';
+import { object } from '@storybook/addon-knobs';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import MetaMaskTemplateRenderer from '.';
 
 export default {
   title: 'Components/App/MetamaskTemplateRenderer',
-  component: MetaMaskTemplateRenderer,
-  argTypes: {
-    sections: {
-      control: 'object',
-    },
-  },
+  id: __filename,
 };
 
 const SECTIONS = {
@@ -20,7 +13,7 @@ const SECTIONS = {
   props: {
     margin: 4,
     padding: 8,
-    borderColor: TextColor.primaryDefault,
+    borderColor: COLORS.PRIMARY1,
     borderWidth: 2,
   },
   children: [
@@ -29,8 +22,8 @@ const SECTIONS = {
       key: 'A Test String',
       children: 'A Test String',
       props: {
-        color: TextColor.textMuted,
-        variant: TypographyVariant.H2,
+        color: COLORS.TEXT_MUTED,
+        variant: TYPOGRAPHY.H2,
       },
     },
     {
@@ -38,8 +31,8 @@ const SECTIONS = {
       key: 'Some more text',
       children: 'Some more text as a paragraph',
       props: {
-        color: TextColor.textAlternative,
-        variant: TypographyVariant.paragraph,
+        color: COLORS.TEXT_ALTERNATIVE,
+        variant: TYPOGRAPHY.Paragraph,
       },
     },
     {
@@ -47,7 +40,8 @@ const SECTIONS = {
       key: 'TDL',
       props: {
         dictionary: {
-          term: 'a word or phrase used to describe a thing or to express a concept, especially in a particular kind of language or branch of study.',
+          term:
+            'a word or phrase used to describe a thing or to express a concept, especially in a particular kind of language or branch of study.',
           definition:
             'a statement of the exact meaning of a word, especially in a dictionary.',
           dl: 'HTML tag denoting a definition list',
@@ -90,12 +84,25 @@ const SECTIONS = {
   ],
 };
 
-export const DefaultStory = (args) => (
-  <MetaMaskTemplateRenderer sections={args.sections} />
+export const DefaultStory = () => (
+  <MetaMaskTemplateRenderer sections={object('sections', SECTIONS)} />
 );
 
 DefaultStory.storyName = 'Default';
 
-DefaultStory.args = {
-  sections: SECTIONS,
-};
+export const WithInvalidElement = () => (
+  <MetaMaskTemplateRenderer
+    sections={object('sections', [
+      {
+        ...SECTIONS,
+        key: 'safe-tree',
+      },
+      {
+        element: 'Unsafe',
+        key: 'unsafe-tree',
+        children:
+          'I should be displayed, but I wont be due to unsafe component',
+      },
+    ])}
+  />
+);

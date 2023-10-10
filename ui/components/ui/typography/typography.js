@@ -32,17 +32,13 @@ export const ValidColors = [
   /**
    * COLORS BELOW HAVE BEEN DEPRECATED
    */
-  COLORS.UI1,
-  COLORS.UI2,
-  COLORS.UI3,
-  COLORS.UI4,
-  COLORS.BLACK,
   COLORS.GREY,
   COLORS.NEUTRAL_GREY,
   COLORS.WHITE,
   COLORS.PRIMARY1,
   COLORS.PRIMARY3,
   COLORS.SECONDARY1,
+  COLORS.SECONDARY3,
   COLORS.SUCCESS1,
   COLORS.SUCCESS3,
   COLORS.ERROR1,
@@ -74,6 +70,7 @@ export default function Typography({
   fontStyle = 'normal',
   align,
   overflowWrap,
+  title,
   tag,
   margin = [1, 0],
   boxProps = {},
@@ -109,7 +106,10 @@ export default function Typography({
   return (
     <Box margin={margin} {...boxProps}>
       {(boxClassName) => (
-        <Tag className={classnames(boxClassName, computedClassName)}>
+        <Tag
+          className={classnames(boxClassName, computedClassName)}
+          title={title}
+        >
           {children}
         </Tag>
       )}
@@ -167,6 +167,10 @@ Typography.propTypes = {
    * Additional className to assign the Typography component
    */
   className: PropTypes.string,
+  /**
+   * Title attribute to include on the element. Will show as tooltip on hover.
+   */
+  title: PropTypes.string,
   /**
    * The text content of the Typography component
    */

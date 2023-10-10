@@ -2,19 +2,19 @@ import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  BorderStyle,
-  BlockSize,
-  BorderRadius,
-  BorderColor,
-  Size,
+  COLORS,
+  RESIZE,
+  SIZES,
+  BORDER_STYLE,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
-import { RESIZE } from './textarea.constants';
+
 import README from './README.mdx';
 import Textarea from '.';
 
 export default {
   title: 'Components/UI/Textarea',
-
+  id: __filename,
   component: Textarea,
   parameters: {
     docs: {
@@ -73,9 +73,9 @@ DefaultStory.args = {
   resize: RESIZE.BOTH,
   scrollable: false,
   boxProps: {
-    borderColor: BorderColor.borderMuted,
-    borderRadius: Size.SM,
-    borderStyle: BorderStyle.solid,
+    borderColor: COLORS.BORDER_MUTED,
+    borderRadius: SIZES.SM,
+    borderStyle: BORDER_STYLE.SOLID,
     padding: [2, 4],
   },
   height: 'auto',
@@ -110,10 +110,10 @@ Scrollable.args = {
   scrollable: true,
   height: 170,
   boxProps: {
-    borderColor: BorderColor.transparent,
-    borderRadius: BorderRadius.none,
-    borderStyle: BorderStyle.none,
+    borderColor: COLORS.TRANSPARENT,
+    borderRadius: SIZES.NONE,
+    borderStyle: BORDER_STYLE.NONE,
     padding: [2, 4],
-    width: BlockSize.Full,
+    width: BLOCK_SIZES.FULL,
   },
 };

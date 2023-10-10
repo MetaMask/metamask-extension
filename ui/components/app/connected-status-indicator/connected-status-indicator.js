@@ -2,37 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { findKey } from 'lodash';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
-  STATUS_CONNECTED_TO_SNAP,
   STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
-import {
-  BackgroundColor,
-  Color,
-} from '../../../helpers/constants/design-system';
+import ColorIndicator from '../../ui/color-indicator';
+import { COLORS } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAddressConnectedSubjectMap,
   getOriginOfCurrentTab,
-  getPermissionsForActiveTab,
   getSelectedAddress,
 } from '../../../selectors';
-import { ConnectedSiteMenu } from '../../multichain';
 
 export default function ConnectedStatusIndicator({ onClick }) {
   const t = useI18nContext();
 
   const selectedAddress = useSelector(getSelectedAddress);
-
-  const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
-
-  const activeWalletSnap = permissionsForActiveTab
-    .map((permission) => permission.key)
-    .includes(WALLET_SNAP_PERMISSION_KEY);
-
   const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
@@ -45,37 +32,36 @@ export default function ConnectedStatusIndicator({ onClick }) {
     status = STATUS_CONNECTED;
   } else if (findKey(addressConnectedSubjectMap, originOfCurrentTab)) {
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
-  } else if (activeWalletSnap) {
-    status = STATUS_CONNECTED_TO_SNAP;
   } else {
     status = STATUS_NOT_CONNECTED;
   }
 
-  let globalMenuColor = Color.iconAlternative;
+  let indicatorType = ColorIndicator.TYPES.OUTLINE;
+  let indicatorColor = COLORS.ICON_DEFAULT;
+
   if (status === STATUS_CONNECTED) {
-    globalMenuColor = Color.successDefault;
-  } else if (
-    status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ||
-    status === STATUS_CONNECTED_TO_SNAP
-  ) {
-    globalMenuColor = BackgroundColor.backgroundDefault;
+    indicatorColor = COLORS.SUCCESS1;
+    indicatorType = ColorIndicator.TYPES.PARTIAL;
+  } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT) {
+    indicatorColor = COLORS.ALERT1;
   }
 
-  const tooltipText =
+  const text =
     status === STATUS_CONNECTED
-      ? t('tooltipSatusConnected')
-      : t('tooltipSatusNotConnected');
+      ? t('statusConnected')
+      : t('statusNotConnected');
 
   return (
-    <ConnectedSiteMenu
-      status={status}
-      globalMenuColor={globalMenuColor}
-      text={tooltipText}
-      as="button"
-      onClick={onClick}
-    />
+    <button className="connected-status-indicator" onClick={onClick}>
+      <ColorIndicator color={indicatorColor} type={indicatorType} />
+      <div className="connected-status-indicator__text">{text}</div>
+    </button>
   );
 }
+
+ConnectedStatusIndicator.defaultProps = {
+  onClick: undefined,
+};
 
 ConnectedStatusIndicator.propTypes = {
   onClick: PropTypes.func,

@@ -1,13 +1,12 @@
 import React from 'react';
 import {
-  AlignItems,
-  BackgroundColor,
+  ALIGN_ITEMS,
   BLOCK_SIZES,
-  BorderColor,
-  BorderStyle,
+  BORDER_STYLE,
+  COLORS,
   DISPLAY,
-  JustifyContent,
-  TextAlign,
+  JUSTIFY_CONTENT,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 
 import README from './README.mdx';
@@ -17,6 +16,7 @@ const sizeOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export default {
   title: 'Components/UI/Card',
+  id: __filename,
   component: Card,
   parameters: {
     docs: {
@@ -32,7 +32,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(BorderStyle),
+      options: Object.values(BORDER_STYLE),
     },
     borderWidth: {
       control: {
@@ -44,13 +44,13 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(BorderColor),
+      options: Object.values(COLORS),
     },
     backgroundColor: {
       control: {
         type: 'select',
       },
-      options: Object.values(BackgroundColor),
+      options: Object.values(COLORS),
     },
     width: {
       control: {
@@ -68,7 +68,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(TextAlign),
+      options: Object.values(TEXT_ALIGN),
     },
     margin: {
       control: {
@@ -140,13 +140,13 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(JustifyContent),
+      options: Object.values(JUSTIFY_CONTENT),
     },
     alignItems: {
       control: {
         type: 'select',
       },
-      options: Object.values(AlignItems),
+      options: Object.values(ALIGN_ITEMS),
     },
   },
   args: {
@@ -157,3 +157,13 @@ export default {
 export const DefaultStory = (args) => <Card {...args}>{args.children}</Card>;
 
 DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  padding: 4,
+  border: true,
+  borderWidth: 1,
+  borderColor: COLORS.BORDER_DEFAULT,
+  borderStyle: BORDER_STYLE.SOLID,
+  backgroundColor: COLORS.WHITE,
+  display: DISPLAY.BLOCK,
+};

@@ -4,29 +4,7 @@
  * should match the property. When detailing a collection of things, it should
  * match the plural form of the thing. e.g. COLORS, TYPOGRAPHY
  */
-
-/**
- * !!! DEPRECATED DO NOT USE!!!
- */
-const DEPRECATED_COLORS = {
-  UI1: 'ui-1',
-  UI2: 'ui-2',
-  UI3: 'ui-3',
-  UI4: 'ui-4',
-  BLACK: 'black',
-  GREY: 'grey',
-  NEUTRAL_GREY: 'neutral-grey',
-  WHITE: 'white',
-  PRIMARY1: 'primary-1',
-  PRIMARY3: 'primary-3',
-  SECONDARY1: 'secondary-1',
-  SUCCESS1: 'success-1',
-  SUCCESS3: 'success-3',
-  ERROR1: 'error-1',
-  ALERT1: 'alert-1',
-};
-
-const BASE_COLORS = {
+export const COLORS = {
   BACKGROUND_DEFAULT: 'background-default',
   BACKGROUND_ALTERNATIVE: 'background-alternative',
   TEXT_DEFAULT: 'text-default',
@@ -75,19 +53,21 @@ const BASE_COLORS = {
   GOERLI: 'goerli',
   TRANSPARENT: 'transparent',
   LOCALHOST: 'localhost',
+  /**
+   * !!! DEPRECATED DO NOT USE!!!
+   */
+  GREY: 'grey',
+  NEUTRAL_GREY: 'neutral-grey',
+  WHITE: 'white',
+  PRIMARY1: 'primary-1',
+  PRIMARY3: 'primary-3',
+  SECONDARY1: 'secondary-1',
+  SECONDARY3: 'secondary-3',
+  SUCCESS1: 'success-1',
+  SUCCESS3: 'success-3',
+  ERROR1: 'error-1',
+  ALERT1: 'alert-1',
 };
-
-export const COLORS = new Proxy(
-  { ...DEPRECATED_COLORS, ...BASE_COLORS },
-  {
-    get(target, prop) {
-      if (prop in DEPRECATED_COLORS) {
-        console.warn('DEPRECATED COLOR WARNING: ', prop);
-      }
-      return target[prop];
-    },
-  },
-);
 
 export const TYPOGRAPHY = {
   H1: 'h1',
