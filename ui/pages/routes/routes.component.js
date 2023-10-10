@@ -480,6 +480,10 @@ export default class Routes extends Component {
   }
 
   showFooter() {
+    if (Boolean(process.env.MULTICHAIN) === false) {
+      return false;
+    }
+
     const { location } = this.props;
     const isHomePage = Boolean(
       matchPath(location.pathname, { path: DEFAULT_ROUTE, exact: true }),
@@ -487,10 +491,11 @@ export default class Routes extends Component {
     const isConnectionsPage = Boolean(
       matchPath(location.pathname, { path: CONNECTIONS, exact: true }),
     );
+    const isAssetPage = Boolean(
+      matchPath(location.pathname, { path: ASSET_ROUTE, exact: false }),
+    );
 
-    const showFooterOnPages = isHomePage || isConnectionsPage;
-
-    return showFooterOnPages;
+    return isAssetPage || isHomePage || isConnectionsPage;
   }
 
   showOnboardingHeader() {
