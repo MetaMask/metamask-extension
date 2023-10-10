@@ -78,7 +78,7 @@ function getActionFunctionById(id, history) {
     },
     18: () => {
       updateViewedNotifications({ 18: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+      history.push(`${EXPERIMENTAL_ROUTE}#security-alerts`);
     },
     19: () => {
       updateViewedNotifications({ 19: true });
@@ -100,7 +100,7 @@ function getActionFunctionById(id, history) {
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: () => {
       updateViewedNotifications({ 23: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+      history.push(`${EXPERIMENTAL_ROUTE}#security-alerts`);
     },
     ///: END:ONLY_INCLUDE_IN
     24: () => {
