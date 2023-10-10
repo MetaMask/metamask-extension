@@ -1,23 +1,18 @@
 import { connect } from 'react-redux';
 import {
-  getNftContracts,
-  getNfts,
-  getNativeCurrency,
-} from '../../../../ducks/metamask/metamask';
-import {
   getMetaMaskAccounts,
+  getNativeCurrency,
   getNativeCurrencyImage,
+  getSendTokenAddress,
 } from '../../../../selectors';
-import { updateSendAsset, getSendAsset } from '../../../../ducks/send';
+import { updateSendToken } from '../../../../store/actions';
 import SendAssetRow from './send-asset-row.component';
 
 function mapStateToProps(state) {
   return {
     tokens: state.metamask.tokens,
     selectedAddress: state.metamask.selectedAddress,
-    nfts: getNfts(state),
-    collections: getNftContracts(state),
-    sendAsset: getSendAsset(state),
+    sendTokenAddress: getSendTokenAddress(state),
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),
     nativeCurrencyImage: getNativeCurrencyImage(state),
@@ -26,8 +21,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateSendAsset: ({ type, details }) =>
-      dispatch(updateSendAsset({ type, details })),
+    setSendToken: (token) => dispatch(updateSendToken(token)),
   };
 }
 

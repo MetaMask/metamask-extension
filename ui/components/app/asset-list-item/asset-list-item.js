@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
@@ -9,13 +9,10 @@ import Tooltip from '../../ui/tooltip';
 import InfoIcon from '../../ui/icon/info-icon.component';
 import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { updateSendAsset } from '../../../ducks/send';
+import { useMetricEvent } from '../../../hooks/useMetricEvent';
+import { updateSendToken } from '../../../store/actions';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
-import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { EVENT } from '../../../../shared/constants/metametrics';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const AssetListItem = ({
   className,
@@ -30,12 +27,17 @@ const AssetListItem = ({
   primary,
   secondary,
   identiconBorder,
-  isERC721,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
+  const sendTokenEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Home',
+      name: 'Clicked Send: Token',
+    },
+  });
   const titleIcon = warning ? (
     <Tooltip
       wrapperClassName="asset-list-item__warning-tooltip"
@@ -62,33 +64,17 @@ const AssetListItem = ({
       <Button
         type="link"
         className="asset-list-item__send-token-button"
-        onClick={async (e) => {
+        onClick={(e) => {
           e.stopPropagation();
-          trackEvent({
-            event: 'Clicked Send: Token',
-            category: EVENT.CATEGORIES.NAVIGATION,
-            properties: {
-              action: 'Home',
-              legacy_event: true,
-            },
-          });
-          try {
-            await dispatch(
-              updateSendAsset({
-                type: ASSET_TYPES.TOKEN,
-                details: {
-                  address: tokenAddress,
-                  decimals: tokenDecimals,
-                  symbol: tokenSymbol,
-                },
-              }),
-            );
-            history.push(SEND_ROUTE);
-          } catch (err) {
-            if (!err.message.includes(INVALID_ASSET_TYPE)) {
-              throw err;
-            }
-          }
+          sendTokenEvent();
+          dispatch(
+            updateSendToken({
+              address: tokenAddress,
+              decimals: tokenDecimals,
+              symbol: tokenSymbol,
+            }),
+          );
+          history.push(SEND_ROUTE);
         }}
       >
         {t('sendSpecifiedTokens', [tokenSymbol])}
@@ -96,7 +82,7 @@ const AssetListItem = ({
     );
   }, [
     tokenSymbol,
-    trackEvent,
+    sendTokenEvent,
     tokenAddress,
     tokenDecimals,
     history,
@@ -121,7 +107,7 @@ const AssetListItem = ({
         </button>
       }
       titleIcon={titleIcon}
-      subtitle={secondary ? <h3 title={secondary}>{secondary}</h3> : null}
+      subtitle={<h3 title={secondary}>{secondary}</h3>}
       onClick={onClick}
       icon={
         <Identicon
@@ -131,17 +117,14 @@ const AssetListItem = ({
           image={tokenImage}
           alt={`${primary} ${tokenSymbol}`}
           imageBorder={identiconBorder}
-          tokenSymbol={tokenSymbol}
         />
       }
       midContent={midContent}
       rightContent={
-        !isERC721 && (
-          <>
-            <i className="fas fa-chevron-right asset-list-item__chevron-right" />
-            {sendTokenButton}
-          </>
-        )
+        <>
+          <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+          {sendTokenButton}
+        </>
       }
     />
   );
@@ -160,7 +143,6 @@ AssetListItem.propTypes = {
   primary: PropTypes.string,
   secondary: PropTypes.string,
   identiconBorder: PropTypes.bool,
-  isERC721: PropTypes.bool,
 };
 
 AssetListItem.defaultProps = {
