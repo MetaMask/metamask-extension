@@ -1,32 +1,28 @@
-import abi from 'human-standard-token-abi';
 import pify from 'pify';
 import log from 'loglevel';
-import { capitalize } from 'lodash';
-import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url';
-import { checksumAddress } from '../helpers/utils/util';
-import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils';
+import { capitalize, isEqual } from 'lodash';
+import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
-import { fetchSymbolAndDecimals } from '../helpers/utils/token-util';
+import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import switchDirection from '../helpers/utils/switch-direction';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
-import { setCustomGasLimit } from '../ducks/gas/gas.duck';
-import txHelper from '../../lib/tx-helper';
+import txHelper from '../helpers/utils/tx-helper';
+import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
-  getEnvironmentType,
-  addHexPrefix,
-} from '../../../app/scripts/lib/util';
-import {
+  getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../selectors';
+import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens';
+import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -41,7 +37,6 @@ export function goHome() {
     type: actionConstants.GO_HOME,
   };
 }
-
 // async actions
 
 export function tryUnlockMetamask(password) {
@@ -473,25 +468,16 @@ export function setCurrentCurrency(currencyCode) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setCurrentCurrency`);
-    let data;
     try {
-      data = await promisifiedBackground.setCurrentCurrency(currencyCode);
+      await promisifiedBackground.setCurrentCurrency(currencyCode);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
-      log.error(error.stack);
+      log.error(error);
       dispatch(displayWarning(error.message));
       return;
     } finally {
       dispatch(hideLoadingIndication());
     }
-
-    dispatch({
-      type: actionConstants.SET_CURRENT_FIAT,
-      value: {
-        currentCurrency: data.currentCurrency,
-        conversionRate: data.conversionRate,
-        conversionDate: data.conversionDate,
-      },
-    });
   };
 }
 
@@ -635,201 +621,10 @@ export function signTypedMsg(msgData) {
   };
 }
 
-export function signTx(txData) {
-  return (dispatch) => {
-    global.ethQuery.sendTransaction(txData, (err) => {
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-    dispatch(showConfTxPage());
-  };
-}
-
-export function setGasLimit(gasLimit) {
-  return {
-    type: actionConstants.UPDATE_GAS_LIMIT,
-    value: gasLimit,
-  };
-}
-
-export function setGasPrice(gasPrice) {
-  return {
-    type: actionConstants.UPDATE_GAS_PRICE,
-    value: gasPrice,
-  };
-}
-
-export function setGasTotal(gasTotal) {
-  return {
-    type: actionConstants.UPDATE_GAS_TOTAL,
-    value: gasTotal,
-  };
-}
-
-export function updateGasData({
-  gasPrice,
-  blockGasLimit,
-  selectedAddress,
-  sendToken,
-  to,
-  value,
-  data,
-}) {
-  return (dispatch) => {
-    dispatch(gasLoadingStarted());
-    return estimateGasForSend({
-      estimateGasMethod: promisifiedBackground.estimateGas,
-      blockGasLimit,
-      selectedAddress,
-      sendToken,
-      to,
-      value,
-      estimateGasPrice: gasPrice,
-      data,
-    })
-      .then((gas) => {
-        dispatch(setGasLimit(gas));
-        dispatch(setCustomGasLimit(gas));
-        dispatch(updateSendErrors({ gasLoadingError: null }));
-        dispatch(gasLoadingFinished());
-      })
-      .catch((err) => {
-        log.error(err);
-        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }));
-        dispatch(gasLoadingFinished());
-      });
-  };
-}
-
-export function gasLoadingStarted() {
-  return {
-    type: actionConstants.GAS_LOADING_STARTED,
-  };
-}
-
-export function gasLoadingFinished() {
-  return {
-    type: actionConstants.GAS_LOADING_FINISHED,
-  };
-}
-
-export function updateSendTokenBalance({ sendToken, tokenContract, address }) {
-  return (dispatch) => {
-    const tokenBalancePromise = tokenContract
-      ? tokenContract.balanceOf(address)
-      : Promise.resolve();
-    return tokenBalancePromise
-      .then((usersToken) => {
-        if (usersToken) {
-          const newTokenBalance = calcTokenBalance({ sendToken, usersToken });
-          dispatch(setSendTokenBalance(newTokenBalance));
-        }
-      })
-      .catch((err) => {
-        log.error(err);
-        updateSendErrors({ tokenBalance: 'tokenBalanceError' });
-      });
-  };
-}
-
-export function updateSendErrors(errorObject) {
-  return {
-    type: actionConstants.UPDATE_SEND_ERRORS,
-    value: errorObject,
-  };
-}
-
-export function setSendTokenBalance(tokenBalance) {
-  return {
-    type: actionConstants.UPDATE_SEND_TOKEN_BALANCE,
-    value: tokenBalance,
-  };
-}
-
-export function updateSendHexData(value) {
-  return {
-    type: actionConstants.UPDATE_SEND_HEX_DATA,
-    value,
-  };
-}
-
-export function updateSendTo(to, nickname = '') {
-  return {
-    type: actionConstants.UPDATE_SEND_TO,
-    value: { to, nickname },
-  };
-}
-
-export function updateSendAmount(amount) {
-  return {
-    type: actionConstants.UPDATE_SEND_AMOUNT,
-    value: amount,
-  };
-}
-
 export function updateCustomNonce(value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
     value,
-  };
-}
-
-export function setMaxModeTo(bool) {
-  return {
-    type: actionConstants.UPDATE_MAX_MODE,
-    value: bool,
-  };
-}
-
-export function updateSend(newSend) {
-  return {
-    type: actionConstants.UPDATE_SEND,
-    value: newSend,
-  };
-}
-
-export function updateSendToken(token) {
-  return {
-    type: actionConstants.UPDATE_SEND_TOKEN,
-    value: token,
-  };
-}
-
-export function clearSend() {
-  return {
-    type: actionConstants.CLEAR_SEND,
-  };
-}
-
-export function updateSendEnsResolution(ensResolution) {
-  return {
-    type: actionConstants.UPDATE_SEND_ENS_RESOLUTION,
-    payload: ensResolution,
-  };
-}
-
-export function updateSendEnsResolutionError(errorMessage) {
-  return {
-    type: actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR,
-    payload: errorMessage,
-  };
-}
-
-export function signTokenTx(tokenAddress, toAddress, amount, txData) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      const token = global.eth.contract(abi).at(tokenAddress);
-      const txPromise = token.transfer(toAddress, addHexPrefix(amount), txData);
-      dispatch(showConfTxPage());
-      dispatch(hideLoadingIndication());
-      await txPromise;
-    } catch (error) {
-      dispatch(hideLoadingIndication());
-      dispatch(displayWarning(error.message));
-    }
   };
 }
 
@@ -897,7 +692,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams));
-        dispatch(clearSend());
+        dispatch(resetSendState());
 
         if (err) {
           dispatch(txError(err));
@@ -913,7 +708,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -972,15 +767,6 @@ export function txError(err) {
   return {
     type: actionConstants.TRANSACTION_ERROR,
     message: err.message,
-  };
-}
-
-export function removeSnapError(msgData) {
-  return (dispatch) => {
-    return promisifiedBackground
-      .removeSnapError(msgData)
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)));
   };
 }
 
@@ -1092,7 +878,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(closeCurrentNotificationWindow());
@@ -1135,7 +921,7 @@ export function cancelTxs(txDataList) {
 
       const newState = await updateMetamaskStateFromBackground();
       dispatch(updateMetamaskState(newState));
-      dispatch(clearSend());
+      dispatch(resetSendState());
 
       txIds.forEach((id) => {
         dispatch(completedTx(id));
@@ -1223,19 +1009,59 @@ export function updateMetamaskState(newState) {
   return (dispatch, getState) => {
     const { metamask: currentState } = getState();
 
-    const { currentLocale, selectedAddress } = currentState;
+    const { currentLocale, selectedAddress, provider } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
+      provider: newProvider,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
     }
+
     if (selectedAddress !== newSelectedAddress) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
+    const newAddressBook = newState.addressBook?.[newProvider?.chainId] ?? {};
+    const oldAddressBook = currentState.addressBook?.[provider?.chainId] ?? {};
+    const newAccounts = getMetaMaskAccounts({ metamask: newState });
+    const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
+    const newSelectedAccount = newAccounts[newSelectedAddress];
+    const oldSelectedAccount = newAccounts[selectedAddress];
+    // dispatch an ACCOUNT_CHANGED for any account whose balance or other
+    // properties changed in this update
+    Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
+      if (!isEqual(oldAccount, newAccounts[address])) {
+        dispatch({
+          type: actionConstants.ACCOUNT_CHANGED,
+          payload: { account: newAccounts[address] },
+        });
+      }
+    });
+    // Also emit an event for the selected account changing, either due to a
+    // property update or if the entire account changes.
+    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
+      dispatch({
+        type: actionConstants.SELECTED_ACCOUNT_CHANGED,
+        payload: { account: newSelectedAccount },
+      });
+    }
+    // We need to keep track of changing address book entries
+    if (isEqual(oldAddressBook, newAddressBook) === false) {
+      dispatch({
+        type: actionConstants.ADDRESS_BOOK_UPDATED,
+        payload: { addressBook: newAddressBook },
+      });
+    }
+
+    if (provider.chainId !== newProvider.chainId) {
+      dispatch({
+        type: actionConstants.CHAIN_CHANGED,
+        payload: newProvider.chainId,
+      });
+    }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
@@ -1326,6 +1152,7 @@ export function showAccountDetail(address) {
 
     try {
       await _setSelectedAddress(dispatch, address);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;
@@ -1738,7 +1565,7 @@ export function addToAddressBook(recipient, nickname = '', memo = '') {
     let set;
     try {
       set = await promisifiedBackground.setAddressBook(
-        checksumAddress(recipient),
+        toChecksumHexAddress(recipient),
         nickname,
         chainId,
         memo,
@@ -1764,7 +1591,7 @@ export function removeFromAddressBook(chainId, addressToRemove) {
   return async () => {
     await promisifiedBackground.removeFromAddressBook(
       chainId,
-      checksumAddress(addressToRemove),
+      toChecksumHexAddress(addressToRemove),
     );
   };
 }
@@ -1842,9 +1669,16 @@ export function hideAlert() {
  * or null (used to clear the previous value)
  */
 export function qrCodeDetected(qrCodeData) {
-  return {
-    type: actionConstants.QR_CODE_DETECTED,
-    value: qrCodeData,
+  return async (dispatch) => {
+    await dispatch({
+      type: actionConstants.QR_CODE_DETECTED,
+      value: qrCodeData,
+    });
+
+    // If on the send page, the send slice will listen for the QR_CODE_DETECTED
+    // action and update its state. Address changes need to recompute gasLimit
+    // so we fire this method so that the send page gasLimit can be recomputed
+    dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -1916,9 +1750,9 @@ export function exportAccount(password, address) {
 
 export function exportAccounts(password, addresses) {
   return function (dispatch) {
-    log.debug(`background.submitPassword`);
+    log.debug(`background.verifyPassword`);
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, function (err) {
+      background.verifyPassword(password, function (err) {
         if (err) {
           log.error('Error in submitting password.');
           reject(err);
@@ -1992,8 +1826,8 @@ export function showSendTokenPage() {
 }
 
 export function buyEth(opts) {
-  return (dispatch) => {
-    const url = getBuyEthUrl(opts);
+  return async (dispatch) => {
+    const url = await getBuyEthUrl(opts);
     global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,
@@ -2059,8 +1893,9 @@ export function updatePreferences(value) {
 }
 
 export function setDefaultHomeActiveTabName(value) {
-  return async () => {
+  return async (dispatch) => {
     await promisifiedBackground.setDefaultHomeActiveTabName(value);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -2147,27 +1982,6 @@ export function setParticipateInMetaMetrics(val) {
           value: val,
         });
         resolve([val, metaMetricsId]);
-      });
-    });
-  };
-}
-
-export function setMetaMetricsSendCount(val) {
-  return (dispatch) => {
-    log.debug(`background.setMetaMetricsSendCount`);
-    return new Promise((resolve, reject) => {
-      background.setMetaMetricsSendCount(val, (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-
-        dispatch({
-          type: actionConstants.SET_METAMETRICS_SEND_COUNT,
-          value: val,
-        });
-        resolve(val);
       });
     });
   };
@@ -2271,7 +2085,7 @@ export function setPendingTokens(pendingTokens) {
   const { customToken = {}, selectedTokens = {} } = pendingTokens;
   const { address, symbol, decimals } = customToken;
   const tokens =
-    address && symbol && decimals
+    address && symbol && decimals >= 0 <= 36
       ? {
           ...selectedTokens,
           [address]: {
@@ -2572,6 +2386,14 @@ export function setLastActiveTime() {
   };
 }
 
+export function setDismissSeedBackUpReminder(value) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await promisifiedBackground.setDismissSeedBackUpReminder(value);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function setConnectedStatusPopoverHasBeenShown() {
   return () => {
     background.setConnectedStatusPopoverHasBeenShown((err) => {
@@ -2582,16 +2404,24 @@ export function setConnectedStatusPopoverHasBeenShown() {
   };
 }
 
-export async function setAlertEnabledness(alertId, enabledness) {
-  await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
+export function setRecoveryPhraseReminderHasBeenShown() {
+  return () => {
+    background.setRecoveryPhraseReminderHasBeenShown((err) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+    });
+  };
 }
 
-export async function setUnconnectedAccountAlertShown(origin) {
-  await promisifiedBackground.setUnconnectedAccountAlertShown(origin);
-}
-
-export async function setWeb3ShimUsageAlertDismissed(origin) {
-  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
+export function setRecoveryPhraseReminderLastShown(lastShown) {
+  return () => {
+    background.setRecoveryPhraseReminderLastShown(lastShown, (err) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+    });
+  };
 }
 
 export function loadingMethodDataStarted() {
@@ -2665,12 +2495,10 @@ export function getTokenParams(tokenAddress) {
     dispatch(loadingTokenParamsStarted());
     log.debug(`loadingTokenParams`);
 
-    return fetchSymbolAndDecimals(tokenAddress, existingTokens).then(
-      ({ symbol, decimals }) => {
-        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
-        dispatch(loadingTokenParamsFinished());
-      },
-    );
+    return getSymbolAndDecimals(tokenAddress).then(({ symbol, decimals }) => {
+      dispatch(addToken(tokenAddress, symbol, Number(decimals)));
+      dispatch(loadingTokenParamsFinished());
+    });
   };
 }
 
@@ -2854,12 +2682,42 @@ export function getCurrentWindowTab() {
   };
 }
 
+export function setLedgerLivePreference(value) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await promisifiedBackground.setLedgerLivePreference(value);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+// Wrappers around promisifedBackground
+/**
+ * The "actions" below are not actions nor action creators. They cannot use
+ * dispatch nor should they be dispatched when used. Instead they can be
+ * called directly. These wrappers will be moved into their location at some
+ * point in the future.
+ */
+
+export function estimateGas(params) {
+  return promisifiedBackground.estimateGas(params);
+}
+
+export async function updateTokenType(tokenAddress) {
+  let token = {};
+  try {
+    token = await promisifiedBackground.updateTokenType(tokenAddress);
+  } catch (error) {
+    log.error(error);
+  }
+  return token;
+}
+
 // MetaMetrics
 /**
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
  */
 
 /**
@@ -2884,4 +2742,46 @@ export function updateViewedNotifications(notificationIdViewedStatusMap) {
   return promisifiedBackground.updateViewedNotifications(
     notificationIdViewedStatusMap,
   );
+}
+
+export async function setAlertEnabledness(alertId, enabledness) {
+  await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
+}
+
+export async function setUnconnectedAccountAlertShown(origin) {
+  await promisifiedBackground.setUnconnectedAccountAlertShown(origin);
+}
+
+export async function setWeb3ShimUsageAlertDismissed(origin) {
+  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
+}
+
+export function resetBlockList() {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.resetBlockList();
+    } catch (err) {
+      dispatch(displayWarning(err.message));
+      throw err;
+    }
+  };
+}
+
+export function removeBlock(block) {
+  return async (dispatch) => {
+    console.log(block);
+  };
+}
+
+
+export function sortBlockList(sortProperty) {
+  return async (dispatch) => {
+    console.log(sortProperty);
+  };
+}
+
+export function toggleBlockNumericInfoFormat() {
+  return async (dispatch) => {
+    console.log('toggle!');
+  };
 }

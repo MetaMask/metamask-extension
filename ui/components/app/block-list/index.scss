@@ -1,0 +1,36 @@
+.block-list {
+  display: flex;
+  flex-flow: column;
+  margin: 32px;
+
+  &__buttons {
+    margin-left: auto;
+    margin-right: auto;
+
+    > * {
+      margin-bottom: 4px;
+    }
+  }
+
+  &__block {
+    display: flex;
+    flex-flow: column;
+    border: 1px solid $Grey-500;
+    color: 1px solid $Grey-000;
+    padding: 24px;
+    margin-top: 12px;
+    position: relative;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__block-delete {
+    width: 40px !important;
+    position: absolute;
+    right: 10px;
+    height: 30px;
+  }
+}
