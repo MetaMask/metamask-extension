@@ -8,6 +8,17 @@ const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 
+const emptyHtmlPage = () => `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>E2E Test Page</title>
+  </head>
+  <body data-testid="empty-page-body">
+    Empty page by MetaMask
+  </body>
+</html>`;
+
 /**
  * The browser makes requests to domains within its own namespace for
  * functionality specific to the browser. For example when running E2E tests in
@@ -55,6 +66,35 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   const mockedEndpoint = await testSpecificMock(server);
 
   // Mocks below this line can be overridden by test-specific mocks
+
+  // Account link
+  const accountLinkRegex =
+    /^https:\/\/etherscan.io\/address\/0x[a-fA-F0-9]{40}$/u;
+  await server.forGet(accountLinkRegex).thenCallback(() => {
+    return {
+      statusCode: 200,
+      body: emptyHtmlPage(),
+    };
+  });
+
+  // Token tracker link
+  const tokenTrackerRegex =
+    /^https:\/\/etherscan.io\/token\/0x[a-fA-F0-9]{40}$/u;
+  await server.forGet(tokenTrackerRegex).thenCallback(() => {
+    return {
+      statusCode: 200,
+      body: emptyHtmlPage(),
+    };
+  });
+
+  // Explorer link
+  const explorerLinkRegex = /^https:\/\/etherscan.io\/tx\/0x[a-fA-F0-9]{64}$/u;
+  await server.forGet(explorerLinkRegex).thenCallback(() => {
+    return {
+      statusCode: 200,
+      body: emptyHtmlPage(),
+    };
+  });
 
   await server
     .forPost(

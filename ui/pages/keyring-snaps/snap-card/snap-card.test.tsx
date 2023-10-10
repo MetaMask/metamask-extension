@@ -81,4 +81,20 @@ describe('SnapCard', () => {
     });
     expect(getByText(messages.snapUpdateAvailable.message)).toBeInTheDocument();
   });
+
+  it('should direct to snap details when the card is clicked', async () => {
+    const { getByTestId } = renderComponent({
+      ...snap,
+      isInstalled: false,
+      updateAvailable: false,
+    });
+
+    const card = getByTestId('key-management-snap');
+
+    fireEvent.click(card);
+
+    await waitFor(() => {
+      expect(mockHistoryPush).toHaveBeenCalled();
+    });
+  });
 });

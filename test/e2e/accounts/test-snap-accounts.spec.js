@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const util = require('ethereumjs-util');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -6,6 +7,7 @@ const {
   openDapp,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
+  defaultGanacheOptions,
   sendTransaction,
   switchToNotificationWindow,
   switchToOrOpenDapp,
@@ -55,6 +57,81 @@ describe('Test Snap Account', function () {
         await installSnapSimpleKeyring(driver, false);
 
         await makeNewAccountAndSwitch(driver);
+      },
+    );
+  });
+
+  it('will display the keyring snap account removal warning', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        failOnConsoleError: false,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await installSnapSimpleKeyring(driver, false);
+
+        await makeNewAccountAndSwitch(driver);
+
+        const windowHandles = await driver.waitUntilXWindowHandles(
+          2,
+          1000,
+          10000,
+        );
+
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+          windowHandles,
+        );
+
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+
+        await driver.clickElement({ text: 'Snaps', tag: 'div' });
+
+        await driver.clickElement(
+          '[data-testid="npm:@metamask/snap-simple-keyring-snap"]',
+        );
+
+        const removeButton = await driver.findElement(
+          '[data-testid="remove-snap-button"]',
+        );
+        await driver.scrollToElement(removeButton);
+        await driver.clickElement('[data-testid="remove-snap-button"]');
+
+        assert.equal(
+          await driver.isElementPresentAndVisible({ text: 'Account 2' }),
+          true,
+        );
+
+        await driver.clickElement({
+          text: 'Continue',
+          tag: 'button',
+        });
+
+        await driver.fill(
+          '[data-testid="remove-snap-confirmation-input"]',
+          'MetaMask Simple Snap Keyring',
+        );
+
+        await driver.clickElement({
+          text: 'Remove Snap',
+          tag: 'button',
+        });
+
+        // Checking result modal
+        assert.equal(
+          await driver.isElementPresentAndVisible({
+            text: 'MetaMask Simple Snap Keyring removed',
+            tag: 'p',
+          }),
+          true,
+        );
       },
     );
   });
@@ -373,7 +450,10 @@ describe('Test Snap Account', function () {
     // click on Accounts
     await driver.clickElement('[data-testid="account-menu-icon"]');
 
-    const label = await driver.findElement({ css: '.mm-tag', text: 'Snaps' });
+    const label = await driver.findElement({
+      css: '.mm-tag',
+      text: 'Snaps (Beta)',
+    });
 
     label.click();
 
