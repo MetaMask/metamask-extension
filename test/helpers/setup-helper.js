@@ -1,24 +1,15 @@
-/* eslint-disable-next-line */
-import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
 
 process.env.IN_TEST = true;
-process.env.METAMASK_BUILD_TYPE = 'main';
 
-global.chrome = {
-  runtime: { id: 'testid', getManifest: () => ({ manifest_version: 2 }) },
-};
+global.chrome = { runtime: { id: 'testid' } };
 
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
-if (typeof beforeEach === 'function') {
-  /* eslint-disable-next-line jest/require-top-level-describe */
-  beforeEach(() => {
-    nock.cleanAll();
-  });
-}
 
 // catch rejections that are still unhandled when tests exit
 const unhandledRejections = new Map();
@@ -41,6 +32,8 @@ process.on('exit', () => {
   }
 });
 
+Enzyme.configure({ adapter: new Adapter() });
+
 log.setDefaultLevel(5);
 global.log = log;
 
@@ -62,35 +55,23 @@ global.Element = window.Element;
 // required by `react-popper`
 global.HTMLElement = window.HTMLElement;
 
-// Jest no longer adds the following timers so we use set/clear Timeouts
-global.setImmediate =
-  global.setImmediate || ((fn, ...args) => global.setTimeout(fn, 0, ...args));
-global.clearImmediate =
-  global.clearImmediate || ((id) => global.clearTimeout(id));
-
 // required by any components anchored on `popover-content`
 const popoverContent = window.document.createElement('div');
 popoverContent.setAttribute('id', 'popover-content');
 window.document.body.appendChild(popoverContent);
 
-// Fetch
-// fetch is part of node js in future versions, thus triggering no-shadow
-// eslint-disable-next-line no-shadow
-const { default: fetch, Headers, Request, Response } = require('node-fetch');
+// fetch
+const fetch = require('node-fetch');
 
+const { Headers, Request, Response } = fetch;
 Object.assign(window, { fetch, Headers, Request, Response });
-// some of our libraries currently assume that `fetch` is globally available,
-// so we need to assign this for tests to run
-global.fetch = fetch;
 
 // localStorage
 window.localStorage = {
   removeItem: () => null,
 };
-
 // used for native dark/light mode detection
 window.matchMedia = () => true;
-
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined;
 
@@ -102,10 +83,6 @@ if (!window.crypto.getRandomValues) {
   // eslint-disable-next-line node/global-require
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues');
 }
-
-// TextEncoder/TextDecoder
-window.TextEncoder = TextEncoder;
-window.TextDecoder = TextDecoder;
 
 // Used to test `clearClipboard` function
 if (!window.navigator.clipboard) {
