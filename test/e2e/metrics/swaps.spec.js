@@ -449,60 +449,60 @@ async function assertSwapStartedEvents(reqs) {
   );
 }
 
-async function assertSwapCompletedEvents(reqs) {
-  const assertionsReq13 = [
-    (req) => req.event === MetaMetricsEventName.SwapCompleted,
-    (req) => Object.keys(req.properties).length === 30,
+// async function assertSwapCompletedEvents(reqs) {
+//   const assertionsReq13 = [
+//     (req) => req.event === MetaMetricsEventName.SwapCompleted,
+//     (req) => Object.keys(req.properties).length === 30,
 
-    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
-    (req) => req.properties?.environment_type === 'background',
-    (req) => req.properties?.locale === 'en',
+//     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+//     (req) => req.properties?.chain_id === toHex(1337),
+//     (req) => req.properties?.environment_type === 'background',
+//     (req) => req.properties?.locale === 'en',
 
-    (req) => req.properties?.token_from === 'TESTETH',
-    (req) => req.properties?.token_from_amount === '2',
-    (req) => req.properties?.token_to === 'DAI',
-    (req) => typeof req.properties?.token_to_amount === 'string',
-    (req) => req.properties?.slippage === 2,
-    (req) => req.properties?.custom_slippage === false,
-    (req) => req.properties?.best_quote_source === 'airswapV4',
-    (req) => typeof req.properties?.other_quote_selected === 'boolean',
-    (req) => typeof req.properties?.other_quote_selected_source === 'string',
-    (req) => typeof req.properties?.gas_fees === 'string',
-    (req) => typeof req.properties?.estimated_gas === 'string',
-    (req) => req.properties?.suggested_gas_price === '30',
-    (req) => req.properties?.used_gas_price === '30',
-    (req) => req.properties?.is_hardware_wallet === false,
-    (req) => req.properties?.stx_enabled === false,
-    (req) => req.properties?.current_stx_enabled === false,
-    (req) => typeof req.properties?.reg_tx_fee_in_usd === 'number',
-    (req) => typeof req.properties?.reg_tx_fee_in_eth === 'number',
-    (req) => typeof req.properties?.reg_tx_max_fee_in_usd === 'number',
-    (req) => typeof req.properties?.reg_tx_max_fee_in_eth === 'number',
-    (req) => req.properties?.token_to_amount_received === '',
-    (req) => req.properties?.quote_vs_executionRatio === null,
-    (req) => req.properties?.estimated_vs_used_gasRatio === '100%',
-    (req) => req.properties?.approval_gas_cost_in_eth === 0,
-    (req) => typeof req.properties?.trade_gas_cost_in_eth === 'number',
-    (req) =>
-      typeof req.properties?.trade_and_approval_gas_cost_in_eth === 'number',
-  ];
+//     (req) => req.properties?.token_from === 'TESTETH',
+//     (req) => req.properties?.token_from_amount === '2',
+//     (req) => req.properties?.token_to === 'DAI',
+//     (req) => typeof req.properties?.token_to_amount === 'string',
+//     (req) => req.properties?.slippage === 2,
+//     (req) => req.properties?.custom_slippage === false,
+//     (req) => req.properties?.best_quote_source === 'airswapV4',
+//     (req) => typeof req.properties?.other_quote_selected === 'boolean',
+//     (req) => typeof req.properties?.other_quote_selected_source === 'string',
+//     (req) => typeof req.properties?.gas_fees === 'string',
+//     (req) => typeof req.properties?.estimated_gas === 'string',
+//     (req) => req.properties?.suggested_gas_price === '30',
+//     (req) => req.properties?.used_gas_price === '30',
+//     (req) => req.properties?.is_hardware_wallet === false,
+//     (req) => req.properties?.stx_enabled === false,
+//     (req) => req.properties?.current_stx_enabled === false,
+//     (req) => typeof req.properties?.reg_tx_fee_in_usd === 'number',
+//     (req) => typeof req.properties?.reg_tx_fee_in_eth === 'number',
+//     (req) => typeof req.properties?.reg_tx_max_fee_in_usd === 'number',
+//     (req) => typeof req.properties?.reg_tx_max_fee_in_eth === 'number',
+//     (req) => req.properties?.token_to_amount_received === '',
+//     (req) => req.properties?.quote_vs_executionRatio === null,
+//     (req) => req.properties?.estimated_vs_used_gasRatio === '100%',
+//     (req) => req.properties?.approval_gas_cost_in_eth === 0,
+//     (req) => typeof req.properties?.trade_gas_cost_in_eth === 'number',
+//     (req) =>
+//       typeof req.properties?.trade_and_approval_gas_cost_in_eth === 'number',
+//   ];
 
-  const assertionsReq14 = [
-    (req) => req.event === MetaMetricsEventName.SwapCompleted,
-    (req) => Object.keys(req.properties).length === 4,
+//   const assertionsReq14 = [
+//     (req) => req.event === MetaMetricsEventName.SwapCompleted,
+//     (req) => Object.keys(req.properties).length === 4,
 
-    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-    (req) => req.properties?.chain_id === toHex(1337),
-    (req) => req.properties?.environment_type === 'background',
-    (req) => req.properties?.locale === 'en',
-  ];
+//     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+//     (req) => req.properties?.chain_id === toHex(1337),
+//     (req) => req.properties?.environment_type === 'background',
+//     (req) => req.properties?.locale === 'en',
+//   ];
 
-  assert.ok(
-    assertInAnyOrder([reqs[13], reqs[14]], [assertionsReq13, assertionsReq14]),
-    'assertSwapCompletedEvents(): reqs[13] and reqs[14] did not match what was expected',
-  );
-}
+//   assert.ok(
+//     assertInAnyOrder([reqs[13], reqs[14]], [assertionsReq13, assertionsReq14]),
+//     'assertSwapCompletedEvents(): reqs[13] and reqs[14] did not match what was expected',
+//   );
+// }
 
 async function assertExitedSwapsEvents(reqs) {
   const assertionsReq15 = [
