@@ -1283,6 +1283,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IN
+      shouldDisablePublish: this._shouldDisablePublish.bind(this),
       messenger: this.controllerMessenger.getRestricted({
         name: 'TransactionController',
         allowedActions: [
@@ -5102,6 +5103,27 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return null;
+  }
+
+  /**
+   * Whether or not should skips publishing the transaction.
+   *
+   * @param {string} txMeta - The transaction meta.
+   * @param signedEthTx - Signed ethereum transaction.
+   */
+  // eslint-disable-next-line no-unused-vars
+  _shouldDisablePublish(txMeta, signedEthTx) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // MMI does not broadcast transactions, as that is the responsibility of the custodian
+    if (txMeta?.custodyStatus) {
+      if (signedEthTx) {
+        txMeta.custodyId = signedEthTx.custodian_transactionId;
+        txMeta.custodyStatus = signedEthTx.transactionStatus;
+      }
+      return true;
+    }
+    ///: END:ONLY_INCLUDE_IN
+    return false;
   }
 
   async _onAccountChange(newAddress) {
