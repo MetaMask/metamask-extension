@@ -781,13 +781,13 @@ export default class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTransaction(transactionId);
     const { properties, sensitiveProperties } =
       await this._buildEventFragmentProperties(txMeta);
-    this._createTransactionEventFragment(
-      txMeta,
+    this.emit('transaction-metric', {
+      actionId,
       event,
       properties,
       sensitiveProperties,
-      actionId,
-    );
+      txMeta,
+    });
   }
 
   startIncomingTransactionPolling() {
@@ -2565,7 +2565,7 @@ export default class TransactionController extends EventEmitter {
       event,
       properties,
       sensitiveProperties,
-      transactionMeta: txMeta,
+      txMeta,
     });
   }
 
