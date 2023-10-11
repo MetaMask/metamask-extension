@@ -13,192 +13,7 @@ const state = {
     protocol: 'https:',
     url: 'https://metamask.github.io/test-dapp/',
   },
-  networkList: [
-    {
-      blockExplorerUrl: "https://etherscan.io",
-      chainId: "0x1",
-      iconColor: 'var(--mainnet)',
-      isATestNetwork: false,
-      labelKey: "mainnet",
-      providerType: "mainnet",
-      rpcUrl: "https://mainnet.infura.io/v3/",
-      ticker: "ETH",
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: "https://ropsten.etherscan.io",
-      chainId: "0x3",
-      iconColor: 'var(--ropsten)',
-      isATestNetwork: true,
-      labelKey: "ropsten",
-      providerType: "ropsten",
-      rpcUrl: "https://ropsten.infura.io/v3/",
-      ticker: "ETH",
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: "https://rinkeby.etherscan.io",
-      chainId: "0x4",
-      iconColor: 'var(--rinkeby)',
-      isATestNetwork: true,
-      labelKey: "rinkeby",
-      providerType: "rinkeby",
-      rpcUrl: "https://rinkeby.infura.io/v3/",
-      ticker: "ETH",
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: "https://goerli.etherscan.io",
-      chainId: "0x5",
-      iconColor: 'var(--goerli)',
-      isATestNetwork: true,
-      labelKey: "goerli",
-      providerType: "goerli",
-      rpcUrl: "https://goerli.infura.io/v3/",
-      ticker: "ETH",
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: "https://kovan.etherscan.io",
-      chainId: "0x2a",
-      iconColor: 'var(--kovan)',
-      isATestNetwork: true,
-      labelKey: "kovan",
-      providerType: "kovan",
-      rpcUrl: "https://kovan.infura.io/v3/",
-      ticker: "ETH",
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: "",
-      chainId: "0x539",
-      iconColor: 'var(--localhost)',
-      isATestNetwork: true,
-      label: "Localhost 8545",
-      providerType: "rpc",
-      rpcUrl: "http://localhost:8545",
-      ticker: "ETH",
-    },
-    {
-      blockExplorerUrl: "https://bscscan.com",
-      chainId: "0x38",
-      iconColor: 'var(--localhost)',
-      isATestNetwork: false,
-      label: "Binance Smart Chain",
-      providerType: "rpc",
-      rpcUrl: "https://bsc-dataseed.binance.org/",
-      ticker: "BNB",
-    },
-    {
-      blockExplorerUrl: "https://cchain.explorer.avax.network/",
-      chainId: "0xa86a",
-      iconColor: 'var(--localhost)',
-      isATestNetwork: false,
-      label: "Avalanche",
-      providerType: "rpc",
-      rpcUrl: "https://api.avax.network/ext/bc/C/rpc",
-      ticker: "AVAX",
-    },
-    {
-      blockExplorerUrl: "https://polygonscan.com",
-      chainId: "0x89",
-      iconColor: 'var(--localhost)',
-      isATestNetwork: false,
-      label: "Polygon",
-      providerType: "rpc",
-      rpcUrl: "https://polygon-rpc.com",
-      ticker: "MATIC",
-    },
-  ],
   metamask: {
-    tokenList: {
-      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
-        address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
-        symbol: 'SNX',
-        decimals: 18,
-        name: 'Synthetix Network Token',
-        iconUrl: 'https://assets.coingecko.com/coins/images/3406/large/SNX.png',
-        aggregators: [
-          'Aave',
-          'Bancor',
-          'CMC',
-          'Crypto.com',
-          'CoinGecko',
-          '1inch',
-          'Paraswap',
-          'PMM',
-          'Synthetix',
-          'Zapper',
-          'Zerion',
-          '0x',
-        ],
-        occurrences: 12,
-        unlisted: false
-      },
-      '0x6b175474e89094c44da98b954eedeac495271d0f': {
-        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        symbol: 'META',
-        decimals: 18,
-        image: 'metamark.svg',
-        unlisted: false
-      },
-      '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
-        address: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
-        symbol: '0X',
-        decimals: 18,
-        image: '0x.svg',
-        unlisted: false
-      },
-      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'AST',
-        decimals: 18,
-        image: 'ast.png',
-        unlisted: false
-      },
-      '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
-        address: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
-        symbol: 'BAT',
-        decimals: 18,
-        image: 'BAT_icon.svg',
-        unlisted: false
-      },
-      '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1': {
-        address: '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1',
-        symbol: 'CVL',
-        decimals: 18,
-        image: 'CVL_token.svg',
-        unlisted: false
-      },
-      '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': {
-        address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
-        symbol: 'GLA',
-        decimals: 18,
-        image: 'gladius.svg',
-        unlisted: false
-      },
-      '0x467Bccd9d29f223BcE8043b84E8C8B282827790F': {
-        address: '0x467Bccd9d29f223BcE8043b84E8C8B282827790F',
-        symbol: 'GNO',
-        decimals: 18,
-        image: 'gnosis.svg',
-        unlisted: false
-      },
-      '0xff20817765cb7f73d4bde2e66e067e58d11095c2': {
-        address: '0xff20817765cb7f73d4bde2e66e067e58d11095c2',
-        symbol: 'OMG',
-        decimals: 18,
-        image: 'omg.jpg',
-        unlisted: false
-      },
-      '0x8e870d67f660d95d5be530380d0ec0bd388289e1': {
-        address: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
-        symbol: 'WED',
-        decimals: 18,
-        image: 'wed.png',
-        unlisted: false
-      },
-    },
     networkDetails: {
       EIPS: {
         1559: true,
@@ -221,85 +36,6 @@ const state = {
       routeState: '',
       swapsFeatureIsLive: false,
       swapsQuoteRefreshTime: 60000,
-    },
-    "snapStates": {},
-    "snaps": {
-      "local:http://localhost:8080/": {
-        "enabled": true,
-        "id": "local:http://localhost:8080/",
-        "initialPermissions": {
-          "snap_confirm": {}
-        },
-        "manifest": {
-          "description": "An example MetaMask Snap.",
-          "initialPermissions": {
-            "snap_confirm": {}
-          },
-          "manifestVersion": "0.1",
-          "proposedName": "MetaMask Example Snap",
-          "repository": {
-            "type": "git",
-            "url": "https://github.com/MetaMask/snaps-skunkworks.git"
-          },
-          "source": {
-            "location": {
-              "npm": {
-                "filePath": "dist/bundle.js",
-                "iconPath": "images/icon.svg",
-                "packageName": "@metamask/example-snap",
-                "registry": "https://registry.npmjs.org/"
-              }
-            },
-            "shasum": "3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE="
-          },
-          "version": "0.6.0"
-        },
-        "permissionName": "wallet_snap_local:http://localhost:8080/",
-        "sourceCode": "(...)",
-        "status": "stopped",
-        "svgIcon": "<svg>...</svg>",
-        "version": "0.6.0"
-      },
-      "Filecoin Snap": {
-        "enabled": true,
-        "id": "npm:http://localhost:8080/",
-        "initialPermissions": {
-          "snap_confirm": {},
-          "eth_accounts": {},
-          "snap_manageState": {},
-        },
-        "manifest": {
-          "description": "This swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously. Learn more.",
-          "initialPermissions": {
-            "snap_confirm": {},
-            "eth_accounts": {},
-            "snap_manageState": {},
-          },
-          "manifestVersion": "0.1",
-          "proposedName": "Filecoin Snap",
-          "repository": {
-            "type": "git",
-            "url": "https://github.com/MetaMask/snaps-skunkworks.git"
-          },
-          "source": {
-            "location": {
-              "npm": {
-                "filePath": "dist/bundle.js",
-                "iconPath": "images/icon.svg",
-                "packageName": "@metamask/example-snap",
-                "registry": "https://registry.npmjs.org/"
-              }
-            },
-            "shasum": "3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE="
-          },
-          "version": "0.6.0"
-        },
-        "permissionName": "wallet_snap_npm:http://localhost:8080/",
-        "sourceCode": "(...)",
-        "status": "stopped",
-        "svgIcon": "<svg>...</svg>",
-        "version": "0.6.0"
-      },
     },
     accountArray: [
       {
@@ -398,30 +134,13 @@ const state = {
         },
       },
     },
-    addresses: [
-      {
-        address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-        name: 'DAI',
-        isEns: false,
-      },
-      {
-        address: '1x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-        name: 'ETH',
-        isEns: true,
-      },
-    ],
     contractExchangeRates: {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': 0,
     },
     tokens: [
       {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538A',
-        symbol: 'DAA',
-        decimals: 18,
-      },
-      {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538U',
-        symbol: 'DAU',
+        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+        symbol: 'DAI',
         decimals: 18,
       },
     ],
@@ -649,15 +368,6 @@ const state = {
               path: '/status',
               timestamp: 1629582711338,
               value: 'submitted',
-            },
-          ],
-          [
-            {
-              note: 'transactions/pending-tx-tracker#event: tx:block-update',
-              op: 'add',
-              path: '/firstRetryBlockNumber',
-              timestamp: 1629582711878,
-              value: '0x9c2686',
             },
           ],
           [
@@ -1106,10 +816,9 @@ const state = {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': './sai.svg',
     },
     hiddenTokens: [],
-    suggestedAssets: [],
+    suggestedAssets: {},
     useNonceField: false,
     usePhishDetect: true,
-    useTokenDetection: true,
     lostIdentities: {},
     forgottenPassword: false,
     ipfsGateway: 'dweb.link',
@@ -1213,42 +922,53 @@ const state = {
       goerli: null,
       mainnet: 10902989,
     },
-    subjects: {
+    permissionsRequests: [],
+    permissionsDescriptions: {},
+    domains: {
       'https://app.uniswap.org': {
-        permissions: {
-          'eth_accounts': {
+        permissions: [
+          {
+            '@context': ['https://github.com/MetaMask/rpc-cap'],
             invoker: 'https://app.uniswap.org',
             parentCapability: 'eth_accounts',
             id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
             date: 1620710693178,
             caveats: [
               {
-                type: 'restrictReturnedAccounts',
+                type: 'limitResponseLength',
+                value: 1,
+                name: 'primaryAccountOnly',
+              },
+              {
+                type: 'filterResponse',
                 value: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
+                name: 'exposedAccounts',
               },
             ],
           },
-        },
-      },
-      "local:http://localhost:8080/": {
-        permissions: {
-          'snap_confirm': {
-            invoker: "local:http://localhost:8080/",
-            parentCapability: 'snap_confirm',
-            id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
-            date: 1620710693178,
-            caveats: []
-          },
-        },
+        ],
       },
     },
-    permissionActivityLog: [
+    permissionsLog: [
       {
         id: 522690215,
         method: 'eth_accounts',
         methodType: 'restricted',
         origin: 'https://metamask.io',
+        request: {
+          method: 'eth_accounts',
+          params: [],
+          jsonrpc: '2.0',
+          id: 522690215,
+          origin: 'https://metamask.io',
+          tabId: 5,
+        },
         requestTime: 1602643170686,
+        response: {
+          id: 522690215,
+          jsonrpc: '2.0',
+          result: [],
+        },
         responseTime: 1602643170688,
         success: true,
       },
@@ -1257,7 +977,20 @@ const state = {
         method: 'eth_accounts',
         methodType: 'restricted',
         origin: 'https://widget.getacute.io',
+        request: {
+          method: 'eth_accounts',
+          params: [],
+          jsonrpc: '2.0',
+          id: 1620464600,
+          origin: 'https://widget.getacute.io',
+          tabId: 5,
+        },
         requestTime: 1602643172935,
+        response: {
+          id: 1620464600,
+          jsonrpc: '2.0',
+          result: [],
+        },
         responseTime: 1602643172935,
         success: true,
       },
@@ -1266,7 +999,19 @@ const state = {
         method: 'eth_accounts',
         methodType: 'restricted',
         origin: 'https://app.uniswap.org',
+        request: {
+          method: 'eth_accounts',
+          jsonrpc: '2.0',
+          id: 4279100021,
+          origin: 'https://app.uniswap.org',
+          tabId: 5,
+        },
         requestTime: 1620710669962,
+        response: {
+          id: 4279100021,
+          jsonrpc: '2.0',
+          result: [],
+        },
         responseTime: 1620710669963,
         success: true,
       },
@@ -1275,7 +1020,19 @@ const state = {
         method: 'eth_requestAccounts',
         methodType: 'restricted',
         origin: 'https://app.uniswap.org',
+        request: {
+          method: 'eth_requestAccounts',
+          jsonrpc: '2.0',
+          id: 4279100022,
+          origin: 'https://app.uniswap.org',
+          tabId: 5,
+        },
         requestTime: 1620710686872,
+        response: {
+          id: 4279100022,
+          jsonrpc: '2.0',
+          result: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
+        },
         responseTime: 1620710693187,
         success: true,
       },
@@ -1284,7 +1041,19 @@ const state = {
         method: 'eth_requestAccounts',
         methodType: 'restricted',
         origin: 'https://app.uniswap.org',
+        request: {
+          method: 'eth_requestAccounts',
+          jsonrpc: '2.0',
+          id: 4279100023,
+          origin: 'https://app.uniswap.org',
+          tabId: 5,
+        },
         requestTime: 1620710693204,
+        response: {
+          id: 4279100023,
+          jsonrpc: '2.0',
+          result: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
+        },
         responseTime: 1620710693213,
         success: true,
       },
@@ -1293,12 +1062,25 @@ const state = {
         method: 'eth_accounts',
         methodType: 'restricted',
         origin: 'https://app.uniswap.org',
+        request: {
+          method: 'eth_accounts',
+          params: [],
+          jsonrpc: '2.0',
+          id: 4279100034,
+          origin: 'https://app.uniswap.org',
+          tabId: 5,
+        },
         requestTime: 1620710712072,
+        response: {
+          id: 4279100034,
+          jsonrpc: '2.0',
+          result: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
+        },
         responseTime: 1620710712075,
         success: true,
       },
     ],
-    permissionHistory: {
+    permissionsHistory: {
       'https://metamask.github.io': {
         eth_accounts: {
           lastApproved: 1620710693213,
@@ -1308,6 +1090,26 @@ const state = {
         },
       },
     },
+    domainMetadata: {
+      'https://metamask.github.io': {
+        name: 'E2E Test Dapp',
+        icon: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+        lastUpdated: 1620723443380,
+        host: 'metamask.github.io',
+      },
+      'https://app.uniswap.org': {
+        name: 'Uniswap',
+        icon: './UNI.png',
+        lastUpdated: 1620723443380,
+        host: 'app.uniswap.org',
+      },
+    },
+    threeBoxSyncingAllowed: false,
+    showRestorePrompt: true,
+    threeBoxLastUpdated: 0,
+    threeBoxAddress: null,
+    threeBoxSynced: false,
+    threeBoxDisabled: false,
     swapsState: {
       quotes: {},
       fetchParams: null,
@@ -1328,31 +1130,6 @@ const state = {
     ensResolutionsByAddress: {},
     pendingApprovals: {},
     pendingApprovalCount: 0,
-    subjectMetadata: {
-      "http://localhost:8080": {
-        extensionId: null,
-        iconUrl: null,
-        name: "Hello, Snaps!",
-        origin: "http://localhost:8080",
-        subjectType: "website"
-      },
-      "https://metamask.github.io": {
-        extensionId: null,
-        iconUrl: null,
-        name: "Snaps Iframe Execution Environment",
-        origin: "https://metamask.github.io",
-        subjectType: "website"
-      },
-      "local:http://localhost:8080/": {
-        extensionId: null,
-        iconUrl: null,
-        name: "MetaMask Example Snap",
-        origin: "local:http://localhost:8080/",
-        subjectType: "snap",
-        svgIcon: "<svg>...</svg>",
-        version: "0.6.0"
-      }
-    }
   },
   appState: {
     shouldClose: false,
@@ -1390,7 +1167,10 @@ const state = {
       ledger: "m/44'/60'/0'/0/0",
     },
     networksTabSelectedRpcUrl: '',
+    networksTabIsInAddMode: false,
     loadingMethodData: false,
+    show3BoxModalAfterImport: false,
+    threeBoxLastUpdated: null,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
@@ -1407,9 +1187,15 @@ const state = {
       balance: '0x0',
       details: null,
     },
-    gas: { error: 'gas' },
     amount: {
-      error: 'amount',
+      mode: 'null',
+    },
+    account: {
+      balance: '0x0',
+    },
+    stage: 'ADD_RECIPIENT',
+    gas: {
+      gasTotal: '0x01319718a5000', // 21000000000000
     },
   },
   confirmTransaction: {
