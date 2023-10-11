@@ -26,8 +26,11 @@ Footer.propTypes = {
   /**
    * Elements that go in the page footer
    */
-  children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
-    .isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+    PropTypes.string,
+  ]).isRequired,
   /**
    * Additional CSS class provided to the content
    */

@@ -47,8 +47,11 @@ Header.propTypes = {
   /**
    * Elements that go in the page footer
    */
-  children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
-    .isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+    PropTypes.string,
+  ]).isRequired,
   /**
    * Any element to place at the end of the header
    */
