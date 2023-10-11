@@ -186,11 +186,8 @@ async function addExternalContributorLabel(
   octokit: InstanceType<typeof GitHub>,
   issue: Labelable,
 ): Promise<void> {
-  // Retrieve issue's author list of organisations
-  const orgs: string[] = await retrieveUserOrgs(octokit, issue?.author);
-
   // If author is not part of the MetaMask organisation
-  if (!orgs.includes('MetaMask')) {
+  if (!(await userBelongsToMetaMaskOrg(octokit, issue?.author))) {
     // Add external contributor label to the issue
     await addLabelToLabelable(
       octokit,
@@ -527,37 +524,28 @@ async function removeLabelFromLabelable(
   });
 }
 
-// This function retrieves the list of organizations a specific user belongs to
-async function retrieveUserOrgs(
+// This function checks if user belongs to MetaMask organization on Github
+async function userBelongsToMetaMaskOrg(
   octokit: InstanceType<typeof GitHub>,
   username: string,
-): Promise<string[]> {
-  const userOrgsQuery = `
-    query UserOrgs($login: String!) {
+): Promise<boolean> {
+  const userBelongsToMetaMaskOrgQuery = `
+    query UserBelongsToMetaMaskOrg($login: String!) {
       user(login: $login) {
-        organizations(first: 100) {
-          nodes {
-            login
-          }
+        organization(login: "MetaMask") {
+          id
         }
       }
     }
   `;
 
-  const retrieveUserOrgsResult: {
+  const userBelongsToMetaMaskOrgResult: {
     user: {
-      organizations: {
-        nodes: {
-          login: string;
-        }[];
+      organization: {
+        id: string;
       };
     };
-  } = await octokit.graphql(userOrgsQuery, { login: username });
+  } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
-  // Extract the organization logins from the result
-  const orgs = retrieveUserOrgsResult.user.organizations.nodes.map(
-    (node: { login: string }) => node.login,
-  );
-
-  return orgs;
+  return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
 }
