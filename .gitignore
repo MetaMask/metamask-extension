@@ -12,7 +12,6 @@ package
 
 # IDEs
 .idea
-.vscode
 .sublime-project
 
 *.bak
@@ -33,6 +32,7 @@ jest-coverage/
 dist
 builds/
 builds.zip
+development/ts-migration-dashboard/build
 
 test-artifacts
 test-builds
@@ -45,4 +45,27 @@ notes.txt
 
 .nyc_output
 
+# MetaMask configuration
 .metamaskrc
+.metamaskprodrc
+
+# TypeScript
+tsout/
+
+# Test results
+test-results/
+
+# This file is used to authenticate with the GitHub Package registry, to
+# enable the use of @metamask preview builds.
+.npmrc
+#yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+
+# Temporary webpack ignore distro folder
+distro/*

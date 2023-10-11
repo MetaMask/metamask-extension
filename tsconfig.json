@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "inlineSources": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "lib": ["dom", "es2020"],
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "outDir": "tsout",
+    "rootDir": ".",
+    "sourceMap": true,
+    "strict": true,
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "**/*.test.js",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/jest-coverage/**/*",
+    "**/__mocks__/**/*",
+    "**/storybook-build/**/*",
+    ".storybook/**/*",
+    "builds/**/*",
+    "dist/**/*",
+    "node_modules/**",
+    "development/ts-migration-dashboard/build/**/*",
+    "development/ts-migration-dashboard/intermediate/**/*"
+  ],
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "paths": {
+    "*": ["./types/*"]
+  }
+}
