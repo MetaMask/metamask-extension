@@ -263,11 +263,11 @@ describe('MetaMask', function () {
       });
 
       it("should close the what's new popup", async function () {
-        const popover = await driver.findElement(By.css('.popover-container'));
+        const popover = await driver2.findElement(By.css('.popover-container'));
 
-        await driver.clickElement(By.css('[data-testid="popover-close"]'));
+        await driver2.clickElement(By.css('[data-testid="popover-close"]'));
 
-        await driver.wait(until.stalenessOf(popover));
+        await driver2.wait(until.stalenessOf(popover));
       });
 
       it('balance renders', async function () {
