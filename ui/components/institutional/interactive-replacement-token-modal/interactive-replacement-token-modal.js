@@ -51,7 +51,7 @@ const InteractiveReplacementTokenModal = () => {
 
   const custodianName = custodyAccountDetails?.custodianName;
   const custodian =
-    custodians.find((item) => item.name === custodianName) || {};
+    custodians.find((item) => item.envName === custodianName) || {};
 
   const handleSubmit = () => {
     global.platform.openTab({

@@ -1,13 +1,20 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../../../shared/constants/network';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 
 describe('CancelTransactionGasFee Component', () => {
   const mockState = {
     metamask: {
       providerConfig: {
-        chainId: '0x4',
+        chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        type: NETWORK_TYPES.GOERLI,
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: false,
