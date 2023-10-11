@@ -1,22 +1,27 @@
 import React, { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
+import classnames from 'classnames';
 import { I18nContext } from '../../../../contexts/i18n';
-import Box from '../../../ui/box';
-import { Text } from '../../../component-library';
+import { getMetaMaskIdentities, getAccountName } from '../../../../selectors';
+import Address from '../../transaction-decoding/components/decoding/address';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
-  Color,
-  BackgroundColor,
-  BorderColor,
-  BorderRadius,
-  TextColor,
-  FontWeight,
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../../../shared/modules/hexstring-utils';
+import Box from '../../../ui/box';
+import Typography from '../../../ui/typography';
+import {
+  DISPLAY,
+  ALIGN_ITEMS,
+  JUSTIFY_CONTENT,
+  COLORS,
+  FONT_WEIGHT,
+  FLEX_DIRECTION,
+  TYPOGRAPHY,
+  BORDER_RADIUS,
 } from '../../../../helpers/constants/design-system';
-import SignatureRequestData from '../signature-request-data';
 
 export default function SignatureRequestMessage({
   data,
@@ -24,10 +29,10 @@ export default function SignatureRequestMessage({
   setMessageRootRef,
   messageRootRef,
   messageIsScrollable,
-  primaryType,
 }) {
   const t = useContext(I18nContext);
   const [messageIsScrolled, setMessageIsScrolled] = useState(false);
+  const identities = useSelector(getMetaMaskIdentities);
   const setMessageIsScrolledAtBottom = () => {
     if (!messageRootRef || messageIsScrolled) {
       return;
@@ -42,51 +47,114 @@ export default function SignatureRequestMessage({
     }
   };
 
+  const renderNode = (renderData) => {
+    return (
+      <Box className="signature-request-message__node">
+        {Object.entries(renderData).map(([label, value], i) => (
+          <Box
+            className="signature-request-message__node"
+            key={i}
+            paddingLeft={2}
+            display={
+              typeof value !== 'object' || value === null ? DISPLAY.FLEX : null
+            }
+          >
+            <Typography
+              as="span"
+              color={COLORS.TEXT_DEFAULT}
+              marginLeft={4}
+              fontWeight={
+                typeof value === 'object'
+                  ? FONT_WEIGHT.BOLD
+                  : FONT_WEIGHT.NORMAL
+              }
+            >
+              {label.charAt(0).toUpperCase() + label.slice(1)}:{' '}
+            </Typography>
+            {typeof value === 'object' && value !== null ? (
+              renderNode(value)
+            ) : (
+              <Typography
+                as="span"
+                color={COLORS.TEXT_DEFAULT}
+                marginLeft={4}
+                className="signature-request-message__node__value"
+              >
+                {isValidHexAddress(value, {
+                  mixedCaseUseChecksum: true,
+                }) ? (
+                  <Typography
+                    variant={TYPOGRAPHY.H7}
+                    color={COLORS.INFO_DEFAULT}
+                    className="signature-request-message__node__value__address"
+                  >
+                    <Address
+                      addressOnly
+                      checksummedRecipientAddress={toChecksumHexAddress(value)}
+                      recipientName={getAccountName(identities, value)}
+                    />
+                  </Typography>
+                ) : (
+                  `${value}`
+                )}
+              </Typography>
+            )}
+          </Box>
+        ))}
+      </Box>
+    );
+  };
+
+  const renderScrollButton = () => {
+    return (
+      <Box
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.CENTER}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+        borderColor={COLORS.BORDER_DEFAULT}
+        backgroundColor={COLORS.BACKGROUND_DEFAULT}
+        color={COLORS.ICON_DEFAULT}
+        onClick={() => {
+          setMessageIsScrolled(true);
+          onMessageScrolled();
+          messageRootRef?.scrollTo(0, messageRootRef?.scrollHeight);
+        }}
+        className="signature-request-message__scroll-button"
+        data-testid="signature-request-scroll-button"
+      >
+        <i className="fa fa-arrow-down" aria-label={t('scrollDown')} />
+      </Box>
+    );
+  };
+
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
       onScroll={debounce(setMessageIsScrolledAtBottom, 25)}
       className="signature-request-message"
     >
-      {messageIsScrollable ? (
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          borderColor={BorderColor.borderDefault}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          color={Color.iconDefault}
-          onClick={() => {
-            setMessageIsScrolled(true);
-            onMessageScrolled();
-            messageRootRef?.scrollTo(0, messageRootRef?.scrollHeight);
-          }}
-          className="signature-request-message__scroll-button"
-          data-testid="signature-request-scroll-button"
-        >
-          <i className="fa fa-arrow-down" aria-label={t('scrollDown')} />
-        </Box>
-      ) : null}
+      {messageIsScrollable ? renderScrollButton() : null}
       <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={COLORS.BACKGROUND_DEFAULT}
         paddingBottom={3}
         paddingTop={3}
         paddingRight={3}
         margin={2}
-        borderRadius={BorderRadius.XL}
-        borderColor={BorderColor.borderMuted}
+        borderRadius={BORDER_RADIUS.XL}
+        borderColor={COLORS.BORDER_MUTED}
         className="signature-request-message__root"
         ref={setMessageRootRef}
       >
-        <Text
-          fontWeight={FontWeight.Bold}
-          color={TextColor.textDefault}
+        <Typography
+          fontWeight={FONT_WEIGHT.BOLD}
+          color={COLORS.TEXT_DEFAULT}
           marginLeft={4}
+          className="signature-request-message__title"
         >
-          {primaryType}
-        </Text>
-        <SignatureRequestData data={data.value} />
+          {t('signatureRequest1')}
+        </Typography>
+        {renderNode(data)}
       </Box>
     </Box>
   );
@@ -98,5 +166,4 @@ SignatureRequestMessage.propTypes = {
   setMessageRootRef: PropTypes.func,
   messageRootRef: PropTypes.object,
   messageIsScrollable: PropTypes.bool,
-  primaryType: PropTypes.string,
 };
