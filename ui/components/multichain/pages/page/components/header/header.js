@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { HeaderBase, Text } from '../../../../../component-library';
 import {
   BlockSize,
+  Display,
   TextAlign,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
@@ -24,7 +25,14 @@ export const Header = ({
       endAccessory={endAccessory}
       {...props}
     >
-      <Text variant={TextVariant.bodyMdBold} textAlign={TextAlign.Center}>
+      <Text
+        display={Display.Block}
+        variant={TextVariant.bodyMdBold}
+        textAlign={TextAlign.Center}
+        paddingInlineStart={8}
+        paddingInlineEnd={8}
+        ellipsis
+      >
         {children}
       </Text>
     </HeaderBase>

@@ -68,3 +68,24 @@ StartAndEndAdornmentStory.args = {
     />
   ),
 };
+
+export const OverflowStory = (args) => (
+  <Header {...args}>{'Connect'.repeat(100)}</Header>
+);
+OverflowStory.storyName = 'OverflowStory';
+OverflowStory.args = {
+  startAccessory: (
+    <ButtonIcon
+      size={ButtonIconSize.Sm}
+      ariaLabel="Back"
+      iconName={IconName.ArrowLeft}
+    />
+  ),
+  endAccessory: (
+    <ButtonIcon
+      size={ButtonIconSize.Sm}
+      ariaLabel="Close"
+      iconName={IconName.Close}
+    />
+  ),
+};
