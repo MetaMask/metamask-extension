@@ -131,19 +131,27 @@ export default function SnapAccountDetailPage() {
             </Button>
           </Detail>
           <Detail title={t('snapDetailAudits')}>
-            {(currentSnap.metadata.audits ?? []).map((audit, index) => {
-              return (
-                <Button
-                  key={`audit-link-${index}`}
-                  variant={ButtonVariant.Link}
-                  overflowWrap={OverflowWrap.Anywhere}
-                  href={audit.report}
-                  externalLink
-                >
-                  {audit.report}
-                </Button>
-              );
-            })}
+            {(currentSnap.metadata.audits ?? []).map(
+              (
+                audit: {
+                  auditor: string;
+                  report: string;
+                },
+                index: number,
+              ) => {
+                return (
+                  <Button
+                    key={`audit-link-${index}`}
+                    variant={ButtonVariant.Link}
+                    overflowWrap={OverflowWrap.Anywhere}
+                    href={audit.report}
+                    externalLink
+                  >
+                    {audit.report}
+                  </Button>
+                );
+              },
+            )}
           </Detail>
           <Detail title={t('snapDetailVersion')}>
             <Text variant={TextVariant.bodyMd}>{latestVersion}</Text>
