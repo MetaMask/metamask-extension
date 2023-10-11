@@ -32,6 +32,7 @@ export const SnapDetailHeader = ({
     name,
     author: { name: developer, website },
     audits,
+    iconUrl,
   },
 }: Pick<SnapCardProps, 'updateAvailable' | 'isInstalled' | 'metadata'>) => {
   const t = useI18nContext();
@@ -135,14 +136,18 @@ export const SnapDetailHeader = ({
             padding={[2, 2, 2, 2]}
             marginRight={1}
           >
-            <Box
-              className="snap-detail-icon"
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-            >
-              <Text>{name ? name[0] : '?'}</Text>
-            </Box>
+            {iconUrl ? (
+              <img src={iconUrl} className="snap-detail-icon" />
+            ) : (
+              <Box
+                className="snap-detail-icon"
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+              >
+                <Text>{name ? name[0] : '?'}</Text>
+              </Box>
+            )}
           </Box>
           {developer.toLowerCase() === METAMASK_DEVELOPER && (
             <SnapDetailTag icon={IconName.Star}>

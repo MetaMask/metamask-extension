@@ -32,6 +32,7 @@ export default function SnapCard({
     name,
     author: { website },
     summary,
+    iconUrl,
   },
   isInstalled,
   updateAvailable,
@@ -81,14 +82,19 @@ export default function SnapCard({
           padding={[2, 2, 2, 2]}
           marginRight={1}
         >
-          <Box
-            className="snap-detail-icon"
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-          >
-            <Text>{name ? name[0] : '?'}</Text>
-          </Box>
+          {iconUrl ? (
+            <img src={iconUrl} className="snap-detail-icon" />
+          ) : (
+            // This is the fallback icon based on the first letter of the snap name.
+            <Box
+              className="snap-detail-icon"
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+            >
+              <Text>{name ? name[0] : '?'}</Text>
+            </Box>
+          )}
         </Box>
         {isInstalled ? (
           <Button

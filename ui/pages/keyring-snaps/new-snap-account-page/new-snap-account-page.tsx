@@ -34,6 +34,7 @@ export interface SnapDetails {
       name: string;
       website: string;
     };
+    iconUrl?: string;
     summary: string;
     description: string;
     audits: {
