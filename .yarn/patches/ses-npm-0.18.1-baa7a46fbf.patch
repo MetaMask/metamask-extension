@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index f9b9d0e7e9a624a90df8f01975ff620c3e0f23da..45bc35ed99641c68b712c869cb2604193998ea15 100644
+--- a/package.json
++++ b/package.json
+@@ -42,6 +42,7 @@
+       "import": "./index.js",
+       "require": "./dist/ses.cjs"
+     },
++    "./src/transforms": "./src/transforms.js",
+     "./package.json": "./package.json"
+   },
+   "scripts": {
