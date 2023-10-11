@@ -10,6 +10,7 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { SECOND } from '../../../../shared/constants/time';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -100,7 +101,7 @@ class ConnectHardwareForm extends Component {
     // Autohide the alert after 5 seconds
     setTimeout((_) => {
       this.props.hideAlert();
-    }, 5000);
+    }, SECOND * 5);
   }
 
   getPage = (device, page, hdPath) => {
@@ -140,10 +141,23 @@ class ConnectHardwareForm extends Component {
         } else if (errorMessage.includes(U2F_ERROR)) {
           this.setState({ error: U2F_ERROR });
         } else if (
+          errorMessage === 'LEDGER_LOCKED' ||
+          errorMessage === 'LEDGER_WRONG_APP'
+        ) {
+          this.setState({
+            error: this.context.t('ledgerLocked'),
+          });
+        } else if (errorMessage.includes('timeout')) {
+          this.setState({
+            error: this.context.t('ledgerTimeout'),
+          });
+        } else if (
           errorMessage !== 'Window closed' &&
           errorMessage !== 'Popup closed'
         ) {
-          this.setState({ error: errorMessage });
+          this.setState({
+            error: errorMessage,
+          });
         }
       });
   };
@@ -248,6 +262,7 @@ class ConnectHardwareForm extends Component {
         <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
+          ledgerTransportType={this.props.ledgerTransportType}
         />
       );
     }
@@ -298,6 +313,7 @@ ConnectHardwareForm.propTypes = {
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
+  ledgerTransportType: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -307,6 +323,7 @@ const mapStateToProps = (state) => ({
   connectedAccounts: getMetaMaskAccountsConnected(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
+  ledgerTransportType: state.metamask.ledgerTransportType,
 });
 
 const mapDispatchToProps = (dispatch) => {

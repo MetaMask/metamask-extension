@@ -28,28 +28,26 @@ import {
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
   getPreferences,
-  doesAddressRequireLedgerHidConnection,
+  getHardwareWalletType,
   getUseTokenDetection,
   getTokenList,
-  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import {
-  isAddressLedger,
-  updateTransactionGasFees,
-  getIsGasEstimatesLoading,
-  getNativeCurrency,
-} from '../../ducks/metamask/metamask';
-
 import {
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
+import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
+import { getPlatform } from '../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-
+import {
+  updateTransactionGasFees,
+  getIsGasEstimatesLoading,
+  getNativeCurrency,
+} from '../../ducks/metamask/metamask';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
-import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -83,6 +81,7 @@ const mapStateToProps = (state, ownProps) => {
     unapprovedTxs,
     nextNonce,
     provider: { chainId },
+    ledgerTransportType,
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
@@ -170,17 +169,11 @@ const mapStateToProps = (state, ownProps) => {
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
-    fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
+    fullTxData.userFeeLevel === 'custom' ||
     txParamsAreDappSuggested(fullTxData);
-  const fromAddressIsLedger = isAddressLedger(state, fromAddress);
+  const showLedgerSteps = getHardwareWalletType(state) === KEYRING_TYPES.LEDGER;
+  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
   const nativeCurrency = getNativeCurrency(state);
-
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    fromAddress,
-  );
-
-  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
   return {
     balance,
@@ -227,11 +220,10 @@ const mapStateToProps = (state, ownProps) => {
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
-    showLedgerSteps: fromAddressIsLedger,
+    showLedgerSteps,
+    isFirefox,
     nativeCurrency,
-    hardwareWalletRequiresConnection,
-    isMultiLayerFeeNetwork,
-    chainId,
+    ledgerTransportType,
   };
 };
 

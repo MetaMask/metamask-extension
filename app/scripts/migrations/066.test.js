@@ -1,11 +1,7 @@
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import migration66 from './066';
 
 describe('migration #66', () => {
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
@@ -29,7 +25,7 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LedgerTransportTypes.u2f);
+    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
   });
 
   it('should set ledgerTransportType to `u2f` if no useLedgerLive property exists and webhid is not available', async () => {
@@ -43,7 +39,7 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LedgerTransportTypes.u2f);
+    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
   });
 
   it('should set ledgerTransportType to `u2f` if useLedgerLive is false and webhid is not available', async () => {
@@ -59,7 +55,7 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LedgerTransportTypes.u2f);
+    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
   });
 
   it('should set ledgerTransportType to `webhid` if useLedgerLive is false and webhid is available', async () => {
@@ -71,13 +67,13 @@ describe('migration #66', () => {
         },
       },
     };
-    jest
-      .spyOn(window, 'navigator', 'get')
-      .mockImplementation(() => ({ hid: true }));
+    const tempNavigatorHid = window.navigator.hid;
+    window.navigator.hid = true;
     const newStorage = await migration66.migrate(oldStorage);
+    window.navigator.hid = tempNavigatorHid;
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LedgerTransportTypes.webhid);
+    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.WEBHID);
   });
 
   it('should set ledgerTransportType to `ledgerLive` if useLedgerLive is true', async () => {
@@ -94,23 +90,5 @@ describe('migration #66', () => {
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
     ).toStrictEqual('ledgerLive');
-  });
-
-  it('should not change ledgerTransportType if useLedgerLive is true and webhid is available', async () => {
-    const oldStorage = {
-      meta: {},
-      data: {
-        PreferencesController: {
-          useLedgerLive: true,
-        },
-      },
-    };
-    jest
-      .spyOn(window, 'navigator', 'get')
-      .mockImplementation(() => ({ hid: true }));
-    const newStorage = await migration66.migrate(oldStorage);
-    expect(
-      newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LedgerTransportTypes.live);
   });
 });

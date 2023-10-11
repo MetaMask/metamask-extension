@@ -1,27 +1,30 @@
+import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
+import { ethers } from 'ethers';
+import log from 'loglevel';
+import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { ThemeType } from '../../../shared/constants/preferences';
+import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
   /**
    *
-   * @typedef {object} PreferencesController
-   * @param {object} opts - Overrides the defaults for the initial state of this.store
-   * @property {object} store The stored object containing a users preferences, stored in local storage
+   * @typedef {Object} PreferencesController
+   * @param {Object} opts - Overrides the defaults for the initial state of this.store
+   * @property {Object} store The stored object containing a users preferences, stored in local storage
    * @property {Array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
-   * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
+   * @property {Object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature.
    *
    * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
-   * @property {object} store.knownMethodData Contains all data methods known by the user
+   * @property {Object} store.knownMethodData Contains all data methods known by the user
    * @property {string} store.currentLocale The preferred language locale key
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
+   *
    */
   constructor(opts = {}) {
     const initState = {
@@ -30,18 +33,10 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
-      disabledRpcMethodPreferences: {
-        eth_sign: false,
-      },
-      useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
-      useNftDetection: false,
-      useCurrencyRateCheck: true,
-      openSeaEnabled: false,
-      advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -58,26 +53,24 @@ export default class PreferencesController {
       preferences: {
         autoLockTimeLimit: undefined,
         showFiatInTestnets: false,
-        showTestNetworks: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
       },
       // ENS decentralized website resolution
-      ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      ipfsGateway: 'dweb.link',
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
-        ? LedgerTransportTypes.webhid
-        : LedgerTransportTypes.u2f,
-      transactionSecurityCheckEnabled: false,
-      theme: ThemeType.os,
+        ? LEDGER_TRANSPORT_TYPES.WEBHID
+        : LEDGER_TRANSPORT_TYPES.U2F,
       ...opts.initState,
     };
 
     this.network = opts.network;
+    this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
-    this.store.setMaxListeners(13);
+    this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
-    this.tokenListController = opts.tokenListController;
+    this.migrateAddressBookState = opts.migrateAddressBookState;
 
     this._subscribeToInfuraAvailability();
 
@@ -89,7 +82,6 @@ export default class PreferencesController {
 
   /**
    * Sets the {@code forgottenPassword} state property
-   *
    * @param {boolean} forgottenPassword - whether or not the user has forgotten their password
    */
   setPasswordForgotten(forgottenPassword) {
@@ -100,6 +92,7 @@ export default class PreferencesController {
    * Setter for the `useBlockie` property
    *
    * @param {boolean} val - Whether or not the user prefers blockie indicators
+   *
    */
   setUseBlockie(val) {
     this.store.updateState({ useBlockie: val });
@@ -109,6 +102,7 @@ export default class PreferencesController {
    * Setter for the `useNonceField` property
    *
    * @param {boolean} val - Whether or not the user prefers to set nonce
+   *
    */
   setUseNonceField(val) {
     this.store.updateState({ useNonceField: val });
@@ -118,92 +112,20 @@ export default class PreferencesController {
    * Setter for the `usePhishDetect` property
    *
    * @param {boolean} val - Whether or not the user prefers phishing domain protection
+   *
    */
   setUsePhishDetect(val) {
     this.store.updateState({ usePhishDetect: val });
   }
 
   /**
-   * Setter for the `useMultiAccountBalanceChecker` property
-   *
-   * @param {boolean} val - Whether or not the user prefers to turn off/on all security settings
-   */
-  setUseMultiAccountBalanceChecker(val) {
-    this.store.updateState({ useMultiAccountBalanceChecker: val });
-  }
-
-  /**
    * Setter for the `useTokenDetection` property
    *
    * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
+   *
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
-    if (val) {
-      this.tokenListController.start();
-    } else {
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
-  }
-
-  /**
-   * Setter for the `useNftDetection` property
-   *
-   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect collectibles.
-   */
-  setUseNftDetection(useNftDetection) {
-    this.store.updateState({ useNftDetection });
-  }
-
-  /**
-   * Setter for the `useCurrencyRateCheck` property
-   *
-   * @param {boolean} val - Whether or not the user prefers to use currency rate check for ETH and tokens.
-   */
-  setUseCurrencyRateCheck(val) {
-    this.store.updateState({ useCurrencyRateCheck: val });
-  }
-
-  /**
-   * Setter for the `openSeaEnabled` property
-   *
-   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for collectibles data.
-   */
-  setOpenSeaEnabled(openSeaEnabled) {
-    this.store.updateState({
-      openSeaEnabled,
-    });
-  }
-
-  /**
-   * Setter for the `advancedGasFee` property
-   *
-   * @param {object} val - holds the maxBaseFee and PriorityFee that the user set as default advanced settings.
-   */
-  setAdvancedGasFee(val) {
-    this.store.updateState({ advancedGasFee: val });
-  }
-
-  /**
-   * Setter for the `theme` property
-   *
-   * @param {string} val - 'default' or 'dark' value based on the mode selected by user.
-   */
-  setTheme(val) {
-    this.store.updateState({ theme: val });
-  }
-
-  /**
-   * Setter for the `transactionSecurityCheckEnabled` property
-   *
-   * @param transactionSecurityCheckEnabled
-   */
-  setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
-    this.store.updateState({
-      transactionSecurityCheckEnabled,
-    });
   }
 
   /**
@@ -222,6 +144,7 @@ export default class PreferencesController {
    * Setter for the `currentLocale` property
    *
    * @param {string} key - he preferred language locale key
+   *
    */
   setCurrentLocale(key) {
     const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(key)
@@ -239,6 +162,7 @@ export default class PreferencesController {
    * not included in addresses array
    *
    * @param {string[]} addresses - An array of hex addresses
+   *
    */
   setAddresses(addresses) {
     const oldIdentities = this.store.getState().identities;
@@ -270,7 +194,7 @@ export default class PreferencesController {
     // If the selected account is no longer valid,
     // select an arbitrary other account:
     if (address === this.getSelectedAddress()) {
-      const [selected] = Object.keys(identities);
+      const selected = Object.keys(identities)[0];
       this.setSelectedAddress(selected);
     }
     return address;
@@ -280,6 +204,7 @@ export default class PreferencesController {
    * Adds addresses to the identities object without removing identities
    *
    * @param {string[]} addresses - An array of hex addresses
+   *
    */
   addAddresses(addresses) {
     const { identities } = this.store.getState();
@@ -333,7 +258,7 @@ export default class PreferencesController {
     // select an arbitrary other account:
     let selected = this.getSelectedAddress();
     if (!addresses.includes(selected)) {
-      [selected] = addresses;
+      selected = addresses[0];
       this.setSelectedAddress(selected);
     }
 
@@ -344,6 +269,7 @@ export default class PreferencesController {
    * Setter for the `selectedAddress` property
    *
    * @param {string} _address - A new hex address for an account
+   *
    */
   setSelectedAddress(_address) {
     const address = normalizeAddress(_address);
@@ -362,6 +288,7 @@ export default class PreferencesController {
    * Getter for the `selectedAddress` property
    *
    * @returns {string} The hex address for the currently selected account
+   *
    */
   getSelectedAddress() {
     return this.store.getState().selectedAddress;
@@ -369,12 +296,11 @@ export default class PreferencesController {
 
   /**
    * Sets a custom label for an account
-   *
    * @param {string} account - the account to set a label for
    * @param {string} label - the custom label for the account
    * @returns {Promise<string>}
    */
-  async setAccountLabel(account, label) {
+  setAccountLabel(account, label) {
     if (!account) {
       throw new Error(
         `setAccountLabel requires a valid address, got ${String(account)}`,
@@ -385,7 +311,84 @@ export default class PreferencesController {
     identities[address] = identities[address] || {};
     identities[address].name = label;
     this.store.updateState({ identities });
-    return label;
+    return Promise.resolve(label);
+  }
+
+  /**
+   * updates custom RPC details
+   *
+   * @param {Object} newRpcDetails - Options bag.
+   * @param {string} newRpcDetails.rpcUrl - The RPC url to add to frequentRpcList.
+   * @param {string} newRpcDetails.chainId - The chainId of the selected network.
+   * @param {string} [newRpcDetails.ticker] - Optional ticker symbol of the selected network.
+   * @param {string} [newRpcDetails.nickname] - Optional nickname of the selected network.
+   * @param {Object} [newRpcDetails.rpcPrefs] - Optional RPC preferences, such as the block explorer URL
+   *
+   */
+  async updateRpc(newRpcDetails) {
+    const rpcList = this.getFrequentRpcListDetail();
+    const index = rpcList.findIndex((element) => {
+      return element.rpcUrl === newRpcDetails.rpcUrl;
+    });
+    if (index > -1) {
+      const rpcDetail = rpcList[index];
+      const updatedRpc = { ...rpcDetail, ...newRpcDetails };
+      if (rpcDetail.chainId !== updatedRpc.chainId) {
+        // When the chainId is changed, associated address book entries should
+        // also be migrated. The address book entries are keyed by the `network` state,
+        // which for custom networks is the chainId with a fallback to the networkId
+        // if the chainId is not set.
+
+        let addressBookKey = rpcDetail.chainId;
+        if (!addressBookKey) {
+          // We need to find the networkId to determine what these addresses were keyed by
+          try {
+            addressBookKey = await this.ethersProvider.send('net_version');
+            assert(typeof addressBookKey === 'string');
+          } catch (error) {
+            log.debug(error);
+            log.warn(
+              `Failed to get networkId from ${rpcDetail.rpcUrl}; skipping address book migration`,
+            );
+          }
+        }
+
+        // There is an edge case where two separate RPC endpoints are keyed by the same
+        // value. In this case, the contact book entries are duplicated so that they remain
+        // on both networks, since we don't know which network each contact is intended for.
+
+        let duplicate = false;
+        const builtInProviderNetworkIds = Object.values(
+          NETWORK_TYPE_TO_ID_MAP,
+        ).map((ids) => ids.networkId);
+        const otherRpcEntries = rpcList.filter(
+          (entry) => entry.rpcUrl !== newRpcDetails.rpcUrl,
+        );
+        if (
+          builtInProviderNetworkIds.includes(addressBookKey) ||
+          otherRpcEntries.some((entry) => entry.chainId === addressBookKey)
+        ) {
+          duplicate = true;
+        }
+
+        this.migrateAddressBookState(
+          addressBookKey,
+          updatedRpc.chainId,
+          duplicate,
+        );
+      }
+      rpcList[index] = updatedRpc;
+      this.store.updateState({ frequentRpcListDetail: rpcList });
+    } else {
+      const {
+        rpcUrl,
+        chainId,
+        ticker,
+        nickname,
+        rpcPrefs = {},
+      } = newRpcDetails;
+      this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs);
+    }
   }
 
   /**
@@ -395,9 +398,10 @@ export default class PreferencesController {
    * @param {string} chainId - The chainId of the selected network.
    * @param {string} [ticker] - Ticker symbol of the selected network.
    * @param {string} [nickname] - Nickname of the selected network.
-   * @param {object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
+   * @param {Object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
+   *
    */
-  upsertToFrequentRpcList(
+  addToFrequentRpcList(
     rpcUrl,
     chainId,
     ticker = 'ETH',
@@ -410,8 +414,7 @@ export default class PreferencesController {
       return element.rpcUrl === rpcUrl;
     });
     if (index !== -1) {
-      rpcList.splice(index, 1, { rpcUrl, chainId, ticker, nickname, rpcPrefs });
-      return;
+      rpcList.splice(index, 1);
     }
 
     if (!isPrefixedFormattedHexString(chainId)) {
@@ -426,9 +429,10 @@ export default class PreferencesController {
    * Removes custom RPC url from state.
    *
    * @param {string} url - The RPC url to remove from frequentRpcList.
-   * @returns {Promise<Array>} Promise resolving to updated frequentRpcList.
+   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
+   *
    */
-  async removeFromFrequentRpcList(url) {
+  removeFromFrequentRpcList(url) {
     const rpcList = this.getFrequentRpcListDetail();
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === url;
@@ -437,13 +441,14 @@ export default class PreferencesController {
       rpcList.splice(index, 1);
     }
     this.store.updateState({ frequentRpcListDetail: rpcList });
-    return rpcList;
+    return Promise.resolve(rpcList);
   }
 
   /**
    * Getter for the `frequentRpcListDetail` property.
    *
-   * @returns {Array<Array>} An array of rpc urls.
+   * @returns {array<array>} An array of rpc urls.
+   *
    */
   getFrequentRpcListDetail() {
     return this.store.getState().frequentRpcListDetail;
@@ -455,8 +460,9 @@ export default class PreferencesController {
    * @param {string} feature - A key that corresponds to a UI feature.
    * @param {boolean} activated - Indicates whether or not the UI feature should be displayed
    * @returns {Promise<object>} Promises a new object; the updated featureFlags object.
+   *
    */
-  async setFeatureFlag(feature, activated) {
+  setFeatureFlag(feature, activated) {
     const currentFeatureFlags = this.store.getState().featureFlags;
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
@@ -465,18 +471,17 @@ export default class PreferencesController {
 
     this.store.updateState({ featureFlags: updatedFeatureFlags });
 
-    return updatedFeatureFlags;
+    return Promise.resolve(updatedFeatureFlags);
   }
 
   /**
    * Updates the `preferences` property, which is an object. These are user-controlled features
    * found in the settings page.
-   *
    * @param {string} preference - The preference to enable or disable.
    * @param {boolean} value - Indicates whether or not the preference should be enabled or disabled.
    * @returns {Promise<object>} Promises a new object; the updated preferences object.
    */
-  async setPreference(preference, value) {
+  setPreference(preference, value) {
     const currentPreferences = this.getPreferences();
     const updatedPreferences = {
       ...currentPreferences,
@@ -484,13 +489,12 @@ export default class PreferencesController {
     };
 
     this.store.updateState({ preferences: updatedPreferences });
-    return updatedPreferences;
+    return Promise.resolve(updatedPreferences);
   }
 
   /**
    * A getter for the `preferences` property
-   *
-   * @returns {object} A key-boolean map of user-selected preferences.
+   * @returns {Object} A key-boolean map of user-selected preferences.
    */
   getPreferences() {
     return this.store.getState().preferences;
@@ -498,7 +502,6 @@ export default class PreferencesController {
 
   /**
    * A getter for the `ipfsGateway` property
-   *
    * @returns {string} The current IPFS gateway domain
    */
   getIpfsGateway() {
@@ -507,20 +510,18 @@ export default class PreferencesController {
 
   /**
    * A setter for the `ipfsGateway` property
-   *
    * @param {string} domain - The new IPFS gateway domain
    * @returns {Promise<string>} A promise of the update IPFS gateway domain
    */
-  async setIpfsGateway(domain) {
+  setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
-    return domain;
+    return Promise.resolve(domain);
   }
 
   /**
-   * A setter for the `ledgerTransportType` property.
-   *
+   * A setter for the `useWebHid` property
    * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
-   * @returns {string} The transport type that was set.
+   * @returns {Promise<string>} A promise of the update to useWebHid
    */
   setLedgerTransportPreference(ledgerTransportType) {
     this.store.updateState({ ledgerTransportType });
@@ -528,9 +529,8 @@ export default class PreferencesController {
   }
 
   /**
-   * A getter for the `ledgerTransportType` property.
-   *
-   * @returns {string} The current preferred Ledger transport type.
+   * A getter for the `ledgerTransportType` property
+   * @returns {boolean} User preference of using WebHid to connect Ledger
    */
   getLedgerTransportPreference() {
     return this.store.getState().ledgerTransportType;
@@ -538,36 +538,13 @@ export default class PreferencesController {
 
   /**
    * A setter for the user preference to dismiss the seed phrase backup reminder
-   *
-   * @param {bool} dismissSeedBackUpReminder - User preference for dismissing the back up reminder.
+   * @param {bool} dismissBackupReminder- User preference for dismissing the back up reminder
+   * @returns {void}
    */
   async setDismissSeedBackUpReminder(dismissSeedBackUpReminder) {
     await this.store.updateState({
       dismissSeedBackUpReminder,
     });
-  }
-
-  /**
-   * A setter for the user preference to enable/disable rpc methods
-   *
-   * @param {string} methodName - The RPC method name to change the setting of
-   * @param {bool} isEnabled - true to enable the rpc method
-   */
-  async setDisabledRpcMethodPreference(methodName, isEnabled) {
-    const currentRpcMethodPreferences =
-      this.store.getState().disabledRpcMethodPreferences;
-    const updatedRpcMethodPreferences = {
-      ...currentRpcMethodPreferences,
-      [methodName]: isEnabled,
-    };
-
-    this.store.updateState({
-      disabledRpcMethodPreferences: updatedRpcMethodPreferences,
-    });
-  }
-
-  getRpcMethodPreferences() {
-    return this.store.getState().disabledRpcMethodPreferences;
   }
 
   //
@@ -586,8 +563,8 @@ export default class PreferencesController {
   /**
    *
    * A setter for the `infuraBlocked` property
-   *
    * @param {boolean} isBlocked - Bool indicating whether Infura is blocked
+   *
    */
   _setInfuraBlocked(isBlocked) {
     const { infuraBlocked } = this.store.getState();

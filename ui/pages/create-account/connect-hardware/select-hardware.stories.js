@@ -1,34 +1,30 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
+import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 
 export default {
-  title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
+  title: 'Connect Hardware Wallet',
+  id: __filename,
 };
 
-export const DefaultStory = () => {
+export const SelectHardwareComponent = () => {
   return (
     <SelectHardware
-      onCancel={() => null}
       browserSupported
       connectToHardwareWallet={(selectedDevice) =>
         action(`Continue connect to ${selectedDevice}`)()
       }
-      ledgerTransportType={LedgerTransportTypes.live}
+      ledgerTransportType={LEDGER_TRANSPORT_TYPES.LIVE}
     />
   );
 };
-
-DefaultStory.storyName = 'Default';
-
 export const BrowserNotSupported = () => {
   return (
     <SelectHardware
-      onCancel={() => null}
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
-      ledgerTransportType={LedgerTransportTypes.live}
+      ledgerTransportType={LEDGER_TRANSPORT_TYPES.LIVE}
     />
   );
 };
