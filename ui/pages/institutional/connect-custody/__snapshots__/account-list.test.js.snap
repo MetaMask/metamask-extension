@@ -54,7 +54,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
                   <span
                     class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
                   >
-                    0x123...7890
+                    0x12345...67890
                     <span
                       class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
                       style="mask-image: url('./images/icons/undefined.svg');"
@@ -129,7 +129,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
                   <span
                     class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
                   >
-                    0x098...4321
+                    0x09876...54321
                     <span
                       class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
                       style="mask-image: url('./images/icons/undefined.svg');"

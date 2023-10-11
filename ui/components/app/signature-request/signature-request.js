@@ -1,4 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useCallback,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react';
 import {
   useDispatch,
   useSelector,
@@ -13,10 +20,8 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 ///: END:ONLY_INCLUDE_IN
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   resolvePendingApproval,
   completedTx,
-  ///: END:ONLY_INCLUDE_IN
   rejectPendingApproval,
 } from '../../../store/actions';
 import {
@@ -51,7 +56,7 @@ import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi,blockaid)
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
@@ -70,7 +75,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Button,
   ButtonLink,
   TagUrl,
@@ -78,12 +83,12 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
+  Box,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 // eslint-disable-next-line import/order
-import Box from '../../ui/box/box';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -157,18 +162,30 @@ const SignatureRequest = ({ txData }) => {
     return { sanitizedMessage, domain, primaryType };
   });
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  const onClickSupportLink = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        action: 'Sign Request',
+        type,
+        version,
+        external_link_clicked: 'security_alert_support_link',
+      },
+    });
+  }, []);
+  ///: END:ONLY_INCLUDE_IN
+
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (accountType === 'custody') {
       await custodySignFn(txData);
-      return;
     }
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     await dispatch(resolvePendingApproval(id));
     completedTx(id);
-    ///: END:ONLY_INCLUDE_IN
 
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -252,6 +269,10 @@ const SignatureRequest = ({ txData }) => {
           ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
           <BlockaidBannerAlert
             securityAlertResponse={txData?.securityAlertResponse}
+            marginLeft={4}
+            marginRight={4}
+            marginBottom={4}
+            onClickSupportLink={onClickSupportLink}
           />
           ///: END:ONLY_INCLUDE_IN
         }
@@ -325,7 +346,7 @@ const SignatureRequest = ({ txData }) => {
         {verifyingContract ? (
           <div>
             <Button
-              variant={BUTTON_VARIANT.LINK}
+              variant={ButtonVariant.Link}
               onClick={() => setShowContractDetails(true)}
               className="signature-request-content__verify-contract-details"
               data-testid="verify-contract-details"

@@ -11,7 +11,7 @@ import withModalProps from '../../../helpers/higher-order-components/with-modal-
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { setSelectedAddress } from '../../../store/actions';
-import { getMetaMaskAccountsRaw } from '../../../selectors';
+import { getMetaMaskIdentities } from '../../../selectors';
 import {
   getMMIAddressFromModalOrAddress,
   getCustodyAccountDetails,
@@ -42,15 +42,14 @@ const CustodyConfirmLink = ({ hideModal }) => {
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
   const trackEvent = useContext(MetaMetricsContext);
-  const mmiAccounts = useSelector(getMetaMaskAccountsRaw);
+  const mmiAccounts = useSelector(getMetaMaskIdentities);
   const address = useSelector(getMMIAddressFromModalOrAddress);
   const custodyAccountDetails = useSelector(getCustodyAccountDetails);
   const { custodians } = useSelector(getMMIConfiguration);
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address)] || {};
-  const { displayName, iconUrl } = custodians.find(
-    (item) => item.name === custodianName || {},
-  );
+  const { displayName, iconUrl } =
+    custodians.find((item) => item.name === custodianName) || {};
   const { url, ethereum, text, action } = useSelector(
     (state) => state.appState.modal.modalState.props.link || {},
   );

@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectActionModalItem should render correctly 1`] = `
+<div>
+  <button
+    class="mm-box select-action-modal-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--background-color-transparent"
+    data-testid="select-action-modal-item"
+  >
+    <div
+      class="mm-box"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon select-action-modal-item__avatar mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/add.svg');"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-lg-medium mm-text--text-align-left mm-box--color-text-default"
+        >
+          Buy
+        </p>
+        <span
+          class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-alternative"
+          style="mask-image: url('./images/icons/export.svg');"
+        />
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
+      >
+        Buy crypto with MetaMask
+      </p>
+    </div>
+  </button>
+</div>
+`;

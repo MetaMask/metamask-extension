@@ -17,6 +17,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   getIpfsGateway,
+  getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 
@@ -29,11 +30,36 @@ export const NftItem = ({
   tokenId,
   onClick,
   clickable,
-  nftImageURL,
+  isIpfsURL,
 }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
-  const isIpfsURL = nftImageURL?.includes('ipfs:');
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
+
+  const ipfsImageIsRenderable = isIpfsEnabled && isIpfsURL && src;
+  const openseaImageIsRenderable = openSeaEnabled && src && !isIpfsURL;
+
+  const nftImageComponentToRender =
+    ipfsImageIsRenderable || openseaImageIsRenderable ? (
+      <Box
+        className="nft-item__item nft-item__item-image"
+        data-testid="nft-image"
+        as="img"
+        src={src}
+        alt={alt}
+        display={Display.Block}
+        justifyContent={JustifyContent.center}
+      />
+    ) : (
+      <NftDefaultImage
+        className="nft-item__default-image"
+        data-testid="nft-default-image"
+        name={name}
+        tokenId={tokenId}
+        clickable={clickable && isIpfsURL}
+      />
+    );
+
   return (
     <Box
       className="nft-item__container"
@@ -64,52 +90,47 @@ export const NftItem = ({
           />
         }
       >
-        {isIpfsEnabled ? (
-          <Box
-            className="nft-item__item nft-item__item-image"
-            data-testid="nft-image"
-            as="img"
-            src={src}
-            alt={alt}
-            display={Display.Block}
-            justifyContent={JustifyContent.center}
-          />
-        ) : (
-          <>
-            {isIpfsURL ? (
-              <NftDefaultImage
-                className="nft-item__default-image"
-                data-testid="nft-default-image"
-                name={name}
-                tokenId={tokenId}
-                clickable={clickable}
-              />
-            ) : (
-              <Box
-                className="nft-item__item nft-item__item-image"
-                data-testid="nft-image"
-                as="img"
-                src={src}
-                alt={alt}
-                display={Display.Block}
-                justifyContent={JustifyContent.center}
-              />
-            )}
-          </>
-        )}
+        {nftImageComponentToRender}
       </BadgeWrapper>
     </Box>
   );
 };
 
 NftItem.propTypes = {
+  /**
+   * NFT media source
+   */
   src: PropTypes.string,
+  /**
+   * Alt text for the NFT
+   */
   alt: PropTypes.string.isRequired,
+  /**
+   * The NFT's name
+   */
   name: PropTypes.string.isRequired,
+  /**
+   * Name of the network the NFT lives on
+   */
   networkName: PropTypes.string.isRequired,
+  /**
+   * Image that represents the network
+   */
   networkSrc: PropTypes.string.isRequired,
+  /**
+   * Token ID of the NFT
+   */
   tokenId: PropTypes.string.isRequired,
+  /**
+   * Executes when the NFT is clicked
+   */
   onClick: PropTypes.func,
+  /**
+   * Represents if the NFT is clickable for larger image
+   */
   clickable: PropTypes.bool,
-  nftImageURL: PropTypes.string,
+  /**
+   * Whether the src url resolve to ipfs
+   */
+  isIpfsURL: PropTypes.bool,
 };

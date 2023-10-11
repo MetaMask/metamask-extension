@@ -455,6 +455,9 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  PetnameAddressCount = 'petname_addresses_count',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 /**
@@ -525,7 +528,6 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NftAdded = 'NFT Added',
-  OnboardingWelcome = 'App Installed',
   OnboardingWalletCreationStarted = 'Wallet Setup Selected',
   OnboardingWalletImportStarted = 'Wallet Import Started',
   OnboardingWalletCreationAttempted = 'Wallet Password Created',
@@ -546,10 +548,16 @@ export enum MetaMetricsEventName {
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
   PermissionsRequested = 'Permissions Requested',
+  PetnameCreated = 'Petname Created',
+  PetnameDeleted = 'Petname Deleted',
+  PetnameDisplayed = 'Petname Displayed',
+  PetnameModalOpened = 'Petname Modal Opened',
+  PetnameUpdated = 'Petname Updated',
   PhishingPageDisplayed = 'Phishing Page Displayed',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
+  QuoteError = 'Quote Error',
   ServiceWorkerRestarted = 'Service Worker Restarted',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -625,6 +633,15 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  SnapInstalled = 'Snap Installed',
+  SnapUninstalled = 'Snap Uninstalled',
+  SnapUpdated = 'Snap Updated',
+  SnapExportUsed = 'Snap Export Used',
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  AddSnapAccountEnabled = 'Add Snap Account Enabled',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 export enum MetaMetricsEventAccountType {
@@ -656,18 +673,19 @@ export enum MetaMetricsEventCategory {
   Navigation = 'Navigation',
   Network = 'Network',
   Onboarding = 'Onboarding',
+  Petnames = 'Petnames',
   Phishing = 'Phishing',
   Retention = 'Retention',
   ServiceWorkers = 'service_workers',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
+  Tokens = 'Tokens',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IN
-  Tokens = 'Tokens',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -684,6 +702,7 @@ export enum MetaMetricsEventKeyType {
 
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
+  GasTimeout = 'gas_timeout',
 }
 
 export enum MetaMetricsNetworkEventSource {

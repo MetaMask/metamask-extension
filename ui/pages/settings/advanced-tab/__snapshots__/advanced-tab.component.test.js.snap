@@ -29,8 +29,6 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         >
           <button
             class="button btn--rounded btn-secondary btn--large"
-            role="button"
-            tabindex="0"
           >
             Download state logs
           </button>
@@ -61,8 +59,6 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         >
           <button
             class="button btn--rounded btn-danger btn--large settings-tab__button--red"
-            role="button"
-            tabindex="0"
           >
             Clear activity tab data
           </button>
@@ -70,7 +66,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-hex-data"
     >
       <div
@@ -136,7 +132,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-testnet-conversion"
     >
       <div
@@ -202,7 +198,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-testnet-conversion"
     >
       <div
@@ -268,7 +264,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-custom-nonce"
     >
       <div
@@ -378,8 +374,6 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           <button
             class="button btn--rounded btn-primary settings-tab__rpc-save-button"
             data-testid="auto-lockout-button"
-            role="button"
-            tabindex="0"
           >
             Save
           </button>
@@ -411,8 +405,6 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           <button
             class="button btn--rounded btn-secondary btn--large"
             data-testid="backup-button"
-            role="button"
-            tabindex="0"
           >
             Backup
           </button>
@@ -520,7 +512,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-dismiss-reminder"
     >
       <div
@@ -586,7 +578,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
       data-testid="advanced-setting-toggle-ethsign"
     >
       <div

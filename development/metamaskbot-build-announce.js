@@ -39,15 +39,19 @@ function getPercentageChange(from, to) {
 }
 
 async function start() {
-  const { GITHUB_COMMENT_TOKEN, CIRCLE_PULL_REQUEST } = process.env;
+  const {
+    GITHUB_COMMENT_TOKEN,
+    CIRCLE_PULL_REQUEST,
+    CIRCLE_SHA1,
+    CIRCLE_BUILD_NUM,
+    CIRCLE_WORKFLOW_JOB_ID,
+    PARENT_COMMIT,
+  } = process.env;
+
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST);
-  const { CIRCLE_SHA1 } = process.env;
   console.log('CIRCLE_SHA1', CIRCLE_SHA1);
-  const { CIRCLE_BUILD_NUM } = process.env;
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
-  const { CIRCLE_WORKFLOW_JOB_ID } = process.env;
   console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
-  const { PARENT_COMMIT } = process.env;
   console.log('PARENT_COMMIT', PARENT_COMMIT);
 
   if (!CIRCLE_PULL_REQUEST) {
@@ -72,6 +76,24 @@ async function start() {
   const flaskBuildLinks = platforms
     .map((platform) => {
       const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
+  const mmiBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-mmi/metamask-mmi-${platform}-${VERSION}-mmi.0.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
+  const testBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-test/metamask-${platform}-${VERSION}.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
+  const testFlaskBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
@@ -140,6 +162,9 @@ async function start() {
     `builds: ${buildLinks}`,
     `builds (beta): ${betaBuildLinks}`,
     `builds (flask): ${flaskBuildLinks}`,
+    `builds (MMI): ${mmiBuildLinks}`,
+    `builds (test): ${testBuildLinks}`,
+    `builds (test-flask): ${testFlaskBuildLinks}`,
     `build viz: ${depVizLink}`,
     `mv3: ${moduleInitStatsBackgroundLink}`,
     `mv3: ${moduleInitStatsUILink}`,

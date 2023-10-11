@@ -2,6 +2,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+} from '../../../../shared/constants/network';
 import { TokenListItem } from '.';
 
 export default {
@@ -31,7 +35,7 @@ export default {
     secondary: '$9.80 USD',
     primary: '88.0068',
     tokenImage: './images/eth_logo.png',
-    tokenSymbol: 'ETH',
+    tokenSymbol: CURRENCY_SYMBOLS.ETH,
     title: 'Ethereum',
   },
 };
@@ -41,7 +45,7 @@ const customNetworkData = {
   metamask: {
     ...testData.metamask,
     providerConfig: {
-      chainId: '0x1',
+      chainId: CHAIN_IDS.MAINNET,
     },
   },
 };

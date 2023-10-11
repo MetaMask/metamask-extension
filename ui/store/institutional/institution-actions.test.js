@@ -39,7 +39,7 @@ const defaultState = {
         },
       },
     },
-    currentNetworkTxList: [
+    transactions: [
       {
         id: 0,
         time: 0,
@@ -206,9 +206,7 @@ describe('#updateCustodyState', () => {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
     };
 
@@ -232,11 +230,9 @@ describe('#updateCustodyState', () => {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 0,
           time: 0,
@@ -287,11 +283,9 @@ describe('#updateCustodyState', () => {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 0,
           time: 0,

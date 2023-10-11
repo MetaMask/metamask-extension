@@ -8,7 +8,7 @@ const {
   checkNotification,
 } = require('./shared');
 
-describe('Swaps - notifications', function () {
+describe('Swaps - notifications @no-mmi', function () {
   async function mockTradesApiPriceSlippageError(mockServer) {
     await mockServer
       .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
@@ -119,12 +119,11 @@ describe('Swaps - notifications', function () {
           amount: 50,
           skipCounter: true,
         });
-        const swapButton = await driver.waitForSelector({
+        await driver.waitForSelector({
           text: 'Swap',
           tag: 'button',
+          css: '[disabled]',
         });
-        assert.equal(await swapButton.getText(), 'Swap');
-        assert.equal(await swapButton.isEnabled(), false);
       },
     );
   });
@@ -171,17 +170,17 @@ describe('Swaps - notifications', function () {
         });
         await driver.fill('input[data-testid*="slippage"]', '1');
         await checkNotification(driver, {
-          title: 'Increase slippage to avoid transaction failure',
-          text: 'Max slippage is too low which may cause your transaction to fail.',
+          title: 'Low slippage',
+          text: 'A value this low (1%) may result in a failed swap',
         });
         await driver.fill('input[data-testid*="slippage"]', '15');
         await checkNotification(driver, {
-          title: 'Very high slippage',
-          text: 'The slippage entered is considered very high and may result in a bad rate',
+          title: 'High slippage',
+          text: 'The slippage entered (15%) is considered very high and may result in a bad rate',
         });
         await driver.fill('input[data-testid*="slippage"]', '20');
         await checkNotification(driver, {
-          title: 'Reduce slippage to continue',
+          title: 'Very high slippage',
           text: 'Slippage tolerance must be 15% or less. Anything higher will result in a bad rate.',
         });
         await driver.fill('input[data-testid*="slippage"]', '4');

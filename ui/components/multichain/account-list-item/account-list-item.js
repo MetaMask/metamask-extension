@@ -44,6 +44,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getUseBlockie } from '../../../selectors';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -63,7 +64,7 @@ function getLabel(keyring = {}, t) {
       return HardwareKeyringNames.lattice;
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     case KeyringType.snap:
-      return t('snaps');
+      return `${t('snaps')} (${t('beta')})`;
     ///: END:ONLY_INCLUDE_IN
     default:
       return null;
@@ -82,7 +83,7 @@ export const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+  const useBlockie = useSelector(getUseBlockie);
 
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);

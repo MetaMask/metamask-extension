@@ -55,6 +55,10 @@ import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { KeyringType } from '../../../shared/constants/keyring';
+///: END:ONLY_INCLUDE_IN
+import { isHardwareKeyring } from '../../helpers/utils/hardware';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -96,6 +100,7 @@ export default class ConfirmTransactionBase extends Component {
     unapprovedTxCount: PropTypes.number,
     customGas: PropTypes.object,
     addToAddressBookIfNew: PropTypes.func,
+    keyringForAccount: PropTypes.object,
     // Component props
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -145,6 +150,7 @@ export default class ConfirmTransactionBase extends Component {
     isNoteToTraderSupported: PropTypes.bool,
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
+    tokenSymbol: PropTypes.string,
   };
 
   state = {
@@ -324,7 +330,9 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
+      tokenSymbol,
     } = this.props;
+
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
 
@@ -452,6 +460,7 @@ export default class ConfirmTransactionBase extends Component {
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
+          txData={txData}
           setUserAcknowledgedGasMissing={() =>
             this.setUserAcknowledgedGasMissing()
           }
@@ -460,6 +469,7 @@ export default class ConfirmTransactionBase extends Component {
           networkName={networkName}
           type={txData.type}
           isBuyableChain={isBuyableChain}
+          tokenSymbol={tokenSymbol}
         />
         <TransactionDetail
           disabled={isDisabled()}
@@ -625,7 +635,27 @@ export default class ConfirmTransactionBase extends Component {
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
+      keyringForAccount,
     } = this.props;
+
+    let loadingIndicatorMessage;
+
+    switch (keyringForAccount?.type) {
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      case KeyringType.snap:
+        loadingIndicatorMessage = this.context.t('loadingScreenSnapMessage');
+        break;
+      ///: END:ONLY_INCLUDE_IN
+      default:
+        if (isHardwareKeyring(keyringForAccount?.type)) {
+          loadingIndicatorMessage = this.context.t(
+            'loadingScreenHardwareWalletMessage',
+          );
+        } else {
+          loadingIndicatorMessage = null;
+        }
+        break;
+    }
 
     updateTxData({
       txData,
@@ -649,7 +679,11 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        sendTransaction(txData)
+        sendTransaction(
+          txData,
+          false, // hideLoadingIndicator
+          loadingIndicatorMessage, // loadingIndicatorMessage
+        )
           .then(() => {
             if (!this._isMounted) {
               return;
@@ -746,9 +780,6 @@ export default class ConfirmTransactionBase extends Component {
 
         sendTransaction(txData)
           .then(() => {
-            if (!this._isMounted) {
-              return;
-            }
             if (txData.custodyStatus) {
               showCustodianDeepLink({
                 fromAddress,
@@ -762,6 +793,9 @@ export default class ConfirmTransactionBase extends Component {
                 },
                 onDeepLinkShown: () => {
                   clearConfirmTransaction();
+                  if (!this._isMounted) {
+                    return;
+                  }
                   this.setState({ submitting: false }, () => {
                     history.push(mostRecentOverviewPage);
                     updateCustomNonce('');
@@ -769,6 +803,9 @@ export default class ConfirmTransactionBase extends Component {
                 },
               });
             } else {
+              if (!this._isMounted) {
+                return;
+              }
               this.setState(
                 {
                   submitting: false,
