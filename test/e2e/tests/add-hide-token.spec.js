@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { toHex } = require('@metamask/controller-utils');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -19,7 +18,7 @@ describe('Hide token', function () {
         fixtures: new FixtureBuilder()
           .withTokensController({
             allTokens: {
-              [toHex(1337)]: {
+              '0x539': {
                 '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
                   {
                     address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
@@ -51,16 +50,16 @@ describe('Hide token', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.waitForSelector({
-          css: '[data-testid="multichain-token-list-item-value"]',
+          css: '.asset-list-item__token-button',
           text: '0 TST',
         });
 
-        let assets = await driver.findElements('.multichain-token-list-item');
+        let assets = await driver.findElements('.asset-list-item');
         assert.equal(assets.length, 2);
 
-        await driver.clickElement({ text: 'Tokens', tag: 'button' });
+        await driver.clickElement({ text: 'Assets', tag: 'button' });
 
-        await driver.clickElement({ text: 'TST', tag: 'p' });
+        await driver.clickElement({ text: 'TST', tag: 'span' });
 
         await driver.clickElement('[data-testid="asset-options__button"]');
 
@@ -75,7 +74,7 @@ describe('Hide token', function () {
         // wait for confirm hide modal to be removed from DOM.
         await confirmHideModal.waitForElementState('hidden');
 
-        assets = await driver.findElements('.multichain-token-list-item');
+        assets = await driver.findElements('.asset-list-item');
         assert.equal(assets.length, 1);
       },
     );
@@ -107,16 +106,14 @@ describe('Add existing token using search', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.fill('input[placeholder="Search"]', 'BAT');
+        await driver.clickElement({ text: 'import tokens', tag: 'a' });
+        await driver.fill('#search-tokens', 'BAT');
         await driver.clickElement({
           text: 'BAT',
           tag: 'span',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement(
-          '[data-testid="import-tokens-modal-import-button"]',
-        );
+        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',
@@ -184,8 +181,13 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
 
         await driver.waitForSelector({
-          css: '[data-testid="multichain-token-list-item-value"]',
-          text: '0 TST',
+          css: '.asset-list-item__token-value',
+          text: '0',
+        });
+
+        await driver.waitForSelector({
+          css: '.asset-list-item__token-symbol',
+          text: 'TST',
         });
       },
     );
@@ -237,7 +239,7 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
 
         const assetListItems = await driver.findElements(
-          '.multichain-token-list-item',
+          '.list-item--single-content-row',
         );
 
         assert.strictEqual(assetListItems.length, 1);
