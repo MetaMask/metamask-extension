@@ -1298,10 +1298,11 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      transactionUpdateController: this.transactionUpdateController,
-      ///: END:ONLY_INCLUDE_IN
-      shouldDisablePublish: this._shouldDisablePublish.bind(this),
+      hooks: {
+        beforePublish: this._beforePublish.bind(this),
+        afterSign: this._afterSign.bind(this),
+        getAdditionalSignArguments: this._getAdditionalSignArguments.bind(this),
+      },
       messenger: this.controllerMessenger.getRestricted({
         name: 'TransactionController',
         allowedActions: [
@@ -5142,24 +5143,46 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Whether or not should skips publishing the transaction.
+   * Whether or not should run logic after sign.
    *
    * @param {string} txMeta - The transaction meta.
    * @param signedEthTx - Signed ethereum transaction.
    */
   // eslint-disable-next-line no-unused-vars
-  _shouldDisablePublish(txMeta, signedEthTx) {
+  _afterSign(txMeta, signedEthTx) {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
     if (txMeta?.custodyStatus) {
-      if (signedEthTx) {
-        txMeta.custodyId = signedEthTx.custodian_transactionId;
-        txMeta.custodyStatus = signedEthTx.transactionStatus;
-      }
+      txMeta.custodyId = signedEthTx.custodian_transactionId;
+      txMeta.custodyStatus = signedEthTx.transactionStatus;
+      this.transactionUpdateController.addTransactionToWatchList(
+        txMeta.custodyId,
+        txMeta.txParams.from,
+      );
       return true;
     }
     ///: END:ONLY_INCLUDE_IN
     return false;
+  }
+
+  /**
+   * Whether or not should run logic before publishing the transaction.
+   *
+   * @param {string} txMeta - The transaction meta.
+   */
+  // eslint-disable-next-line no-unused-vars
+  _beforePublish(txMeta) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // MMI does not broadcast transactions, as that is the responsibility of the custodian
+    if (txMeta?.custodyStatus) {
+      return true;
+    }
+    ///: END:ONLY_INCLUDE_IN
+    return false;
+  }
+
+  _getAdditionalSignArguments(...args) {
+    return args.filter((arg) => arg);
   }
 
   async _onAccountChange(newAddress) {

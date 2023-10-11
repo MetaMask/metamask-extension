@@ -134,7 +134,6 @@ describe('Transaction Controller', function () {
       securityProviderRequest: () => undefined,
       preferencesStore,
       messenger: messengerMock,
-      shouldDisablePublish: () => undefined,
     });
 
     txController.nonceTracker.getNonceLock = () =>
