@@ -88,6 +88,20 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       setIsUncontrolledOpen(!isUncontrolledOpen);
     };
 
+    const handleBlur = (e: any) => {
+      const wrapper = e.currentTarget;
+      const { relatedTarget } = e;
+
+      if (!wrapper.contains(relatedTarget)) {
+        // Close the popover only if the related target is not inside the wrapper
+        setIsUncontrolledOpen(false);
+        // If you have a controlled isOpen state, update it to close
+        if (onOpenChange) {
+          onOpenChange(false);
+        }
+      }
+    };
+
     return (
       <SelectContext.Provider
         value={{
@@ -109,7 +123,7 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       >
         <Box
           className={classnames('mm-select-wrapper', className)}
-          // onBlur={onBlur}
+          onBlur={handleBlur}
           onChange={onValueChange}
           ref={ref}
           {...(props as BoxProps<C>)}
