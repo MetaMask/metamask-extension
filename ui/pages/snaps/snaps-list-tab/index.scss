@@ -1,0 +1,85 @@
+.snaps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background-default);
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 65px 24px 15px 24px;
+    border-bottom: 1px solid var(--color-border-muted);
+
+    @include screen-sm-max {
+      padding: 10px 20px;
+    }
+
+    &__title-container {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      flex: 0 0 auto;
+
+      &__title {
+        @include H3;
+
+        margin-left: 26px;
+
+        @include screen-sm-max {
+          @include H6;
+
+          margin-left: 16px;
+          font-weight: bold;
+        }
+      }
+    }
+
+    &_button {
+      width: auto;
+
+      @include screen-sm-max {
+        font-size: 0.75rem;
+        padding: 3.5px 1rem;
+      }
+    }
+  }
+
+  &__container {
+    display: flex;
+    overflow: auto;
+    flex-direction: column;
+    flex: 1 1 auto;
+
+    @include screen-sm-max {
+      height: 100%;
+    }
+
+    &__text {
+      @include H3;
+
+      color: var(--color-text-muted);
+      text-align: center;
+
+      @include screen-sm-max {
+        @include H6;
+      }
+    }
+  }
+}
+
+.snap-list-tab {
+  .snap-list-tab__container--no-snaps_inner {
+    max-width: 164px;
+    align-self: flex-end;
+  }
+
+  .snap-list-tab__no-snaps_icon {
+    font-size: 48px;
+  }
+
+  &__container--no-snaps_banner-tip {
+    max-width: 390px;
+  }
+}

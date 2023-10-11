@@ -25,8 +25,6 @@ import {
   SETTINGS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
-  SNAPS_LIST_ROUTE,
-  SNAPS_VIEW_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
@@ -46,8 +44,6 @@ const ROUTES_TO_I18N_KEYS = {
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
-  [SNAPS_LIST_ROUTE]: 'snaps',
-  [SNAPS_VIEW_ROUTE]: 'snaps',
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -59,7 +55,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
   const isAddressEntryPage = pathNameTail.includes('0x');
-  const isSnapViewPage = Boolean(pathname.match(SNAPS_VIEW_ROUTE));
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
   const isNetworksFormPage =
@@ -80,8 +75,6 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = CONTACT_LIST_ROUTE;
   } else if (isNetworksFormPage) {
     backRoute = NETWORKS_ROUTE;
-  } else if (isSnapViewPage) {
-    backRoute = SNAPS_LIST_ROUTE;
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
   }
@@ -107,7 +100,6 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbRoute,
     isAddressEntryPage,
     isPopup,
-    isSnapViewPage,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
   };

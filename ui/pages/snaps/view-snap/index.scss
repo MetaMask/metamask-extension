@@ -1,0 +1,145 @@
+.view-snap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background-default);
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 65px 24px 15px 24px;
+    border-bottom: 1px solid var(--color-border-muted);
+
+    @include screen-sm-max {
+      padding: 10px 20px;
+    }
+
+    &__title-container {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      flex: 0 0 auto;
+
+      &__title {
+        @include H3;
+
+        margin-left: 26px;
+
+        @include screen-sm-max {
+          @include H6;
+
+          margin-left: 16px;
+          font-weight: bold;
+        }
+      }
+    }
+
+    &_button {
+      width: auto;
+
+      @include screen-sm-max {
+        font-size: 0.75rem;
+        padding: 3.5px 1rem;
+      }
+    }
+  }
+
+  &__container {
+    display: flex;
+    overflow: auto;
+    flex-direction: column;
+    flex: 1 1 auto;
+
+    @include screen-sm-max {
+      height: 100%;
+    }
+
+    &__text {
+      @include H3;
+
+      color: var(--color-text-muted);
+      text-align: center;
+
+      @include screen-sm-max {
+        @include H6;
+      }
+    }
+  }
+
+  &__content {
+    max-width: 475px;
+
+    &__description {
+      &__wrapper {
+        position: relative;
+        overflow: hidden;
+        max-height: 5.5rem;
+
+        @include screen-md-min {
+          max-height: 6rem;
+        }
+
+        &.open {
+          max-height: none;
+        }
+      }
+
+      &__more-button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: unset;
+        padding: 0;
+        padding-left: 32px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-default) 33%);
+      }
+    }
+
+
+    &__permissions {
+      .permission-cell {
+        margin: 0;
+      }
+    }
+
+    .connected-sites-list {
+      &__content-row {
+        border-top: none;
+        padding: 0 0 8px 0;
+
+        & &-link-button {
+          padding: 0;
+          padding-inline-start: 0;
+          color: var(--color-error-default);
+          font-size: 14px;
+        }
+
+        a {
+          font-size: 14px;
+          color: var(--color-error-default);
+        }
+
+        a:hover {
+          color: var(--color-error-alternative);
+        }
+      }
+
+      &__subject-info {
+        a.btn-link {
+          font-size: 14px;
+          color: var(--color-error-default);
+        }
+      }
+
+      &__subject-icon {
+        flex-shrink: 0;
+      }
+
+      &__subject-name {
+        font-size: 14px;
+      }
+    }
+  }
+}
