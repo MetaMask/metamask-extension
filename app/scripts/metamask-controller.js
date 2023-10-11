@@ -7,6 +7,7 @@ import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
   debounce,
+  omitBy,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   throttle,
   memoize,
@@ -1305,6 +1306,9 @@ export default class MetamaskController extends EventEmitter {
         sensitiveProperties,
         transactionMeta,
         skipFinalize = false,
+        skipUpdate = false,
+        skipCreate = false,
+        updateParams = {},
       }) => {
         const isSubmitted = [
           TransactionMetaMetricsEvent.finalized,
@@ -1320,103 +1324,145 @@ export default class MetamaskController extends EventEmitter {
           return;
         }
 
-        switch (event) {
-          case TransactionMetaMetricsEvent.added:
-            this.createEventFragment({
-              category: MetaMetricsEventCategory.Transactions,
-              initialEvent: TransactionMetaMetricsEvent.added,
-              successEvent: TransactionMetaMetricsEvent.approved,
-              failureEvent: TransactionMetaMetricsEvent.rejected,
-              properties,
-              sensitiveProperties,
-              persist: true,
-              uniqueIdentifier,
-              actionId,
-            });
-            break;
+        function createEventFragment({ eventName, payload, createEvent }) {
+          let createParams = {
+            ...payload,
+            persist: true,
+          };
+          switch (eventName) {
+            case TransactionMetaMetricsEvent.added:
+              createParams = {
+                ...createParams,
+                category: MetaMetricsEventCategory.Transactions,
+                initialEvent: TransactionMetaMetricsEvent.added,
+                successEvent: TransactionMetaMetricsEvent.approved,
+                failureEvent: TransactionMetaMetricsEvent.rejected,
+              };
+              break;
 
-          case TransactionMetaMetricsEvent.approved:
-          case TransactionMetaMetricsEvent.rejected:
-            this.createEventFragment({
-              category: MetaMetricsEventCategory.Transactions,
-              successEvent: TransactionMetaMetricsEvent.approved,
-              failureEvent: TransactionMetaMetricsEvent.rejected,
-              properties,
-              sensitiveProperties,
-              persist: true,
-              uniqueIdentifier,
-              actionId,
-            });
-            break;
+            case TransactionMetaMetricsEvent.approved:
+            case TransactionMetaMetricsEvent.rejected:
+              createParams = {
+                ...createParams,
+                category: MetaMetricsEventCategory.Transactions,
+                successEvent: TransactionMetaMetricsEvent.approved,
+                failureEvent: TransactionMetaMetricsEvent.rejected,
+              };
+              break;
 
-          case TransactionMetaMetricsEvent.submitted:
-            this.createEventFragment({
-              category: MetaMetricsEventCategory.Transactions,
-              initialEvent: TransactionMetaMetricsEvent.submitted,
-              successEvent: TransactionMetaMetricsEvent.finalized,
-              properties,
-              sensitiveProperties,
-              persist: true,
-              uniqueIdentifier,
-              actionId,
-            });
-            break;
+            case TransactionMetaMetricsEvent.submitted:
+              createParams = {
+                ...createParams,
+                category: MetaMetricsEventCategory.Transactions,
+                initialEvent: TransactionMetaMetricsEvent.submitted,
+                successEvent: TransactionMetaMetricsEvent.finalized,
+              };
+              break;
 
-          case TransactionMetaMetricsEvent.finalized:
-            this.createEventFragment({
-              category: MetaMetricsEventCategory.Transactions,
-              successEvent: TransactionMetaMetricsEvent.finalized,
-              properties,
-              sensitiveProperties,
-              persist: true,
-              uniqueIdentifier,
-              actionId,
-            });
-            break;
-          default:
-            break;
+            case TransactionMetaMetricsEvent.finalized:
+              createParams = {
+                ...createParams,
+                category: MetaMetricsEventCategory.Transactions,
+                successEvent: TransactionMetaMetricsEvent.finalized,
+              };
+              break;
+            default:
+              break;
+          }
+
+          createEvent(createParams);
         }
 
-        if (skipFinalize) {
-          return;
+        function updateEventFragment({
+          eventName,
+          payload,
+          txMeta,
+          updateEvent,
+        }) {
+          let id;
+          switch (eventName) {
+            case TransactionMetaMetricsEvent.approved:
+              id = `transaction-added-${txMeta.id}`;
+              break;
+
+            case TransactionMetaMetricsEvent.rejected:
+              id = `transaction-added-${txMeta.id}`;
+              break;
+
+            case TransactionMetaMetricsEvent.finalized:
+              id = `transaction-submitted-${txMeta.id}`;
+              break;
+            default:
+              break;
+          }
+
+          updateEvent(
+            id,
+            omitBy(payload, (v) => v === undefined),
+          );
         }
 
-        let id;
-        switch (event) {
-          // If the user approves a transaction, finalize the transaction added
-          // event fragment.
-          case TransactionMetaMetricsEvent.approved:
-            id = `transaction-added-${transactionMeta.id}`;
-            this.metaMetricsController.updateEventFragment(id, {
-              properties,
-              sensitiveProperties,
-            });
-            this.metaMetricsController.finalizeEventFragment(id);
-            break;
+        function finalizeEventFragment({
+          eventName,
+          txMeta,
+          finalizeEvent,
+        }) {
+          let id;
+          let payload;
+          switch (eventName) {
+            case TransactionMetaMetricsEvent.approved:
+              id = `transaction-added-${txMeta.id}`;
+              break;
 
-          // If the user rejects a transaction, finalize the transaction added
-          // event fragment. with the abandoned flag set.
-          case TransactionMetaMetricsEvent.rejected:
-            id = `transaction-added-${transactionMeta.id}`;
-            this.metaMetricsController.updateEventFragment(id, {
-              properties,
-              sensitiveProperties,
-            });
-            this.metaMetricsController.finalizeEventFragment(id, {
-              abandoned: true,
-            });
-            break;
+            case TransactionMetaMetricsEvent.rejected:
+              id = `transaction-added-${txMeta.id}`;
+              payload = {
+                abandoned: true,
+              };
+              break;
 
-          case TransactionMetaMetricsEvent.finalized:
-            id = `transaction-submitted-${transactionMeta.id}`;
-            this.metaMetricsController.updateEventFragment(id, {
+            case TransactionMetaMetricsEvent.finalized:
+              id = `transaction-submitted-${txMeta.id}`;
+              break;
+            default:
+              break;
+          }
+
+          finalizeEvent(id, payload);
+        }
+
+        if (!skipCreate) {
+          createEventFragment({
+            eventName: event,
+            createEvent: this.metaMetricsController.createEventFragment,
+            payload: {
+              actionId,
               properties,
               sensitiveProperties,
-            });
-            this.metaMetricsController.finalizeEventFragment(id);
-            break;
-          default:
-            break;
+              uniqueIdentifier,
+            },
+          });
+        }
+
+        if (!skipUpdate) {
+          updateEventFragment({
+            eventName: event,
+            updateEvent: this.metaMetricsController.updateEventFragment,
+            payload: {
+              properties,
+              sensitiveProperties,
+              ...updateParams,
+            },
+            txMeta: transactionMeta,
+          });
+        }
+
+        if (!skipFinalize) {
+          finalizeEventFragment({
+            eventName: event,
+            finalizeEvent: this.metaMetricsController.finalizeEventFragment,
+            txMeta: transactionMeta,
+          });
         }
       },
     );
@@ -2790,8 +2836,8 @@ export default class MetamaskController extends EventEmitter {
       addTransaction: this.addTransaction.bind(this),
       addTransactionAndWaitForPublish:
         this.addTransactionAndWaitForPublish.bind(this),
-      createTransactionEventFragment:
-        txController.createTransactionEventFragment.bind(txController),
+      createOrUpdateTransactionEventFragment:
+        txController.createOrUpdateTransactionEventFragment.bind(txController),
       getTransactions: txController.getTransactions.bind(txController),
 
       updateEditableParams:

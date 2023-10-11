@@ -16,7 +16,7 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
-  createTransactionEventFragment: jest.fn(),
+  createOrUpdateTransactionEventFragment: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue('unknown'),
 }));
 

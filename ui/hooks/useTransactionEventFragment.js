@@ -2,10 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useGasFeeContext } from '../contexts/gasFee';
-import {
-  createTransactionEventFragment,
-  updateEventFragment,
-} from '../store/actions';
+import { createOrUpdateTransactionEventFragment } from '../store/actions';
 import { selectMatchingFragment } from '../selectors';
 import { TransactionMetaMetricsEvent } from '../../shared/constants/transaction';
 
@@ -23,13 +20,12 @@ export const useTransactionEventFragment = () => {
       if (!transaction || !transaction.id) {
         return;
       }
-      if (!fragment) {
-        await createTransactionEventFragment(
-          transaction.id,
-          TransactionMetaMetricsEvent.approved,
-        );
-      }
-      updateEventFragment(`transaction-added-${transaction.id}`, params);
+      await createOrUpdateTransactionEventFragment(
+        transaction.id,
+        TransactionMetaMetricsEvent.approved,
+        Boolean(fragment),
+        params,
+      );
     },
     [fragment, transaction],
   );

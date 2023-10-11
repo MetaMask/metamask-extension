@@ -4136,15 +4136,19 @@ export function createEventFragment(
   ]);
 }
 
-export function createTransactionEventFragment(
+export function createOrUpdateTransactionEventFragment(
   transactionId: string,
   event: TransactionMetaMetricsEvent,
+  isFragmentExist: boolean,
+  updateParameters: any,
 ): Promise<string> {
   const actionId = generateActionId();
-  return submitRequestToBackground('createTransactionEventFragment', [
+  return submitRequestToBackground('createOrUpdateTransactionEventFragment', [
     transactionId,
     event,
     actionId,
+    isFragmentExist,
+    updateParameters,
   ]);
 }
 

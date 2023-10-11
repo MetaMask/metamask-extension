@@ -776,8 +776,16 @@ export default class TransactionController extends EventEmitter {
    *  fragment for
    * @param {valueOf<TransactionMetaMetricsEvent>} event - event type to create
    * @param {string} actionId - actionId passed from UI
+   * @param {boolean} isFragmentExists - whether fragment exist or not
+   * @param {object} updateParams - Update payload sent from UI
    */
-  async createTransactionEventFragment(transactionId, event, actionId) {
+  async createOrUpdateTransactionEventFragment(
+    transactionId,
+    event,
+    actionId,
+    isFragmentExists,
+    updateParams,
+  ) {
     const txMeta = this.txStateManager.getTransaction(transactionId);
     const { properties, sensitiveProperties } =
       await this._buildEventFragmentProperties(txMeta);
@@ -787,7 +795,10 @@ export default class TransactionController extends EventEmitter {
       properties,
       sensitiveProperties,
       transactionMeta: txMeta,
+      skipCreate: isFragmentExists,
+      skipUpdate: false,
       skipFinalize: true,
+      updateParams,
     });
   }
 

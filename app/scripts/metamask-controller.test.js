@@ -1824,7 +1824,7 @@ describe('MetaMaskController', () => {
           ).toHaveBeenCalledTimes(1);
           expect(
             localController.metaMetricsController.finalizeEventFragment,
-          ).toHaveBeenCalledWith(expectedId);
+          ).toHaveBeenCalledWith(expectedId, undefined);
         });
 
         it('should create,update & finalize event fragment when transaction rejected', () => {
@@ -1952,7 +1952,7 @@ describe('MetaMaskController', () => {
           ).toHaveBeenCalledTimes(1);
           expect(
             localController.metaMetricsController.finalizeEventFragment,
-          ).toHaveBeenCalledWith(expectedId);
+          ).toHaveBeenCalledWith(expectedId, undefined);
         });
       });
 
