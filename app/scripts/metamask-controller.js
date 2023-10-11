@@ -9,6 +9,8 @@ import {
   debounce,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   throttle,
+  memoize,
+  wrap,
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
 import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
@@ -47,11 +49,9 @@ import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
   PermissionController,
   PermissionsRequestNotFoundError,
-} from '@metamask/permission-controller';
-import {
   SubjectMetadataController,
   SubjectType,
-} from '@metamask/subject-metadata-controller';
+} from '@metamask/permission-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import {
   SelectedNetworkController,
@@ -141,9 +141,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { UI_INSTITUTIONAL_NOTIFICATIONS } from '../../shared/notifications/institutional';
-///: END:ONLY_INCLUDE_IN
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -169,6 +166,9 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
@@ -734,15 +734,9 @@ export default class MetamaskController extends EventEmitter {
       name: 'AnnouncementController',
     });
 
-    let allAnnouncements = UI_NOTIFICATIONS;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    allAnnouncements = UI_INSTITUTIONAL_NOTIFICATIONS;
-    ///: END:ONLY_INCLUDE_IN
-
     this.announcementController = new AnnouncementController({
       messenger: announcementMessenger,
-      allAnnouncements,
+      allAnnouncements: UI_NOTIFICATIONS,
       state: initState.AnnouncementController,
     });
 
@@ -882,12 +876,14 @@ export default class MetamaskController extends EventEmitter {
     const getSnapController = () => this.snapController;
     const getApprovalController = () => this.approvalController;
     const getKeyringController = () => this.keyringController;
+    const getPreferencesController = () => this.preferencesController;
 
     additionalKeyrings.push(
       snapKeyringBuilder(
         getSnapController,
         getApprovalController,
         getKeyringController,
+        getPreferencesController,
         (address) => this.removeAccount(address),
       ),
     );
@@ -1982,22 +1978,30 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
   /**
-   * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
+   * Tracks snaps export usage.
+   * Note: This function is throttled to 1 call per 60 seconds per snap id + handler combination.
    *
    * @param {string} snapId - The ID of the snap the handler is being triggered on.
    * @param {string} handler - The handler to trigger on the snap for the request.
    */
-  _trackSnapExportUsage = throttle(
-    (snapId, handler) =>
-      this.metaMetricsController.trackEvent({
-        event: MetaMetricsEventName.SnapExportUsed,
-        category: MetaMetricsEventCategory.Snaps,
-        properties: {
-          snap_id: snapId,
-          export: handler,
-        },
-      }),
-    SECOND * 60,
+  _trackSnapExportUsage = wrap(
+    memoize(
+      () =>
+        throttle(
+          (snapId, handler) =>
+            this.metaMetricsController.trackEvent({
+              event: MetaMetricsEventName.SnapExportUsed,
+              category: MetaMetricsEventCategory.Snaps,
+              properties: {
+                snap_id: snapId,
+                export: handler,
+              },
+            }),
+          SECOND * 60,
+        ),
+      (snapId, handler) => `${snapId}${handler}`,
+    ),
+    (getFunc, ...args) => getFunc(...args)(...args),
   );
 
   /**
@@ -2793,10 +2797,6 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // snaps
-      removeSnapError: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:removeSnapError',
-      ),
       disableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:disable',
@@ -4425,6 +4425,24 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:install',
           origin,
         ),
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+        hasPermission: this.permissionController.hasPermission.bind(
+          this.permissionController,
+        ),
+        getSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:get',
+        ),
+        handleSnapRpcRequest: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:handleRequest',
+        ),
+        getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
+          this.subjectMetadataController,
+        ),
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
     );
     ///: END:ONLY_INCLUDE_IN

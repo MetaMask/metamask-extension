@@ -54,6 +54,10 @@ export default function SnapCard({
       borderWidth={1}
       padding={[4, 4, 4, 4]}
       data-testid="key-management-snap"
+      className="snap-account-card"
+      onClick={() => {
+        history.push(`/add-snap-account/${id}`);
+      }}
     >
       <Box
         display={Display.Flex}
