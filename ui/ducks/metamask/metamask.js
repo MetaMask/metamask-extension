@@ -279,15 +279,18 @@ export function getBlockGasLimit(state) {
   return state.metamask.currentBlockGasLimit;
 }
 
-export function getConversionRate(state) {
-  return state.metamask.conversionRate;
+export function getNativeCurrency(state) {
+  console.log("getNativeCurrency", getProviderConfig(state).ticker)
+  return getProviderConfig(state).ticker;
 }
 
-export function getNativeCurrency(state) {
-  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
-  return useCurrencyRateCheck
-    ? state.metamask.nativeCurrency
-    : getProviderConfig(state).ticker;
+export function getConversionRate(state) {
+  console.log("getConversionRate", state.metamask.currencyRates[
+    getProviderConfig(state).ticker
+  ]?.conversionRate)
+  return state.metamask.currencyRates[
+    getProviderConfig(state).ticker
+  ]?.conversionRate;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
