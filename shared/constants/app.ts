@@ -1,5 +1,3 @@
-///: END:ONLY_INCLUDE_IN
-import { DialogType } from '@metamask/rpc-methods';
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -8,12 +6,9 @@ import { RestrictedMethods } from './permissions';
  * notification - When the extension opens due to interaction with a Web3 enabled website
  * fullscreen - When the user clicks 'expand view' to open the extension in a new tab
  * background - The background process that powers the extension
+ *
+ * @typedef {'popup' | 'notification' | 'fullscreen' | 'background'} EnvironmentType
  */
-export type EnvironmentType =
-  | 'popup'
-  | 'notification'
-  | 'fullscreen'
-  | 'background';
 export const ENVIRONMENT_TYPE_POPUP = 'popup';
 export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
@@ -24,12 +19,11 @@ export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
  *
  * This should be kept in-sync with the `BuildType` map in `development/build/utils.js`.
  */
-export enum BuildType {
-  beta = 'beta',
-  desktop = 'desktop',
-  flask = 'flask',
-  main = 'main',
-}
+export const BuildType = {
+  beta: 'beta',
+  flask: 'flask',
+  main: 'main',
+};
 
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
@@ -45,48 +39,38 @@ export const MESSAGE_TYPE = {
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
   ETH_SIGN: 'eth_sign',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
-  ETH_SIGN_TYPED_DATA_V3: 'eth_signTypedData_v3',
-  ETH_SIGN_TYPED_DATA_V4: 'eth_signTypedData_v4',
   GET_PROVIDER_STATE: 'metamask_getProviderState',
   LOG_WEB3_SHIM_USAGE: 'metamask_logWeb3ShimUsage',
   PERSONAL_SIGN: 'personal_sign',
   SEND_METADATA: 'metamask_sendDomainMetadata',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
-  WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
-  SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
-  SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
+  GET_PREFERRED_CURRENCY: RestrictedMethods.wallet_preferredCurrency,
+  SNAP_CONFIRM: RestrictedMethods.snap_confirm,
   ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-  ENABLE_DESKTOP: `metamask_enableDesktop`,
-  ///: END:ONLY_INCLUDE_IN
-} as const;
-
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-export const SNAP_DIALOG_TYPES = {
-  [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
-  [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
-  [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
 };
-///: END:ONLY_INCLUDE_IN
 
 /**
- * Custom messages to send and be received by the extension
+ * The different kinds of subjects that MetaMask may interact with, including
+ * third parties and itself (e.g. when the background communicated with the UI).
  */
-export const EXTENSION_MESSAGES = {
-  CONNECTION_READY: 'CONNECTION_READY',
-  READY: 'METAMASK_EXTENSION_READY',
-} as const;
+export const SUBJECT_TYPES = {
+  EXTENSION: 'extension',
+  INTERNAL: 'internal',
+  UNKNOWN: 'unknown',
+  WEBSITE: 'website',
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SNAP: 'snap',
+  ///: END:ONLY_INCLUDE_IN
+};
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
-  [ENVIRONMENT_TYPE_BACKGROUND]: 'none',
-} as const;
+};
 
 export const ORIGIN_METAMASK = 'metamask';
 
@@ -98,7 +82,7 @@ export const CHROME_BUILD_IDS = [
   METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
-] as const;
+];
 
 const METAMASK_BETA_FIREFOX_ID = 'webextension-beta@metamask.io';
 const METAMASK_PROD_FIREFOX_ID = 'webextension@metamask.io';
@@ -108,6 +92,4 @@ export const FIREFOX_BUILD_IDS = [
   METAMASK_BETA_FIREFOX_ID,
   METAMASK_PROD_FIREFOX_ID,
   METAMASK_FLASK_FIREFOX_ID,
-] as const;
-
-export const UNKNOWN_TICKER_SYMBOL = 'UNKNOWN';
+];
