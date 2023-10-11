@@ -371,9 +371,6 @@
   "amount": {
     "message": "Betrag"
   },
-  "apiUrl": {
-    "message": "API-URL"
-  },
   "appDescription": {
     "message": "Ethereum Browsererweiterung",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Ausgelastet"
   },
-  "buy": {
-    "message": "Kaufen"
-  },
   "buyAsset": {
     "message": "$1 kaufen",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Halten Sie Ihre Kryptowährung und erzielen Sie potenzielle Gewinne"
-  },
-  "buyDisabled": {
-    "message": "Kaufen ist in diesem Netzwerk nicht verfügbar"
   },
   "buyMoreAsset": {
     "message": "Mehr $1 kaufen",
@@ -980,9 +968,6 @@
   },
   "custodian": {
     "message": "Verwahrer"
-  },
-  "custodianAccount": {
-    "message": "Verwahrungskonto"
   },
   "custodianAccountAddedDesc": {
     "message": "Sie können jetzt Verwahrungskonten in MetaMask Institutional verwenden."
@@ -1414,9 +1399,6 @@
   "enableAutoDetect": {
     "message": " Automatische Erkennung aktivieren"
   },
-  "enableForAllNetworks": {
-    "message": "Für alle Netzwerke aktivieren"
-  },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
   },
@@ -1556,11 +1538,9 @@
   "experimental": {
     "message": "Experimentell"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaps erforschen"
-  },
   "extendWalletWithSnaps": {
-    "message": "Erweitern Sie Ihr Wallet-Erlebnis."
+    "message": "Erweitern Sie Ihr Wallet-Erlebnis.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Externe Erweiterung"
@@ -1590,9 +1570,6 @@
   "fileImportFail": {
     "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Die abgelegte Datei ist zu groß."
   },
   "flaskWelcomeUninstall": {
     "message": "Sie sollten diese Erweiterung deinstallieren.",
@@ -2331,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Hier anfragen"
   },
-  "mmiAddToken": {
-    "message": "Die Seite bei $1 möchte das folgende Verwahrungstoken in MetaMask Institutional autorisieren."
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional ist weltweit konzipiert und aufgebaut."
   },
@@ -2412,9 +2386,6 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
-  },
-  "networkNameOptimism": {
-    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2879,6 +2850,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Alle als gelesen markieren"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Mehr erfahren"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Wir freuen uns sehr, die Open-Beta-Version von MetaMask Snaps zu präsentieren!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personalisieren Sie Ihre Wallet mit Snaps, die von der Entwickler-Community erstellt wurden!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps helfen Ihnen dabei, mehr aus MetaMask zu machen – wie z. B. Verbindungen mit anderen Netzwerken herzustellen, Transaktionseinblicke zu erlangen und benutzerdefinierte Benachrichtigungen zu erhalten."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Wir stellen vor: MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 neue Tokens in diesem Konto gefunden.",
     "description": "$1 is the number of new tokens detected"
@@ -3032,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Im Block-Explorer öffnen"
-  },
-  "openSea": {
-    "message": "OpenSea (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3196,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Erlauben Sie dem Snap Lebenszyklus-Hooks zu verwenden, um den Code während seines Lebenszyklus zu bestimmten Zeiten auszuführen.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Für unbestimmte Zeit ausführen.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Gestatten Sie dem Snap, unbegrenzt ausgeführt zu werden, während es zum Beispiel große Datenmengen verarbeitet.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum-Konten hinzufügen und kontrollieren",
@@ -4060,6 +4035,10 @@
   "snapsNoInsight": {
     "message": "Der Snap brachte keine Einsicht."
   },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Alle Daten, die Sie mit Drittanbieterdiensten teilen, werden direkt von diesen Drittanbieterdiensten im Einklang mit deren Datenschutzerklärung erfasst. Für weitere Informationen lesen Sie bitte die jeweiligen Datenschutzerklärungen.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsSettingsDescription": {
     "message": "Verwalten Sie Ihre Snaps."
   },
@@ -4814,9 +4793,6 @@
   "termsOfService": {
     "message": "Nutzungsbedingungen"
   },
-  "termsOfUse": {
-    "message": "Nutzungsbedingungen"
-  },
   "termsOfUseAgreeText": {
     "message": " Ich akzeptiere die Nutzungsbedingungen, die meine Verwendung von MetaMask, einschließlich aller seiner Funktionen, betreffen"
   },
@@ -4844,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "diese Sammlung"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Dieser Dienst ist experimentell. Durch die Aktivierung dieser Funktion stimmen Sie den $1 von OpenSea zu.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Zeit"
@@ -5063,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "Erneutes Absenden der Transaktion mit Erhöhung der geschätzten Gas-Gebühr auf $1 zu $2."
-  },
-  "transactionSecurityCheck": {
-    "message": "Sicherheitsbenachrichtigungen aktivieren"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um Risiken bei nicht unterzeichneten Transaktionen und Signaturanfragen zu erkennen und anzuzeigen, bevor Sie diese signieren. Diese Dienste haben Zugriff auf Ihre unsignierten Transaktions- und Signaturanfragen, Ihre Kontoadresse und Ihre bevorzugte Sprache."
   },
   "transactionSettings": {
     "message": "Transaktionseinstellungen"
@@ -5287,9 +5253,6 @@
   },
   "viewOnOpensea": {
     "message": "Auf Opensea ansehen"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolio-Dashboard anzeigen"
   },
   "viewinCustodianApp": {
     "message": "In Verwahrungs-App anzeigen"

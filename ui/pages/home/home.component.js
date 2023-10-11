@@ -13,6 +13,7 @@ import NftsTab from '../../components/app/nfts-tab';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
+import WhatsNewPopup from '../../components/app/whats-new-popup';
 ///: END:ONLY_INCLUDE_IN
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -23,7 +24,6 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
-import WhatsNewPopup from '../../components/app/whats-new-popup';
 
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
@@ -124,6 +124,7 @@ export default class Home extends PureComponent {
     hasTransactionPendingApprovals: PropTypes.bool.isRequired,
     hasWatchTokenPendingApprovals: PropTypes.bool,
     hasWatchNftPendingApprovals: PropTypes.bool,
+    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -140,16 +141,20 @@ export default class Home extends PureComponent {
         );
       }
     },
+    firstTimeFlowType: PropTypes.string,
+    completedOnboarding: PropTypes.bool,
+    showWhatsNewPopup: PropTypes.bool.isRequired,
+    hideWhatsNewPopup: PropTypes.func.isRequired,
+    announcementsToShow: PropTypes.bool.isRequired,
+    onboardedInThisUISession: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
+    newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     defaultHomeActiveTabName: PropTypes.string,
-    firstTimeFlowType: PropTypes.string,
-    completedOnboarding: PropTypes.bool,
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -162,9 +167,6 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.bool.isRequired,
@@ -186,14 +188,11 @@ export default class Home extends PureComponent {
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
-    newNetworkAddedConfigurationId: PropTypes.string,
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    onboardedInThisUISession: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
-    mmiPortfolioUrl: PropTypes.string,
     modalOpen: PropTypes.bool,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     waitForConfirmDeepLinkDialog: PropTypes.bool,
@@ -762,17 +761,16 @@ export default class Home extends PureComponent {
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      ///: END:ONLY_INCLUDE_IN
-      announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
-      firstTimeFlowType,
       completedOnboarding,
       onboardedInThisUISession,
+      announcementsToShow,
+      firstTimeFlowType,
       newNetworkAddedConfigurationId,
+      ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       mmiPortfolioEnabled,
-      mmiPortfolioUrl,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
@@ -783,6 +781,7 @@ export default class Home extends PureComponent {
     }
     const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     const showWhatsNew =
       completedOnboarding &&
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
@@ -791,7 +790,6 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IN
@@ -822,17 +820,10 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
-          {showWhatsNew ? (
-            <WhatsNewPopup
-              onClose={hideWhatsNewPopup}
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              mmiPortfolioUrl={mmiPortfolioUrl}
-              ///: END:ONLY_INCLUDE_IN
-            />
-          ) : null}
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
           }
+          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
@@ -861,7 +852,6 @@ export default class Home extends PureComponent {
                   <EthOverview
                     showAddress
                     mmiPortfolioEnabled={mmiPortfolioEnabled}
-                    mmiPortfolioUrl={mmiPortfolioUrl}
                   />
                   ///: END:ONLY_INCLUDE_IN
                 }

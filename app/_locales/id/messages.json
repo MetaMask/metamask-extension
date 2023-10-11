@@ -371,9 +371,6 @@
   "amount": {
     "message": "Jumlah"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Dompet Ethereum pada Browser Anda",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buy": {
-    "message": "Beli"
-  },
   "buyAsset": {
     "message": "Beli $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Pertahankan kripto Anda dan dapatkan potensi keuntungan"
-  },
-  "buyDisabled": {
-    "message": "Beli tidak tersedia di jaringan ini"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",
@@ -980,9 +968,6 @@
   },
   "custodian": {
     "message": "Kustodian"
-  },
-  "custodianAccount": {
-    "message": "Akun kustodian"
   },
   "custodianAccountAddedDesc": {
     "message": "Saat ini Anda dapat menggunakan akun kustodian di MetaMask Institutional."
@@ -1414,9 +1399,6 @@
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
-  "enableForAllNetworks": {
-    "message": "Aktifkan untuk semua jaringan"
-  },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
   },
@@ -1556,11 +1538,9 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Jelajahi MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Perluas pengalaman dompet."
+    "message": "Perluas pengalaman dompet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Ekstensi eksternal"
@@ -1590,9 +1570,6 @@
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "File yang didrop terlalu besar."
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
@@ -2331,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Minta di sini"
   },
-  "mmiAddToken": {
-    "message": "Halaman di $1 ingin mengotorisasi token kustodian berikut di MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dirancang dan dibangun di seluruh dunia."
   },
@@ -2412,9 +2386,6 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
-  },
-  "networkNameOptimism": {
-    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2879,6 +2850,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Selengkapnya"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Kami sangat gembira mengumumkan versi Open Beta dari MetaMask Snap!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Personalisasikan dompet Anda dengan snap yang dibuat oleh komunitas pengembang!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snap membantu Anda melakukan lebih banyak hal dengan MetaMask — seperti terhubung ke lebih banyak jaringan, melihat wawasan transaksi, dan mendapatkan notifikasi khusus."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Memperkenalkan MetaMask Snap"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
     "description": "$1 is the number of new tokens detected"
@@ -3032,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Buka di block explorer"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3196,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Izinkan snap menggunakan lifecycle hook untuk menjalankan kode pada waktu tertentu selama siklus hidupnya.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Operasikan sepanjang waktu.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Izinkan snap beroperasi sepanjang waktu saat, sebagai contoh, memproses data dalam jumlah besar.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",
@@ -4060,6 +4035,10 @@
   "snapsNoInsight": {
     "message": "Snap tidak mengembalikan wawasan apa pun"
   },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsSettingsDescription": {
     "message": "Kelola Snap Anda"
   },
@@ -4814,9 +4793,6 @@
   "termsOfService": {
     "message": "Ketentuan layanan"
   },
-  "termsOfUse": {
-    "message": "ketentuan penggunaan"
-  },
   "termsOfUseAgreeText": {
     "message": " Saya menyetujui Syarat Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
   },
@@ -4844,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "koleksi ini"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental. Dengan mengaktifkan fitur ini, Anda menyetujui $1 OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Waktu"
@@ -5063,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Aktifkan peringatan keamanan"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan berbagai risiko yang muncul dalam transaksi yang belum ditandatangani dan permintaan tanda tangan sebelum Anda menandatanganinya. Layanan ini akan dapat mengakses transaksi yang belum ditandatangani dan permintaan tanda tangan, alamat akun, serta bahasa pilihan Anda."
   },
   "transactionSettings": {
     "message": "Pengaturan transaksi"
@@ -5287,9 +5253,6 @@
   },
   "viewOnOpensea": {
     "message": "Lihat di Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Tampilkan Dasbor Portofolio"
   },
   "viewinCustodianApp": {
     "message": "Lihat di aplikasi kustodian"

@@ -371,9 +371,6 @@
   "amount": {
     "message": "Сумма"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Кошелек Ethereum в вашем браузере",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Занят"
   },
-  "buy": {
-    "message": "Купить"
-  },
   "buyAsset": {
     "message": "Купить $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Держите свою криптовалюту и зарабатывайте потенциально прибыль"
-  },
-  "buyDisabled": {
-    "message": "В этой сети недоступна покупка"
   },
   "buyMoreAsset": {
     "message": "Купить еще $1",
@@ -980,9 +968,6 @@
   },
   "custodian": {
     "message": "Депозитарий"
-  },
-  "custodianAccount": {
-    "message": "Депозитарный счет"
   },
   "custodianAccountAddedDesc": {
     "message": "Теперь вы можете использовать свои депозитарные счета в MetaMask Institutional."
@@ -1414,9 +1399,6 @@
   "enableAutoDetect": {
     "message": " Включить автоопределение"
   },
-  "enableForAllNetworks": {
-    "message": "Включить для всех сетей"
-  },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },
@@ -1556,11 +1538,9 @@
   "experimental": {
     "message": "Экспериментальные"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Обзор MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Настройте кошелек под себя."
+    "message": "Настройте кошелек под себя.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Внешнее расширение"
@@ -1590,9 +1570,6 @@
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Добавленный файл слишком велик."
   },
   "flaskWelcomeUninstall": {
     "message": "вам нужно должны удалить это расширение",
@@ -2331,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Запросите здесь"
   },
-  "mmiAddToken": {
-    "message": "Страница в $1 хочет авторизовать следующий токен депозитария в MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional разработан и создан с учетом потребностей в разных частях мира."
   },
@@ -2412,9 +2386,6 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
-  },
-  "networkNameOptimism": {
-    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2879,6 +2850,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Отметить все как прочитанные"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Подробнее"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 Мы рады объявить об открытой бета-версии MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Персонализируйте свой кошелек с помощью snaps, созданных сообществом разработчиков!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snaps помогают вам делать больше с MetaMask — например, подключаться к большему количеству сетей, просматривать статистику транзакций и получать настраиваемые уведомления."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Представляем MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 новых токена(-ов) найдены в этом счете",
     "description": "$1 is the number of new tokens detected"
@@ -3032,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Открыть в обозревателе блоков"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (бета-версия)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3196,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Разрешите snap использовать обработчики жизненного цикла для запуска кода в определенное время в течение его жизненного цикла.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Выполнять бесконечно.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Разрешите snap работать бесконечно, например, при обработке больших объемов данных.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Добавляйте счета Ethereum и управляйте ими",
@@ -4060,6 +4035,10 @@
   "snapsNoInsight": {
     "message": "Этот snap не выдал никакой аналитики"
   },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Любая информация, которую вы передаете Сторонним службам, будет собираться непосредственно этими Сторонними службами в соответствии с их политикой конфиденциальности. Пожалуйста, обратитесь к их политике конфиденциальности для получения дополнительной информации.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsSettingsDescription": {
     "message": "Управление вашим Snaps"
   },
@@ -4814,9 +4793,6 @@
   "termsOfService": {
     "message": "Условия обслуживания"
   },
-  "termsOfUse": {
-    "message": "условия использования"
-  },
   "termsOfUseAgreeText": {
     "message": " Я согласен(-на) с Условиями использования, которые применяются к использованию мною MetaMask и всех его функций"
   },
@@ -4844,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "эта коллекция"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Эта услуга является экспериментальной. Включив эту функцию, вы соглашаетесь с $1 OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Время"
@@ -5063,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "Транзакция отправлена повторно с платой за газ, увеличенной до $1, в $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Включить оповещения безопасности"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Мы используем сторонние API для обнаружения и отображения рисков, связанных с неподписанными транзакциями и запросами подписи, прежде чем вы их подпишете. Эти службы будут иметь доступ к вашим неподписанным транзакциям и запросам подписи, адресу вашего счета и предпочитаемому вами языку."
   },
   "transactionSettings": {
     "message": "Настройки транзакции"
@@ -5287,9 +5253,6 @@
   },
   "viewOnOpensea": {
     "message": "Смотреть на OpenSea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Просмотр панели инструментов Portfolio"
   },
   "viewinCustodianApp": {
     "message": "Смотреть в приложении депозитария"

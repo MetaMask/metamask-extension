@@ -319,6 +319,8 @@ describe('Confirm Page Container Container Test', () => {
       };
 
       mockState.metamask.addressBook = addressBook;
+      mockState.confirmTransaction.txData.txParams.to =
+        '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8';
 
       const store = configureMockStore()(mockState);
 

@@ -10,6 +10,9 @@ jest.mock('webextension-polyfill', () => {
       getManifest: jest.fn(),
       getURL: jest.fn(),
     },
+    notifications: {
+      create: jest.fn(),
+    },
   };
 });
 
@@ -119,6 +122,66 @@ describe('extension platform', () => {
       expect(
         extensionPlatform.getExtensionURL(null, QUERY_STRING),
       ).toStrictEqual(`${TEST_URL}?${QUERY_STRING}`);
+    });
+  });
+
+  describe('_showFailedTransaction', () => {
+    it('should show failed transaction with nonce', async () => {
+      const txMeta = {
+        txParams: { nonce: '0x1' },
+        err: { message: 'Error message' },
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform._showFailedTransaction(txMeta);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${txMeta.err.message}`,
+      );
+    });
+
+    it('should show failed transaction with errorMessage', async () => {
+      const errorMessage = 'Test error message';
+      const txMeta = {
+        txParams: { nonce: '0x1' },
+        err: { message: 'Error message' },
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform._showFailedTransaction(txMeta, errorMessage);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${errorMessage}`,
+      );
+    });
+
+    it('should show failed transaction without nonce', async () => {
+      const txMeta = {
+        txParams: {},
+        err: { message: 'Error message' },
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform._showFailedTransaction(txMeta);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction failed! ${txMeta.err.message}`,
+      );
     });
   });
 });

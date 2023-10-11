@@ -371,9 +371,6 @@
   "amount": {
     "message": "금액"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "바쁨"
   },
-  "buy": {
-    "message": "구매"
-  },
   "buyAsset": {
     "message": "$1 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "암호화폐를 보유하고 잠재적인 수익을 얻으세요"
-  },
-  "buyDisabled": {
-    "message": "이 네트워크에서는 매수할 수 없습니다"
   },
   "buyMoreAsset": {
     "message": "$1 추가 구매",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "수탁자"
   },
-  "custodianAccount": {
-    "message": "수탁 계정"
-  },
   "custodianAccountAddedDesc": {
     "message": "이제 MetaMask Institutional에서 수탁 계정을 사용할 수 있습니다."
   },
@@ -1158,6 +1143,9 @@
   "descriptionFromSnap": {
     "message": "$1 설명",
     "description": "$1 represents the name of the snap"
+  },
+  "desktopApp": {
+    "message": "데스크톱 앱"
   },
   "desktopConnectionCriticalErrorDescription": {
     "message": "이는 간헐적인 오류일 수 있습니다. 확장 프로그램을 다시 시작하거나 MetaMask 데스크톱을 비활성화해 보세요."
@@ -1411,9 +1399,6 @@
   "enableAutoDetect": {
     "message": " 자동 감지 활성화"
   },
-  "enableForAllNetworks": {
-    "message": "모든 네트워크에 활성화"
-  },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },
@@ -1553,11 +1538,9 @@
   "experimental": {
     "message": "실험적"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask 스냅 탐색"
-  },
   "extendWalletWithSnaps": {
-    "message": "지갑 경험을 개인 맞춤하세요."
+    "message": "지갑 경험을 개인 맞춤하세요.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "외부 확장"
@@ -1587,9 +1570,6 @@
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "드롭한 파일 크기가 너무 큽니다."
   },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
@@ -2328,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "여기에서 요청하세요"
   },
-  "mmiAddToken": {
-    "message": "$1의 페이지는 다음과 같은 MetaMask 기관 수탁 토큰을 승인하려고 합니다"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional은 전 세계적으로 설계 및 구축되었습니다."
   },
@@ -2409,9 +2386,6 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
-  },
-  "networkNameOptimism": {
-    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2756,6 +2730,9 @@
   "notifications23ActionText": {
     "message": "보안 경고 활성화"
   },
+  "notifications23DescriptionOne": {
+    "message": "이더리움 메인넷에서 Blockaid가 제공하는 보안 경고를 통해 개인정보를 보호하면서 사기를 피하세요."
+  },
   "notifications23DescriptionTwo": {
     "message": "요청을 승인하기 전에 항상 직접 확인하세요."
   },
@@ -2852,6 +2829,14 @@
   "notifications9Title": {
     "message": "👓 사용자가 트랜잭션을 이해하기 쉽게 도와드립니다."
   },
+  "notificationsDropLedgerFirefoxDescription": {
+    "message": "Firefox에서 더 이상 U2F를 지원하지 않아 Firefox를 이용한 MetaMask에서 Ledger를 이용할 수 없습니다. 대신 Google Chrome에서 MetaMask를 이용해 보세요.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
+  },
+  "notificationsDropLedgerFirefoxTitle": {
+    "message": "Firefox의 Ledger 지원 중단",
+    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
+  },
   "notificationsEmptyText": {
     "message": "설치한 스냅에서 알림을 찾을 수 있는 곳입니다."
   },
@@ -2864,6 +2849,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "모두 읽음으로 표시"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "자세히 알아보기"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 MetaMask Snaps의 오픈 베타가 시작되었습니다!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "개발자 커뮤니티가 구축한 스냅으로 지갑을 개별 맞춤하세요!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "스냅은 추가 네트워크 연결, 트랜잭션 인사이트 확인, 커스텀 알림 받기 등 사용자가 MetaMask에서 더욱 다양한 기능을 사용할 수 있도록 합니다."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "MetaMask Snaps 소개"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
@@ -3018,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "블록 탐색기 열기"
-  },
-  "openSea": {
-    "message": "OpenSea+ Blockaid(베타)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3182,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "스냅으로 라이프사이클 훅을 사용하도록 허용하면 라이프사이클 동안 코드를 특정 횟수만큼 실행합니다.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "무기한 운용됩니다.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "예를 들어 많은 양의 데이터를 처리하는 동안 스냅이 무기한 실행되도록 허용합니다.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "이더리움 계정 추가 및 제어",
@@ -3650,8 +3639,15 @@
   "securityAlerts": {
     "message": "보안 경고"
   },
+  "securityAlertsDescription": {
+    "message": "이 기능은 개인정보를 보호하면서 트랜잭션 및 서명 요청을 적극적으로 검토하여 이더리움 메인넷에서 악의적인 활동이 있는 경우 경고합니다. 사용자 데이터는 이 서비스를 제공하는 제삼자와 공유되지 않습니다. 요청을 승인하기 전에 항상 직접 확인하세요. 이 기능이 모든 악의적인 활동 탐지를 보장하는 것은 아닙니다."
+  },
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
+  },
+  "securityProviderPoweredBy": {
+    "message": "$1 제공",
+    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "세부 정보 보기"
@@ -4038,6 +4034,10 @@
   },
   "snapsNoInsight": {
     "message": "스냅이 인사이트를 가져오지 못했습니다"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "타사와 공유하는 모든 정보는 해당 타사의 개인정보 처리방침에 따라 직접 수집됩니다. 더 자세한 내용은 해당 회사의 개인정보 처리방침을 참고하시기 바랍니다.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "스냅 관리"
@@ -4793,9 +4793,6 @@
   "termsOfService": {
     "message": "서비스 약관"
   },
-  "termsOfUse": {
-    "message": "이용약관"
-  },
   "termsOfUseAgreeText": {
     "message": " 본인은 MetaMask의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
   },
@@ -4823,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "이 컬렉션"
-  },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 기능입니다. 이 기능을 활성화하면 OpenSea의 $1에 동의하는 것입니다.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "시간"
@@ -5042,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "$2에서 가스비를 $1(으)로 올린 트랜잭션이 다시 제출되었습니다."
-  },
-  "transactionSecurityCheck": {
-    "message": "보안 경고 활성화"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "서명하기 전에 해당 트랜잭션과 서명 요청 관련 위험을 탐지하고 표시하기 위해 타사 API를 이용합니다. 이러한 서비스는 해당 서비스가 아직 서명하지 않은 트랜잭션, 서명 요청, 계정 주소 및 기본 언어에 액세스할 수 있습니다."
   },
   "transactionSettings": {
     "message": "트랜잭션 설정"
@@ -5266,9 +5253,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea에서 보기"
-  },
-  "viewPortfolioDashboard": {
-    "message": "포트폴리오 대시보드 보기"
   },
   "viewinCustodianApp": {
     "message": "수탁 앱에서 보기"

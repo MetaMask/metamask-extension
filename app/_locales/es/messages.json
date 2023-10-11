@@ -371,9 +371,6 @@
   "amount": {
     "message": "Importe"
   },
-  "apiUrl": {
-    "message": "URL de la API"
-  },
   "appDescription": {
     "message": "Un monedero de Ethereum en el explorador",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buy": {
-    "message": "Comprar"
-  },
   "buyAsset": {
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Guarde sus criptomonedas y obtenga ganancias potenciales"
-  },
-  "buyDisabled": {
-    "message": "Comprar no está disponible en esta red"
   },
   "buyMoreAsset": {
     "message": "Comprar más $1",
@@ -980,9 +968,6 @@
   },
   "custodian": {
     "message": "Custodio"
-  },
-  "custodianAccount": {
-    "message": "Cuenta custodiada"
   },
   "custodianAccountAddedDesc": {
     "message": "Ahora ya puede usar sus cuentas custodiadas en MetaMask Institutional."
@@ -1414,9 +1399,6 @@
   "enableAutoDetect": {
     "message": " Activar autodetección"
   },
-  "enableForAllNetworks": {
-    "message": "Habilitar para todas las redes"
-  },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },
@@ -1556,11 +1538,9 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explore MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Amplíe la experiencia de uso de su monedero."
+    "message": "Amplíe la experiencia de uso de su monedero.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Extensión externa"
@@ -1590,9 +1570,6 @@
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "El archivo arrastrado es demasiado grande."
   },
   "flaskWelcomeUninstall": {
     "message": "le recomendamos que desinstale esta extensión",
@@ -2331,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Solicítelo aquí"
   },
-  "mmiAddToken": {
-    "message": "A la página de $1 le gustaría autorizar el siguiente token custodiado en MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional está diseñado y construido en todo el mundo."
   },
@@ -2412,9 +2386,6 @@
   },
   "networkNameGoerli": {
     "message": "Goerli"
-  },
-  "networkNameOptimism": {
-    "message": "Optimism"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -2879,6 +2850,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Marcar todo como leído"
   },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Conozca más"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "🎉 ¡Nos complace anunciar la versión Beta abierta de MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "¡Personalice su monedero con snaps creados por la comunidad de desarrolladores!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Los snaps lo ayudan a hacer más con MetaMask, como conectarlo a más redes, ver información sobre transacciones y recibir notificaciones personalizadas."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Presentamos MetaMask Snaps"
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nuevos tokens encontrados en esta cuenta",
     "description": "$1 is the number of new tokens detected"
@@ -3032,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Abrir en el explorador de bloques"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3196,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Permita que el snap use ganchos de ciclo de vida para ejecutar código en momentos específicos durante su ciclo de vida.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Ejecutar indefinidamente.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Permita que el snap se ejecute indefinidamente mientras, por ejemplo, procesa grandes cantidades de datos.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Agregar y controlar cuentas de Ethereum",
@@ -4060,6 +4035,10 @@
   "snapsNoInsight": {
     "message": "El snap no devolvió ninguna información"
   },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Cualquier información que comparta con Servicios de terceros será recopilada directamente por dichos Servicios de terceros de acuerdo con sus políticas de privacidad. Consulte sus políticas de privacidad para obtener más información.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsSettingsDescription": {
     "message": "Administre sus snaps"
   },
@@ -4814,9 +4793,6 @@
   "termsOfService": {
     "message": "Términos de servicio"
   },
-  "termsOfUse": {
-    "message": "términos de uso"
-  },
   "termsOfUseAgreeText": {
     "message": " Acepto los Términos de uso, que se aplican al uso que hago de MetaMask y de todas sus funcionalidades"
   },
@@ -4844,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "esta colección"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Este servicio es experimental. Al habilitar esta función, usted acepta los $1 de OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Tiempo"
@@ -5063,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "Transacción reenviada con la tarifa de gas aumentada a $1 en $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Habilitar alertas de seguridad"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Usamos API de terceros para detectar y mostrar los riesgos involucrados en transacciones sin firmar y solicitudes de firma antes de que las firme. Estos servicios tendrán acceso a su transacción no firmada y solicitudes de firma, la dirección de su cuenta y su idioma preferido."
   },
   "transactionSettings": {
     "message": "Ajustes de la transacción"
@@ -5287,9 +5253,6 @@
   },
   "viewOnOpensea": {
     "message": "Ver en Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Ver panel de cartera"
   },
   "viewinCustodianApp": {
     "message": "Ver en la aplicación de custodia"

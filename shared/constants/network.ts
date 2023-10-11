@@ -161,6 +161,7 @@ export const CHAIN_IDS = {
   MOONRIVER: '0x505',
   CRONOS: '0x19',
   GNOSIS: '0x64',
+  ZKSYNC_ERA: '0x144',
 } as const;
 
 /**
@@ -180,7 +181,7 @@ export const POLYGON_DISPLAY_NAME = 'Polygon';
 export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
 export const ARBITRUM_DISPLAY_NAME = 'Arbitrum One';
 export const BNB_DISPLAY_NAME = 'BNB Chain';
-export const OPTIMISM_DISPLAY_NAME = 'Optimism';
+export const OPTIMISM_DISPLAY_NAME = 'OP Mainnet';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
@@ -640,6 +641,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.LINEA_MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'linea',
+  },
+  [CHAIN_IDS.ZKSYNC_ERA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'zksync',
   },
 };
 
