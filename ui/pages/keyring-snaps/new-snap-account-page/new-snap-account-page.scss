@@ -25,15 +25,15 @@
   background-position: bottom;
 }
 
-.snap-account-subtitle{
+.snap-account-subtitle {
   @include screen-sm-min {
     padding-left: 48px;
-    padding-right: 48px
+    padding-right: 48px;
   }
 
   @include screen-md-min {
     padding-left: 48px;
-    padding-right: 48px
+    padding-right: 48px;
   }
 
   text-align: center;
