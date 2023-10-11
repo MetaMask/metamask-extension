@@ -42,7 +42,7 @@ export default function UserPreferencedCurrencyDisplay({
     currency,
     showEthLogo,
     nativeCurrency,
-    currentNetwork.nickname,
+    currentNetwork?.nickname,
     currentNetwork?.rpcPrefs?.imageUrl,
   ]);
   return (

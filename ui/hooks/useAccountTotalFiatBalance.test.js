@@ -96,7 +96,7 @@ describe('useAccountTotalFiatBalance', () => {
     );
     expect(result.current).toStrictEqual({
       formattedFiat: '$9.41',
-      totalWeiBalance: '14ba1e6a08a9ec',
+      totalWeiBalance: '14ba1e6a08a9ed',
       totalFiatBalance: '9.41',
       tokensWithBalances: [
         {
