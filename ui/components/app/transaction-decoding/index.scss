@@ -7,9 +7,6 @@
 
 .tx-insight {
   overflow-x: hidden;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
 
   &-loading {
     display: flex;
@@ -83,8 +80,8 @@
         width: fit-content;
         padding: 4px;
         text-transform: uppercase;
-        border: 1px solid var(--color-border-default);
-        color: var(--color-background-alternative);
+        border: 1px solid var(--color-border-muted);
+        color: var(--color-text-muted);
         border-radius: 4px;
       }
 
@@ -133,7 +130,7 @@
       }
 
       .solidity-value {
-        color: var(--color-text-alternative);
+        color: var(--color-text-muted);
         overflow-x: hidden;
         padding-bottom: 5px;
 
@@ -159,21 +156,11 @@
         font-family: sans-serif;
       }
 
-      .eth-tx-params footer {
-        text-align: center;
-        color: var(--color-text-muted);
-      }
-
+      .eth-tx-params footer,
       .eth-tx-params footer a {
         text-align: center;
-        color: var(--color-text-muted);
+        color: var(--color-text-alternative);
       }
-    }
-  }
-
-  .tx-insight-component-address {
-    &__sender-icon {
-      padding-right: 8px;
     }
   }
 }
