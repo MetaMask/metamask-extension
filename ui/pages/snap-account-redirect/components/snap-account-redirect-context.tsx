@@ -81,7 +81,7 @@ const SnapAccountRedirectContent = ({
         >
           {t('snapAccountRedirectSiteDescription', [snapName])}
         </Text>
-        {url !== '' || message !== '' ? (
+        {url.length > 0 || message.length > 0 ? (
           <SnapAccountRedirectMessage
             snapName={snapName}
             url={url}

@@ -57,7 +57,7 @@ export const snapKeyringBuilder = (
       },
       redirectUser: async (snapId: string, url: string, message: string) => {
         // Either url or message must be defined
-        if (url !== '' || message !== '') {
+        if (url.length > 0 || message.length > 0) {
           const isBlocked = await isBlockedUrl(url, getPhishingController());
 
           const confirmationResult: boolean =
