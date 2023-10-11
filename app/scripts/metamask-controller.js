@@ -166,6 +166,15 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+import {
+  onTransactionAdded,
+  onTransactionApproved,
+  onTransactionFinalized,
+  onTransactionDropped,
+  onTransactionRejected,
+  onTransactionSubmitted,
+  createTransactionEventFragmentWithTxId,
+} from './lib/transaction-metrics';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IN
@@ -1290,30 +1299,12 @@ export default class MetamaskController extends EventEmitter {
       ),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      createEventFragment: this.metaMetricsController.createEventFragment.bind(
-        this.metaMetricsController,
-      ),
-      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
-        this.metaMetricsController,
-      ),
-      finalizeEventFragment:
-        this.metaMetricsController.finalizeEventFragment.bind(
-          this.metaMetricsController,
-        ),
-      getEventFragmentById:
-        this.metaMetricsController.getEventFragmentById.bind(
-          this.metaMetricsController,
-        ),
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
       getParticipateInMetrics: () =>
         this.metaMetricsController.state.participateInMetaMetrics,
       getEIP1559GasFeeEstimates:
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
-      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
       ...this.snapAndHardwareMetricsParams,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -1328,6 +1319,42 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
+
+    const dependencyMapForTxEventTrackers =
+      this.getTxTrackingEventDependencyMap();
+
+    this.txController.on(
+      'transaction-added',
+      onTransactionAdded(dependencyMapForTxEventTrackers),
+    );
+    this.txController.on(
+      'transaction-approved',
+      onTransactionApproved(dependencyMapForTxEventTrackers),
+    );
+    this.txController.on(
+      'transaction-dropped',
+      onTransactionDropped(dependencyMapForTxEventTrackers),
+    );
+    this.txController.on(
+      'transaction-finalized',
+      onTransactionFinalized(dependencyMapForTxEventTrackers),
+    );
+    this.txController.on(
+      'transaction-rejected',
+      onTransactionRejected(dependencyMapForTxEventTrackers),
+    );
+    this.txController.on(
+      'transaction-submitted',
+      onTransactionSubmitted(dependencyMapForTxEventTrackers),
+    );
+    this.txController.on(
+      'transaction-swap-failed',
+      this.metaMetricsController.trackEvent,
+    );
+    this.txController.on(
+      'transaction-swap-finalized',
+      this.metaMetricsController.trackEvent,
+    );
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
@@ -1935,6 +1962,41 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
+  }
+
+  getTxTrackingEventDependencyMap() {
+    const controllerActions = {
+      // Metametrics Actions
+      createEventFragment: this.metaMetricsController.createEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      finalizeEventFragment:
+        this.metaMetricsController.finalizeEventFragment.bind(
+          this.metaMetricsController,
+        ),
+      getEventFragmentById:
+        this.metaMetricsController.getEventFragmentById.bind(
+          this.metaMetricsController,
+        ),
+      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      // Other dependencies
+      getAccountType: this.getAccountType.bind(this),
+      getDeviceModel: this.getDeviceModel.bind(this),
+      getEIP1559GasFeeEstimates:
+        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
+      getSelectedAddress: () =>
+        this.preferencesController.store.getState().selectedAddress,
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
+      getTransaction: this.txController.txStateManager.getTransaction.bind(
+        this.txController,
+      ),
+    };
+    return {
+      controllerActions,
+      provider: this.provider,
+    };
   }
 
   triggerNetworkrequests() {
@@ -2694,8 +2756,10 @@ export default class MetamaskController extends EventEmitter {
       addTransaction: this.addTransaction.bind(this),
       addTransactionAndWaitForPublish:
         this.addTransactionAndWaitForPublish.bind(this),
-      createTransactionEventFragment:
-        txController.createTransactionEventFragment.bind(txController),
+      createTransactionEventFragmentWithTxId:
+        createTransactionEventFragmentWithTxId(
+          this.getTxTrackingEventDependencyMap(),
+        ),
       getTransactions: txController.getTransactions.bind(txController),
 
       updateEditableParams:
