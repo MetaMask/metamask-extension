@@ -230,6 +230,7 @@ $attributesToApplyExtraProperties: margin;
   &--width-full {
     width: 100%;
   }
+
   &--min-width-full {
     min-width: 100%;
   }
@@ -242,6 +243,7 @@ $attributesToApplyExtraProperties: margin;
     &--width-#{$fraction} {
       width: $value;
     }
+
     &--min-width-#{$fraction} {
       min-width: $value;
     }
@@ -276,6 +278,7 @@ $attributesToApplyExtraProperties: margin;
       }
     }
   }
+
   @each $breakpoint, $min-width in $screen-sizes-map {
     @media screen and (min-width: $min-width) {
       &--#{$breakpoint}\:min-width-full {
