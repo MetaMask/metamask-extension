@@ -3,7 +3,12 @@ function getValues(pendingApproval, t, actions, _history) {
   const { url, message, isBlockedUrl } = pendingApproval.requestData;
 
   const getConditionalProps = () => {
-    if (url !== undefined && url !== null && url.length > 0) {
+    if (
+      url !== undefined &&
+      url !== null &&
+      url.length > 0 &&
+      isBlockedUrl === false
+    ) {
       return {
         submitText: t('goToSite'),
         onSubmit: () =>

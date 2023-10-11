@@ -81,7 +81,7 @@ const SnapAccountRedirectContent = ({
         >
           {t('snapAccountRedirectSiteDescription', [snapName])}
         </Text>
-        {url.length > 0 || message.length > 0 ? (
+        {(url.length > 0 || message.length > 0) && isBlockedUrl === false ? (
           <SnapAccountRedirectMessage
             snapName={snapName}
             url={url}
