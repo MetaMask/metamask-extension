@@ -443,6 +443,10 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
+export function getAllTokens(state) {
+  return state.metamask.allTokens;
+}
+
 export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
   const selectedAccount = getSelectedInternalAccount(state);
