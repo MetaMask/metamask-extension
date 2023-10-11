@@ -1,18 +1,17 @@
 import { constant, times, uniq, zip } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { addHexPrefix } from 'ethereumjs-util';
 import {
-  GasRecommendations,
-  EditGasModes,
+  GAS_RECOMMENDATIONS,
+  EDIT_GAS_MODES,
 } from '../../../shared/constants/gas';
-import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../app/scripts/constants/transactions-controller-utils';
 import {
   bnGreaterThan,
   isNullish,
   roundToDecimalPlacesRemovingExtraZeroes,
 } from './util';
-
-const TEN_PERCENT_NUMERIC = new Numeric(1.1, 10);
 
 export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
   gasUsed,
@@ -34,23 +33,40 @@ export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
  * by 1.10 to get bare minimum new gas fee.
  *
  * @param {string | undefined} hexStringValue - hex value in wei to be incremented
+ * @param conversionOptions
  * @returns {string | undefined} hex value in WEI 10% higher than the param.
  */
-export function addTenPercentAndRound(hexStringValue) {
+export function addTenPercent(hexStringValue, conversionOptions = {}) {
   if (hexStringValue === undefined) {
     return undefined;
   }
-  return new Numeric(hexStringValue, 16)
-    .times(TEN_PERCENT_NUMERIC)
-    .round(0)
-    .toPrefixedHexString();
+  return addHexPrefix(
+    multiplyCurrencies(hexStringValue, 1.1, {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      numberOfDecimals: 0,
+      ...conversionOptions,
+    }),
+  );
+}
+
+/**
+ * Simple helper to save on duplication to multiply the supplied wei hex string
+ * by 1.10 to get bare minimum new gas fee.
+ *
+ * @param {string | undefined} hexStringValue - hex value in wei to be incremented
+ * @returns {string | undefined} hex value in WEI 10% higher than the param.
+ */
+export function addTenPercentAndRound(hexStringValue) {
+  return addTenPercent(hexStringValue, { numberOfDecimals: 0 });
 }
 
 export function isMetamaskSuggestedGasEstimate(estimate) {
   return [
-    GasRecommendations.high,
-    GasRecommendations.medium,
-    GasRecommendations.low,
+    GAS_RECOMMENDATIONS.HIGH,
+    GAS_RECOMMENDATIONS.MEDIUM,
+    GAS_RECOMMENDATIONS.LOW,
   ].includes(estimate);
 }
 
@@ -102,6 +118,7 @@ export function formatGasFeeOrFeeRange(
  */
 export function editGasModeIsSpeedUpOrCancel(editGasMode) {
   return (
-    editGasMode === EditGasModes.cancel || editGasMode === EditGasModes.speedUp
+    editGasMode === EDIT_GAS_MODES.CANCEL ||
+    editGasMode === EDIT_GAS_MODES.SPEED_UP
   );
 }

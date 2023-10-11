@@ -16,12 +16,13 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
-import { SUPPORT_LINK } from '../../ui/helpers/constants/common';
-import { getErrorHtml } from '../../ui/helpers/utils/error-utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+import { SUPPORT_LINK } from './constants/ui-utils';
+import { getErrorHtml } from './constants/error-utils';
 
 start().catch(log.error);
 
@@ -53,7 +54,20 @@ async function start() {
   const connectionStream = new PortStream(extensionPort);
 
   const activeTab = await queryCurrentActiveTab(windowType);
-  initializeUiWithTab(activeTab);
+
+  /**
+   * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
+   * Code below ensures that UI is rendered only after background is ready.
+   */
+  if (isManifestV3()) {
+    extensionPort.onMessage.addListener((message) => {
+      if (message?.name === 'CONNECTION_READY') {
+        initializeUiWithTab(activeTab);
+      }
+    });
+  } else {
+    initializeUiWithTab(activeTab);
+  }
 
   function initializeUiWithTab(tab) {
     const container = document.getElementById('app-content');

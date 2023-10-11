@@ -2,18 +2,18 @@ import { useState } from 'react';
 import { isEqual } from 'lodash';
 
 import {
-  GasEstimateTypes,
+  GAS_ESTIMATE_TYPES,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../shared/constants/gas';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
-import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../app/scripts/constants/transactions-controller-utils';
 import { feeParamsAreCustom } from './utils';
 
 function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
-  if (gasEstimateType === GasEstimateTypes.legacy) {
+  if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
     return gasFeeEstimates?.[estimateToUse] ?? '0';
-  } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
+  } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
     return gasFeeEstimates?.gasPrice ?? '0';
   }
   return '0';

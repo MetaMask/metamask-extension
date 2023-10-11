@@ -1,14 +1,14 @@
+import { calcTokenValue } from '../../../app/scripts/constants/swaps-utils';
+import { decimalToHex } from '../../../app/scripts/constants/transactions-controller-utils';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { decimalToHex } from '../../../shared/modules/conversion-util';
-import { calcTokenValue } from '../../../shared/modules/token-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
-import { getTokenData } from '../../helpers/utils/transactions.util';
 
 export function getCustomTxParamsData(
   data,
   { customPermissionAmount, decimals },
 ) {
-  const tokenData = getTokenData(data);
+  const tokenData = parseStandardTokenTransactionData(data);
 
   if (!tokenData) {
     throw new Error('Invalid data');

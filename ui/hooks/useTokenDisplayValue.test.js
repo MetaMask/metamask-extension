@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import * as txUtil from '../../shared/modules/transaction.utils';
-import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
+import * as metamaskControllerUtils from '../../app/scripts/constants/metamask-controller-utils';
 import { useTokenDisplayValue } from './useTokenDisplayValue';
 
 const tests = [

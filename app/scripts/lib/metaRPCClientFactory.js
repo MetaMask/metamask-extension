@@ -1,7 +1,7 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import SafeEventEmitter from 'safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
-import { TEN_SECONDS_IN_MILLISECONDS } from '../../../ui/helpers/constants/critical-error';
+import { TEN_SECONDS_IN_MILLISECONDS } from '../constants/transactions-controller-utils';
 
 class MetaRPCClient {
   constructor(connectionStream) {

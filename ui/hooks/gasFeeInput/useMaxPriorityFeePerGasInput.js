@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { addHexPrefix } from 'ethereumjs-util';
 
 import { SECONDARY } from '../../helpers/constants/common';
-import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
@@ -14,6 +13,7 @@ import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import { hexWEIToDecGWEI } from '../../../app/scripts/constants/transactions-controller-utils';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
 const getMaxPriorityFeePerGasFromTransaction = (transaction) => {

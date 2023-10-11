@@ -1,4 +1,4 @@
-import { setupLocale } from '.';
+import { setupLocale } from '../app/scripts/constants/error-utils';
 
 const enMessages = {
   troubleStarting: {
@@ -29,10 +29,15 @@ const esMessages = {
   },
 };
 
-jest.mock('./helpers/utils/i18n-helper', () => ({
-  fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
-  loadRelativeTimeFormatLocaleData: jest.fn(),
-}));
+jest.mock('../app/scripts/constants/error-utils', () => {
+  const originalModule = jest.requireActual('../app/scripts/constants/error-utils');
+
+  return {
+    ...originalModule,
+    fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
+    loadRelativeTimeFormatLocaleData: jest.fn(),
+  }
+});
 
 describe('Index Tests', () => {
   it('should get locale messages by calling setupLocale', async () => {

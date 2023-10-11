@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
-import { decimalToHex } from '../../../../../shared/modules/conversion-util';
-import {
-  decGWEIToHexWEI,
-  hexWEIToDecGWEI,
-} from '../../../../helpers/utils/conversions.util';
-import { getNetworkSupportsSettingGasPrice } from '../../../../selectors/selectors';
+import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
+import { getNetworkSupportsSettingGasFees } from '../../../../selectors/selectors';
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
+import {
+  decimalToHex,
+  hexWEIToDecGWEI,
+} from '../../../../../app/scripts/constants/transactions-controller-utils';
 import AdvancedGasInputs from './advanced-gas-inputs.component';
 
 function convertGasPriceForInputs(gasPriceInHexWEI) {
@@ -22,7 +22,7 @@ function convertMinimumGasLimitForInputs(minimumGasLimit = MIN_GAS_LIMIT_DEC) {
 
 function mapStateToProps(state) {
   return {
-    networkSupportsSettingGasPrice: getNetworkSupportsSettingGasPrice(state),
+    networkSupportsSettingGasFees: getNetworkSupportsSettingGasFees(state),
   };
 }
 

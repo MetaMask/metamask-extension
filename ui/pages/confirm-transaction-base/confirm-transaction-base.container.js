@@ -13,7 +13,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
+import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
@@ -32,29 +32,32 @@ import {
   getUseTokenDetection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
-  getFailedTransactionsToDisplay,
+  getEIP1559V2Enabled,
+  getIsBuyableChain,
+  getEnsResolutionByAddress,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
+  isAddressLedger,
+  updateGasFees,
+  getIsGasEstimatesLoading,
+  getNativeCurrency,
+} from '../../ducks/metamask/metamask';
+
+import {
+  parseStandardTokenTransactionData,
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
-
-import {
-  addTxToFailedTxesToDisplay,
-  removeTxFromFailedTxesToDisplay,
-  getGasLoadingAnimationIsShowing,
-} from '../../ducks/app/app';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import {
-  updateTransactionGasFees,
-  getIsGasEstimatesLoading,
-  getNativeCurrency,
-  isAddressLedger,
-} from '../../ducks/metamask/metamask';
 
+import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { getTokenAddressParam } from '../../helpers/utils/token-util';
+import { calcGasTotal } from '../../../app/scripts/constants/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -77,32 +80,25 @@ const mapStateToProps = (state, ownProps) => {
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
-
+  const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
   const {
-    ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
     network,
     unapprovedTxs,
     nextNonce,
+    allCollectibleContracts,
+    selectedAddress,
     provider: { chainId },
   } = metamask;
-
-  const transactionsToDisplayOnFailure = getFailedTransactionsToDisplay(state);
-
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
-    ) ||
-    Object.values(transactionsToDisplayOnFailure).find(
-      ({ id }) => id === (transactionId || Number(paramsTransactionId)),
-    ) ||
-    {};
-
+    ) || {};
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -113,28 +109,40 @@ const mapStateToProps = (state, ownProps) => {
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
 
+  const transactionData = parseStandardTokenTransactionData(data);
+  const tokenToAddress = getTokenAddressParam(transactionData);
+
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
-  const toAddress = propsToAddress || txParamsToAddress;
+  let toAddress = txParamsToAddress;
+  if (type !== TRANSACTION_TYPES.SIMPLE_SEND) {
+    toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
+  }
 
   const tokenList = getTokenList(state);
   const useTokenDetection = getUseTokenDetection(state);
-  const casedTokenList = useTokenDetection
-    ? tokenList
-    : Object.keys(tokenList).reduce((acc, base) => {
-        return {
-          ...acc,
-          [base.toLowerCase()]: tokenList[base],
-        };
-      }, {});
+  let casedTokenList = tokenList;
+  if (!process.env.TOKEN_DETECTION_V2) {
+    casedTokenList = useTokenDetection
+      ? tokenList
+      : Object.keys(tokenList).reduce((acc, base) => {
+          return {
+            ...acc,
+            [base.toLowerCase()]: tokenList[base],
+          };
+        }, {});
+  }
   const toName =
     identities[toAddress]?.name ||
     casedTokenList[toAddress]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
-  const addressBookObject = addressBook[checksummedAddress];
-  const toEns = ensResolutionsByAddress[checksummedAddress] || '';
+  const addressBookObject =
+    addressBook &&
+    addressBook[chainId] &&
+    addressBook[chainId][checksummedAddress];
+  const toEns = getEnsResolutionByAddress(state, checksummedAddress);
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
   const supportsEIP1559 =
@@ -178,6 +186,13 @@ const mapStateToProps = (state, ownProps) => {
       },
     };
   }
+
+  const isCollectibleTransfer = Boolean(
+    allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
+      return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
+    }),
+  );
+
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
@@ -193,9 +208,8 @@ const mapStateToProps = (state, ownProps) => {
     fromAddress,
   );
 
-  const isFailedTransaction = fullTxData.status === 'failed';
-
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
+  const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
   return {
     balance,
@@ -227,7 +241,7 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state),
+    hideSubtitle: !getShouldShowFiat(state) && !isCollectibleTransfer,
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
@@ -246,7 +260,9 @@ const mapStateToProps = (state, ownProps) => {
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
-    isFailedTransaction,
+    chainId,
+    eip1559V2Enabled,
+    isBuyableChain,
   };
 };
 
@@ -279,12 +295,9 @@ export const mapDispatchToProps = (dispatch) => {
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {
-      dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+      dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
-    addTxToFailedTxesToDisplay: (id) =>
-      dispatch(addTxToFailedTxesToDisplay(id)),
-    removeTxFromFailedTxesToDisplay: (id) =>
-      dispatch(removeTxFromFailedTxesToDisplay(id)),
+    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
   };
 };
 

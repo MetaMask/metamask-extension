@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import Modal from '../../modal';
 import Identicon from '../../../ui/identicon';
 import TextField from '../../../ui/text-field';
-import { calcTokenAmount } from '../../../../../shared/modules/token-utils';
+import { calcTokenAmount } from '../../../../../app/scripts/constants/transactions-controller-utils';
 
 const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 
@@ -54,8 +54,8 @@ export default class EditApprovalPermission extends PureComponent {
           <div className="edit-approval-permission__title">
             {t('editPermission')}
           </div>
-          <div
-            className="edit-approval-permission__header__close"
+          <i
+            className="fa fa-times fa-lg edit-approval-permission__header__close"
             onClick={() => hideModal()}
           />
         </div>
@@ -103,11 +103,11 @@ export default class EditApprovalPermission extends PureComponent {
                   'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
                 })}
               >
-                {new BigNumber(tokenAmount).lessThan(
-                  new BigNumber(tokenBalance),
+                {new BigNumber(tokenAmount).equals(
+                  new BigNumber(MAX_UNSIGNED_256_INT),
                 )
-                  ? t('proposedApprovalLimit')
-                  : t('unlimited')}
+                  ? t('unlimited')
+                  : t('proposedApprovalLimit')}
               </div>
               <div className="edit-approval-permission__edit-section__option-description">
                 {t('spendLimitRequestedBy', [origin])}
@@ -226,7 +226,6 @@ export default class EditApprovalPermission extends PureComponent {
           hideModal();
         }}
         submitText={t('save')}
-        submitType="primary"
         contentClass="edit-approval-permission-modal-content"
         containerClass="edit-approval-permission-modal-container"
         submitDisabled={disabled}

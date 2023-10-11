@@ -6,12 +6,12 @@ import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
 import { getEnvironmentType } from '../app/scripts/lib/util';
-import { AlertTypes } from '../shared/constants/alerts';
+import { ALERT_TYPES } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
-import switchDirection from '../shared/lib/switch-direction';
-import { setupLocale } from '../shared/lib/error-utils';
+import switchDirection from '../app/scripts/constants/switch-direction';
+import { setupLocale } from '../app/scripts/constants/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -25,35 +25,12 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { _setBackgroundConnection } from './store/action-queue';
-import './css/index.scss';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
-let reduxStore;
-
-/**
- * Method to update backgroundConnection object use by UI
- *
- * @param backgroundConnection - connection object to background
- */
-export const updateBackgroundConnection = (backgroundConnection) => {
-  _setBackgroundConnection(backgroundConnection);
-  backgroundConnection.onNotification((data) => {
-    if (data.method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
-    } else {
-      throw new Error(
-        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-          data,
-        )}`,
-      );
-    }
-  });
-};
-
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
+  actions._setBackgroundConnection(backgroundConnection);
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
@@ -91,23 +68,23 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     appState: {},
 
     localeMessages: {
-      currentLocale: metamaskState.currentLocale,
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
   };
 
-  updateBackgroundConnection(backgroundConnection);
-
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
-    const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(draftInitialState);
+    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(
+      draftInitialState,
+    );
     const selectedAddress = getSelectedAddress(draftInitialState);
-    const unconnectedAccountAlertShownOrigins =
-      getUnconnectedAccountAlertShown(draftInitialState);
-    const unconnectedAccountAlertIsEnabled =
-      getUnconnectedAccountAlertEnabledness(draftInitialState);
+    const unconnectedAccountAlertShownOrigins = getUnconnectedAccountAlertShown(
+      draftInitialState,
+    );
+    const unconnectedAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(
+      draftInitialState,
+    );
 
     if (
       origin &&
@@ -116,7 +93,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       permittedAccountsForCurrentTab.length > 0 &&
       !permittedAccountsForCurrentTab.includes(selectedAddress)
     ) {
-      draftInitialState[AlertTypes.unconnectedAccount] = {
+      draftInitialState[ALERT_TYPES.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,
       };
       actions.setUnconnectedAccountAlertShown(origin);
@@ -124,7 +101,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   }
 
   const store = configureStore(draftInitialState);
-  reduxStore = store;
 
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
@@ -146,6 +122,18 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
+  backgroundConnection.onNotification((data) => {
+    if (data.method === 'sendUpdate') {
+      store.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else {
+      throw new Error(
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
+          data,
+        )}`,
+      );
+    }
+  });
+
   // global metamask api - used by tooling
   global.metamask = {
     updateCurrentLocale: (code) => {
@@ -166,16 +154,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 }
 
 function setupDebuggingHelpers(store) {
-  /**
-   * The following stateHook is a method intended to throw an error, used in
-   * our E2E test to ensure that errors are attempted to be sent to sentry.
-   */
-  window.stateHooks.throwTestError = async function () {
-    const error = new Error('Test Error');
-    error.name = 'TestError';
-    throw error;
-  };
-  window.stateHooks.getCleanAppState = async function () {
+  window.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
@@ -184,7 +163,7 @@ function setupDebuggingHelpers(store) {
     });
     return state;
   };
-  window.stateHooks.getSentryState = function () {
+  window.getSentryState = function () {
     const fullState = store.getState();
     const debugState = maskObject(fullState, SENTRY_STATE);
     return {
@@ -196,7 +175,7 @@ function setupDebuggingHelpers(store) {
 }
 
 window.logStateString = async function (cb) {
-  const state = await window.stateHooks.getCleanAppState();
+  const state = await window.getCleanAppState();
   browser.runtime
     .getPlatformInfo()
     .then((platform) => {

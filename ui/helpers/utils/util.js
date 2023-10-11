@@ -3,7 +3,8 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { util } from '@metamask/controllers';
+import slip44 from '@metamask/slip44';
 import {
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
@@ -13,10 +14,18 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import * as Codec from "@truffle/codec";
+import {
+  TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_NAME_CHAR_LIMIT,
+  TRUNCATED_ADDRESS_END_CHARS,
+} from '../../../shared/constants/labels';
+import { toBigNumber } from '../../../shared/modules/conversion.utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
+  if (!date) {
+    return '';
+  }
   return DateTime.fromMillis(date).toFormat(format);
 }
 
@@ -25,6 +34,9 @@ export function formatDateWithYearContext(
   formatThisYear = 'MMM d',
   fallback = 'MMM d, y',
 ) {
+  if (!date) {
+    return '';
+  }
   const dateTime = DateTime.fromMillis(date);
   const now = DateTime.local();
   return dateTime.toFormat(
@@ -33,6 +45,7 @@ export function formatDateWithYearContext(
 }
 /**
  * Determines if the provided chainId is a default MetaMask chain
+ *
  * @param {string} chainId - chainId to check
  */
 export function isDefaultMetaMaskChain(chainId) {
@@ -209,11 +222,13 @@ export function exportAsFile(filename, data, type = 'text/csv') {
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  if (address.length < 11) {
+  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
     return address;
   }
 
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
+    -TRUNCATED_ADDRESS_END_CHARS,
+  )}`;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -241,6 +256,21 @@ export function stripHttpSchemes(urlString) {
  */
 export function stripHttpsScheme(urlString) {
   return urlString.replace(/^https:\/\//u, '');
+}
+
+/**
+ * Strips `https` schemes from URL strings, if the URL does not have a port.
+ * This is useful
+ *
+ * @param {string} urlString - The URL string to strip the scheme from.
+ * @returns {string} The URL string, without the scheme, if it was stripped.
+ */
+export function stripHttpsSchemeWithoutPort(urlString) {
+  if (getURL(urlString).port) {
+    return urlString;
+  }
+
+  return stripHttpsScheme(urlString);
 }
 
 /**
@@ -286,116 +316,220 @@ export function checkExistingAddresses(address, list = []) {
   return list.some(matchesAddress);
 }
 
-/**
- * Given a number and specified precision, returns that number in base 10 with a maximum of precision
- * significant digits, but without any trailing zeros after the decimal point To be used when wishing
- * to display only as much digits to the user as necessary
- *
- * @param {string | number | BigNumber} n - The number to format
- * @param {number} precision - The maximum number of significant digits in the return value
- * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
- */
-export function toPrecisionWithoutTrailingZeros(n, precision) {
-  return new BigNumber(n)
-    .toPrecision(precision)
-    .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
-}
-
-/**
- * Given and object where all values are strings, returns the same object with all values
- * now prefixed with '0x'
- */
-export function addHexPrefixToObjectValues(obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: addHexPrefix(obj[key]) };
-  }, {});
-}
-
-/**
- * Given the standard set of information about a transaction, returns a transaction properly formatted for
- * publishing via JSON RPC and web3
- *
- * @param {boolean} [sendToken] - Indicates whether or not the transaciton is a token transaction
- * @param {string} data - A hex string containing the data to include in the transaction
- * @param {string} to - A hex address of the tx recipient address
- * @param {string} from - A hex address of the tx sender address
- * @param {string} gas - A hex representation of the gas value for the transaction
- * @param {string} gasPrice - A hex representation of the gas price for the transaction
- * @returns {Object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
- */
-export function constructTxParams({
-  sendToken,
-  data,
-  to,
-  amount,
-  from,
-  gas,
-  gasPrice,
-}) {
-  const txParams = {
-    data,
-    from,
-    value: '0',
-    gas,
-    gasPrice,
-  };
-
-  if (!sendToken) {
-    txParams.value = amount;
-    txParams.to = to;
+export function bnGreaterThan(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
   }
-  return addHexPrefixToObjectValues(txParams);
+  return new BigNumber(a, 10).gt(b, 10);
 }
 
-const decodingEndpoints = [
-	'https://eth.sowjones.exchange/txExtra',
-  'http://164.90.247.198/txExtra',
-];
-export async function getDecoding (txParams, chainId = 1) {
+export function bnLessThan(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).lt(b, 10);
+}
+
+export function bnGreaterThanEqualTo(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).gte(b, 10);
+}
+
+export function bnLessThanEqualTo(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).lte(b, 10);
+}
+
+export function getURL(url) {
   try {
-    return await getSingleDecoding(decodingEndpoints[0], txParams, chainId);
+    return new URL(url);
   } catch (err) {
-    return await getSingleDecoding(decodingEndpoints[1], txParams, chainId);
+    return '';
   }
 }
 
-async function getSingleDecoding(base, txParams, chainId) {
-	const url = `${base}?to=${txParams.to}&from=${txParams.from}&data=${txParams.data}&chain=${chainId}`;
-	const { decoding, definitions } = await fetch(url).then(res => res.json());
-  return { decoding, definitions };
+export function getURLHost(url) {
+  return getURL(url)?.host || '';
 }
 
-export function deserializeCalldataDecoding(decoding) {
-  switch (decoding.kind) {
-    case "function": {
-      return {
-        ...decoding,
-        class: Codec.Format.Utils.Serial.deserializeType(decoding.class),
-        arguments: decoding.arguments.map(({ name, value }) => ({
-          name,
-          value: Codec.Format.Utils.Serial.deserializeResult(value)
-        }))
-      };
-    }
-    case "constructor": {
-      return {
-        ...decoding,
-        class: Codec.Format.Utils.Serial.deserializeType(decoding.class),
-        arguments: decoding.arguments.map(({ name, value }) => ({
-          name,
-          value: Codec.Format.Utils.Serial.deserializeResult(value)
-        }))
-      };
-    }
-    case "message": {
-      return {
-        ...decoding,
-        class: Codec.Format.Utils.Serial.deserializeType(decoding.class)
-      };
-    }
-    case "unknown":
-    case "create":
-    default:
-      return decoding;
+export function getURLHostName(url) {
+  return getURL(url)?.hostname || '';
+}
+
+// Once we reach this threshold, we switch to higher unit
+const MINUTE_CUTOFF = 90 * 60;
+const SECOND_CUTOFF = 90;
+
+export const toHumanReadableTime = (t, milliseconds) => {
+  if (milliseconds === undefined || milliseconds === null) {
+    return '';
   }
+  const seconds = Math.ceil(milliseconds / 1000);
+  if (seconds <= SECOND_CUTOFF) {
+    return t('gasTimingSecondsShort', [seconds]);
+  }
+  if (seconds <= MINUTE_CUTOFF) {
+    return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
+  }
+  return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
+};
+
+export function clearClipboard() {
+  window.navigator.clipboard.writeText('');
+}
+
+const solidityTypes = () => {
+  const types = [
+    'bool',
+    'address',
+    'string',
+    'bytes',
+    'int',
+    'uint',
+    'fixed',
+    'ufixed',
+  ];
+
+  const ints = Array.from(new Array(32)).map(
+    (_, index) => `int${(index + 1) * 8}`,
+  );
+  const uints = Array.from(new Array(32)).map(
+    (_, index) => `uint${(index + 1) * 8}`,
+  );
+  const bytes = Array.from(new Array(32)).map(
+    (_, index) => `bytes${index + 1}`,
+  );
+
+  /**
+   * fixed and ufixed
+   * This value type also can be declared keywords such as ufixedMxN and fixedMxN.
+   * The M represents the amount of bits that the type takes,
+   * with N representing the number of decimal points that are available.
+   *  M has to be divisible by 8, and a number from 8 to 256.
+   * N has to be a value between 0 and 80, also being inclusive.
+   */
+  const fixedM = Array.from(new Array(32)).map(
+    (_, index) => `fixed${(index + 1) * 8}`,
+  );
+  const ufixedM = Array.from(new Array(32)).map(
+    (_, index) => `ufixed${(index + 1) * 8}`,
+  );
+  const fixed = Array.from(new Array(80)).map((_, index) =>
+    fixedM.map((aFixedM) => `${aFixedM}x${index + 1}`),
+  );
+  const ufixed = Array.from(new Array(80)).map((_, index) =>
+    ufixedM.map((auFixedM) => `${auFixedM}x${index + 1}`),
+  );
+
+  return [
+    ...types,
+    ...ints,
+    ...uints,
+    ...bytes,
+    ...fixed.flat(),
+    ...ufixed.flat(),
+  ];
+};
+
+export const sanitizeMessage = (msg, baseType, types) => {
+  if (!types) {
+    throw new Error(`Invalid types definition`);
+  }
+
+  const baseTypeDefinitions = types[baseType];
+  if (!baseTypeDefinitions) {
+    throw new Error(`Invalid primary type definition`);
+  }
+
+  const sanitizedMessage = {};
+  const msgKeys = Object.keys(msg);
+  msgKeys.forEach((msgKey) => {
+    const definedType = Object.values(baseTypeDefinitions).find(
+      (baseTypeDefinition) => baseTypeDefinition.name === msgKey,
+    );
+
+    if (!definedType) {
+      return;
+    }
+
+    // key has a type. check if the definedType is also a type
+    const nestedType = definedType.type.replace(/\[\]$/u, '');
+    const nestedTypeDefinition = types[nestedType];
+
+    if (nestedTypeDefinition) {
+      if (definedType.type.endsWith('[]') > 0) {
+        // nested array
+        sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
+          sanitizeMessage(value, nestedType, types),
+        );
+      } else {
+        // nested object
+        sanitizedMessage[msgKey] = sanitizeMessage(
+          msg[msgKey],
+          definedType.type,
+          types,
+        );
+      }
+    } else {
+      // check if it's a valid solidity type
+      const isSolidityType = solidityTypes().includes(nestedType);
+      if (isSolidityType) {
+        sanitizedMessage[msgKey] = msg[msgKey];
+      }
+    }
+  });
+  return sanitizedMessage;
+};
+
+export function getAssetImageURL(image, ipfsGateway) {
+  if (!image || !ipfsGateway || typeof image !== 'string') {
+    return '';
+  }
+
+  if (image.startsWith('ipfs://')) {
+    return util.getFormattedIpfsUrl(ipfsGateway, image, true);
+  }
+  return image;
+}
+
+export function roundToDecimalPlacesRemovingExtraZeroes(
+  numberish,
+  numberOfDecimalPlaces,
+) {
+  if (numberish === undefined || numberish === null) {
+    return '';
+  }
+  return toBigNumber
+    .dec(toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces))
+    .toNumber();
+}
+
+/**
+ * Gets the name of the SLIP-44 protocol corresponding to the specified
+ * `coin_type`.
+ *
+ * @param {string | number} coinType - The SLIP-44 `coin_type` value whose name
+ * to retrieve.
+ * @returns {string | undefined} The name of the protocol if found.
+ */
+export function coinTypeToProtocolName(coinType) {
+  if (String(coinType) === '1') {
+    return 'Test Networks';
+  }
+  return slip44[coinType]?.name || undefined;
+}
+
+/**
+ * Tests "nullishness". Used to guard a section of a component from being
+ * rendered based on a value.
+ *
+ * @param {any} value - A value (literally anything).
+ * @returns `true` if the value is null or undefined, `false` otherwise.
+ */
+export function isNullish(value) {
+  return value === null || value === undefined;
 }
