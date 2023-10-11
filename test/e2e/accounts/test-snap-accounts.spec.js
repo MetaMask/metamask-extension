@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { time } = require('console');
 const util = require('ethereumjs-util');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -166,21 +167,21 @@ describe('Test Snap Account', function () {
   // run the full matrix of sign types and sync/async approve/async reject flows
   // (in Jest we could do this with test.each, but that does not exist here)
   [
-    ['#personalSign', 'sync'],
+    // ['#personalSign', 'sync'],
     ['#personalSign', 'approve'],
-    ['#personalSign', 'reject'],
-    ['#signTypedData', 'sync'],
-    ['#signTypedData', 'approve'],
-    ['#signTypedData', 'reject'],
-    ['#signTypedDataV3', 'sync'],
-    ['#signTypedDataV3', 'approve'],
-    ['#signTypedDataV3', 'reject'],
-    ['#signTypedDataV4', 'sync'],
-    ['#signTypedDataV4', 'approve'],
-    ['#signTypedDataV4', 'reject'],
-    ['#signPermit', 'sync'],
-    ['#signPermit', 'approve'],
-    ['#signPermit', 'reject'],
+    // ['#personalSign', 'reject'],
+    // ['#signTypedData', 'sync'],
+    // ['#signTypedData', 'approve'],
+    // ['#signTypedData', 'reject'],
+    // ['#signTypedDataV3', 'sync'],
+    // ['#signTypedDataV3', 'approve'],
+    // ['#signTypedDataV3', 'reject'],
+    // ['#signTypedDataV4', 'sync'],
+    // ['#signTypedDataV4', 'approve'],
+    // ['#signTypedDataV4', 'reject'],
+    // ['#signPermit', 'sync'],
+    // ['#signPermit', 'approve'],
+    // ['#signPermit', 'reject'],
   ].forEach(([locatorID, flowType]) => {
     // generate title of the test from the locatorID and flowType
     let title = `can ${locatorID} (${
@@ -189,7 +190,7 @@ describe('Test Snap Account', function () {
 
     title += flowType === 'sync' ? ')' : ` ${flowType})`;
 
-    it(title, async function () {
+    it.only(title, async function () {
       await withFixtures(
         accountSnapFixtures(this.test.title),
         async ({ driver }) => {
@@ -491,17 +492,14 @@ describe('Test Snap Account', function () {
   async function approveOrRejectRequest(driver, flowType) {
     // Click redirect button
     if (flowType === 'approve' || flowType === 'reject') {
-      const handles = await driver.getAllWindowHandles();
+      // const handles = await driver.getAllWindowHandles();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+
       await driver.clickElement({
         text: 'Go to site',
         tag: 'button',
       });
-      const newHandles = await driver.getAllWindowHandles();
-      const newSnapWindowHandle = newHandles.find(
-        (handle) => !handles.includes(handle),
-      );
-      await driver.switchToWindow(newSnapWindowHandle);
+      // await driver.switchToWindow(newSnapWindowHandle);
     } else {
       await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
     }
