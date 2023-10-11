@@ -34,6 +34,9 @@ async function loadNewAccount() {
       await driver.press('#password', driver.Key.ENTER);
 
       await driver.clickElement('[data-testid="account-menu-icon"]');
+      await driver.clickElement(
+        '[data-testid="multichain-account-menu-popover-action-button"]',
+      );
       const timestampBeforeAction = new Date();
       await driver.clickElement(
         '[data-testid="multichain-account-menu-popover-add-account"]',
