@@ -1,7 +1,7 @@
-diff --git a/node_modules/colors/lib/extendStringPrototype.js b/node_modules/colors/lib/extendStringPrototype.js
-index 46fd386..c7d0fc5 100644
---- a/node_modules/colors/lib/extendStringPrototype.js
-+++ b/node_modules/colors/lib/extendStringPrototype.js
+diff --git a/lib/extendStringPrototype.js b/lib/extendStringPrototype.js
+index 46fd386a915a67d53fa8c3beefdf74d6c0ed03bc..c7d0fc50f42603463eb8237e2428802ab8831eb9 100644
+--- a/lib/extendStringPrototype.js
++++ b/lib/extendStringPrototype.js
 @@ -5,7 +5,8 @@ module['exports'] = function() {
    // Extends prototype of native string object to allow for "foo".red syntax
    //

@@ -1,7 +1,7 @@
-diff --git a/node_modules/@types/madge/index.d.ts b/node_modules/@types/madge/index.d.ts
-index f2a8652..3a26bfe 100755
---- a/node_modules/@types/madge/index.d.ts
-+++ b/node_modules/@types/madge/index.d.ts
+diff --git a/index.d.ts b/index.d.ts
+index f2a8652b233b13610c67633b7eca38d507276c95..3a26bfe8664e1a509fa3ad061828f457f8f5e7b9 100755
+--- a/index.d.ts
++++ b/index.d.ts
 @@ -265,6 +265,10 @@ declare namespace madge {
           *
           * @default undefined
