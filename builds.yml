@@ -24,10 +24,10 @@ buildTypes:
       - SEGMENT_PROD_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
-      - ALLOW_LOCAL_SNAPS: false
-      - REQUIRE_SNAPS_ALLOWLIST: true
+      - ALLOW_LOCAL_SNAPS: true # !!! DON'T MERGE THIS !!!
+      - REQUIRE_SNAPS_ALLOWLIST: false # !!! DON'T MERGE THIS !!!
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/3.0.0/index.html
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/dev/registry.json # !!! DON'T MERGE THIS !!!
     # Main build uses the default browser manifest
     manifestOverrides: false
 
