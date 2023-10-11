@@ -22,8 +22,12 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
-import { getCurrentNetwork, getSelectedIdentity } from '../../../../selectors';
-import { AccountPicker } from '../..';
+import {
+  getCurrentNetwork,
+  getMetaMaskAccountsOrdered,
+  getSelectedIdentity,
+} from '../../../../selectors';
+import { AccountPicker, AccountListItem } from '../..';
 import DomainInput from '../../../../pages/send/send-content/add-recipient/domain-input.component';
 
 export const SendPage = () => {
@@ -39,10 +43,13 @@ export const SendPage = () => {
   // use the network in draft send transaction state
   const identity = useSelector(getSelectedIdentity);
 
+  // Accounts
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
+
   const SendPageRow = ({ children }) => (
     <Box
       display={Display.Flex}
-      paddingBottom={4}
+      paddingBottom={6}
       flexDirection={FlexDirection.Column}
     >
       {children}
@@ -101,6 +108,12 @@ export const SendPage = () => {
             initializeDomainSlice={() => undefined}
             resetDomainResolution={() => undefined}
           />
+        </SendPageRow>
+        <SendPageRow>
+          <Label paddingBottom={2}>{t('yourAccounts')}</Label>
+          {accounts.map((account) => (
+            <AccountListItem identity={account} key={account.address} />
+          ))}
         </SendPageRow>
       </Content>
       <Footer>

@@ -20,7 +20,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  FontWeight,
   IconColor,
   Size,
   TextAlign,
@@ -140,4 +139,12 @@ AccountPicker.propTypes = {
    * Represents if the AccountPicker should take full width
    */
   block: PropTypes.bool,
+  /**
+   * Props to be added to the address element
+   */
+  addressProps: PropTypes.object,
+  /**
+   * Props to be added to the label element
+   */
+  labelProps: PropTypes.object,
 };
