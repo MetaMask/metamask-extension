@@ -6,6 +6,7 @@ import type {
 } from '@metamask/approval-controller';
 import type { KeyringController } from '@metamask/keyring-controller';
 import { PhishingController } from '@metamask/phishing-controller';
+import browser from 'webextension-polyfill';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
@@ -68,7 +69,7 @@ export const snapKeyringBuilder = (
             })) as boolean;
 
           if (confirmationResult) {
-            window.open(url, '_blank', 'noreferrer');
+            browser.tabs.create({ url });
           } else {
             console.log('User refused snap account redirection to:', url);
           }
