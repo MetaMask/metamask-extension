@@ -3949,10 +3949,6 @@
   "snapDetailsInstalled": {
     "message": "Terinstal"
   },
-  "snapError": {
-    "message": "Kesalahan Snap: '$1'. Kode Kesalahan: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
   "snapInstall": {
     "message": "Instal Snap"
   },
@@ -5035,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Aktifkan peringatan keamanan"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan berbagai risiko yang muncul dalam transaksi yang belum ditandatangani dan permintaan tanda tangan sebelum Anda menandatanganinya. Layanan ini akan dapat mengakses transaksi yang belum ditandatangani dan permintaan tanda tangan, alamat akun, serta bahasa pilihan Anda."
   },
   "transactionSettings": {
     "message": "Pengaturan transaksi"

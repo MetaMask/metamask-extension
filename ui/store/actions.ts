@@ -1195,10 +1195,6 @@ export function removeSnap(
   };
 }
 
-export async function removeSnapError(msgData: string): Promise<void> {
-  return submitRequestToBackground('removeSnapError', [msgData]);
-}
-
 export async function handleSnapRequest(args: {
   snapId: string;
   origin: string;
