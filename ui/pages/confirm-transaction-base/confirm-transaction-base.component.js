@@ -6,6 +6,8 @@ import ConfirmPageContainer, {
   ConfirmDetailRow,
 } from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
+import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
+import { addHexes, hexToDecimal } from '../../helpers/utils/conversions.util';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -19,7 +21,7 @@ import {
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
-import { hexToDecimal } from '../../helpers/utils/conversions.util';
+
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs';
 import TextField from '../../components/ui/text-field';
 import AdvancedGasControls from '../../components/app/advanced-gas-controls';
@@ -34,6 +36,13 @@ import { toBuffer } from '../../../shared/modules/buffer-utils';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
+import GasTiming from '../../components/app/gas-timing/gas-timing.component';
+
+import { COLORS } from '../../helpers/constants/design-system';
+import {
+  disconnectGasFeeEstimatePoller,
+  getGasFeeEstimatesAndStartPolling,
+} from '../../store/actions';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -53,7 +62,8 @@ export default class ConfirmTransactionBase extends Component {
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
-    hexTransactionFee: PropTypes.string,
+    hexMinimumTransactionFee: PropTypes.string,
+    hexMaximumTransactionFee: PropTypes.string,
     hexTransactionTotal: PropTypes.string,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
@@ -106,6 +116,7 @@ export default class ConfirmTransactionBase extends Component {
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
+    supportsEIP1599: PropTypes.bool,
   };
 
   state = {
@@ -186,7 +197,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       balance,
       conversionRate,
-      hexTransactionFee,
+      hexMaximumTransactionFee,
       txData: { simulationFails, txParams: { value: amount } = {} } = {},
       customGas,
       noGasPrice,
@@ -196,7 +207,7 @@ export default class ConfirmTransactionBase extends Component {
       balance &&
       !isBalanceSufficient({
         amount,
-        gasTotal: hexTransactionFee || '0x0',
+        gasTotal: hexMaximumTransactionFee || '0x0',
         balance,
         conversionRate,
       });
@@ -277,7 +288,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
-      hexTransactionFee,
+      hexMinimumTransactionFee,
       hexTransactionTotal,
       useNonceField,
       customNonceValue,
@@ -292,8 +303,18 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       isEthGasPrice,
       noGasPrice,
+      txData,
+      supportsEIP1599,
     } = this.props;
     const { t } = this.context;
+
+    const getRequestingOrigin = () => {
+      try {
+        return new URL(txData.origin)?.hostname;
+      } catch (err) {
+        return '';
+      }
+    };
 
     const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
     const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
@@ -346,39 +367,99 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
+    const showInlineControls = process.env.SHOW_EIP_1559_UI
+      ? advancedInlineGasShown
+      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
+
+    const showGasEditButton = process.env.SHOW_EIP_1559_UI
+      ? !showInlineControls
+      : !(notMainnetOrTest || gasPriceFetchFailure);
+
     if (process.env.SHOW_EIP_1559_UI) {
       return (
         <div className="confirm-page-container-content__details">
           <TransactionDetail
+            onEdit={() => this.handleEditGas()}
             rows={[
               <TransactionDetailItem
                 key="gas-item"
                 detailTitle={
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip contentText="" position="top">
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
+                  txData.dappSuggestedGasFees ? (
+                    <>
+                      {t('transactionDetailDappGasHeading', [
+                        getRequestingOrigin(),
+                      ])}
+                      <InfoTooltip
+                        contentText={t('transactionDetailDappGasTooltip')}
+                        position="top"
+                        iconFillColor="#f66a0a"
+                      >
+                        <i className="fa fa-info-circle" />
+                      </InfoTooltip>
+                    </>
+                  ) : (
+                    <>
+                      {t('transactionDetailGasHeading')}
+                      <InfoTooltip
+                        contentText={
+                          <>
+                            <p>{t('transactionDetailGasTooltipIntro')}</p>
+                            <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                            <p>
+                              <a
+                                href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {t('transactionDetailGasTooltipConversion')}
+                              </a>
+                            </p>
+                          </>
+                        }
+                        position="top"
+                      >
+                        <i className="fa fa-info-circle" />
+                      </InfoTooltip>
+                    </>
+                  )
+                }
+                detailTitleColor={
+                  txData.dappSuggestedGasFees ? COLORS.SECONDARY1 : COLORS.BLACK
                 }
                 detailText={
                   <UserPreferencedCurrencyDisplay
                     type={PRIMARY}
-                    value={hexTransactionFee}
+                    value={hexMinimumTransactionFee}
                     hideLabel={false}
                   />
                 }
                 detailTotal={
                   <UserPreferencedCurrencyDisplay
                     type={SECONDARY}
-                    value={hexTransactionFee}
+                    value={hexMinimumTransactionFee}
                     hideLabel
                   />
                 }
-                handleActionClick={
-                  advancedInlineGasShown ? null : () => this.handleEditGas()
+                subText={t('editGasSubTextFee', [
+                  <UserPreferencedCurrencyDisplay
+                    key="gas-subtext"
+                    type={SECONDARY}
+                    value={getHexGasTotal({
+                      gasPrice: txData.txParams.maxFeePerGas,
+                      gasLimit: txData.txParams.gas,
+                    })}
+                    hideLabel
+                  />,
+                ])}
+                subTitle={
+                  supportsEIP1599 && (
+                    <GasTiming
+                      maxPriorityFeePerGas={
+                        txData.txParams.maxPriorityFeePerGas
+                      }
+                    />
+                  )
                 }
-                actionText={advancedInlineGasShown ? '' : t('edit')}
               />,
               <TransactionDetailItem
                 key="total-item"
@@ -398,26 +479,34 @@ export default class ConfirmTransactionBase extends Component {
                   />
                 }
                 subTitle={t('transactionDetailGasTotalSubtitle')}
+                subText={t('editGasSubTextAmount', [
+                  <UserPreferencedCurrencyDisplay
+                    key="gas-total-subtext"
+                    type={SECONDARY}
+                    value={addHexes(
+                      txData.txParams.value,
+                      getHexGasTotal({
+                        gasPrice: txData.txParams.maxFeePerGas,
+                        gasLimit: txData.txParams.gas,
+                      }),
+                    )}
+                    hideLabel
+                  />,
+                ])}
               />,
             ]}
           />
+          {nonceField}
         </div>
       );
     }
-    const showInlineControls = process.env.SHOW_EIP_1559_UI
-      ? advancedInlineGasShown
-      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
-
-    const showGasEditButton = process.env.SHOW_EIP_1559_UI
-      ? !showInlineControls
-      : !(notMainnetOrTest || gasPriceFetchFailure);
 
     return (
       <div className="confirm-page-container-content__details">
         <div className="confirm-page-container-content__gas-fee">
           <ConfirmDetailRow
             label={t('gasFee')}
-            value={hexTransactionFee}
+            value={hexMinimumTransactionFee}
             headerText={showGasEditButton ? t('edit') : ''}
             headerTextClassName={
               showGasEditButton ? 'confirm-detail-row__header-text--edit' : ''
@@ -690,6 +779,7 @@ export default class ConfirmTransactionBase extends Component {
   };
 
   componentDidMount() {
+    this._isMounted = true;
     const {
       toAddress,
       txData: { origin } = {},
@@ -716,9 +806,28 @@ export default class ConfirmTransactionBase extends Component {
     if (toAddress) {
       tryReverseResolveAddress(toAddress);
     }
+
+    /**
+     * This makes a request to get estimates and begin polling, keeping track of the poll
+     * token in component state.
+     * It then disconnects polling upon componentWillUnmount. If the hook is unmounted
+     * while waiting for `getGasFeeEstimatesAndStartPolling` to resolve, the `_isMounted`
+     * flag ensures that a call to disconnect happens after promise resolution.
+     */
+    getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
+      if (this._isMounted) {
+        this.setState({ pollingToken });
+      } else {
+        disconnectGasFeeEstimatePoller(pollingToken);
+      }
+    });
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
+    if (this.state.pollingToken) {
+      disconnectGasFeeEstimatePoller(this.state.pollingToken);
+    }
     this._removeBeforeUnload();
   }
 

@@ -2,8 +2,6 @@ import { useEffect } from 'react';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
-  addPollingTokenToAppState,
-  removePollingTokenFromAppState,
 } from '../store/actions';
 
 /**
@@ -18,30 +16,18 @@ export function useSafeGasEstimatePolling() {
   useEffect(() => {
     let active = true;
     let pollToken;
-
-    const cleanup = () => {
-      active = false;
-      if (pollToken) {
-        disconnectGasFeeEstimatePoller(pollToken);
-        removePollingTokenFromAppState(pollToken);
-      }
-    };
-
     getGasFeeEstimatesAndStartPolling().then((newPollToken) => {
       if (active) {
         pollToken = newPollToken;
-        addPollingTokenToAppState(pollToken);
       } else {
         disconnectGasFeeEstimatePoller(newPollToken);
-        removePollingTokenFromAppState(pollToken);
       }
     });
-
-    window.addEventListener('beforeunload', cleanup);
-
     return () => {
-      cleanup();
-      window.removeEventListener('beforeunload', cleanup);
+      active = false;
+      if (pollToken) {
+        disconnectGasFeeEstimatePoller(pollToken);
+      }
     };
   }, []);
 }

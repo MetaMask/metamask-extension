@@ -5,8 +5,8 @@ import createRandomId from '../../shared/modules/random-id';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
+  isEIP1559Network,
 } from '../ducks/metamask/metamask';
-import { checkNetworkAndAccountSupports1559 } from '../selectors';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -28,7 +28,7 @@ jest.mock('react-redux', () => {
 });
 
 const DEFAULT_OPTS = {
-  checkNetworkAndAccountSupports1559: false,
+  isEIP1559Network: false,
   gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
   gasFeeEstimates: {
     low: '10',
@@ -38,11 +38,8 @@ const DEFAULT_OPTS = {
 };
 
 const generateUseSelectorRouter = (opts = DEFAULT_OPTS) => (selector) => {
-  if (selector === checkNetworkAndAccountSupports1559) {
-    return (
-      opts.checkNetworkAndAccountSupports1559 ??
-      DEFAULT_OPTS.checkNetworkAndAccountSupports1559
-    );
+  if (selector === isEIP1559Network) {
+    return opts.isEIP1559Network ?? DEFAULT_OPTS.isEIP1559Network;
   }
   if (selector === getGasEstimateType) {
     return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
@@ -140,7 +137,7 @@ describe('useGasFeeEstimates', () => {
     };
     useSelector.mockImplementation(
       generateUseSelectorRouter({
-        checkNetworkAndAccountSupports1559: true,
+        isEIP1559Network: true,
         gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
         gasFeeEstimates,
       }),
@@ -179,7 +176,7 @@ describe('useGasFeeEstimates', () => {
   it('indicates that gas estimates are loading when gasEstimateType is not FEE_MARKET or ETH_GASPRICE, but network supports EIP-1559', () => {
     useSelector.mockImplementation(
       generateUseSelectorRouter({
-        checkNetworkAndAccountSupports1559: true,
+        isEIP1559Network: true,
         gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
         gasFeeEstimates: {
           gasPrice: '10',
@@ -222,7 +219,7 @@ describe('useGasFeeEstimates', () => {
     };
     useSelector.mockImplementation(
       generateUseSelectorRouter({
-        checkNetworkAndAccountSupports1559: false,
+        isEIP1559Network: false,
         gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
         gasFeeEstimates,
       }),

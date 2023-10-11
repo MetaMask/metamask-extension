@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
@@ -15,7 +14,8 @@ import {
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+
+const DEFAULT_ESTIMATES_LEVEL = 'medium';
 
 export default function AdvancedGasControls({
   estimateToUse,
@@ -33,16 +33,13 @@ export default function AdvancedGasControls({
   maxPriorityFeeFiat,
   maxFeeFiat,
   gasErrors,
-  minimumGasLimit,
+  networkSupportsEIP1559,
 }) {
   const t = useContext(I18nContext);
-  const networkAndAccountSupport1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
 
   const suggestedValues = {};
 
-  if (networkAndAccountSupport1559) {
+  if (networkSupportsEIP1559) {
     suggestedValues.maxFeePerGas =
       gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas ||
       gasFeeEstimates?.gasPrice;
@@ -62,10 +59,7 @@ export default function AdvancedGasControls({
     }
   }
 
-  const showFeeMarketFields =
-    networkAndAccountSupport1559 &&
-    (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-      gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE);
+  const showFeeMarketFields = networkSupportsEIP1559;
 
   return (
     <div className="advanced-gas-controls">
@@ -73,7 +67,7 @@ export default function AdvancedGasControls({
         titleText={t('gasLimit')}
         error={
           gasErrors?.gasLimit
-            ? getGasFormErrorText(gasErrors.gasLimit, t, { minimumGasLimit })
+            ? getGasFormErrorText(gasErrors.gasLimit, t)
             : null
         }
         onChange={setGasLimit}
@@ -95,6 +89,31 @@ export default function AdvancedGasControls({
             }}
             value={maxPriorityFee}
             detailText={maxPriorityFeeFiat}
+            numeric
+            titleDetail={
+              suggestedValues.maxPriorityFeePerGas && (
+                <>
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('gasFeeEstimate')}:
+                  </Typography>{' '}
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                  >
+                    {
+                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
+                        ?.suggestedMaxPriorityFeePerGas
+                    }
+                  </Typography>
+                </>
+              )
+            }
             error={
               gasErrors?.maxPriorityFee
                 ? getGasFormErrorText(gasErrors.maxPriorityFee, t)
@@ -112,6 +131,30 @@ export default function AdvancedGasControls({
             value={maxFee}
             numeric
             detailText={maxFeeFiat}
+            titleDetail={
+              suggestedValues.maxFeePerGas && (
+                <>
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('gasFeeEstimate')}:
+                  </Typography>{' '}
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                  >
+                    {
+                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
+                        ?.suggestedMaxFeePerGas
+                    }
+                  </Typography>
+                </>
+              )
+            }
             error={
               gasErrors?.maxFee
                 ? getGasFormErrorText(gasErrors.maxFee, t)
@@ -190,5 +233,5 @@ AdvancedGasControls.propTypes = {
   maxPriorityFeeFiat: PropTypes.string,
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
-  minimumGasLimit: PropTypes.number,
+  networkSupportsEIP1559: PropTypes.object,
 };

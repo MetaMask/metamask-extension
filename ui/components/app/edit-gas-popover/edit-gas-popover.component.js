@@ -1,17 +1,16 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
-import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
-import { txParamsAreDappSuggested } from '../../../../shared/modules/transaction.utils';
-import {
-  EDIT_GAS_MODES,
-  GAS_LIMITS,
-  GAS_RECOMMENDATIONS,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../../../shared/constants/gas';
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
+import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
-import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
+import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+} from '../../../helpers/utils/conversions.util';
 
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
@@ -23,63 +22,37 @@ import {
   createCancelTransaction,
   createSpeedUpTransaction,
   hideModal,
-  updateTransactionGasFees,
-  updateCustomSwapsEIP1559GasParams,
-  updateSwapsUserFeeLevel,
-  hideLoadingIndication,
-  showLoadingIndication,
+  hideSidebar,
+  updateTransaction,
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
-import { hexToDecimal } from '../../../../app/scripts/constants/metamask-controller-utils';
-import { decimalToHex } from '../../../../app/scripts/constants/transactions-controller-utils';
 
 export default function EditGasPopover({
   popoverTitle = '',
   confirmButtonText = '',
   editGasDisplayProps = {},
-  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
+  defaultEstimateToUse = 'medium',
   transaction,
   mode,
   onClose,
-  minimumGasLimit = GAS_LIMITS.SIMPLE,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const supportsEIP1559 =
-    useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction?.txParams);
-  const gasLoadingAnimationIsShowing = useSelector(
-    getGasLoadingAnimationIsShowing,
-  );
+  const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
+  const networkSupports1559 = useSelector(isEIP1559Network);
+
+  const shouldAnimate = useShouldAnimateGasEstimations();
 
   const showEducationButton =
-    (mode === EDIT_GAS_MODES.MODIFY_IN_PLACE ||
-      mode === EDIT_GAS_MODES.SWAPS) &&
-    supportsEIP1559;
+    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && process.env.SHOW_EIP_1559_UI;
   const [showEducationContent, setShowEducationContent] = useState(false);
+
+  const [warning] = useState(null);
 
   const [
     dappSuggestedGasFeeAcknowledged,
     setDappSuggestedGasFeeAcknowledged,
   ] = useState(false);
-
-  const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
-  const updatedCustomGasSettings = useIncrementedGasFees(transaction);
-
-  let updatedTransaction = transaction;
-  if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
-    updatedTransaction = {
-      ...transaction,
-      userFeeLevel: CUSTOM_GAS_ESTIMATE,
-      txParams: {
-        ...transaction.txParams,
-        ...updatedCustomGasSettings,
-      },
-    };
-  }
 
   const {
     maxPriorityFeePerGas,
@@ -89,121 +62,79 @@ export default function EditGasPopover({
     setMaxFeePerGas,
     maxFeePerGasFiat,
     estimatedMaximumNative,
-    estimatedMinimumNative,
     isGasEstimatesLoading,
+    gasFeeEstimates,
     gasEstimateType,
     gasPrice,
     setGasPrice,
     gasLimit,
     setGasLimit,
-    properGasLimit,
     estimateToUse,
     setEstimateToUse,
     estimatedMinimumFiat,
     estimatedMaximumFiat,
     hasGasErrors,
     gasErrors,
-    gasWarnings,
     onManualChange,
-    balanceError,
-    estimatesUnavailableWarning,
-    estimatedBaseFee,
-    isNetworkBusy,
-  } = useGasFeeInputs(
-    defaultEstimateToUse,
-    updatedTransaction,
-    minimumGasLimit,
-    mode,
-  );
+  } = useGasFeeInputs(defaultEstimateToUse, transaction);
 
-  const txParamsHaveBeenCustomized =
-    estimateToUse === CUSTOM_GAS_ESTIMATE ||
-    txParamsAreDappSuggested(updatedTransaction);
+  const [showAdvancedForm, setShowAdvancedForm] = useState(
+    !estimateToUse || hasGasErrors,
+  );
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
-   * we will be extracting this component from the hard to maintain modal
-   * component. For now this is just to be able to appropriately close
+   * we will be extracting this component from the hard to maintain modal/
+   * sidebar component. For now this is just to be able to appropriately close
    * the modal in testing
    */
   const closePopover = useCallback(() => {
     if (onClose) {
       onClose();
+    } else if (showSidebar) {
+      dispatch(hideSidebar());
     } else {
       dispatch(hideModal());
     }
-  }, [onClose, dispatch]);
+  }, [showSidebar, onClose, dispatch]);
 
-  const onSubmit = useCallback(async () => {
-    if (!updatedTransaction || !mode) {
+  const onSubmit = useCallback(() => {
+    if (!transaction || !mode) {
       closePopover();
     }
 
-    const newGasSettings = {
-      gas: decimalToHex(gasLimit),
-      gasLimit: decimalToHex(gasLimit),
-      estimateSuggested: defaultEstimateToUse,
-      estimateUsed: estimateToUse,
-    };
-
-    if (supportsEIP1559) {
-      newGasSettings.maxFeePerGas = decGWEIToHexWEI(maxFeePerGas ?? gasPrice);
-      newGasSettings.maxPriorityFeePerGas = decGWEIToHexWEI(
-        maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
-      );
-    } else {
-      newGasSettings.gasPrice = decGWEIToHexWEI(gasPrice);
-    }
-
-    const cleanTransactionParams = { ...updatedTransaction.txParams };
-
-    if (supportsEIP1559) {
-      delete cleanTransactionParams.gasPrice;
-    }
-
-    const updatedTxMeta = {
-      ...updatedTransaction,
-      userEditedGasLimit: gasLimit !== Number(transaction.originalGasEstimate),
-      userFeeLevel: estimateToUse || CUSTOM_GAS_ESTIMATE,
-      txParams: {
-        ...cleanTransactionParams,
-        ...newGasSettings,
-      },
-    };
+    const newGasSettings = networkSupports1559
+      ? {
+          gas: decimalToHex(gasLimit),
+          gasLimit: decimalToHex(gasLimit),
+          maxFeePerGas: decGWEIToHexWEI(maxFeePerGas ?? gasPrice),
+          maxPriorityFeePerGas: decGWEIToHexWEI(
+            maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
+          ),
+        }
+      : {
+          gas: decimalToHex(gasLimit),
+          gasLimit: decimalToHex(gasLimit),
+          gasPrice: decGWEIToHexWEI(gasPrice),
+        };
 
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
-        dispatch(
-          createCancelTransaction(updatedTransaction.id, newGasSettings, {
-            estimatedBaseFee,
-          }),
-        );
+        dispatch(createCancelTransaction(transaction.id, newGasSettings));
         break;
       case EDIT_GAS_MODES.SPEED_UP:
-        dispatch(
-          createSpeedUpTransaction(updatedTransaction.id, newGasSettings, {
-            estimatedBaseFee,
-          }),
-        );
+        dispatch(createSpeedUpTransaction(transaction.id, newGasSettings));
         break;
       case EDIT_GAS_MODES.MODIFY_IN_PLACE:
-        newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
-        newGasSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
-
-        dispatch(showLoadingIndication());
-        await dispatch(
-          updateTransactionGasFees(updatedTxMeta.id, newGasSettings),
+        dispatch(
+          updateTransaction({
+            ...transaction,
+            txParams: {
+              ...transaction.txParams,
+              ...newGasSettings,
+            },
+          }),
         );
-        dispatch(hideLoadingIndication());
-        break;
-      case EDIT_GAS_MODES.SWAPS:
-        // This popover component should only be used for the "FEE_MARKET" type in Swaps.
-        if (supportsEIP1559) {
-          dispatch(
-            updateSwapsUserFeeLevel(estimateToUse || CUSTOM_GAS_ESTIMATE),
-          );
-          dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
-        }
         break;
       default:
         break;
@@ -211,19 +142,15 @@ export default function EditGasPopover({
 
     closePopover();
   }, [
-    updatedTransaction,
+    transaction,
     mode,
     dispatch,
     closePopover,
     gasLimit,
     gasPrice,
-    transaction.originalGasEstimate,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    supportsEIP1559,
-    estimateToUse,
-    estimatedBaseFee,
-    defaultEstimateToUse,
+    networkSupports1559,
   ]);
 
   let title = t('editGasTitle');
@@ -238,11 +165,11 @@ export default function EditGasPopover({
   }
 
   const footerButtonText = confirmButtonText || t('save');
+
   return (
     <Popover
       title={title}
       onClose={closePopover}
-      className="edit-gas-popover__wrapper"
       onBack={
         showEducationContent ? () => setShowEducationContent(false) : undefined
       }
@@ -252,12 +179,7 @@ export default function EditGasPopover({
             <Button
               type="primary"
               onClick={onSubmit}
-              disabled={
-                hasGasErrors ||
-                balanceError ||
-                ((isGasEstimatesLoading || gasLoadingAnimationIsShowing) &&
-                  !txParamsHaveBeenCustomized)
-              }
+              disabled={hasGasErrors || isGasEstimatesLoading}
             >
               {footerButtonText}
             </Button>
@@ -270,9 +192,12 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <>
-            {process.env.IN_TEST ? null : <LoadingHeartBeat />}
+            <LoadingHeartBeat active={shouldAnimate} />
             <EditGasDisplay
               showEducationButton={showEducationButton}
+              warning={warning}
+              showAdvancedForm={showAdvancedForm}
+              setShowAdvancedForm={setShowAdvancedForm}
               dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}
               setDappSuggestedGasFeeAcknowledged={
                 setDappSuggestedGasFeeAcknowledged
@@ -284,30 +209,23 @@ export default function EditGasPopover({
               setMaxFeePerGas={setMaxFeePerGas}
               maxFeePerGasFiat={maxFeePerGasFiat}
               estimatedMaximumNative={estimatedMaximumNative}
-              estimatedMinimumNative={estimatedMinimumNative}
               isGasEstimatesLoading={isGasEstimatesLoading}
+              gasFeeEstimates={gasFeeEstimates}
               gasEstimateType={gasEstimateType}
               gasPrice={gasPrice}
               setGasPrice={setGasPrice}
               gasLimit={gasLimit}
               setGasLimit={setGasLimit}
-              properGasLimit={properGasLimit}
               estimateToUse={estimateToUse}
               setEstimateToUse={setEstimateToUse}
               estimatedMinimumFiat={estimatedMinimumFiat}
               estimatedMaximumFiat={estimatedMaximumFiat}
               onEducationClick={() => setShowEducationContent(true)}
               mode={mode}
-              transaction={updatedTransaction}
-              gasErrors={gasErrors}
-              gasWarnings={gasWarnings}
-              onManualChange={onManualChange}
-              minimumGasLimit={minimumGasLimitDec}
-              balanceError={balanceError}
-              estimatesUnavailableWarning={estimatesUnavailableWarning}
+              transaction={transaction}
               hasGasErrors={hasGasErrors}
-              txParamsHaveBeenCustomized={txParamsHaveBeenCustomized}
-              isNetworkBusy={isNetworkBusy}
+              gasErrors={gasErrors}
+              onManualChange={onManualChange}
               {...editGasDisplayProps}
             />
           </>
@@ -325,5 +243,4 @@ EditGasPopover.propTypes = {
   transaction: PropTypes.object,
   mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
   defaultEstimateToUse: PropTypes.string,
-  minimumGasLimit: PropTypes.string,
 };
