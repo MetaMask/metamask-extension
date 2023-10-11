@@ -308,6 +308,12 @@
   "address": {
     "message": "Address"
   },
+  "connectedaccount":{
+    "message": "account"
+  },
+  "connectedaccounts": {
+    "message": "accounts"
+  },
   "addressCopied": {
     "message": "Address copied!"
   },
