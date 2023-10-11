@@ -96,19 +96,21 @@ export default function SnapAccountDetailPage() {
           paddingLeft={4}
         >
           <Detail title={t('snapDetailTags')}>
-            {(currentSnap?.metadata?.tags ?? []).map((tag, index) => {
-              return (
-                <Tag
-                  label={tag}
-                  labelProps={{
-                    color: TextColor.textAlternative,
-                  }}
-                  className=""
-                  key={`tag-${index}`}
-                  marginRight={1}
-                />
-              );
-            })}
+            {(currentSnap?.metadata?.tags ?? []).map(
+              (tag: string, index: number) => {
+                return (
+                  <Tag
+                    label={tag}
+                    labelProps={{
+                      color: TextColor.textAlternative,
+                    }}
+                    className=""
+                    key={`tag-${index}`}
+                    marginRight={1}
+                  />
+                );
+              },
+            )}
           </Detail>
           <Detail title={t('snapDetailDeveloper')}>
             <Text
