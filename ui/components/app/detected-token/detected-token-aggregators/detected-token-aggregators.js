@@ -8,7 +8,7 @@ import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Text, Box, ButtonLink } from '../../../component-library';
+import { Box, ButtonLink, Text } from '../../../component-library';
 
 const NUMBER_OF_AGGREGATORS_TO_DISPLAY = 2;
 
@@ -24,7 +24,6 @@ const DetectedTokenAggregators = ({ aggregators }) => {
         {t('fromTokenLists', [
           numOfHiddenAggregators > 0 && !displayMore ? (
             <Text
-              variant={TextVariant.bodySm}
               as="h6"
               fontWeight={FontWeight.Normal}
               key="detected-token-aggrgators-with-more"
@@ -42,7 +41,6 @@ const DetectedTokenAggregators = ({ aggregators }) => {
             </Text>
           ) : (
             <Text
-              variant={TextVariant.bodySm}
               as="h6"
               fontWeight={FontWeight.Normal}
               key="detected-token-aggrgators-without-more"

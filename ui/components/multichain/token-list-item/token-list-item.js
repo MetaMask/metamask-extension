@@ -9,22 +9,23 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
-  Text,
   Box,
+  Text,
 } from '../../component-library';
 import {
   getCurrentChainId,
   getCurrentNetwork,
   getNativeCurrencyImage,
+  getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -33,6 +34,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 export const TokenListItem = ({
   className,
@@ -47,9 +49,13 @@ export const TokenListItem = ({
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
+  const tokenTitle =
+    title === CURRENCY_SYMBOLS.ETH ? t('networkNameEthereum') : title;
 
   // Used for badge icon
   const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+
   return (
     <Box
       className={classnames('multichain-token-list-item', className)}
@@ -83,9 +89,10 @@ export const TokenListItem = ({
         <BadgeWrapper
           badge={
             <AvatarNetwork
-              size={Size.XS}
+              size={AvatarNetworkSize.Xs}
               name={currentNetwork?.nickname}
               src={currentNetwork?.rpcPrefs?.imageUrl}
+              backgroundColor={testNetworkBackgroundColor}
               borderColor={
                 primaryTokenImage
                   ? BorderColor.borderMuted
@@ -117,21 +124,30 @@ export const TokenListItem = ({
             gap={1}
           >
             <Box width={BlockSize.OneThird}>
-              <Tooltip
-                position="bottom"
-                interactive
-                html={title}
-                disabled={title?.length < 12}
-                tooltipInnerClassName="multichain-token-list-item__tooltip"
-              >
+              {title?.length > 12 ? (
+                <Tooltip
+                  position="bottom"
+                  interactive
+                  html={title}
+                  tooltipInnerClassName="multichain-token-list-item__tooltip"
+                >
+                  <Text
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.bodyMd}
+                    ellipsis
+                  >
+                    {tokenTitle}
+                  </Text>
+                </Tooltip>
+              ) : (
                 <Text
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
-                  {title === 'ETH' ? t('networkNameEthereum') : title}
+                  {tokenTitle}
                 </Text>
-              </Tooltip>
+              )}
             </Box>
             <Text
               fontWeight={FontWeight.Medium}

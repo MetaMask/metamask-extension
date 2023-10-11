@@ -455,6 +455,9 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  PetnameAddressCount = 'petname_addresses_count',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 /**
@@ -484,6 +487,8 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
+  ActivityDetailsOpened = 'Activity Details Opened',
+  ActivityDetailsClosed = 'Activity Details Closed',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
@@ -523,7 +528,6 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NftAdded = 'NFT Added',
-  OnboardingWelcome = 'App Installed',
   OnboardingWalletCreationStarted = 'Wallet Setup Selected',
   OnboardingWalletImportStarted = 'Wallet Import Started',
   OnboardingWalletCreationAttempted = 'Wallet Password Created',
@@ -544,10 +548,16 @@ export enum MetaMetricsEventName {
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
   PermissionsRequested = 'Permissions Requested',
+  PetnameCreated = 'Petname Created',
+  PetnameDeleted = 'Petname Deleted',
+  PetnameDisplayed = 'Petname Displayed',
+  PetnameModalOpened = 'Petname Modal Opened',
+  PetnameUpdated = 'Petname Updated',
   PhishingPageDisplayed = 'Phishing Page Displayed',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
+  QuoteError = 'Quote Error',
   ServiceWorkerRestarted = 'Service Worker Restarted',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -583,10 +593,21 @@ export enum MetaMetricsEventName {
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  UserClickedDeepLink = 'User Clicked Deeplink',
-  UserClickedConnectCustodialAccount = 'Clicked Connect Custodial Account',
-  UserClickedPortfolioButton = 'Clicked Portfolio Button',
-  UserClickedCompliance = 'Clicked Compliance',
+  DeeplinkClicked = 'Deeplink Clicked',
+  ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
+  MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
+  PortfolioDashboardModalButtonClicked = 'Portfolio Dashboard Modal Button Clicked',
+  PortfolioDashboardModalOpened = 'Portfolio Dashboard Modal Opened',
+  StakeButtonClicked = 'Stake Button Clicked',
+  InteractiveReplacementTokenButtonClicked = 'Interactive Replacement Token Button Clicked',
+  RefreshTokenListClicked = 'Refresh Token List Clicked',
+  SignatureDeeplinkDisplayed = 'Signature Deeplink Displayed',
+  InstitutionalFeatureConnected = 'Institutional Feature Connected',
+  CustodianSelected = 'Custodian Selected',
+  CustodianConnected = 'Custodian Connected',
+  CustodianConnectionCanceled = 'Custodian Connection Canceled',
+  CustodianConnectionFailed = 'Custodian Connection Failed',
+  CustodialAccountsConnected = 'Custodial Accounts Connected',
   ///: END:ONLY_INCLUDE_IN
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
@@ -599,6 +620,28 @@ export enum MetaMetricsEventName {
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
+  PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
+  QuotesRequested = 'Quotes Requested',
+  QuotesReceived = 'Quotes Received',
+  BestQuoteReviewed = 'Best Quote Reviewed',
+  AllAvailableQuotesOpened = 'All Available Quotes Opened',
+  SwapStarted = 'Swap Started',
+  TransactionAdded = 'Transaction Added',
+  TransactionSubmitted = 'Transaction Submitted',
+  TransactionApproved = 'Transaction Approved',
+  SwapCompleted = 'Swap Completed',
+  TransactionFinalized = 'Transaction Finalized',
+  ExitedSwaps = 'Exited Swaps',
+  SwapError = 'Swap Error',
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  SnapInstalled = 'Snap Installed',
+  SnapUninstalled = 'Snap Uninstalled',
+  SnapUpdated = 'Snap Updated',
+  SnapExportUsed = 'Snap Export Used',
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  AddSnapAccountEnabled = 'Add Snap Account Enabled',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 export enum MetaMetricsEventAccountType {
@@ -630,18 +673,19 @@ export enum MetaMetricsEventCategory {
   Navigation = 'Navigation',
   Network = 'Network',
   Onboarding = 'Onboarding',
+  Petnames = 'Petnames',
   Phishing = 'Phishing',
   Retention = 'Retention',
   ServiceWorkers = 'service_workers',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
+  Tokens = 'Tokens',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IN
-  Tokens = 'Tokens',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -654,6 +698,11 @@ export enum MetaMetricsEventLinkType {
 export enum MetaMetricsEventKeyType {
   Pkey = 'private_key',
   Srp = 'srp',
+}
+
+export enum MetaMetricsEventErrorType {
+  InsufficientGas = 'insufficient_gas',
+  GasTimeout = 'gas_timeout',
 }
 
 export enum MetaMetricsNetworkEventSource {

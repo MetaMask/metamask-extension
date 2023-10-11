@@ -3,14 +3,14 @@
 exports[`PopoverHeader should render PopoverHeader correctly 1`] = `
 <div>
   <div
-    class="box mm-header-base mm-popover-header box--display-flex box--flex-direction-row box--justify-content-space-between"
+    class="mm-box mm-header-base mm-popover-header mm-box--display-flex mm-box--justify-content-space-between"
     data-testid="popover-header"
   >
     <div
-      class="box box--flex-direction-row box--width-full"
+      class="mm-box"
     >
       <h4
-        class="box mm-text mm-text--heading-sm mm-text--text-align-center box--flex-direction-row box--color-inherit"
+        class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-inherit"
       >
         PopoverHeader
       </h4>

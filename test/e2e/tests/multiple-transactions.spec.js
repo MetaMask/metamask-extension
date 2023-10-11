@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   regularDelayMs,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -31,8 +32,7 @@ describe('Multiple transactions', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // initiates a transaction from the dapp
         await openDapp(driver);
@@ -62,7 +62,13 @@ describe('Multiple transactions', function () {
           tag: 'a',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.switchToWindow(confirmation);
+
+        // wait for the "Reject 2 transactions" to disappear
+        await driver.waitForElementNotPresent(
+          '.page-container__footer-secondary a',
+        );
+
         // confirms first transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -70,9 +76,12 @@ describe('Multiple transactions', function () {
         await driver.switchToWindow(extensionTab);
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForSelector(
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
+        );
 
         const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '.transaction-list__completed-transactions .activity-list-item',
         );
 
         assert.equal(confirmedTxes.length, 2);
@@ -92,8 +101,7 @@ describe('Multiple transactions', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // initiates a transaction from the dapp
         await openDapp(driver);
@@ -137,7 +145,7 @@ describe('Multiple transactions', function () {
 
         // should not be present
         await driver.assertElementNotPresent(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '.transaction-list__completed-transactions .activity-list-item',
         );
       },
     );

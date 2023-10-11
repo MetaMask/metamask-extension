@@ -1,5 +1,8 @@
 import React from 'react';
-import type { BoxProps } from '../../ui/box/box.d';
+import type {
+  PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
+} from '../box';
 
 /*
  * ModalContent sizes
@@ -11,7 +14,7 @@ export enum ModalContentSize {
   Sm = 'sm',
 }
 
-export interface ModalContentProps extends BoxProps {
+export interface ModalContentStyleUtilityProps extends StyleUtilityProps {
   /**
    * The additional className of the ModalContent component
    */
@@ -29,5 +32,12 @@ export interface ModalContentProps extends BoxProps {
   /**
    * Additional props to pass to the dialog node inside of ModalContent component
    */
-  modalDialogProps?: BoxProps | React.HTMLAttributes<HTMLElement>;
+  modalDialogProps?: any;
 }
+
+export type ModalContentProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, ModalContentStyleUtilityProps>;
+
+export type ModalContentComponent = <C extends React.ElementType = 'div'>(
+  props: ModalContentProps<C>,
+) => React.ReactElement | null;

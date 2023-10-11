@@ -1,21 +1,25 @@
 import React from 'react';
+import { useArgs } from '@storybook/client-api';
+
 import CustomSpendingCap from './custom-spending-cap';
 
 export default {
   title: 'Components/App/CustomSpendingCap',
-
   argTypes: {
+    txParams: {
+      control: 'object',
+    },
     tokenName: {
-      control: { type: 'text' },
+      control: 'text',
     },
     currentTokenBalance: {
-      control: { type: 'number' },
+      control: 'text',
     },
     dappProposedValue: {
-      control: { type: 'text' },
+      control: 'text',
     },
     siteOrigin: {
-      control: { type: 'text' },
+      control: 'text',
     },
     passTheErrorText: {
       action: 'passTheErrorText',
@@ -23,32 +27,55 @@ export default {
     decimals: {
       control: 'text',
     },
+    setInputChangeInProgress: {
+      action: 'setInputChangeInProgress',
+    },
     customSpendingCap: {
-      control: { type: 'text' },
+      control: 'text',
+    },
+    setCustomSpendingCap: {
+      action: 'setCustomSpendingCap',
     },
   },
   args: {
     tokenName: 'DAI',
-    currentTokenBalance: 200.12,
+    currentTokenBalance: '200.12',
     dappProposedValue: '7',
     siteOrigin: 'Uniswap.org',
     decimals: '4',
     customSpendingCap: '7',
+    txParams: {
+      data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+      from: '0x8eeee1781fd885ff5ddef7789486676961873d12',
+      gas: '0xb41b',
+      maxFeePerGas: '0x4a817c800',
+      maxPriorityFeePerGas: '0x4a817c800',
+      to: '0x665933d73375e385bef40abcccea8b4cccc32d4c',
+      value: '0x0',
+    },
   },
 };
 
-export const DefaultStory = (args) => {
-  return <CustomSpendingCap {...args} />;
+const Template = (args) => {
+  const [{ customSpendingCap }, updateArgs] = useArgs();
+  const handleOnChange = (value) => {
+    updateArgs({ customSpendingCap: value });
+  };
+  return (
+    <CustomSpendingCap
+      {...args}
+      customSpendingCap={customSpendingCap}
+      setCustomSpendingCap={handleOnChange}
+    />
+  );
 };
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const CustomSpendingCapStory = (args) => {
-  return <CustomSpendingCap {...args} />;
-};
-CustomSpendingCapStory.storyName = 'CustomSpendingCapStory';
+export const CustomSpendingCapStory = Template.bind({});
+CustomSpendingCapStory.storyName = 'CustomSpendingCap';
 
 CustomSpendingCapStory.args = {
-  ...DefaultStory.args,
   customSpendingCap: '8',
 };

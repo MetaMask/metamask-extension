@@ -66,7 +66,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const transactionItem = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
         assert.equal(
@@ -120,7 +120,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const transactionItem = await driver.waitForSelector({
-          css: '.list-item__title',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
         assert.equal(
@@ -132,7 +132,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should enable approval for a third party address to manage all ERC1155 token', async function () {
+  it('should enable approval for a third party address to manage all ERC1155 token @no-mmi', async function () {
     const expectedMessageTitle =
       'Allow access to and transfer all of your NFTs from this collection?';
     const expectedDescription =
@@ -222,7 +222,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should revoke approval for a third party address to manage all ERC1155 token', async function () {
+  it('should revoke approval for a third party address to manage all ERC1155 token @no-mmi', async function () {
     const expectedMessageTitle =
       'Revoke permission to access and transfer all of your NFTs from this collection?';
     const expectedDescription =

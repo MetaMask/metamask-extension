@@ -13,11 +13,13 @@ import {
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  Box,
   IconName,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Text,
   ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../component-library';
+
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -32,7 +34,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -40,8 +41,13 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAddress,
+  getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  getNotifySnaps,
   getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -49,6 +55,8 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
+  BorderColor,
   Display,
   JustifyContent,
   TextAlign,
@@ -56,18 +64,27 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
+import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+
+const METRICS_LOCATION = 'Global Menu';
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const address = useSelector(getSelectedAddress);
+  const unapprovedTransactons = useSelector(getUnapprovedTransactions);
 
-  const hasUnapprovedTransactions = useSelector(
-    (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
-  );
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  const notifySnaps = useSelector(getNotifySnaps);
+  ///: END:ONLY_INCLUDE_IN
+
+  const hasUnapprovedTransactions =
+    Object.keys(unapprovedTransactons).length > 0;
+
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const metaMetricsId = useSelector(getMetaMetricsId);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   ///: END:ONLY_INCLUDE_IN
@@ -85,6 +102,21 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
   return (
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
+      <AccountDetailsMenuItem
+        metricsLocation={METRICS_LOCATION}
+        closeMenu={closeMenu}
+        address={address}
+      />
+      <ViewExplorerMenuItem
+        metricsLocation={METRICS_LOCATION}
+        closeMenu={closeMenu}
+        address={address}
+      />
+      <Box
+        borderColor={BorderColor.borderMuted}
+        width={BlockSize.Full}
+        style={{ height: '1px', borderBottomWidth: 0 }}
+      ></Box>
       <MenuItem
         iconName={IconName.Connect}
         disabled={hasUnapprovedTransactions}
@@ -94,7 +126,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             event: MetaMetricsEventName.NavConnectedSitesOpened,
             category: MetaMetricsEventCategory.Navigation,
             properties: {
-              location: 'Global Menu',
+              location: METRICS_LOCATION,
             },
           });
           closeMenu();
@@ -112,9 +144,12 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             onClick={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.UserClickedPortfolioButton,
+                event: MetaMetricsEventName.MMIPortfolioButtonClicked,
               });
-              window.open(mmiPortfolioUrl, '_blank');
+              window.open(
+                `${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`,
+                '_blank',
+              );
               closeMenu();
             }}
             data-testid="global-menu-mmi-portfolio"
@@ -124,40 +159,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         )
         ///: END:ONLY_INCLUDE_IN
       }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-        <MenuItem
-          iconName={IconName.Diagram}
-          onClick={() => {
-            const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
-            global.platform.openTab({
-              url: portfolioUrl,
-            });
-            trackEvent(
-              {
-                category: MetaMetricsEventCategory.Home,
-                event: MetaMetricsEventName.PortfolioLinkClicked,
-                properties: {
-                  url: portfolioUrl,
-                  location: 'Global Menu',
-                },
-              },
-              {
-                contextPropsIntoEventProperties: [
-                  MetaMetricsContextProp.PageTitle,
-                ],
-              },
-            );
-            closeMenu();
-          }}
-          data-testid="global-menu-portfolio"
-        >
-          {t('portfolioView')}
-        </MenuItem>
-        ///: END:ONLY_INCLUDE_IN
-      }
-
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}
@@ -167,7 +168,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
               properties: {
-                location: 'Global Menu',
+                location: METRICS_LOCATION,
               },
             });
             closeMenu();
@@ -179,40 +180,42 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       )}
       {
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-        <>
-          <MenuItem
-            iconName={IconName.Notification}
-            onClick={() => {
-              closeMenu();
-              history.push(NOTIFICATIONS_ROUTE);
-            }}
-          >
-            <Text as="span">{t('notifications')}</Text>
-            {unreadNotificationsCount > 0 && (
-              <Text
-                as="span"
-                display={Display.InlineBlock}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                backgroundColor={BackgroundColor.primaryDefault}
-                color={TextColor.primaryInverse}
-                padding={[0, 1, 0, 1]}
-                variant={TextVariant.bodyXs}
-                textAlign={TextAlign.Center}
-                data-testid="global-menu-notification-count"
-                style={{
-                  borderRadius: '16px',
-                  minWidth: '24px',
-                }}
-                marginInlineStart={2}
-              >
-                {unreadNotificationsCount > 99
-                  ? '99+'
-                  : unreadNotificationsCount}
-              </Text>
-            )}
-          </MenuItem>
-        </>
+        notifySnaps.length ? (
+          <>
+            <MenuItem
+              iconName={IconName.Notification}
+              onClick={() => {
+                closeMenu();
+                history.push(NOTIFICATIONS_ROUTE);
+              }}
+            >
+              {t('notifications')}
+              {unreadNotificationsCount > 0 && (
+                <Text
+                  as="span"
+                  display={Display.InlineBlock}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                  color={TextColor.primaryInverse}
+                  padding={[0, 1, 0, 1]}
+                  variant={TextVariant.bodyXs}
+                  textAlign={TextAlign.Center}
+                  data-testid="global-menu-notification-count"
+                  style={{
+                    borderRadius: '16px',
+                    minWidth: '24px',
+                  }}
+                  marginInlineStart={2}
+                >
+                  {unreadNotificationsCount > 99
+                    ? '99+'
+                    : unreadNotificationsCount}
+                </Text>
+              )}
+            </MenuItem>
+          </>
+        ) : null
         ///: END:ONLY_INCLUDE_IN(snaps)
       }
       <MenuItem
@@ -225,7 +228,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: supportLink,
-                location: 'Global Menu',
+                location: METRICS_LOCATION,
               },
             },
             {
@@ -249,7 +252,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
             properties: {
-              location: 'Global Menu',
+              location: METRICS_LOCATION,
             },
           });
           closeMenu();
@@ -267,7 +270,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppLocked,
             properties: {
-              location: 'Global Menu',
+              location: METRICS_LOCATION,
             },
           });
           closeMenu();

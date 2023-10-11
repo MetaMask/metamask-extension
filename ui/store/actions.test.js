@@ -244,6 +244,9 @@ describe('Actions', () => {
               '0xAnotherAddress': '0x0',
             },
           },
+          identities: {
+            '0xAnotherAddress': {},
+          },
         }),
       );
 
@@ -398,7 +401,7 @@ describe('Actions', () => {
 
       const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
         cb(null, {
-          identities: {},
+          addedAccountAddress: '0x123',
         }),
       );
 
@@ -895,6 +898,7 @@ describe('Actions', () => {
           address: '0x514910771af9ca656af840dff83e8264ecf986ca',
           symbol: 'LINK',
           decimals: 18,
+          networkClientId: 'networkClientId1',
         }),
       );
       expect(addTokenStub.callCount).toStrictEqual(1);
@@ -911,7 +915,7 @@ describe('Actions', () => {
 
       const addTokenStub = sinon
         .stub()
-        .callsFake((_, __, ___, ____, cb) => cb(null, tokenDetails));
+        .callsFake((_, cb) => cb(null, tokenDetails));
 
       background.getApi.returns({
         addToken: addTokenStub,
@@ -934,6 +938,7 @@ describe('Actions', () => {
           address: '0x514910771af9ca656af840dff83e8264ecf986ca',
           symbol: 'LINK',
           decimals: 18,
+          networkClientId: 'networkClientId1',
         }),
       );
 
@@ -1402,15 +1407,17 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        {
-          type: 'SHOW_PRIVATE_KEY',
-          payload: testPrivKey,
-        },
       ];
 
       await store.dispatch(
-        actions.exportAccount('a-test-password', '0xAddress'),
+        actions.exportAccount(
+          'a-test-password',
+          '0xAddress',
+          jest.fn(),
+          jest.fn(),
+        ),
       );
+
       expect(verifyPasswordStub.callCount).toStrictEqual(1);
       expect(exportAccountStub.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -1619,6 +1626,32 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setParticipateInMetaMetrics', () => {
+    beforeAll(() => {
+      window.sentry = {
+        toggleSession: jest.fn(),
+        endSession: jest.fn(),
+      };
+    });
+    it('sets participateInMetaMetrics to true', async () => {
+      const store = mockStore();
+      const setParticipateInMetaMetricsStub = jest.fn((_, cb) => cb());
+
+      background.getApi.returns({
+        setParticipateInMetaMetrics: setParticipateInMetaMetricsStub,
+      });
+
+      _setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.setParticipateInMetaMetrics(true));
+      expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(
+        true,
+        expect.anything(),
+      );
+      expect(window.sentry.toggleSession).toHaveBeenCalled();
+    });
+  });
+
   describe('#setUseBlockie', () => {
     afterEach(() => {
       sinon.restore();
@@ -1726,6 +1759,84 @@ describe('Actions', () => {
       ];
 
       store.dispatch(actions.setUseMultiAccountBalanceChecker());
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setUse4ByteResolution', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setUse4ByteResolution in background', async () => {
+      const store = mockStore();
+      const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => cb());
+      _setBackgroundConnection({
+        setUse4ByteResolution: setUse4ByteResolutionStub,
+      });
+
+      await store.dispatch(actions.setUse4ByteResolution());
+      expect(setUse4ByteResolutionStub.callCount).toStrictEqual(1);
+    });
+
+    it('errors when setUse4ByteResolution in background throws', async () => {
+      const store = mockStore();
+      const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => {
+        cb(new Error('error'));
+      });
+
+      _setBackgroundConnection({
+        setUse4ByteResolution: setUse4ByteResolutionStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.setUse4ByteResolution());
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setUseSafeChainsListValidation', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setUseSafeChainsListValidation in background', () => {
+      const store = mockStore();
+      const setUseSafeChainsListValidationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      _setBackgroundConnection({
+        setUseSafeChainsListValidation: setUseSafeChainsListValidationStub,
+      });
+
+      store.dispatch(actions.setUseSafeChainsListValidation());
+      expect(setUseSafeChainsListValidationStub.callCount).toStrictEqual(1);
+    });
+
+    it('errors when setUseSafeChainsListValidation in background throws', () => {
+      const store = mockStore();
+      const setUseSafeChainsListValidationStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          cb(new Error('error'));
+        });
+
+      _setBackgroundConnection({
+        setUseSafeChainsListValidation: setUseSafeChainsListValidationStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+      ];
+
+      store.dispatch(actions.setUseSafeChainsListValidation());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1875,6 +1986,9 @@ describe('Actions', () => {
               '0xFirstAddress': {
                 balance: '0x0',
               },
+            },
+            identities: {
+              '0xFirstAddress': {},
             },
             cachedBalances: {
               '0x1': {

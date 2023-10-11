@@ -4,19 +4,20 @@ import ConfigureSnapPopup, {
   ConfigureSnapPopupType,
 } from '../../../components/app/configure-snap-popup';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Button,
   Icon,
   IconName,
   Text,
+  IconSize,
 } from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  Color,
+  TextColor,
   Display,
   FlexDirection,
   IconColor,
@@ -31,13 +32,14 @@ export default function SnapCard({
   snapTitle,
   snapSlug,
   isInstalled,
+  updateAvailable,
   website,
   id,
   onClickFunc,
 }: Pick<
   SnapCardProps,
   'iconUrl' | 'snapTitle' | 'snapSlug' | 'isInstalled' | 'website' | 'id'
-> & { onClickFunc: () => void }) {
+> & { onClickFunc: () => void; updateAvailable: boolean }) {
   const t = useI18nContext();
   const history = useHistory();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
@@ -52,6 +54,9 @@ export default function SnapCard({
       borderWidth={1}
       padding={[4, 4, 4, 4]}
       data-testid="key-management-snap"
+      onClick={() => {
+        history.push(`/add-snap-account/${id}`);
+      }}
     >
       <Box
         display={Display.Flex}
@@ -90,16 +95,25 @@ export default function SnapCard({
         </Box>
         {isInstalled ? (
           <Button
+            className="configure-button"
             data-testid="configure-snap-button"
-            variant={BUTTON_VARIANT.SECONDARY}
+            variant={ButtonVariant.Secondary}
             onClick={() => setShowConfigPopover(true)}
           >
             {t('snapConfigure')}
+            <Icon
+              as="span"
+              marginLeft={2}
+              name={IconName.Arrow2UpRight}
+              style={{
+                verticalAlign: 'middle',
+              }}
+            />
           </Button>
         ) : (
           <Button
             data-testid="install-snap-button"
-            variant={BUTTON_VARIANT.SECONDARY}
+            variant={ButtonVariant.Secondary}
             onClick={() => {
               history.push(`/add-snap-account/${id}`);
             }}
@@ -110,7 +124,7 @@ export default function SnapCard({
       </Box>
       <Text
         variant={TextVariant.bodySm}
-        color={Color.textAlternative}
+        color={TextColor.textAlternative}
         marginBottom={2}
       >
         {snapTitle}
@@ -119,11 +133,23 @@ export default function SnapCard({
         {snapSlug}
       </Text>
 
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        marginTop={2}
+      >
+        {updateAvailable && (
+          <Text color={TextColor.textAlternative}>
+            {t('snapUpdateAvailable')}
+          </Text>
+        )}
         <Icon
           data-testid="to-snap-detail"
           name={IconName.Arrow2Right}
           color={IconColor.iconAlternative}
+          size={IconSize.Xs}
           onClick={onClickFunc}
           marginLeft="auto"
         />

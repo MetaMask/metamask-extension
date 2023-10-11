@@ -2,6 +2,12 @@
  * @file The entry point for the web extension singleton process.
  */
 
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+import './lib/setup-initial-state-hooks';
+
 import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
@@ -9,6 +15,7 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
+import { isObject } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -21,6 +28,9 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -37,7 +47,7 @@ import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
-import { SENTRY_STATE } from './lib/setupSentry';
+import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
@@ -64,6 +74,12 @@ import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 ///: END:ONLY_INCLUDE_IN
 /* eslint-enable import/order */
 
+// Setup global hook for improved Sentry state snapshots during initialization
+const inTest = process.env.IN_TEST;
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+global.stateHooks.getMostRecentPersistedState = () =>
+  localStore.mostRecentRetrievedState;
+
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
@@ -75,7 +91,7 @@ const metamaskInternalProcessHash = {
 
 const metamaskBlockedPorts = ['trezor-connect'];
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
+log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
@@ -86,10 +102,6 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-
-// state persistence
-const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {
@@ -209,7 +221,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
  * @property {boolean} isNetworkMenuOpen - Represents whether the main network selection UI is currently displayed.
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
- * @property {object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
  * @property {object} contractExchangeRates - Info about current token prices.
@@ -226,7 +237,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
- * @property {TransactionMeta[]} currentNetworkTxList - An array of transactions associated with the currently selected network.
  * @property {object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
@@ -238,7 +248,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
- * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
@@ -260,7 +269,8 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  */
 async function initialize() {
   try {
-    const initState = await loadStateFromPersistence();
+    const initData = await loadStateFromPersistence();
+    const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -283,6 +293,7 @@ async function initialize() {
       initLangCode,
       {},
       isFirstMetaMaskControllerSetup,
+      initData.meta,
     );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -349,7 +360,7 @@ async function loadPhishingWarningPage() {
   } catch (error) {
     if (error instanceof PhishingWarningPageTimeoutError) {
       console.warn(
-        'Phishing warning page timeout; page not guaraneteed to work offline.',
+        'Phishing warning page timeout; page not guaranteed to work offline.',
       );
     } else {
       console.error('Failed to initialize phishing warning page', error);
@@ -405,6 +416,19 @@ export async function loadStateFromPersistence() {
   versionedData = await migrator.migrateData(versionedData);
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
+  } else if (!isObject(versionedData.meta)) {
+    throw new Error(
+      `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
+    );
+  } else if (typeof versionedData.meta.version !== 'number') {
+    throw new Error(
+      `MetaMask - migrator metadata version has invalid type '${typeof versionedData
+        .meta.version}'`,
+    );
+  } else if (!isObject(versionedData.data)) {
+    throw new Error(
+      `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
+    );
   }
   // this initializes the meta/version data as a class variable to be used for future writes
   localStore.setMetadata(versionedData.meta);
@@ -413,7 +437,7 @@ export async function loadStateFromPersistence() {
   localStore.set(versionedData.data);
 
   // return just the data
-  return versionedData.data;
+  return versionedData;
 }
 
 /**
@@ -426,12 +450,14 @@ export async function loadStateFromPersistence() {
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
  * @param isFirstMetaMaskControllerSetup
+ * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  */
 export function setupController(
   initState,
   initLangCode,
   overrides,
   isFirstMetaMaskControllerSetup,
+  stateMetadata,
 ) {
   //
   // MetaMask Controller
@@ -458,6 +484,7 @@ export function setupController(
     localStore,
     overrides,
     isFirstMetaMaskControllerSetup,
+    currentMigrationVersion: stateMetadata.version,
   });
 
   setupEnsIpfsResolver({
@@ -466,6 +493,9 @@ export function setupController(
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
+    getUseAddressBarEnsResolution: () =>
+      controller.preferencesController.store.getState()
+        .useAddressBarEnsResolution,
     provider: controller.provider,
   });
 
@@ -774,6 +804,14 @@ export function setupController(
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+            controller.approvalController.accept(id, false);
+            break;
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
           default:
             controller.approvalController.reject(
               id,
@@ -792,6 +830,13 @@ export function setupController(
     controller.store.subscribe((state) => {
       DesktopManager.setState(state);
     });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed.
+  if (Object.keys(controller.snapController.state.snaps).length > 0) {
+    controller.snapController.updateBlockedSnaps();
   }
   ///: END:ONLY_INCLUDE_IN
 }
@@ -866,14 +911,9 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 function setupSentryGetStateGlobal(store) {
-  global.stateHooks.getSentryState = function () {
-    const fullState = store.getState();
-    const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
-    return {
-      browser: window.navigator.userAgent,
-      store: debugState,
-      version: platform.getVersion(),
-    };
+  global.stateHooks.getSentryAppState = function () {
+    const backgroundState = store.memStore.getState();
+    return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }
 

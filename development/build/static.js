@@ -3,7 +3,6 @@ const fs = require('fs-extra');
 const watch = require('gulp-watch');
 const glob = require('fast-glob');
 
-const locales = require('../../app/_locales/index.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
@@ -180,6 +179,10 @@ function getCopyTargets(
       dest: 'init-globals.js',
     },
     {
+      src: './app/scripts/load-app.js',
+      dest: 'load-app.js',
+    },
+    {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,
@@ -205,26 +208,9 @@ function getCopyTargets(
 
   if (activeFeatures.includes('blockaid')) {
     allCopyTargets.push({
-      src: getPathInsideNodeModules('@metamask/ppom-validator', 'dist/'),
+      src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
       dest: '',
-    });
-  }
-
-  const languageTags = new Set();
-  for (const locale of locales) {
-    const { code } = locale;
-    const tag = code.split('_')[0];
-    languageTags.add(tag);
-  }
-
-  for (const tag of languageTags) {
-    allCopyTargets.push({
-      src: getPathInsideNodeModules(
-        '@formatjs/intl-relativetimeformat',
-        `dist/locale-data/${tag}.json`,
-      ),
-      dest: `intl/${tag}/relative-time-format-data.json`,
     });
   }
 

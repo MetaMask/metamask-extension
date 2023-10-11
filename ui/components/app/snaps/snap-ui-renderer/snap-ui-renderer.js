@@ -46,6 +46,9 @@ export const UI_MAPPING = {
   text: (props) => ({
     element: 'SnapUIMarkdown',
     children: props.value,
+    props: {
+      markdown: props.markdown,
+    },
   }),
   spinner: () => ({
     element: 'Spinner',
@@ -66,6 +69,12 @@ export const UI_MAPPING = {
     element: 'Copyable',
     props: {
       text: props.value,
+    },
+  }),
+  image: (props) => ({
+    element: 'SnapUIImage',
+    props: {
+      value: props.value,
     },
   }),
 };

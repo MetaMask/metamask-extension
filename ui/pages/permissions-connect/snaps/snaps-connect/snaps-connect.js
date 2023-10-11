@@ -6,8 +6,8 @@ import Box from '../../../../components/ui/box';
 import SiteOrigin from '../../../../components/ui/site-origin';
 import {
   IconSize,
-  Text,
   ValidTag,
+  Text,
 } from '../../../../components/component-library';
 import {
   FlexDirection,

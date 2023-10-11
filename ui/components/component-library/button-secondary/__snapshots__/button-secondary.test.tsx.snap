@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ButtonSecondary should render button element correctly 1`] = `
+<div>
+  <button
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+    data-testid="button-secondary"
+  >
+    Button Secondary
+  </button>
+</div>
+`;

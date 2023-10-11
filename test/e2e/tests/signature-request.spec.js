@@ -124,7 +124,7 @@ describe('Sign Typed Data Signature Request', function () {
   });
 
   testData.forEach((data) => {
-    it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
+    it(`can queue multiple Signature Requests of ${data.type} and confirm @no-mmi`, async function () {
       await withFixtures(
         {
           dapp: true,
@@ -160,7 +160,7 @@ describe('Sign Typed Data Signature Request', function () {
 
           await driver.waitForSelector({
             text: 'Reject 2 requests',
-            tag: 'a',
+            tag: 'button',
           });
 
           await verifyAndAssertSignTypedData(

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, Label } from '../../component-library';
+import { Label, Text } from '../../component-library';
+
 import {
   TextTransform,
   BackgroundColor,

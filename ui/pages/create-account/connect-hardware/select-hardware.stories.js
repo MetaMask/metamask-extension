@@ -10,6 +10,7 @@ export default {
 export const DefaultStory = () => {
   return (
     <SelectHardware
+      onCancel={() => null}
       browserSupported
       connectToHardwareWallet={(selectedDevice) =>
         action(`Continue connect to ${selectedDevice}`)()
@@ -24,6 +25,7 @@ DefaultStory.storyName = 'Default';
 export const BrowserNotSupported = () => {
   return (
     <SelectHardware
+      onCancel={() => null}
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
       ledgerTransportType={LedgerTransportTypes.live}

@@ -2,9 +2,14 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
+import { NetworkType } from '@metamask/controller-utils';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { domainInitialState } from '../../ducks/domains';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import {
   renderWithProvider,
   setBackgroundConnection,
@@ -64,14 +69,14 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: 'activity' },
   metamask: {
-    unapprovedTxs: {
-      1: {
+    transactions: [
+      {
         id: 1,
         txParams: {
           value: 'oldTxValue',
         },
       },
-    },
+    ],
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
@@ -85,8 +90,12 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    networkDetails: {
-      EIPS: {},
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {},
+        status: 'available',
+      },
     },
     tokens: [],
     preferences: {
@@ -103,7 +112,6 @@ const baseStore = {
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },
-    currentNetworkTxList: [],
     cachedBalances: {
       [CHAIN_IDS.GOERLI]: {},
     },
@@ -238,6 +246,14 @@ describe('Send Page', () => {
             transactionCategory: 'approve',
           },
         },
+        metamask: {
+          ...baseStore.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+        },
       });
       const { getByText } = renderWithProvider(<Send />, store);
       expect(getByText('Send')).toBeTruthy();
@@ -274,6 +290,14 @@ describe('Send Page', () => {
             type: 'transfer',
             origin: 'https://metamask.github.io',
             transactionCategory: 'approve',
+          },
+        },
+        metamask: {
+          ...baseStore.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
           },
         },
       });

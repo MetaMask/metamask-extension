@@ -12,6 +12,8 @@ import {
   MessagesIndexedById,
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { getCurrentNetworkTransactions } from '../../selectors';
+import { TransactionMeta } from '../../../shared/constants/transaction';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
@@ -57,13 +59,19 @@ export function updateCustodyState(
   newState: MetaMaskReduxState['metamask'],
   state: CombinedBackgroundAndReduxState & any,
 ) {
-  if (!newState.currentNetworkTxList || !state.metamask.currentNetworkTxList) {
+  if (!newState.transactions || !state.metamask.transactions) {
     return;
   }
 
-  const differentTxs = newState.currentNetworkTxList.filter(
-    (item) =>
-      state.metamask.currentNetworkTxList.filter(
+  const newCurrentNetworkTxList = getCurrentNetworkTransactions({
+    metamask: newState,
+  });
+
+  const oldCurrentNetworkTxList = getCurrentNetworkTransactions(state);
+
+  const differentTxs = newCurrentNetworkTxList.filter(
+    (item: TransactionMeta) =>
+      oldCurrentNetworkTxList.filter(
         (tx: { [key: string]: any }) =>
           tx.custodyId === item.custodyId &&
           tx.custodyStatus !== item.custodyStatus,
@@ -71,7 +79,7 @@ export function updateCustodyState(
   );
 
   const txStateSaysDeepLinkShouldClose = Boolean(
-    differentTxs.find((tx) => {
+    differentTxs.find((tx: TransactionMeta) => {
       const custodyAccountDetails =
         state.metamask.custodyAccountDetails[
           toChecksumHexAddress(tx.txParams.from)
@@ -115,17 +123,19 @@ export function updateCustodyState(
 }
 
 export function checkForUnapprovedMessages(
-  msgData: TemporaryMessageDataType['msgParams'],
+  msgData: TemporaryMessageDataType,
   unapprovedMessages: MessagesIndexedById,
 ) {
   const custodianUnapprovedMessages = Object.keys(unapprovedMessages)
     .map((key) => unapprovedMessages[key])
-    .filter((message) => message.custodyId && message.status === 'unapproved');
+    .filter((message) => {
+      return message.metadata?.custodyId && message.status === 'unapproved';
+    });
 
   if (custodianUnapprovedMessages && custodianUnapprovedMessages.length > 0) {
     return {
       ...msgData,
-      custodyId: unapprovedMessages[msgData.metamaskId]?.custodyId,
+      custodyId: unapprovedMessages[msgData.id]?.metadata?.custodyId,
     };
   }
 

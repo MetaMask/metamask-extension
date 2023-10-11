@@ -54,6 +54,7 @@ import {
   getAggregatorMetadata,
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
+  getLatestAddedTokenTo,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -89,9 +90,11 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
 import {
   resetSwapsPostFetchState,
+  ignoreTokens,
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
@@ -99,6 +102,7 @@ import {
   setSwapsErrorKey,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
+import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   countDecimals,
   fetchTokenPrice,
@@ -115,13 +119,14 @@ import {
   IconSize,
   TextField,
   ButtonLink,
-  Text,
+  ButtonLinkSize,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  BannerAlert,
+  Text,
 } from '../../../components/component-library';
-import { BannerAlert } from '../../../components/component-library/banner-alert';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
 import TransactionSettings from '../transaction-settings/transaction-settings';
@@ -132,8 +137,6 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from './smart-transactions-popover';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
-
-const MAX_ALLOWED_SLIPPAGE = 15;
 
 let timeoutIdForQuotesPrefetching;
 
@@ -182,6 +185,7 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
   const areQuotesPresent = numberOfQuotes > 0;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
@@ -449,12 +453,21 @@ export default function PrepareSwapPage({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
+  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
+      if (latestAddedTokenTo && token.address !== toAddress) {
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: toAddress,
+            dontShowLoadingIndicator: true,
+          }),
+        );
+      }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
@@ -556,7 +569,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
+  }, [dispatch]);
 
   const BlockExplorerLink = () => {
     return (
@@ -586,7 +599,10 @@ export default function PrepareSwapPage({
     );
   };
 
-  const swapYourTokenBalance = `${t('balance')}: ${fromTokenString || '0'}`;
+  const yourTokenFromBalance = `${t('balance')}: ${fromTokenString || '0'}`;
+  const yourTokenToBalance = `${t('balance')}: ${
+    selectedToToken?.string || '0'
+  }`;
 
   const isDirectWrappingEnabled = shouldEnableDirectWrapping(
     chainId,
@@ -627,6 +643,10 @@ export default function PrepareSwapPage({
       if (!isReviewSwapButtonDisabled) {
         if (isSmartTransaction) {
           clearSmartTransactionFees(); // Clean up STX fees eery time there is a form change.
+          dispatch({
+            type: SET_SMART_TRANSACTIONS_ERROR,
+            payload: null,
+          });
         }
         // Only do quotes prefetching if the Review swap button is enabled.
         prefetchQuotesWithoutRedirecting();
@@ -773,7 +793,7 @@ export default function PrepareSwapPage({
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
         {tokenForImport && isImportTokenModalOpen && (
-          <ImportToken {...importTokenProps} />
+          <ImportToken isOpen {...importTokenProps} />
         )}
         <Modal
           onClose={onSwapToClose}
@@ -843,14 +863,15 @@ export default function PrepareSwapPage({
             </Box>
           </ModalContent>
         </Modal>
-        {showSmartTransactionsOptInPopover && (
-          <SmartTransactionsPopover
-            onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-            onCloseSmartTransactionsOptInPopover={
-              onCloseSmartTransactionsOptInPopover
-            }
-          />
-        )}
+
+        <SmartTransactionsPopover
+          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
+          onCloseSmartTransactionsOptInPopover={
+            onCloseSmartTransactionsOptInPopover
+          }
+          isOpen={showSmartTransactionsOptInPopover}
+        />
+
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
@@ -883,7 +904,7 @@ export default function PrepareSwapPage({
             alignItems={AlignItems.stretch}
           >
             <div className="prepare-swap-page__balance-message">
-              {fromTokenSymbol && swapYourTokenBalance}
+              {fromTokenSymbol && yourTokenFromBalance}
               {showMaxBalanceLink && (
                 <div
                   className="prepare-swap-page__max-balance"
@@ -942,11 +963,7 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           )}
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            height={0}
-          >
+          <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.center}>
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
@@ -997,6 +1014,15 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
+          >
+            <div className="prepare-swap-page__balance-message">
+              {selectedToToken?.string && yourTokenToBalance}
+            </div>
+          </Box>
         </div>
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
@@ -1009,6 +1035,9 @@ export default function PrepareSwapPage({
                   ? t('swapTokenVerifiedOn1SourceTitle')
                   : t('swapTokenAddedManuallyTitle')
               }
+              titleProps={{
+                'data-testid': 'swaps-banner-title',
+              }}
               width={BLOCK_SIZES.FULL}
             >
               <Box>
@@ -1028,7 +1057,7 @@ export default function PrepareSwapPage({
                 </Text>
                 {!verificationClicked && (
                   <ButtonLink
-                    size={Size.INHERIT}
+                    size={ButtonLinkSize.Inherit}
                     textProps={{
                       variant: TextVariant.bodyMd,
                       alignItems: AlignItems.flexStart,
@@ -1047,7 +1076,10 @@ export default function PrepareSwapPage({
         )}
         {swapsErrorKey && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
-            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
+            <SwapsBannerAlert
+              swapsErrorKey={swapsErrorKey}
+              currentSlippage={maxSlippage}
+            />
           </Box>
         )}
         {transactionSettingsOpened &&

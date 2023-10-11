@@ -6,7 +6,11 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH } from '../../../helpers/constants/common';
 import configureStore from '../../../store/store';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-
+import {
+  NETWORK_TYPES,
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 import EditGasFeePopover from './edit-gas-fee-popover';
 
 jest.mock('../../../store/actions', () => ({
@@ -53,7 +57,11 @@ const render = ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
-      providerConfig: {},
+      providerConfig: {
+        chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        type: NETWORK_TYPES.GOERLI,
+      },
       cachedBalances: {},
       accounts: {
         '0xAddress': {
@@ -61,9 +69,13 @@ const render = ({ txProps, contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
+      identities: {
+        '0xAddress': {},
+      },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      advancedGasFee: {},
     },
   });
 

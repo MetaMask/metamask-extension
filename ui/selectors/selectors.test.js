@@ -1,9 +1,11 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, NetworkType } from '@metamask/controller-utils';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
+  NETWORK_TYPES,
+  OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
 
@@ -314,6 +316,55 @@ describe('Selectors', () => {
       const lastItem = networks.pop();
       expect(lastItem.nickname.toLowerCase()).toContain('localhost');
     });
+
+    it('properly assigns a network as removable', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.LOCALHOST,
+              nickname: LOCALHOST_DISPLAY_NAME,
+              id: 'some-config-name',
+            },
+          },
+        },
+      });
+
+      const mainnet = networks.find(
+        (network) => network.id === NETWORK_TYPES.MAINNET,
+      );
+      expect(mainnet.removable).toBe(false);
+
+      const customNetwork = networks.find(
+        (network) => network.id === 'some-config-name',
+      );
+      expect(customNetwork.removable).toBe(true);
+    });
+
+    it('properly proposes a known network image when not provided by adding function', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.OPTIMISM,
+              nickname: OPTIMISM_DISPLAY_NAME,
+              id: 'some-config-name',
+            },
+          },
+        },
+      });
+
+      const optimismConfig = networks.find(
+        ({ chainId }) => chainId === CHAIN_IDS.OPTIMISM,
+      );
+      expect(optimismConfig.rpcPrefs.imageUrl).toBe('./images/optimism.svg');
+    });
   });
 
   describe('#getCurrentNetwork', () => {
@@ -465,8 +516,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networkDetails: {
-            EIPS: { 1559: false },
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: { 1559: false },
+            },
           },
         },
       });
@@ -475,8 +528,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networkDetails: {
-            EIPS: { 1559: false },
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: { 1559: false },
+            },
           },
         },
       });
@@ -501,7 +556,7 @@ describe('Selectors', () => {
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
     const accountsWithSendEther =
       selectors.accountsWithSendEtherInfoSelector(mockState);
-    expect(accountsWithSendEther).toHaveLength(4);
+    expect(accountsWithSendEther).toHaveLength(5);
     expect(accountsWithSendEther[0].balance).toStrictEqual(
       '0x346ba7725f412cbfdb',
     );
@@ -599,11 +654,6 @@ describe('Selectors', () => {
       maxBaseFee: '75',
       priorityFee: '2',
     });
-  });
-  it('#getIsAdvancedGasFeeDefault', () => {
-    const isAdvancedGasFeeDefault =
-      selectors.getIsAdvancedGasFeeDefault(mockState);
-    expect(isAdvancedGasFeeDefault).toStrictEqual(true);
   });
   it('#getAppIsLoading', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
@@ -709,5 +759,43 @@ describe('Selectors', () => {
 
     mockState.metamask.snapsInstallPrivacyWarningShown = null;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+  });
+
+  it('#getInfuraBlocked', () => {
+    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
+    expect(isInfuraBlocked).toBe(false);
+
+    const modifiedMockState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networksMetadata: {
+          ...mockState.metamask.networksMetadata,
+          goerli: {
+            status: 'blocked',
+          },
+        },
+      },
+    };
+    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
+    expect(isInfuraBlocked).toBe(true);
+  });
+
+  it('#getSnapRegistryData', () => {
+    const mockSnapId = 'npm:@metamask/test-snap-bip44';
+    expect(selectors.getSnapRegistryData(mockState, mockSnapId)).toStrictEqual(
+      expect.objectContaining({
+        id: mockSnapId,
+        versions: {
+          '5.1.2': {
+            checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+          },
+        },
+        metadata: expect.objectContaining({
+          website: 'https://snaps.consensys.io/',
+          name: 'BIP-44',
+        }),
+      }),
+    );
   });
 });

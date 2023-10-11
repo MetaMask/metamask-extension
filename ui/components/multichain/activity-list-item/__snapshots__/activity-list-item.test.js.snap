@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ActivityListItem should match snapshot with no props 1`] = `
+<div>
+  <div
+    class="mm-box activity-list-item activity-list-item--single-content-row mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
+    tabindex="0"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+    >
+      <div
+        class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--width-full"
+      >
+        <div
+          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--width-1/3 mm-box--sm:width-7/12"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+            data-testid="activity-list-item-action"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ActivityListItem should match snapshot with props 1`] = `
+<div>
+  <div
+    class="mm-box activity-list-item list-item-test mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
+    data-testid="test-id"
+    tabindex="0"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--width-full mm-box--color-text-default"
+    >
+      <p>
+        Content rendered at the top
+      </p>
+    </p>
+    <div
+      class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+    >
+      <div
+        class="mm-box mm-box--display-inline-flex"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/custody.svg');"
+        />
+      </div>
+      <div
+        class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--width-full"
+      >
+        <div
+          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--width-1/3 mm-box--sm:width-7/12"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+            data-testid="activity-list-item-action"
+          >
+            Hello World
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+          >
+            <p>
+              I am a list item
+            </p>
+          </div>
+          <div
+            class="mm-box activity-list-item__children"
+          >
+            <button>
+              I am a button
+            </button>
+          </div>
+        </div>
+        <div
+          class="mm-box activity-list-item__mid-content mm-box--display-inline-flex"
+        >
+          <p>
+            Content rendered in the middle
+          </p>
+        </div>
+        <div
+          class="mm-box activity-list-item__right-content mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full mm-box--height-min"
+        >
+          <p>
+            Content rendered to the right
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

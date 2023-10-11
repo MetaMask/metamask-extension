@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
 import { cloneDeep } from 'lodash';
+import { SubjectType } from '@metamask/permission-controller';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -16,13 +17,16 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
+  getTargetSubjectMetadata,
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 
-const signatureSelect = (txData) => {
+const signatureSelect = (txData, targetSubjectMetadata) => {
   const {
     type,
     msgParams: { version, siwe },
@@ -36,7 +40,7 @@ const signatureSelect = (txData) => {
     return SignatureRequest;
   }
 
-  if (siwe?.isSIWEMessage) {
+  if (siwe?.isSIWEMessage && targetSubjectMetadata !== SubjectType.Snap) {
     return SignatureRequestSIWE;
   }
 
@@ -51,9 +55,7 @@ const ConfirmTxScreen = ({ match }) => {
   );
   const sendTo = useSelector(getSendTo);
   const {
-    unapprovedTxs,
     identities,
-    currentNetworkTxList,
     currentCurrency,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
@@ -61,6 +63,8 @@ const ConfirmTxScreen = ({ match }) => {
     networkId,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const { chainId } = useSelector(getProviderConfig);
   const { txId: index } = useSelector((state) => state.appState);
 
@@ -83,68 +87,78 @@ const ConfirmTxScreen = ({ match }) => {
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
-  }, []);
-
-  useEffect(() => {
-    if (!prevValue) {
-      setPrevValues({ index, unapprovedTxs });
-      return;
-    }
-
-    let prevTx;
-    const { params: { id: transactionId } = {} } = match;
-    if (transactionId) {
-      prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId);
-    } else {
-      const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevValue;
-      const prevUnconfTxList = txHelper(
-        prevUnapprovedTxs,
-        {},
-        {},
-        {},
-        networkId,
-        chainId,
-      );
-      const prevTxData = prevUnconfTxList[prevIndex] || {};
-      prevTx =
-        currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
-    }
-
-    const unconfTxList = txHelper(
-      unapprovedTxs || {},
-      {},
-      {},
-      {},
-      networkId,
-      chainId,
-    );
-
-    if (prevTx && prevTx.status === TransactionStatus.dropped) {
-      dispatch(
-        actions.showModal({
-          name: 'TRANSACTION_CONFIRMED',
-          onSubmit: () => navigateToMostRecentOverviewPage(),
-        }),
-      );
-      return;
-    }
-
-    if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
-      navigateToMostRecentOverviewPage();
-    }
-
-    setPrevValues({ index, unapprovedTxs });
   }, [
     chainId,
-    currentNetworkTxList,
-    match,
+    navigateToMostRecentOverviewPage,
     networkId,
     sendTo,
     unapprovedMessagesTotal,
     unapprovedTxs,
   ]);
 
-  const getTxData = () => {
+  useEffect(
+    () => {
+      if (!prevValue) {
+        setPrevValues({ index, unapprovedTxs });
+        return;
+      }
+
+      let prevTx;
+      const { params: { id: transactionId } = {} } = match;
+      if (transactionId) {
+        prevTx = currentNetworkTxList.find(
+          ({ id }) => `${id}` === transactionId,
+        );
+      } else {
+        const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } =
+          prevValue;
+        const prevUnconfTxList = txHelper(
+          prevUnapprovedTxs,
+          {},
+          {},
+          {},
+          networkId,
+          chainId,
+        );
+        const prevTxData = prevUnconfTxList[prevIndex] || {};
+        prevTx =
+          currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
+      }
+
+      const unconfTxList = txHelper(
+        unapprovedTxs || {},
+        {},
+        {},
+        {},
+        networkId,
+        chainId,
+      );
+
+      if (prevTx && prevTx.status === TransactionStatus.dropped) {
+        dispatch(
+          actions.showModal({
+            name: 'TRANSACTION_CONFIRMED',
+            onSubmit: () => navigateToMostRecentOverviewPage(),
+          }),
+        );
+        return;
+      }
+
+      if (
+        unconfTxList.length === 0 &&
+        !sendTo &&
+        unapprovedMessagesTotal === 0
+      ) {
+        navigateToMostRecentOverviewPage();
+      }
+
+      setPrevValues({ index, unapprovedTxs });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const getTxData = useCallback(() => {
     const { params: { id: transactionId } = {} } = match;
 
     const unconfTxList = txHelper(
@@ -162,16 +176,28 @@ const ConfirmTxScreen = ({ match }) => {
       ? unconfTxList.find(({ id }) => `${id}` === transactionId)
       : unconfTxList[index];
     return cloneDeep(unconfirmedTx);
-  };
+  }, [
+    chainId,
+    index,
+    match,
+    networkId,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTxs,
+    unapprovedTypedMessages,
+  ]);
 
-  const txData = getTxData() || {};
+  const txData = useMemo(() => getTxData() || {}, [getTxData]);
 
-  const { msgParams } = txData;
-  if (!msgParams) {
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, txData.msgParams?.origin),
+  );
+
+  if (!txData.msgParams) {
     return <Loading />;
   }
 
-  const SigComponent = signatureSelect(txData);
+  const SigComponent = signatureSelect(txData, targetSubjectMetadata);
 
   return (
     <SigComponent

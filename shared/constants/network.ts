@@ -138,6 +138,10 @@ export const CHAIN_IDS = {
   BSC_TESTNET: '0x61',
   OPTIMISM: '0xa',
   OPTIMISM_TESTNET: '0x1a4',
+  BASE: '0x2105',
+  BASE_TESTNET: '0x14a33',
+  OPBNB: '0xcc',
+  OPBNB_TESTNET: '0x15eb',
   POLYGON: '0x89',
   POLYGON_TESTNET: '0x13881',
   AVALANCHE: '0xa86a',
@@ -158,6 +162,8 @@ export const CHAIN_IDS = {
   CRONOS: '0x19',
   FILECOIN: '0x13a',
   FILECOIN_TESTNET: '0x4cb2f',
+  GNOSIS: '0x64',
+  ZKSYNC_ERA: '0x144',
 } as const;
 
 /**
@@ -177,7 +183,7 @@ export const POLYGON_DISPLAY_NAME = 'Polygon';
 export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
 export const ARBITRUM_DISPLAY_NAME = 'Arbitrum One';
 export const BNB_DISPLAY_NAME = 'BNB Chain';
-export const OPTIMISM_DISPLAY_NAME = 'Optimism';
+export const OPTIMISM_DISPLAY_NAME = 'OP Mainnet';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
@@ -185,6 +191,7 @@ export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const FILECOIN_DISPLAY_NAME = 'Filecoin Mainnet';
 export const FILECOIN_TESTNET_DISPLAY_NAME = 'Filecoin Calibration';
+export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -222,6 +229,7 @@ export const CURRENCY_SYMBOLS = {
   BUSD: 'BUSD',
   CELO: 'CELO',
   DAI: 'DAI',
+  GNOSIS: 'XDAI',
   ETH: 'ETH',
   FANTOM: 'FTM',
   HARMONY: 'ONE',
@@ -255,6 +263,7 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const FILECOIN_TOKEN_IMAGE_URL = './images/filecoin.png';
+export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -334,6 +343,14 @@ export const BUILT_IN_INFURA_NETWORKS = pick(
 
 export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 
+// type SupportedNetworksType = {
+//   [key: string]: {
+//     domain: string;
+//     subdomain: string;
+//     networkId: string;
+//   };
+// };
+
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
@@ -391,6 +408,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FILECOIN]: FILECOIN_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FILECOIN_TESTNET]: FILECOIN_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -421,12 +439,14 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.FILECOIN]: FILECOIN_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.FILECOIN_TESTNET]: FILECOIN_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
 
 const defaultEtherscanDomain = 'etherscan.io';
 const defaultEtherscanSubdomainPrefix = 'api';
+
 /**
  * Map of all Etherscan supported networks.
  */
@@ -529,6 +549,10 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: 'filecoin.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}`,
     networkId: parseInt(CHAIN_IDS.FILECOIN, 16).toString(),
+  [CHAIN_IDS.GNOSIS]: {
+    domain: 'gnosisscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
+    networkId: parseInt(CHAIN_IDS.GNOSIS, 16).toString(),
   },
 };
 
@@ -558,6 +582,10 @@ export const BUYABLE_CHAINS_MAP: {
     ChainId,
     | typeof CHAIN_IDS.LOCALHOST
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
+    | typeof CHAIN_IDS.BASE_TESTNET
+    | typeof CHAIN_IDS.BASE
+    | typeof CHAIN_IDS.OPBNB_TESTNET
+    | typeof CHAIN_IDS.OPBNB
     | typeof CHAIN_IDS.BSC_TESTNET
     | typeof CHAIN_IDS.POLYGON_TESTNET
     | typeof CHAIN_IDS.AVALANCHE_TESTNET
@@ -567,14 +595,12 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.FILECOIN
     | typeof CHAIN_IDS.FILECOIN_TESTNET
+    | typeof CHAIN_IDS.SEPOLIA
+    | typeof CHAIN_IDS.GNOSIS
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
-  [CHAIN_IDS.SEPOLIA]: {
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [CHAIN_IDS.BSC]: {
@@ -632,6 +658,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.LINEA_MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'linea',
+  },
+  [CHAIN_IDS.ZKSYNC_ERA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'zksync',
   },
 };
 
@@ -744,6 +774,13 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://filfox.info/en',
       imageUrl: FILECOIN_TOKEN_IMAGE_URL,
+    chainId: CHAIN_IDS.GNOSIS,
+    nickname: GNOSIS_DISPLAY_NAME,
+    rpcUrl: `https://rpc.gnosischain.com`,
+    ticker: CURRENCY_SYMBOLS.GNOSIS,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://gnosisscan.io',
+      imageUrl: GNOSIS_TOKEN_IMAGE_URL,
     },
   },
 ];

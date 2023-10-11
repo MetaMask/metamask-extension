@@ -195,9 +195,6 @@
   "buildContactList": {
     "message": "Buuin ang iyong listahan ng contact"
   },
-  "buy": {
-    "message": "Bumili"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -338,9 +335,6 @@
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong key (i-click para kopyahin)"
-  },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
   },
@@ -408,9 +402,6 @@
   },
   "deleteNetwork": {
     "message": "I-delete ang Network?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
   "details": {
     "message": "Mga Detalye"
@@ -492,9 +483,6 @@
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"
   },
-  "enterPassword": {
-    "message": "Ilagay ang password"
-  },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
   },
@@ -544,9 +532,6 @@
   },
   "expandView": {
     "message": "I-expand ang view"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Pribadong Key"
   },
   "externalExtension": {
     "message": "External Extension"
@@ -1105,9 +1090,6 @@
   "publicAddress": {
     "message": "Pampublikong Address"
   },
-  "queue": {
-    "message": "Queue"
-  },
   "queued": {
     "message": "Naka-queue"
   },
@@ -1217,9 +1199,6 @@
   "searchResults": {
     "message": "Mga Resulta ng Paghahanap"
   },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -1317,9 +1296,6 @@
   },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
-  },
-  "showPrivateKeys": {
-    "message": "Ipakita ang Mga Private Key"
   },
   "sigRequest": {
     "message": "Request ng Signature"
@@ -1772,9 +1748,6 @@
   },
   "tryAgain": {
     "message": "Subukan ulit"
-  },
-  "typePassword": {
-    "message": "Uri ng password ng iyong MetaMask"
   },
   "unapproved": {
     "message": "Hindi inaprubahan"

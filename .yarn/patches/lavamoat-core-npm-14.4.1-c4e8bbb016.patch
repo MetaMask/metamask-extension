@@ -1,0 +1,31 @@
+diff --git a/src/kernelTemplate.js b/src/kernelTemplate.js
+index de8d73048b7bb7c4e74009b5c85ad919fe197ef0..e5bcb987cff013def8b2e8c767eb75a57ea0bd7a 100644
+--- a/src/kernelTemplate.js
++++ b/src/kernelTemplate.js
+@@ -60,6 +60,8 @@
+       errorTaming: 'unsafe',
+       // shows the full call stack
+       stackFiltering: 'verbose',
++      // prevents most common override mistake cases from tripping up users
++      overrideTaming: 'severe',
+     }
+ 
+     lockdown(lockdownOptions)
+diff --git a/src/loadPolicy.js b/src/loadPolicy.js
+index ef71923f9282d6a5e9f74e6ec6fa0516f28f508b..0118fda7e1b0fa461ec01ceff8d7112d072f3dfb 100644
+--- a/src/loadPolicy.js
++++ b/src/loadPolicy.js
+@@ -33,10 +33,9 @@ async function loadPolicyAndApplyOverrides({ debugMode, policyPath, policyOverri
+     }
+     const policyOverride = await readPolicyFile({ debugMode, policyPath: policyOverridePath })
+     lavamoatPolicy = mergePolicy(policy, policyOverride)
+-    // TODO: Only write if merge results in changes.
+-    // Would have to make a deep equal check on whole policy, which is a waste of time.
+-    // mergePolicy() should be able to do it in one pass.
+-    fs.writeFileSync(policyPath, jsonStringify(lavamoatPolicy, { space: 2 }))
++    // Skip policy write step to prevent intermittent build failures
++    // The extension validates the policy in a separate step, we don't need it
++    // to be written to disk here.
+   }
+   return lavamoatPolicy
+ }

@@ -17,7 +17,6 @@ import {
   showInteractiveReplacementTokenBanner,
 } from '../../../store/institutional/institution-background';
 import {
-  Text,
   Label,
   Icon,
   ButtonLink,
@@ -27,6 +26,7 @@ import {
   Button,
   BUTTON_VARIANT,
   BUTTON_SIZES,
+  Text,
 } from '../../../components/component-library';
 import {
   OverflowWrap,
@@ -63,7 +63,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
   const { url } = interactiveReplacementToken || {};
   const { custodians } = mmiConfiguration;
   const custodian =
-    custodians.find((item) => item.name === custodianName) || {};
+    custodians.find((item) => item.envName === custodianName) || {};
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const metaMaskAccounts = useSelector(getMetaMaskAccounts);
   const connectRequests = useSelector(

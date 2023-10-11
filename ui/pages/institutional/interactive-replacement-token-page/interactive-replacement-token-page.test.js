@@ -14,6 +14,7 @@ const custodianAccounts = [
     address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     balance: '0x',
     name: 'Jupiter',
+    envName: 'Jupiter',
     labels: [
       {
         key: 'service',
@@ -25,6 +26,7 @@ const custodianAccounts = [
     address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
     balance: '0x',
     name: 'Jupiter',
+    envName: 'Jupiter',
     labels: [
       {
         key: 'service',
@@ -70,11 +72,6 @@ const connectRequests = [
     labels,
     origin: 'origin',
     apiUrl: 'apiUrl',
-    token: {
-      projectName: 'projectName',
-      projectId: 'projectId',
-      clientId: 'clientId',
-    },
   },
 ];
 
@@ -102,6 +99,7 @@ const render = ({ newState } = {}) => {
           {
             production: true,
             name: 'Jupiter',
+            envName: 'Jupiter',
             type: 'Jupiter',
             iconUrl: 'iconUrl',
             displayName: 'displayName',
@@ -109,7 +107,6 @@ const render = ({ newState } = {}) => {
         ],
       },
       institutionalFeatures: {
-        complianceProjectId: '',
         connectRequests,
       },
       ...newState,

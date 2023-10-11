@@ -5,20 +5,26 @@ import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   IconName,
-  ButtonLink,
   TextFieldSearch,
-  Text,
   Box,
   Modal,
   ModalContent,
   ModalOverlay,
   ModalHeader,
+  Text,
+  ButtonVariant,
+  ButtonLink,
+  ButtonSecondary,
+  ButtonSecondarySize,
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
   BlockSize,
   Size,
   TextColor,
+  Display,
+  FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -27,6 +33,9 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getIsAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
 import {
@@ -46,6 +55,17 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
+const ACTION_MODES = {
+  // Displays the search box and account list
+  LIST: '',
+  // Displays the Add, Import, Hardware accounts
+  MENU: 'menu',
+  // Displays the add account form controls
+  ADD: 'add',
+  // Displays the import account form controls
+  IMPORT: 'import',
+};
+
 export const AccountListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -55,9 +75,12 @@ export const AccountListMenu = ({ onClose }) => {
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
+  ///: END:ONLY_INCLUDE_IN
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [actionMode, setActionMode] = useState('');
+  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
   let searchResults = accounts;
   if (searchQuery) {
@@ -74,10 +97,19 @@ export const AccountListMenu = ({ onClose }) => {
   }
 
   let title = t('selectAnAccount');
-  if (actionMode === 'add') {
+  if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
     title = t('addAccount');
-  } else if (actionMode === 'import') {
+  } else if (actionMode === ACTION_MODES.IMPORT) {
     title = t('importAccount');
+  }
+
+  let onBack = null;
+  if (actionMode !== ACTION_MODES.LIST) {
+    if (actionMode === ACTION_MODES.MENU) {
+      onBack = () => setActionMode(ACTION_MODES.LIST);
+    } else {
+      onBack = () => setActionMode(ACTION_MODES.MENU);
+    }
   }
 
   return (
@@ -85,36 +117,30 @@ export const AccountListMenu = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent
         className="multichain-account-menu-popover"
-        modalDialogProps={{ padding: 0, marginBottom: 0 }}
+        modalDialogProps={{
+          className: 'multichain-account-menu-popover__dialog',
+          padding: 0,
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+        }}
       >
-        <ModalHeader
-          paddingTop={4}
-          paddingRight={4}
-          paddingBottom={6}
-          onClose={onClose}
-          onBack={actionMode === '' ? null : () => setActionMode('')}
-        >
+        <ModalHeader padding={4} onClose={onClose} onBack={onBack}>
           {title}
         </ModalHeader>
-        {actionMode === 'add' ? (
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-          >
+        {actionMode === ACTION_MODES.ADD ? (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <CreateAccount
               onActionComplete={(confirmed) => {
                 if (confirmed) {
                   dispatch(toggleAccountMenu());
                 } else {
-                  setActionMode('');
+                  setActionMode(ACTION_MODES.LIST);
                 }
               }}
             />
           </Box>
         ) : null}
-        {actionMode === 'import' ? (
+        {actionMode === ACTION_MODES.IMPORT ? (
           <Box
             paddingLeft={4}
             paddingRight={4}
@@ -126,14 +152,135 @@ export const AccountListMenu = ({ onClose }) => {
                 if (confirmed) {
                   dispatch(toggleAccountMenu());
                 } else {
-                  setActionMode('');
+                  setActionMode(ACTION_MODES.LIST);
                 }
               }}
             />
           </Box>
         ) : null}
-        {actionMode === '' ? (
-          <Box>
+        {/* Add / Import / Hardware Menu */}
+        {actionMode === ACTION_MODES.MENU ? (
+          <Box padding={4}>
+            <Box>
+              <ButtonLink
+                size={Size.SM}
+                startIconName={IconName.Add}
+                onClick={() => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.AccountAddSelected,
+                    properties: {
+                      account_type: MetaMetricsEventAccountType.Default,
+                      location: 'Main Menu',
+                    },
+                  });
+                  setActionMode(ACTION_MODES.ADD);
+                }}
+                data-testid="multichain-account-menu-popover-add-account"
+              >
+                {t('addNewAccount')}
+              </ButtonLink>
+            </Box>
+            <Box marginTop={4}>
+              <ButtonLink
+                size={Size.SM}
+                startIconName={IconName.Import}
+                onClick={() => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.AccountAddSelected,
+                    properties: {
+                      account_type: MetaMetricsEventAccountType.Imported,
+                      location: 'Main Menu',
+                    },
+                  });
+                  setActionMode(ACTION_MODES.IMPORT);
+                }}
+              >
+                {t('importAccount')}
+              </ButtonLink>
+            </Box>
+            <Box marginTop={4}>
+              <ButtonLink
+                size={Size.SM}
+                startIconName={IconName.Hardware}
+                onClick={() => {
+                  dispatch(toggleAccountMenu());
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.AccountAddSelected,
+                    properties: {
+                      account_type: MetaMetricsEventAccountType.Hardware,
+                      location: 'Main Menu',
+                    },
+                  });
+                  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                    global.platform.openExtensionInBrowser(
+                      CONNECT_HARDWARE_ROUTE,
+                    );
+                  } else {
+                    history.push(CONNECT_HARDWARE_ROUTE);
+                  }
+                }}
+              >
+                {t('addHardwareWallet')}
+              </ButtonLink>
+            </Box>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+              addSnapAccountEnabled ? (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={Size.SM}
+                    startIconName={IconName.Snaps}
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
+                      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                        ? global.platform.openExtensionInBrowser(
+                            ADD_SNAP_ACCOUNT_ROUTE,
+                            null,
+                            true,
+                          )
+                        : history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                    }}
+                  >
+                    {t('settingAddSnapAccount')}
+                  </ButtonLink>
+                </Box>
+              ) : null
+              ///: END:ONLY_INCLUDE_IN
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={Size.SM}
+                  startIconName={IconName.Custody}
+                  onClick={() => {
+                    dispatch(toggleAccountMenu());
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event:
+                        MetaMetricsEventName.ConnectCustodialAccountClicked,
+                    });
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser(
+                        CUSTODY_ACCOUNT_ROUTE,
+                      );
+                    } else {
+                      history.push(CUSTODY_ACCOUNT_ROUTE);
+                    }
+                  }}
+                >
+                  {t('connectCustodialAccountMenu')}
+                </ButtonLink>
+              </Box>
+              ///: END:ONLY_INCLUDE_IN
+            }
+          </Box>
+        ) : null}
+        {actionMode === ACTION_MODES.LIST ? (
+          <>
             {/* Search box */}
             {accounts.length > 1 ? (
               <Box
@@ -196,126 +343,27 @@ export const AccountListMenu = ({ onClose }) => {
                 );
               })}
             </Box>
-            {/* Add / Import / Hardware */}
-            <Box padding={4}>
-              <Box marginBottom={4}>
-                <ButtonLink
-                  size={Size.SM}
-                  startIconName={IconName.Add}
-                  onClick={() => {
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        account_type: MetaMetricsEventAccountType.Default,
-                        location: 'Main Menu',
-                      },
-                    });
-                    setActionMode('add');
-                  }}
-                  data-testid="multichain-account-menu-popover-add-account"
-                >
-                  {t('addAccount')}
-                </ButtonLink>
-              </Box>
-              <Box marginBottom={4}>
-                <ButtonLink
-                  size={Size.SM}
-                  startIconName={IconName.Import}
-                  onClick={() => {
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        account_type: MetaMetricsEventAccountType.Imported,
-                        location: 'Main Menu',
-                      },
-                    });
-                    setActionMode('import');
-                  }}
-                >
-                  {t('importAccount')}
-                </ButtonLink>
-              </Box>
-              <Box marginBottom={4}>
-                <ButtonLink
-                  size={Size.SM}
-                  startIconName={IconName.Hardware}
-                  onClick={() => {
-                    dispatch(toggleAccountMenu());
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.AccountAddSelected,
-                      properties: {
-                        account_type: MetaMetricsEventAccountType.Hardware,
-                        location: 'Main Menu',
-                      },
-                    });
-                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                      global.platform.openExtensionInBrowser(
-                        CONNECT_HARDWARE_ROUTE,
-                      );
-                    } else {
-                      history.push(CONNECT_HARDWARE_ROUTE);
-                    }
-                  }}
-                >
-                  {t('hardwareWallet')}
-                </ButtonLink>
-              </Box>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-                <>
-                  <Box marginTop={4}>
-                    <ButtonLink
-                      size={Size.SM}
-                      startIconName={IconName.Snaps}
-                      onClick={() => {
-                        dispatch(toggleAccountMenu());
-                        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                          ? global.platform.openExtensionInBrowser(
-                              ADD_SNAP_ACCOUNT_ROUTE,
-                              null,
-                              true,
-                            )
-                          : history.push(ADD_SNAP_ACCOUNT_ROUTE);
-                      }}
-                    >
-                      {t('settingAddSnapAccount')}
-                    </ButtonLink>
-                  </Box>
-                </>
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <Box>
-                  <ButtonLink
-                    size={Size.SM}
-                    startIconName={IconName.Custody}
-                    onClick={() => {
-                      dispatch(toggleAccountMenu());
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event:
-                          MetaMetricsEventName.UserClickedConnectCustodialAccount,
-                      });
-                      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                        global.platform.openExtensionInBrowser(
-                          CUSTODY_ACCOUNT_ROUTE,
-                        );
-                      } else {
-                        history.push(CUSTODY_ACCOUNT_ROUTE);
-                      }
-                    }}
-                  >
-                    {t('connectCustodialAccountMenu')}
-                  </ButtonLink>
-                </Box>
-                ///: END:ONLY_INCLUDE_IN
-              }
+            {/* Add / Import / Hardware button */}
+            <Box
+              paddingTop={2}
+              paddingBottom={4}
+              paddingLeft={4}
+              paddingRight={4}
+              alignItems={AlignItems.center}
+              display={Display.Flex}
+            >
+              <ButtonSecondary
+                startIconName={IconName.Add}
+                variant={ButtonVariant.Secondary}
+                size={ButtonSecondarySize.Lg}
+                block
+                onClick={() => setActionMode(ACTION_MODES.MENU)}
+                data-testid="multichain-account-menu-popover-action-button"
+              >
+                {t('addImportAccount')}
+              </ButtonSecondary>
             </Box>
-          </Box>
+          </>
         ) : null}
       </ModalContent>
     </Modal>
