@@ -1,4 +1,3 @@
-import { ReactFragment } from 'react';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
@@ -15,6 +14,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+import getBuyUrl from '../../app/scripts/lib/buy-url';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -29,7 +29,7 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
@@ -43,10 +43,7 @@ import {
   DraftTransaction,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import {
-  getProviderConfig,
-  getUnconnectedAccountAlertEnabledness,
-} from '../ducks/metamask/metamask';
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,
@@ -54,7 +51,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  MetaMetricsEventCategory,
+  EVENT,
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -65,9 +62,10 @@ import {
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
+import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -78,7 +76,12 @@ import {
   TransactionMetaMetricsEvent,
   TransactionType,
 } from '../../shared/constants/transaction';
-import { NetworkType, RPCDefinition } from '../../shared/constants/network';
+import {
+  BUYABLE_CHAINS_MAP,
+  CurrencySymbol,
+  NetworkType,
+  RPCDefinition,
+} from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
@@ -89,12 +92,6 @@ import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-ma
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import {
-  checkForUnapprovedTypedMessages,
-  updateCustodyState,
-} from './institutional/institution-actions';
-///: END:ONLY_INCLUDE_IN
 import {
   generateActionId,
   callBackgroundMethod,
@@ -116,7 +113,7 @@ export function goHome() {
 export function tryUnlockMetamask(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     dispatch(unlockInProgress());
     log.debug(`background.submitPassword`);
@@ -158,7 +155,7 @@ export function createNewVaultAndRestore(
   password: string,
   seedPhrase: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
 
@@ -201,7 +198,7 @@ export function createNewVaultAndRestore(
 export function createNewVaultAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     try {
@@ -224,7 +221,7 @@ export function createNewVaultAndGetSeedPhrase(
 export function unlockAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     try {
@@ -294,7 +291,7 @@ export async function verifySeedPhrase() {
 export function requestRevealSeedWords(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.verifyPassword`);
 
@@ -302,6 +299,9 @@ export function requestRevealSeedWords(
       await verifyPassword(password);
       const seedPhrase = await verifySeedPhrase();
       return seedPhrase;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -323,13 +323,36 @@ export function tryReverseResolveAddress(
   };
 }
 
+export function fetchInfoToSync(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch) => {
+    log.debug(`background.fetchInfoToSync`);
+    return new Promise((resolve, reject) => {
+      callBackgroundMethod('fetchInfoToSync', [], (err, result) => {
+        if (err) {
+          if (isErrorWithMessage(err)) {
+            dispatch(displayWarning(err.message));
+          }
+          reject(err);
+          return;
+        }
+        resolve(result);
+      });
+    });
+  };
+}
+
 export function resetAccount(): ThunkAction<
   Promise<string>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
 
     return new Promise<string>((resolve, reject) => {
@@ -354,7 +377,7 @@ export function resetAccount(): ThunkAction<
 export function removeAccount(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     try {
@@ -383,18 +406,17 @@ export function removeAccount(
 export function importNewAccount(
   strategy: string,
   args: any[],
-  loadingMessage: ReactFragment,
 ): ThunkAction<
   Promise<MetaMaskReduxState['metamask']>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     let newState;
-
-    dispatch(showLoadingIndication(loadingMessage));
-
+    dispatch(
+      showLoadingIndication('This may take a while, please be patient.'),
+    );
     try {
       log.debug(`background.importAccountWithStrategy`);
       await submitRequestToBackground('importAccountWithStrategy', [
@@ -405,6 +427,9 @@ export function importNewAccount(
       newState = await submitRequestToBackground<
         MetaMaskReduxState['metamask']
       >('getState');
+    } catch (err) {
+      dispatch(displayWarning(err));
+      throw err;
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -451,7 +476,7 @@ export function checkHardwareStatus(
   hdPath: string,
 ): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.checkHardwareStatus`, deviceName, hdPath);
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let unlocked = false;
@@ -477,7 +502,7 @@ export function forgetDevice(
   deviceName: HardwareDeviceNames,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.forgetDevice`, deviceName);
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     try {
       await submitRequestToBackground('forgetDevice', [deviceName]);
@@ -582,7 +607,7 @@ export function unlockHardwareWalletAccounts(
     hdPath,
     hdPathDescription,
   );
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     for (const index of indexes) {
@@ -612,7 +637,7 @@ export function showQrScanner(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(
       showModal({
         name: 'QR_SCANNER',
@@ -624,7 +649,7 @@ export function showQrScanner(): ThunkAction<
 export function setCurrentCurrency(
   currencyCode: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setCurrentCurrency`);
     try {
@@ -649,7 +674,7 @@ export function signMsg(
   AnyAction
 > {
   log.debug('action - signMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`actions calling background.signMessage`);
     let newState;
@@ -681,7 +706,7 @@ export function signPersonalMsg(
   AnyAction
 > {
   log.debug('action - signPersonalMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`actions calling background.signPersonalMessage`);
 
@@ -699,11 +724,6 @@ export function signPersonalMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (newState.unapprovedTypedMessages) {
-      return checkForUnapprovedTypedMessages(msgData, newState);
-    }
-    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -719,7 +739,7 @@ export function decryptMsgInline(
   AnyAction
 > {
   log.debug('action - decryptMsgInline');
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     log.debug(`actions calling background.decryptMessageInline`);
 
     let newState;
@@ -747,7 +767,7 @@ export function decryptMsg(
   AnyAction
 > {
   log.debug('action - decryptMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`actions calling background.decryptMessage`);
 
@@ -780,7 +800,7 @@ export function encryptionPublicKeyMsg(
   AnyAction
 > {
   log.debug('action - encryptionPublicKeyMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`actions calling background.encryptionPublicKey`);
 
@@ -813,7 +833,7 @@ export function signTypedMsg(
   AnyAction
 > {
   log.debug('action - signTypedMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`actions calling background.signTypedMessage`);
 
@@ -831,11 +851,6 @@ export function signTypedMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (newState.unapprovedTypedMessages) {
-      return checkForUnapprovedTypedMessages(msgData, newState);
-    }
-    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -937,7 +952,7 @@ export function updateEditableParams(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     let updatedTransaction: TransactionMeta;
     try {
       updatedTransaction = await submitRequestToBackground(
@@ -1079,7 +1094,7 @@ export function updateTransaction(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
 
     try {
@@ -1126,7 +1141,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     const actionId = generateActionId();
     try {
       log.debug('background.addUnapprovedTransaction');
@@ -1180,7 +1195,7 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
@@ -1234,7 +1249,7 @@ export async function getTransactions(
 export function completedTx(
   txId: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch({
       type: actionConstants.COMPLETED_TX,
       value: {
@@ -1252,11 +1267,11 @@ export function updateTransactionParams(txId: number, txParams: TxParams) {
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('disableSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -1265,7 +1280,7 @@ export function disableSnap(
 export function enableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('enableSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -1274,7 +1289,7 @@ export function enableSnap(
 export function removeSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('removeSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -1300,7 +1315,7 @@ export async function handleSnapRequest(args: {
 export function dismissNotifications(
   ids: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('dismissNotifications', [ids]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -1340,35 +1355,10 @@ export function deleteExpiredNotifications(): ThunkAction<
 export function markNotificationsAsRead(
   ids: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('markNotificationsAsRead', [ids]);
     await forceUpdateMetamaskState(dispatch);
   };
-}
-
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-
-export function setDesktopEnabled(desktopEnabled: boolean) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setDesktopEnabled', [desktopEnabled]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
-}
-
-export async function generateDesktopOtp() {
-  return await submitRequestToBackground('generateDesktopOtp');
-}
-
-export async function testDesktopConnection() {
-  return await submitRequestToBackground('testDesktopConnection');
-}
-
-export async function disableDesktop() {
-  return await submitRequestToBackground('disableDesktop');
 }
 ///: END:ONLY_INCLUDE_IN
 
@@ -1380,7 +1370,7 @@ export function cancelMsg(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let newState;
@@ -1408,7 +1398,7 @@ export function cancelMsg(
 export function cancelMsgs(
   msgDataList: TemporaryMessageDataType[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     try {
@@ -1503,7 +1493,7 @@ export function cancelPersonalMsg(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let newState;
@@ -1530,7 +1520,7 @@ export function cancelDecryptMsg(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let newState;
@@ -1557,7 +1547,7 @@ export function cancelEncryptionPublicKeyMsg(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let newState;
@@ -1584,7 +1574,7 @@ export function cancelTypedMsg(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let newState;
@@ -1612,7 +1602,7 @@ export function cancelTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise<void>((resolve, reject) => {
       const actionId = generateActionId();
@@ -1655,7 +1645,7 @@ export function cancelTx(
 export function cancelTxs(
   txMetaList: TransactionMeta[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     try {
@@ -1700,7 +1690,7 @@ export function markPasswordForgotten(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     try {
       await new Promise<void>((resolve, reject) => {
         callBackgroundMethod('markPasswordForgotten', [], (error) => {
@@ -1725,7 +1715,7 @@ export function unMarkPasswordForgotten(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     return new Promise<void>((resolve) => {
       callBackgroundMethod('unMarkPasswordForgotten', [], () => {
         resolve();
@@ -1768,15 +1758,13 @@ export function updateMetamaskState(
   newState: MetaMaskReduxState['metamask'],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
-    const state = getState();
-    const providerConfig = getProviderConfig(state);
-    const { metamask: currentState } = state;
+    const { metamask: currentState } = getState();
 
-    const { currentLocale, selectedAddress } = currentState;
+    const { currentLocale, selectedAddress, provider } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
-      providerConfig: newProviderConfig,
+      provider: newProvider,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
@@ -1787,10 +1775,8 @@ export function updateMetamaskState(
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
-    const newAddressBook =
-      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
-    const oldAddressBook =
-      currentState.addressBook?.[providerConfig?.chainId] ?? {};
+    const newAddressBook = newState.addressBook?.[newProvider?.chainId] ?? {};
+    const oldAddressBook = currentState.addressBook?.[provider?.chainId] ?? {};
     const newAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: newState });
     const oldAccounts: { [address: string]: Record<string, any> } =
@@ -1839,10 +1825,10 @@ export function updateMetamaskState(
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
     });
-    if (providerConfig.chainId !== newProviderConfig.chainId) {
+    if (provider.chainId !== newProvider.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
-        payload: newProviderConfig.chainId,
+        payload: newProvider.chainId,
       });
       // We dispatch this action to ensure that the send state stays up to date
       // after the chain changes. This async thunk will fail gracefully in the
@@ -1851,10 +1837,6 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    updateCustodyState(dispatch, newState, getState());
-    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -1878,7 +1860,7 @@ export function lockMetamask(): ThunkAction<
 > {
   log.debug(`background.setLocked`);
 
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
@@ -1907,7 +1889,7 @@ async function _setSelectedAddress(address: string): Promise<void> {
 export function setSelectedAddress(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setSelectedAddress`);
     try {
@@ -1969,7 +1951,7 @@ export function addPermittedAccount(
   origin: string,
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'addPermittedAccount',
@@ -1991,7 +1973,7 @@ export function removePermittedAccount(
   origin: string,
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'removePermittedAccount',
@@ -2029,7 +2011,7 @@ export function addToken(
   image?: string,
   dontShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot add token without address');
     }
@@ -2061,7 +2043,7 @@ export function addToken(
 export function addImportedTokens(
   tokensToImport: Token[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     try {
       await submitRequestToBackground('addImportedTokens', [tokensToImport]);
     } catch (error) {
@@ -2090,7 +2072,7 @@ export function ignoreTokens({
     ? tokensToIgnore
     : [tokensToIgnore];
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
@@ -2122,12 +2104,12 @@ export function addNft(
   tokenID: string,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot add NFT without address');
+      throw new Error('MetaMask - Cannot add collectible without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot add NFT without tokenID');
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2149,12 +2131,12 @@ export function addNftVerifyOwnership(
   tokenID: string,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot add NFT without address');
+      throw new Error('MetaMask - Cannot add collectible without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot add NFT without tokenID');
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2187,12 +2169,12 @@ export function removeAndIgnoreNft(
   tokenID: string,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot ignore NFT without address');
+      throw new Error('MetaMask - Cannot ignore collectible without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot ignore NFT without tokenID');
+      throw new Error('MetaMask - Cannot ignore collectible without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2214,12 +2196,12 @@ export function removeNft(
   tokenID: string,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot remove NFT without address');
+      throw new Error('MetaMask - Cannot remove collectible without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot remove NFT without tokenID');
+      throw new Error('MetaMask - Cannot remove collectible without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2242,13 +2224,13 @@ export async function checkAndUpdateAllNftsOwnershipStatus() {
 
 export async function isNftOwner(
   ownerAddress: string,
-  nftAddress: string,
-  nftId: string,
+  collectibleAddress: string,
+  collectibleId: string,
 ): Promise<boolean> {
   return await submitRequestToBackground('isNftOwner', [
     ownerAddress,
-    nftAddress,
-    nftId,
+    collectibleAddress,
+    collectibleId,
   ]);
 }
 
@@ -2282,7 +2264,7 @@ export async function getTokenStandardAndDetails(
 export function addTokens(
   tokens: Token[] | { [address: string]: Token },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     if (Array.isArray(tokens)) {
       return Promise.all(
         tokens.map(({ address, symbol, decimals }) =>
@@ -2295,6 +2277,44 @@ export function addTokens(
         dispatch(addToken(address, symbol, decimals)),
       ),
     );
+  };
+}
+
+export function rejectWatchAsset(
+  suggestedAssetID: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('rejectWatchAsset', [suggestedAssetID]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    dispatch(closeCurrentNotificationWindow());
+  };
+}
+
+export function acceptWatchAsset(
+  suggestedAssetID: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('acceptWatchAsset', [suggestedAssetID]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    dispatch(closeCurrentNotificationWindow());
   };
 }
 
@@ -2312,7 +2332,7 @@ export function createCancelTransaction(
   log.debug('background.cancelTransaction');
   let newTxId: number;
 
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     const actionId = generateActionId();
     return new Promise<MetaMaskReduxState['metamask']>((resolve, reject) => {
       callBackgroundMethod<MetaMaskReduxState['metamask']>(
@@ -2348,7 +2368,7 @@ export function createSpeedUpTransaction(
   log.debug('background.createSpeedUpTransaction');
   let newTx: TransactionMeta;
 
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     const actionId = generateActionId();
     return new Promise<MetaMaskReduxState['metamask']>((resolve, reject) => {
       callBackgroundMethod<MetaMaskReduxState['metamask']>(
@@ -2381,7 +2401,7 @@ export function createRetryTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   let newTx: TransactionMeta;
 
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     return new Promise<MetaMaskReduxState['metamask']>((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod<MetaMaskReduxState['metamask']>(
@@ -2413,7 +2433,7 @@ export function createRetryTransaction(
 export function setProviderType(
   type: NetworkType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     log.debug(`background.setProviderType`, type);
 
     try {
@@ -2425,91 +2445,27 @@ export function setProviderType(
   };
 }
 
-export function upsertNetworkConfiguration(
-  {
-    rpcUrl,
-    chainId,
-    nickname,
-    rpcPrefs,
-    ticker = EtherDenomination.ETH,
-  }: {
-    rpcUrl: string;
-    chainId: string;
-    nickname: string;
-    rpcPrefs: RPCDefinition['rpcPrefs'];
-    ticker: string;
-  },
-  {
-    setActive,
-    source,
-  }: {
-    setActive: boolean;
-    source: string;
-  },
+export function updateAndSetCustomRpc(
+  newRpcUrl: string,
+  chainId: string,
+  ticker: EtherDenomination,
+  nickname: string,
+  rpcPrefs: RPCDefinition['rpcPrefs'],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
-      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
+      `background.updateAndSetCustomRpc: ${newRpcUrl} ${chainId} ${
+        ticker ?? EtherDenomination.ETH
+      } ${nickname}`,
     );
-    let networkConfigurationId;
-    try {
-      networkConfigurationId = await submitRequestToBackground(
-        'upsertNetworkConfiguration',
-        [
-          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
-          { setActive, source, referrer: ORIGIN_METAMASK },
-        ],
-      );
-    } catch (error) {
-      log.error(error);
-      dispatch(displayWarning('Had a problem adding network!'));
-    }
-    return networkConfigurationId;
-  };
-}
-
-export function editAndSetNetworkConfiguration(
-  {
-    networkConfigurationId,
-    rpcUrl,
-    chainId,
-    nickname,
-    rpcPrefs,
-    ticker = EtherDenomination.ETH,
-  }: {
-    networkConfigurationId: string;
-    rpcUrl: string;
-    chainId: string;
-    nickname: string;
-    rpcPrefs: RPCDefinition['rpcPrefs'];
-    ticker: string;
-  },
-  { source }: { source: string },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
-    );
-    try {
-      await submitRequestToBackground('removeNetworkConfiguration', [
-        networkConfigurationId,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem removing network!'));
-      return;
-    }
 
     try {
-      await submitRequestToBackground('upsertNetworkConfiguration', [
-        {
-          rpcUrl,
-          chainId,
-          ticker,
-          nickname: nickname || rpcUrl,
-          rpcPrefs,
-        },
-        { setActive: true, referrer: ORIGIN_METAMASK, source },
+      await submitRequestToBackground('updateAndSetCustomRpc', [
+        newRpcUrl,
+        chainId,
+        ticker ?? EtherDenomination.ETH,
+        nickname || newRpcUrl,
+        rpcPrefs,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -2518,14 +2474,56 @@ export function editAndSetNetworkConfiguration(
   };
 }
 
-export function setActiveNetwork(
-  networkConfigurationId: string,
+export function editRpc(
+  oldRpcUrl: string,
+  newRpcUrl: string,
+  chainId: string,
+  ticker: EtherDenomination,
+  nickname: string,
+  rpcPrefs: RPCDefinition['rpcPrefs'],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
+    log.debug(`background.delRpcTarget: ${oldRpcUrl}`);
     try {
-      await submitRequestToBackground('setActiveNetwork', [
-        networkConfigurationId,
+      submitRequestToBackground('delCustomRpc', [oldRpcUrl]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem removing network!'));
+      return;
+    }
+
+    try {
+      await submitRequestToBackground('updateAndSetCustomRpc', [
+        newRpcUrl,
+        chainId,
+        ticker ?? EtherDenomination.ETH,
+        nickname || newRpcUrl,
+        rpcPrefs,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function setRpcTarget(
+  newRpcUrl: string,
+  chainId: string,
+  ticker?: EtherDenomination,
+  nickname?: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    log.debug(
+      `background.setRpcTarget: ${newRpcUrl} ${chainId} ${ticker} ${nickname}`,
+    );
+
+    try {
+      await submitRequestToBackground('setCustomRpc', [
+        newRpcUrl,
+        chainId,
+        ticker ?? EtherDenomination.ETH,
+        nickname || newRpcUrl,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -2540,7 +2538,7 @@ export function rollbackToPreviousProvider(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     try {
       await submitRequestToBackground('rollbackToPreviousProvider');
     } catch (error) {
@@ -2550,27 +2548,21 @@ export function rollbackToPreviousProvider(): ThunkAction<
   };
 }
 
-export function removeNetworkConfiguration(
-  networkConfigurationId: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+export function delRpcTarget(
+  oldRpcUrl: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch) => {
-    log.debug(
-      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
-    );
-    return new Promise((resolve, reject) => {
-      callBackgroundMethod(
-        'removeNetworkConfiguration',
-        [networkConfigurationId],
-        (err) => {
-          if (err) {
-            logErrorWithMessage(err);
-            dispatch(displayWarning('Had a problem removing network!'));
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
+    log.debug(`background.delRpcTarget: ${oldRpcUrl}`);
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod('delCustomRpc', [oldRpcUrl], (err) => {
+        if (err) {
+          logErrorWithMessage(err);
+          dispatch(displayWarning('Had a problem removing network!'));
+          reject(err);
+          return;
+        }
+        resolve();
+      });
     });
   };
 }
@@ -2584,7 +2576,7 @@ export function addToAddressBook(
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getProviderConfig(getState());
+    const { chainId } = getState().metamask.provider;
 
     let set;
     try {
@@ -2683,19 +2675,19 @@ export function hideAlert(): Action {
 /**
  * TODO: this should be moved somewhere else when it makese sense to do so
  */
-interface NftDropDownState {
+interface CollectibleDropDownState {
   [address: string]: {
     [chainId: string]: {
-      [nftAddress: string]: boolean;
+      [collectibleAddress: string]: boolean;
     };
   };
 }
 
-export function updateNftDropDownState(
-  value: NftDropDownState,
+export function updateCollectibleDropDownState(
+  value: CollectibleDropDownState,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('updateNftDropDownState', [value]);
+  return async (dispatch) => {
+    await submitRequestToBackground('updateCollectibleDropDownState', [value]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2717,7 +2709,7 @@ interface QrCodeData {
 export function qrCodeDetected(
   qrCodeData: QrCodeData,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await dispatch({
       type: actionConstants.QR_CODE_DETECTED,
       value: qrCodeData,
@@ -2731,8 +2723,8 @@ export function qrCodeDetected(
 }
 
 export function showLoadingIndication(
-  message?: string | ReactFragment,
-): PayloadAction<string | ReactFragment | undefined> {
+  message?: string,
+): PayloadAction<string | undefined> {
   return {
     type: actionConstants.SHOW_LOADING,
     payload: message,
@@ -2873,7 +2865,7 @@ export function setAccountLabel(
   account: string,
   label: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setAccountLabel`);
 
@@ -2909,6 +2901,23 @@ export function showSendTokenPage(): Action {
   };
 }
 
+export function buy(opts: {
+  chainId: keyof typeof BUYABLE_CHAINS_MAP;
+  address?: string;
+  symbol?: CurrencySymbol;
+  service?: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    const url = await getBuyUrl(opts);
+    if (url) {
+      global.platform.openTab({ url });
+      dispatch({
+        type: actionConstants.BUY,
+      });
+    }
+  };
+}
+
 // TODO: Lift to shared folder when it makes sense
 interface TemporaryFeatureFlagDef {
   [feature: string]: boolean;
@@ -2927,7 +2936,7 @@ export function setFeatureFlag(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
       callBackgroundMethod<TemporaryFeatureFlagDef>(
@@ -2957,7 +2966,7 @@ export function setPreference(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
       callBackgroundMethod<TemporaryPreferenceFlagDef>(
@@ -2982,7 +2991,7 @@ export function setPreference(
 export function setDefaultHomeActiveTabName(
   value: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3016,7 +3025,7 @@ export function setCompletedOnboarding(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     try {
@@ -3071,19 +3080,6 @@ export function toggleAccountMenu() {
   };
 }
 
-export function toggleNetworkMenu() {
-  return {
-    type: actionConstants.TOGGLE_NETWORK_MENU,
-  };
-}
-
-export function setAccountDetailsAddress(address: string) {
-  return {
-    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
-    payload: address,
-  };
-}
-
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
@@ -3092,7 +3088,7 @@ export function setParticipateInMetaMetrics(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);
     return new Promise((resolve, reject) => {
       callBackgroundMethod<string>(
@@ -3120,7 +3116,7 @@ export function setParticipateInMetaMetrics(
 export function setUseBlockie(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseBlockie`);
     callBackgroundMethod('setUseBlockie', [val], (err) => {
@@ -3135,7 +3131,7 @@ export function setUseBlockie(
 export function setUseNonceField(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNonceField`);
     try {
@@ -3150,7 +3146,7 @@ export function setUseNonceField(
 export function setUsePhishDetect(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUsePhishDetect`);
     callBackgroundMethod('setUsePhishDetect', [val], (err) => {
@@ -3165,7 +3161,7 @@ export function setUsePhishDetect(
 export function setUseMultiAccountBalanceChecker(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseMultiAccountBalanceChecker`);
     callBackgroundMethod('setUseMultiAccountBalanceChecker', [val], (err) => {
@@ -3180,7 +3176,7 @@ export function setUseMultiAccountBalanceChecker(
 export function setUseTokenDetection(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseTokenDetection`);
     callBackgroundMethod('setUseTokenDetection', [val], (err) => {
@@ -3195,7 +3191,7 @@ export function setUseTokenDetection(
 export function setUseNftDetection(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNftDetection`);
     callBackgroundMethod('setUseNftDetection', [val], (err) => {
@@ -3210,7 +3206,7 @@ export function setUseNftDetection(
 export function setUseCurrencyRateCheck(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseCurrencyRateCheck`);
     callBackgroundMethod('setUseCurrencyRateCheck', [val], (err) => {
@@ -3225,7 +3221,7 @@ export function setUseCurrencyRateCheck(
 export function setOpenSeaEnabled(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setOpenSeaEnabled`);
     callBackgroundMethod('setOpenSeaEnabled', [val], (err) => {
@@ -3243,7 +3239,7 @@ export function detectNfts(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.detectNfts`);
     await submitRequestToBackground('detectNfts');
@@ -3255,7 +3251,7 @@ export function detectNfts(): ThunkAction<
 export function setAdvancedGasFee(
   val: { maxBaseFee?: Hex; priorityFee?: Hex } | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setAdvancedGasFee`);
     callBackgroundMethod('setAdvancedGasFee', [val], (err) => {
@@ -3270,7 +3266,7 @@ export function setAdvancedGasFee(
 export function setTheme(
   val: ThemeType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setTheme`);
     try {
@@ -3284,7 +3280,7 @@ export function setTheme(
 export function setIpfsGateway(
   val: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     log.debug(`background.setIpfsGateway`);
     callBackgroundMethod('setIpfsGateway', [val], (err) => {
       if (err) {
@@ -3297,7 +3293,7 @@ export function setIpfsGateway(
 export function updateCurrentLocale(
   key: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     try {
@@ -3379,7 +3375,7 @@ export function setPendingTokens(pendingTokens: {
 export function setSwapsLiveness(
   swapsLiveness: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSwapsLiveness', [swapsLiveness]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3388,7 +3384,7 @@ export function setSwapsLiveness(
 export function setSwapsFeatureFlags(
   featureFlags: TemporaryFeatureFlagDef,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSwapsFeatureFlags', [featureFlags]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3422,7 +3418,7 @@ export function fetchAndSetQuotes(
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     const [quotes, selectedAggId] = await submitRequestToBackground(
       'fetchAndSetQuotes',
       [fetchParams, fetchParamsMetaData],
@@ -3435,7 +3431,7 @@ export function fetchAndSetQuotes(
 export function setSelectedQuoteAggId(
   aggId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSelectedQuoteAggId', [aggId]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3444,7 +3440,7 @@ export function setSelectedQuoteAggId(
 export function setSwapsTokens(
   tokens: Token[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSwapsTokens', [tokens]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3456,7 +3452,7 @@ export function clearSwapsQuotes(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('clearSwapsQuotes');
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3468,7 +3464,7 @@ export function resetBackgroundSwapsState(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('resetSwapsState');
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3477,7 +3473,7 @@ export function resetBackgroundSwapsState(): ThunkAction<
 export function setCustomApproveTxData(
   data: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setCustomApproveTxData', [data]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3486,7 +3482,7 @@ export function setCustomApproveTxData(
 export function setSwapsTxGasPrice(
   gasPrice: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSwapsTxGasPrice', [gasPrice]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3495,7 +3491,7 @@ export function setSwapsTxGasPrice(
 export function setSwapsTxGasLimit(
   gasLimit: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSwapsTxGasLimit', [gasLimit, true]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3510,7 +3506,7 @@ export function updateCustomSwapsEIP1559GasParams({
   maxFeePerGas: string;
   maxPriorityFeePerGas: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await Promise.all([
       submitRequestToBackground('setSwapsTxGasLimit', [gasLimit]),
       submitRequestToBackground('setSwapsTxMaxFeePerGas', [maxFeePerGas]),
@@ -3528,7 +3524,7 @@ export function updateCustomSwapsEIP1559GasParams({
 export function updateSwapsUserFeeLevel(
   swapsCustomUserFeeLevel: PriorityLevels,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSwapsUserFeeLevel', [
       swapsCustomUserFeeLevel,
     ]);
@@ -3539,7 +3535,7 @@ export function updateSwapsUserFeeLevel(
 export function setSwapsQuotesPollingLimitEnabled(
   quotesPollingLimitEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSwapsQuotesPollingLimitEnabled', [
       quotesPollingLimitEnabled,
     ]);
@@ -3550,7 +3546,7 @@ export function setSwapsQuotesPollingLimitEnabled(
 export function setTradeTxId(
   tradeTxId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setTradeTxId', [tradeTxId]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3559,7 +3555,7 @@ export function setTradeTxId(
 export function setApproveTxId(
   approveTxId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setApproveTxId', [approveTxId]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3571,7 +3567,7 @@ export function safeRefetchQuotes(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('safeRefetchQuotes');
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3583,7 +3579,7 @@ export function stopPollingForQuotes(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('stopPollingForQuotes');
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3592,7 +3588,7 @@ export function stopPollingForQuotes(): ThunkAction<
 export function setBackgroundSwapRouteState(
   routeState: '' | 'loading' | 'awaiting' | 'smartTransactionStatus',
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setBackgroundSwapRouteState', [
       routeState,
     ]);
@@ -3606,7 +3602,7 @@ export function resetSwapsPostFetchState(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('resetPostFetchState');
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3615,7 +3611,7 @@ export function resetSwapsPostFetchState(): ThunkAction<
 export function setSwapsErrorKey(
   errorKey: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setSwapsErrorKey', [errorKey]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3624,7 +3620,7 @@ export function setSwapsErrorKey(
 export function setInitialGasEstimate(
   initialAggId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('setInitialGasEstimate', [initialAggId]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3635,7 +3631,7 @@ export function setInitialGasEstimate(
 export function requestAccountsPermissionWithId(
   origin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     const id = await submitRequestToBackground(
       'requestAccountsPermissionWithId',
       [origin],
@@ -3653,12 +3649,11 @@ export function requestAccountsPermissionWithId(
 export function approvePermissionsRequest(
   request: PermissionsRequest,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     callBackgroundMethod('approvePermissionsRequest', [request], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }
-      forceUpdateMetamaskState(dispatch);
     });
   };
 }
@@ -3671,7 +3666,7 @@ export function approvePermissionsRequest(
 export function rejectPermissionsRequest(
   requestId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       callBackgroundMethod('rejectPermissionsRequest', [requestId], (err) => {
         if (err) {
@@ -3693,7 +3688,7 @@ export function rejectPermissionsRequest(
 export function removePermissionsFor(
   subjects: Record<string, NonEmptyArray<string>>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     callBackgroundMethod('removePermissionsFor', [subjects], (err) => {
       if (err) {
         dispatch(displayWarning(err));
@@ -3701,35 +3696,6 @@ export function removePermissionsFor(
     });
   };
 }
-
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-/**
- * Updates the caveat value for the specified origin, permission and caveat type.
- *
- * @param origin
- * @param target
- * @param caveatType
- * @param caveatValue
- */
-export function updateCaveat(
-  origin: string,
-  target: string,
-  caveatType: string,
-  caveatValue: Record<string, Json>,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch) => {
-    callBackgroundMethod(
-      'updateCaveat',
-      [origin, target, caveatType, caveatValue],
-      (err) => {
-        if (err) {
-          dispatch(displayWarning(err));
-        }
-      },
-    );
-  };
-}
-///: END:ONLY_INCLUDE_IN
 
 // Pending Approvals
 
@@ -3744,7 +3710,7 @@ export function resolvePendingApproval(
   id: string,
   value: unknown,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('resolvePendingApproval', [id, value]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
@@ -3766,7 +3732,7 @@ export function rejectPendingApproval(
   id: string,
   error: unknown,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     await submitRequestToBackground('rejectPendingApproval', [id, error]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being rejected
@@ -3780,7 +3746,7 @@ export function rejectPendingApproval(
 export function setFirstTimeFlowType(
   type: 'create' | 'import',
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     log.debug(`background.setFirstTimeFlowType`);
     callBackgroundMethod('setFirstTimeFlowType', [type], (err) => {
       if (err) {
@@ -3794,43 +3760,39 @@ export function setFirstTimeFlowType(
   };
 }
 
-export function setSelectedNetworkConfigurationId(
-  networkConfigurationId: string,
+export function setSelectedSettingsRpcUrl(
+  newRpcUrl: string,
 ): PayloadAction<string> {
   return {
-    type: actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID,
-    payload: networkConfigurationId,
+    type: actionConstants.SET_SELECTED_SETTINGS_RPC_URL,
+    payload: newRpcUrl,
   };
 }
 
-export function setNewNetworkAdded({
-  networkConfigurationId,
-  nickname,
-}: {
-  networkConfigurationId: string;
-  nickname: string;
-}): PayloadAction<object> {
+export function setNewNetworkAdded(
+  newNetworkAdded: string,
+): PayloadAction<string> {
   return {
     type: actionConstants.SET_NEW_NETWORK_ADDED,
-    payload: { networkConfigurationId, nickname },
+    payload: newNetworkAdded,
   };
 }
 
-export function setNewNftAddedMessage(
-  newNftAddedMessage: string,
+export function setNewCollectibleAddedMessage(
+  newCollectibleAddedMessage: string,
 ): PayloadAction<string> {
   return {
-    type: actionConstants.SET_NEW_NFT_ADDED_MESSAGE,
-    payload: newNftAddedMessage,
+    type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
+    payload: newCollectibleAddedMessage,
   };
 }
 
-export function setRemoveNftMessage(
-  removeNftMessage: string,
+export function setRemoveCollectibleMessage(
+  removeCollectibleMessage: string,
 ): PayloadAction<string> {
   return {
-    type: actionConstants.SET_REMOVE_NFT_MESSAGE,
-    payload: removeNftMessage,
+    type: actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE,
+    payload: removeCollectibleMessage,
   };
 }
 
@@ -3849,7 +3811,7 @@ export function setLastActiveTime(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     callBackgroundMethod('setLastActiveTime', [], (err) => {
       if (err) {
         dispatch(displayWarning(err));
@@ -3861,18 +3823,15 @@ export function setLastActiveTime(): ThunkAction<
 export function setDismissSeedBackUpReminder(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
     dispatch(hideLoadingIndication());
   };
 }
 
-export function setDisabledRpcMethodPreference(
-  methodName: string,
-  value: number,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+export function setDisabledRpcMethodPreference(methodName: string, value: boolean): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction>  {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setDisabledRpcMethodPreference', [
       methodName,
@@ -3882,13 +3841,8 @@ export function setDisabledRpcMethodPreference(
   };
 }
 
-export function getRpcMethodPreferences(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+export function getRpcMethodPreferences(): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction>  {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('getRpcMethodPreferences', []);
     dispatch(hideLoadingIndication());
@@ -3936,12 +3890,6 @@ export function setRecoveryPhraseReminderLastShown(
   };
 }
 
-export function setTermsOfUseLastAgreed(lastAgreed: number) {
-  return async () => {
-    await submitRequestToBackground('setTermsOfUseLastAgreed', [lastAgreed]);
-  };
-}
-
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
@@ -3953,7 +3901,7 @@ export function setOutdatedBrowserWarningLastShown(lastShown: number) {
 export function getContractMethodData(
   data = '',
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+  return async (dispatch, getState) => {
     const prefixedData = addHexPrefix(data);
     const fourBytePrefix = prefixedData.slice(0, 10);
     if (fourBytePrefix.length < 10) {
@@ -3990,7 +3938,7 @@ export function getContractMethodData(
 export function setSeedPhraseBackedUp(
   seedPhraseBackupState: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch) => {
     log.debug(`background.setSeedPhraseBackedUp`);
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
@@ -4070,7 +4018,7 @@ export function getRequestAccountTabIds(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     const requestAccountTabIds = await submitRequestToBackground<{
       [origin: string]: string;
     }>('getRequestAccountTabIds');
@@ -4093,7 +4041,7 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     const openMetaMaskTabIDs = await submitRequestToBackground<{
       [tabId: string]: boolean;
     }>('getOpenMetamaskTabsIds');
@@ -4104,7 +4052,7 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
 export function setLedgerTransportPreference(
   value: LedgerTransportTypes,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setLedgerTransportPreference', [value]);
     dispatch(hideLoadingIndication());
@@ -4318,7 +4266,7 @@ export async function setSmartTransactionsOptInStatus(
   trackMetaMetricsEvent({
     actionId: generateActionId(),
     event: 'STX OptIn',
-    category: MetaMetricsEventCategory.Swaps,
+    category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,
@@ -4339,7 +4287,7 @@ export function fetchSmartTransactionFees(
   unsignedTransaction: Partial<TxParams> & { chainId: string },
   approveTxParams: TxParams,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     if (approveTxParams) {
       approveTxParams.value = '0x0';
     }
@@ -4412,7 +4360,7 @@ export function signAndSendSmartTransaction({
     cancelFees: TemporarySmartTransactionGasFees[];
   };
 }): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     const signedTransactions = await createSignedTransactions(
       unsignedTransaction,
       smartTransactionFees.fees,
@@ -4452,7 +4400,7 @@ export function updateSmartTransaction(
   uuid: string,
   txMeta: TransactionMeta,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     try {
       await submitRequestToBackground('updateSmartTransaction', [
         {
@@ -4491,7 +4439,7 @@ export function setSmartTransactionsRefreshInterval(
 export function cancelSmartTransaction(
   uuid: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     try {
       await submitRequestToBackground('cancelSmartTransaction', [uuid]);
     } catch (err) {
@@ -4535,12 +4483,12 @@ export function hideTestNetMessage() {
   return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
 }
 
-export function hideBetaHeader() {
-  return submitRequestToBackground('setShowBetaHeader', [false]);
+export function hidePortfolioTooltip() {
+  return submitRequestToBackground('setShowPortfolioTooltip', [false]);
 }
 
-export function hideProductTour() {
-  return submitRequestToBackground('setShowProductTour', [false]);
+export function hideBetaHeader() {
+  return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
 // TODO: codeword NOT_A_THUNK @brad-decker
@@ -4577,7 +4525,7 @@ export function cancelSyncQRHardware(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(hideLoadingIndication());
     await submitRequestToBackground('cancelSyncQRHardware');
   };
@@ -4596,47 +4544,42 @@ export function cancelQRHardwareSignRequest(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     dispatch(hideLoadingIndication());
     await submitRequestToBackground('cancelQRHardwareSignRequest');
   };
 }
 
-export function requestUserApproval({
-  origin,
-  type,
-  requestData,
-}: {
-  origin: string;
-  type: string;
-  requestData: object;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+export function addCustomNetwork(
+  customRpc: RPCDefinition,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
     try {
-      await submitRequestToBackground('requestUserApproval', [
-        {
-          origin,
-          type,
-          requestData,
-        },
+      dispatch(setNewCustomNetworkAdded(customRpc));
+      await submitRequestToBackground('addCustomNetwork', [
+        customRpc,
+        generateActionId(),
       ]);
     } catch (error) {
       logErrorWithMessage(error);
-      dispatch(displayWarning('Had trouble requesting user approval'));
+      dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
 }
 
-export async function getCurrentNetworkEIP1559Compatibility(): Promise<
-  boolean | undefined
-> {
-  let networkEIP1559Compatibility;
-  try {
-    networkEIP1559Compatibility = await submitRequestToBackground<boolean>(
-      'getCurrentNetworkEIP1559Compatibility',
-    );
-  } catch (error) {
-    console.error(error);
-  }
-  return networkEIP1559Compatibility;
+export function requestAddNetworkApproval(
+  customRpc: RPCDefinition,
+  originIsMetaMask: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    try {
+      await submitRequestToBackground('requestAddNetworkApproval', [
+        customRpc,
+        originIsMetaMask,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
 }

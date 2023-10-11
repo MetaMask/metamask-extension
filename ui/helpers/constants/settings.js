@@ -133,6 +133,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
   },
   {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('toggleEthSignField'),
+    descriptionMessage: (t) => t('toggleEthSignDescriptionField'),
+    route: `${ADVANCED_ROUTE}#toggle-ethsign`,
+    icon: 'fas fa-sliders-h',
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
