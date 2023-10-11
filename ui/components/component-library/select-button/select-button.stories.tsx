@@ -3,6 +3,7 @@ import React from 'react';
 import { SelectWrapper } from '../select-wrapper';
 import README from './README.mdx';
 
+import { SelectButtonSize } from './select-button.types';
 import { SelectButton } from '.';
 
 export default {
@@ -30,5 +31,17 @@ const SelectButtonStory: StoryFn<typeof SelectButton> = (args) => {
 export const DefaultStory = SelectButtonStory.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Demo = SelectButtonStory.bind({});
-Demo.args = {};
+export const Size: StoryFn<typeof SelectButton> = (args) => {
+  return (
+    <SelectWrapper
+      triggerComponent={
+        <SelectButton size={SelectButtonSize.Sm} {...args}>
+          {SelectButtonSize.Sm}
+        </SelectButton>
+      }
+    >
+      Demo
+    </SelectWrapper>
+  );
+};
+Size.args = {};

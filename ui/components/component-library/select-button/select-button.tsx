@@ -6,6 +6,7 @@ import { Box, Icon, IconName, IconSize } from '..';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
@@ -81,6 +82,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         paddingLeft={4}
         paddingRight={4}
         display={Display.Flex}
+        height={BlockSize.Full}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         gap={2}
