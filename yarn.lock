@@ -3855,17 +3855,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@metamask/base-controller@npm:3.2.1"
-  dependencies:
-    "@metamask/utils": "npm:^6.2.0"
-    immer: "npm:^9.0.6"
-  checksum: ff4db984a72c942694b0ab849ec61f1c36423e6c6b7144a560f52fb6449e91dd4ce3b937a3b7e092468d0c679f305cc0c805085593f9b83acd98fbfe6f971b69
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^3.2.2":
+"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1, @metamask/base-controller@npm:^3.2.2":
   version: 3.2.3
   resolution: "@metamask/base-controller@npm:3.2.3"
   dependencies:
@@ -4045,24 +4035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:11.0.0"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
-    "@metamask/eth-sig-util": "npm:^5.0.0"
-    "@metamask/utils": "npm:^3.0.3"
-    clone: "npm:^2.1.1"
-    eth-block-tracker: "npm:^7.0.0"
-    eth-rpc-errors: "npm:^4.0.3"
-    json-rpc-engine: "npm:^6.1.0"
-    pify: "npm:^3.0.0"
-    safe-stable-stringify: "npm:^2.3.2"
-  checksum: c1bcf11d6e0fc2299e1c807c76a0a2002e18ed9a6d229cd05169d076d2292dcd38f70963676acd29c2797e1960f41effea4f105fb354119a06d3237afcc4eb32
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-middleware@npm:^11.0.2":
+"@metamask/eth-json-rpc-middleware@npm:^11.0.0, @metamask/eth-json-rpc-middleware@npm:^11.0.2":
   version: 11.0.2
   resolution: "@metamask/eth-json-rpc-middleware@npm:11.0.2"
   dependencies:
@@ -4153,7 +4126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^5.0.0, @metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2, @metamask/eth-sig-util@npm:^5.1.0":
+"@metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2, @metamask/eth-sig-util@npm:^5.1.0":
   version: 5.1.0
   resolution: "@metamask/eth-sig-util@npm:5.1.0"
   dependencies:
@@ -4519,27 +4492,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/permission-controller@npm:4.0.0"
-  dependencies:
-    "@metamask/approval-controller": "npm:^3.0.0"
-    "@metamask/base-controller": "npm:^3.0.0"
-    "@metamask/controller-utils": "npm:^4.0.0"
-    "@metamask/utils": "npm:^5.0.2"
-    "@types/deep-freeze-strict": "npm:^1.1.0"
-    deep-freeze-strict: "npm:^1.1.1"
-    eth-rpc-errors: "npm:^4.0.2"
-    immer: "npm:^9.0.6"
-    json-rpc-engine: "npm:^6.1.0"
-    nanoid: "npm:^3.1.31"
-  peerDependencies:
-    "@metamask/approval-controller": ^3.0.0
-  checksum: bbb915e144983d7f891858bf248a7338f5ec1076c552cb1e2485d9bba12ce69d59f52dfc6e2033c37d8111b8866334f1dfed51cfe243088d3d61661e14bb3cc8
-  languageName: node
-  linkType: hard
-
-"@metamask/permission-controller@npm:^4.1.0":
+"@metamask/permission-controller@npm:^4.0.0, @metamask/permission-controller@npm:^4.1.0":
   version: 4.1.2
   resolution: "@metamask/permission-controller@npm:4.1.2"
   dependencies:
@@ -4652,26 +4605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^11.0.0, @metamask/providers@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "@metamask/providers@npm:11.1.0"
-  dependencies:
-    "@metamask/object-multiplex": "npm:^1.1.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    detect-browser: "npm:^5.2.0"
-    eth-rpc-errors: "npm:^4.0.2"
-    extension-port-stream: "npm:^2.0.1"
-    fast-deep-equal: "npm:^2.0.1"
-    is-stream: "npm:^2.0.0"
-    json-rpc-engine: "npm:^6.1.0"
-    json-rpc-middleware-stream: "npm:^4.2.1"
-    pump: "npm:^3.0.0"
-    webextension-polyfill: "npm:^0.10.0"
-  checksum: e844e1e7b60a2b85fae973134852bd2d4de291daae1774a6f05fdc429e711ecea02710240b1b6dfe9656f712a4d9a356a6bc3f162d977f1878127a167b6a8fdf
-  languageName: node
-  linkType: hard
-
-"@metamask/providers@npm:^11.1.1":
+"@metamask/providers@npm:^11.0.0, @metamask/providers@npm:^11.1.0, @metamask/providers@npm:^11.1.1":
   version: 11.1.2
   resolution: "@metamask/providers@npm:11.1.2"
   dependencies:
@@ -5013,18 +4947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-registry@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@metamask/snaps-registry@npm:1.2.1"
-  dependencies:
-    "@metamask/utils": "npm:^6.0.0"
-    "@noble/secp256k1": "npm:^1.7.1"
-    superstruct: "npm:^1.0.3"
-  checksum: de16245fd26b98f9bab7764838f7911aec0ecc409dd814b3ed6fe39a1cb2ea579c3a31deafbd348082942f6aae1a82d8e2dd8fd46fb071c3d1e4974b0d07e87a
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-registry@npm:^1.2.2":
+"@metamask/snaps-registry@npm:^1.2.1, @metamask/snaps-registry@npm:^1.2.2":
   version: 1.2.2
   resolution: "@metamask/snaps-registry@npm:1.2.2"
   dependencies:
@@ -5184,7 +5107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.4.1":
+"@metamask/utils@npm:^3.4.1":
   version: 3.6.0
   resolution: "@metamask/utils@npm:3.6.0"
   dependencies:
@@ -5221,7 +5144,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^6.0.0, @metamask/utils@npm:^6.0.1, @metamask/utils@npm:^6.1.0, @metamask/utils@npm:^6.2.0":
+"@metamask/utils@npm:^6.0.1, @metamask/utils@npm:^6.1.0, @metamask/utils@npm:^6.2.0":
   version: 6.2.0
   resolution: "@metamask/utils@npm:6.2.0"
   dependencies:
@@ -16058,7 +15981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^7.0.0, eth-block-tracker@npm:^7.0.1":
+"eth-block-tracker@npm:^7.0.1":
   version: 7.0.1
   resolution: "eth-block-tracker@npm:7.0.1"
   dependencies:
@@ -29309,14 +29232,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:2 || 3, readable-stream@npm:3, readable-stream@npm:^3.0.2, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "readable-stream@npm:3.6.0"
+"readable-stream@npm:2 || 3, readable-stream@npm:3, readable-stream@npm:3.6.2, readable-stream@npm:^3.0.2, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0":
+  version: 3.6.2
+  resolution: "readable-stream@npm:3.6.2"
   dependencies:
     inherits: "npm:^2.0.3"
     string_decoder: "npm:^1.1.1"
     util-deprecate: "npm:^1.0.1"
-  checksum: b80b3e6a7fafb1c79de7db541de357f4a5ee73bd70c21672f5a7c840d27bb27bdb0151e7ba2fd82c4a888df22ce0c501b0d9f3e4dfe51688876701c437d59536
+  checksum: d9e3e53193adcdb79d8f10f2a1f6989bd4389f5936c6f8b870e77570853561c362bee69feca2bbb7b32368ce96a85504aa4cedf7cf80f36e6a9de30d64244048
   languageName: node
   linkType: hard
 
@@ -29332,17 +29255,6 @@ __metadata:
     string_decoder: "npm:~1.0.3"
     util-deprecate: "npm:~1.0.1"
   checksum: 3d0767205c263e5beb1929ca67f3269eeda21e7d6b71595515c50074e9cb9cabd7cae2f7237e2eb2ec548d264501b9b0a3e929bd0dc49df706ccb554a028c913
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:3.6.2":
-  version: 3.6.2
-  resolution: "readable-stream@npm:3.6.2"
-  dependencies:
-    inherits: "npm:^2.0.3"
-    string_decoder: "npm:^1.1.1"
-    util-deprecate: "npm:^1.0.1"
-  checksum: d9e3e53193adcdb79d8f10f2a1f6989bd4389f5936c6f8b870e77570853561c362bee69feca2bbb7b32368ce96a85504aa4cedf7cf80f36e6a9de30d64244048
   languageName: node
   linkType: hard
 
