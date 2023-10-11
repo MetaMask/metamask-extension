@@ -1412,7 +1412,12 @@ export function getIsOpbnb(state) {
 }
 
 export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state) || getIsZora(state);
+  return (
+    getIsOptimism(state) ||
+    getIsBase(state) ||
+    getIsOpbnb(state) ||
+    getIsZora(state)
+  );
 }
 
 export function getIsMultiLayerFeeNetwork(state) {
