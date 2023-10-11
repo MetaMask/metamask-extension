@@ -2,24 +2,12 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
-  AlignItems,
   BlockSize,
-  BackgroundColor,
-  BorderColor,
-  BorderRadius,
-  BorderStyle,
-  Display,
   FlexDirection,
   FlexWrap,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../../component-library';
+import { Box } from '../../../../component-library';
+import Dropdown from '../../../dropdown';
 
 export const DropdownTab = ({
   activeClassName,
@@ -37,18 +25,11 @@ export const DropdownTab = ({
   const dropdownRef = useRef(null);
 
   const selectOption = useCallback(
-    (event, option) => {
-      event.stopPropagation();
-      onChange(option.value);
-      setIsOpen(false);
+    (option) => {
+      onChange(option);
     },
     [onChange],
   );
-
-  const openDropdown = (event) => {
-    event.preventDefault();
-    setIsOpen(true);
-  };
 
   const onTabClick = (event) => {
     event.preventDefault();
@@ -79,74 +60,38 @@ export const DropdownTab = ({
   return (
     <Box
       as="li"
-      className={classnames('tab', className, {
-        'tab--active': isActive,
-        [activeClassName]: activeClassName && isActive,
-      })}
+      className={classnames(
+        'tab',
+        className,
+        'transaction-insight-dropdown-wrapper',
+        {
+          'tab--active': isActive,
+          [activeClassName]: activeClassName && isActive,
+        },
+      )}
       data-testid={dataTestId}
       onClick={onTabClick}
       dataTestId={dataTestId}
       flexDirection={FlexDirection.Row}
       flexWrap={FlexWrap.NoWrap}
       height={BlockSize.Full}
-      style={{ cursor: 'pointer', overflow: 'hidden' }}
+      style={{
+        cursor: 'pointer',
+        position: 'relative',
+        overflow: 'visible',
+      }}
       title={selectedOptionName}
     >
-      <Box display={Display.Flex} alignItems={AlignItems.flexStart} padding={2}>
-        <Text
-          variant={TextVariant.inherit}
-          style={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {selectedOptionName}
-        </Text>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.flexStart}
-          paddingLeft={1}
-          paddingRight={1}
-          onClick={openDropdown}
-        >
-          <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
-        </Box>
-      </Box>
-      {isOpen && (
-        <Box
-          backgroundColor={BackgroundColor.backgroundDefault}
-          borderStyle={BorderStyle.solid}
-          borderColor={BorderColor.borderDefault}
-          borderRadius={BorderRadius.SM}
-          paddingLeft={2}
-          paddingRight={2}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          flexWrap={FlexWrap.NoWrap}
-          style={{ position: 'absolute', maxWidth: '170px' }}
-          ref={dropdownRef}
-        >
-          {options.map((option, i) => (
-            <Text
-              key={i}
-              marginTop={1}
-              marginBottom={1}
-              variant={TextVariant.bodySm}
-              onClick={(event) => selectOption(event, option)}
-              style={{
-                cursor: 'pointer',
-                textTransform: 'none',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {option.name}
-            </Text>
-          ))}
-        </Box>
-      )}
+      <Dropdown
+        className="transaction-insight-dropdown"
+        onChange={(option) => selectOption(option)}
+        options={options}
+        selectedOption={selectedOption}
+        title="Transaction Insights"
+        style={{
+          pointerEvents: isActive ? 'auto' : 'none',
+        }}
+      />
     </Box>
   );
 };

@@ -153,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountSnapsFeedback": {
+    "message": "Submit feedback on this feature"
+  },
   "accountsConnected": {
     "message": "Accounts connected"
   },
