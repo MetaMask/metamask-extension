@@ -95,7 +95,6 @@ export default function AdvancedGasControls({
             }}
             value={maxPriorityFee}
             detailText={maxPriorityFeeFiat}
-            numeric
             error={
               gasErrors?.maxPriorityFee
                 ? getGasFormErrorText(gasErrors.maxPriorityFee, t)
