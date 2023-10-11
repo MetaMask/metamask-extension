@@ -4272,9 +4272,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^1.0.0-rc.1":
-  version: 1.0.0-rc.1
-  resolution: "@metamask/keyring-api@npm:1.0.0-rc.1"
+"@metamask/keyring-api@npm:^1.0.0, @metamask/keyring-api@npm:^1.0.0-rc.1":
+  version: 1.0.0
+  resolution: "@metamask/keyring-api@npm:1.0.0"
   dependencies:
     "@metamask/providers": "npm:^13.0.0"
     "@metamask/rpc-methods": "npm:^3.0.0"
@@ -4284,7 +4284,7 @@ __metadata:
     "@types/uuid": "npm:^9.0.1"
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
-  checksum: 60c418d430d01ec6e8a0ed8e6407bb62bcabfe6933d20f8efd31f82e9ae6d1f2b34009affc621f9bf2570d35fad20e4565305369232742b7830c11a27b053e6f
+  checksum: f7e5f4f043b53407752348ddc5825217ecacc3e80446c81fadf1ca4b1b27fc2f82ba9b71221769b241d43877762ed7c82ffc5caa550214134de30548810c7025
   languageName: node
   linkType: hard
 
@@ -23832,7 +23832,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^6.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/keyring-api": "npm:^1.0.0-rc.1"
+    "@metamask/keyring-api": "npm:^1.0.0"
     "@metamask/keyring-controller": "npm:^8.0.1"
     "@metamask/logging-controller": "npm:^1.0.1"
     "@metamask/logo": "npm:^3.1.2"
