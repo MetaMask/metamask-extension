@@ -45,6 +45,10 @@ export const AssetListConversionButton = ({ onClick, variant }) => {
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.LG}
       style={{ backgroundImage, backgroundColor: color }}
+      paddingInlineStart={4}
+      paddingInlineEnd={4}
+      marginTop={4}
+      marginBottom={4}
     >
       <Box
         display={Display.Flex}
