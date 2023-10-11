@@ -3949,10 +3949,6 @@
   "snapDetailsInstalled": {
     "message": "Na-install"
   },
-  "snapError": {
-    "message": "Snap Error: '$1'. Error Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
   "snapInstall": {
     "message": "I-install ang snap"
   },
@@ -5035,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Isinumite ulit ang transaksyon na may tinantyang bayad sa gas na itinaas sa $1 sa $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Paganahin ang mga alerto sa seguridad"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Gumagamit kami ng mga third-party na API para tumuklas at ipakita ang mga panganib na kasangkot sa hindi napirmahang mga kahilingan sa transaksyon at paglagda bago mo pirmahan ang mga ito. Ang mga serbisyong ito ay magkakaroon ng access sa iyong hindi pa napirmahang mga kahilingan sa transaksyon at paglagda, address ng iyong account, at iyong nais na wika."
   },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"

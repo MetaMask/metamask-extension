@@ -3949,10 +3949,6 @@
   "snapDetailsInstalled": {
     "message": "Instalado"
   },
-  "snapError": {
-    "message": "Erro no snap: '$1'. Código de erro: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
   "snapInstall": {
     "message": "Instalar snap"
   },
@@ -5035,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Ativar alertas de segurança"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Usamos APIs de terceiros para detectar e exibir riscos envolvidos em solicitações de assinatura e de transações não assinadas antes que você as assine. Esses serviços terão acesso às suas solicitações de assinatura e de transações não assinadas, ao endereço de sua conta e ao seu idioma preferencial."
   },
   "transactionSettings": {
     "message": "Configurações da transação"
