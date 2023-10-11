@@ -3928,9 +3928,6 @@
   "snapDetailDeveloper": {
     "message": "Разработчик"
   },
-  "snapDetailLastUpdated": {
-    "message": "Обновлено"
-  },
   "snapDetailManageSnap": {
     "message": "Управление snap"
   },

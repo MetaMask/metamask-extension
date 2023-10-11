@@ -4197,9 +4197,6 @@
   "snapDetailDeveloper": {
     "message": "Developer"
   },
-  "snapDetailLastUpdated": {
-    "message": "Updated"
-  },
   "snapDetailManageSnap": {
     "message": "Manage snap"
   },

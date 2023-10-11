@@ -3928,9 +3928,6 @@
   "snapDetailDeveloper": {
     "message": "Pengembang"
   },
-  "snapDetailLastUpdated": {
-    "message": "Diperbarui"
-  },
   "snapDetailManageSnap": {
     "message": "Kelola snap"
   },

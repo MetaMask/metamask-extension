@@ -3928,9 +3928,6 @@
   "snapDetailDeveloper": {
     "message": "開発者"
   },
-  "snapDetailLastUpdated": {
-    "message": "更新済み"
-  },
   "snapDetailManageSnap": {
     "message": "snapの管理"
   },

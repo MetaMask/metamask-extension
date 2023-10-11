@@ -3928,9 +3928,6 @@
   "snapDetailDeveloper": {
     "message": "Προγραμματιστής"
   },
-  "snapDetailLastUpdated": {
-    "message": "Ενημερώθηκε"
-  },
   "snapDetailManageSnap": {
     "message": "Διαχείριση του snap"
   },

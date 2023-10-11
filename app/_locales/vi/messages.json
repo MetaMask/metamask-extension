@@ -3928,9 +3928,6 @@
   "snapDetailDeveloper": {
     "message": "Nhà phát triển"
   },
-  "snapDetailLastUpdated": {
-    "message": "Đã cập nhật"
-  },
   "snapDetailManageSnap": {
     "message": "Quản lý Snap"
   },
