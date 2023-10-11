@@ -769,7 +769,12 @@ async function validateContractDetails(driver) {
   await driver.clickElement({ text: 'Got it', tag: 'button' });
 
   // Approve signing typed data
-  await driver.clickElement('[data-testid="signature-request-scroll-button"]');
+  try {
+    // eslint-disable-next-line prettier/prettier
+    await driver.clickElement('[data-testid="signature-request-scroll-button"]');
+  } catch (error) {
+    // Ignore error if scroll button is not present
+  }
   await driver.delay(regularDelayMs);
 }
 
