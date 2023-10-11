@@ -5,14 +5,7 @@ import {
   MAINNET_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
-  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../../shared/constants/network';
-
-import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  ALLOWED_SWAPS_CHAIN_IDS,
-} from '../../../shared/constants/swaps';
-
 import {
   shortenAddress,
   checksumAddress,
@@ -22,10 +15,11 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
-
-import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
-
-import { getNativeCurrency } from './send';
+import {
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  ALLOWED_SWAPS_CHAIN_IDS,
+} from '../../../shared/constants/swaps';
+import { getSwapsFeatureLiveness } from '../ducks/swaps/swaps';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -332,13 +326,6 @@ export function getUnapprovedConfirmations(state) {
   return Object.values(pendingApprovals);
 }
 
-export function getUnapprovedTemplatedConfirmations(state) {
-  const unapprovedConfirmations = getUnapprovedConfirmations(state);
-  return unapprovedConfirmations.filter((approval) =>
-    TEMPLATED_CONFIRMATION_MESSAGE_TYPES.includes(approval.type),
-  );
-}
-
 function getSuggestedTokenCount(state) {
   const { suggestedTokens = {} } = state.metamask;
   return Object.keys(suggestedTokens).length;
@@ -482,7 +469,47 @@ export function getIsSwapsChain(state) {
   return ALLOWED_SWAPS_CHAIN_IDS[chainId];
 }
 
-export function getNativeCurrencyImage(state) {
-  const nativeCurrency = getNativeCurrency(state).toUpperCase();
-  return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
+export function getShowWhatsNewPopup(state) {
+  return state.appState.showWhatsNewPopup;
+}
+
+function getNotificationToExclude(state) {
+  const currentNetworkIsMainnet = getIsMainnet(state);
+  const swapsIsEnabled = getSwapsFeatureLiveness(state);
+
+  return {
+    1: !currentNetworkIsMainnet || !swapsIsEnabled,
+  };
+}
+
+/**
+ * @typedef {Object} Notification
+ * @property {number} id - A unique identifier for the notification
+ * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
+ */
+
+/**
+ * Notifications are managed by the notification controller and referenced by
+ * `state.metamask.notifications`. This function returns a list of notifications
+ * the can be shown to the user. This list includes all notifications that do not
+ * have a truthy `isShown` property, and also which are not filtered out due to
+ * conditions encoded in the `getNotificationToExclude` function.
+ *
+ * The returned notifcations are sorted by date.
+ *
+ * @param {object} state - the redux state object
+ * @returns {Notification[]} An array of notifications that can be shown to the user
+ */
+
+export function getSortedNotificationsToShow(state) {
+  const notifications = Object.values(state.metamask.notifications) || [];
+  const notificationToExclude = getNotificationToExclude(state);
+  const notificationsToShow = notifications.filter(
+    (notification) =>
+      !notification.isShown && !notificationToExclude[notification.id],
+  );
+  const notificationsSortedByDate = notificationsToShow.sort(
+    (a, b) => new Date(b.date) - new Date(a.date),
+  );
+  return notificationsSortedByDate;
 }

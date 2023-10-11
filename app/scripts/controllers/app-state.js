@@ -1,5 +1,6 @@
-import EventEmitter from 'events'
-import { ObservableStore } from '@metamask/obs-store'
+import EventEmitter from 'events';
+import { ObservableStore } from '@metamask/obs-store';
+import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -14,39 +15,33 @@ export default class AppStateController extends EventEmitter {
       onInactiveTimeout,
       showUnlockRequest,
       preferencesStore,
-    } = opts
-    super()
+    } = opts;
+    super();
 
-    this.onInactiveTimeout = onInactiveTimeout || (() => undefined)
+    this.onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.store = new ObservableStore({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
-      swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
       ...initState,
-      dataPersistenceFailing: false,
-    })
-    this.timer = null
+    });
+    this.timer = null;
 
-    this.isUnlocked = isUnlocked
-    this.waitingForUnlock = []
-    addUnlockListener(this.handleUnlock.bind(this))
+    this.isUnlocked = isUnlocked;
+    this.waitingForUnlock = [];
+    addUnlockListener(this.handleUnlock.bind(this));
 
-    this._showUnlockRequest = showUnlockRequest
+    this._showUnlockRequest = showUnlockRequest;
 
     preferencesStore.subscribe(({ preferences }) => {
-      const currentState = this.store.getState()
+      const currentState = this.store.getState();
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
-        this._setInactiveTimeout(preferences.autoLockTimeLimit)
+        this._setInactiveTimeout(preferences.autoLockTimeLimit);
       }
-    })
+    });
 
-    const { preferences } = preferencesStore.getState()
-    this._setInactiveTimeout(preferences.autoLockTimeLimit)
-  }
-
-  get state() {
-    return this.store.getState()
+    const { preferences } = preferencesStore.getState();
+    this._setInactiveTimeout(preferences.autoLockTimeLimit);
   }
 
   /**
@@ -61,11 +56,11 @@ export default class AppStateController extends EventEmitter {
   getUnlockPromise(shouldShowUnlockRequest) {
     return new Promise((resolve) => {
       if (this.isUnlocked()) {
-        resolve()
+        resolve();
       } else {
-        this.waitForUnlock(resolve, shouldShowUnlockRequest)
+        this.waitForUnlock(resolve, shouldShowUnlockRequest);
       }
-    })
+    });
   }
 
   /**
@@ -78,10 +73,10 @@ export default class AppStateController extends EventEmitter {
    * popup should be opened.
    */
   waitForUnlock(resolve, shouldShowUnlockRequest) {
-    this.waitingForUnlock.push({ resolve })
-    this.emit('updateBadge')
+    this.waitingForUnlock.push({ resolve });
+    this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
     if (shouldShowUnlockRequest) {
-      this._showUnlockRequest()
+      this._showUnlockRequest();
     }
   }
 
@@ -91,9 +86,9 @@ export default class AppStateController extends EventEmitter {
   handleUnlock() {
     if (this.waitingForUnlock.length > 0) {
       while (this.waitingForUnlock.length > 0) {
-        this.waitingForUnlock.shift().resolve()
+        this.waitingForUnlock.shift().resolve();
       }
-      this.emit('updateBadge')
+      this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
     }
   }
 
@@ -104,7 +99,7 @@ export default class AppStateController extends EventEmitter {
   setDefaultHomeActiveTabName(defaultHomeActiveTabName) {
     this.store.updateState({
       defaultHomeActiveTabName,
-    })
+    });
   }
 
   /**
@@ -113,28 +108,7 @@ export default class AppStateController extends EventEmitter {
   setConnectedStatusPopoverHasBeenShown() {
     this.store.updateState({
       connectedStatusPopoverHasBeenShown: true,
-    })
-  }
-
-  /**
-   * Set whether data persistence is failing
-   *
-   * @param {boolean} failing - 'true' indicates that data persistence is
-   *   failing, 'false' indicates that it is working correctly.
-   */
-  setDataPersistenceFailing(failing) {
-    this.store.updateState({
-      dataPersistenceFailing: failing,
-    })
-  }
-
-  /**
-   * Record that the user has seen the swap screen welcome message
-   */
-  setSwapsWelcomeMessageHasBeenShown() {
-    this.store.updateState({
-      swapsWelcomeMessageHasBeenShown: true,
-    })
+    });
   }
 
   /**
@@ -142,7 +116,7 @@ export default class AppStateController extends EventEmitter {
    * @returns {void}
    */
   setLastActiveTime() {
-    this._resetTimer()
+    this._resetTimer();
   }
 
   /**
@@ -154,9 +128,9 @@ export default class AppStateController extends EventEmitter {
   _setInactiveTimeout(timeoutMinutes) {
     this.store.updateState({
       timeoutMinutes,
-    })
+    });
 
-    this._resetTimer()
+    this._resetTimer();
   }
 
   /**
@@ -169,19 +143,19 @@ export default class AppStateController extends EventEmitter {
    * @private
    */
   _resetTimer() {
-    const { timeoutMinutes } = this.store.getState()
+    const { timeoutMinutes } = this.store.getState();
 
     if (this.timer) {
-      clearTimeout(this.timer)
+      clearTimeout(this.timer);
     }
 
     if (!timeoutMinutes) {
-      return
+      return;
     }
 
     this.timer = setTimeout(
       () => this.onInactiveTimeout(),
       timeoutMinutes * 60 * 1000,
-    )
+    );
   }
 }

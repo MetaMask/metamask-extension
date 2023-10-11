@@ -45,16 +45,10 @@
         "1": {
           "isShown": true
         },
+        "2": {
+          "isShown": true
+        },
         "3": {
-          "isShown": true
-        },
-        "5": {
-          "isShown": true
-        },
-        "6": {
-          "isShown": true
-        },
-        "8": {
           "isShown": true
         }
       }
@@ -141,6 +135,7 @@
       },
       "completedOnboarding": true,
       "metaMetricsId": null,
+      "metaMetricsSendCount": 0,
       "ipfsGateway": "dweb.link",
       "selectedAddress": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1"
     },
@@ -151,6 +146,7 @@
     },
     "PermissionsController": {
       "permissionsRequests": [],
+      "permissionsDescriptions": {},
       "domains": {
         "http://127.0.0.1:8080": {
           "permissions": [

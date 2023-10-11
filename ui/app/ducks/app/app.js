@@ -1,8 +1,7 @@
-import {
-  WEBHID_CONNECTED_STATUSES,
-  TRANSPORT_STATES,
-} from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
+
+// actionConstants
+const SET_THREEBOX_LAST_UPDATED = 'metamask/app/SET_THREEBOX_LAST_UPDATED';
 
 export default function reduceApp(state = {}, action) {
   // default state
@@ -19,6 +18,12 @@ export default function reduceApp(state = {}, action) {
         name: null,
       },
     },
+    sidebar: {
+      isOpen: false,
+      transitionName: '',
+      type: '',
+      props: {},
+    },
     alertOpen: false,
     alertMessage: null,
     qrCodeData: null,
@@ -32,27 +37,20 @@ export default function reduceApp(state = {}, action) {
     warning: null,
     buyView: {},
     isMouseUser: false,
+    gasIsLoading: false,
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
-      lattice: `m/44'/60'/0'/0`,
     },
     networksTabSelectedRpcUrl: '',
+    networksTabIsInAddMode: false,
     loadingMethodData: false,
+    show3BoxModalAfterImport: false,
+    threeBoxLastUpdated: null,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
     showWhatsNewPopup: true,
-    singleExceptions: {
-      testKey: null,
-    },
-    gasLoadingAnimationIsShowing: false,
-    ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
-    ledgerTransportStatus: TRANSPORT_STATES.NONE,
-    newNetworkAdded: '',
-    newCollectibleAddedMessage: '',
-    showTestnetMessageInDropdown: true,
-    transactionsToDisplayOnFailure: {},
     ...state,
   };
 
@@ -68,6 +66,25 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         networkDropdownOpen: false,
+      };
+
+    // sidebar methods
+    case actionConstants.SIDEBAR_OPEN:
+      return {
+        ...appState,
+        sidebar: {
+          ...action.value,
+          isOpen: true,
+        },
+      };
+
+    case actionConstants.SIDEBAR_CLOSE:
+      return {
+        ...appState,
+        sidebar: {
+          ...appState.sidebar,
+          isOpen: false,
+        },
       };
 
     // alert methods
@@ -276,22 +293,28 @@ export default function reduceApp(state = {}, action) {
         isMouseUser: action.value,
       };
 
+    case actionConstants.GAS_LOADING_STARTED:
+      return {
+        ...appState,
+        gasIsLoading: true,
+      };
+
+    case actionConstants.GAS_LOADING_FINISHED:
+      return {
+        ...appState,
+        gasIsLoading: false,
+      };
+
     case actionConstants.SET_SELECTED_SETTINGS_RPC_URL:
       return {
         ...appState,
         networksTabSelectedRpcUrl: action.value,
       };
 
-    case actionConstants.SET_NEW_NETWORK_ADDED:
+    case actionConstants.SET_NETWORKS_TAB_ADD_MODE:
       return {
         ...appState,
-        newNetworkAdded: action.value,
-      };
-
-    case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
-      return {
-        ...appState,
-        newCollectibleAddedMessage: action.value,
+        networksTabIsInAddMode: action.value,
       };
 
     case actionConstants.LOADING_METHOD_DATA_STARTED:
@@ -304,6 +327,12 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         loadingMethodData: false,
+      };
+
+    case SET_THREEBOX_LAST_UPDATED:
+      return {
+        ...appState,
+        threeBoxLastUpdated: action.value,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
@@ -324,52 +353,10 @@ export default function reduceApp(state = {}, action) {
         currentWindowTab: action.value,
       };
 
-    case actionConstants.HIDE_WHATS_NEW_POPUP:
+    case actionConstants.HIDE_SHOW_WHATS_NEW_POPUP:
       return {
         ...appState,
         showWhatsNewPopup: false,
-      };
-
-    case actionConstants.CAPTURE_SINGLE_EXCEPTION:
-      return {
-        ...appState,
-        singleExceptions: {
-          ...appState.singleExceptions,
-          [action.value]: null,
-        },
-      };
-
-    case actionConstants.TOGGLE_GAS_LOADING_ANIMATION:
-      return {
-        ...appState,
-        gasLoadingAnimationIsShowing: action.value,
-      };
-    case actionConstants.ADD_TXS_TO_FAILED_TXES_TO_DISPLAY:
-      return {
-        ...appState,
-        transactionsToDisplayOnFailure: {
-          ...appState.transactionsToDisplayOnFailure,
-          [action.value]: true,
-        },
-      };
-
-    case actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY:
-      delete appState.transactionsToDisplayOnFailure[action.value];
-      return {
-        ...appState,
-        transactionsToDisplayOnFailure: appState.transactionsToDisplayOnFailure,
-      };
-
-    case actionConstants.SET_WEBHID_CONNECTED_STATUS:
-      return {
-        ...appState,
-        ledgerWebHidConnectedStatus: action.value,
-      };
-
-    case actionConstants.SET_LEDGER_TRANSPORT_STATUS:
-      return {
-        ...appState,
-        ledgerTransportStatus: action.value,
       };
 
     default:
@@ -378,50 +365,15 @@ export default function reduceApp(state = {}, action) {
 }
 
 // Action Creators
+export function setThreeBoxLastUpdated(lastUpdated) {
+  return {
+    type: SET_THREEBOX_LAST_UPDATED,
+    value: lastUpdated,
+  };
+}
+
 export function hideWhatsNewPopup() {
   return {
-    type: actionConstants.HIDE_WHATS_NEW_POPUP,
+    type: actionConstants.HIDE_SHOW_WHATS_NEW_POPUP,
   };
-}
-
-export function toggleGasLoadingAnimation(value) {
-  return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
-}
-export function addTxToFailedTxesToDisplay(txId) {
-  return {
-    type: actionConstants.ADD_TXS_TO_FAILED_TXES_TO_DISPLAY,
-    value: txId,
-  };
-}
-
-export function removeTxFromFailedTxesToDisplay(txId) {
-  return {
-    type: actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY,
-    value: txId,
-  };
-}
-
-export function setLedgerWebHidConnectedStatus(value) {
-  return { type: actionConstants.SET_WEBHID_CONNECTED_STATUS, value };
-}
-
-export function setLedgerTransportStatus(value) {
-  return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, value };
-}
-
-// Selectors
-export function getQrCodeData(state) {
-  return state.appState.qrCodeData;
-}
-
-export function getGasLoadingAnimationIsShowing(state) {
-  return state.appState.gasLoadingAnimationIsShowing;
-}
-
-export function getLedgerWebHidConnectedStatus(state) {
-  return state.appState.ledgerWebHidConnectedStatus;
-}
-
-export function getLedgerTransportStatus(state) {
-  return state.appState.ledgerTransportStatus;
 }

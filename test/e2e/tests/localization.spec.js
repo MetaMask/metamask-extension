@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const { By, Key } = require('selenium-webdriver');
+const { withFixtures } = require('../helpers');
 
 describe('Localization', function () {
   it('can correctly display Philippine peso symbol and code', async function () {
@@ -9,50 +9,34 @@ describe('Localization', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: convertToHexValue(25000000000000000000),
+          balance: 25000000000000000000,
         },
       ],
     };
     await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withCurrencyController({
-            currentCurrency: 'php',
-          })
-          .withPreferencesController({
-            preferences: {
-              showFiatInTestnets: true,
-            },
-          })
-          .build(),
-        ganacheOptions,
-        title: this.test.title,
-      },
+      { fixtures: 'localization', ganacheOptions, title: this.test.title },
       async ({ driver }) => {
-        // TODO: Add runtime handler for this request
-        // await driver.addRequestHandlers(function () {
-        //   globalThis.msw.worker.use(
-        //     globalThis.msw.rest.get(
-        //       'https://min-api.cryptocompare.com/data/price',
-        //       (_request, response, context) => {
-        //         return response(context.json({ PHP: 400 }));
-        //       },
-        //     ),
-        //   );
-        // });
-
+        console.log(111);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        const passwordField = await driver.findElement(By.css('#password'));
+        console.log(222);
+        await passwordField.sendKeys('correct horse battery staple');
+        await passwordField.sendKeys(Key.ENTER);
+        console.log(333);
         const secondaryBalance = await driver.findElement(
-          '[data-testid="eth-overview__secondary-currency"]',
+          By.css('[data-testid="eth-overview__secondary-currency"]'),
         );
+        console.log(444);
         const secondaryBalanceText = await secondaryBalance.getText();
         const [fiatAmount, fiatUnit] = secondaryBalanceText
           .trim()
           .split(/\s+/u);
+        console.log(555);
+        console.log('fiatAmount', fiatAmount.startsWith('₱'));
+        console.log('fiatUnit', fiatUnit === 'PHP');
         assert.ok(fiatAmount.startsWith('₱'));
         assert.equal(fiatUnit, 'PHP');
+        console.log(666);
       },
     );
   });
