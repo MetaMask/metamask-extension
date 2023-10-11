@@ -15,6 +15,7 @@ import {
   FlexDirection,
   FlexWrap,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -104,7 +105,12 @@ export default function NewSnapAccountPage() {
             </Text>,
           ])}
         </Text>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text
+          className="snap-account-subtitle"
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Center}
+        >
           {t('snapCreateAccountSubtitle')}
         </Text>
       </Box>
