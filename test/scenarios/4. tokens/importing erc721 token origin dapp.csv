@@ -7,10 +7,11 @@ Step,Test steps,Test data,Expected result,Notes
 6,Connect with the current account. ,,,
 7,Deploy the NFT contract. ,,,
 8,Confirm the transaction and wait for it to complete.,,,
-9,Proceed to mint NFT. ,,,
+9,Proceed to mint NFT. ,,,"If NFT with token ID #3 must be watched, amount of NFTs minted should be equal to or greater than 3."
 10,Confirm the transaction and wait for it to complete.,,,
 11,Switch to the wallet and open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
 12,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab.,
-13,"In the test dapp, proceed to Watch NFT. ",,,
+,"In the test dapp, enter the NFT ID you wish to watch. ",e.g. 3,,
+13,Proceed to Watch NFT. ,,,
 14,Confirm the addition of the custom token.,,,
 15,Switch back to the wallet.,,The NFT is shown in the wallets NFTs list. The NFT image is shown.,OpenSea API in Security & Privacy Settings has to be enabled for the NFT image to be shown.
