@@ -35,6 +35,7 @@ import {
   ImportNftsModal,
   ImportTokensModal,
   SelectActionModal,
+  AppFooter,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -478,6 +479,25 @@ export default class Routes extends Component {
     return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
   }
 
+  showFooter() {
+    if (Boolean(process.env.MULTICHAIN) === false) {
+      return false;
+    }
+
+    const { location } = this.props;
+    const isHomePage = Boolean(
+      matchPath(location.pathname, { path: DEFAULT_ROUTE, exact: true }),
+    );
+    const isConnectionsPage = Boolean(
+      matchPath(location.pathname, { path: CONNECTIONS, exact: true }),
+    );
+    const isAssetPage = Boolean(
+      matchPath(location.pathname, { path: ASSET_ROUTE, exact: false }),
+    );
+
+    return isAssetPage || isHomePage || isConnectionsPage;
+  }
+
   showOnboardingHeader() {
     const { location } = this.props;
 
@@ -619,6 +639,7 @@ export default class Routes extends Component {
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>
+        {this.showFooter() && <AppFooter location={location} />}
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );
