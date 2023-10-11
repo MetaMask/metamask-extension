@@ -72,7 +72,13 @@ export default class ExperimentalTab extends PureComponent {
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  toggleSecurityAlert(value) {
+  /**
+   * toggleSecurityAlert
+   *
+   * @param {boolean} oldValue - the current securityAlertEnabled value.
+   */
+  toggleSecurityAlert(oldValue) {
+    const newValue = !oldValue;
     const { setSecurityAlertsEnabled, transactionSecurityCheckEnabled } =
       this.props;
     this.context.trackEvent({
@@ -83,14 +89,20 @@ export default class ExperimentalTab extends PureComponent {
         legacy_event: true,
       },
     });
-    setSecurityAlertsEnabled(!value);
-    if (!value && transactionSecurityCheckEnabled) {
+    setSecurityAlertsEnabled(newValue);
+    if (newValue && transactionSecurityCheckEnabled) {
       this.toggleTransactionSecurityCheck(true);
     }
   }
   ///: END:ONLY_INCLUDE_IN
 
-  toggleTransactionSecurityCheck(value) {
+  /**
+   * toggleTransactionSecurityCheck
+   *
+   * @param {boolean} oldValue - the current transactionSecurityCheckEnabled value.
+   */
+  toggleTransactionSecurityCheck(oldValue) {
+    const newValue = !oldValue;
     const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
       this.props;
     this.context.trackEvent({
@@ -101,8 +113,8 @@ export default class ExperimentalTab extends PureComponent {
         legacy_event: true,
       },
     });
-    setTransactionSecurityCheckEnabled(!value);
-    if (!value && securityAlertsEnabled && this.toggleSecurityAlert) {
+    setTransactionSecurityCheckEnabled(newValue);
+    if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
       this.toggleSecurityAlert(true);
     }
   }
