@@ -127,7 +127,7 @@ describe('Backup and Restore', function () {
 
         // Dismiss success message
         await driver.waitForSelector({
-          css: '.actionable-message__message',
+          css: '[data-testid="restore-user-data-banner-alert-description"]',
           text: 'Your data has been restored successfully',
         });
         await driver.clickElement({ text: 'Dismiss', tag: 'button' });
