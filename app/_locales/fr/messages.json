@@ -1538,11 +1538,9 @@
   "experimental": {
     "message": "Expérimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explorer les Snaps MetaMask"
-  },
   "extendWalletWithSnaps": {
-    "message": "Personnalisez votre expérience de portefeuille."
+    "message": "Personnalisez votre expérience de portefeuille.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Extension externe"
@@ -2389,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3023,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Ouvrir dans l’explorateur de blocs"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4801,9 +4793,6 @@
   "termsOfService": {
     "message": "Conditions de service"
   },
-  "termsOfUse": {
-    "message": "conditions d’utilisation"
-  },
   "termsOfUseAgreeText": {
     "message": " J’accepte les conditions d’utilisation de MetaMask et de ses fonctionnalités"
   },
@@ -4831,10 +4820,6 @@
   },
   "thisCollection": {
     "message": "cette collection"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Ce service est expérimental. En activant cette fonctionnalité, vous acceptez les $1 d’OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Temps"
@@ -5050,12 +5035,6 @@
   },
   "transactionResubmitted": {
     "message": "La transaction a été soumise à nouveau avec une augmentation du prix du gaz, désormais de $1 à $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Autoriser les fournisseurs de services de vérification des transactions"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Nous utilisons des API tierces pour détecter et afficher les risques liés aux transactions non signées et aux demandes de signature avant que vous ne les signiez. Ces services auront accès à vos transactions non signées et à vos demandes de signature, à l’adresse de votre compte et à la langue que vous préférez."
   },
   "transactionSettings": {
     "message": "Paramètres de la transaction"
@@ -5274,9 +5253,6 @@
   },
   "viewOnOpensea": {
     "message": "Afficher sur Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Afficher le tableau de bord du portefeuille"
   },
   "viewinCustodianApp": {
     "message": "Afficher dans l’application dépositaire"

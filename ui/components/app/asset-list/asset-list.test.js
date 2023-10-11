@@ -49,16 +49,20 @@ jest.mock('../../../hooks/useTokenTracker', () => {
   };
 });
 
-const render = () => {
+const render = (
+  selectedAddress = mockState.metamask.selectedAddress,
+  balance = ETH_BALANCE,
+  chainId = CHAIN_IDS.MAINNET,
+) => {
   const state = {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: { chainId: CHAIN_IDS.MAINNET },
+      providerConfig: { chainId },
       conversionRate: CONVERSION_RATE,
       cachedBalances: {
         [CHAIN_IDS.MAINNET]: {
-          [mockState.metamask.selectedAddress]: ETH_BALANCE,
+          [selectedAddress]: balance,
         },
       },
       contractExchangeRates: {
@@ -66,6 +70,7 @@ const render = () => {
         [LINK_CONTRACT]: 0.00423239,
         [WBTC_CONTRACT]: 16.66575,
       },
+      selectedAddress,
     },
   };
   const store = configureStore(state);
@@ -81,10 +86,13 @@ describe('AssetList', () => {
     expect(screen.getByText('Refresh list')).toBeInTheDocument();
   });
 
-  it('calculates the correct fiat account total', () => {
-    process.env.MULTICHAIN = 1;
-    const { container } = render();
-    expect(container).toMatchSnapshot();
-    expect(screen.getByText('$63,356.88 USD')).toBeInTheDocument();
+  describe('token fiat value calculations', () => {
+    it('calculates the correct fiat account total', () => {
+      process.env.MULTICHAIN = 1;
+      const { container } = render();
+      expect(container).toMatchSnapshot();
+      expect(screen.getByText('$63,356.88 USD')).toBeInTheDocument();
+      jest.resetModules();
+    });
   });
 });
