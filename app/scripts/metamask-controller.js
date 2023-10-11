@@ -1402,11 +1402,7 @@ export default class MetamaskController extends EventEmitter {
           );
         }
 
-        function finalizeEventFragment({
-          eventName,
-          txMeta,
-          finalizeEvent,
-        }) {
+        function finalizeEventFragment({ eventName, txMeta, finalizeEvent }) {
           let id;
           let payload;
           switch (eventName) {
