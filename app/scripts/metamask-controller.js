@@ -1304,6 +1304,7 @@ export default class MetamaskController extends EventEmitter {
         properties,
         sensitiveProperties,
         transactionMeta,
+        skipFinalize = false,
       }) => {
         const isSubmitted = [
           TransactionMetaMetricsEvent.finalized,
@@ -1319,10 +1320,9 @@ export default class MetamaskController extends EventEmitter {
           return;
         }
 
-        let id;
         switch (event) {
           case TransactionMetaMetricsEvent.added:
-            this.metaMetricsController.createEventFragment({
+            this.createEventFragment({
               category: MetaMetricsEventCategory.Transactions,
               initialEvent: TransactionMetaMetricsEvent.added,
               successEvent: TransactionMetaMetricsEvent.approved,
@@ -1335,32 +1335,9 @@ export default class MetamaskController extends EventEmitter {
             });
             break;
 
-          // If the user approves a transaction, finalize the transaction added
-          // event fragment.
           case TransactionMetaMetricsEvent.approved:
-            id = `transaction-added-${transactionMeta.id}`;
-            this.metaMetricsController.createEventFragment({
-              category: MetaMetricsEventCategory.Transactions,
-              successEvent: TransactionMetaMetricsEvent.approved,
-              failureEvent: TransactionMetaMetricsEvent.rejected,
-              properties,
-              sensitiveProperties,
-              persist: true,
-              uniqueIdentifier,
-              actionId,
-            });
-            this.metaMetricsController.updateEventFragment(id, {
-              properties,
-              sensitiveProperties,
-            });
-            this.metaMetricsController.finalizeEventFragment(id);
-            break;
-
-          // If the user rejects a transaction, finalize the transaction added
-          // event fragment. with the abandoned flag set.
           case TransactionMetaMetricsEvent.rejected:
-            id = `transaction-added-${transactionMeta.id}`;
-            this.metaMetricsController.createEventFragment({
+            this.createEventFragment({
               category: MetaMetricsEventCategory.Transactions,
               successEvent: TransactionMetaMetricsEvent.approved,
               failureEvent: TransactionMetaMetricsEvent.rejected,
@@ -1369,18 +1346,11 @@ export default class MetamaskController extends EventEmitter {
               persist: true,
               uniqueIdentifier,
               actionId,
-            });
-            this.metaMetricsController.updateEventFragment(id, {
-              properties,
-              sensitiveProperties,
-            });
-            this.metaMetricsController.finalizeEventFragment(id, {
-              abandoned: true,
             });
             break;
 
           case TransactionMetaMetricsEvent.submitted:
-            this.metaMetricsController.createEventFragment({
+            this.createEventFragment({
               category: MetaMetricsEventCategory.Transactions,
               initialEvent: TransactionMetaMetricsEvent.submitted,
               successEvent: TransactionMetaMetricsEvent.finalized,
@@ -1393,8 +1363,7 @@ export default class MetamaskController extends EventEmitter {
             break;
 
           case TransactionMetaMetricsEvent.finalized:
-            id = `transaction-submitted-${transactionMeta.id}`;
-            this.metaMetricsController.createEventFragment({
+            this.createEventFragment({
               category: MetaMetricsEventCategory.Transactions,
               successEvent: TransactionMetaMetricsEvent.finalized,
               properties,
@@ -1403,6 +1372,43 @@ export default class MetamaskController extends EventEmitter {
               uniqueIdentifier,
               actionId,
             });
+            break;
+          default:
+            break;
+        }
+
+        if (skipFinalize) {
+          return;
+        }
+
+        let id;
+        switch (event) {
+          // If the user approves a transaction, finalize the transaction added
+          // event fragment.
+          case TransactionMetaMetricsEvent.approved:
+            id = `transaction-added-${transactionMeta.id}`;
+            this.metaMetricsController.updateEventFragment(id, {
+              properties,
+              sensitiveProperties,
+            });
+            this.metaMetricsController.finalizeEventFragment(id);
+            break;
+
+          // If the user rejects a transaction, finalize the transaction added
+          // event fragment. with the abandoned flag set.
+          case TransactionMetaMetricsEvent.rejected:
+            id = `transaction-added-${transactionMeta.id}`;
+            this.metaMetricsController.updateEventFragment(id, {
+              properties,
+              sensitiveProperties,
+            });
+            this.metaMetricsController.finalizeEventFragment(id, {
+              abandoned: true,
+            });
+            break;
+
+          case TransactionMetaMetricsEvent.finalized:
+            id = `transaction-submitted-${transactionMeta.id}`;
             this.metaMetricsController.updateEventFragment(id, {
               properties,
               sensitiveProperties,

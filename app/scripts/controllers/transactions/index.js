@@ -787,6 +787,7 @@ export default class TransactionController extends EventEmitter {
       properties,
       sensitiveProperties,
       transactionMeta: txMeta,
+      skipFinalize: true,
     });
   }
 
