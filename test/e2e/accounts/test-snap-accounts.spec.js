@@ -284,6 +284,8 @@ describe('Test Snap Account', function () {
   async function signData(driver, locatorID, newPublicKey, flowType) {
     const isAsyncFlow = flowType !== 'sync';
 
+    console.log('SNAPS/ signData called with', flowType, isAsyncFlow);
+
     await switchToOrOpenDapp(driver);
 
     await driver.clickElement(locatorID);
@@ -490,16 +492,20 @@ describe('Test Snap Account', function () {
    * @param {string} flowType
    */
   async function approveOrRejectRequest(driver, flowType) {
+    console.log('SNAPS/ approveOrRejectRequest');
     // Click redirect button
     if (flowType === 'approve' || flowType === 'reject') {
-      // const handles = await driver.getAllWindowHandles();
+      const handles = await driver.getAllWindowHandles();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
-
       await driver.clickElement({
         text: 'Go to site',
         tag: 'button',
       });
-      // await driver.switchToWindow(newSnapWindowHandle);
+      const newHandles = await driver.getAllWindowHandles();
+      const newSnapWindowHandle = newHandles.find(
+        (handle) => !handles.includes(handle),
+      );
+      await driver.switchToWindow(newSnapWindowHandle);
     } else {
       await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
     }

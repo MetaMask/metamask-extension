@@ -1,0 +1,79 @@
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module './uws_darwin_arm64_108.node'
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+[driver] Called 'navigate' with arguments []
+[driver] Called 'fill' with arguments ["#password","correct horse battery staple"]
+[driver] Called 'press' with arguments ["#password",""]
+[driver] Called 'openNewPage' with arguments ["https://metamask.github.io/snap-simple-keyring/0.4.0/"]
+[driver] Called 'findElement' with arguments ["#connectButton"]
+[driver] Called 'scrollToElement' with arguments [{"driver_":{"session_":{},"executor_":{"customCommands_":{},"log_":{"name_":"webdriver.http.Executor","level_":null,"parent_":{"name_":"webdriver.http","level_":null,"parent_":{"name_":"webdriver","l
+[driver] Called 'waitUntilXWindowHandles' with arguments [3]
+[driver] Called 'getAllWindowHandles' with arguments []
+[driver] Called 'switchToWindowWithTitle' with arguments ["MetaMask Notification",["802eb8c9-6348-4f6f-96cf-035815ae78ac","9d558c38-99b6-4afe-890d-c28343bc0f49","ef58c194-e40f-4243-b6f9-7a34e9f747e8"]]
+[driver] Called 'clickElement' with arguments [{"text":"Connect","tag":"button"}]
+[driver] Called 'clickElementSafe' with arguments ["[data-testid=\"snap-install-scroll\"]",1000]
+[driver] Called 'waitForSelector' with arguments [{"text":"Install"}]
+[driver] Called 'clickElement' with arguments [{"text":"Install","tag":"button"}]
+[driver] Called 'waitForSelector' with arguments [{"text":"OK"}]
+[driver] Called 'clickElement' with arguments [{"text":"OK","tag":"button"}]
+[driver] Called 'switchToWindowWithTitle' with arguments ["SSK - Simple Snap Keyring"]
+[driver] Called 'waitForSelector' with arguments [{"text":"Connected","tag":"span"}]
+[driver] Called 'switchToWindowWithTitle' with arguments ["SSK - Simple Snap Keyring"]
+[driver] Called 'clickElement' with arguments [{"xpath":"//input[@id=\"use-sync-flow-toggle\"]/.."}]
+[driver] Called 'clickElement' with arguments [{"text":"Create account","tag":"div"}]
+[driver] Called 'clickElement' with arguments [{"text":"Create Account","tag":"button"}]
+[driver] Called 'waitUntilXWindowHandles' with arguments [3]
+[driver] Called 'getAllWindowHandles' with arguments []
+[driver] Called 'switchToWindowWithTitle' with arguments ["MetaMask Notification",["802eb8c9-6348-4f6f-96cf-035815ae78ac","9d558c38-99b6-4afe-890d-c28343bc0f49","b9f26162-f19a-48d6-8bd2-e1957ffcfcc3"]]
+[driver] Called 'clickElement' with arguments ["[data-testid=\"confirmation-submit-button\"]"]
+[driver] Called 'clickElement' with arguments ["[data-testid=\"confirmation-submit-button\"]"]
+[driver] Called 'switchToWindowWithTitle' with arguments ["SSK - Simple Snap Keyring"]
+[driver] Called 'findElement' with arguments [{"text":"0x","tag":"p"}]
+[driver] Called 'switchToWindowWithTitle' with arguments ["MetaMask"]
+[driver] Called 'clickElement' with arguments ["[data-testid=\"account-menu-icon\"]"]
+[driver] Called 'findElement' with arguments [{"css":".mm-tag","text":"Snaps (Beta)"}]
+[driver] Called 'waitForElementNotPresent' with arguments [".mm-tag"]
+[driver] Called 'openNewPage' with arguments ["http://127.0.0.1:8080"]
+SNAPS/ signData called with approve true
+[driver] Called 'switchToWindowWithTitle' with arguments ["E2E Test Dapp"]
+[driver] Called 'clickElement' with arguments ["#personalSign"]
+[driver] Called 'waitUntilXWindowHandles' with arguments [4]
+[driver] Called 'getAllWindowHandles' with arguments []
+[driver] Called 'switchToWindowWithTitle' with arguments ["MetaMask Notification",["802eb8c9-6348-4f6f-96cf-035815ae78ac","9d558c38-99b6-4afe-890d-c28343bc0f49","1580c9d0-7b11-4e47-99f0-3e4a07efc410","ce1954f5-e4f5-4fa8-b694-f2b375d959f4"]]
+[driver] Called 'clickElement' with arguments [{"text":"Sign","tag":"button"}]
+[driver] Called 'waitUntilXWindowHandles' with arguments [3]
+NoSuchWindowError: Browsing context has been discarded
+    at Object.throwDecodedError (/Users/owencraston/src/consensys/metamask-extension/node_modules/selenium-webdriver/lib/error.js:524:15)
+    at parseHttpResponse (/Users/owencraston/src/consensys/metamask-extension/node_modules/selenium-webdriver/lib/http.js:601:13)
+    at Executor.execute (/Users/owencraston/src/consensys/metamask-extension/node_modules/selenium-webdriver/lib/http.js:529:28)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at thenableWebDriverProxy.execute (/Users/owencraston/src/consensys/metamask-extension/node_modules/selenium-webdriver/lib/webdriver.js:745:17)
+    at Driver.mockedEndpoint [as verboseReportOnFailure] (/Users/owencraston/src/consensys/metamask-extension/test/e2e/webdriver/driver.js:480:1)
+    at withFixtures (/Users/owencraston/src/consensys/metamask-extension/test/e2e/helpers.js:157:7)
+    at Context.<anonymous> (/Users/owencraston/src/consensys/metamask-extension/test/e2e/accounts/test-snap-accounts.spec.js:152:29) {
+  remoteStacktrace: 'RemoteError@chrome://remote/content/shared/RemoteError.sys.mjs:8:8\n' +
+    'WebDriverError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:189:5\n' +
+    'NoSuchWindowError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:630:5\n' +
+    'assert.that/<@chrome://remote/content/shared/webdriver/Assert.sys.mjs:485:13\n' +
+    'assert.open@chrome://remote/content/shared/webdriver/Assert.sys.mjs:147:4\n' +
+    'GeckoDriver.prototype.takeScreenshot@chrome://remote/content/marionette/driver.sys.mjs:2462:15\n' +
+    'despatch@chrome://remote/content/marionette/server.sys.mjs:318:40\n' +
+    'execute@chrome://remote/content/marionette/server.sys.mjs:289:16\n' +
+    'onPacket/<@chrome://remote/content/marionette/server.sys.mjs:262:20\n' +
+    'onPacket@chrome://remote/content/marionette/server.sys.mjs:263:9\n' +
+    '_onJSONObjectReady/<@chrome://remote/content/marionette/transport.sys.mjs:494:20\n'
+}
+<testsuite name="Mocha Tests" tests="1" failures="0" errors="1" skipped="0" timestamp="Wed, 11 Oct 2023 22:49:46 GMT" time="43.19">
+<testcase classname="Test Snap Account" name="can #personalSign (async flow approve)" time="43.188"><failure>waitUntilXWindowHandles timed out polling window handles
+Error: waitUntilXWindowHandles timed out polling window handles
+    at Driver.waitUntilXWindowHandles (test/e2e/webdriver/driver.js:408:3)
+    at clickSignOnSignatureConfirmation (test/e2e/helpers.js:669:3)
+    at withFixtures (test/e2e/accounts/test-snap-accounts.spec.js:241:9)
+    at /Users/owencraston/src/consensys/metamask-extension/test/e2e/accounts/test-snap-accounts.spec.js:159:11
+    at withFixtures (test/e2e/helpers.js:107:9)
+    at Context.&#x3C;anonymous&#x3E; (test/e2e/accounts/test-snap-accounts.spec.js:152:29)</failure></testcase>
+</testsuite>
