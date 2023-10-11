@@ -1,1 +1,48 @@
+npm-debug.log
+yarn-error.log
+node_modules
+package-lock.json
 
+audit.json
+
+app/bower_components
+test/bower_components
+package
+.eslintcache
+
+# IDEs
+.idea
+.vscode
+.sublime-project
+
+*.bak
+
+# VIM
+*.swp
+*.swo
+
+temp
+.tmp
+.sass-cache
+.DS_Store
+app/.DS_Store
+
+storybook-build/
+coverage/
+jest-coverage/
+dist
+builds/
+builds.zip
+
+test-artifacts
+test-builds
+build-artifacts
+
+#ignore css output and sourcemaps
+ui/css/output/
+
+notes.txt
+
+.nyc_output
+
+.metamaskrc
