@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 
 describe('Advanced Settings', function () {
   const ganacheOptions = {
@@ -13,11 +12,18 @@ describe('Advanced Settings', function () {
     ],
   };
 
-  it('should show conversion on test network when activated', async function () {
+  const testNetworks = {
+    ropsten: 'Ropsten Test Network',
+    kovan: 'Kovan Test Network',
+    rinkeby: 'Rinkeby Test Network',
+    goerli: 'Goerli Test Network',
+  };
+
+  it('should show conversion on test networks when activated', async function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },
@@ -26,9 +32,7 @@ describe('Advanced Settings', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
 
@@ -40,23 +44,70 @@ describe('Advanced Settings', function () {
           '.settings-page__header__title-container__close-button',
         );
 
-        const secondaryCurrency = await driver.findElement(
-          '[data-testid="eth-overview__secondary-currency"] .currency-display-component__suffix',
+        // Ropsten
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: testNetworks.ropsten, tag: 'span' });
+        await driver.waitForSelector({ text: 'RopstenETH', tag: 'span' });
+
+        let secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
         );
         assert.equal(
-          await secondaryCurrency.getText(),
-          'USD',
-          `Secondary currency is not present`,
+          await secondaryCurrency,
+          true,
+          `Secondary currency is not present in ${testNetworks.ropsten}`,
+        );
+
+        // Kovan
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: testNetworks.kovan, tag: 'span' });
+        await driver.waitForSelector({ text: 'KovanETH', tag: 'span' });
+
+        secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
+        assert.equal(
+          await secondaryCurrency,
+          true,
+          `Secondary currency is not present in ${testNetworks.kovan}`,
+        );
+
+        // Rinkeby
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: testNetworks.rinkeby, tag: 'span' });
+        await driver.waitForSelector({ text: 'RinkebyETH', tag: 'span' });
+
+        secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
+        assert.equal(
+          await secondaryCurrency,
+          true,
+          `Secondary currency is not present in ${testNetworks.rinkeby}`,
+        );
+
+        // Goerli
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: testNetworks.goerli, tag: 'span' });
+        await driver.waitForSelector({ text: 'GoerliETH', tag: 'span' });
+
+        secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
+        assert.equal(
+          await secondaryCurrency,
+          true,
+          `Secondary currency is not present in ${testNetworks.goerli}`,
         );
       },
     );
   });
 
-  it('should not show conversion on test network when deactivated', async function () {
+  it('should not show conversion on test networks when deactivated', async function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },
@@ -65,10 +116,73 @@ describe('Advanced Settings', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        const secondaryCurrency = await driver.isElementPresent(
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Advanced', tag: 'div' });
+
+        await driver.clickElement(
+          '[data-testid="advanced-setting-show-testnet-conversion"] label',
+        );
+
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
+
+        // Ropsten
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: testNetworks.ropsten, tag: 'span' });
+        await driver.waitForSelector({ text: 'RopstenETH', tag: 'span' });
+
+        let secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(secondaryCurrency, false, `Secondary currency is present`);
+        assert.equal(
+          await secondaryCurrency,
+          false,
+          `Secondary currency is present in ${testNetworks.ropsten}`,
+        );
+
+        // Kovan
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: testNetworks.kovan, tag: 'span' });
+        await driver.waitForSelector({ text: 'KovanETH', tag: 'span' });
+
+        secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
+        assert.equal(
+          await secondaryCurrency,
+          false,
+          `Secondary currency is present in ${testNetworks.kovan}`,
+        );
+
+        // Rinkeby
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: testNetworks.rinkeby, tag: 'span' });
+        await driver.waitForSelector({ text: 'RinkebyETH', tag: 'span' });
+
+        secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
+        assert.equal(
+          await secondaryCurrency,
+          false,
+          `Secondary currency is present in ${testNetworks.rinkeby}`,
+        );
+
+        // Goerli
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: testNetworks.goerli, tag: 'span' });
+        await driver.waitForSelector({ text: 'GoerliETH', tag: 'span' });
+
+        secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
+        assert.equal(
+          await secondaryCurrency,
+          false,
+          `Secondary currency is present in ${testNetworks.goerli}`,
+        );
       },
     );
   });
