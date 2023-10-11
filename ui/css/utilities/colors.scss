@@ -1,14 +1,31 @@
 :root {
   // Accents
   // Everything below this line is part of the new color system
+  --ui-grey: #d6d9dc;
+  --ui-1: #f2f3f4;
+  --ui-2: #d6d9dc;
+  --ui-3: #bbc0c5;
+  --ui-4: #6a737d;
   --mainnet: #29b6af;
-  --inherit: inherit;
-  --transparent: transparent;
-  --color-network-linea-goerli-default: #61dfff;
-  --color-network-linea-goerli-inverse: #fcfcfc;
-  --color-network-linea-mainnet-default: #121212;
-  --color-network-linea-mainnet-inverse: #fcfcfc;
-  // DO NOT CHANGE
-  // Required for the QR reader to work properly
-  --qr-code-white-background: #fff;
+  --ropsten: #ff4a8d;
+  --kovan: #9064ff;
+  --rinkeby: #f6c343;
+  --goerli: #3099f2;
+  --localhost: #29b6af;
+  --flask-purple: #8b45b6;
+}
+
+/* Deprecated colors */
+:root {
+  --white: #fff;
+  --black: #000;
+
+  /*
+    Colors
+    http://chir.ag/projects/name-that-color
+  */
+
+  --dusty-gray: #9b9b9b;
+  --alto: #dedede;
+  --tundora: #4d4d4d;
 }
