@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getAccountLink } from '@metamask/etherscan-link';
 import TransactionList from '../../../components/app/transaction-list';
@@ -12,10 +12,10 @@ import {
   getSelectedAddress,
   getIsCustomNetwork,
 } from '../../../selectors/selectors';
+import { showModal } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 
@@ -23,6 +23,7 @@ export default function NativeAsset({ nativeCurrency }) {
   const selectedAccountName = useSelector(
     (state) => getSelectedIdentity(state).name,
   );
+  const dispatch = useDispatch();
 
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
@@ -44,7 +45,7 @@ export default function NativeAsset({ nativeCurrency }) {
             onClickBlockExplorer={() => {
               trackEvent({
                 event: 'Clicked Block Explorer Link',
-                category: MetaMetricsEventCategory.Navigation,
+                category: 'Navigation',
                 properties: {
                   link_type: 'Account Tracker',
                   action: 'Asset Options',
@@ -55,11 +56,14 @@ export default function NativeAsset({ nativeCurrency }) {
                 url: accountLink,
               });
             }}
+            onViewAccountDetails={() => {
+              dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+            }}
             isCustomNetwork={isCustomNetwork}
           />
         }
       />
-      <EthOverview className="asset__overview" showAddress={false} />
+      <EthOverview className="asset__overview" />
       <TransactionList hideTokenTransactions />
     </>
   );

@@ -1,106 +1,96 @@
 import React from 'react';
-import configureMockState from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
-import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import {
-  etherscanViewOn,
-  exportPrivateKey,
-} from '../../../../../app/_locales/en/messages.json';
-import AccountDetailsModal from '.';
-
-const mockShowModal = jest.fn();
-
-jest.mock('../../../../store/actions.ts', () => {
-  return {
-    showModal: () => mockShowModal,
-  };
-});
+import sinon from 'sinon';
+import { shallow } from 'enzyme';
+import AccountDetailsModal from './account-details-modal.container';
 
 describe('Account Details Modal', () => {
-  const mockStore = configureMockState([thunk])(mockState);
+  let wrapper;
 
-  global.platform = { openTab: jest.fn() };
+  global.platform = { openTab: sinon.spy() };
 
-  it('should set account label when changing default account label', () => {
-    const { queryByTestId } = renderWithProvider(
-      <AccountDetailsModal />,
-      mockStore,
-    );
+  const props = {
+    hideModal: sinon.spy(),
+    setAccountLabel: sinon.spy(),
+    showExportPrivateKeyModal: sinon.spy(),
+    network: 'test',
+    rpcPrefs: {},
+    selectedIdentity: {
+      address: '0xAddress',
+      name: 'Account 1',
+    },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: ['0xAddress'],
+      },
+    ],
+    identities: {
+      '0xAddress': {
+        address: '0xAddress',
+        name: 'Account 1',
+      },
+    },
+    accounts: {
+      address: '0xAddress',
+      lastSelected: 1637764711510,
+      name: 'Account 1',
+      balance: '0x543a5fb6caccf599',
+    },
+    blockExplorerLinkText: {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    },
+  };
 
-    const editButton = queryByTestId('editable-label-button');
-
-    expect(queryByTestId('editable-input')).not.toBeInTheDocument();
-    fireEvent.click(editButton);
-    expect(queryByTestId('editable-input')).toBeInTheDocument();
-
-    const editableInput = queryByTestId('editable-input');
-    const newAccountLabel = 'New Label';
-
-    fireEvent.change(editableInput, {
-      target: { value: newAccountLabel },
+  beforeEach(() => {
+    wrapper = shallow(<AccountDetailsModal.WrappedComponent {...props} />, {
+      context: {
+        t: (str) => str,
+        trackEvent: (e) => e,
+      },
     });
+  });
 
-    expect(editableInput).toHaveAttribute('value', newAccountLabel);
+  it('sets account label when changing default account label', () => {
+    const accountLabel = wrapper.find('.account-details-modal__name').first();
+    accountLabel.simulate('submit', 'New Label');
+
+    expect(props.setAccountLabel.calledOnce).toStrictEqual(true);
+    expect(props.setAccountLabel.getCall(0).args[1]).toStrictEqual('New Label');
   });
 
   it('opens new tab when view block explorer is clicked', () => {
-    const { queryByText } = renderWithProvider(
-      <AccountDetailsModal />,
-      mockStore,
-    );
+    wrapper.setProps({
+      blockExplorerLinkText: {
+        firstPart: 'viewOnEtherscan',
+        secondPart: 'blockExplorerAccountAction',
+      },
+    });
+    const modalButton = wrapper.find('.account-details-modal__button');
+    const etherscanLink = modalButton.first();
 
-    const viewOnEtherscan = queryByText(etherscanViewOn.message);
-
-    fireEvent.click(viewOnEtherscan);
-
-    expect(global.platform.openTab).toHaveBeenCalled();
+    etherscanLink.simulate('click');
+    expect(global.platform.openTab.calledOnce).toStrictEqual(true);
   });
 
   it('shows export private key modal when clicked', () => {
-    const { queryByText } = renderWithProvider(
-      <AccountDetailsModal />,
-      mockStore,
-    );
+    const modalButton = wrapper.find('.account-details-modal__button');
+    const etherscanLink = modalButton.last();
 
-    const exportPrivButton = queryByText(exportPrivateKey.message);
-
-    fireEvent.click(exportPrivButton);
-
-    expect(mockShowModal).toHaveBeenCalled();
+    etherscanLink.simulate('click');
+    expect(props.showExportPrivateKeyModal.calledOnce).toStrictEqual(true);
   });
 
   it('sets blockexplorerview text when block explorer url in rpcPrefs exists', () => {
     const blockExplorerUrl = 'https://block.explorer';
+    wrapper.setProps({
+      rpcPrefs: { blockExplorerUrl },
+      blockExplorerLinkText: { firstPart: 'blockExplorerView' },
+    });
 
-    const customProviderMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        networkConfigurations: {
-          networkConfigurationId: {
-            chainId: '0x99',
-            rpcPrefs: {
-              blockExplorerUrl,
-            },
-          },
-        },
-        provider: {
-          chainId: '0x99',
-        },
-      },
-    };
+    const modalButton = wrapper.find('.account-details-modal__button');
+    const blockExplorerLink = modalButton.first().shallow();
 
-    const customProviderMockStore = configureMockState([thunk])(
-      customProviderMockState,
-    );
-
-    const { queryByText } = renderWithProvider(
-      <AccountDetailsModal />,
-      customProviderMockStore,
-    );
-
-    expect(queryByText(/block.explorer/u)).toBeInTheDocument();
+    expect(blockExplorerLink.text()).toStrictEqual('blockExplorerView');
   });
 });
