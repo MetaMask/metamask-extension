@@ -152,7 +152,7 @@ export default function NewSnapAccountPage() {
           marginBottom={4}
           externalLink
         >
-          {t('snapFeedback')}
+          {t('accountSnapsFeedback')}
         </ButtonLink>
       </Box>
     </Box>
