@@ -55,4 +55,67 @@
     margin-right: 12px;
     flex: 0 0 auto;
   }
+
+  &__nft-header {
+    @include H7;
+
+    display: flex;
+  }
+
+  &__nft {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__details {
+    flex: 0 0 30%;
+    min-width: 0;
+  }
+
+  &__nft-list {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+  }
+
+  &__nft-list-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-top: 8px;
+    box-sizing: border-box;
+  }
+
+  &__nft-data {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+  }
+  &__nft-details {
+    display: flex;
+    justify-content: space-evenly;
+    width: 70%;
+  }
+
+  &__nft-name,
+  &__nft-description,
+  &__nft-standard {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__nft-image {
+    margin-right: 12px;
+    flex: 0 0 auto;
+    width: 50px;
+  }
+
+  &__nft-address,
+  &__nft-tokenid {
+    font-size: 11px;
+    color: #606060;
+    padding: 4px;
+  }
 }

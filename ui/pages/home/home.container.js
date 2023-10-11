@@ -3,70 +3,99 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   activeTabHasPermissions,
-  getCurrentEthBalance,
   getFirstPermissionRequest,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getFirstSnapInstallOrUpdateRequest,
+  ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
   unconfirmedTransactionsCountSelector,
+  getInfuraBlocked,
   getShowWhatsNewPopup,
-  getSortedNotificationsToShow,
+  getSortedAnnouncementsToShow,
+  getShowRecoveryPhraseReminder,
+  getShowTermsOfUse,
+  getShowOutdatedBrowserWarning,
+  getNewNetworkAdded,
+  hasUnsignedQRHardwareTransaction,
+  hasUnsignedQRHardwareMessage,
+  getNewNftAddedMessage,
+  getNewTokensImported,
+  getShouldShowSeedPhraseReminder,
+  getRemoveNftMessage,
 } from '../../selectors';
 
 import {
-  restoreFromThreeBox,
-  turnThreeBoxSyncingOn,
-  getThreeBoxLastUpdated,
-  setShowRestorePromptToFalse,
+  closeNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
+  setRecoveryPhraseReminderHasBeenShown,
+  setRecoveryPhraseReminderLastShown,
+  setTermsOfUseLastAgreed,
+  setOutdatedBrowserWarningLastShown,
+  setNewNetworkAdded,
+  setNewNftAddedMessage,
+  setRemoveNftMessage,
+  setNewTokensImported,
+  setActiveNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapError,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
+import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
-import { getSwapsFeatureLiveness } from '../../ducks/swaps/swaps';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app';
+} from '../../../shared/constants/app';
 import {
-  ALERT_TYPES,
-  WEB3_SHIM_USAGE_ALERT_STATES,
-} from '../../../../shared/constants/alerts';
+  AlertTypes,
+  Web3ShimUsageAlertStates,
+} from '../../../shared/constants/alerts';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
-    suggestedTokens,
+    suggestedAssets,
+    suggestedNfts,
     seedPhraseBackedUp,
-    tokens,
-    threeBoxSynced,
-    showRestorePrompt,
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
+    firstTimeFlowType,
+    completedOnboarding,
   } = metamask;
-  const accountBalance = getCurrentEthBalance(state);
-  const { forgottenPassword, threeBoxLastUpdated } = appState;
+  const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const swapsEnabled = getSwapsFeatureLiveness(state);
+  const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-  const firstPermissionsRequest = getFirstPermissionRequest(state);
-  const firstPermissionsRequestId =
-    firstPermissionsRequest && firstPermissionsRequest.metadata
-      ? firstPermissionsRequest.metadata.id
-      : null;
+  let firstPermissionsRequest, firstPermissionsRequestId;
+  firstPermissionsRequest = getFirstPermissionRequest(state);
+  firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+
+  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (!firstPermissionsRequest) {
+    firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
+    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -74,26 +103,28 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageAlertEnabledness(state) &&
     activeTabHasPermissions(state) &&
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
-      WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
+      Web3ShimUsageAlertStates.recorded;
+
+  const isSigningQRHardwareTransaction =
+    hasUnsignedQRHardwareTransaction(state) ||
+    hasUnsignedQRHardwareMessage(state);
 
   return {
     forgottenPassword,
-    suggestedTokens,
+    suggestedAssets,
+    suggestedNfts,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
-    shouldShowSeedPhraseReminder:
-      seedPhraseBackedUp === false &&
-      (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
-    threeBoxSynced,
-    showRestorePrompt,
     selectedAddress,
-    threeBoxLastUpdated,
     firstPermissionsRequestId,
     totalUnapprovedCount,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
+    firstTimeFlowType,
+    completedOnboarding,
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
@@ -101,33 +132,68 @@ const mapStateToProps = (state) => {
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
-    notificationsToShow: getSortedNotificationsToShow(state).length > 0,
+    infuraBlocked: getInfuraBlocked(state),
+    announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    errorsToShow: metamask.snapErrors,
+    shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
+    ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
+    showTermsOfUsePopup: getShowTermsOfUse(state),
+    showOutdatedBrowserWarning:
+      getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
+    seedPhraseBackedUp,
+    newNetworkAddedName: getNewNetworkAdded(state),
+    isSigningQRHardwareTransaction,
+    newNftAddedMessage: getNewNftAddedMessage(state),
+    removeNftMessage: getRemoveNftMessage(state),
+    newTokensImported: getNewTokensImported(state),
+    newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
+    onboardedInThisUISession: appState.onboardedInThisUISession,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
-  setupThreeBox: () => {
-    dispatch(getThreeBoxLastUpdated()).then((lastUpdated) => {
-      if (lastUpdated) {
-        dispatch(setThreeBoxLastUpdated(lastUpdated));
-      } else {
-        dispatch(setShowRestorePromptToFalse());
-        dispatch(turnThreeBoxSyncingOn());
-      }
-    });
-  },
-  restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
-  setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
+  closeNotificationPopup: () => closeNotificationPopup(),
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapError: async (id) => await removeSnapError(id),
+  ///: END:ONLY_INCLUDE_IN
   setConnectedStatusPopoverHasBeenShown: () =>
     dispatch(setConnectedStatusPopoverHasBeenShown()),
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
   setWeb3ShimUsageAlertDismissed: (origin) =>
     setWeb3ShimUsageAlertDismissed(origin),
   disableWeb3ShimUsageAlert: () =>
-    setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
+    setAlertEnabledness(AlertTypes.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+  setRecoveryPhraseReminderHasBeenShown: () =>
+    dispatch(setRecoveryPhraseReminderHasBeenShown()),
+  setRecoveryPhraseReminderLastShown: (lastShown) =>
+    dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+  setTermsOfUseLastAgreed: (lastAgreed) => {
+    dispatch(setTermsOfUseLastAgreed(lastAgreed));
+  },
+  setOutdatedBrowserWarningLastShown: (lastShown) => {
+    dispatch(setOutdatedBrowserWarningLastShown(lastShown));
+  },
+  setNewNftAddedMessage: (message) => {
+    dispatch(setRemoveNftMessage(''));
+    dispatch(setNewNftAddedMessage(message));
+  },
+  setRemoveNftMessage: (message) => {
+    dispatch(setNewNftAddedMessage(''));
+    dispatch(setRemoveNftMessage(message));
+  },
+  setNewTokensImported: (newTokens) => {
+    dispatch(setNewTokensImported(newTokens));
+  },
+  clearNewNetworkAdded: () => {
+    dispatch(setNewNetworkAdded({}));
+  },
+  setActiveNetwork: (networkConfigurationId) => {
+    dispatch(setActiveNetwork(networkConfigurationId));
+  },
 });
 
 export default compose(
