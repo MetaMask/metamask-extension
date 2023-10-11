@@ -786,7 +786,7 @@ export default class TransactionController extends EventEmitter {
       event,
       properties,
       sensitiveProperties,
-      txMeta,
+      transactionMeta: txMeta,
     });
   }
 
@@ -2565,7 +2565,7 @@ export default class TransactionController extends EventEmitter {
       event,
       properties,
       sensitiveProperties,
-      txMeta,
+      transactionMeta: txMeta,
     });
   }
 
