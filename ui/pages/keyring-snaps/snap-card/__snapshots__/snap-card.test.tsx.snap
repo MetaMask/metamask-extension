@@ -3,7 +3,7 @@
 exports[`SnapCard should render 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-4 mm-box--sm:padding-4 mm-box--md:padding-4 mm-box--lg:padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+    class="mm-box snap-account-card mm-box--padding-4 mm-box--sm:padding-4 mm-box--md:padding-4 mm-box--lg:padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
     data-testid="key-management-snap"
   >
     <div
