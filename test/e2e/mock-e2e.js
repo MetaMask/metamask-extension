@@ -111,7 +111,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
-  await server.forPost('https://api.segment.io/v1/batch').thenCallback(() => {
+  await server.forPost('http://localhost:9090/v1/batch').thenCallback(() => {
     return {
       statusCode: 200,
     };
