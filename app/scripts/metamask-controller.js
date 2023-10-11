@@ -2882,10 +2882,6 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // snaps
-      removeSnapError: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:removeSnapError',
-      ),
       disableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:disable',

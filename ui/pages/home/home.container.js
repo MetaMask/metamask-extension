@@ -54,9 +54,6 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  removeSnapError,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -153,10 +150,6 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    errorsToShow: metamask.snapErrors,
-    shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
-    ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
@@ -188,9 +181,6 @@ const mapDispatchToProps = (dispatch) => {
 
   return {
     closeNotificationPopup: () => closeNotificationPopup(),
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    removeSnapError: async (id) => await removeSnapError(id),
-    ///: END:ONLY_INCLUDE_IN
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
     onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),

@@ -3949,10 +3949,6 @@
   "snapDetailsInstalled": {
     "message": "इंस्टॉल किया गया"
   },
-  "snapError": {
-    "message": "Snap एरर: '$1'. एरर कोड: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
   "snapInstall": {
     "message": "Snap इंस्टाल करें"
   },
