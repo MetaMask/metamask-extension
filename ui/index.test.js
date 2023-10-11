@@ -1,4 +1,4 @@
-import { setupLocale } from '../shared/lib/error-utils';
+import { setupLocale } from '.';
 
 const enMessages = {
   troubleStarting: {
@@ -6,7 +6,7 @@ const enMessages = {
       'MetaMask had trouble starting. This error could be intermittent, so try restarting the extension.',
   },
   restartMetamask: {
-    message: 'Restart MetaMask',
+    message: 'Restart Metamask',
   },
   stillGettingMessage: {
     message: 'Still getting this message?',
@@ -29,7 +29,7 @@ const esMessages = {
   },
 };
 
-jest.mock('../shared/modules/i18n', () => ({
+jest.mock('./helpers/utils/i18n-helper', () => ({
   fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));

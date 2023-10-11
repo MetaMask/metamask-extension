@@ -1,9 +1,7 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
-import SafeEventEmitter from '@metamask/safe-event-emitter';
+import SafeEventEmitter from 'safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
-import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
-
-class DisconnectError extends Error {}
+import { TEN_SECONDS_IN_MILLISECONDS } from '../../../ui/helpers/constants/critical-error';
 
 class MetaRPCClient {
   constructor(connectionStream) {
@@ -14,25 +12,20 @@ class MetaRPCClient {
     this.connectionStream.on('data', this.handleResponse.bind(this));
     this.connectionStream.on('end', this.close.bind(this));
     this.responseHandled = {};
-    this.DisconnectError = DisconnectError;
   }
 
   send(id, payload, cb) {
     this.requests.set(id, cb);
     this.connectionStream.write(payload);
     this.responseHandled[id] = false;
-    if (payload.method === 'getState') {
-      setTimeout(() => {
-        if (!this.responseHandled[id] && cb) {
-          delete this.responseHandled[id];
-          return cb(new Error('No response from RPC'), null);
-        }
+    setTimeout(() => {
+      if (!this.responseHandled[id] && cb) {
+        return cb(new Error('No response from RPC'), null);
+      }
 
-        delete this.responseHandled[id];
-        // needed for linter to pass
-        return true;
-      }, TEN_SECONDS_IN_MILLISECONDS);
-    }
+      // needed for linter to pass
+      return true;
+    }, TEN_SECONDS_IN_MILLISECONDS);
   }
 
   onNotification(handler) {
@@ -50,13 +43,6 @@ class MetaRPCClient {
   close() {
     this.notificationChannel.removeAllListeners();
     this.uncaughtErrorChannel.removeAllListeners();
-    // fail all unfinished requests
-    for (const [id, handler] of this.requests) {
-      if (!this.responseHandled[id]) {
-        this.responseHandled[id] = true;
-        handler(new DisconnectError('disconnected'));
-      }
-    }
   }
 
   handleResponse(data) {
