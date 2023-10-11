@@ -34,7 +34,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
-import { removeTransactionToDisplayOnFailure } from '../ducks/app/app';
+import { removeTxFromFailedTxesToDisplay } from '../ducks/app/app';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -70,6 +70,19 @@ export function tryUnlockMetamask(password) {
       .then(() => {
         dispatch(unlockSucceeded());
         return forceUpdateMetamaskState(dispatch);
+      })
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          background.verifySeedPhrase((err) => {
+            if (err) {
+              dispatch(displayWarning(err.message));
+              reject(err);
+              return;
+            }
+
+            resolve();
+          });
+        });
       })
       .then(() => {
         dispatch(hideLoadingIndication());
@@ -433,9 +446,8 @@ export function connectHardware(deviceName, page, hdPath, t) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
-        if (deviceName !== DEVICE_NAMES.QR) {
+        if (deviceName !== DEVICE_NAMES.QR)
           dispatch(displayWarning(error.message));
-        }
         throw error;
       }
     } finally {
@@ -924,7 +936,6 @@ export function cancelTx(txData, _showLoadingIndication = true) {
 
 /**
  * Cancels all of the given transactions
- *
  * @param {Array<object>} txDataList - a list of tx data objects
  * @returns {function(*): Promise<void>}
  */
@@ -959,7 +970,7 @@ export function cancelTxs(txDataList) {
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        closeNotificationPopup();
+        global.platform.closeCurrentWindow();
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -1115,13 +1126,13 @@ export function updateMetamaskState(newState) {
       value: newState,
     });
 
-    // Remove successful transactions from `transactionsToDisplayOnFailure`.
+    // Check that the transaction was not submitted successfully, and remove it from failed transactions if it was.
 
     const transactionIdsToRemove = Object.keys(
       transactionsToDisplayOnFailure,
     ).filter((id) => {
-      const currentTx = currentNetworkTxList.find((tx) => String(tx.id) === id);
-      const newTx = newNetworkTxList.find((tx) => String(tx.id) === id);
+      const currentTx = currentNetworkTxList.find((tx) => tx.id === id);
+      const newTx = newNetworkTxList.find((tx) => tx.id === id);
       if (currentTx && newTx) {
         return (
           newTx.status !== currentTx.status &&
@@ -1134,7 +1145,7 @@ export function updateMetamaskState(newState) {
     });
 
     transactionIdsToRemove.forEach((id) => {
-      dispatch(removeTransactionToDisplayOnFailure(id));
+      dispatch(removeTxFromFailedTxesToDisplay(id));
     });
   };
 }
@@ -1420,43 +1431,6 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
       dispatch(hideLoadingIndication());
     }
   };
-}
-
-export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
-  await promisifiedBackground.checkAndUpdateAllCollectiblesOwnershipStatus();
-}
-
-export async function isCollectibleOwner(
-  ownerAddress,
-  collectibleAddress,
-  collectibleId,
-) {
-  return await promisifiedBackground.isCollectibleOwner(
-    ownerAddress,
-    collectibleAddress,
-    collectibleId,
-  );
-}
-
-export async function checkAndUpdateSingleCollectibleOwnershipStatus(
-  collectible,
-) {
-  await promisifiedBackground.checkAndUpdateSingleCollectibleOwnershipStatus(
-    collectible,
-    false,
-  );
-}
-
-export async function getTokenStandardAndDetails(
-  address,
-  userAddress,
-  tokenId,
-) {
-  return await promisifiedBackground.getTokenStandardAndDetails(
-    address,
-    userAddress,
-    tokenId,
-  );
 }
 
 export function removeToken(address) {
@@ -1794,7 +1768,6 @@ export function addToAddressBook(recipient, nickname = '', memo = '') {
 
 /**
  * @description Calls the addressBookController to remove an existing address.
- * @param chainId
  * @param {string} addressToRemove - Address of the entry to remove from the address book
  */
 export function removeFromAddressBook(chainId, addressToRemove) {
@@ -1840,7 +1813,7 @@ export function closeCurrentNotificationWindow() {
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasUnconfirmedTransactions(getState())
     ) {
-      closeNotificationPopup();
+      global.platform.closeCurrentWindow();
     }
   };
 }
@@ -1862,8 +1835,6 @@ export function hideAlert() {
  * This action will receive two types of values via qrCodeData
  * an object with the following structure {type, values}
  * or null (used to clear the previous value)
- *
- * @param qrCodeData
  */
 export function qrCodeDetected(qrCodeData) {
   return async (dispatch) => {
@@ -2206,15 +2177,15 @@ export function setUseBlockie(val) {
 }
 
 export function setUseNonceField(val) {
-  return async (dispatch) => {
+  return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNonceField`);
-    try {
-      await promisifiedBackground.setUseNonceField(val);
-    } catch (error) {
-      dispatch(displayWarning(error.message));
-    }
-    dispatch(hideLoadingIndication());
+    background.setUseNonceField(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
     dispatch({
       type: actionConstants.SET_USE_NONCEFIELD,
       value: val,
@@ -2261,29 +2232,6 @@ export function setUseCollectibleDetection(val) {
   };
 }
 
-export function setOpenSeaEnabled(val) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setOpenSeaEnabled`);
-    background.setOpenSeaEnabled(val, (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-  };
-}
-
-export function detectCollectibles() {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.detectCollectibles`);
-    await promisifiedBackground.detectCollectibles();
-    dispatch(hideLoadingIndication());
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 export function setAdvancedGasFee(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2294,18 +2242,6 @@ export function setAdvancedGasFee(val) {
         dispatch(displayWarning(err.message));
       }
     });
-  };
-}
-
-export function setEIP1559V2Enabled(val) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setEIP1559V2Enabled`);
-    try {
-      await promisifiedBackground.setEIP1559V2Enabled(val);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
   };
 }
 
@@ -2570,12 +2506,12 @@ export function requestAccountsPermissionWithId(origin) {
 
 /**
  * Approves the permissions request.
- *
- * @param {Object} request - The permissions request to approve.
+ * @param {Object} request - The permissions request to approve
+ * @param {string[]} accounts - The accounts to expose, if any.
  */
-export function approvePermissionsRequest(request) {
+export function approvePermissionsRequest(request, accounts) {
   return (dispatch) => {
-    background.approvePermissionsRequest(request, (err) => {
+    background.approvePermissionsRequest(request, accounts, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2585,7 +2521,6 @@ export function approvePermissionsRequest(request) {
 
 /**
  * Rejects the permissions request with the given ID.
- *
  * @param {string} requestId - The id of the request to be rejected
  */
 export function rejectPermissionsRequest(requestId) {
@@ -2605,12 +2540,10 @@ export function rejectPermissionsRequest(requestId) {
 
 /**
  * Clears the given permissions for the given origin.
- *
- * @param subjects
  */
-export function removePermissionsFor(subjects) {
+export function removePermissionsFor(domains) {
   return (dispatch) => {
-    background.removePermissionsFor(subjects, (err) => {
+    background.removePermissionsFor(domains, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2623,7 +2556,6 @@ export function removePermissionsFor(subjects) {
 /**
  * Resolves a pending approval and closes the current notification window if no
  * further approvals are pending after the background state updates.
- *
  * @param {string} id - The pending approval id
  * @param {any} [value] - The value required to confirm a pending approval
  */
@@ -2642,7 +2574,6 @@ export function resolvePendingApproval(id, value) {
 /**
  * Rejects a pending approval and closes the current notification window if no
  * further approvals are pending after the background state updates.
- *
  * @param {string} id - The pending approval id
  * @param {Error} [error] - The error to throw when rejecting the approval
  */
@@ -2796,26 +2727,13 @@ export function loadingTokenParamsFinished() {
   };
 }
 
-export function getTokenParams(address) {
+export function getTokenParams(tokenAddress) {
   return (dispatch, getState) => {
     const tokenList = getTokenList(getState());
     const existingTokens = getState().metamask.tokens;
-    const { selectedAddress } = getState().metamask;
-    const { chainId } = getState().metamask.provider;
-    const existingCollectibles = getState().metamask?.allCollectibles?.[
-      selectedAddress
-    ]?.[chainId];
-    const existingToken = existingTokens.find(({ address: tokenAddress }) =>
-      isEqualCaseInsensitive(address, tokenAddress),
+    const existingToken = existingTokens.find(({ address }) =>
+      isEqualCaseInsensitive(tokenAddress, address),
     );
-    const existingCollectible = existingCollectibles?.find(
-      ({ address: collectibleAddress }) =>
-        isEqualCaseInsensitive(address, collectibleAddress),
-    );
-
-    if (existingCollectible) {
-      return null;
-    }
 
     if (existingToken) {
       return Promise.resolve({
@@ -2827,9 +2745,9 @@ export function getTokenParams(address) {
     dispatch(loadingTokenParamsStarted());
     log.debug(`loadingTokenParams`);
 
-    return getSymbolAndDecimals(address, tokenList).then(
+    return getSymbolAndDecimals(tokenAddress, tokenList).then(
       ({ symbol, decimals }) => {
-        dispatch(addToken(address, symbol, Number(decimals)));
+        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
         dispatch(loadingTokenParamsFinished());
       },
     );
@@ -2958,17 +2876,19 @@ export function setNextNonce(nextNonce) {
 }
 
 export function getNextNonce() {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     const address = getState().metamask.selectedAddress;
-    let nextNonce;
-    try {
-      nextNonce = await promisifiedBackground.getNextNonce(address);
-    } catch (error) {
-      dispatch(displayWarning(error.message));
-      throw error;
-    }
-    dispatch(setNextNonce(nextNonce));
-    return nextNonce;
+    return new Promise((resolve, reject) => {
+      background.getNextNonce(address, (err, nextNonce) => {
+        if (err) {
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
+        }
+        dispatch(setNextNonce(nextNonce));
+        resolve(nextNonce);
+      });
+    });
   };
 }
 
@@ -3078,6 +2998,7 @@ export function getGasFeeEstimatesAndStartPolling() {
  *
  * @param {string} pollToken - Poll token received from calling
  *  `getGasFeeEstimatesAndStartPolling`.
+ * @returns {void}
  */
 export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
@@ -3104,11 +3025,6 @@ export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
   );
 }
 
-export async function closeNotificationPopup() {
-  await promisifiedBackground.markNotificationPopupAsAutomaticallyClosed();
-  global.platform.closeCurrentWindow();
-}
-
 // MetaMetrics
 /**
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
@@ -3126,21 +3042,10 @@ export function trackMetaMetricsEvent(payload, options) {
   return promisifiedBackground.trackMetaMetricsEvent(payload, options);
 }
 
-export function createEventFragment(options) {
-  return promisifiedBackground.createEventFragment(options);
-}
-
-export function updateEventFragment(id, payload) {
-  return promisifiedBackground.updateEventFragment(id, payload);
-}
-
-export function finalizeEventFragment(id, options) {
-  return promisifiedBackground.finalizeEventFragment(id, options);
-}
-
 /**
  * @param {MetaMetricsPagePayload} payload - details of the page viewed
  * @param {MetaMetricsPageOptions} options - options for handling the page view
+ * @returns {void}
  */
 export function trackMetaMetricsPage(payload, options) {
   return promisifiedBackground.trackMetaMetricsPage(payload, options);
@@ -3169,17 +3074,8 @@ export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
 }
 
-// App state
 export function hideTestNetMessage() {
   return promisifiedBackground.setShowTestnetMessageInDropdown(false);
-}
-
-export function setCollectiblesDetectionNoticeDismissed() {
-  return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
-}
-
-export function setEnableEIP1559V2NoticeDismissed() {
-  return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
 // QR Hardware Wallets

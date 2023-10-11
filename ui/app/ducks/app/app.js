@@ -56,7 +56,6 @@ export default function reduceApp(state = {}, action) {
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
-    sendInputCurrencySwitched: false,
     showTestnetMessageInDropdown: true,
     transactionsToDisplayOnFailure: {},
     ...state,
@@ -356,7 +355,7 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         gasLoadingAnimationIsShowing: action.value,
       };
-    case actionConstants.ADD_TRANSACTION_TO_DISPLAY_ON_FAILURE:
+    case actionConstants.ADD_TXS_TO_FAILED_TXES_TO_DISPLAY:
       return {
         ...appState,
         transactionsToDisplayOnFailure: {
@@ -365,7 +364,7 @@ export default function reduceApp(state = {}, action) {
         },
       };
 
-    case actionConstants.REMOVE_TRANSACTION_TO_DISPLAY_ON_FAILURE:
+    case actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY:
       delete appState.transactionsToDisplayOnFailure[action.value];
       return {
         ...appState,
@@ -383,11 +382,7 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         ledgerTransportStatus: action.value,
       };
-    case actionConstants.SET_CURRENCY_INPUT_SWITCH:
-      return {
-        ...appState,
-        sendInputCurrencySwitched: action.value,
-      };
+
     default:
       return appState;
   }
@@ -410,16 +405,16 @@ export function hideWhatsNewPopup() {
 export function toggleGasLoadingAnimation(value) {
   return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
 }
-export function addTransactionToDisplayOnFailure(txId) {
+export function addTxToFailedTxesToDisplay(txId) {
   return {
-    type: actionConstants.ADD_TRANSACTION_TO_DISPLAY_ON_FAILURE,
+    type: actionConstants.ADD_TXS_TO_FAILED_TXES_TO_DISPLAY,
     value: txId,
   };
 }
 
-export function removeTransactionToDisplayOnFailure(txId) {
+export function removeTxFromFailedTxesToDisplay(txId) {
   return {
-    type: actionConstants.REMOVE_TRANSACTION_TO_DISPLAY_ON_FAILURE,
+    type: actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY,
     value: txId,
   };
 }
@@ -447,8 +442,4 @@ export function getLedgerWebHidConnectedStatus(state) {
 
 export function getLedgerTransportStatus(state) {
   return state.appState.ledgerTransportStatus;
-}
-
-export function toggleCurrencySwitch(value) {
-  return { type: actionConstants.SET_CURRENCY_INPUT_SWITCH, value };
 }

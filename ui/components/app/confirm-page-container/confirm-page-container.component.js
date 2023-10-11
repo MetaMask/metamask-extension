@@ -10,13 +10,10 @@ import Dialog from '../../ui/dialog';
 import ErrorMessage from '../../ui/error-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
-import NicknamePopovers from '../modals/nickname-popovers';
-
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 
-import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -24,10 +21,6 @@ import {
 } from '.';
 
 export default class ConfirmPageContainer extends Component {
-  state = {
-    showNicknamePopovers: false,
-  };
-
   static contextTypes = {
     t: PropTypes.func,
   };
@@ -40,7 +33,6 @@ export default class ConfirmPageContainer extends Component {
     showEdit: PropTypes.bool,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
-    image: PropTypes.string,
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
@@ -56,7 +48,6 @@ export default class ConfirmPageContainer extends Component {
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
     dataComponent: PropTypes.node,
-    dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
@@ -82,12 +73,13 @@ export default class ConfirmPageContainer extends Component {
     disabled: PropTypes.bool,
     editingGas: PropTypes.bool,
     handleCloseEditGas: PropTypes.func,
-    isFailedTransaction: PropTypes.bool,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
+    showAddToAddressBookModal: PropTypes.func,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
+    isFailedTransaction: PropTypes.bool,
   };
 
   render() {
@@ -106,13 +98,11 @@ export default class ConfirmPageContainer extends Component {
       contentComponent,
       action,
       title,
-      image,
       titleComponent,
       subtitleComponent,
       hideSubtitle,
       detailsComponent,
       dataComponent,
-      dataHexComponent,
       onCancelAll,
       onCancel,
       onSubmit,
@@ -137,6 +127,7 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
+      showAddToAddressBookModal,
       contact = {},
       isOwnedAccount,
       supportsEIP1559V2,
@@ -158,16 +149,11 @@ export default class ConfirmPageContainer extends Component {
       <GasFeeContextProvider transaction={currentTransaction}>
         <div className="page-container">
           <ConfirmPageContainerNavigation
-            totalTx={isFailedTransaction ? totalTx + 1 : totalTx}
-            positionOfCurrentTx={
-              isFailedTransaction
-                ? positionOfCurrentTx + 1
-                : positionOfCurrentTx
-            }
+            totalTx={totalTx}
+            positionOfCurrentTx={positionOfCurrentTx}
             nextTxId={nextTxId}
             prevTxId={prevTxId}
             showNavigation={showNavigation}
-            isFailedTransaction={isFailedTransaction}
             onNextTx={(txId) => onNextTx(txId)}
             firstTx={firstTx}
             lastTx={lastTx}
@@ -193,37 +179,24 @@ export default class ConfirmPageContainer extends Component {
           </ConfirmPageContainerHeader>
           <div>
             {showAddToAddressDialog && (
-              <>
-                <Dialog
-                  type="message"
-                  className="send__dialog"
-                  onClick={() => this.setState({ showNicknamePopovers: true })}
-                >
-                  {this.context.t('newAccountDetectedDialogMessage')}
-                </Dialog>
-                {this.state.showNicknamePopovers ? (
-                  <NicknamePopovers
-                    onClose={() =>
-                      this.setState({ showNicknamePopovers: false })
-                    }
-                    address={toAddress}
-                  />
-                ) : null}
-              </>
+              <Dialog
+                type="message"
+                className="send__dialog"
+                onClick={() => showAddToAddressBookModal()}
+              >
+                {this.context.t('newAccountDetectedDialogMessage')}
+              </Dialog>
             )}
           </div>
-          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}
               title={title}
-              image={image}
               titleComponent={titleComponent}
               subtitleComponent={subtitleComponent}
               hideSubtitle={hideSubtitle}
               detailsComponent={detailsComponent}
               dataComponent={dataComponent}
-              dataHexComponent={dataHexComponent}
               errorMessage={errorMessage}
               errorKey={errorKey}
               identiconAddress={identiconAddress}
@@ -245,7 +218,6 @@ export default class ConfirmPageContainer extends Component {
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
-              hasTopBorder={showAddToAddressDialog}
               isFailedTransaction={isFailedTransaction}
             />
           )}
@@ -282,12 +254,8 @@ export default class ConfirmPageContainer extends Component {
               transaction={currentTransaction}
             />
           )}
-          {supportsEIP1559V2 && (
-            <>
-              <EditGasFeePopover />
-              <AdvancedGasFeePopover />
-            </>
-          )}
+          <EditGasFeePopover />
+          <AdvancedGasFeePopover />
         </div>
       </GasFeeContextProvider>
     );

@@ -14,11 +14,7 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
-import {
-  isEqualCaseInsensitive,
-  shortenAddress,
-  valuesFor,
-} from '../../helpers/utils/util';
+import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
   getCustomNonceValue,
@@ -36,7 +32,6 @@ import {
   getUseTokenDetection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
-  getEIP1559V2Enabled,
   getFailedTransactionsToDisplay,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -46,8 +41,8 @@ import {
 } from '../../../shared/modules/transaction.utils';
 
 import {
-  addTransactionToDisplayOnFailure,
-  removeTransactionToDisplayOnFailure,
+  addTxToFailedTxesToDisplay,
+  removeTxFromFailedTxesToDisplay,
   getGasLoadingAnimationIsShowing,
 } from '../../ducks/app/app';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
@@ -92,8 +87,6 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     nextNonce,
-    allCollectibleContracts,
-    selectedAddress,
     provider: { chainId },
   } = metamask;
 
@@ -140,10 +133,7 @@ const mapStateToProps = (state, ownProps) => {
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
-  const addressBookObject =
-    addressBook &&
-    addressBook[chainId] &&
-    addressBook[chainId][checksummedAddress];
+  const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
@@ -188,13 +178,6 @@ const mapStateToProps = (state, ownProps) => {
       },
     };
   }
-
-  const isCollectibleTransfer = Boolean(
-    allCollectibleContracts?.[selectedAddress]?.[chainId].find((contract) => {
-      return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
-    }),
-  );
-
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
@@ -213,7 +196,6 @@ const mapStateToProps = (state, ownProps) => {
   const isFailedTransaction = fullTxData.status === 'failed';
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
-  const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
   return {
     balance,
@@ -245,7 +227,7 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state) && !isCollectibleTransfer,
+    hideSubtitle: !getShouldShowFiat(state),
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
@@ -264,8 +246,6 @@ const mapStateToProps = (state, ownProps) => {
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
-    chainId,
-    eip1559V2Enabled,
     isFailedTransaction,
   };
 };
@@ -301,10 +281,10 @@ export const mapDispatchToProps = (dispatch) => {
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
     },
-    addTransactionToDisplayOnFailure: (id) =>
-      dispatch(addTransactionToDisplayOnFailure(id)),
-    removeTransactionToDisplayOnFailure: (id) =>
-      dispatch(removeTransactionToDisplayOnFailure(id)),
+    addTxToFailedTxesToDisplay: (id) =>
+      dispatch(addTxToFailedTxesToDisplay(id)),
+    removeTxFromFailedTxesToDisplay: (id) =>
+      dispatch(removeTxFromFailedTxesToDisplay(id)),
   };
 };
 

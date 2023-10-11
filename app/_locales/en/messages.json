@@ -2449,6 +2449,9 @@
     "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "moreDetails": {
+    "message": "More details"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -4349,7 +4352,7 @@
     "message": "Something's gone wrong. Try reloading the page."
   },
   "somethingWentWrong": {
-    "message": "Oops! Something went wrong."
+    "message": "Something went wrong."
   },
   "speedUp": {
     "message": "Speed up"

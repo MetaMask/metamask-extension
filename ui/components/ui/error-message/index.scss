@@ -2,9 +2,9 @@
   @include H7;
 
   min-height: 32px;
-  border: 1px solid var(--Red-300);
-  color: var(--ui-black);
-  background: var(--error-2);
+  border: 1px solid $Red-300;
+  color: $ui-black;
+  background: $error-2;
   border-radius: 8px;
   display: flex;
   justify-content: flex-start;
@@ -22,14 +22,14 @@
 
   &__link {
     text-decoration: none;
-    color: var(--Blue-500);
+    color: $Blue-500;
 
     &:hover {
-      color: var(--Blue-400);
+      color: $Blue-400;
     }
 
     &:active {
-      color: var(--Blue-600);
+      color: $Blue-600;
     }
   }
 }

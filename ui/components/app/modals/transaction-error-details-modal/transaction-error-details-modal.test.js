@@ -32,6 +32,9 @@ describe('Transaction Error Details Modal', () => {
   it('shows transaction error details alert', async () => {
     renderWithProvider(<TransactionErrorDetailsModal {...props} />, store);
 
+    const heading = screen.getByRole('heading', { name: 'Details' });
+    expect(heading.title).toStrictEqual('Details');
+
     const closeButton = screen.getByRole('button', { name: 'Close' });
     expect(closeButton.title).toStrictEqual('Close');
     fireEvent.click(closeButton);

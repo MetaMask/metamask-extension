@@ -21,7 +21,6 @@ export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
     action: PropTypes.string,
     dataComponent: PropTypes.node,
-    dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
@@ -31,7 +30,6 @@ export default class ConfirmPageContainerContent extends Component {
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    image: PropTypes.string,
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
     origin: PropTypes.string.isRequired,
@@ -49,7 +47,6 @@ export default class ConfirmPageContainerContent extends Component {
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
-    hasTopBorder: PropTypes.bool,
     isFailedTransaction: PropTypes.bool,
   };
 
@@ -64,7 +61,7 @@ export default class ConfirmPageContainerContent extends Component {
 
   renderTabs() {
     const { t } = this.context;
-    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
+    const { detailsComponent, dataComponent } = this.props;
 
     return (
       <Tabs>
@@ -77,14 +74,6 @@ export default class ConfirmPageContainerContent extends Component {
         <Tab className="confirm-page-container-content__tab" name={t('data')}>
           {dataComponent}
         </Tab>
-        {dataHexComponent && (
-          <Tab
-            className="confirm-page-container-content__tab"
-            name={t('dataHex')}
-          >
-            {dataHexComponent}
-          </Tab>
-        )}
       </Tabs>
     );
   }
@@ -96,7 +85,6 @@ export default class ConfirmPageContainerContent extends Component {
       errorMessage,
       hasSimulationError,
       title,
-      image,
       titleComponent,
       subtitleComponent,
       hideSubtitle,
@@ -119,7 +107,6 @@ export default class ConfirmPageContainerContent extends Component {
       setUserAcknowledgedGasMissing,
       hideUserAcknowledgedGasMissing,
       supportsEIP1559V2,
-      hasTopBorder,
       isFailedTransaction,
     } = this.props;
 
@@ -131,11 +118,7 @@ export default class ConfirmPageContainerContent extends Component {
         };
 
     return (
-      <div
-        className={classnames('confirm-page-container-content', {
-          'confirm-page-container-content--with-top-border': hasTopBorder,
-        })}
-      >
+      <div className="confirm-page-container-content">
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
@@ -156,7 +139,6 @@ export default class ConfirmPageContainerContent extends Component {
           })}
           action={action}
           title={title}
-          image={image}
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
           hideSubtitle={hideSubtitle}
@@ -200,7 +182,7 @@ export default class ConfirmPageContainerContent extends Component {
           hideCancel={isFailedTransaction}
           submitButtonType={isFailedTransaction ? 'default' : 'confirm'}
         >
-          {unapprovedTxCount > 1 && !isFailedTransaction ? (
+          {unapprovedTxCount > 1 ? (
             <a onClick={onCancelAll}>{rejectNText}</a>
           ) : null}
         </PageContainerFooter>
