@@ -8,7 +8,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '../../component-library/box';
+import { Box } from '../box';
 
 import { TextField } from '../text-field';
 import { HelpText, HelpTextSeverity } from '../help-text';
@@ -124,9 +124,9 @@ FormTextField.propTypes = {
    * The id of the FormTextField
    * Required if label prop exists to ensure accessibility
    *
-   * @param {object} props - The props passed to the component.
-   * @param {string} propName - The prop name in this case 'id'.
-   * @param {string} componentName - The name of the component.
+   * @param props - The props passed to the component.
+   * @param propName - The prop name in this case 'id'.
+   * @param componentName - The name of the component.
    */
   id: (props, propName, componentName) => {
     if (props.label && !props[propName]) {
