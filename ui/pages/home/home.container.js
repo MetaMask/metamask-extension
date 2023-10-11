@@ -13,21 +13,16 @@ import {
   unconfirmedTransactionsCountSelector,
   getInfuraBlocked,
   getShowWhatsNewPopup,
-  getSortedNotificationsToShow,
+  getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
-  getFailedTransactionsToDisplayCount,
 } from '../../selectors';
 
 import {
   closeNotificationPopup,
-  restoreFromThreeBox,
-  turnThreeBoxSyncingOn,
-  getThreeBoxLastUpdated,
-  setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -36,8 +31,11 @@ import {
   setRecoveryPhraseReminderLastShown,
   setNewNetworkAdded,
   setNewCollectibleAddedMessage,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapError,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
+import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -57,16 +55,16 @@ const mapStateToProps = (state) => {
     suggestedAssets,
     seedPhraseBackedUp,
     tokens,
-    threeBoxSynced,
-    showRestorePrompt,
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
     dismissSeedBackUpReminder,
+    firstTimeFlowType,
+    completedOnboarding,
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
-  const { forgottenPassword, threeBoxLastUpdated } = appState;
+  const { forgottenPassword } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
@@ -102,14 +100,13 @@ const mapStateToProps = (state) => {
       dismissSeedBackUpReminder === false,
     isPopup,
     isNotification,
-    threeBoxSynced,
-    showRestorePrompt,
     selectedAddress,
-    threeBoxLastUpdated,
     firstPermissionsRequestId,
     totalUnapprovedCount,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
+    firstTimeFlowType,
+    completedOnboarding,
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
@@ -118,34 +115,25 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
-    notificationsToShow: getSortedNotificationsToShow(state).length > 0,
+    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    errorsToShow: metamask.snapErrors,
+    shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
+    ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
-    failedTransactionsToDisplayCount: getFailedTransactionsToDisplayCount(
-      state,
-    ),
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   closeNotificationPopup: () => closeNotificationPopup(),
-  turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
-  setupThreeBox: () => {
-    dispatch(getThreeBoxLastUpdated()).then((lastUpdated) => {
-      if (lastUpdated) {
-        dispatch(setThreeBoxLastUpdated(lastUpdated));
-      } else {
-        dispatch(setShowRestorePromptToFalse());
-        dispatch(turnThreeBoxSyncingOn());
-      }
-    });
-  },
-  restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
-  setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapError: async (id) => await removeSnapError(id),
+  ///: END:ONLY_INCLUDE_IN
   setConnectedStatusPopoverHasBeenShown: () =>
     dispatch(setConnectedStatusPopoverHasBeenShown()),
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),

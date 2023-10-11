@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
-  initializeThreeBox,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
@@ -25,7 +24,6 @@ class RestoreVaultPage extends Component {
     leaveImportSeedScreenState: PropTypes.func,
     history: PropTypes.object,
     isLoading: PropTypes.bool,
-    initializeThreeBox: PropTypes.func,
   };
 
   handleImport = async (password, seedPhrase) => {
@@ -34,8 +32,6 @@ class RestoreVaultPage extends Component {
       createNewVaultAndRestore,
       leaveImportSeedScreenState,
       history,
-      // eslint-disable-next-line no-shadow
-      initializeThreeBox,
     } = this.props;
 
     leaveImportSeedScreenState();
@@ -47,7 +43,6 @@ class RestoreVaultPage extends Component {
         name: 'onboardingRestoredVault',
       },
     });
-    initializeThreeBox();
     history.push(DEFAULT_ROUTE);
   };
 
@@ -133,6 +128,5 @@ export default connect(
     },
     createNewVaultAndRestore: (pw, seed) =>
       dispatch(createNewVaultAndRestore(pw, seed)),
-    initializeThreeBox: () => dispatch(initializeThreeBox()),
   }),
 )(RestoreVaultPage);

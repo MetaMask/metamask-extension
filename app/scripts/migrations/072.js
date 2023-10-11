@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash';
 const version = 72;
 
 /**
- * Should empty the `knownMethodData` object in PreferencesController
+ * Deletes the ThreeBoxController.
  */
 export default {
   version,
@@ -18,13 +18,6 @@ export default {
 };
 
 function transformState(state) {
-  const PreferencesController = state?.PreferencesController || {};
-
-  return {
-    ...state,
-    PreferencesController: {
-      ...PreferencesController,
-      knownMethodData: {},
-    },
-  };
+  delete state.ThreeBoxController;
+  return state;
 }

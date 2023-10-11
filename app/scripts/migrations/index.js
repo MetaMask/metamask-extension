@@ -76,34 +76,6 @@ import m069 from './069';
 import m070 from './070';
 import m071 from './071';
 import m072 from './072';
-import m073 from './073';
-import m074 from './074';
-import m075 from './075';
-import m076 from './076';
-import m077 from './077';
-import * as m078 from './078';
-import m079 from './079';
-import m080 from './080';
-import * as m081 from './081';
-import * as m082 from './082';
-import * as m083 from './083';
-import * as m084 from './084';
-import * as m085 from './085';
-import * as m086 from './086';
-import * as m087 from './087';
-import * as m088 from './088';
-import * as m089 from './089';
-import * as m090 from './090';
-import * as m091 from './091';
-import * as m092 from './092';
-import * as m092point1 from './092.1';
-import * as m092point2 from './092.2';
-import * as m092point3 from './092.3';
-import * as m093 from './093';
-import * as m094 from './094';
-import * as m095 from './095';
-import * as m096 from './096';
-import * as m097 from './097';
 
 const migrations = [
   m002,
@@ -177,33 +149,6 @@ const migrations = [
   m070,
   m071,
   m072,
-  m073,
-  m074,
-  m075,
-  m076,
-  m077,
-  m078,
-  m079,
-  m080,
-  m081,
-  m082,
-  m083,
-  m084,
-  m085,
-  m086,
-  m087,
-  m088,
-  m089,
-  m090,
-  m091,
-  m092,
-  m092point1,
-  m092point2,
-  m092point3,
-  m093,
-  m094,
-  m095,
-  m096,
-  m097,
 ];
+
 export default migrations;
