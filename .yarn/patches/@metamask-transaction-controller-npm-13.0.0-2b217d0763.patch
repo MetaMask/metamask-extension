@@ -802,10 +802,10 @@ index 0000000000000000000000000000000000000000..bc833c77e5506469a0142d51a8675760
 \ No newline at end of file
 diff --git a/dist/gas.js b/dist/gas.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..f34cc5aba74a1517cd44edfcca6530d3a38f9c99
+index 0000000000000000000000000000000000000000..32f147977fe99a8077d57b89aaa0fdcb5eed7195
 --- /dev/null
 +++ b/dist/gas.js
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,121 @@
 +"use strict";
 +/* eslint-disable jsdoc/require-jsdoc */
 +var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -829,10 +829,9 @@ index 0000000000000000000000000000000000000000..f34cc5aba74a1517cd44edfcca6530d3
 +function updateGas(request) {
 +    return __awaiter(this, void 0, void 0, function* () {
 +        const { txMeta } = request;
-+        const { blockGasLimit, estimateGasError, estimatedGas, simulationFails } = yield estimateGas(txMeta.txParams, request.ethQuery);
++        const { blockGasLimit, estimatedGas, simulationFails } = yield estimateGas(txMeta.txParams, request.ethQuery);
 +        txMeta.txParams.gas = yield getGas(Object.assign(Object.assign({}, request), { blockGasLimit,
 +            estimatedGas }));
-+        txMeta.txParams.estimateGasError = estimateGasError;
 +        txMeta.simulationFails = simulationFails;
 +    });
 +}
