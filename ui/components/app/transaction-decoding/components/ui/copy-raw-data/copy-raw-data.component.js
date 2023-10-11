@@ -1,13 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Tooltip from '../../../../../ui/tooltip/tooltip';
 import CopyIcon from '../../../../../ui/icon/copy-icon.component';
-import { I18nContext } from '../../../../../../contexts/i18n';
 
 import { useCopyToClipboard } from '../../../../../../hooks/useCopyToClipboard';
 
 const CopyRawData = (data) => {
-  const t = useContext(I18nContext);
   const [copied, handleCopy] = useCopyToClipboard();
 
   return (
@@ -22,9 +20,7 @@ const CopyRawData = (data) => {
           <div className="copy-raw-data__icon">
             <CopyIcon size={12} color="#BBC0C5" />
           </div>
-          <div className="copy-raw-data__label">
-            {t('copyRawTransactionData')}
-          </div>
+          <div className="copy-raw-data__label">Copy raw transaction data</div>
         </button>
       </Tooltip>
     </div>

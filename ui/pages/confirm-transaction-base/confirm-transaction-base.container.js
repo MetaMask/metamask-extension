@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import contractMap from '@metamask/contract-metadata';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -14,14 +13,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import {
-  INSUFFICIENT_FUNDS_ERROR_KEY,
-  GAS_LIMIT_TOO_LOW_ERROR_KEY,
-} from '../../helpers/constants/error-keys';
-import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
-import { conversionGreaterThan } from '../../../shared/modules/conversion.utils';
-import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
@@ -34,22 +26,31 @@ import {
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
   getShouldShowFiat,
+  checkNetworkAndAccountSupports1559,
+  getPreferences,
+  doesAddressRequireLedgerHidConnection,
+  getUseTokenDetection,
+  getTokenList,
+  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
+  isAddressLedger,
   updateTransactionGasFees,
-  isEIP1559Network,
+  getIsGasEstimatesLoading,
+  getNativeCurrency,
 } from '../../ducks/metamask/metamask';
-import ConfirmTransactionBase from './confirm-transaction-base.component';
 
-const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
-  return {
-    ...acc,
-    [base.toLowerCase()]: contractMap[base],
-  };
-}, {});
+import {
+  transactionMatchesNetwork,
+  txParamsAreDappSuggested,
+} from '../../../shared/modules/transaction.utils';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+
+import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
+import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
 const customNonceMerge = (txData) =>
@@ -68,14 +69,16 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
-  const supportsEIP1599 = isEIP1559Network(state);
+
+  const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
+  const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
+
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
-    assetImages,
     network,
     unapprovedTxs,
     nextNonce,
@@ -96,15 +99,24 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
-  const assetImage = assetImages[txParamsToAddress];
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
   const toAddress = propsToAddress || txParamsToAddress;
 
+  const tokenList = getTokenList(state);
+  const useTokenDetection = getUseTokenDetection(state);
+  const casedTokenList = useTokenDetection
+    ? tokenList
+    : Object.keys(tokenList).reduce((acc, base) => {
+        return {
+          ...acc,
+          [base.toLowerCase()]: tokenList[base],
+        };
+      }, {});
   const toName =
     identities[toAddress]?.name ||
-    casedContractMap[toAddress]?.name ||
+    casedTokenList[toAddress]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
@@ -112,12 +124,15 @@ const mapStateToProps = (state, ownProps) => {
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
+  const supportsEIP1559 =
+    checkNetworkAndAccountSupports1559(state) && !isLegacyTransaction(txParams);
 
   const {
     hexTransactionAmount,
     hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
+    gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
 
   if (transaction && transaction.simulationFails) {
@@ -152,7 +167,20 @@ const mapStateToProps = (state, ownProps) => {
   }
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
-  const noGasPrice = getNoGasPriceFetched(state);
+  const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+  const gasFeeIsCustom =
+    fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
+    txParamsAreDappSuggested(fullTxData);
+  const fromAddressIsLedger = isAddressLedger(state, fromAddress);
+  const nativeCurrency = getNativeCurrency(state);
+
+  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
+    state,
+    fromAddress,
+  );
+
+  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
   return {
     balance,
@@ -173,7 +201,6 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     transactionStatus,
     nonce,
-    assetImage,
     unapprovedTxs,
     unapprovedTxCount,
     currentNetworkUnapprovedTxs,
@@ -193,7 +220,18 @@ const mapStateToProps = (state, ownProps) => {
     isMainnet,
     isEthGasPrice,
     noGasPrice,
-    supportsEIP1599,
+    supportsEIP1559,
+    gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
+    useNativeCurrencyAsPrimaryCurrency,
+    maxFeePerGas: gasEstimationObject.maxFeePerGas,
+    maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
+    baseFeePerGas: gasEstimationObject.baseFeePerGas,
+    gasFeeIsCustom,
+    showLedgerSteps: fromAddressIsLedger,
+    nativeCurrency,
+    hardwareWalletRequiresConnection,
+    isMultiLayerFeeNetwork,
+    chainId,
   };
 };
 
@@ -209,16 +247,6 @@ export const mapDispatchToProps = (dispatch) => {
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
-    },
-    showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
-      return dispatch(
-        showModal({
-          name: 'CUSTOMIZE_GAS',
-          txData,
-          onSubmit,
-          validate,
-        }),
-      );
     },
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
@@ -241,78 +269,19 @@ export const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const getValidateEditGas = ({ balance, conversionRate, txData }) => {
-  const { txParams: { value: amount } = {} } = txData;
-
-  return ({ gasLimit, gasPrice }) => {
-    const gasTotal = getHexGasTotal({ gasLimit, gasPrice });
-    const hasSufficientBalance = isBalanceSufficient({
-      amount,
-      gasTotal,
-      balance,
-      conversionRate,
-    });
-
-    if (!hasSufficientBalance) {
-      return {
-        valid: false,
-        errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
-      };
-    }
-
-    const gasLimitTooLow =
-      gasLimit &&
-      conversionGreaterThan(
-        {
-          value: MIN_GAS_LIMIT_DEC,
-          fromNumericBase: 'dec',
-          conversionRate,
-        },
-        {
-          value: gasLimit,
-          fromNumericBase: 'hex',
-        },
-      );
-
-    if (gasLimitTooLow) {
-      return {
-        valid: false,
-        errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
-      };
-    }
-
-    return {
-      valid: true,
-    };
-  };
-};
-
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { balance, conversionRate, txData, unapprovedTxs } = stateProps;
+  const { txData, unapprovedTxs } = stateProps;
 
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
-    showCustomizeGasModal: dispatchShowCustomizeGasModal,
     updateTransactionGasFees: dispatchUpdateTransactionGasFees,
     ...otherDispatchProps
   } = dispatchProps;
-
-  const validateEditGas = getValidateEditGas({
-    balance,
-    conversionRate,
-    txData,
-  });
 
   return {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
-    showCustomizeGasModal: () =>
-      dispatchShowCustomizeGasModal({
-        txData,
-        onSubmit: (customGas) => dispatchUpdateTransactionGasFees(customGas),
-        validate: validateEditGas,
-      }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
