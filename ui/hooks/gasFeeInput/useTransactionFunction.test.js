@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
+import { Numeric } from '../../../shared/modules/Numeric';
 
 import {
   CUSTOM_GAS_ESTIMATE,
@@ -27,19 +28,27 @@ const wrapper = ({ children }) => (
   <Provider store={configureStore(mockState)}>{children}</Provider>
 );
 
+const TEST_GAS_FEE_1 = new Numeric(20520, 10);
+const TEST_GAS_FEE_1_AS_HEX = TEST_GAS_FEE_1.toBase(16).toString();
+const TEST_GAS_FEE_2 = new Numeric(1500000016, 10);
+const TEST_GAS_FEE_2_AS_HEX = TEST_GAS_FEE_2.toBase(16).toString();
+
+const MEDIUM_FEE_MARKET_ESTIMATE_IN_DEC_GWEI = FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium.suggestedMaxPriorityFeePerGas;
+const MEDIUM_FEE_MARKET_ESTIMATE_IN_HEX_WEI = new Numeric(MEDIUM_FEE_MARKET_ESTIMATE_IN_DEC_GWEI, 10).toBase(16).toDenomination('WEI');
+
 const renderUseTransactionFunctions = (props) => {
   return renderHook(
     () =>
       useTransactionFunctions({
         defaultEstimateToUse: GasRecommendations.medium,
         editGasMode: EditGasModes.modifyInPlace,
-        estimatedBaseFee: '0x59682f10',
+        estimatedBaseFee: TEST_GAS_FEE_2_AS_HEX,
         gasFeeEstimates: FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates,
         gasLimit: '21000',
-        maxPriorityFeePerGas: '0x59682f10',
+        maxPriorityFeePerGas: TEST_GAS_FEE_2_AS_HEX,
         transaction: {
           userFeeLevel: CUSTOM_GAS_ESTIMATE,
-          txParams: { maxFeePerGas: '0x5028', maxPriorityFeePerGas: '0x5028' },
+          txParams: { maxFeePerGas: TEST_GAS_FEE_1_AS_HEX, maxPriorityFeePerGas: TEST_GAS_FEE_1_AS_HEX },
         },
         ...props,
       }),
@@ -98,7 +107,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
     const { result } = renderUseTransactionFunctions({
       transaction: {
         userFeeLevel: CUSTOM_GAS_ESTIMATE,
-        txParams: { maxFeePerGas: '0x5028', maxPriorityFeePerGas: '0x0' },
+        txParams: { maxFeePerGas: TEST_GAS_FEE_1, maxPriorityFeePerGas: '0x0' },
       },
     });
     await result.current.updateTransactionToTenPercentIncreasedGasFee();
@@ -108,8 +117,8 @@ describe('useMaxPriorityFeePerGasInput', () => {
       estimateUsed: 'custom',
       gas: '5208',
       gasLimit: '5208',
-      maxFeePerGas: '0x582c',
-      maxPriorityFeePerGas: '0x1caf4ad00',
+      maxFeePerGas: TEST_GAS_FEE_1.times(1.1).toHexString(),
+      maxPriorityFeePerGas: MEDIUM_FEE_MARKET_ESTIMATE_IN_HEX_WEI.times(1.1).toHexString(),
       userEditedGasLimit: undefined,
       userFeeLevel: 'custom',
     });
