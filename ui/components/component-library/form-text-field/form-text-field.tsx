@@ -8,7 +8,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
+import { Box } from '../../component-library/box';
 
 import { TextField } from '../text-field';
 import { HelpText, HelpTextSeverity } from '../help-text';
