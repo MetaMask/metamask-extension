@@ -43,8 +43,8 @@ export default class ExperimentalTab extends PureComponent {
   static propTypes = {
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertsEnabled: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -74,16 +74,62 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  /**
+   * toggleSecurityAlert
+   *
+   * @param {boolean} oldValue - the current securityAlertEnabled value.
+   */
+  toggleSecurityAlert(oldValue) {
+    const newValue = !oldValue;
+    const { setSecurityAlertsEnabled, transactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: 'Enabled/Disable security_alerts_enabled',
+      properties: {
+        action: 'Enabled/Disable security_alerts_enabled',
+        legacy_event: true,
+      },
+    });
+    setSecurityAlertsEnabled(newValue);
+    if (newValue && transactionSecurityCheckEnabled) {
+      this.toggleTransactionSecurityCheck(true);
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  /**
+   * toggleTransactionSecurityCheck
+   *
+   * @param {boolean} oldValue - the current transactionSecurityCheckEnabled value.
+   */
+  toggleTransactionSecurityCheck(oldValue) {
+    const newValue = !oldValue;
+    const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: 'Enabled/Disable TransactionSecurityCheck',
+      properties: {
+        action: 'Enabled/Disable TransactionSecurityCheck',
+        legacy_event: true,
+      },
+    });
+    setTransactionSecurityCheckEnabled(newValue);
+    if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
+      this.toggleSecurityAlert(true);
+    }
+  }
+
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
     const {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertsEnabled,
-      setSecurityAlertsEnabled,
       ///: END:ONLY_INCLUDE_IN
       transactionSecurityCheckEnabled,
-      setTransactionSecurityCheckEnabled,
     } = this.props;
 
     return (
@@ -146,17 +192,7 @@ export default class ExperimentalTab extends PureComponent {
                     </div>
                     <ToggleButton
                       value={securityAlertsEnabled}
-                      onToggle={(value) => {
-                        this.context.trackEvent({
-                          category: MetaMetricsEventCategory.Settings,
-                          event: 'Enabled/Disable security_alerts_enabled',
-                          properties: {
-                            action: 'Enabled/Disable security_alerts_enabled',
-                            legacy_event: true,
-                          },
-                        });
-                        setSecurityAlertsEnabled(!value || false);
-                      }}
+                      onToggle={this.toggleSecurityAlert.bind(this)}
                     />
                   </div>
                 </>
@@ -185,17 +221,7 @@ export default class ExperimentalTab extends PureComponent {
                 </div>
                 <ToggleButton
                   value={transactionSecurityCheckEnabled}
-                  onToggle={(value) => {
-                    this.context.trackEvent({
-                      category: MetaMetricsEventCategory.Settings,
-                      event: 'Enabled/Disable TransactionSecurityCheck',
-                      properties: {
-                        action: 'Enabled/Disable TransactionSecurityCheck',
-                        legacy_event: true,
-                      },
-                    });
-                    setTransactionSecurityCheckEnabled(!value);
-                  }}
+                  onToggle={this.toggleTransactionSecurityCheck.bind(this)}
                 />
               </div>
             </div>
