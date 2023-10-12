@@ -68,7 +68,7 @@ export const snapKeyringBuilder = (
               type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
             })) as boolean;
 
-          if (confirmationResult) {
+          if (confirmationResult && url.length > 0) {
             browser.tabs.create({ url });
           } else {
             console.log('User refused snap account redirection to:', url);

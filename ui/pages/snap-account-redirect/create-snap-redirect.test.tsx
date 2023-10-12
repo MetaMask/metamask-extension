@@ -42,6 +42,9 @@ describe('<SnapAccountRedirect />', () => {
       />,
     );
 
+    expect(
+      queryByTestId('snap-account-redirect-content-description'),
+    ).toBeNull();
     expect(queryByTestId('snap-account-redirect-message')).toBeNull();
     expect(queryByTestId('snap-account-redirect-url-display-box')).toBeNull();
     expect(

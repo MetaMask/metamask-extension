@@ -75,13 +75,15 @@ const SnapAccountRedirectContent = ({
             </BannerAlert>
           </Box>
         ) : null}
-        <Text
-          data-testid="snap-account-redirect-content-description"
-          textAlign={TextAlign.Center}
-          variant={TextVariant.bodyMd}
-        >
-          {t('snapAccountRedirectSiteDescription', [snapName])}
-        </Text>
+        {isBlockedUrl === false ? (
+          <Text
+            data-testid="snap-account-redirect-content-description"
+            textAlign={TextAlign.Center}
+            variant={TextVariant.bodyMd}
+          >
+            {t('snapAccountRedirectSiteDescription', [snapName])}
+          </Text>
+        ) : null}
         {(url.length > 0 || message.length > 0) && isBlockedUrl === false ? (
           <SnapAccountRedirectMessage
             snapName={snapName}
