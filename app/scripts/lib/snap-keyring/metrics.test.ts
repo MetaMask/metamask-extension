@@ -15,6 +15,10 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
     };
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should return an empty object if no messenger is provided', async () => {
     const result = await getSnapAndHardwareInfoForMetrics(
       getSelectedAddress,
