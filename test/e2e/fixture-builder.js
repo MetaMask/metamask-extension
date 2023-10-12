@@ -10,7 +10,7 @@ const {
   ACTION_QUEUE_METRICS_E2E_TEST,
 } = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL } = require('./helpers');
+const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 
 function defaultFixture() {
   return {
@@ -513,6 +513,29 @@ class FixtureBuilder {
     return this;
   }
 
+  withNetworkControllerDoubleGanache() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.LOCALHOST,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+        },
+        '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
+          id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+          rpcUrl: 'http://localhost:8546',
+          chainId: '0x53a',
+          ticker: 'ETH',
+          nickname: 'Localhost 8546',
+          rpcPrefs: {},
+        },
+      },
+    });
+  }
+
   withNftController(data) {
     merge(
       this.fixture.data.NftController
@@ -609,6 +632,55 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                  ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withPermissionControllerConnectedToTwoTestDapps(
+    restrictReturnedAccounts = true,
+  ) {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                  ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+        [DAPP_ONE_URL]: {
+          origin: DAPP_ONE_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'AqPEWxyhNCJYACFw93jE4',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_ONE_URL,
               caveats: restrictReturnedAccounts && [
                 {
                   type: 'restrictReturnedAccounts',
