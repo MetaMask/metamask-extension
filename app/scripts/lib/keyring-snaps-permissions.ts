@@ -51,9 +51,13 @@ const ALLOWED_PROTOCOLS: string[] = [
  * @param origin - The origin to check.
  * @returns `true` if the protocol of the origin is allowed, `false` otherwise.
  */
-function isProtocolAllowed(origin: string): boolean {
-  const url = new URL(origin);
-  return ALLOWED_PROTOCOLS.includes(url.protocol);
+export function isProtocolAllowed(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    return ALLOWED_PROTOCOLS.includes(url.protocol);
+  } catch (error) {
+    return false;
+  }
 }
 
 /**
