@@ -22,6 +22,7 @@ const UrlDisplayBox = ({ url }: Pick<SnapAccountRedirectProps, 'url'>) => {
       paddingRight={4}
     >
       <Text
+        data-testid="snap-account-redirect-url-display-box"
         padding={2}
         variant={TextVariant.bodyMd}
         color={TextColor.primaryDefault}

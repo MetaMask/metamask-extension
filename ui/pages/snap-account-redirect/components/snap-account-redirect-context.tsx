@@ -54,7 +54,10 @@ const SnapAccountRedirectContent = ({
         </Text>
         {isBlockedUrl ? (
           <Box display={Display.Flex} paddingLeft={4} paddingRight={4}>
-            <BannerAlert severity={BannerAlertSeverity.Danger}>
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              data-testid="snap-account-redirect-content-blocked-url-banner"
+            >
               <Text>
                 {t('snapUrlIsBlocked', [
                   <Button

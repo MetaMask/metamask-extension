@@ -12,7 +12,10 @@ const SnapAccountRedirectMessage = ({
 }: Pick<SnapAccountRedirectProps, 'snapName' | 'url' | 'message'>) => {
   /* eslint-disable no-negated-condition */
   return (
-    <SnapDelineator snapName={snapName}>
+    <SnapDelineator
+      data-testid="snap-account-redirect-message-container"
+      snapName={snapName}
+    >
       {message !== '' ? (
         <Text
           variant={TextVariant.bodySm}
