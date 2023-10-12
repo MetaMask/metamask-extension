@@ -4144,9 +4144,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^1.0.0-rc.1":
-  version: 1.0.0-rc.1
-  resolution: "@metamask/eth-snap-keyring@npm:1.0.0-rc.1"
+"@metamask/eth-snap-keyring@npm:1.0.0-rc.2":
+  version: 1.0.0-rc.2
+  resolution: "@metamask/eth-snap-keyring@npm:1.0.0-rc.2"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@metamask/eth-sig-util": "npm:^7.0.0"
@@ -4156,7 +4156,7 @@ __metadata:
     "@types/uuid": "npm:^9.0.1"
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
-  checksum: afb50a755823e249e80731da7e2f3ab4246b900020135eb4c3c657d663f2d44a7a6281f29a9a453f5975bd493e4322bede3d5bea0c94871dda8ce0ceced5f186
+  checksum: 02e3392db1e0bbea0aac8fa99e55ad2490d99d23568fb1587a31a1510ff41aad3bc29ec5514256e727ec2c6a34c111327600cee8a2d48e4745bdc8665d30770b
   languageName: node
   linkType: hard
 
@@ -8237,6 +8237,13 @@ __metadata:
   version: 0.0.91
   resolution: "@types/web@npm:0.0.91"
   checksum: 14b54d13af6c5340305bf48bf5c44bc6359f700eff581f1e1026c580b5b22d955e8569afb6f2f657280a1fcac18852b1e31256d539fb0be4f45cc2d31059550a
+  languageName: node
+  linkType: hard
+
+"@types/webextension-polyfill@npm:^0.10.4":
+  version: 0.10.4
+  resolution: "@types/webextension-polyfill@npm:0.10.4"
+  checksum: f5aa3d24d3214a1d82328dc14c2f9b8d07d36e149281968959992f29ef78017dc1cf6055759d18ce46d29528d22b87fcfb30a289432382704869c7f3e1962f52
   languageName: node
   linkType: hard
 
@@ -23816,7 +23823,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
     "@metamask/eth-keyring-controller": "npm:^13.0.1"
     "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
-    "@metamask/eth-snap-keyring": "npm:^1.0.0-rc.1"
+    "@metamask/eth-snap-keyring": "npm:1.0.0-rc.2"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^1.1.0"
     "@metamask/etherscan-link": "npm:^2.2.0"
@@ -23908,6 +23915,7 @@ __metadata:
     "@types/sinon": "npm:^10.0.13"
     "@types/w3c-web-hid": "npm:^1.0.3"
     "@types/watchify": "npm:^3.11.1"
+    "@types/webextension-polyfill": "npm:^0.10.4"
     "@types/yargs": "npm:^17.0.8"
     "@typescript-eslint/eslint-plugin": "npm:^5.30.7"
     "@typescript-eslint/parser": "npm:^5.30.7"
