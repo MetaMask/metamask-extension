@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const util = require('ethereumjs-util');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  clickSignOnSignatureConfirmation,
   convertETHToHexGwei,
   openDapp,
   PRIVATE_KEY,
@@ -286,6 +285,12 @@ describe('Test Snap Account', function () {
     await switchToOrOpenDapp(driver);
 
     await driver.clickElement(locatorID);
+
+    // behaviour of chrome and firefox is different,
+    // chrome needs extra time to load the popup
+    if (driver.browser === 'chrome') {
+      await driver.delay(500);
+    }
     const handles = await driver.getAllWindowHandles();
     await driver.switchToWindowWithTitle(
       WINDOW_TITLES.Notification,
@@ -298,7 +303,7 @@ describe('Test Snap Account', function () {
       await validateContractDetails(driver);
     }
 
-    await clickSignOnSignatureConfirmation(driver, isAsyncFlow ? 4 : 3);
+    await driver.clickElement({ text: 'Sign', tag: 'button' });
 
     if (isAsyncFlow) {
       await approveOrRejectRequest(driver, flowType);
@@ -427,7 +432,12 @@ describe('Test Snap Account', function () {
     });
 
     // Click "Create" on the Snap's confirmation popup
-    await switchToNotificationWindow(driver, 3);
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
     await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
@@ -510,10 +520,11 @@ describe('Test Snap Account', function () {
         // the driver tries to switch to the first notification window
         // and not the second notification window with the redirect button
         await driver.delay(500);
-        const handles = await driver.waitUntilXWindowHandles(4);
+        const handles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Notification,
           handles,
+          2000,
         );
       } catch (error) {
         console.log('SNAPS/ error switching to notification window', error);
