@@ -1,10 +1,23 @@
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
+import { GetSnap } from '@metamask/snaps-controllers';
+import { Snap } from '@metamask/snaps-utils';
+
+type AllowedActions = GetSnap | KeyringControllerGetKeyringForAccountAction;
+
+export type SnapAndHardwareMessenger = RestrictedControllerMessenger<
+  'SnapAndHardwareMessenger',
+  AllowedActions,
+  never,
+  AllowedActions['type'],
+  never
+>;
 
 export default async function getSnapAndHardwareInfoForMetrics(
-  selectedAddress: string,
+  getSelectedAddress: () => string,
   getAccountType: (address: string) => Promise<string>,
   getDeviceModel: (address: string) => Promise<string>,
-  messenger: RestrictedControllerMessenger,
+  messenger: SnapAndHardwareMessenger,
 ) {
   // If it's coming from a unit test, there's no messenger
   // Will fix this in a future PR and add proper unit tests
@@ -12,19 +25,23 @@ export default async function getSnapAndHardwareInfoForMetrics(
     return {};
   }
 
+  const selectedAddress = getSelectedAddress().toLowerCase();
+
   const keyring: any = await getKeyringForAccount(selectedAddress);
 
   const account = await getAccountFromAddress(selectedAddress);
 
-  const snap = await messenger.call(
+  const snap: Snap = (await messenger.call(
     'SnapController:get',
     account?.metadata.snap.id,
-  );
+  )) as Snap;
 
   async function getAccountFromAddress(address: string) {
     if (keyring.listAccounts) {
       const accounts = await keyring.listAccounts();
-      return accounts.find((_account: any) => _account.address === address);
+      return accounts.find(
+        (_account: any) => _account.address.toLowerCase() === address,
+      );
     }
 
     return undefined;
