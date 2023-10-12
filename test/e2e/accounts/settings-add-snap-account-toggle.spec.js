@@ -3,7 +3,7 @@ const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Add snap account experimental settings', function () {
-  it('switch "Enable Add snap account" to on', async function () {
+  it('switch "Enable Add account snap" to on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -21,7 +21,7 @@ describe('Add snap account experimental settings', function () {
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
         await driver.assertElementNotPresent({
-          text: 'Add snap account',
+          text: 'Add account Snap',
           tag: 'button',
         });
         await driver.clickElement('.mm-box button[aria-label="Close"]');
@@ -34,11 +34,8 @@ describe('Add snap account experimental settings', function () {
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
         // Switch "Enable Add snap account" to on.
-        const toggle = await driver.findElement(
-          '[data-testid="add-snap-account-toggle"]',
-        );
-        await driver.scrollToElement(toggle);
-        await driver.clickElement('[data-testid="add-snap-account-toggle"]');
+        const toggles = await driver.findClickableElements('.toggle-button');
+        await toggles[2].click();
 
         // Make sure the "Add snap account" button is visible.
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -47,7 +44,7 @@ describe('Add snap account experimental settings', function () {
         );
         assert.equal(
           await driver.isElementPresentAndVisible({
-            text: 'Add snap account',
+            text: 'Add account Snap',
             tag: 'button',
           }),
           true,
