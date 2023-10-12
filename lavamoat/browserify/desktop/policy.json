@@ -2616,9 +2616,7 @@
     },
     "@metamask/transaction-controller": {
       "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
+        "console.error": true
       },
       "packages": {
         "@ethereumjs/common": true,
