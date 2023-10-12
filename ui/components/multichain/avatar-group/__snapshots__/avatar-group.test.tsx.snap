@@ -10,7 +10,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
       class="mm-box mm-box--display-flex"
     >
       <div
-        class="mm-box 0-nidhi mm-box--rounded-full"
+        class="mm-box mm-box--rounded-full"
         style="margin-left: 0px;"
       >
         <div
@@ -24,7 +24,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
         </div>
       </div>
       <div
-        class="mm-box 1-nidhi mm-box--rounded-full"
+        class="mm-box mm-box--rounded-full"
         style="margin-left: -8px;"
       >
         <div
@@ -38,7 +38,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
         </div>
       </div>
       <div
-        class="mm-box 2-nidhi mm-box--rounded-full"
+        class="mm-box mm-box--rounded-full"
         style="margin-left: -8px;"
       >
         <div
@@ -52,7 +52,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
         </div>
       </div>
       <div
-        class="mm-box 3-nidhi mm-box--rounded-full"
+        class="mm-box mm-box--rounded-full"
         style="margin-left: -8px;"
       >
         <div

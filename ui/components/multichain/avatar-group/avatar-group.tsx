@@ -48,7 +48,6 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
             style={
               i === 0 ? { marginLeft: '0px' } : { marginLeft: marginLeftValue }
             }
-            className={`${i}-nidhi`}
           >
             <AvatarToken
               src={x.image}
