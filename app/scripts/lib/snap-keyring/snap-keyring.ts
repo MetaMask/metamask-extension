@@ -8,6 +8,7 @@ import type { KeyringController } from '@metamask/keyring-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
+import PreferencesController from '../../controllers/preferences';
 
 /**
  * Get the addresses of the accounts managed by a given Snap.
@@ -29,7 +30,8 @@ export const getAccountsBySnapId = async (
  *
  * @param getSnapController - A function that retrieves the Snap Controller instance.
  * @param getApprovalController - A function that retrieves the Approval Controller instance.
- * @param getCoreKeyringController - A function that retrieves the Core Keyring Controller instance.
+ * @param getKeyringController - A function that retrieves the Keyring Controller instance.
+ * @param getPreferencesController - A function that retrieves the Preferences Controller instance.
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
@@ -39,20 +41,21 @@ export const getAccountsBySnapId = async (
 export const snapKeyringBuilder = (
   getSnapController: () => SnapController,
   getApprovalController: () => ApprovalController,
-  getCoreKeyringController: () => KeyringController,
+  getKeyringController: () => KeyringController,
+  getPreferencesController: () => PreferencesController,
   removeAccountHelper: (address: string) => Promise<any>,
 ) => {
   const builder = (() => {
     return new SnapKeyring(getSnapController() as any, {
       addressExists: async (address) => {
-        const addresses = await getCoreKeyringController().getAccounts();
+        const addresses = await getKeyringController().getAccounts();
         return addresses.includes(address.toLowerCase());
       },
       saveState: async () => {
-        await getCoreKeyringController().persistAllKeyrings();
+        await getKeyringController().persistAllKeyrings();
       },
       addAccount: async (
-        _address: string,
+        address: string,
         origin: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
@@ -75,7 +78,8 @@ export const snapKeyringBuilder = (
           if (confirmationResult) {
             try {
               await handleUserInput(confirmationResult);
-              await getCoreKeyringController().persistAllKeyrings();
+              await getKeyringController().persistAllKeyrings();
+              getPreferencesController().setSelectedAddress(address);
               await getApprovalController().success({
                 message: t('snapAccountCreated') ?? 'Your account is ready!',
                 header: [snapAuthorshipHeader],
@@ -127,7 +131,7 @@ export const snapKeyringBuilder = (
             try {
               await removeAccountHelper(address);
               await handleUserInput(confirmationResult);
-              await getCoreKeyringController().persistAllKeyrings();
+              await getKeyringController().persistAllKeyrings();
               await getApprovalController().success({
                 message: t('snapAccountRemoved') ?? 'Account removed',
                 header: [snapAuthorshipHeader],

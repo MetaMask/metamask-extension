@@ -78,16 +78,7 @@ describe('ENS', function () {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController({
-            providerConfig: {
-              chainId: '0x1',
-              nickname: '',
-              rpcUrl: '',
-              type: 'mainnet',
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockInfura,

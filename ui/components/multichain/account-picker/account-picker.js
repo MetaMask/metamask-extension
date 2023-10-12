@@ -10,6 +10,7 @@ import {
   IconName,
   Text,
   ButtonBase,
+  ButtonBaseSize,
 } from '../../component-library';
 import {
   AlignItems,
@@ -51,6 +52,7 @@ export const AccountPicker = ({
         alignItems: AlignItems.center,
       }}
       disabled={disabled}
+      size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Md}
     >
       <Box
         display={Display.Flex}
