@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {
-  Button,
-  ButtonVariant,
-} from '../../../../components/component-library';
+import Button from '../../../../components/ui/button';
 
 export default function ConfirmationFooter({
   onSubmit,
@@ -36,7 +33,7 @@ export default function ConfirmationFooter({
           <Button
             data-testid="confirmation-submit-button"
             disabled={Boolean(loading)}
-            variant={ButtonVariant.Primary}
+            type="primary"
             onClick={onSubmit}
             className={classnames({
               centered: !onCancel,
