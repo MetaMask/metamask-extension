@@ -2,17 +2,11 @@ import { MINUTE, SECOND } from '../constants/time';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
-const fetchWithCache = async ({
+const fetchWithCache = async (
   url,
   fetchOptions = {},
-  cacheOptions: { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
-  functionName = '',
-}: {
-  url: string;
-  fetchOptions?: Record<string, any>;
-  cacheOptions?: Record<string, any>;
-  functionName: string;
-}) => {
+  { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
+) => {
   if (
     fetchOptions.body ||
     (fetchOptions.method && fetchOptions.method !== 'GET')
@@ -46,7 +40,7 @@ const fetchWithCache = async ({
   });
   if (!response.ok) {
     throw new Error(
-      `Fetch with cache failed within function ${functionName} with status'${response.status}': '${response.statusText}'`,
+      `Fetch failed with status '${response.status}': '${response.statusText}'`,
     );
   }
   const responseJson = await response.json();

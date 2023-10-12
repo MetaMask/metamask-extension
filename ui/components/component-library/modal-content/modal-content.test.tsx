@@ -55,14 +55,11 @@ describe('ModalContent', () => {
       'mm-modal-content__dialog--size-sm',
     );
   });
-  it('should render with additional props being passed to modalDialogProps and not override default class name', () => {
+  it('should render with additional props being passed to modalDialogProps', () => {
     const { getByTestId } = render(
       <Modal isOpen onClose={onClose}>
         <ModalContent
-          modalDialogProps={{
-            'data-testid': 'test',
-            className: 'custom-dialog-class',
-          }}
+          modalDialogProps={{ 'data-testid': 'test' }}
           data-testid="modal-content"
         >
           test
@@ -70,9 +67,6 @@ describe('ModalContent', () => {
       </Modal>,
     );
     expect(getByTestId('test')).toBeDefined();
-    expect(getByTestId('test')).toHaveClass(
-      'mm-modal-content__dialog custom-dialog-class',
-    );
   });
   it('should close when escape key is pressed', () => {
     const { getByRole } = render(

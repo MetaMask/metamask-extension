@@ -274,12 +274,11 @@ export async function fetchTradesInfo(
 
   const queryString = new URLSearchParams(urlParams).toString();
   const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
-  const tradesResponse = await fetchWithCache({
-    url: tradeURL,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
-    functionName: 'fetchTradesInfo',
-  });
+  const tradesResponse = await fetchWithCache(
+    tradeURL,
+    { method: 'GET', headers: clientIdHeader },
+    { cacheRefreshTime: 0, timeout: SECOND * 15 },
+  );
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (
       quote.trade &&

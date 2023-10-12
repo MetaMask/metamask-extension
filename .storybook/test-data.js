@@ -626,7 +626,34 @@ const state = {
               path: '/txParams/nonce',
               timestamp: 1629582711220,
               value: '0x15b',
-            }
+            },
+            {
+              op: 'add',
+              path: '/nonceDetails',
+              value: {
+                local: {
+                  details: {
+                    highest: 347,
+                    startPoint: 347,
+                  },
+                  name: 'local',
+                  nonce: 347,
+                },
+                network: {
+                  details: {
+                    baseCount: 347,
+                    blockNumber: '0x9c2682',
+                  },
+                  name: 'network',
+                  nonce: 347,
+                },
+                params: {
+                  highestLocallyConfirmed: 327,
+                  highestSuggested: 347,
+                  nextNetworkNonce: 347,
+                },
+              },
+            },
           ],
           [
             {
@@ -874,6 +901,29 @@ const state = {
         id: 7900715443136469,
         loadingDefaults: false,
         metamaskNetworkId: '56',
+        nonceDetails: {
+          local: {
+            details: {
+              highest: 347,
+              startPoint: 347,
+            },
+            name: 'local',
+            nonce: 347,
+          },
+          network: {
+            details: {
+              baseCount: 347,
+              blockNumber: '0x9c2682',
+            },
+            name: 'network',
+            nonce: 347,
+          },
+          params: {
+            highestLocallyConfirmed: 327,
+            highestSuggested: 347,
+            nextNetworkNonce: 347,
+          },
+        },
         origin: 'metamask',
         r: '0x90a4dfb0646eef9815454d0ab543b5844acb8772101084565155c93ecce8ed69',
         rawTx:

@@ -10,7 +10,6 @@ import {
   GOERLI,
   OPTIMISM,
   POLYGON,
-  ZKSYNC_ERA,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
@@ -118,12 +117,11 @@ export async function fetchToken(
   chainId: any,
 ): Promise<Json> {
   const tokenUrl = getBaseApi('token', chainId);
-  return await fetchWithCache({
-    url: `${tokenUrl}?address=${contractAddress}`,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchToken',
-  });
+  return await fetchWithCache(
+    `${tokenUrl}?address=${contractAddress}`,
+    { method: 'GET', headers: clientIdHeader },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+  );
 }
 
 type Token = { symbol: string; address: string };
@@ -131,12 +129,11 @@ export async function fetchTokens(
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 ): Promise<SwapsTokenObject[]> {
   const tokensUrl = getBaseApi('tokens', chainId);
-  const tokens = await fetchWithCache({
-    url: tokensUrl,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchTokens',
-  });
+  const tokens = await fetchWithCache(
+    tokensUrl,
+    { method: 'GET', headers: clientIdHeader },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+  );
   const logError = false;
   const tokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId] || null;
   return [
@@ -155,12 +152,11 @@ export async function fetchTokens(
 
 export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
   const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
-  const aggregators = await fetchWithCache({
-    url: aggregatorMetadataUrl,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchAggregatorMetadata',
-  });
+  const aggregators = await fetchWithCache(
+    aggregatorMetadataUrl,
+    { method: 'GET', headers: clientIdHeader },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+  );
   const filteredAggregators = {} as any;
   for (const aggKey in aggregators) {
     if (
@@ -179,12 +175,11 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
 export async function fetchTopAssets(chainId: any): Promise<object> {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
-    (await fetchWithCache({
-      url: topAssetsUrl,
-      functionName: 'fetchTopAssets',
-      fetchOptions: { method: 'GET', headers: clientIdHeader },
-      cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    })) || [];
+    (await fetchWithCache(
+      topAssetsUrl,
+      { method: 'GET', headers: clientIdHeader },
+      { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+    )) || [];
   const topAssetsMap = response.reduce(
     (_topAssetsMap: any, asset: { address: string }, index: number) => {
       if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
@@ -201,23 +196,21 @@ export async function fetchSwapsFeatureFlags(): Promise<any> {
   const v2ApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
     ? SWAPS_DEV_API_V2_BASE_URL
     : SWAPS_API_V2_BASE_URL;
-  return await fetchWithCache({
-    url: `${v2ApiBaseUrl}/featureFlags`,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: 600000 },
-    functionName: 'fetchSwapsFeatureFlags',
-  });
+  return await fetchWithCache(
+    `${v2ApiBaseUrl}/featureFlags`,
+    { method: 'GET', headers: clientIdHeader },
+    { cacheRefreshTime: 600000 },
+  );
 }
 
 export async function fetchTokenPrice(address: string): Promise<any> {
   const query = `contract_addresses=${address}&vs_currencies=eth`;
 
-  const prices = await fetchWithCache({
-    url: `https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`,
-    fetchOptions: { method: 'GET' },
-    cacheOptions: { cacheRefreshTime: 60000 },
-    functionName: 'fetchTokenPrice',
-  });
+  const prices = await fetchWithCache(
+    `https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`,
+    { method: 'GET' },
+    { cacheRefreshTime: 60000 },
+  );
   return prices?.[address]?.eth;
 }
 
@@ -230,12 +223,11 @@ export async function fetchSwapsGasPrices(chainId: any): Promise<
     }
 > {
   const gasPricesUrl = getBaseApi('gasPrices', chainId);
-  const response = await fetchWithCache({
-    url: gasPricesUrl,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: 30000 },
-    functionName: 'fetchSwapsGasPrices',
-  });
+  const response = await fetchWithCache(
+    gasPricesUrl,
+    { method: 'GET', headers: clientIdHeader },
+    { cacheRefreshTime: 30000 },
+  );
   const responseIsValid = validateData(
     SWAP_GAS_PRICE_VALIDATOR,
     response,
@@ -628,8 +620,6 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return OPTIMISM;
     case CHAIN_IDS.ARBITRUM:
       return ARBITRUM;
-    case CHAIN_IDS.ZKSYNC_ERA:
-      return ZKSYNC_ERA;
     default:
       return '';
   }

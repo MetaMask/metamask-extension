@@ -198,7 +198,6 @@ export const SENTRY_BACKGROUND_STATE = {
     usePhishDetect: true,
     useTokenDetection: true,
   },
-  SelectedNetworkController: { domains: true, perDomainNetwork: false },
   SignatureController: {
     unapprovedMsgCount: true,
     unapprovedMsgs: false,

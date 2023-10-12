@@ -26,16 +26,15 @@ import fetchWithCache from '../../../shared/lib/fetch-with-cache';
  */
 
 async function getMethodFrom4Byte(fourBytePrefix) {
-  const fourByteResponse = await fetchWithCache({
-    url: `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
-    fetchOptions: {
+  const fourByteResponse = await fetchWithCache(
+    `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
+    {
       referrerPolicy: 'no-referrer-when-downgrade',
       body: null,
       method: 'GET',
       mode: 'cors',
     },
-    functionName: 'getMethodFrom4Byte',
-  });
+  );
   fourByteResponse.results.sort((a, b) => {
     return new Date(a.created_at).getTime() < new Date(b.created_at).getTime()
       ? -1

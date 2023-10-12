@@ -33,10 +33,9 @@ describe('NewNetworkInfo', () => {
         '[{"address":"0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f","symbol":"SNX","decimals":18,"name":"Synthetix Network Token","iconUrl":"https://assets.coingecko.com/coins/images/3406/large/SNX.png","aggregators":["aave","bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","synthetix","zapper","zerion","zeroEx"],"occurrences":12},{"address":"0x1f9840a85d5af5bf1d1762f925bdaddc4201f984","symbol":"UNI","decimals":18,"name":"Uniswap","iconUrl":"https://images.prismic.io/token-price-prod/d0352dd9-5de8-4633-839d-bc3422c44d9c_UNI%404x.png","aggregators":["aave","bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","zapper","zerion","zeroEx"],"occurrences":11}]',
       );
 
-    const updateTokenDetectionSupportStatus = await fetchWithCache({
-      url: 'https://token-api.metaswap.codefi.network/tokens/0x1',
-      functionName: 'getTokenDetectionSupportStatus',
-    });
+    const updateTokenDetectionSupportStatus = await fetchWithCache(
+      'https://token-api.metaswap.codefi.network/tokens/0x1',
+    );
 
     const store = configureMockStore()(
       state,
@@ -55,10 +54,9 @@ describe('NewNetworkInfo', () => {
         '[{"address":"0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f","symbol":"SNX","decimals":18,"name":"Synthetix Network Token","iconUrl":"https://assets.coingecko.com/coins/images/3406/large/SNX.png","aggregators":["aave","bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","synthetix","zapper","zerion","zeroEx"],"occurrences":12},{"address":"0x1f9840a85d5af5bf1d1762f925bdaddc4201f984","symbol":"UNI","decimals":18,"name":"Uniswap","iconUrl":"https://images.prismic.io/token-price-prod/d0352dd9-5de8-4633-839d-bc3422c44d9c_UNI%404x.png","aggregators":["aave","bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","zapper","zerion","zeroEx"],"occurrences":11}]',
       );
 
-    const updateTokenDetectionSupportStatus = await fetchWithCache({
-      url: 'https://token-api.metaswap.codefi.network/tokens/0x1',
-      functionName: 'getTokenDetectionSupportStatus',
-    });
+    const updateTokenDetectionSupportStatus = await fetchWithCache(
+      'https://token-api.metaswap.codefi.network/tokens/0x1',
+    );
 
     state.metamask.nativeCurrency = '';
 
@@ -79,10 +77,10 @@ describe('NewNetworkInfo', () => {
         200,
         '[{"address":"0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f","symbol":"SNX","decimals":18,"name":"Synthetix Network Token","iconUrl":"https://assets.coingecko.com/coins/images/3406/large/SNX.png","aggregators":["aave","bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","synthetix","zapper","zerion","zeroEx"],"occurrences":12},{"address":"0x1f9840a85d5af5bf1d1762f925bdaddc4201f984","symbol":"UNI","decimals":18,"name":"Uniswap","iconUrl":"https://images.prismic.io/token-price-prod/d0352dd9-5de8-4633-839d-bc3422c44d9c_UNI%404x.png","aggregators":["aave","bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","zapper","zerion","zeroEx"],"occurrences":11}]',
       );
-    const updateTokenDetectionSupportStatus = await fetchWithCache({
-      url: 'https://token-api.metaswap.codefi.network/tokens/0x1',
-      functionName: 'getTokenDetectionSupportStatus',
-    });
+
+    const updateTokenDetectionSupportStatus = await fetchWithCache(
+      'https://token-api.metaswap.codefi.network/tokens/0x1',
+    );
 
     const store = configureMockStore()(
       state,
@@ -101,10 +99,9 @@ describe('NewNetworkInfo', () => {
         '[{"address":"0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f","symbol":"SNX","decimals":18,"name":"Synthetix Network Token","iconUrl":"https://assets.coingecko.com/coins/images/3406/large/SNX.png","aggregators":["aave","bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","synthetix","zapper","zerion","zeroEx"],"occurrences":12},{"address":"0x1f9840a85d5af5bf1d1762f925bdaddc4201f984","symbol":"UNI","decimals":18,"name":"Uniswap","iconUrl":"https://images.prismic.io/token-price-prod/d0352dd9-5de8-4633-839d-bc3422c44d9c_UNI%404x.png","aggregators":["aave","bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","zapper","zerion","zeroEx"],"occurrences":11}]',
       );
 
-    const updateTokenDetectionSupportStatus = await fetchWithCache({
-      url: 'https://token-api.metaswap.codefi.network/tokens/0x1',
-      functionName: 'getTokenDetectionSupportStatus',
-    });
+    const updateTokenDetectionSupportStatus = await fetchWithCache(
+      'https://token-api.metaswap.codefi.network/tokens/0x1',
+    );
 
     const store = configureMockStore()(
       state,
@@ -120,10 +117,9 @@ describe('NewNetworkInfo', () => {
       .get('/tokens/0x3')
       .reply(200, '{"error":"ChainId 0x3 is not supported"}');
 
-    const updateTokenDetectionSupportStatus = await fetchWithCache({
-      url: 'https://token-api.metaswap.codefi.network/tokens/0x3',
-      functionName: 'getTokenDetectionSupportStatus',
-    });
+    const updateTokenDetectionSupportStatus = await fetchWithCache(
+      'https://token-api.metaswap.codefi.network/tokens/0x3',
+    );
 
     const store = configureMockStore()(
       state,
@@ -139,10 +135,9 @@ describe('NewNetworkInfo', () => {
       .get('/tokens/0x3')
       .reply(200, '{"error":"ChainId 0x3 is not supported"}');
 
-    const updateTokenDetectionSupportStatus = await fetchWithCache({
-      url: 'https://token-api.metaswap.codefi.network/tokens/0x3',
-      functionName: 'getTokenDetectionSupportStatus',
-    });
+    const updateTokenDetectionSupportStatus = await fetchWithCache(
+      'https://token-api.metaswap.codefi.network/tokens/0x3',
+    );
 
     state.metamask.providerConfig.ticker = null;
 
@@ -161,10 +156,9 @@ describe('NewNetworkInfo', () => {
       .get('/tokens/0x3')
       .reply(200, '{"error":"ChainId 0x3 is not supported"}');
 
-    const updateTokenDetectionSupportStatus = await fetchWithCache({
-      url: 'https://token-api.metaswap.codefi.network/tokens/0x3',
-      functionName: 'getTokenDetectionSupportStatus',
-    });
+    const updateTokenDetectionSupportStatus = await fetchWithCache(
+      'https://token-api.metaswap.codefi.network/tokens/0x3',
+    );
 
     const store = configureMockStore()(
       state,

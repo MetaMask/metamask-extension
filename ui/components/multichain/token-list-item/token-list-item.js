@@ -34,7 +34,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 export const TokenListItem = ({
   className,
@@ -49,8 +48,7 @@ export const TokenListItem = ({
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
-  const tokenTitle =
-    title === CURRENCY_SYMBOLS.ETH ? t('networkNameEthereum') : title;
+  const tokenTitle = title === 'ETH' ? t('networkNameEthereum') : title;
 
   // Used for badge icon
   const currentNetwork = useSelector(getCurrentNetwork);

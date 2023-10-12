@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { ButtonLink, IconName, Box } from '../../component-library';
 import {
-  ButtonLink,
-  IconName,
-  Box,
-  ButtonLinkSize,
-} from '../../component-library';
-import { AlignItems, Display } from '../../../helpers/constants/design-system';
+  AlignItems,
+  Display,
+  Size,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { detectNewTokens, showImportTokensModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -19,13 +19,8 @@ import {
   getIsTokenDetectionSupported,
   getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
-import type { BoxProps } from '../../component-library/box';
-import type { ImportTokenLinkProps } from './import-token-link.types';
 
-export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
-  className = '',
-  ...props
-}): JSX.Element => {
+export const ImportTokenLink = ({ className, ...props }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -42,25 +37,22 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
   return (
     <Box
       className={classnames('multichain-import-token-link', className)}
-      {...(props as BoxProps<'div'>)}
+      {...props}
     >
       <Box display={Display.Flex} alignItems={AlignItems.center}>
         <ButtonLink
-          size={ButtonLinkSize.Md}
+          size={Size.MD}
           data-testid="import-token-button"
           startIconName={IconName.Add}
           onClick={() => {
             dispatch(showImportTokensModal());
-            trackEvent(
-              {
-                event: MetaMetricsEventName.TokenImportButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: 'Home',
-                },
+            trackEvent({
+              event: MetaMetricsEventName.TokenImportButtonClicked,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: 'Home',
               },
-              {},
-            );
+            });
           }}
         >
           {isTokenDetectionAvailable
@@ -71,7 +63,7 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
       </Box>
       <Box display={Display.Flex} alignItems={AlignItems.center} paddingTop={2}>
         <ButtonLink
-          size={ButtonLinkSize.Md}
+          size={Size.MD}
           startIconName={IconName.Refresh}
           data-testid="refresh-list-button"
           onClick={() => dispatch(detectNewTokens())}
@@ -81,4 +73,11 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
       </Box>
     </Box>
   );
+};
+
+ImportTokenLink.propTypes = {
+  /**
+   * An additional className to apply to the TokenList.
+   */
+  className: PropTypes.string,
 };

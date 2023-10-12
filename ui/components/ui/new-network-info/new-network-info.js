@@ -49,10 +49,9 @@ const NewNetworkInfo = () => {
   };
 
   const getIsTokenDetectionSupported = async () => {
-    const fetchedTokenData = await fetchWithCache({
-      url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
-      functionName: 'getIsTokenDetectionSupported',
-    });
+    const fetchedTokenData = await fetchWithCache(
+      `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
+    );
 
     return !fetchedTokenData.error;
   };

@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { detectNewTokens } from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ImportTokenLink } from '.';
 
 const mockPushHistory = jest.fn();
@@ -49,7 +48,7 @@ describe('Import Token Link', () => {
     const mockState = {
       metamask: {
         providerConfig: {
-          chainId: CHAIN_IDS.MAINNET,
+          chainId: '0x1',
         },
       },
     };

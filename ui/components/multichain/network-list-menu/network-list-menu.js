@@ -24,7 +24,6 @@ import ToggleButton from '../../ui/toggle-button';
 import {
   BlockSize,
   Display,
-  FlexDirection,
   JustifyContent,
   Size,
   TextColor,
@@ -178,12 +177,7 @@ export const NetworkListMenu = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent
         className="multichain-network-list-menu-content-wrapper"
-        modalDialogProps={{
-          className: 'multichain-network-list-menu-content-wrapper__dialog',
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
-          padding: 0,
-        }}
+        modalDialogProps={{ padding: 0 }}
       >
         <ModalHeader
           paddingTop={4}

@@ -1811,15 +1811,21 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+<<<<<<< HEAD
         "@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/permission-controller>@metamask/utils": true,
+=======
+        "@metamask/controller-utils": true,
+>>>>>>> parent of 3d07aecd13 (Merge branch 'master' into Version-v11.2.0)
         "@metamask/permission-controller>nanoid": true,
+        "@metamask/utils": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "immer": true,
         "json-rpc-engine": true
       }
     },
+<<<<<<< HEAD
     "@metamask/permission-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -1863,6 +1869,8 @@
         "superstruct": true
       }
     },
+=======
+>>>>>>> parent of 3d07aecd13 (Merge branch 'master' into Version-v11.2.0)
     "@metamask/permission-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -2044,11 +2052,6 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
-      }
-    },
-    "@metamask/selected-network-controller": {
-      "packages": {
-        "@metamask/base-controller": true
       }
     },
     "@metamask/signature-controller": {

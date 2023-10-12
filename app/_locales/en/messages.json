@@ -351,14 +351,8 @@
     "message": "All of your NFTs from $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allow": {
-    "message": "Allow"
-  },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "This will allow MMI to connect to $1 to import your accounts."
   },
   "allowSpendToken": {
     "message": "Give permission to access your $1?",
@@ -376,6 +370,9 @@
   },
   "amount": {
     "message": "Amount"
+  },
+  "apiUrl": {
+    "message": "API URL"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -735,15 +732,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "We will redirect you to $1 upon clicking continue."
-  },
-  "confirmConnectCustodianText": {
-    "message": "To connect your accounts log into your $1 account and click on the 'connect to MMI' button."
-  },
-  "confirmConnectionTitle": {
-    "message": "Confirm connection to $1"
-  },
   "confirmPassword": {
     "message": "Confirm password"
   },
@@ -776,9 +764,6 @@
   },
   "connectCustodialAccountTitle": {
     "message": "Custodial Accounts"
-  },
-  "connectCustodianAccounts": {
-    "message": "Connect $1 accounts"
   },
   "connectManually": {
     "message": "Manually connect to current site"
@@ -996,11 +981,14 @@
   "custodian": {
     "message": "Custodian"
   },
+  "custodianAccount": {
+    "message": "Custodian account"
+  },
   "custodianAccountAddedDesc": {
-    "message": "You can now use your accounts in MetaMask Institutional."
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
   },
   "custodianAccountAddedTitle": {
-    "message": "Selected $1 accounts have been added."
+    "message": "Selected custodian accounts have been added."
   },
   "custodianReplaceRefreshTokenChangedFailed": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
@@ -2355,6 +2343,9 @@
   "missingSettingRequest": {
     "message": "Request here"
   },
+  "mmiAddToken": {
+    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
+  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."
   },
@@ -2445,9 +2436,6 @@
   },
   "networkNameTestnet": {
     "message": "Testnet"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkProvider": {
     "message": "Network provider"
@@ -3243,14 +3231,6 @@
   "permission_getEntropyDescription": {
     "message": "Allow the snap to derive arbitrary keys unique to this snap, without exposing them. These keys are separate from your MetaMask account(s) and not related to your private keys or Secret Recovery Phrase. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_getEntropy` permission"
-  },
-  "permission_getLocale": {
-    "message": "View your preferred language.",
-    "description": "The description for the `snap_getLocale` permission"
-  },
-  "permission_getLocaleDescription": {
-    "message": "Let this Snap access your preferred language from your MetaMask settings. This can be used to localize and display the Snap's content using your language.",
-    "description": "An extended description for the `snap_getLocale` permission"
   },
   "permission_lifecycleHooks": {
     "message": "Use lifecycle hooks.",
@@ -4298,7 +4278,7 @@
     "message": "Stake"
   },
   "stakeDescription": {
-    "message": "Stake your crypto to earn rewards"
+    "message": "Hold up your crypto and earn potential profits"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."

@@ -356,10 +356,7 @@ const NetworksForm = ({
 
       try {
         safeChainsList =
-          (await fetchWithCache({
-            url: 'https://chainid.network/chains.json',
-            functionName: 'getSafeChainsList',
-          })) || [];
+          (await fetchWithCache('https://chainid.network/chains.json')) || [];
       } catch (err) {
         log.warn('Failed to fetch the chainList from chainid.network', err);
         providerError = err;

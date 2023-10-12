@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [11.2.0]
 ## [11.1.2]
 ### Fixed
 - Prevent crashes for users that have NFTs without an image and/r limited image data ([#21176](https://github.com/MetaMask/metamask-extension/pull/21176))
@@ -4045,9 +4044,6 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.2.0...HEAD
-[11.2.0]: https://github.com/MetaMask/metamask-extension/compare/v11.1.0...v11.2.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.1.1...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.1.2...HEAD
 [11.1.2]: https://github.com/MetaMask/metamask-extension/compare/v11.1.1...v11.1.2
 [11.1.1]: https://github.com/MetaMask/metamask-extension/compare/v11.1.0...v11.1.1

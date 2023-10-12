@@ -96,7 +96,6 @@ const state = {
 };
 
 const mockShowModal = jest.fn();
-const mockedState = jest.mocked(state);
 
 jest.mock('../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
@@ -201,30 +200,12 @@ describe('TokenAllowancePage', () => {
     store = configureMockStore([thunk])(state);
   });
 
-  describe('when mounted', () => {
-    it('should match snapshot', () => {
-      const { container } = renderWithProvider(
-        <TokenAllowance {...props} />,
-        store,
-      );
-
-      expect(container).toMatchSnapshot();
-    });
-
-    it('should load the page with dappProposedAmount prefilled and "Use site suggestion" should not be displayed', () => {
-      mockedState.appState.customTokenAmount = '';
-
-      const { queryByText, getByTestId } = renderWithProvider(
-        <TokenAllowance {...props} />,
-        configureMockStore([thunk])(mockedState),
-      );
-
-      const useSiteSuggestion = queryByText('Use site suggestion');
-      expect(useSiteSuggestion).not.toBeInTheDocument();
-
-      const input = getByTestId('custom-spending-cap-input');
-      expect(input.value).toBe('7');
-    });
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
   });
 
   it('should render title "Spending cap request for your" in token allowance page', () => {
@@ -375,23 +356,34 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Function: Approve')).toBeInTheDocument();
   });
 
-  it('should click "Use site suggestion" and set input value to dappProposedTokenAmount', () => {
-    mockedState.appState.customTokenAmount = '';
+  it('should load the page with dappProposedAmount prefilled and "Use site suggestion" should not be displayed', () => {
+    const { queryByText, getByTestId } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
 
+    act(() => {
+      const useSiteSuggestion = queryByText('Use site suggestion');
+      expect(useSiteSuggestion).not.toBeInTheDocument();
+    });
+
+    const input = getByTestId('custom-spending-cap-input');
+    expect(input.value).toBe('7');
+  });
+
+  it('should click Use site suggestion and set input value to default', () => {
     const { getByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} />,
-      configureMockStore([thunk])(mockedState),
+      store,
     );
     const textField = getByTestId('custom-spending-cap-input');
-
     expect(textField.value).toBe('7');
     fireEvent.change(textField, { target: { value: '1' } });
     expect(textField.value).toBe('1');
 
-    const useSiteSuggestion = getByText('Use site suggestion');
-    expect(useSiteSuggestion).toBeInTheDocument();
-
     act(() => {
+      const useSiteSuggestion = getByText('Use site suggestion');
+      expect(useSiteSuggestion).toBeInTheDocument();
       fireEvent.click(useSiteSuggestion);
     });
 

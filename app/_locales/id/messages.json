@@ -371,6 +371,9 @@
   "amount": {
     "message": "Jumlah"
   },
+  "apiUrl": {
+    "message": "URL API"
+  },
   "appDescription": {
     "message": "Dompet Ethereum pada Browser Anda",
     "description": "The description of the application"
@@ -977,6 +980,9 @@
   },
   "custodian": {
     "message": "Kustodian"
+  },
+  "custodianAccount": {
+    "message": "Akun kustodian"
   },
   "custodianAccountAddedDesc": {
     "message": "Saat ini Anda dapat menggunakan akun kustodian di MetaMask Institutional."
@@ -2325,6 +2331,9 @@
   "missingSettingRequest": {
     "message": "Minta di sini"
   },
+  "mmiAddToken": {
+    "message": "Halaman di $1 ingin mengotorisasi token kustodian berikut di MetaMask Institutional"
+  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dirancang dan dibangun di seluruh dunia."
   },
@@ -2869,21 +2878,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
-  },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Selengkapnya"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Kami sangat gembira mengumumkan versi Open Beta dari MetaMask Snap!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalisasikan dompet Anda dengan snap yang dibuat oleh komunitas pengembang!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap membantu Anda melakukan lebih banyak hal dengan MetaMask — seperti terhubung ke lebih banyak jaringan, melihat wawasan transaksi, dan mendapatkan notifikasi khusus."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Memperkenalkan MetaMask Snap"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
@@ -4065,10 +4059,6 @@
   },
   "snapsNoInsight": {
     "message": "Snap tidak mengembalikan wawasan apa pun"
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Kelola Snap Anda"

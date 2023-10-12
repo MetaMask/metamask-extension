@@ -28,11 +28,9 @@ export default class AppStateController extends EventEmitter {
       preferencesStore,
       qrHardwareStore,
       messenger,
-      extension,
     } = opts;
     super();
 
-    this.extension = extension;
     this.onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.store = new ObservableStore({
       timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
@@ -251,7 +249,7 @@ export default class AppStateController extends EventEmitter {
     if (this.timer) {
       clearTimeout(this.timer);
     } else if (isManifestV3) {
-      this.extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+      chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
     if (!timeoutMinutes) {
@@ -259,14 +257,14 @@ export default class AppStateController extends EventEmitter {
     }
 
     if (isManifestV3) {
-      this.extension.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
+      chrome.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
         delayInMinutes: timeoutMinutes,
         periodInMinutes: timeoutMinutes,
       });
-      this.extension.alarms.onAlarm.addListener((alarmInfo) => {
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
           this.onInactiveTimeout();
-          this.extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+          chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
         }
       });
     } else {

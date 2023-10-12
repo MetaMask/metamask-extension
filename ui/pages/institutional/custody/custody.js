@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import { isEqual } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -17,8 +18,8 @@ import {
   Label,
   IconName,
   IconSize,
-  ButtonSize,
-  ButtonVariant,
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
   Box,
   Text,
 } from '../../../components/component-library';
@@ -38,7 +39,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
-  CUSTODY_ACCOUNT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
@@ -51,10 +51,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
-import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
-import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
-
-const GK8_DISPLAY_NAME = 'gk8';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -67,16 +63,11 @@ const CustodyPage = () => {
   const { custodians } = useSelector(getMMIConfiguration);
 
   const [loading, setLoading] = useState(true);
-  const [
-    isConfirmConnectCustodianModalVisible,
-    setIsConfirmConnectCustodianModalVisible,
-  ] = useState(false);
   const [selectedAccounts, setSelectedAccounts] = useState({});
   const [selectedCustodianName, setSelectedCustodianName] = useState('');
   const [selectedCustodianImage, setSelectedCustodianImage] = useState(null);
   const [selectedCustodianDisplayName, setSelectedCustodianDisplayName] =
     useState('');
-  const [matchedCustodian, setMatchedCustodian] = useState(null);
   const [selectedCustodianType, setSelectedCustodianType] = useState('');
   const [connectError, setConnectError] = useState('');
   const [currentJwt, setCurrentJwt] = useState('');
@@ -89,20 +80,26 @@ const CustodyPage = () => {
   const [accounts, setAccounts] = useState();
   const address = useSelector(getSelectedAddress);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
-  const isCheckBoxSelected =
-    accounts && Object.keys(selectedAccounts).length === accounts.length;
 
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
 
-    const sortedCustodians = [...custodians]
-      .filter((item) => item.type !== 'Jupiter')
-      .sort((a, b) =>
-        a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
-      );
+    const sortedCustodians = [...custodians].sort(function (a, b) {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
 
     function shouldShowInProduction(custodian) {
       return (
+        custodian &&
         'production' in custodian &&
         !custodian.production &&
         process.env.METAMASK_ENVIRONMENT === 'production'
@@ -110,57 +107,17 @@ const CustodyPage = () => {
     }
 
     function isHidden(custodian) {
-      return 'hidden' in custodian && custodian.hidden;
+      return custodian && 'hidden' in custodian && custodian.hidden;
     }
 
     function isNotSelectedCustodian(custodian) {
       return (
-        'envName' in custodian &&
+        custodian &&
+        'name' in custodian &&
         connectRequest &&
         Object.keys(connectRequest).length &&
-        custodian.envName !== selectedCustodianName
+        custodian.name !== selectedCustodianName
       );
-    }
-
-    async function handleButtonClick(custodian) {
-      try {
-        const custodianByDisplayName = findCustodianByDisplayName(
-          custodian.displayName,
-          custodians,
-        );
-
-        const jwtListValue = await dispatch(
-          mmiActions.getCustodianJWTList(custodian.envName),
-        );
-
-        setSelectedCustodianName(custodian.envName);
-        setSelectedCustodianDisplayName(custodian.displayName);
-        setSelectedCustodianImage(custodian.iconUrl);
-        setApiUrl(custodian.apiUrl);
-        setCurrentJwt(jwtListValue[0] || '');
-        setJwtList(jwtListValue);
-
-        // open confirm Connect Custodian modal except for gk8
-        if (
-          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
-          GK8_DISPLAY_NAME
-        ) {
-          setSelectedCustodianType(custodian.type);
-        } else {
-          setMatchedCustodian(custodianByDisplayName);
-          setIsConfirmConnectCustodianModalVisible(true);
-        }
-
-        trackEvent({
-          category: MetaMetricsEventCategory.MMI,
-          event: MetaMetricsEventName.CustodianSelected,
-          properties: {
-            custodian: custodian.envName,
-          },
-        });
-      } catch (error) {
-        console.error('Error:', error);
-      }
     }
 
     sortedCustodians.forEach((custodian) => {
@@ -174,7 +131,7 @@ const CustodyPage = () => {
 
       custodianItems.push(
         <Box
-          key={custodian.envName}
+          key={uuidv4()}
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
@@ -197,9 +154,31 @@ const CustodyPage = () => {
           </Box>
 
           <Button
-            size={ButtonSize.Sm}
+            size={BUTTON_SIZES.SM}
             data-testid="custody-connect-button"
-            onClick={() => handleButtonClick(custodian)}
+            onClick={async () => {
+              try {
+                const jwtListValue = await dispatch(
+                  mmiActions.getCustodianJWTList(custodian.name),
+                );
+                setSelectedCustodianName(custodian.name);
+                setSelectedCustodianType(custodian.type);
+                setSelectedCustodianImage(custodian.iconUrl);
+                setSelectedCustodianDisplayName(custodian.displayName);
+                setApiUrl(custodian.apiUrl);
+                setCurrentJwt(jwtListValue[0] || '');
+                setJwtList(jwtListValue);
+                trackEvent({
+                  category: MetaMetricsEventCategory.MMI,
+                  event: MetaMetricsEventName.CustodianSelected,
+                  properties: {
+                    custodian: custodian.name,
+                  },
+                });
+              } catch (error) {
+                console.error('Error:', error);
+              }
+            }}
           >
             {t('select')}
           </Button>
@@ -220,27 +199,25 @@ const CustodyPage = () => {
 
   const handleConnectError = useCallback(
     (e) => {
-      const getErrorMessage = (error) => {
-        const detailedError = error.message.split(':');
-        const errorCode = parseInt(detailedError[0], 10);
+      let errorMessage;
+      const detailedError = e.message.split(':');
 
-        if (detailedError.length > 1 && !isNaN(errorCode)) {
-          switch (errorCode) {
-            case 401:
-              return 'Authentication error. Please ensure you have entered the correct token';
-            default:
-              return null;
-          }
+      if (detailedError.length > 1 && !isNaN(parseInt(detailedError[0], 10))) {
+        if (parseInt(detailedError[0], 10) === 401) {
+          // Authentication Error
+          errorMessage =
+            'Authentication error. Please ensure you have entered the correct token';
         }
+      }
 
-        if (/Network Error/u.test(error.message)) {
-          return 'Network error. Please ensure you have entered the correct API URL';
-        }
+      if (/Network Error/u.test(e.message)) {
+        errorMessage =
+          'Network error. Please ensure you have entered the correct API URL';
+      }
 
-        return error.message;
-      };
-
-      const errorMessage = getErrorMessage(e);
+      if (!errorMessage) {
+        errorMessage = e.message;
+      }
 
       setConnectError(
         `Something went wrong connecting your custodian account. Error details: ${errorMessage}`,
@@ -349,8 +326,6 @@ const CustodyPage = () => {
     setCurrentJwt('');
     setConnectError('');
     setSelectError('');
-
-    history.push(CUSTODY_ACCOUNT_ROUTE);
   };
 
   const setSelectAllAccounts = (e) => {
@@ -382,12 +357,7 @@ const CustodyPage = () => {
   return (
     <Box className="page-container">
       {connectError && (
-        <Text
-          data-testid="connect-error"
-          textAlign={TextAlign.Center}
-          marginTop={3}
-          padding={[2, 7, 5]}
-        >
+        <Text textAlign={TextAlign.Center} marginTop={3} padding={[2, 7, 5]}>
           {connectError}
         </Text>
       )}
@@ -396,10 +366,8 @@ const CustodyPage = () => {
           {selectError}
         </Text>
       )}
-
       {!accounts && !selectedCustodianType && (
         <Box
-          data-testid="connect-custodial-account"
           padding={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -454,7 +422,6 @@ const CustodyPage = () => {
               marginTop={4}
             >
               <ButtonIcon
-                data-testid="custody-back-button"
                 ariaLabel={t('back')}
                 iconName={IconName.ArrowLeft}
                 size={IconSize.Sm}
@@ -500,10 +467,9 @@ const CustodyPage = () => {
             ) : (
               <Box display={Display.Flex} gap={4}>
                 <Button
-                  data-testid="custody-cancel-button"
                   block
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Lg}
+                  variant={BUTTON_VARIANT.SECONDARY}
+                  size={BUTTON_SIZES.LG}
                   onClick={cancelConnectCustodianToken}
                 >
                   {t('cancel')}
@@ -511,7 +477,7 @@ const CustodyPage = () => {
                 <Button
                   block
                   data-testid="jwt-form-connect-button"
-                  size={ButtonSize.Lg}
+                  size={BUTTON_SIZES.LG}
                   onClick={async () => {
                     try {
                       setConnectError('');
@@ -569,13 +535,12 @@ const CustodyPage = () => {
             <input
               type="checkbox"
               id="selectAllAccounts"
-              data-testid={`select-all-accounts-selected-${isCheckBoxSelected}`}
               name="selectAllAccounts"
               marginRight={2}
               marginLeft={2}
               value={{}}
               onChange={(e) => setSelectAllAccounts(e)}
-              checked={isCheckBoxSelected}
+              checked={Object.keys(selectedAccounts).length === accounts.length}
             />
             <Label htmlFor="selectAllAccounts">{t('selectAllAccounts')}</Label>
           </Box>
@@ -608,7 +573,7 @@ const CustodyPage = () => {
             onAddAccounts={async () => {
               try {
                 const selectedCustodian = custodians.find(
-                  (custodian) => custodian.envName === selectedCustodianName,
+                  (custodian) => custodian.name === selectedCustodianName,
                 );
 
                 await dispatch(
@@ -690,22 +655,14 @@ const CustodyPage = () => {
           <Box as="footer" className="page-container__footer" padding={4}>
             <Button
               block
-              size={ButtonSize.Lg}
-              type={ButtonVariant.Secondary}
+              size={BUTTON_SIZES.LG}
+              type={BUTTON_VARIANT.SECONDARY}
               onClick={() => history.push(DEFAULT_ROUTE)}
             >
               {t('close')}
             </Button>
           </Box>
         </>
-      )}
-
-      {isConfirmConnectCustodianModalVisible && (
-        <ConfirmConnectCustodianModal
-          onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
-          custodianName={selectedCustodianDisplayName}
-          custodianURL={matchedCustodian?.website}
-        />
       )}
     </Box>
   );

@@ -30,7 +30,9 @@ const Template = (args) => <ActivityListItem {...args} />;
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
   'data-testid': 'activity-list-item',
-  onClick: () => undefined,
+  onClick: () => {
+    console.log('clicked list item');
+  },
   className: 'custom-class',
   title: 'Activity Title',
   icon: (

@@ -371,6 +371,9 @@
   "amount": {
     "message": "Betrag"
   },
+  "apiUrl": {
+    "message": "API-URL"
+  },
   "appDescription": {
     "message": "Ethereum Browsererweiterung",
     "description": "The description of the application"
@@ -977,6 +980,9 @@
   },
   "custodian": {
     "message": "Verwahrer"
+  },
+  "custodianAccount": {
+    "message": "Verwahrungskonto"
   },
   "custodianAccountAddedDesc": {
     "message": "Sie können jetzt Verwahrungskonten in MetaMask Institutional verwenden."
@@ -2325,6 +2331,9 @@
   "missingSettingRequest": {
     "message": "Hier anfragen"
   },
+  "mmiAddToken": {
+    "message": "Die Seite bei $1 möchte das folgende Verwahrungstoken in MetaMask Institutional autorisieren."
+  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional ist weltweit konzipiert und aufgebaut."
   },
@@ -2869,21 +2878,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Alle als gelesen markieren"
-  },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Mehr erfahren"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Wir freuen uns sehr, die Open-Beta-Version von MetaMask Snaps zu präsentieren!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalisieren Sie Ihre Wallet mit Snaps, die von der Entwickler-Community erstellt wurden!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snaps helfen Ihnen dabei, mehr aus MetaMask zu machen – wie z. B. Verbindungen mit anderen Netzwerken herzustellen, Transaktionseinblicke zu erlangen und benutzerdefinierte Benachrichtigungen zu erhalten."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Wir stellen vor: MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 neue Tokens in diesem Konto gefunden.",
@@ -4065,10 +4059,6 @@
   },
   "snapsNoInsight": {
     "message": "Der Snap brachte keine Einsicht."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Alle Daten, die Sie mit Drittanbieterdiensten teilen, werden direkt von diesen Drittanbieterdiensten im Einklang mit deren Datenschutzerklärung erfasst. Für weitere Informationen lesen Sie bitte die jeweiligen Datenschutzerklärungen.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Verwalten Sie Ihre Snaps."

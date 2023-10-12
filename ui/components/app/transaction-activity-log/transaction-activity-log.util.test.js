@@ -309,6 +309,15 @@ describe('TransactionActivityLog utils', () => {
               timestamp: 1535507564439,
               value: '0xa4',
             },
+            {
+              op: 'add',
+              path: '/nonceDetails',
+              value: {
+                local: {},
+                network: {},
+                params: {},
+              },
+            },
           ],
           [
             {

@@ -3,23 +3,18 @@ import configureMockStore from 'redux-mock-store';
 
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
 import { TokenListItem } from '.';
 
 const state = {
   metamask: {
     providerConfig: {
-      ticker: CURRENCY_SYMBOLS.ETH,
+      ticker: 'ETH',
       nickname: '',
-      chainId: CHAIN_IDS.MAINNET,
-      type: NETWORK_TYPES.MAINNET,
+      chainId: '0x1',
+      type: 'mainnet',
     },
     useTokenDetection: false,
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    nativeCurrency: 'ETH',
   },
 };
 

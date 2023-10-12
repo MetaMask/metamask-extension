@@ -196,12 +196,6 @@ describe('EthOverview', () => {
       const mockedStoreWithCustodyKeyring = {
         metamask: {
           ...mockStore.metamask,
-          mmiConfiguration: {
-            portfolio: {
-              enabled: true,
-              url: 'https://metamask-institutional.io',
-            },
-          },
           keyrings: [
             {
               type: 'Custody',
@@ -230,7 +224,9 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: 'https://metamask-institutional.io/swap',
+          url: expect.stringContaining(
+            'https://metamask-institutional.io/swap',
+          ),
         }),
       );
     });

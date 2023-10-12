@@ -103,7 +103,7 @@ export default function ReviewSpendingCap({
                   name={IconName.Danger}
                   color={IconColor.errorDefault}
                   size={IconSize.Sm}
-                  style={{ verticalAlign: 'middle' }}
+                  style={{ 'vertical-align': 'middle' }}
                 />
               )}
               {Number(tokenValue) === 0 && (

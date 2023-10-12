@@ -103,7 +103,6 @@ import * as m093 from './093';
 import * as m094 from './094';
 import * as m095 from './095';
 import * as m096 from './096';
-import * as m097 from './097';
 
 const migrations = [
   m002,
@@ -204,6 +203,5 @@ const migrations = [
   m094,
   m095,
   m096,
-  m097,
 ];
 export default migrations;

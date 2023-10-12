@@ -345,9 +345,6 @@ export default class TransactionController extends EventEmitter {
       this._requestTransactionApproval(txMeta, {
         shouldShowRequest: false,
       }).catch((error) => {
-        if (error.code === errorCodes.provider.userRejectedRequest) {
-          return;
-        }
         log.error('Error during persisted transaction approval', error);
       });
     });
@@ -1860,6 +1857,11 @@ export default class TransactionController extends EventEmitter {
         customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
 
       txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
+      // add nonce debugging information to txMeta
+      txMeta.nonceDetails = nonceLock.nonceDetails;
+      if (customNonceValue) {
+        txMeta.nonceDetails.customNonceValue = customNonceValue;
+      }
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions#approveTransaction',

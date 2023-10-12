@@ -1,15 +1,11 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   CONNECTED_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  AvatarFavicon,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  BadgeWrapper,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -23,23 +19,14 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
   IconColor,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  getConnectedSubjectsForAllAddresses,
-  getCurrentNetwork,
-  getOriginOfCurrentTab,
-  getSelectedAddress,
-  getTestNetworkBackgroundColor,
-} from '../../../selectors';
 import { showSelectActionModal } from './app-footer-actions';
 
 export const AppFooter = () => {
@@ -51,20 +38,6 @@ export const AppFooter = () => {
   const connectedRoute = `#${CONNECTED_ROUTE}`;
   const activeWallet = location.pathname === DEFAULT_ROUTE;
   const activeConnections = location.pathname === CONNECTED_ROUTE;
-
-  const selectedAddress = useSelector(getSelectedAddress);
-
-  const currentTabOrigin = useSelector(getOriginOfCurrentTab);
-  const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
-  const connectedSite = connectedSites[selectedAddress]?.find(
-    ({ origin }) => origin === currentTabOrigin,
-  );
-  const connectedAvatar = connectedSite?.iconUrl;
-  const connectedAvatarName = connectedSite?.name;
-
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-
-  const currentChain = useSelector(getCurrentNetwork);
 
   return (
     <Box
@@ -140,40 +113,16 @@ export const AppFooter = () => {
         alignItems={AlignItems.center}
         tabIndex={0}
       >
-        {connectedSite ? (
-          <Box alignItems={AlignItems.center}>
-            <BadgeWrapper
-              display={Display.Flex}
-              className="app-footer__connected-badge"
-              badge={
-                <AvatarNetwork
-                  backgroundColor={testNetworkBackgroundColor}
-                  size={AvatarNetworkSize.Xs}
-                  name={currentChain.nickname}
-                  src={currentChain.rpcPrefs?.imageUrl}
-                  borderWidth={2}
-                  borderColor={BorderColor.borderDefault}
-                />
-              }
-            >
-              <AvatarFavicon
-                size={Size.SM}
-                src={connectedAvatar}
-                name={connectedAvatarName}
-              />
-            </BadgeWrapper>
-          </Box>
-        ) : (
-          <Icon
-            color={
-              activeConnections
-                ? IconColor.primaryDefault
-                : IconColor.iconAlternative
-            }
-            name={IconName.Global}
-            size={IconSize.Lg}
-          />
-        )}
+        <Icon
+          data-testid="app-footer-connections-button"
+          color={
+            activeConnections
+              ? IconColor.primaryDefault
+              : IconColor.iconAlternative
+          }
+          name={IconName.Global}
+          size={IconSize.Lg}
+        />
         <Text
           color={
             activeConnections
