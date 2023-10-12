@@ -164,24 +164,17 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
                     Test Snap Account Message
                   </p>
                   <div
-                    class="mm-box mm-box--padding-top-2 mm-box--display-block"
+                    class="mm-box mm-box--padding-top-2 mm-box--display-flex"
                   >
                     <div
-                      class="box mm-text-field mm-text-field--size-md box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+                      class="mm-box mm-box--padding-right-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
                     >
-                      <input
-                        aria-invalid="false"
-                        autocomplete="off"
-                        class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-primary-default mm-box--background-color-transparent mm-box--border-style-none"
-                        data-testid="snap-account-redirect-url"
-                        focused="false"
-                        id="snap-account-redirect-url"
-                        name=""
-                        placeholder=""
-                        readonly=""
-                        type="text"
-                        value="https://metamask.github.io/test-snap"
-                      />
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-box--padding-2 mm-box--color-primary-default"
+                        data-testid="snap-account-redirect-url-display-box"
+                      >
+                        https://metamask.github.io/test-snap
+                      </p>
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
                         style="mask-image: url('./images/icons/share.svg');"
