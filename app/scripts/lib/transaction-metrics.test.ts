@@ -16,9 +16,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
-import {
-  BlockaidReason,
-} from '../../../shared/constants/security-provider';
+import { BlockaidReason } from '../../../shared/constants/security-provider';
 import {
   onTransactionAdded,
   onTransactionApproved,
