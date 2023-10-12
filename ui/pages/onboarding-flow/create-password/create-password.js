@@ -243,20 +243,24 @@ export default function CreatePassword({
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         secretRecoveryPhrase &&
-      firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
-        <TwoStepProgressBar
-          stage={twoStepStages.PASSWORD_CREATE}
-          marginBottom={4}
-        />
-      ) : (
-        <ThreeStepProgressBar
-          stage={threeStepStages.PASSWORD_CREATE}
-          marginBottom={4}
-        />
-      )}
+        firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
+          <TwoStepProgressBar
+            stage={twoStepStages.PASSWORD_CREATE}
+            marginBottom={4}
+          />
+        ) : (
+          <ThreeStepProgressBar
+            stage={threeStepStages.PASSWORD_CREATE}
+            marginBottom={4}
+          />
+        )
+        ///: END:ONLY_INCLUDE_IN
+      }
+
       <Text variant={TextVariant.headingLg} marginBottom={3}>
         {t('createPassword')}
       </Text>
+
       <Text
         variant={TextVariant.headingSm}
         textAlign={TextAlign.Center}
