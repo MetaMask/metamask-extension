@@ -235,7 +235,7 @@
     "@metamask-institutional/rpc-allowlist": "^1.0.0",
     "@metamask-institutional/sdk": "^0.1.20",
     "@metamask-institutional/transaction-update": "^0.1.30",
-    "@metamask/address-book-controller": "^3.0.0",
+    "@metamask/address-book-controller": "^3.1.4",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",
     "@metamask/assets-controllers": "^15.0.0",
