@@ -3121,8 +3121,6 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      let accounts, lastBalance;
-
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       // clear known identities
@@ -3153,25 +3151,36 @@ export default class MetamaskController extends EventEmitter {
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
 
+      // Scan accounts until we find an empty one
+      const { chainId } = this.networkController.state.providerConfig;
       const ethQuery = new EthQuery(this.provider);
-      accounts = await this.keyringController.getAccounts();
-      lastBalance = await this.getBalance(
-        accounts[accounts.length - 1],
-        ethQuery,
-      );
+      const accounts = await this.keyringController.getAccounts();
+      let address = accounts[accounts.length - 1];
 
-      // seek out the first zero balance
-      while (lastBalance !== '0x0') {
-        const { addedAccountAddress } =
-          await this.keyringController.addNewAccount(accounts.length);
-        accounts = await this.keyringController.getAccounts();
-        lastBalance = await this.getBalance(addedAccountAddress, ethQuery);
-      }
+      for (let count = accounts.length; ; count++) {
+        const balance = await this.getBalance(address, ethQuery);
+        if (balance === '0x0') {
+          // This account has no balance, so check for tokens
+          // todo make sure this call is needed
+          await this.detectTokensController.detectNewTokens({
+            selectedAddress: address,
+          });
 
-      // remove extra zero balance account potentially created from seeking ahead
-      if (accounts.length > 1 && lastBalance === '0x0') {
-        await this.removeAccount(accounts[accounts.length - 1]);
-        accounts = await this.keyringController.getAccounts();
+          const tokens =
+            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+
+          if ((tokens?.length ?? 0) === 0) {
+            // This account has no balance or detected tokens
+            if (count !== 1) {
+              await this.removeAccount(address);
+            }
+            break;
+          }
+        }
+
+        // This account has assets, so check the next account
+        ({ addedAccountAddress: address } =
+          await this.keyringController.addNewAccount(count));
       }
 
       // This must be set as soon as possible to communicate to the
