@@ -81,6 +81,7 @@ export const SNAP_DIALOG_TYPES = {
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
+  showSnapAccountRedirect: 'showSnapAccountRedirect',
 };
 ///: END:ONLY_INCLUDE_IN
 
