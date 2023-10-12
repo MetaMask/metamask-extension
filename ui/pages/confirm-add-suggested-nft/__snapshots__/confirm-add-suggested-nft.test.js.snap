@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
-{
+Object {
   "asFragment": [Function],
   "baseElement": <body>
     <div
@@ -105,7 +105,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
               >
                 0 ETH
-
+                 
               </h6>
             </div>
           </div>
@@ -149,9 +149,9 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
           >
             <span>
-
+               
               This allows the following asset to be added to your wallet.
-
+               
             </span>
           </p>
         </div>
@@ -315,7 +315,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
             >
               0 ETH
-
+               
             </h6>
           </div>
         </div>
@@ -359,9 +359,9 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
         >
           <span>
-
+             
             This allows the following asset to be added to your wallet.
-
+             
           </span>
         </p>
       </div>
