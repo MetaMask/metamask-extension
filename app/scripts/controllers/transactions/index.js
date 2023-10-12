@@ -2299,6 +2299,7 @@ export default class TransactionController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertResponse,
       ///: END:ONLY_INCLUDE_IN
+      simulationFails,
     } = txMeta;
 
     const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
@@ -2472,6 +2473,14 @@ export default class TransactionController extends EventEmitter {
     }
     ///: END:ONLY_INCLUDE_IN
 
+    if (simulationFails) {
+      if (uiCustomizations === null) {
+        uiCustomizations = ['gas_estimation_failed'];
+      } else {
+        uiCustomizations.push('gas_estimation_failed');
+      }
+    }
+
     /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
     let properties = {
       chain_id: chainId,
@@ -2492,6 +2501,7 @@ export default class TransactionController extends EventEmitter {
       security_alert_reason:
         securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
       ///: END:ONLY_INCLUDE_IN
+      gas_estimation_failed: Boolean(simulationFails),
     };
 
     const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
