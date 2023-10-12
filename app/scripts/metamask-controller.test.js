@@ -1667,13 +1667,25 @@ describe('MetaMaskController', () => {
     });
 
     describe('transaction events', () => {
-      it('should call metric event listeners for transactions ', () => {
-        expect(transactionMetricHandlers.onTransactionAdded).toBeCalledTimes(1);
-        expect(transactionMetricHandlers.onTransactionApproved).toBeCalledTimes(1);
-        expect(transactionMetricHandlers.onTransactionFinalized).toBeCalledTimes(1);
-        expect(transactionMetricHandlers.onTransactionDropped).toBeCalledTimes(1);
-        expect(transactionMetricHandlers.onTransactionRejected).toBeCalledTimes(1);
-        expect(transactionMetricHandlers.onTransactionSubmitted).toBeCalledTimes(1);
+      it('should call metric event listeners for transactions', () => {
+        expect(
+          transactionMetricHandlers.onTransactionAdded,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          transactionMetricHandlers.onTransactionApproved,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          transactionMetricHandlers.onTransactionFinalized,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          transactionMetricHandlers.onTransactionDropped,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          transactionMetricHandlers.onTransactionRejected,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          transactionMetricHandlers.onTransactionSubmitted,
+        ).toHaveBeenCalledTimes(1);
       });
     });
   });
