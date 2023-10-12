@@ -190,7 +190,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         class="settings-page__content-item"
       >
         <span>
-          Snap accounts
+          Account Snaps
         </span>
         <div
           class="settings-page__content-description"
@@ -206,7 +206,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             <h5
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-0 mm-box--color-text-default"
             >
-              Enable "Add Snap account"
+              Enable "Add account Snap (Beta)"
             </h5>
             <label
               class="toggle-button toggle-button--off"
@@ -254,7 +254,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <h6
             class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--color-text-alternative"
           >
-            Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service.
+            Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service.
           </h6>
         </div>
       </div>
