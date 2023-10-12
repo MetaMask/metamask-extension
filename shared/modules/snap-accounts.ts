@@ -16,6 +16,8 @@ export function showSnapAccountExperimentalToggle(): boolean {
     return false;
   }
 
-  return new Date().getTime() > new Date(KEYRING_SNAPS_AVAILABILITY_DATE).getTime();
+  return (
+    new Date().getTime() > new Date(KEYRING_SNAPS_AVAILABILITY_DATE).getTime()
+  );
 }
 ///: END:ONLY_INCLUDE_IN
