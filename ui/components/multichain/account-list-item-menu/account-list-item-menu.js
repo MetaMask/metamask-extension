@@ -185,12 +185,14 @@ export const AccountListItemMenu = ({
                   const token = await dispatch(
                     mmiActions.getCustodianToken(identity.address),
                   );
+
                   const custodyAccountDetails = await dispatch(
                     mmiActions.getAllCustodianAccountsWithToken(
                       keyring.type.split(' - ')[1],
                       token,
                     ),
                   );
+
                   dispatch(
                     showModal({
                       name: 'CONFIRM_REMOVE_JWT',

@@ -222,8 +222,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('displayNftMedia'),
-    descriptionMessage: (t) => t('displayNftMediaDesc'),
+    sectionMessage: (t) => t('enableOpenSeaAPI'),
+    descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
     route: `${SECURITY_ROUTE}#opensea-api`,
     icon: 'fa fa-lock',
   },
@@ -373,9 +373,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('transactionSecurityCheck'),
-    descriptionMessage: (t) => t('transactionSecurityCheckDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#transaction-security-check`,
+    sectionMessage: (t) => t('securityAlerts'),
+    descriptionMessage: (t) => t('securityAlertsDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#security-alerts`,
     icon: 'fa fa-flask',
   },
 ];

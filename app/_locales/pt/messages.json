@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Descartar o lembrete de backup da Frase de Recuperação Secreta"
   },
-  "displayNftMedia": {
-    "message": "Exibir mídias de NFTs"
-  },
   "domain": {
     "message": "Domínio"
   },
@@ -1404,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Ative nas Configurações."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Habilitar API do OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
   "enableSmartSwaps": {
     "message": "Ativar trocas inteligentes"
@@ -1535,11 +1538,9 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explorar os snaps da MetaMask"
-  },
   "extendWalletWithSnaps": {
-    "message": "Personalize sua experiência com a carteira."
+    "message": "Personalize sua experiência com a carteira.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Extensão externa"
@@ -2386,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3020,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Abrir no explorador de blocos"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3918,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Criar uma conta $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3953,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Instalado"
-  },
-  "snapError": {
-    "message": "Erro no snap: '$1'. Código de erro: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Instalar snap"
@@ -4798,9 +4789,6 @@
   "termsOfService": {
     "message": "Termos de Serviço"
   },
-  "termsOfUse": {
-    "message": "termos de uso"
-  },
   "termsOfUseAgreeText": {
     "message": " Eu concordo com os Termos de Uso, que se aplicam ao meu uso da MetaMask e de todos os seus recursos"
   },
@@ -4828,10 +4816,6 @@
   },
   "thisCollection": {
     "message": "esta coleção"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Esse serviço é experimental. Ao ativar esse recurso, você concorda com os $1 da OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Hora"
@@ -5047,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Ativar alertas de segurança"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Usamos APIs de terceiros para detectar e exibir riscos envolvidos em solicitações de assinatura e de transações não assinadas antes que você as assine. Esses serviços terão acesso às suas solicitações de assinatura e de transações não assinadas, ao endereço de sua conta e ao seu idioma preferencial."
   },
   "transactionSettings": {
     "message": "Configurações da transação"
@@ -5271,9 +5249,6 @@
   },
   "viewOnOpensea": {
     "message": "Ver na OpenSea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Ver painel do portfólio"
   },
   "viewinCustodianApp": {
     "message": "Ver no app custodiante"
