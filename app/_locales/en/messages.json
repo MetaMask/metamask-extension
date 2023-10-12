@@ -281,7 +281,7 @@
     "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
   "addSnapAccountToggle": {
-    "message": "Enable \"Add Account Snap (Beta)\""
+    "message": "Enable \"Add account Snap (Beta)\""
   },
   "addSnapAccountsDescription": {
     "message": "Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service."
@@ -4053,7 +4053,7 @@
     "description": "The token symbol that is being approved"
   },
   "settingAddSnapAccount": {
-    "message": "Add account Snap"
+    "message": "Add Account Snap"
   },
   "settings": {
     "message": "Settings"
