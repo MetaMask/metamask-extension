@@ -1,7 +1,7 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
-import EthQuery from 'ethjs-query';
+import EthQuery from '@metamask/ethjs-query';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
@@ -68,6 +68,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import getSnapAndHardwareInfoForMetrics from '../../lib/snap-keyring/metrics';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -166,10 +167,12 @@ export default class TransactionController extends EventEmitter {
     this.updateEventFragment = opts.updateEventFragment;
     this.finalizeEventFragment = opts.finalizeEventFragment;
     this.getEventFragmentById = opts.getEventFragmentById;
-    this.getDeviceModel = opts.getDeviceModel;
-    this.getAccountType = opts.getAccountType;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
+    this.getSelectedAddress = opts.getSelectedAddress;
+    this.getAccountType = opts.getAccountType;
+    this.getDeviceModel = opts.getDeviceModel;
+    this.snapAndHardwareMessenger = opts.snapAndHardwareMessenger;
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
 
@@ -229,7 +232,7 @@ export default class TransactionController extends EventEmitter {
       isEnabled: () =>
         Boolean(
           this.preferencesStore.getState().incomingTransactionsPreferences?.[
-            this._getChainId()
+            this._getCurrentChainId()
           ] && this._hasCompletedOnboarding(),
         ),
       lastFetchedBlockNumbers: opts.initState?.lastFetchedBlockNumbers || {},
@@ -345,6 +348,9 @@ export default class TransactionController extends EventEmitter {
       this._requestTransactionApproval(txMeta, {
         shouldShowRequest: false,
       }).catch((error) => {
+        if (error.code === errorCodes.provider.userRejectedRequest) {
+          return;
+        }
         log.error('Error during persisted transaction approval', error);
       });
     });
@@ -960,6 +966,7 @@ export default class TransactionController extends EventEmitter {
       if (blockTimestamp) {
         txMeta.blockTimestamp = blockTimestamp;
       }
+      txMeta.verifiedOnBlockchain = true;
 
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
@@ -1857,11 +1864,6 @@ export default class TransactionController extends EventEmitter {
         customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
 
       txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
-      // add nonce debugging information to txMeta
-      txMeta.nonceDetails = nonceLock.nonceDetails;
-      if (customNonceValue) {
-        txMeta.nonceDetails.customNonceValue = customNonceValue;
-      }
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions#approveTransaction',
@@ -2135,16 +2137,12 @@ export default class TransactionController extends EventEmitter {
    * Updates the memStore in transaction controller
    */
   _updateMemstore() {
-    const { transactions } = this.store.getState();
-    const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
-
-    const currentNetworkTxList = this.txStateManager.getTransactions({
+    const transactions = this.getTransactions({
+      filterToCurrentNetwork: false,
       limit: MAX_MEMSTORE_TX_LIST_SIZE,
     });
 
     this.memStore.updateState({
-      unapprovedTxs,
-      currentNetworkTxList,
       transactions,
     });
   }
@@ -2430,7 +2428,10 @@ export default class TransactionController extends EventEmitter {
       ) {
         if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
           transactionApprovalAmountType = TransactionApprovalAmountType.revoke;
-        } else if (customTokenAmount) {
+        } else if (
+          customTokenAmount &&
+          customTokenAmount !== dappProposedTokenAmount
+        ) {
           transactionApprovalAmountType = TransactionApprovalAmountType.custom;
         } else if (dappProposedTokenAmount) {
           transactionApprovalAmountType =
@@ -2498,8 +2499,6 @@ export default class TransactionController extends EventEmitter {
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
       gas_edit_attempted: 'none',
-      account_type: await this.getAccountType(this.getSelectedAddress()),
-      device_model: await this.getDeviceModel(this.getSelectedAddress()),
       asset_type: assetType,
       token_standard: tokenStandard,
       transaction_type: transactionType,
@@ -2512,6 +2511,16 @@ export default class TransactionController extends EventEmitter {
         securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
       ///: END:ONLY_INCLUDE_IN
     };
+
+    const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+      this.getSelectedAddress,
+      this.getAccountType,
+      this.getDeviceModel,
+      this.snapAndHardwareMessenger,
+    );
+
+    // merge the snapAndHardwareInfo into the properties
+    Object.assign(properties, snapAndHardwareInfo);
 
     if (transactionContractMethod === contractMethodNames.APPROVE) {
       properties = {
@@ -2796,7 +2805,9 @@ export default class TransactionController extends EventEmitter {
     const currentTransactions = this.store.getState().transactions || {};
 
     const incomingTransactions = transactions
-      .filter((tx) => !this._hasTransactionHash(tx.hash, currentTransactions))
+      .filter((tx) =>
+        this._hasNoDuplicateIncoming(tx.hash, currentTransactions),
+      )
       .reduce((result, tx) => {
         result[tx.id] = tx;
         return result;
@@ -2814,8 +2825,21 @@ export default class TransactionController extends EventEmitter {
     this.store.updateState({ lastFetchedBlockNumbers });
   }
 
-  _hasTransactionHash(hash, transactions) {
-    return Object.values(transactions).some((tx) => tx.hash === hash);
+  /**
+   * This function checks if there is not any transaction in the provided
+   * transactions object that has the same hash as the provided txHash and has a
+   * type of 'incoming'.
+   *
+   * @param {string} txHash - The transaction hash to compare with.
+   * @param {object} transactions - The transactions to check in.
+   * @returns {boolean} Returns false if there is a transaction that has the
+   * same hash as the provided txHash and has a type of 'incoming'. Otherwise,
+   * it returns true.
+   */
+  _hasNoDuplicateIncoming(txHash, transactions) {
+    return !Object.values(transactions).some(
+      (tx) => tx.hash === txHash && tx.type === TransactionType.incoming,
+    );
   }
 
   // Approvals
@@ -2831,7 +2855,7 @@ export default class TransactionController extends EventEmitter {
       const { origin } = txMeta;
 
       const approvalResult = await this._requestApproval(
-        String(txId),
+        txId,
         origin,
         { txId },
         {

@@ -81,9 +81,7 @@ const getStateTree = ({
     unapprovedMsgs,
     selectedAddress: SENDERS.ONE,
     featureFlags: {},
-    transactions: [...incomingTxList],
-    incomingTransactions: [...incomingTxList],
-    currentNetworkTxList: [...txList],
+    transactions: [...incomingTxList, ...txList],
     incomingTransactionsPreferences: {},
   },
 });

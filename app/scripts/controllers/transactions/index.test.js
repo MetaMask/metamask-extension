@@ -56,10 +56,10 @@ const TRANSACTION_META_MOCK = {
   hash: '0x1',
   id: 1,
   status: TransactionStatus.confirmed,
-  transaction: {
+  time: 123456789,
+  txParams: {
     from: VALID_ADDRESS,
   },
-  time: 123456789,
 };
 
 async function flushPromises() {
@@ -154,8 +154,6 @@ describe('Transaction Controller', function () {
       getEventFragmentById: () =>
         fragmentExists === false ? undefined : { id: 0 },
       getEIP1559GasFeeEstimates: () => undefined,
-      getAccountType: () => 'MetaMask',
-      getDeviceModel: () => 'N/A',
       securityProviderRequest: () => undefined,
       preferencesStore,
       messenger: messengerMock,
@@ -186,21 +184,10 @@ describe('Transaction Controller', function () {
     it('should return a state object with the right keys and data types', function () {
       const exposedState = txController.getState();
       assert.ok(
-        'unapprovedTxs' in exposedState,
-        'state should have the key unapprovedTxs',
+        'transactions' in exposedState,
+        'state should have the key transactions',
       );
-      assert.ok(
-        'currentNetworkTxList' in exposedState,
-        'state should have the key currentNetworkTxList',
-      );
-      assert.ok(
-        typeof exposedState?.unapprovedTxs === 'object',
-        'should be an object',
-      );
-      assert.ok(
-        Array.isArray(exposedState.currentNetworkTxList),
-        'should be an array',
-      );
+      assert.ok(Array.isArray(exposedState.transactions), 'should be an array');
     });
   });
 
@@ -2191,10 +2178,8 @@ describe('Transaction Controller', function () {
             referrer: ORIGIN_METAMASK,
             source: MetaMetricsTransactionEventSource.User,
             transaction_type: TransactionType.simpleSend,
-            account_type: 'MetaMask',
             asset_type: AssetType.native,
             token_standard: TokenStandard.none,
-            device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
             security_alert_reason: BlockaidReason.notApplicable,
@@ -2280,10 +2265,8 @@ describe('Transaction Controller', function () {
             referrer: ORIGIN_METAMASK,
             source: MetaMetricsTransactionEventSource.User,
             transaction_type: TransactionType.simpleSend,
-            account_type: 'MetaMask',
             asset_type: AssetType.native,
             token_standard: TokenStandard.none,
-            device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
             security_alert_reason: BlockaidReason.notApplicable,
@@ -2381,10 +2364,8 @@ describe('Transaction Controller', function () {
             referrer: 'other',
             source: MetaMetricsTransactionEventSource.Dapp,
             transaction_type: TransactionType.simpleSend,
-            account_type: 'MetaMask',
             asset_type: AssetType.native,
             token_standard: TokenStandard.none,
-            device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
             security_alert_reason: BlockaidReason.notApplicable,
@@ -2472,10 +2453,8 @@ describe('Transaction Controller', function () {
             referrer: 'other',
             source: MetaMetricsTransactionEventSource.Dapp,
             transaction_type: TransactionType.simpleSend,
-            account_type: 'MetaMask',
             asset_type: AssetType.native,
             token_standard: TokenStandard.none,
-            device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
             security_alert_reason: BlockaidReason.notApplicable,
@@ -2569,10 +2548,8 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
-          account_type: 'MetaMask',
           asset_type: AssetType.native,
           token_standard: TokenStandard.none,
-          device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
           security_alert_reason: BlockaidReason.notApplicable,
@@ -2643,10 +2620,8 @@ describe('Transaction Controller', function () {
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
-          account_type: 'MetaMask',
           asset_type: AssetType.native,
           token_standard: TokenStandard.none,
-          device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
           security_alert_reason: BlockaidReason.notApplicable,
@@ -2721,10 +2696,8 @@ describe('Transaction Controller', function () {
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
-          account_type: 'MetaMask',
           asset_type: AssetType.native,
           token_standard: TokenStandard.none,
-          device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: ['security_alert_failed'],
           security_alert_reason: 'some error',
@@ -2796,10 +2769,8 @@ describe('Transaction Controller', function () {
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
-          account_type: 'MetaMask',
           asset_type: AssetType.native,
           token_standard: TokenStandard.none,
-          device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: ['flagged_as_malicious'],
           security_alert_reason: BlockaidReason.notApplicable,
@@ -2872,10 +2843,8 @@ describe('Transaction Controller', function () {
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
-          account_type: 'MetaMask',
           asset_type: AssetType.native,
           token_standard: TokenStandard.none,
-          device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: ['flagged_as_safety_unknown'],
           security_alert_reason: BlockaidReason.notApplicable,
@@ -2956,10 +2925,8 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
-          account_type: 'MetaMask',
           asset_type: AssetType.native,
           token_standard: TokenStandard.none,
-          device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
           security_alert_reason: BlockaidReason.notApplicable,
@@ -3437,13 +3404,34 @@ describe('Transaction Controller', function () {
       });
     });
 
-    it('ignores new transactions if hash matches existing transaction', async function () {
-      const existingTransaction = TRANSACTION_META_MOCK;
-      const incomingTransaction1 = { ...TRANSACTION_META_MOCK, id: 2 };
-      const incomingTransaction2 = { ...TRANSACTION_META_MOCK, id: 3 };
+    it('ignores new transactions if hash matches existing incoming transaction', async function () {
+      const existingTransaction = {
+        ...TRANSACTION_META_MOCK,
+        id: 1,
+        type: TransactionType.incoming,
+      };
+      const existingTransaction2 = {
+        ...TRANSACTION_META_MOCK,
+        id: 2,
+        hash: '0xNewHash',
+        type: TransactionType.simpleSend,
+      };
+
+      const incomingTransaction1 = {
+        ...TRANSACTION_META_MOCK,
+        id: 3,
+        type: TransactionType.incoming,
+      };
+      const incomingTransaction2 = {
+        ...TRANSACTION_META_MOCK,
+        id: 4,
+        hash: '0xNewHash',
+        type: TransactionType.incoming,
+      };
 
       txController.store.getState().transactions = {
         [existingTransaction.id]: existingTransaction,
+        [existingTransaction2.id]: existingTransaction2,
       };
 
       await incomingTransactionHelperEventMock.firstCall.args[1]({
@@ -3453,6 +3441,8 @@ describe('Transaction Controller', function () {
 
       assert.deepEqual(txController.store.getState().transactions, {
         [existingTransaction.id]: existingTransaction,
+        [existingTransaction2.id]: existingTransaction2,
+        [incomingTransaction2.id]: incomingTransaction2,
       });
     });
   });
