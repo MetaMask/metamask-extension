@@ -579,6 +579,7 @@
     "nock": "patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch",
     "node-fetch": "^2.6.1",
     "nyc": "^15.1.0",
+    "playwright": "^1.39.0",
     "postcss": "^8.4.32",
     "postcss-rtlcss": "^4.0.9",
     "prettier": "^2.7.1",
