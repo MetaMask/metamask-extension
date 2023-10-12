@@ -15,10 +15,10 @@ export default {
   },
   args: {
     members: [
-      { label: 'Eth', src: './images/eth_logo.png' },
-      { label: 'Matic', src: './images/matic-token.png' },
-      { label: 'Palm', src: './images/palm.svg' },
-      { label: 'Avalanche', src: './images/avax-token.png' },
+      { symbol: 'ETH', image: './images/eth_logo.png' },
+      { symbol: 'MATIC', image: './images/matic-token.png' },
+      { symbol: 'OP', image: './images/optimism.svg' },
+      { symbol: 'AVAX', image: './images/avax-token.png' },
     ],
     limit: 4,
   },
@@ -34,11 +34,11 @@ export const WithTag: StoryFn<typeof AvatarGroup> = (args) => (
 );
 WithTag.args = {
   members: [
-    { label: 'Eth', src: './images/eth_logo.png' },
-    { label: 'Matic', src: './images/matic-token.png' },
-    { label: 'Palm', src: './images/palm.svg' },
-    { label: 'Avalanche', src: './images/avax-token.png' },
-    { label: 'Optimism', src: './images/optimism.svg' },
+    { symbol: 'MATIC', image: './images/matic-token.png' },
+    { symbol: 'OP', image: './images/optimism.svg' },
+    { symbol: 'AVAX', image: './images/avax-token.png' },
+    { symbol: 'ETH', image: './images/eth_logo.png' },
+    { symbol: 'PALM', image: './images/palm.svg' },
   ],
   limit: 2,
 };
@@ -48,10 +48,10 @@ export const TokenWithOutSrc: StoryFn<typeof AvatarGroup> = (args) => (
 );
 TokenWithOutSrc.args = {
   members: [
-    { label: 'Eth', src: '' },
-    { label: 'Matic', src: '' },
-    { label: 'Palm', src: '' },
-    { label: 'Avalanche', src: '' },
+    { symbol: 'MATIC', image: '' },
+    { symbol: 'OP', image: '' },
+    { symbol: 'AVAX', image: '' },
+    { symbol: 'ETH', image: '' },
   ],
   limit: 2,
 };

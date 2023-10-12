@@ -17,7 +17,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
           <img
-            alt="Eth logo"
+            alt="ETH logo"
             class="mm-avatar-token__token-image"
             src="./images/eth_logo.png"
           />
@@ -31,7 +31,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
           <img
-            alt="Matic logo"
+            alt="MATIC logo"
             class="mm-avatar-token__token-image"
             src="./images/matic-token.png"
           />
@@ -45,9 +45,9 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
           <img
-            alt="Palm logo"
+            alt="OP logo"
             class="mm-avatar-token__token-image"
-            src="./images/palm.svg"
+            src="./images/optimism.svg"
           />
         </div>
       </div>
@@ -59,7 +59,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
           <img
-            alt="Avalanche logo"
+            alt="AVAX logo"
             class="mm-avatar-token__token-image"
             src="./images/avax-token.png"
           />
