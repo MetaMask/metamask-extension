@@ -3949,10 +3949,6 @@
   "snapDetailsInstalled": {
     "message": "Đã cài đặt"
   },
-  "snapError": {
-    "message": "Lỗi Snap: \"$1\". Mã lỗi: \"$2\"",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
   "snapInstall": {
     "message": "Cài đặt Snap"
   },
@@ -5035,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Đã gửi lại giao dịch với mức phí gas ước tính tăng lên $1 lúc $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Bật cảnh báo bảo mật"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện và hiển thị những rủi ro liên quan đến các yêu cầu chữ ký và giao dịch chưa ký trước khi bạn ký. Những dịch vụ này sẽ có quyền truy cập vào các yêu cầu chữ ký và giao dịch chưa ký, địa chỉ tài khoản và ngôn ngữ yêu thích của bạn."
   },
   "transactionSettings": {
     "message": "Cài đặt giao dịch"
