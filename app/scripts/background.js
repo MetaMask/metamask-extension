@@ -806,9 +806,8 @@ export function setupController(
           ///: END:ONLY_INCLUDE_IN
           ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
-            controller.approvalController.accept(id, false);
-            break;
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
