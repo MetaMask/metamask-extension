@@ -18,7 +18,7 @@ const SnapAccountRedirectMessage = ({
     >
       {message !== '' ? (
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodyMd}
           data-testid="snap-account-redirect-message"
         >
           {message}

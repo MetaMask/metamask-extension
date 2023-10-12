@@ -16,7 +16,7 @@ const RedirectUrlIcon = ({ url }: RedirectUrlIconProps) => {
       onClick={() => {
         global.platform.openTab({ url });
       }}
-      name={IconName.Share}
+      name={IconName.Export}
       color={IconColor.primaryDefault}
       size={IconSize.Sm}
     />

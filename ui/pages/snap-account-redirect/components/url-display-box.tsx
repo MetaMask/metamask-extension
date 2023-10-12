@@ -4,6 +4,7 @@ import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
+  BorderColor,
   Display,
   TextColor,
   TextVariant,
@@ -19,6 +20,7 @@ const UrlDisplayBox = ({ url }: Pick<SnapAccountRedirectProps, 'url'>) => {
       alignItems={AlignItems.center}
       borderWidth={1}
       borderRadius={BorderRadius.SM}
+      borderColor={BorderColor.borderDefault}
       paddingRight={4}
     >
       <Text

@@ -39,8 +39,6 @@ const SnapAccountRedirectContent = ({
     >
       <Box
         gap={4}
-        paddingLeft={2}
-        paddingRight={2}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
