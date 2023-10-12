@@ -13,6 +13,7 @@ import {
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  Box,
   IconName,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Text,
@@ -54,6 +55,8 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
+  BorderColor,
   Display,
   JustifyContent,
   TextAlign,
@@ -109,6 +112,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         closeMenu={closeMenu}
         address={address}
       />
+      <Box
+        borderColor={BorderColor.borderMuted}
+        width={BlockSize.Full}
+        style={{ height: '1px', borderBottomWidth: 0 }}
+      ></Box>
       <MenuItem
         iconName={IconName.Connect}
         disabled={hasUnapprovedTransactions}

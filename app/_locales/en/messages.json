@@ -153,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountSnapsFeedback": {
+    "message": "Submit feedback on this feature"
+  },
   "accountsConnected": {
     "message": "Accounts connected"
   },
@@ -179,6 +182,9 @@
   },
   "addAccount": {
     "message": "Add account"
+  },
+  "addAccountSnapModalHeader": {
+    "message": "Add Account Snap"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -278,10 +284,10 @@
     "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
   "addSnapAccountToggle": {
-    "message": "Enable \"Add Snap account\""
+    "message": "Enable \"Add account Snap (Beta)\""
   },
   "addSnapAccountsDescription": {
-    "message": "Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service."
+    "message": "Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service."
   },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
@@ -507,6 +513,9 @@
   "backupApprovalNotice": {
     "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
   },
+  "backupKeyringSnapReminder": {
+    "message": "Be sure you can access any accounts created by this Snap on your own before removing it"
+  },
   "backupNow": {
     "message": "Backup now"
   },
@@ -598,6 +607,9 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
+  "blockaidMessage": {
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -902,6 +914,9 @@
   },
   "continue": {
     "message": "Continue"
+  },
+  "continueMmiOnboarding": {
+    "message": "Continue MetaMask Institutional onboarding"
   },
   "contract": {
     "message": "Contract"
@@ -1616,8 +1631,20 @@
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
+  "extensionInsallCompleteDescription": {
+    "message": "Return to the MetaMask Institutional product onboarding to connect your custodial or self-custodial accounts."
+  },
+  "extensionInsallCompleteTitle": {
+    "message": "Extension install complete"
+  },
   "externalExtension": {
     "message": "External extension"
+  },
+  "externalNameSourcesSetting": {
+    "message": "Suggest address names"
+  },
+  "externalNameSourcesSettingDescription": {
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"
@@ -2024,6 +2051,12 @@
   "install": {
     "message": "Install"
   },
+  "installExtension": {
+    "message": "Install extension"
+  },
+  "installExtensionDescription": {
+    "message": "The institution-compliant version of the world's leading web3 wallet, MetaMask."
+  },
   "installOrigin": {
     "message": "Install origin"
   },
@@ -2139,6 +2172,24 @@
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
+  },
+  "keyringAccountName": {
+    "message": "Account name"
+  },
+  "keyringAccountPublicAddress": {
+    "message": "Public Address"
+  },
+  "keyringSnapRemovalResult1": {
+    "message": "$1 $2removed",
+    "description": "Displays the result after removal of a keyring snap. $1 is the snap name, $2 is whether it is successful or not"
+  },
+  "keyringSnapRemovalResultNotSuccessful": {
+    "message": "not ",
+    "description": "Displays the `not` word in $2."
+  },
+  "keyringSnapRemoveConfirmation": {
+    "message": "Type $1 to confirm you want to remove this snap:",
+    "description": "Asks user to input the name nap prior to deleting the snap. $1 is the snap name"
   },
   "keystone": {
     "message": "Keystone"
@@ -2258,6 +2309,12 @@
   },
   "loadingNFTs": {
     "message": "Loading NFTs..."
+  },
+  "loadingScreenHardwareWalletMessage": {
+    "message": "Please complete the transaction on the hardware wallet."
+  },
+  "loadingScreenSnapMessage": {
+    "message": "Please complete the transaction on the Snap."
   },
   "loadingTokens": {
     "message": "Loading tokens..."
@@ -2388,6 +2445,9 @@
   "mmiNewNFTDetectedInNFTsTabMessage": {
     "message": "Let MetaMask Institutional automatically detect and display NFTs in your wallet."
   },
+  "mmiPasswordSetupDetails": {
+    "message": "This password will unlock your MetaMask Institutional extension only."
+  },
   "more": {
     "message": "more"
   },
@@ -2496,8 +2556,8 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
+  "networkNameOpMainnet": {
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -3145,6 +3205,9 @@
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
   },
+  "onboardingPinMmiExtensionLabel": {
+    "message": "Pin MetaMask Institutional"
+  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -3155,6 +3218,10 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openCustodianApp": {
+    "message": "Open $1 app",
+    "description": "The $1 is the name of the Custodian that will be open"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Go to full screen to connect your Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3162,8 +3229,11 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
+  "openSeaLabel": {
+    "message": "OpenSea + Blockaid"
+  },
+  "openSeaMessage": {
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests."
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3210,6 +3280,9 @@
   },
   "password": {
     "message": "Password"
+  },
+  "passwordMmiTermsWarning": {
+    "message": "I understand that MetaMask Institutional cannot recover this password for me. $1"
   },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
@@ -3438,6 +3511,12 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "pinExtensionDescription": {
+    "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
+  },
+  "pinExtensionTitle": {
+    "message": "Pin extension"
+  },
   "pleaseConfirm": {
     "message": "Please confirm"
   },
@@ -3457,6 +3536,9 @@
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
+  },
+  "preferredProvider": {
+    "message": "Select your preferred provider"
   },
   "preparingSwap": {
     "message": "Preparing swap..."
@@ -3597,6 +3679,12 @@
   },
   "removeJWTDescription": {
     "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
+  },
+  "removeKeyringSnap": {
+    "message": "Removing this Snap removes these accounts from MetaMask:"
+  },
+  "removeKeyringSnapToolTip": {
+    "message": "The snap controls the accounts, and by removing it, the accounts will be removed from MetaMask, too, but they will remain in the blockchain."
   },
   "removeNFT": {
     "message": "Remove NFT"
@@ -3807,7 +3895,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity on Ethereum Mainnet by actively reviewing transaction and signature requests while preserving your privacy. Your data isn't shared with the third party providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -3968,13 +4056,16 @@
     "description": "The token symbol that is being approved"
   },
   "settingAddSnapAccount": {
-    "message": "Add snap account"
+    "message": "Add account Snap"
   },
   "settings": {
     "message": "Settings"
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
+  },
+  "settingsSubHeadingSignatures": {
+    "message": "Signature requests"
   },
   "show": {
     "message": "Show"
@@ -4080,7 +4171,7 @@
     "message": "Account removed"
   },
   "snapAccounts": {
-    "message": "Snap accounts"
+    "message": "Account Snaps"
   },
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
@@ -4097,14 +4188,14 @@
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapCreateAccountSubtitle": {
-    "message": "Choose how to secure your new account using MetaMask Snaps."
+    "message": "Choose how to secure your new account using MetaMask Snaps. If you install an account Snap, remember that it is a third-party service."
   },
   "snapCreateAccountTitle": {
-    "message": "Create a $1 account",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "message": "Create an account $1 (Beta)",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
-    "message": "snap",
+    "message": "Snap",
     "description": "$1 of the snapCreateAccountTitle"
   },
   "snapCreatedByMetaMask": {
@@ -4132,14 +4223,10 @@
     "message": "Website"
   },
   "snapDetailsCreateASnapAccount": {
-    "message": "Create a Snap Account"
+    "message": "Add an account Snap (Beta)"
   },
   "snapDetailsInstalled": {
     "message": "Installed"
-  },
-  "snapError": {
-    "message": "Snap Error: '$1'. Error Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Install snap"
@@ -4256,6 +4343,10 @@
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
+  },
+  "somethingDoesntLookRight": {
+    "message": "Something doesn't look right? $1",
+    "description": "A false positive message for users to contact support. $1 is a link to the support page."
   },
   "somethingIsWrong": {
     "message": "Something's gone wrong. Try reloading the page."
@@ -4995,9 +5086,6 @@
   "termsOfService": {
     "message": "Terms of service"
   },
-  "termsOfUse": {
-    "message": "terms of use"
-  },
   "termsOfUseAgreeText": {
     "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
   },
@@ -5025,10 +5113,6 @@
   },
   "thisCollection": {
     "message": "this collection"
-  },
-  "thisServiceIsExperimental": {
-    "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Time"
@@ -5244,12 +5328,6 @@
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Enable security alerts"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
   },
   "transactionSettings": {
     "message": "Transaction settings"
@@ -5481,9 +5559,6 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "View Portfolio Dashboard"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"

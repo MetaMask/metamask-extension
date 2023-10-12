@@ -13,6 +13,7 @@ import NftsTab from '../../components/app/nfts-tab';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
+import WhatsNewPopup from '../../components/app/whats-new-popup';
 ///: END:ONLY_INCLUDE_IN
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -23,7 +24,6 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
-import WhatsNewPopup from '../../components/app/whats-new-popup';
 
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
@@ -124,6 +124,7 @@ export default class Home extends PureComponent {
     hasTransactionPendingApprovals: PropTypes.bool.isRequired,
     hasWatchTokenPendingApprovals: PropTypes.bool,
     hasWatchNftPendingApprovals: PropTypes.bool,
+    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -140,16 +141,20 @@ export default class Home extends PureComponent {
         );
       }
     },
+    firstTimeFlowType: PropTypes.string,
+    completedOnboarding: PropTypes.bool,
+    showWhatsNewPopup: PropTypes.bool.isRequired,
+    hideWhatsNewPopup: PropTypes.func.isRequired,
+    announcementsToShow: PropTypes.bool.isRequired,
+    onboardedInThisUISession: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
+    newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     defaultHomeActiveTabName: PropTypes.string,
-    firstTimeFlowType: PropTypes.string,
-    completedOnboarding: PropTypes.bool,
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -162,14 +167,6 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    errorsToShow: PropTypes.object.isRequired,
-    shouldShowErrors: PropTypes.bool.isRequired,
-    removeSnapError: PropTypes.func.isRequired,
-    ///: END:ONLY_INCLUDE_IN
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     setTermsOfUseLastAgreed: PropTypes.func.isRequired,
@@ -186,10 +183,8 @@ export default class Home extends PureComponent {
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
-    newNetworkAddedConfigurationId: PropTypes.string,
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    onboardedInThisUISession: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -412,11 +407,6 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-      removeSnapError,
-      errorsToShow,
-      shouldShowErrors,
-      ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       showOutdatedBrowserWarning,
       newNftAddedMessage,
@@ -440,43 +430,6 @@ export default class Home extends PureComponent {
 
     return (
       <MultipleNotifications>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          shouldShowErrors
-            ? Object.entries(errorsToShow).map(([errorId, error]) => {
-                return (
-                  <HomeNotification
-                    classNames={['home__error-message']}
-                    infoText={error.data.snapId}
-                    descriptionText={
-                      <>
-                        <Text
-                          variant={TextVariant.bodyMd}
-                          as="h5"
-                          color={TextColor.textAlternative}
-                        >
-                          {t('somethingWentWrong')}
-                        </Text>
-                        <Text
-                          color={TextColor.textAlternative}
-                          variant={TextVariant.bodySm}
-                          as="h6"
-                        >
-                          {t('snapError', [error.message, error.code])}
-                        </Text>
-                      </>
-                    }
-                    onIgnore={async () => {
-                      await removeSnapError(errorId);
-                    }}
-                    ignoreText="Dismiss"
-                    key="home-error-message"
-                  />
-                );
-              })
-            : null
-          ///: END:ONLY_INCLUDE_IN
-        }
         {newNftAddedMessage === 'success' ? (
           <ActionableMessage
             type="success"
@@ -761,14 +714,14 @@ export default class Home extends PureComponent {
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      ///: END:ONLY_INCLUDE_IN
-      announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
-      firstTimeFlowType,
       completedOnboarding,
       onboardedInThisUISession,
+      announcementsToShow,
+      firstTimeFlowType,
       newNetworkAddedConfigurationId,
+      ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       mmiPortfolioEnabled,
       ///: END:ONLY_INCLUDE_IN
@@ -781,6 +734,7 @@ export default class Home extends PureComponent {
     }
     const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     const showWhatsNew =
       completedOnboarding &&
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
@@ -789,7 +743,6 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IN
@@ -820,10 +773,10 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
-          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
           }
+          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}

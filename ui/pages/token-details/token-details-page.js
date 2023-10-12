@@ -46,7 +46,7 @@ export default function TokenDetailsPage() {
     isEqualCaseInsensitive(address, tokenAddress),
   );
 
-  const { tokensWithBalances } = useTokenTracker([token]);
+  const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
   const tokenBalance = tokensWithBalances[0]?.string;
   const tokenCurrencyBalance = useTokenFiatAmount(
     token?.address,

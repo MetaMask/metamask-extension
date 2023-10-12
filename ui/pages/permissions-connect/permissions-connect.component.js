@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { SubjectType } from '@metamask/subject-metadata-controller';
+import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IN
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
