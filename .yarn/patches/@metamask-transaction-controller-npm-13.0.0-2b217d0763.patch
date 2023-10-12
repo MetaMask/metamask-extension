@@ -32,13 +32,14 @@ index a45b30c1572f248d2c7ec6527b2dfa04f10ba735..00000000000000000000000000000000
 \ No newline at end of file
 diff --git a/dist/PendingTransactionTracker.d.ts b/dist/PendingTransactionTracker.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..5f0aec40c3f4ea95ac256150285e347942484530
+index 0000000000000000000000000000000000000000..2ecc06fd71216e453c596d656ac226a0d396bb1e
 --- /dev/null
 +++ b/dist/PendingTransactionTracker.d.ts
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,18 @@
 +/// <reference types="node" />
++import type EthQuery from '@metamask/eth-query';
++import type { BlockTracker } from '@metamask/network-controller';
 +import EventEmitter from 'events';
-+import { PollingBlockTracker as BlockTracker } from 'eth-block-tracker';
 +import type { TransactionMeta } from './types';
 +export declare class PendingTransactionTracker {
 +    #private;
@@ -47,17 +48,19 @@ index 0000000000000000000000000000000000000000..5f0aec40c3f4ea95ac256150285e3479
 +        blockTracker: BlockTracker;
 +        failTransaction: (txMeta: TransactionMeta, error: Error) => void;
 +        getChainId: () => string;
-+        getEthQuery: () => any;
++        getEthQuery: () => EthQuery;
 +        getTransactions: () => TransactionMeta[];
 +    });
 +    start(): void;
 +}
++//# sourceMappingURL=PendingTransactionTracker.d.ts.map
+\ No newline at end of file
 diff --git a/dist/PendingTransactionTracker.js b/dist/PendingTransactionTracker.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..e06b36dd9d5219159ad6f668af03b75c88942aca
+index 0000000000000000000000000000000000000000..fcb98e55bf710a3b6d632d033f4a6648fb421ec9
 --- /dev/null
 +++ b/dist/PendingTransactionTracker.js
-@@ -0,0 +1,142 @@
+@@ -0,0 +1,144 @@
 +"use strict";
 +var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
 +    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -85,8 +88,8 @@ index 0000000000000000000000000000000000000000..e06b36dd9d5219159ad6f668af03b75c
 +var _PendingTransactionTracker_instances, _PendingTransactionTracker_blockTracker, _PendingTransactionTracker_failTransaction, _PendingTransactionTracker_getChainId, _PendingTransactionTracker_getEthQuery, _PendingTransactionTracker_getTransactions, _PendingTransactionTracker_onLatestBlock, _PendingTransactionTracker_blockchainTransactionStateReconciler, _PendingTransactionTracker_checkTxReceiptStatusIsFailed;
 +Object.defineProperty(exports, "__esModule", { value: true });
 +exports.PendingTransactionTracker = void 0;
-+const events_1 = __importDefault(require("events"));
 +const controller_utils_1 = require("@metamask/controller-utils");
++const events_1 = __importDefault(require("events"));
 +const logger_1 = require("./logger");
 +const types_1 = require("./types");
 +class PendingTransactionTracker {
@@ -134,7 +137,7 @@ index 0000000000000000000000000000000000000000..e06b36dd9d5219159ad6f668af03b75c
 +    });
 +}, _PendingTransactionTracker_blockchainTransactionStateReconciler = function _PendingTransactionTracker_blockchainTransactionStateReconciler(meta) {
 +    return __awaiter(this, void 0, void 0, function* () {
-+        const { status, transactionHash, id, chainId, transaction: { to }, } = meta;
++        const { status, hash, id, chainId, txParams: { to }, } = meta;
 +        switch (status) {
 +            case types_1.TransactionStatus.confirmed:
 +                (0, logger_1.pendingTransactionsLogger)('Checking confirmed transaction', {
@@ -142,16 +145,18 @@ index 0000000000000000000000000000000000000000..e06b36dd9d5219159ad6f668af03b75c
 +                    chainId,
 +                    to,
 +                });
-+                const txReceipt = yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionReceipt', [transactionHash]);
++                const txReceipt = yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionReceipt', [hash]);
 +                if (!txReceipt) {
 +                    return [meta, false];
 +                }
-+                // Required when adding new transaction metadata properties
-+                // const txBlock = await query(this.#getEthQuery(), 'getBlockByHash', [
-+                //   txReceipt.blockHash,
-+                // ]);
++                const txBlock = yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getBlockByHash', [
++                    txReceipt.blockHash,
++                ]);
 +                meta.verifiedOnBlockchain = true;
-+                meta.transaction.gasUsed = txReceipt.gasUsed;
++                meta.txParams.gasUsed = txReceipt.gasUsed;
++                meta.txReceipt = txReceipt;
++                meta.baseFeePerGas = txBlock === null || txBlock === void 0 ? void 0 : txBlock.baseFeePerGas;
++                meta.blockTimestamp = txBlock === null || txBlock === void 0 ? void 0 : txBlock.timestamp;
 +                // According to the Web3 docs:
 +                // TRUE if the transaction was successful, FALSE if the EVM reverted the transaction.
 +                if (Number(txReceipt.status) === 0) {
@@ -167,10 +172,10 @@ index 0000000000000000000000000000000000000000..e06b36dd9d5219159ad6f668af03b75c
 +                    to,
 +                });
 +                const txObj = yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionByHash', [
-+                    transactionHash,
++                    hash,
 +                ]);
 +                if (!txObj) {
-+                    const receiptShowsFailedStatus = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTxReceiptStatusIsFailed).call(this, transactionHash);
++                    const receiptShowsFailedStatus = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTxReceiptStatusIsFailed).call(this, hash);
 +                    // Case the txObj is evaluated as false, a second check will
 +                    // determine if the tx failed or it is pending or confirmed
 +                    if (receiptShowsFailedStatus) {
@@ -202,10 +207,10 @@ index 0000000000000000000000000000000000000000..e06b36dd9d5219159ad6f668af03b75c
 +//# sourceMappingURL=PendingTransactionTracker.js.map
 \ No newline at end of file
 diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
-index d8fa996c21bc45df84598be8aa7f870910184244..94e6f45c53ef61338d07c59dc006f96f66e4aaa0 100644
+index d8fa996c21bc45df84598be8aa7f870910184244..8982abfea48c84b087d4b999b05052b68f5d846b 100644
 --- a/dist/TransactionController.d.ts
 +++ b/dist/TransactionController.d.ts
-@@ -4,9 +4,11 @@ import type { TypedTransaction } from '@ethereumjs/tx';
+@@ -4,10 +4,12 @@ import type { TypedTransaction } from '@ethereumjs/tx';
  import type { AddApprovalRequest } from '@metamask/approval-controller';
  import type { BaseConfig, BaseState, RestrictedControllerMessenger } from '@metamask/base-controller';
  import { BaseController } from '@metamask/base-controller';
@@ -213,32 +218,65 @@ index d8fa996c21bc45df84598be8aa7f870910184244..94e6f45c53ef61338d07c59dc006f96f
  import type { BlockTracker, NetworkState, Provider } from '@metamask/network-controller';
  import type { Hex } from '@metamask/utils';
  import { EventEmitter } from 'events';
+-import type { TransactionParams, TransactionMeta, TransactionReceipt, SendFlowHistoryEntry, WalletDevice } from './types';
 +import type { NonceLock } from 'nonce-tracker/dist/NonceTracker';
- import type { TransactionParams, TransactionMeta, TransactionReceipt, SendFlowHistoryEntry, WalletDevice } from './types';
++import type { TransactionParams, TransactionMeta, TransactionReceipt, SecurityProviderRequest, SendFlowHistoryEntry, WalletDevice } from './types';
  import { TransactionType } from './types';
  export declare const HARDFORK = Hardfork.London;
-@@ -101,6 +103,7 @@ export declare class TransactionController extends BaseController<TransactionCon
+ /**
+@@ -30,12 +32,10 @@ export interface FeeMarketEIP1559Values {
+  * @type TransactionConfig
+  *
+  * Transaction controller configuration
+- * @property interval - Polling interval used to fetch new currency rate
+  * @property provider - Provider used to create a new underlying EthQuery instance
+  * @property sign - Method used to sign transactions
+  */
+ export interface TransactionConfig extends BaseConfig {
+-    interval: number;
+     sign?: (txParams: TransactionParams, from: string) => Promise<any>;
+     txHistoryLimit: number;
+ }
+@@ -96,13 +96,18 @@ export declare class TransactionController extends BaseController<TransactionCon
+     private readonly nonceTracker;
+     private registry;
+     private readonly provider;
+-    private handle?;
++    private readonly handle?;
+     private readonly mutex;
      private readonly getNetworkState;
      private readonly getCurrentAccountEIP1559Compatibility;
      private readonly getCurrentNetworkEIP1559Compatibility;
 +    private readonly getGasFeeEstimates;
++    private readonly getPermittedAccounts;
++    private readonly getSelectedAddress;
      private readonly messagingSystem;
      private readonly incomingTransactionHelper;
++    private readonly securityProviderRequest?;
++    private readonly pendingTransactionTracker;
      private failTransaction;
-@@ -126,6 +129,7 @@ export declare class TransactionController extends BaseController<TransactionCon
+     private registryLookup;
+     /**
+@@ -126,7 +131,9 @@ export declare class TransactionController extends BaseController<TransactionCon
       * @param options.disableSendFlowHistory - Explicitly disable transaction metadata history.
       * @param options.getCurrentAccountEIP1559Compatibility - Whether or not the account supports EIP-1559.
       * @param options.getCurrentNetworkEIP1559Compatibility - Whether or not the network supports EIP-1559.
 +     * @param options.getGasFeeEstimates -
       * @param options.getNetworkState - Gets the state of the network controller.
++     * @param options.getPermittedAccounts - Get accounts that a given origin has permissions for.
       * @param options.getSelectedAddress - Gets the address of the currently selected account.
       * @param options.incomingTransactions - Configuration options for incoming transaction support.
-@@ -139,12 +143,13 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @param options.incomingTransactions.includeTokenTransfers - Whether or not to include ERC20 token transfers.
+@@ -136,16 +143,19 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @param options.messenger - The controller messenger.
+      * @param options.onNetworkStateChange - Allows subscribing to network controller state changes.
+      * @param options.provider - The provider used to create the underlying EthQuery instance.
++     * @param options.securityProviderRequest - A function for verifying a transaction, whether it is malicious or not.
       * @param config - Initial options used to configure this controller.
       * @param state - Initial state to set on this controller.
       */
 -    constructor({ blockTracker, disableHistory, disableSendFlowHistory, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getNetworkState, getSelectedAddress, incomingTransactions, messenger, onNetworkStateChange, provider, }: {
-+    constructor({ blockTracker, disableHistory, disableSendFlowHistory, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getGasFeeEstimates, getNetworkState, getSelectedAddress, incomingTransactions, messenger, onNetworkStateChange, provider, }: {
++    constructor({ blockTracker, disableHistory, disableSendFlowHistory, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getGasFeeEstimates, getNetworkState, getPermittedAccounts, getSelectedAddress, incomingTransactions, messenger, onNetworkStateChange, provider, securityProviderRequest, }: {
          blockTracker: BlockTracker;
          disableHistory: boolean;
          disableSendFlowHistory: boolean;
@@ -246,9 +284,31 @@ index d8fa996c21bc45df84598be8aa7f870910184244..94e6f45c53ef61338d07c59dc006f96f
          getCurrentNetworkEIP1559Compatibility: () => Promise<boolean>;
 +        getGasFeeEstimates: () => Promise<GasFeeState>;
          getNetworkState: () => NetworkState;
++        getPermittedAccounts: (origin?: string) => Promise<string[]>;
          getSelectedAddress: () => string;
          incomingTransactions: {
-@@ -183,16 +188,23 @@ export declare class TransactionController extends BaseController<TransactionCon
+             includeTokenTransfers?: boolean;
+@@ -156,13 +166,8 @@ export declare class TransactionController extends BaseController<TransactionCon
+         messenger: TransactionControllerMessenger;
+         onNetworkStateChange: (listener: (state: NetworkState) => void) => void;
+         provider: Provider;
++        securityProviderRequest?: SecurityProviderRequest;
+     }, config?: Partial<TransactionConfig>, state?: Partial<TransactionState>);
+-    /**
+-     * Starts a new polling interval.
+-     *
+-     * @param interval - The polling interval used to fetch new transaction statuses.
+-     */
+-    poll(interval?: number): Promise<void>;
+     /**
+      * Handle new method data request.
+      *
+@@ -179,20 +184,29 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @param opts - Additional options to control how the transaction is added.
+      * @param opts.actionId - Unique ID to prevent duplicate requests.
+      * @param opts.deviceConfirmedOn - An enum to indicate what device confirmed the transaction.
++     * @param opts.method - RPC method that requested the transaction.
+      * @param opts.origin - The origin of the transaction request, such as a dApp hostname.
       * @param opts.requireApproval - Whether the transaction requires approval by the user, defaults to true unless explicitly disabled.
       * @param opts.securityAlertResponse - Response from security validator.
       * @param opts.sendFlowHistory - The sendFlowHistory entries to add.
@@ -259,9 +319,10 @@ index d8fa996c21bc45df84598be8aa7f870910184244..94e6f45c53ef61338d07c59dc006f96f
       * @returns Object containing a promise resolving to the transaction hash if approved.
       */
 -    addTransaction(txParams: TransactionParams, { actionId, deviceConfirmedOn, origin, requireApproval, securityAlertResponse, sendFlowHistory, type, }?: {
-+    addTransaction(txParams: TransactionParams, { actionId, deviceConfirmedOn, origin, requireApproval, securityAlertResponse, sendFlowHistory, swaps, type, }?: {
++    addTransaction(txParams: TransactionParams, { actionId, deviceConfirmedOn, method, origin, requireApproval, securityAlertResponse, sendFlowHistory, swaps, type, }?: {
          actionId?: string;
          deviceConfirmedOn?: WalletDevice;
++        method?: string;
          origin?: string;
          requireApproval?: boolean | undefined;
          securityAlertResponse?: Record<string, unknown>;
@@ -273,7 +334,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..94e6f45c53ef61338d07c59dc006f96f
          type?: TransactionType;
      }): Promise<Result>;
      startIncomingTransactionPolling(): void;
-@@ -235,12 +247,15 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -235,18 +249,16 @@ export declare class TransactionController extends BaseController<TransactionCon
       */
      estimateGas(transaction: TransactionParams): Promise<{
          gas: string;
@@ -292,9 +353,47 @@ index d8fa996c21bc45df84598be8aa7f870910184244..94e6f45c53ef61338d07c59dc006f96f
 +            };
 +        } | undefined;
      }>;
+-    /**
+-     * Check the status of submitted transactions on the network to determine whether they have
+-     * been included in a block. Any that have been included in a block are marked as confirmed.
+-     */
+-    queryTransactionStatuses(): Promise<void>;
      /**
-      * Check the status of submitted transactions on the network to determine whether they have
-@@ -431,6 +446,26 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * Updates an existing transaction in state.
+      *
+@@ -359,23 +371,6 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @returns Whether the transaction is in a final state.
+      */
+     private isLocalFinalState;
+-    /**
+-     * Method to verify the state of a transaction using the Blockchain as a source of truth.
+-     *
+-     * @param meta - The local transaction to verify on the blockchain.
+-     * @returns A tuple containing the updated transaction, and whether or not an update was required.
+-     */
+-    private blockchainTransactionStateReconciler;
+-    /**
+-     * Method to check if a tx has failed according to their receipt
+-     * According to the Web3 docs:
+-     * TRUE if the transaction was successful, FALSE if the EVM reverted the transaction.
+-     * The receipt is not available for pending transactions and returns null.
+-     *
+-     * @param txHash - The transaction hash.
+-     * @returns Whether the transaction has failed.
+-     */
+-    private checkTxReceiptStatusIsFailed;
+     private requestApproval;
+     private getTransaction;
+     private getApprovalId;
+@@ -394,6 +389,7 @@ export declare class TransactionController extends BaseController<TransactionCon
+     private getCommonConfiguration;
+     private onIncomingTransactions;
+     private onUpdatedLastFetchedBlockNumbers;
++    private onPendingTransactionsUpdate;
+     private generateDappSuggestedGasFees;
+     /**
+      * Validates and adds external provided transaction to state.
+@@ -431,6 +427,26 @@ export declare class TransactionController extends BaseController<TransactionCon
       */
      private updateTransactionMetaRSV;
      private getEIP1559Compatibility;
@@ -331,10 +430,10 @@ index 083b07c332887c5dc2bca0074f22794962934600..00000000000000000000000000000000
 -{"version":3,"file":"TransactionController.d.ts","sourceRoot":"","sources":["../src/TransactionController.ts"],"names":[],"mappings":"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"}
 \ No newline at end of file
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec10ad93974 100644
+index bfa28719cf6450321d54123b47563ae0c102f1e4..dd21f2c4558663f446c73351214957add5bf1786 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
-@@ -28,11 +28,15 @@ const nonce_tracker_1 = __importDefault(require("nonce-tracker"));
+@@ -28,11 +28,17 @@ const nonce_tracker_1 = __importDefault(require("nonce-tracker"));
  const uuid_1 = require("uuid");
  const EtherscanRemoteTransactionSource_1 = require("./EtherscanRemoteTransactionSource");
  const external_transactions_1 = require("./external-transactions");
@@ -343,6 +442,8 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
  const history_1 = require("./history");
  const IncomingTransactionHelper_1 = require("./IncomingTransactionHelper");
 +const logger_1 = require("./logger");
++const logger_2 = require("./logger");
++const PendingTransactionTracker_1 = require("./PendingTransactionTracker");
  const transaction_type_1 = require("./transaction-type");
  const types_1 = require("./types");
  const utils_1 = require("./utils");
@@ -350,33 +451,76 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
  exports.HARDFORK = common_1.Hardfork.London;
  /**
   * Multiplier used to determine a transaction's increased gas fee during cancellation
-@@ -59,6 +63,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -59,7 +65,9 @@ class TransactionController extends base_controller_1.BaseController {
       * @param options.disableSendFlowHistory - Explicitly disable transaction metadata history.
       * @param options.getCurrentAccountEIP1559Compatibility - Whether or not the account supports EIP-1559.
       * @param options.getCurrentNetworkEIP1559Compatibility - Whether or not the network supports EIP-1559.
 +     * @param options.getGasFeeEstimates -
       * @param options.getNetworkState - Gets the state of the network controller.
++     * @param options.getPermittedAccounts - Get accounts that a given origin has permissions for.
       * @param options.getSelectedAddress - Gets the address of the currently selected account.
       * @param options.incomingTransactions - Configuration options for incoming transaction support.
-@@ -72,7 +77,7 @@ class TransactionController extends base_controller_1.BaseController {
+      * @param options.incomingTransactions.includeTokenTransfers - Whether or not to include ERC20 token transfers.
+@@ -69,10 +77,11 @@ class TransactionController extends base_controller_1.BaseController {
+      * @param options.messenger - The controller messenger.
+      * @param options.onNetworkStateChange - Allows subscribing to network controller state changes.
+      * @param options.provider - The provider used to create the underlying EthQuery instance.
++     * @param options.securityProviderRequest - A function for verifying a transaction, whether it is malicious or not.
       * @param config - Initial options used to configure this controller.
       * @param state - Initial state to set on this controller.
       */
 -    constructor({ blockTracker, disableHistory, disableSendFlowHistory, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getNetworkState, getSelectedAddress, incomingTransactions = {}, messenger, onNetworkStateChange, provider, }, config, state) {
-+    constructor({ blockTracker, disableHistory, disableSendFlowHistory, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getGasFeeEstimates, getNetworkState, getSelectedAddress, incomingTransactions = {}, messenger, onNetworkStateChange, provider, }, config, state) {
++    constructor({ blockTracker, disableHistory, disableSendFlowHistory, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getGasFeeEstimates, getNetworkState, getPermittedAccounts, getSelectedAddress, incomingTransactions = {}, messenger, onNetworkStateChange, provider, securityProviderRequest, }, config, state) {
          super(config, state);
          this.mutex = new async_mutex_1.Mutex();
          /**
-@@ -104,6 +109,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -84,7 +93,6 @@ class TransactionController extends base_controller_1.BaseController {
+          */
+         this.name = 'TransactionController';
+         this.defaultConfig = {
+-            interval: 15000,
+             txHistoryLimit: 40,
+         };
+         this.defaultState = {
+@@ -96,6 +104,7 @@ class TransactionController extends base_controller_1.BaseController {
+         this.provider = provider;
+         this.messagingSystem = messenger;
+         this.getNetworkState = getNetworkState;
++        // @ts-expect-error TODO: Provider type alignment
+         this.ethQuery = new eth_query_1.default(provider);
+         this.isSendFlowHistoryDisabled = disableSendFlowHistory !== null && disableSendFlowHistory !== void 0 ? disableSendFlowHistory : false;
+         this.isHistoryDisabled = disableHistory !== null && disableHistory !== void 0 ? disableHistory : false;
+@@ -104,6 +113,10 @@ class TransactionController extends base_controller_1.BaseController {
              getCurrentAccountEIP1559Compatibility;
          this.getCurrentNetworkEIP1559Compatibility =
              getCurrentNetworkEIP1559Compatibility;
 +        this.getGasFeeEstimates = getGasFeeEstimates;
++        this.getPermittedAccounts = getPermittedAccounts;
++        this.getSelectedAddress = getSelectedAddress;
++        this.securityProviderRequest = securityProviderRequest;
          this.nonceTracker = new nonce_tracker_1.default({
              provider,
              blockTracker,
-@@ -132,7 +138,14 @@ class TransactionController extends base_controller_1.BaseController {
-         this.poll();
+@@ -125,14 +138,31 @@ class TransactionController extends base_controller_1.BaseController {
+         });
+         this.incomingTransactionHelper.hub.on('transactions', this.onIncomingTransactions.bind(this));
+         this.incomingTransactionHelper.hub.on('updatedLastFetchedBlockNumbers', this.onUpdatedLastFetchedBlockNumbers.bind(this));
++        this.pendingTransactionTracker = new PendingTransactionTracker_1.PendingTransactionTracker({
++            blockTracker,
++            failTransaction: this.failTransaction.bind(this),
++            getChainId: this.getChainId.bind(this),
++            getEthQuery: () => this.ethQuery,
++            getTransactions: () => this.state.transactions,
++        });
++        this.pendingTransactionTracker.hub.on('transactions', this.onPendingTransactionsUpdate.bind(this));
++        this.pendingTransactionTracker.hub.on('transaction-confirmed', (transactionMeta) => this.hub.emit(`${transactionMeta.id}:confirmed`, transactionMeta));
+         onNetworkStateChange(() => {
++            // @ts-expect-error TODO: Provider type alignment
+             this.ethQuery = new eth_query_1.default(this.provider);
+             this.registry = new eth_method_registry_1.default({ provider: this.provider });
+         });
+-        this.poll();
++        this.pendingTransactionTracker.start();
      }
      failTransaction(transactionMeta, error) {
 -        const newTransactionMeta = Object.assign(Object.assign({}, transactionMeta), { error, status: types_1.TransactionStatus.failed });
@@ -391,7 +535,34 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
          this.updateTransaction(newTransactionMeta, 'TransactionController#failTransaction - Add error message and set status to failed');
          this.hub.emit(`${transactionMeta.id}:finished`, newTransactionMeta);
      }
-@@ -197,21 +210,24 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -143,21 +173,6 @@ class TransactionController extends base_controller_1.BaseController {
+             return { registryMethod, parsedRegistryMethod };
+         });
+     }
+-    /**
+-     * Starts a new polling interval.
+-     *
+-     * @param interval - The polling interval used to fetch new transaction statuses.
+-     */
+-    poll(interval) {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            interval && this.configure({ interval }, false, false);
+-            this.handle && clearTimeout(this.handle);
+-            yield (0, controller_utils_1.safelyExecute)(() => this.queryTransactionStatuses());
+-            this.handle = setTimeout(() => {
+-                this.poll(this.config.interval);
+-            }, this.config.interval);
+-        });
+-    }
+     /**
+      * Handle new method data request.
+      *
+@@ -193,25 +208,32 @@ class TransactionController extends base_controller_1.BaseController {
+      * @param opts - Additional options to control how the transaction is added.
+      * @param opts.actionId - Unique ID to prevent duplicate requests.
+      * @param opts.deviceConfirmedOn - An enum to indicate what device confirmed the transaction.
++     * @param opts.method - RPC method that requested the transaction.
+      * @param opts.origin - The origin of the transaction request, such as a dApp hostname.
       * @param opts.requireApproval - Whether the transaction requires approval by the user, defaults to true unless explicitly disabled.
       * @param opts.securityAlertResponse - Response from security validator.
       * @param opts.sendFlowHistory - The sendFlowHistory entries to add.
@@ -402,7 +573,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
       * @returns Object containing a promise resolving to the transaction hash if approved.
       */
 -    addTransaction(txParams, { actionId, deviceConfirmedOn, origin, requireApproval, securityAlertResponse, sendFlowHistory, type, } = {}) {
-+    addTransaction(txParams, { actionId, deviceConfirmedOn, origin, requireApproval, securityAlertResponse, sendFlowHistory, swaps, type, } = {}) {
++    addTransaction(txParams, { actionId, deviceConfirmedOn, method, origin, requireApproval, securityAlertResponse, sendFlowHistory, swaps, type, } = {}) {
          return __awaiter(this, void 0, void 0, function* () {
              const chainId = this.getChainId();
              const { transactions } = this.state;
@@ -410,6 +581,9 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
              const isEIP1559Compatible = yield this.getEIP1559Compatibility();
 -            (0, utils_1.validateTxParams)(txParams, isEIP1559Compatible);
 +            (0, validation_1.validateTxParams)(txParams, isEIP1559Compatible);
++            if (origin) {
++                yield (0, validation_1.validateTransactionOrigin)(yield this.getPermittedAccounts(origin), this.getSelectedAddress(), txParams.from, origin);
++            }
              const dappSuggestedGasFees = this.generateDappSuggestedGasFees(txParams, origin);
              const transactionType = type !== null && type !== void 0 ? type : (yield (0, transaction_type_1.determineTransactionType)(txParams, this.ethQuery)).type;
              const existingTransactionMeta = this.getTransactionWithActionId(actionId);
@@ -419,7 +593,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
                  // Add actionId to txMeta to check if same actionId is seen again
                  actionId,
                  chainId,
-@@ -227,15 +243,9 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -227,18 +249,17 @@ class TransactionController extends base_controller_1.BaseController {
                  verifiedOnBlockchain: false,
                  type: transactionType,
              };
@@ -438,7 +612,15 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
              }
              // Checks if a transaction already exists with a given actionId
              if (!existingTransactionMeta) {
-@@ -287,6 +297,14 @@ class TransactionController extends base_controller_1.BaseController {
++                // Set security provider response
++                if (method && this.securityProviderRequest) {
++                    const securityProviderResponse = yield this.securityProviderRequest(transactionMeta, method);
++                    transactionMeta.securityProviderResponse = securityProviderResponse;
++                }
+                 if (!this.isSendFlowHistoryDisabled) {
+                     transactionMeta.sendFlowHistory = sendFlowHistory !== null && sendFlowHistory !== void 0 ? sendFlowHistory : [];
+                 }
+@@ -287,6 +308,14 @@ class TransactionController extends base_controller_1.BaseController {
                  console.error('Error during persisted transaction approval', error);
              });
          }
@@ -453,7 +635,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
      }
      /**
       * Attempts to cancel a transaction based on its ID by setting its status to "rejected"
-@@ -432,67 +450,12 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -432,93 +461,12 @@ class TransactionController extends base_controller_1.BaseController {
       */
      estimateGas(transaction) {
          return __awaiter(this, void 0, void 0, function* () {
@@ -518,6 +700,32 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
 -                };
 -            }
 -            return { gas: (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN)), gasPrice, estimateGasError };
+-        });
+-    }
+-    /**
+-     * Check the status of submitted transactions on the network to determine whether they have
+-     * been included in a block. Any that have been included in a block are marked as confirmed.
+-     */
+-    queryTransactionStatuses() {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            const { transactions } = this.state;
+-            const currentChainId = this.getChainId();
+-            let gotUpdates = false;
+-            yield (0, controller_utils_1.safelyExecute)(() => Promise.all(transactions.map((meta, index) => __awaiter(this, void 0, void 0, function* () {
+-                if (!meta.verifiedOnBlockchain && meta.chainId === currentChainId) {
+-                    const [reconciledTx, updateRequired] = yield this.blockchainTransactionStateReconciler(meta);
+-                    if (updateRequired) {
+-                        transactions[index] = reconciledTx;
+-                        gotUpdates = updateRequired;
+-                    }
+-                }
+-            }))));
+-            /* istanbul ignore else */
+-            if (gotUpdates) {
+-                this.update({
+-                    transactions: this.trimTransactionsForState(transactions),
+-                });
+-            }
 +            const { estimatedGas: gas, estimateGasError, simulationFails, } = yield (0, gas_1.estimateGas)(transaction, this.ethQuery);
 +            return {
 +                gas,
@@ -527,7 +735,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
          });
      }
      /**
-@@ -530,7 +493,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -530,7 +478,7 @@ class TransactionController extends base_controller_1.BaseController {
      updateTransaction(transactionMeta, note) {
          const { transactions } = this.state;
          transactionMeta.txParams = (0, utils_1.normalizeTxParams)(transactionMeta.txParams);
@@ -536,7 +744,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
          if (!this.isHistoryDisabled) {
              (0, history_1.updateTransactionHistory)(transactionMeta, note);
          }
-@@ -702,7 +665,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -702,7 +650,7 @@ class TransactionController extends base_controller_1.BaseController {
                      if (!isTxCompleted) {
                          if (error.code === rpc_errors_1.errorCodes.provider.userRejectedRequest) {
                              this.cancelTransaction(transactionId);
@@ -545,7 +753,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
                          }
                          else {
                              this.failTransaction(meta, error);
-@@ -739,6 +702,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -739,6 +687,7 @@ class TransactionController extends base_controller_1.BaseController {
       */
      approveTransaction(transactionId) {
          return __awaiter(this, void 0, void 0, function* () {
@@ -553,7 +761,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
              const { transactions } = this.state;
              const releaseLock = yield this.mutex.acquire();
              const chainId = this.getChainId();
-@@ -771,13 +735,9 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -771,13 +720,9 @@ class TransactionController extends base_controller_1.BaseController {
                  const baseTxParams = Object.assign(Object.assign({}, transactionMeta.txParams), { gasLimit: transactionMeta.txParams.gas });
                  const isEIP1559 = (0, utils_1.isEIP1559Transaction)(transactionMeta.txParams);
                  const txParams = isEIP1559
@@ -568,7 +776,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
                  const unsignedEthTx = this.prepareUnsignedEthTx(txParams);
                  const signedTx = yield this.sign(unsignedEthTx, from);
                  yield this.updateTransactionMetaRSV(transactionMeta, signedTx);
-@@ -788,6 +748,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -788,6 +733,7 @@ class TransactionController extends base_controller_1.BaseController {
                  this.updateTransaction(transactionMeta, 'TransactionController#approveTransaction - RawTransaction added');
                  const hash = yield (0, controller_utils_1.query)(this.ethQuery, 'sendRawTransaction', [rawTx]);
                  transactionMeta.hash = hash;
@@ -576,7 +784,104 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d9c7873673dabd0c21a533f6a1649ec1
                  transactionMeta.status = types_1.TransactionStatus.submitted;
                  transactionMeta.submittedTime = new Date().getTime();
                  this.updateTransaction(transactionMeta, 'TransactionController#approveTransaction - Transaction submitted');
-@@ -1182,6 +1143,135 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -884,85 +830,6 @@ class TransactionController extends base_controller_1.BaseController {
+             types_1.TransactionStatus.submitted,
+         ].includes(status);
+     }
+-    /**
+-     * Method to verify the state of a transaction using the Blockchain as a source of truth.
+-     *
+-     * @param meta - The local transaction to verify on the blockchain.
+-     * @returns A tuple containing the updated transaction, and whether or not an update was required.
+-     */
+-    blockchainTransactionStateReconciler(meta) {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            const { status, hash } = meta;
+-            switch (status) {
+-                case types_1.TransactionStatus.confirmed:
+-                    const txReceipt = yield (0, controller_utils_1.query)(this.ethQuery, 'getTransactionReceipt', [
+-                        hash,
+-                    ]);
+-                    if (!txReceipt) {
+-                        return [meta, false];
+-                    }
+-                    const txBlock = yield (0, controller_utils_1.query)(this.ethQuery, 'getBlockByHash', [
+-                        txReceipt.blockHash,
+-                    ]);
+-                    meta.verifiedOnBlockchain = true;
+-                    meta.txParams.gasUsed = txReceipt.gasUsed;
+-                    meta.txReceipt = txReceipt;
+-                    meta.baseFeePerGas = txBlock === null || txBlock === void 0 ? void 0 : txBlock.baseFeePerGas;
+-                    meta.blockTimestamp = txBlock === null || txBlock === void 0 ? void 0 : txBlock.timestamp;
+-                    // According to the Web3 docs:
+-                    // TRUE if the transaction was successful, FALSE if the EVM reverted the transaction.
+-                    if (Number(txReceipt.status) === 0) {
+-                        const error = new Error('Transaction failed. The transaction was reversed');
+-                        this.failTransaction(meta, error);
+-                        return [meta, false];
+-                    }
+-                    return [meta, true];
+-                case types_1.TransactionStatus.submitted:
+-                    const txObj = yield (0, controller_utils_1.query)(this.ethQuery, 'getTransactionByHash', [
+-                        hash,
+-                    ]);
+-                    if (!txObj) {
+-                        const receiptShowsFailedStatus = yield this.checkTxReceiptStatusIsFailed(hash);
+-                        // Case the txObj is evaluated as false, a second check will
+-                        // determine if the tx failed or it is pending or confirmed
+-                        if (receiptShowsFailedStatus) {
+-                            const error = new Error('Transaction failed. The transaction was dropped or replaced by a new one');
+-                            this.failTransaction(meta, error);
+-                        }
+-                    }
+-                    /* istanbul ignore next */
+-                    if (txObj === null || txObj === void 0 ? void 0 : txObj.blockNumber) {
+-                        meta.status = types_1.TransactionStatus.confirmed;
+-                        this.hub.emit(`${meta.id}:confirmed`, meta);
+-                        return [meta, true];
+-                    }
+-                    return [meta, false];
+-                default:
+-                    return [meta, false];
+-            }
+-        });
+-    }
+-    /**
+-     * Method to check if a tx has failed according to their receipt
+-     * According to the Web3 docs:
+-     * TRUE if the transaction was successful, FALSE if the EVM reverted the transaction.
+-     * The receipt is not available for pending transactions and returns null.
+-     *
+-     * @param txHash - The transaction hash.
+-     * @returns Whether the transaction has failed.
+-     */
+-    checkTxReceiptStatusIsFailed(txHash) {
+-        return __awaiter(this, void 0, void 0, function* () {
+-            const txReceipt = yield (0, controller_utils_1.query)(this.ethQuery, 'getTransactionReceipt', [
+-                txHash,
+-            ]);
+-            if (!txReceipt) {
+-                // Transaction is pending
+-                return false;
+-            }
+-            return Number(txReceipt.status) === 0;
+-        });
+-    }
+     requestApproval(txMeta, { shouldShowRequest }) {
+         return __awaiter(this, void 0, void 0, function* () {
+             const id = this.getApprovalId(txMeta);
+@@ -1043,6 +910,10 @@ class TransactionController extends base_controller_1.BaseController {
+         this.update({ lastFetchedBlockNumbers });
+         this.hub.emit('incomingTransactionBlock', blockNumber);
+     }
++    onPendingTransactionsUpdate(transactions) {
++        (0, logger_2.pendingTransactionsLogger)('Updated pending transactions');
++        this.update({ transactions: this.trimTransactionsForState(transactions) });
++    }
+     generateDappSuggestedGasFees(txParams, origin) {
+         if (!origin || origin === controller_utils_1.ORIGIN_METAMASK) {
+             return undefined;
+@@ -1182,6 +1053,135 @@ class TransactionController extends base_controller_1.BaseController {
              return (currentNetworkIsEIP1559Compatible && currentAccountIsEIP1559Compatible);
          });
      }
@@ -1183,6 +1488,18 @@ index c4fa911f8d6b99b6c5c088a4793f3dbbfc467ba1..00000000000000000000000000000000
 @@ -1 +0,0 @@
 -{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;AAAA,0DAAwC;AAExC,iCAA+C;AAAtC,6GAAA,oBAAoB,OAAA;AAC7B,0CAAwB","sourcesContent":["export * from './TransactionController';\nexport type { EtherscanTransactionMeta } from './etherscan';\nexport { isEIP1559Transaction } from './utils';\nexport * from './types';\n"]}
 \ No newline at end of file
+diff --git a/dist/logger.d.ts b/dist/logger.d.ts
+index 43ad63fcff9ebdc96494d6afc63c625dc1db1e9e..bb2c083f87f1f17a64441b96ee5775a2e24d0f4b 100644
+--- a/dist/logger.d.ts
++++ b/dist/logger.d.ts
+@@ -2,5 +2,6 @@
+ import { createModuleLogger } from '@metamask/utils';
+ export declare const projectLogger: import("debug").Debugger;
+ export declare const incomingTransactionsLogger: import("debug").Debugger;
++export declare const pendingTransactionsLogger: import("debug").Debugger;
+ export { createModuleLogger };
+ //# sourceMappingURL=logger.d.ts.map
+\ No newline at end of file
 diff --git a/dist/logger.d.ts.map b/dist/logger.d.ts.map
 deleted file mode 100644
 index bb648efa761c202101a89b638d574fb8c68fa019..0000000000000000000000000000000000000000
@@ -1190,6 +1507,23 @@ index bb648efa761c202101a89b638d574fb8c68fa019..00000000000000000000000000000000
 +++ /dev/null
 @@ -1 +0,0 @@
 -{"version":3,"file":"logger.d.ts","sourceRoot":"","sources":["../src/logger.ts"],"names":[],"mappings":";AAAA,OAAO,EAAuB,kBAAkB,EAAE,MAAM,iBAAiB,CAAC;AAE1E,eAAO,MAAM,aAAa,0BAAgD,CAAC;AAE3E,eAAO,MAAM,0BAA0B,0BAGtC,CAAC;AAEF,OAAO,EAAE,kBAAkB,EAAE,CAAC"}
+\ No newline at end of file
+diff --git a/dist/logger.js b/dist/logger.js
+index 69ce8ecbe3d5e6f6f0887be4d590f7d9be2d82ec..d21f7ed9bb0dfaa8a88346e2127a949216ce7af0 100644
+--- a/dist/logger.js
++++ b/dist/logger.js
+@@ -1,8 +1,10 @@
+ "use strict";
++/* istanbul ignore file */
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.createModuleLogger = exports.incomingTransactionsLogger = exports.projectLogger = void 0;
++exports.createModuleLogger = exports.pendingTransactionsLogger = exports.incomingTransactionsLogger = exports.projectLogger = void 0;
+ const utils_1 = require("@metamask/utils");
+ Object.defineProperty(exports, "createModuleLogger", { enumerable: true, get: function () { return utils_1.createModuleLogger; } });
+ exports.projectLogger = (0, utils_1.createProjectLogger)('transaction-controller');
+ exports.incomingTransactionsLogger = (0, utils_1.createModuleLogger)(exports.projectLogger, 'incoming-transactions');
++exports.pendingTransactionsLogger = (0, utils_1.createModuleLogger)(exports.projectLogger, 'pending-transactions');
+ //# sourceMappingURL=logger.js.map
 \ No newline at end of file
 diff --git a/dist/logger.js.map b/dist/logger.js.map
 deleted file mode 100644
@@ -1216,10 +1550,19 @@ index fc7d6688b16bf302ad949725f78e6b505da8a266..00000000000000000000000000000000
 -{"version":3,"file":"transaction-type.js","sourceRoot":"","sources":["../src/transaction-type.ts"],"names":[],"mappings":"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","sourcesContent":["import type { TransactionDescription } from '@ethersproject/abi';\nimport { Interface } from '@ethersproject/abi';\nimport { query } from '@metamask/controller-utils';\nimport type EthQuery from '@metamask/eth-query';\nimport { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';\n\nimport type { InferTransactionTypeResult, TransactionParams } from './types';\nimport { TransactionType } from './types';\n\nexport const ESTIMATE_GAS_ERROR = 'eth_estimateGas rpc method error';\n\nconst ERC20Interface = new Interface(abiERC20);\nconst ERC721Interface = new Interface(abiERC721);\nconst ERC1155Interface = new Interface(abiERC1155);\n\n/**\n * Determines the type of the transaction by analyzing the txParams.\n * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these\n * represent specific events that we specify manually at transaction creation.\n *\n * @param txParams - Parameters for the transaction.\n * @param ethQuery - EthQuery instance.\n * @returns A object with the transaction type and the contract code response in Hex.\n */\nexport async function determineTransactionType(\n  txParams: TransactionParams,\n  ethQuery: EthQuery,\n): Promise<InferTransactionTypeResult> {\n  const { data, to } = txParams;\n  const name = parseStandardTokenTransactionData(data)?.name;\n\n  if (data && !to) {\n    return { type: TransactionType.deployContract, getCodeResponse: undefined };\n  }\n\n  const { contractCode: resultCode, isContractAddress } =\n    await readAddressAsContract(ethQuery, to);\n\n  if (!isContractAddress) {\n    return { type: TransactionType.simpleSend, getCodeResponse: resultCode };\n  }\n\n  const hasValue = txParams.value && Number(txParams.value) !== 0;\n\n  const tokenMethodName = [\n    TransactionType.tokenMethodApprove,\n    TransactionType.tokenMethodSetApprovalForAll,\n    TransactionType.tokenMethodTransfer,\n    TransactionType.tokenMethodTransferFrom,\n    TransactionType.tokenMethodSafeTransferFrom,\n  ].find((methodName) => methodName.toLowerCase() === name?.toLowerCase());\n\n  if (data && tokenMethodName && !hasValue) {\n    return { type: tokenMethodName, getCodeResponse: resultCode };\n  }\n\n  return {\n    type: TransactionType.contractInteraction,\n    getCodeResponse: resultCode,\n  };\n}\n\n/**\n * Attempts to decode transaction data using ABIs for three different token standards: ERC20, ERC721, ERC1155.\n * The data will decode correctly if the transaction is an interaction with a contract that matches one of these\n * contract standards\n *\n * @param data - Encoded transaction data.\n * @returns A representation of an ethereum contract call.\n */\nfunction parseStandardTokenTransactionData(\n  data?: string,\n): TransactionDescription | undefined {\n  if (!data) {\n    return undefined;\n  }\n\n  try {\n    return ERC20Interface.parseTransaction({ data });\n  } catch {\n    // ignore and next try to parse with erc721 ABI\n  }\n\n  try {\n    return ERC721Interface.parseTransaction({ data });\n  } catch {\n    // ignore and next try to parse with erc1155 ABI\n  }\n\n  try {\n    return ERC1155Interface.parseTransaction({ data });\n  } catch {\n    // ignore and return undefined\n  }\n\n  return undefined;\n}\n\n/**\n * Reads an Ethereum address and determines if it is a contract address.\n *\n * @param ethQuery - The Ethereum query object used to interact with the Ethereum blockchain.\n * @param address - The Ethereum address.\n * @returns An object containing the contract code and a boolean indicating if it is a contract address.\n */\nasync function readAddressAsContract(\n  ethQuery: EthQuery,\n  address?: string,\n): Promise<{\n  contractCode: string | null;\n  isContractAddress: boolean;\n}> {\n  let contractCode;\n  try {\n    contractCode = await query(ethQuery, 'getCode', [address]);\n  } catch (e) {\n    contractCode = null;\n  }\n\n  const isContractAddress = contractCode\n    ? contractCode !== '0x' && contractCode !== '0x0'\n    : false;\n  return { contractCode, isContractAddress };\n}\n"]}
 \ No newline at end of file
 diff --git a/dist/types.d.ts b/dist/types.d.ts
-index fb94e7b8f531f2f0c86f44a9d678447d7205ade8..d256bfa356a91b0b8f3933e48e64deb836fe816c 100644
+index fb94e7b8f531f2f0c86f44a9d678447d7205ade8..d2c8385c144770d8dc10db76fa73f81d79eb6888 100644
 --- a/dist/types.d.ts
 +++ b/dist/types.d.ts
-@@ -116,6 +116,14 @@ declare type TransactionMetaBase = {
+@@ -111,11 +111,23 @@ declare type TransactionMetaBase = {
+      * Response from security validator.
+      */
+     securityAlertResponse?: Record<string, unknown>;
++    /**
++     * Response from security provider.
++     */
++    securityProviderResponse?: Record<string, any>;
+     /**
+      * An array of entries that describe the user's journey through the send flow.
       * This is purely attached to state logs for troubleshooting and support.
       */
      sendFlowHistory?: SendFlowHistoryEntry[];
@@ -1234,7 +1577,7 @@ index fb94e7b8f531f2f0c86f44a9d678447d7205ade8..d256bfa356a91b0b8f3933e48e64deb8
      /**
       * The time the transaction was submitted to the network, in Unix epoch time (ms).
       */
-@@ -155,7 +163,7 @@ declare type TransactionMetaBase = {
+@@ -155,7 +167,7 @@ declare type TransactionMetaBase = {
      /**
       * Estimate level user selected.
       */
@@ -1243,10 +1586,14 @@ index fb94e7b8f531f2f0c86f44a9d678447d7205ade8..d256bfa356a91b0b8f3933e48e64deb8
      /**
       * The transaction's 'v' value as a hex string.
       */
-@@ -499,5 +507,37 @@ export declare type InferTransactionTypeResult = {
+@@ -499,5 +511,41 @@ export declare type InferTransactionTypeResult = {
       */
      type: TransactionType;
  };
++/**
++ * A function for verifying a transaction, whether it is malicious or not
++ */
++export declare type SecurityProviderRequest = (requestData: TransactionMeta, messageType: string) => Promise<any>;
 +/**
 + * In EIP-2718 typed transaction envelopes were specified, with the very first
 + * typed envelope being 'legacy' and describing the shape of the base
@@ -1454,11 +1801,21 @@ index 013009a958e3d81146cdad86460848b4f2dc74de..00000000000000000000000000000000
 \ No newline at end of file
 diff --git a/dist/validation.d.ts b/dist/validation.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..7f69a1f295158bea13187f73abb80d7d9344527b
+index 0000000000000000000000000000000000000000..e69dca1ce0b10c96287358c8c8aef7aa8f0d7a98
 --- /dev/null
 +++ b/dist/validation.d.ts
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,20 @@
 +import type { TransactionParams } from './types';
++/**
++ * Validates whether a transaction initiated by a specific 'from' address is permitted by the origin.
++ *
++ * @param permittedAddresses - The permitted accounts for the given origin.
++ * @param selectedAddress - The currently selected Ethereum address in the wallet.
++ * @param from - The address from which the transaction is initiated.
++ * @param origin - The origin or source of the transaction.
++ * @throws Throws an error if the transaction is not permitted.
++ */
++export declare function validateTransactionOrigin(permittedAddresses: string[], selectedAddress: string, from: string, origin: string): Promise<void>;
 +/**
 + * Validates the transaction params for required properties and throws in
 + * the event of any validation error.
@@ -1471,18 +1828,59 @@ index 0000000000000000000000000000000000000000..7f69a1f295158bea13187f73abb80d7d
 \ No newline at end of file
 diff --git a/dist/validation.js b/dist/validation.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..e5a311397b59a2ef388c4e1f3866dea30a2fe046
+index 0000000000000000000000000000000000000000..e18a51ea46ff06610734a8ff11bd61e524e7f7fe
 --- /dev/null
 +++ b/dist/validation.js
-@@ -0,0 +1,120 @@
+@@ -0,0 +1,174 @@
 +"use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
 +Object.defineProperty(exports, "__esModule", { value: true });
-+exports.validateTxParams = void 0;
++exports.validateTxParams = exports.validateTransactionOrigin = void 0;
 +const abi_1 = require("@ethersproject/abi");
 +const controller_utils_1 = require("@metamask/controller-utils");
 +const metamask_eth_abis_1 = require("@metamask/metamask-eth-abis");
 +const rpc_errors_1 = require("@metamask/rpc-errors");
 +const utils_1 = require("./utils");
++/**
++ * Validates whether a transaction initiated by a specific 'from' address is permitted by the origin.
++ *
++ * @param permittedAddresses - The permitted accounts for the given origin.
++ * @param selectedAddress - The currently selected Ethereum address in the wallet.
++ * @param from - The address from which the transaction is initiated.
++ * @param origin - The origin or source of the transaction.
++ * @throws Throws an error if the transaction is not permitted.
++ */
++function validateTransactionOrigin(permittedAddresses, selectedAddress, from, origin) {
++    return __awaiter(this, void 0, void 0, function* () {
++        if (origin === controller_utils_1.ORIGIN_METAMASK) {
++            // Ensure the 'from' address matches the currently selected address
++            if (from !== selectedAddress) {
++                throw rpc_errors_1.rpcErrors.internal({
++                    message: `Internally initiated transaction is using invalid account.`,
++                    data: {
++                        origin,
++                        fromAddress: from,
++                        selectedAddress,
++                    },
++                });
++            }
++            return;
++        }
++        // Check if the origin has permissions to initiate transactions from the specified address
++        if (!permittedAddresses.includes(from)) {
++            throw rpc_errors_1.providerErrors.unauthorized({ data: { origin } });
++        }
++    });
++}
++exports.validateTransactionOrigin = validateTransactionOrigin;
 +/**
 + * Validates the transaction params for required properties and throws in
 + * the event of any validation error.
@@ -1496,6 +1894,7 @@ index 0000000000000000000000000000000000000000..e5a311397b59a2ef388c4e1f3866dea3
 +    validateParamRecipient(txParams);
 +    validateParamValue(txParams.value);
 +    validateParamData(txParams.data);
++    validateParamChainId(txParams.chainId);
 +}
 +exports.validateTxParams = validateTxParams;
 +/**
@@ -1592,6 +1991,18 @@ index 0000000000000000000000000000000000000000..e5a311397b59a2ef388c4e1f3866dea3
 +                throw rpc_errors_1.rpcErrors.invalidParams('Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.');
 +            }
 +        }
++    }
++}
++/**
++ * Validates chainId type.
++ *
++ * @param chainId - The chainId to validate.
++ */
++function validateParamChainId(chainId) {
++    if (chainId !== undefined &&
++        typeof chainId !== 'number' &&
++        typeof chainId !== 'string') {
++        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction params: chainId is not a Number or hex string. got: (${chainId})`);
 +    }
 +}
 +//# sourceMappingURL=validation.js.map

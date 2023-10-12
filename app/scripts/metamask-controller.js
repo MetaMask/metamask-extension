@@ -1252,6 +1252,7 @@ export default class MetamaskController extends EventEmitter {
           this.gasFeeController,
         ),
         getNetworkState: () => this.networkController.state,
+        getPermittedAccounts: this.getPermittedAccounts.bind(this),
         getSelectedAddress: () =>
           this.preferencesController.store.getState().selectedAddress,
         incomingTransactions: {
@@ -1281,7 +1282,6 @@ export default class MetamaskController extends EventEmitter {
         provider: this.provider,
       },
       {
-        interval: 1000,
         sign: (...args) => this.keyringController.signTransaction(...args),
       },
       initState.TransactionController,
