@@ -162,8 +162,10 @@ describe('MetaMask @no-mmi', function () {
     });
 
     it('balance renders', async function () {
+
+      const balanceSelector = process.env.MULTICHAIN ? '[data-testid="token-balance-overview-currency-display"]' : '[data-testid="eth-overview__primary-currency"]';
       await driver.waitForSelector({
-        css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
+        css: `${balanceSelector} .currency-display-component__text`,
         text: '1000',
       });
       await driver.delay(regularDelayMs);
