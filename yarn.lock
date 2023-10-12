@@ -4597,9 +4597,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "@metamask/providers@npm:13.0.0"
+"@metamask/providers@npm:^13.0.0, @metamask/providers@npm:^13.1.0":
+  version: 13.1.0
+  resolution: "@metamask/providers@npm:13.1.0"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^7.1.1"
     "@metamask/object-multiplex": "npm:^1.1.0"
@@ -4612,7 +4612,7 @@ __metadata:
     is-stream: "npm:^2.0.0"
     json-rpc-middleware-stream: "npm:^4.2.1"
     webextension-polyfill: "npm:^0.10.0"
-  checksum: c6fe1936741a2b782960f0a12148602754fabe55b75707fd80716d5a42ca4f672d838d1ba36873e96f4afdc5360247e3b737c95b7ca532a74e135218cb65033a
+  checksum: 2ee1802d92d0fd2c733c5d98137e4f92c77a42fbf008a6b19de25d84d48321502031b82aa66501c4ce9c7e863a82c1866fe477349b48ba1151d4b8c2114233e8
   languageName: node
   linkType: hard
 
@@ -23840,7 +23840,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^6.2.0"
     "@metamask/ppom-validator": "npm:^0.5.0"
-    "@metamask/providers": "npm:^13.0.0"
+    "@metamask/providers": "npm:^13.1.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/rpc-methods": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
