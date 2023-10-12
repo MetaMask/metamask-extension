@@ -3,7 +3,10 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
-import { keyringSnapPermissionsBuilder } from './keyring-snaps-permissions';
+import {
+  isProtocolAllowed,
+  keyringSnapPermissionsBuilder,
+} from './keyring-snaps-permissions';
 
 describe('keyringSnapPermissionsBuilder', () => {
   const mockController = new SubjectMetadataController({
@@ -71,5 +74,25 @@ describe('keyringSnapPermissionsBuilder', () => {
   ])('"%s" cannot call any methods', (origin) => {
     const permissions = keyringSnapPermissionsBuilder(mockController);
     expect(permissions(origin as any)).toStrictEqual([]);
+  });
+});
+
+describe('isProtocolAllowed', () => {
+  it.each([
+    ['http://some-dapp.com', true],
+    ['https://some-dapp.com', true],
+    ['sftp://some-dapp.com', false],
+    ['', false],
+    ['null', false],
+    ['0', false],
+    [undefined, false],
+    [null, false],
+    [true, false],
+    [false, false],
+    [1, false],
+    [0, false],
+    [-1, false],
+  ])('"%s" cannot call any methods', (origin: any, expected: boolean) => {
+    expect(isProtocolAllowed(origin)).toBe(expected);
   });
 });

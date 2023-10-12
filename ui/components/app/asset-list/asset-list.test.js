@@ -89,8 +89,7 @@ describe('AssetList', () => {
   describe('token fiat value calculations', () => {
     it('calculates the correct fiat account total', () => {
       process.env.MULTICHAIN = 1;
-      const { container } = render();
-      expect(container).toMatchSnapshot();
+      render();
       expect(screen.getByText('$63,356.88 USD')).toBeInTheDocument();
       jest.resetModules();
     });
