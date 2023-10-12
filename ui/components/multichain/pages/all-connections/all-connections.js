@@ -19,20 +19,11 @@ export const AllConnections = () => {
   const connectedSubjectsForAllAddresses = useSelector(
     getConnectedSubjectsForAllAddresses,
   );
-  console.log(
-    'connectedSubjectsForAllAddresses: ',
-    connectedSubjectsForAllAddresses,
-  );
 
   const connectedAddresses = Object.keys(connectedSubjectsForAllAddresses);
   const connectedSiteData = {};
 
   connectedAddresses.forEach((connectedAddress) => {
-    console.log(
-      'gets here: ',
-      connectedAddress,
-      connectedAddresses[connectedAddress],
-    );
     connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
       if (!connectedSiteData[app.origin]) {
         connectedSiteData[app.origin] = { ...app, addresses: [] };
@@ -40,7 +31,6 @@ export const AllConnections = () => {
       connectedSiteData[app.origin].addresses.push(connectedAddress);
     });
   });
-  console.log('final data is: ', connectedSiteData);
 
   const allConnectionsList = {};
 
@@ -63,8 +53,10 @@ export const AllConnections = () => {
     allConnectionsList[name].addresses.push(...addresses);
   });
 
-  console.log(allConnectionsList);
-
+  const handleConnectionClick = (connection) => {
+    // TODO: go to connection details page
+    console.log('connection clicked: ', connection);
+  };
   return (
     <Page
       header={
@@ -80,13 +72,19 @@ export const AllConnections = () => {
             />
           }
         >
-          All Connections
+          {t('allConnections')}
         </Header>
       }
     >
-      {Object.keys(allConnectionsList).map((key) => {
-        const connection = allConnectionsList[key];
-        return <ConnectionListItem key={key} connection={connection} />;
+      {Object.keys(allConnectionsList).map((itemKey) => {
+        const connection = allConnectionsList[itemKey];
+        return (
+          <ConnectionListItem
+            key={itemKey}
+            connection={connection}
+            onClick={() => handleConnectionClick(connection)}
+          />
+        );
       })}
     </Page>
   );

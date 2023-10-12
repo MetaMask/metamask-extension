@@ -5,15 +5,15 @@ export default {
   title: 'Components/Multichain/ConnectionListItem',
   component: ConnectionListItem,
   argTypes: {
-    key: {
-      control: 'text',
-    },
     connection: {
       control: 'object',
     },
+    onClick: {
+      control: 'function',
+      action: 'clicked',
+    },
   },
   args: {
-    key: 'TestKey',
     connection: {
       extensionId: null,
       iconUrl: 'https://portfolio.metamask.io/favicon.png',
@@ -22,6 +22,7 @@ export default {
       subjectType: 'website',
       addresses: ['0xTestAddress1', '0xTestAddress2'],
     },
+    onClick: () => console.log('clicked'),
   },
 };
 
@@ -43,7 +44,6 @@ export const ChaosStory = (args) => (
   </div>
 );
 ChaosStory.args = {
-  key: 'TestKey',
   connection: {
     extensionId: null,
     iconUrl: 'https://portfolio.metamask.io/favicon.png',
@@ -52,4 +52,5 @@ ChaosStory.args = {
     subjectType: 'website',
     addresses: ['OxTestAddress1', 'OxTestAddress2'],
   },
+  onClick: () => console.log('clicked'),
 };

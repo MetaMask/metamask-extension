@@ -6,7 +6,6 @@ import {
   BlockSize,
   Display,
   FlexDirection,
-  FlexWrap,
   IconColor,
   JustifyContent,
   TextAlign,
@@ -25,17 +24,19 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 
-export const ConnectionListItem = ({ key, connection }) => {
+export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   return (
     <Box
+      as="button"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.baseline}
       width={BlockSize.Full}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      onClick={onClick}
       padding={4}
       gap={4}
-      key={key}
     >
       <BadgeWrapper
         badge={
@@ -54,10 +55,19 @@ export const ConnectionListItem = ({ key, connection }) => {
         flexDirection={FlexDirection.Column}
         width={BlockSize.FiveTwelfths}
       >
-        <Text variant={TextVariant.bodyLgMedium} ellipsis>
+        <Text
+          variant={TextVariant.bodyLgMedium}
+          textAlign={TextAlign.Left}
+          ellipsis
+        >
           {connection.name}
         </Text>
-        <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
+        <Text
+          display={Display.Flex}
+          alignItems={AlignItems.flexStart}
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodyMd}
+        >
           {getURLHost(connection.origin)}
         </Text>
       </Box>
@@ -91,6 +101,12 @@ export const ConnectionListItem = ({ key, connection }) => {
 };
 
 ConnectionListItem.propTypes = {
-  key: PropTypes.string.isRequired,
+  /**
+   * The connection data to display
+   */
   connection: PropTypes.object.isRequired,
+  /**
+   * The function to call when the connection is clicked
+   */
+  onClick: PropTypes.func.isRequired,
 };
