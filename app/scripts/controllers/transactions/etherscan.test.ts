@@ -16,10 +16,10 @@ jest.mock('@metamask/controller-utils', () => ({
   handleFetch: jest.fn(),
 }));
 
-const ADDERSS_MOCK = '0x2A2D72308838A6A46a0B5FDA3055FE915b5D99eD';
+const ADDRESS_MOCK = '0x2A2D72308838A6A46a0B5FDA3055FE915b5D99eD';
 
 const REQUEST_MOCK: EtherscanTransactionRequest = {
-  address: ADDERSS_MOCK,
+  address: ADDRESS_MOCK,
   chainId: CHAIN_IDS.GOERLI,
   limit: 3,
   fromBlock: 2,
@@ -28,8 +28,8 @@ const REQUEST_MOCK: EtherscanTransactionRequest = {
 
 const RESPONSE_MOCK: EtherscanTransactionResponse<EtherscanTransactionMeta> = {
   result: [
-    { from: ADDERSS_MOCK, nonce: '0x1' } as EtherscanTransactionMeta,
-    { from: ADDERSS_MOCK, nonce: '0x2' } as EtherscanTransactionMeta,
+    { from: ADDRESS_MOCK, nonce: '0x1' } as EtherscanTransactionMeta,
+    { from: ADDRESS_MOCK, nonce: '0x2' } as EtherscanTransactionMeta,
   ],
 };
 
