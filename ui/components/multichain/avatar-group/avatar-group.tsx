@@ -36,6 +36,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       alignItems={AlignItems.center}
       display={Display.Flex}
       className={classnames('multichain-avatar-group', className)}
+      data-testid="avatar-group"
     >
       <Box display={Display.Flex}>
         {visibleMembers.map((x, i) => (
