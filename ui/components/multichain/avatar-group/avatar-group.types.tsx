@@ -12,7 +12,7 @@ export interface AvatarGroupProps extends StyleUtilityProps {
     image: string;
     symbol?: string;
   }[];
-  /** * Size of Avatar Tokens */
+  /** * Size of Avatar Tokens. For AvatarGroup we are considering AvatarTokenSize.Xs, AvatarTokenSize.Sm, AvatarTokenSize.Md  */
   size?: AvatarTokenSize;
   /** * Border Color of Avatar Tokens */
   borderColor?: BorderColor;
