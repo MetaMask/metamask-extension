@@ -38,7 +38,7 @@ describe('Settings', function () {
         );
         await importedNftImage.click();
         // check for default image
-        const nftDefaultImage = await driver.findElement(
+        const nftDefaultImage = await driver.findVisibleElement(
           '[data-testid=nft-default-image]',
         );
         assert.equal(await nftDefaultImage.isDisplayed(), true);
@@ -48,7 +48,9 @@ describe('Settings', function () {
           text: 'Show',
           tag: 'button',
         });
-        const toggleIpfsModal = await driver.findElement('.toggle-ipfs-modal');
+        const toggleIpfsModal = await driver.findVisibleElement(
+          '.toggle-ipfs-modal',
+        );
         assert.equal(await toggleIpfsModal.isDisplayed(), true);
 
         // Toggle on ipfs when click on confirm button in modal
