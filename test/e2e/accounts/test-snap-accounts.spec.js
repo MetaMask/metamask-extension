@@ -286,7 +286,12 @@ describe('Test Snap Account', function () {
     await switchToOrOpenDapp(driver);
 
     await driver.clickElement(locatorID);
-    await switchToNotificationWindow(driver, 4);
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
 
     // these two don't have a contract details page
     if (locatorID !== '#personalSign' && locatorID !== '#signTypedData') {
@@ -466,7 +471,12 @@ describe('Test Snap Account', function () {
   async function connectAccountToTestDapp(driver) {
     await switchToOrOpenDapp(driver);
     await driver.clickElement('#connectButton');
-    await switchToNotificationWindow(driver, 4);
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
     await driver.clickElement('[data-testid="page-container-footer-next"]');
     await driver.clickElement('[data-testid="page-container-footer-next"]');
   }
