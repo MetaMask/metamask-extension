@@ -256,7 +256,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Window Handling
-        let windowHandles = await driver.getAllWindowHandles();
+        const windowHandles = await driver.getAllWindowHandles();
         const dappOne = windowHandles[1];
 
         // switchEthereumChain request
