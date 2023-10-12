@@ -35,6 +35,7 @@ import {
   ImportNftsModal,
   ImportTokensModal,
   SelectActionModal,
+  AppFooter,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -119,6 +120,9 @@ import NewNetworkInfo from '../../components/ui/new-network-info/new-network-inf
 import { ThemeType } from '../../../shared/constants/preferences';
 import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
+///: END:ONLY_INCLUDE_IN
 
 export default class Routes extends Component {
   static propTypes = {
@@ -167,6 +171,10 @@ export default class Routes extends Component {
     hideImportTokensModal: PropTypes.func.isRequired,
     isSelectActionModalOpen: PropTypes.bool.isRequired,
     hideSelectActionModal: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
+    hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -471,6 +479,25 @@ export default class Routes extends Component {
     return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
   }
 
+  showFooter() {
+    if (Boolean(process.env.MULTICHAIN) === false) {
+      return false;
+    }
+
+    const { location } = this.props;
+    const isHomePage = Boolean(
+      matchPath(location.pathname, { path: DEFAULT_ROUTE, exact: true }),
+    );
+    const isConnectionsPage = Boolean(
+      matchPath(location.pathname, { path: CONNECTIONS, exact: true }),
+    );
+    const isAssetPage = Boolean(
+      matchPath(location.pathname, { path: ASSET_ROUTE, exact: false }),
+    );
+
+    return isAssetPage || isHomePage || isConnectionsPage;
+  }
+
   showOnboardingHeader() {
     const { location } = this.props;
 
@@ -522,6 +549,10 @@ export default class Routes extends Component {
       hideIpfsModal,
       hideImportTokensModal,
       hideSelectActionModal,
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      isShowKeyringSnapRemovalResultModal,
+      hideShowKeyringSnapRemovalResultModal,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     const loadMessage =
@@ -593,11 +624,22 @@ export default class Routes extends Component {
         {isSelectActionModalOpen ? (
           <SelectActionModal onClose={() => hideSelectActionModal()} />
         ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          isShowKeyringSnapRemovalResultModal && (
+            <KeyringSnapRemovalResult
+              isOpen={isShowKeyringSnapRemovalResultModal}
+              onClose={() => hideShowKeyringSnapRemovalResultModal()}
+            />
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>
+        {this.showFooter() && <AppFooter location={location} />}
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );

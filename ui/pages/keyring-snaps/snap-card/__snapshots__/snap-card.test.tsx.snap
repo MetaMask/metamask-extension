@@ -3,7 +3,7 @@
 exports[`SnapCard should render 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-4 mm-box--sm:padding-4 mm-box--md:padding-4 mm-box--lg:padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+    class="mm-box snap-account-card mm-box--padding-4 mm-box--sm:padding-4 mm-box--md:padding-4 mm-box--lg:padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
     data-testid="key-management-snap"
   >
     <div
@@ -41,10 +41,10 @@ exports[`SnapCard should render 1`] = `
       Secure your account with MetaMask Mobile
     </h3>
     <div
-      class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+      class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
     >
       <span
-        class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-alternative"
+        class="mm-box mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-alternative"
         data-testid="to-snap-detail"
         style="mask-image: url('./images/icons/arrow-2-right.svg');"
       />
