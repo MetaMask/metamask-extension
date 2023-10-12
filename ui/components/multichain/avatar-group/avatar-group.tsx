@@ -44,14 +44,14 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
         {visibleMembers.map((x, i) => (
           <Box
             borderRadius={BorderRadius.full}
-            key={x.label}
+            key={x.symbol}
             style={
               i === 0 ? { marginLeft: '0px' } : { marginLeft: marginLeftValue }
             }
           >
             <AvatarToken
-              src={x.src}
-              name={x.label}
+              src={x.image}
+              name={x.symbol}
               size={size}
               borderColor={borderColor}
             />

@@ -9,9 +9,8 @@ export interface AvatarGroupProps extends StyleUtilityProps {
   limit: number;
   /** * List of Avatar Tokens */
   members: {
-    label: string;
-    src?: string;
-    size?: string;
+    image: string;
+    symbol?: string;
   }[];
   /** * Size of Avatar Tokens */
   size?: AvatarTokenSize;
