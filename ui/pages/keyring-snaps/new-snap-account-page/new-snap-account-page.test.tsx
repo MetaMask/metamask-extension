@@ -81,7 +81,7 @@ const renderComponent = (props = {}) => {
 describe('NewSnapAccountPage', () => {
   it('should render the popup', async () => {
     const { getByText } = renderComponent();
-    const popupTitle = getByText(messages.settingAddSnapAccount.message);
+    const popupTitle = getByText(messages.addAccountSnapModalHeader.message);
     expect(popupTitle).toBeInTheDocument();
 
     const closeButton = getByText(messages.getStarted.message);
@@ -94,7 +94,7 @@ describe('NewSnapAccountPage', () => {
   it('should render the texts', async () => {
     const { getByText } = renderComponent();
     expect(
-      getByText(messages.settingAddSnapAccount.message),
+      getByText(messages.addAccountSnapModalHeader.message),
     ).toBeInTheDocument();
     expect(
       getByText(messages.addSnapAccountModalDescription.message),
