@@ -84,5 +84,7 @@ AssetListConversionButton.propTypes = {
   /**
    * Text within the button body
    */
-  variant: PropTypes.oneOf(['buy', 'receive', 'nft']),
+  variant: PropTypes.oneOf(
+    Object.values(ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES),
+  ),
 };
