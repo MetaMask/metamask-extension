@@ -539,7 +539,7 @@ async function buildEventFragmentProperties({
     getAccountType,
     getDeviceModel,
     getSelectedAddress,
-    getTransaction, // ????
+    getTransaction,
   },
   provider,
 }: {

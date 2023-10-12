@@ -1347,13 +1347,11 @@ export default class MetamaskController extends EventEmitter {
       'transaction-submitted',
       onTransactionSubmitted(dependencyMapForTxEventTrackers),
     );
-    this.txController.on(
-      'transaction-swap-failed',
-      this.metaMetricsController.trackEvent,
+    this.txController.on('transaction-swap-failed', (payload) =>
+      this.metaMetricsController.trackEvent(payload),
     );
-    this.txController.on(
-      'transaction-swap-finalized',
-      this.metaMetricsController.trackEvent,
+    this.txController.on('transaction-swap-finalized', (payload) =>
+      this.metaMetricsController.trackEvent(payload),
     );
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
