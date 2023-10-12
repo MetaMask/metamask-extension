@@ -1,20 +1,23 @@
-import MetamaskController from '../../metamask-controller';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
 
 export default async function getSnapAndHardwareInfoForMetrics(
-  metamaskController: MetamaskController,
+  selectedAddress: string,
+  getAccountType: (address: string) => Promise<string>,
+  getDeviceModel: (address: string) => Promise<string>,
+  messenger: RestrictedControllerMessenger,
 ) {
-  if (!metamaskController?.preferencesController) {
-    return {}; // if it's coming from a unit test, there's no metamaskController or preferencesController
+  // If it's coming from a unit test, there's no messenger
+  // Will fix this in a future PR and add proper unit tests
+  if (!messenger) {
+    return {};
   }
-
-  const selectedAddress: string =
-    metamaskController.preferencesController.getSelectedAddress();
 
   const keyring: any = await getKeyringForAccount(selectedAddress);
 
   const account = await getAccountFromAddress(selectedAddress);
 
-  const truncatedSnap = metamaskController.snapController.getTruncated(
+  const snap = await messenger.call(
+    'SnapController:get',
     account?.metadata.snap.id,
   );
 
@@ -36,16 +39,17 @@ export default async function getSnapAndHardwareInfoForMetrics(
   }
 
   async function getKeyringForAccount(address: string) {
-    return await metamaskController.keyringController.getKeyringForAccount(
+    return await messenger.call(
+      'KeyringController:getKeyringForAccount',
       address,
     );
   }
 
   return {
-    account_type: await metamaskController.getAccountType(selectedAddress),
-    device_model: await metamaskController.getDeviceModel(selectedAddress),
+    account_type: await getAccountType(selectedAddress),
+    device_model: await getDeviceModel(selectedAddress),
     account_hardware_type: await getHardwareWalletType(),
-    account_snap_type: truncatedSnap?.id,
-    account_snap_version: truncatedSnap?.version,
+    account_snap_type: snap?.id,
+    account_snap_version: snap?.version,
   };
 }

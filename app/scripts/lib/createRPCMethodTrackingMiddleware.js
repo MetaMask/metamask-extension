@@ -118,7 +118,10 @@ const rateLimitTimeouts = {};
  * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
  *  allowing another set of events to be tracked.
  * @param opts.securityProviderRequest
- * @param {MetamaskController} opts.metamaskController
+ * @param {Function} opts.getSelectedAddress
+ * @param {Function} opts.getAccountType
+ * @param {Function} opts.getDeviceModel
+ * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
@@ -126,7 +129,10 @@ export default function createRPCMethodTrackingMiddleware({
   getMetricsState,
   rateLimitSeconds = 60 * 5,
   securityProviderRequest,
-  metamaskController,
+  getSelectedAddress,
+  getAccountType,
+  getDeviceModel,
+  snapAndHardwareMessenger,
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -201,7 +207,10 @@ export default function createRPCMethodTrackingMiddleware({
         ///: END:ONLY_INCLUDE_IN
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-          metamaskController,
+          getSelectedAddress(),
+          getAccountType,
+          getDeviceModel,
+          snapAndHardwareMessenger,
         );
 
         // merge the snapAndHardwareInfo into eventProperties
