@@ -3,12 +3,12 @@ import { showSnapAccountExperimentalToggle } from './snap-accounts';
 describe('showSnapAccountExperimentalToggle', () => {
   beforeEach(() => {
     process.env = Object.assign(process.env, {
-      KEYRING_SNAPS_DATE: '02 Nov 2023 15:00:00 GMT',
+      KEYRING_SNAPS_AVAILABILITY_DATE: '02 Nov 2023 15:00:00 GMT',
     });
   });
 
   afterEach(() => {
-    delete process.env.KEYRING_SNAPS_DATE;
+    delete process.env.KEYRING_SNAPS_AVAILABILITY_DATE;
   });
 
   it('returns false if the current date is before November 2, 2023', () => {

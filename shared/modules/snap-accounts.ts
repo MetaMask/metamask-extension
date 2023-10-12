@@ -9,12 +9,13 @@
  */
 export function showSnapAccountExperimentalToggle(): boolean {
   // eslint-disable-next-line prefer-destructuring
-  const KEYRING_SNAPS_DATE = process.env.KEYRING_SNAPS_DATE;
+  const KEYRING_SNAPS_AVAILABILITY_DATE =
+    process.env.KEYRING_SNAPS_AVAILABILITY_DATE;
 
-  if (!KEYRING_SNAPS_DATE) {
+  if (!KEYRING_SNAPS_AVAILABILITY_DATE) {
     return false;
   }
 
-  return new Date().getTime() > new Date(KEYRING_SNAPS_DATE).getTime();
+  return new Date().getTime() > new Date(KEYRING_SNAPS_AVAILABILITY_DATE).getTime();
 }
 ///: END:ONLY_INCLUDE_IN
