@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
-  IconSize,
 } from '../../../components/component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
@@ -12,13 +12,14 @@ interface RedirectUrlIconProps {
 
 const RedirectUrlIcon = ({ url }: RedirectUrlIconProps) => {
   return (
-    <Icon
+    <ButtonIcon
       onClick={() => {
         global.platform.openTab({ url });
       }}
-      name={IconName.Export}
+      iconName={IconName.Export}
       color={IconColor.primaryDefault}
-      size={IconSize.Sm}
+      size={ButtonIconSize.Sm}
+      ariaLabel={''}
     />
   );
 };
