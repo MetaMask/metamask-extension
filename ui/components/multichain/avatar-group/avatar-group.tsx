@@ -11,6 +11,8 @@ import {
   BorderColor,
   BorderRadius,
   Display,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { AvatarGroupProps } from './avatar-group.types';
 
@@ -60,7 +62,16 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       </Box>
       {showTag ? (
         <Box>
-          {typeof tagValue === 'string' ? <Text>{tagValue}</Text> : tagValue}
+          {typeof tagValue === 'string' ? (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {tagValue}
+            </Text>
+          ) : (
+            tagValue
+          )}
         </Box>
       ) : null}
     </Box>
