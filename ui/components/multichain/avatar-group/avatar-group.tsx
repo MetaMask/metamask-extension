@@ -8,6 +8,7 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
+  BorderColor,
   BorderRadius,
   Display,
 } from '../../../helpers/constants/design-system';
@@ -18,6 +19,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   limit = 4,
   members = [],
   size = AvatarTokenSize.Sm,
+  borderColor = BorderColor.transparent,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit);
@@ -47,7 +49,12 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
               i === 0 ? { marginLeft: '0px' } : { marginLeft: marginLeftValue }
             }
           >
-            <AvatarToken src={x.src} name={x.label} size={size} />
+            <AvatarToken
+              src={x.src}
+              name={x.label}
+              size={size}
+              borderColor={borderColor}
+            />
           </Box>
         ))}
       </Box>
