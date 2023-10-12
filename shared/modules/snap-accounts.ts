@@ -8,16 +8,14 @@
  * @returns true if the current date is after the specified date, false otherwise.
  */
 export function showSnapAccountExperimentalToggle(): boolean {
-  // eslint-disable-next-line prefer-destructuring
-  const KEYRING_SNAPS_AVAILABILITY_DATE =
+  const keyringSnapsAvailabilityDate =
     process.env.KEYRING_SNAPS_AVAILABILITY_DATE;
-
-  if (!KEYRING_SNAPS_AVAILABILITY_DATE) {
+  if (!keyringSnapsAvailabilityDate) {
     return false;
   }
 
   return (
-    new Date().getTime() > new Date(KEYRING_SNAPS_AVAILABILITY_DATE).getTime()
+    new Date().getTime() > new Date(keyringSnapsAvailabilityDate).getTime()
   );
 }
 ///: END:ONLY_INCLUDE_IN
