@@ -38,6 +38,7 @@ const PREFERENCES_CONTROLLER_MOCK = {
   snapRegistryList: {},
   transactionSecurityCheckEnabled: false,
   theme: 'OS',
+  isLineaMainnetReleased: false,
 };
 
 describe('migration #92.3', () => {
