@@ -8240,6 +8240,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webextension-polyfill@npm:^0.10.4":
+  version: 0.10.4
+  resolution: "@types/webextension-polyfill@npm:0.10.4"
+  checksum: f5aa3d24d3214a1d82328dc14c2f9b8d07d36e149281968959992f29ef78017dc1cf6055759d18ce46d29528d22b87fcfb30a289432382704869c7f3e1962f52
+  languageName: node
+  linkType: hard
+
 "@types/ws@npm:*":
   version: 8.2.2
   resolution: "@types/ws@npm:8.2.2"
@@ -23908,6 +23915,7 @@ __metadata:
     "@types/sinon": "npm:^10.0.13"
     "@types/w3c-web-hid": "npm:^1.0.3"
     "@types/watchify": "npm:^3.11.1"
+    "@types/webextension-polyfill": "npm:^0.10.4"
     "@types/yargs": "npm:^17.0.8"
     "@typescript-eslint/eslint-plugin": "npm:^5.30.7"
     "@typescript-eslint/parser": "npm:^5.30.7"
