@@ -206,7 +206,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             <h5
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-0 mm-box--color-text-default"
             >
-              Enable "Add Account Snap (Beta)"
+              Enable "Add account Snap (Beta)"
             </h5>
             <div
               class="mm-box"
