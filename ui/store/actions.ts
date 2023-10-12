@@ -1039,6 +1039,7 @@ export async function addTransactionAndWaitForPublish(
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
+  loadingIndicatorMessage: string,
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -1046,7 +1047,8 @@ export function updateAndApproveTx(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
+    !dontShowLoadingIndicator &&
+      dispatch(showLoadingIndication(loadingIndicatorMessage));
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod(
@@ -1136,13 +1138,17 @@ export function enableSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+
+export async function getPhishingResult(website: string) {
+  return await submitRequestToBackground('getPhishingResult', [website]);
+}
 ///: END:ONLY_INCLUDE_IN
 
 // TODO: Clean this up.
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function removeSnap(
   snapId: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
     ///: END:ONLY_INCLUDE_IN
@@ -1171,9 +1177,9 @@ export function removeSnap(
           'getAccountsBySnapId',
           [snapId],
         );
-        addresses.forEach((address) =>
-          dispatch(removeAccount(address.toLowerCase())),
-        );
+        for (const address of addresses) {
+          await submitRequestToBackground('removeAccount', [address]);
+        }
       }
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -1187,10 +1193,6 @@ export function removeSnap(
       dispatch(hideLoadingIndication());
     }
   };
-}
-
-export async function removeSnapError(msgData: string): Promise<void> {
-  return submitRequestToBackground('removeSnapError', [msgData]);
 }
 
 export async function handleSnapRequest(args: {
@@ -2078,8 +2080,9 @@ export function createCancelTransaction(
             return;
           }
           if (newState) {
-            const currentNetworkTxList =
-              getCurrentNetworkTransactions(newState);
+            const currentNetworkTxList = getCurrentNetworkTransactions({
+              metamask: newState,
+            });
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
@@ -4464,6 +4467,31 @@ export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   } catch (error) {
     logErrorWithMessage(error);
   }
+}
+
+export function showKeyringSnapRemovalModal(payload: {
+  snapName: string;
+  result: 'success' | 'failed';
+}) {
+  return {
+    type: actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT,
+    payload,
+  };
+}
+
+export function hideKeyringRemovalResultModal() {
+  return {
+    type: actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT,
+  };
+}
+
+export async function getSnapAccountsById(snapId: string): Promise<string[]> {
+  const addresses: string[] = await submitRequestToBackground(
+    'getAccountsBySnapId',
+    [snapId],
+  );
+
+  return addresses;
 }
 ///: END:ONLY_INCLUDE_IN
 

@@ -1407,7 +1407,40 @@
         "requestState": { "test": "value" }
       }
     },
-    "pendingApprovalCount": 1
+    "pendingApprovalCount": 1,
+    "database": {
+      "verifiedSnaps": {
+        "npm:@metamask/test-snap-bip44": {
+          "id": "npm:@metamask/test-snap-bip44",
+          "metadata": {
+            "name": "BIP-44",
+            "author": {
+              "name": "Consensys",
+              "website": "https://consensys.io/"
+            },
+            "website": "https://snaps.consensys.io/",
+            "summary": "An example Snap that signs messages using BLS.",
+            "description": "An example Snap that signs messages using BLS.",
+            "audits": [
+              {
+                "auditor": "Consensys Diligence",
+                "report": "https://consensys.io/diligence/audits/"
+              }
+            ],
+            "category": "interoperability",
+            "support": {
+              "contact": "https://github.com/MetaMask"
+            },
+            "sourceCode": "https://github.com/MetaMask/test-snaps"
+          },
+          "versions": {
+            "5.1.2": {
+              "checksum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            }
+          }
+        }
+      }
+    }
   },
   "send": {
     "amountMode": "INPUT",

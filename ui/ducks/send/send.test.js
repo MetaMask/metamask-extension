@@ -1143,6 +1143,53 @@ describe('Send Slice', () => {
           action.payload.account.address,
         );
       });
+      it('should reset to native asset on selectedAccount changed', () => {
+        const olderState = {
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          selectedAccount: {
+            balance: '0x3',
+            address: mockAddress1,
+          },
+          draftTransactions: {
+            'test-uuid': {
+              ...draftTransactionInitialState,
+              asset: {
+                type: AssetType.token,
+                error: null,
+                details: {
+                  address: 'tokenAddress',
+                  symbol: 'tokenSymbol',
+                  decimals: 'tokenDecimals',
+                },
+                balance: '0x2',
+              },
+            },
+          },
+        };
+
+        const action = {
+          type: 'SELECTED_ACCOUNT_CHANGED',
+          payload: {
+            account: {
+              address: '0xDifferentAddress',
+              balance: '0x1',
+            },
+          },
+        };
+
+        const result = sendReducer(olderState, action);
+        expect(result.selectedAccount.balance).toStrictEqual(
+          action.payload.account.balance,
+        );
+        expect(result.selectedAccount.address).toStrictEqual(
+          action.payload.account.address,
+        );
+
+        expect(result.draftTransactions['test-uuid'].asset).toStrictEqual({
+          ...draftTransactionInitialState.asset,
+          balance: action.payload.account.balance,
+        });
+      });
 
       it('should gracefully handle missing account in payload', () => {
         const olderState = {
