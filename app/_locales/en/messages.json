@@ -153,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountSnapsFeedback": {
+    "message": "Submit feedback on this feature"
+  },
   "accountsConnected": {
     "message": "Accounts connected"
   },
@@ -179,6 +182,9 @@
   },
   "addAccount": {
     "message": "Add account"
+  },
+  "addAccountSnapModalHeader": {
+    "message": "Add Account Snap"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -278,10 +284,10 @@
     "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
   "addSnapAccountToggle": {
-    "message": "Enable \"Add Snap account\""
+    "message": "Enable \"Add account Snap (Beta)\""
   },
   "addSnapAccountsDescription": {
-    "message": "Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service."
+    "message": "Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service."
   },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
@@ -3212,6 +3218,10 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openCustodianApp": {
+    "message": "Open $1 app",
+    "description": "The $1 is the name of the Custodian that will be open"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Go to full screen to connect your Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -4046,7 +4056,7 @@
     "description": "The token symbol that is being approved"
   },
   "settingAddSnapAccount": {
-    "message": "Add snap account"
+    "message": "Add account Snap"
   },
   "settings": {
     "message": "Settings"
@@ -4161,7 +4171,7 @@
     "message": "Account removed"
   },
   "snapAccounts": {
-    "message": "Snap accounts"
+    "message": "Account Snaps"
   },
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
@@ -4178,14 +4188,14 @@
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapCreateAccountSubtitle": {
-    "message": "Choose how to secure your new account using MetaMask Snaps."
+    "message": "Choose how to secure your new account using MetaMask Snaps. If you install an account Snap, remember that it is a third-party service."
   },
   "snapCreateAccountTitle": {
-    "message": "Create a $1 account",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "message": "Create an account $1 (Beta)",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
-    "message": "snap",
+    "message": "Snap",
     "description": "$1 of the snapCreateAccountTitle"
   },
   "snapCreatedByMetaMask": {
@@ -4213,14 +4223,10 @@
     "message": "Website"
   },
   "snapDetailsCreateASnapAccount": {
-    "message": "Create a Snap Account"
+    "message": "Add an account Snap (Beta)"
   },
   "snapDetailsInstalled": {
     "message": "Installed"
-  },
-  "snapError": {
-    "message": "Snap Error: '$1'. Error Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Install snap"
@@ -5316,6 +5322,12 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "transactionInsightsDeprecationInfo": {
+    "message": "Explore more ways to get transaction insights with"
+  },
+  "transactionInsightsDeprecationTitle": {
+    "message": "This feature will be deprecated soon"
   },
   "transactionNote": {
     "message": "Transaction note"
