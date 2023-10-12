@@ -31,7 +31,7 @@ function getValues(pendingApproval, t, actions, _history) {
         },
       },
     ],
-    cancelText: t('cancel'),
+    cancelText: t('close'),
     onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
     ...getConditionalProps(),
   };
