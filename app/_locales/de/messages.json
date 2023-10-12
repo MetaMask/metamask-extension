@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Ein $1-Konto erstellen",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "Snap",

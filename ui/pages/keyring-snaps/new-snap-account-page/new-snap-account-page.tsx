@@ -15,6 +15,7 @@ import {
   FlexDirection,
   FlexWrap,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -77,7 +78,11 @@ export default function NewSnapAccountPage() {
   );
 
   return (
-    <Box className="snap-account-page">
+    <Box
+      className="snap-account-page"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+    >
       <AddSnapAccountModal
         onClose={async () => {
           await hidePopup();
@@ -104,7 +109,12 @@ export default function NewSnapAccountPage() {
             </Text>,
           ])}
         </Text>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text
+          className="snap-account-subtitle"
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Center}
+        >
           {t('snapCreateAccountSubtitle')}
         </Text>
       </Box>
@@ -114,6 +124,7 @@ export default function NewSnapAccountPage() {
         gap={4}
         padding={[0, 10, 0, 10]}
         className="snap-account-cards"
+        marginBottom={'auto'}
       >
         {Object.values(snapRegistryList).map(
           (snap: SnapDetails, index: number) => {
