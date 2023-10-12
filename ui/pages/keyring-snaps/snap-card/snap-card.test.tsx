@@ -45,7 +45,7 @@ describe('SnapCard', () => {
     const { getByText } = renderComponent({ ...snap, isInstalled: false });
     expect(getByText(snap.snapTitle)).toBeInTheDocument();
     expect(getByText(snap.snapSlug)).toBeInTheDocument();
-    const installButton = getByText(messages.install.message);
+    const installButton = getByText(messages.details.message);
 
     expect(installButton).toBeInTheDocument();
     fireEvent.click(installButton);
