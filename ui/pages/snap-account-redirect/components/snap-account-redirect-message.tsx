@@ -1,13 +1,9 @@
 import React from 'react';
-import {
-  Display,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { Box, TextField, Text } from '../../../components/component-library';
+import { Display, TextVariant } from '../../../helpers/constants/design-system';
+import { Box, Text } from '../../../components/component-library';
 import { SnapAccountRedirectProps } from '../snap-account-redirect';
 import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
-import RedirectUrlIcon from './redirect-url-icon';
+import UrlDisplayBox from './url-display-box';
 
 const SnapAccountRedirectMessage = ({
   snapName,
@@ -25,38 +21,9 @@ const SnapAccountRedirectMessage = ({
           {message}
         </Text>
       ) : null}
-      {url !== '' ? (
-        <Box paddingTop={2} display={Display.Block}>
-          <TextField
-            id="snap-account-redirect-url"
-            testId="snap-account-redirect-url"
-            value={url}
-            autoComplete={false}
-            autoFocus={false}
-            readOnly
-            margin="normal"
-            largeLabel
-            startAccessory={null}
-            endAccessory={<RedirectUrlIcon url={url} />}
-            inputProps={{
-              color: TextColor.primaryDefault,
-            }}
-            truncate={false}
-            className=""
-            defaultValue=""
-            disabled={false}
-            error={false}
-            inputRef={null}
-            maxLength={undefined}
-            name=""
-            placeholder=""
-            required={false}
-            type="text"
-            onBlur={null}
-            onChange={null}
-            onClick={null}
-            onFocus={null}
-          />
+      {url.length > 0 ? (
+        <Box paddingTop={2} display={Display.Flex}>
+          <UrlDisplayBox url={url} />
         </Box>
       ) : null}
     </SnapDelineator>

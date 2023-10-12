@@ -1,0 +1,36 @@
+import React from 'react';
+import { SnapAccountRedirectProps } from '../snap-account-redirect';
+import {
+  AlignItems,
+  BackgroundColor,
+  BorderRadius,
+  Display,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { Box, Text } from '../../../components/component-library';
+import RedirectUrlIcon from './redirect-url-icon';
+
+const UrlDisplayBox = ({ url }: Pick<SnapAccountRedirectProps, 'url'>) => {
+  return (
+    <Box
+      display={Display.InlineFlex}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      alignItems={AlignItems.center}
+      borderWidth={1}
+      borderRadius={BorderRadius.SM}
+      paddingRight={4}
+    >
+      <Text
+        padding={2}
+        variant={TextVariant.bodyMd}
+        color={TextColor.primaryDefault}
+      >
+        {url}
+      </Text>
+      <RedirectUrlIcon url={url} />
+    </Box>
+  );
+};
+
+export default React.memo(UrlDisplayBox);
