@@ -2,6 +2,12 @@ import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../spinner';
 import { Box } from '../../component-library';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
 
 const LoadingScreen = ({
   header,
@@ -16,7 +22,7 @@ const LoadingScreen = ({
     return isValidElement(loadingMessage) ? (
       loadingMessage
     ) : (
-      <span>{loadingMessage}</span>
+      <span style={{ textAlign: 'center' }}>{loadingMessage}</span>
     );
   };
 
@@ -31,7 +37,14 @@ const LoadingScreen = ({
           />
         )}
       </Box>
-      <Box>{renderMessage()}</Box>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+      >
+        {renderMessage()}
+      </Box>
     </Box>
   );
 };

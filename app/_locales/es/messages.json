@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Cree una cuenta $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Instalado"
-  },
-  "snapError": {
-    "message": "Error de snap: '$1'. Código de error: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Instalar snap"
@@ -5035,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Transacción reenviada con la tarifa de gas aumentada a $1 en $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Habilitar alertas de seguridad"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Usamos API de terceros para detectar y mostrar los riesgos involucrados en transacciones sin firmar y solicitudes de firma antes de que las firme. Estos servicios tendrán acceso a su transacción no firmada y solicitudes de firma, la dirección de su cuenta y su idioma preferido."
   },
   "transactionSettings": {
     "message": "Ajustes de la transacción"
