@@ -304,8 +304,9 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <Box data-testid="add-snap-account-toggle">
+                <Box>
                   <ToggleButton
+                    dataTestId="add-snap-account-toggle"
                     value={addSnapAccountEnabled}
                     onToggle={(value) => {
                       trackEvent({
