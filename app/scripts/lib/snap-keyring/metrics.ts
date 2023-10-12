@@ -25,7 +25,7 @@ export default async function getSnapAndHardwareInfoForMetrics(
     return {};
   }
 
-  const selectedAddress = getSelectedAddress().toLowerCase();
+  const selectedAddress = getSelectedAddress();
 
   const keyring: any = await getKeyringForAccount(selectedAddress);
 
@@ -37,10 +37,12 @@ export default async function getSnapAndHardwareInfoForMetrics(
   )) as Snap;
 
   async function getAccountFromAddress(address: string) {
+    const lowercaseAddress = address.toLowerCase();
+
     if (keyring.listAccounts) {
       const accounts = await keyring.listAccounts();
       return accounts.find(
-        (_account: any) => _account.address.toLowerCase() === address,
+        (_account: any) => _account.address.toLowerCase() === lowercaseAddress,
       );
     }
 
