@@ -183,6 +183,9 @@
   "addAccount": {
     "message": "Add account"
   },
+  "addAccountSnapModalHeader": {
+    "message": "Add Account Snap"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -4053,7 +4056,7 @@
     "description": "The token symbol that is being approved"
   },
   "settingAddSnapAccount": {
-    "message": "Add Account Snap"
+    "message": "Add account Snap"
   },
   "settings": {
     "message": "Settings"
@@ -4188,11 +4191,11 @@
     "message": "Choose how to secure your new account using MetaMask Snaps. If you install an account Snap, remember that it is a third-party service."
   },
   "snapCreateAccountTitle": {
-    "message": "Create an $1 Snap (Beta)",
+    "message": "Create an account $1 (Beta)",
     "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
-    "message": "account",
+    "message": "Snap",
     "description": "$1 of the snapCreateAccountTitle"
   },
   "snapCreatedByMetaMask": {
