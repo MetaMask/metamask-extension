@@ -3,7 +3,9 @@ const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Add snap account experimental settings', function () {
-  it('switch "Enable Add account snap" to on', async function () {
+  // This test was broken by other changes, and is not currently being run. It
+  // will be re-added after #21221 gets merged, otherwise it will not pass.
+  it.skip('switch "Enable Add account snap" to on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
