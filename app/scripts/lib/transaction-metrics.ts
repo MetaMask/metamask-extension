@@ -27,7 +27,7 @@ import {
 } from '../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 
-const METRICS_STATUS_FAILED = 'failed on-chain';
+export const METRICS_STATUS_FAILED = 'failed on-chain';
 
 type ControllerActions = {
   createEventFragment: (arg0: any) => any;
