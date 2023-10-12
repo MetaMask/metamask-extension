@@ -22,7 +22,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   borderColor = BorderColor.transparent,
 }): JSX.Element => {
   const membersCount = members.length;
-  const visibleMembers = members.slice(0, limit);
+  const visibleMembers = members.slice(0, limit).reverse();
   const showTag = membersCount > limit;
   let marginLeftValue = '';
   if (AvatarTokenSize.Xs) {
@@ -48,6 +48,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
             style={
               i === 0 ? { marginLeft: '0px' } : { marginLeft: marginLeftValue }
             }
+            className={`${i}-nidhi`}
           >
             <AvatarToken
               src={x.image}

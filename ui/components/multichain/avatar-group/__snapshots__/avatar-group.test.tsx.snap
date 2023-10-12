@@ -10,35 +10,21 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
       class="mm-box mm-box--display-flex"
     >
       <div
-        class="mm-box mm-box--rounded-full"
+        class="mm-box 0-nidhi mm-box--rounded-full"
         style="margin-left: 0px;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
           <img
-            alt="ETH logo"
+            alt="AVAX logo"
             class="mm-avatar-token__token-image"
-            src="./images/eth_logo.png"
+            src="./images/avax-token.png"
           />
         </div>
       </div>
       <div
-        class="mm-box mm-box--rounded-full"
-        style="margin-left: -8px;"
-      >
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-        >
-          <img
-            alt="MATIC logo"
-            class="mm-avatar-token__token-image"
-            src="./images/matic-token.png"
-          />
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--rounded-full"
+        class="mm-box 1-nidhi mm-box--rounded-full"
         style="margin-left: -8px;"
       >
         <div
@@ -52,16 +38,30 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--rounded-full"
+        class="mm-box 2-nidhi mm-box--rounded-full"
         style="margin-left: -8px;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
           <img
-            alt="AVAX logo"
+            alt="MATIC logo"
             class="mm-avatar-token__token-image"
-            src="./images/avax-token.png"
+            src="./images/matic-token.png"
+          />
+        </div>
+      </div>
+      <div
+        class="mm-box 3-nidhi mm-box--rounded-full"
+        style="margin-left: -8px;"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          <img
+            alt="ETH logo"
+            class="mm-avatar-token__token-image"
+            src="./images/eth_logo.png"
           />
         </div>
       </div>
