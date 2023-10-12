@@ -93,7 +93,6 @@ buildTypes:
     features:
       - build-mmi
       - snaps
-      - keyring-snaps
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
@@ -105,7 +104,6 @@ buildTypes:
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
