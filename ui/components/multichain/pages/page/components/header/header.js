@@ -26,6 +26,7 @@ export const Header = ({
       {...props}
     >
       <Text
+        as="div"
         display={Display.Block}
         variant={TextVariant.bodyMdBold}
         textAlign={TextAlign.Center}

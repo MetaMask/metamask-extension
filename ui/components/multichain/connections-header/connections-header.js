@@ -17,7 +17,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonLink,
-  HeaderBase,
   IconName,
   TagUrl,
 } from '../../component-library';
@@ -29,6 +28,7 @@ import {
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { Header } from '../pages/page';
 
 export const ConnectionsHeader = ({ hostName }) => {
   const selectedAddress = useSelector(getSelectedAddress);
@@ -46,10 +46,8 @@ export const ConnectionsHeader = ({ hostName }) => {
   );
   const connectedAvatar = connectedSite?.iconUrl;
   return (
-    // TODO: change this to header component when it's ready
-    <HeaderBase
+    <Header
       className="connections-header"
-      width={BlockSize.Full}
       startAccessory={
         <ButtonIcon
           ariaLabel={t('back')}
@@ -65,7 +63,6 @@ export const ConnectionsHeader = ({ hostName }) => {
         display: Display.Flex,
         alignItems: AlignItems.center,
         justifyContent: JustifyContent.center,
-        padding: 4,
       }}
       endAccessory={
         <ButtonLink color={TextColor.primaryDefault}>
@@ -77,14 +74,11 @@ export const ConnectionsHeader = ({ hostName }) => {
         display: Display.Flex,
         alignItems: AlignItems.center,
         justifyContent: JustifyContent.flexEnd,
-        padding: 4,
       }}
       childrenWrapperProps={{
         className: 'connections-header__child-accessory-wrapper',
         display: Display.Flex,
         justifyContent: JustifyContent.center,
-        paddingTop: 4,
-        paddingBottom: 4,
         flexDirection: FlexDirection.Row,
       }}
     >
@@ -105,7 +99,7 @@ export const ConnectionsHeader = ({ hostName }) => {
         backgroundColor={BackgroundColor.transparent}
         showLockIcon
       />
-    </HeaderBase>
+    </Header>
   );
 };
 
