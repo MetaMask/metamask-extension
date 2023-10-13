@@ -169,7 +169,6 @@ export default class TransactionController extends EventEmitter {
     this.getEventFragmentById = opts.getEventFragmentById;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
-    this.getSelectedAddress = opts.getSelectedAddress;
     this.getAccountType = opts.getAccountType;
     this.getDeviceModel = opts.getDeviceModel;
     this.snapAndHardwareMessenger = opts.snapAndHardwareMessenger;
