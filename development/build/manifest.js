@@ -1,7 +1,7 @@
 const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const { mergeWith, cloneDeep, capitalize } = require('lodash');
+const { mergeWith, cloneDeep } = require('lodash');
 
 const baseManifest = process.env.ENABLE_MV3
   ? require('../../app/manifest/v3/_base.json')
@@ -10,7 +10,7 @@ const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
-const { getEnvironment } = require('./utils');
+const { getEnvironment, getBuildName } = require('./utils');
 
 module.exports = createManifestTasks;
 
@@ -124,10 +124,6 @@ function createManifestTasks({
       return;
     }
 
-    const mv3Str = process.env.ENABLE_MV3 ? ' MV3' : '';
-    const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
-    const snowStr = shouldIncludeSnow ? ' snow' : '';
-
     // Get the first 8 characters of the git revision id
     const gitRevisionStr = childProcess
       .execSync('git rev-parse HEAD')
@@ -135,12 +131,13 @@ function createManifestTasks({
       .trim()
       .substring(0, 8);
 
-    const buildName =
-      buildType === 'mmi'
-        ? `MetaMask Institutional ${mv3Str}`
-        : `MetaMask ${capitalize(buildType)}${mv3Str}${lavamoatStr}${snowStr}`;
-
-    manifest.name = buildName;
+    manifest.name = getBuildName({
+      environment,
+      buildType,
+      applyLavaMoat,
+      shouldIncludeSnow,
+      shouldIncludeMV3: process.env.ENABLE_MV3,
+    });
 
     manifest.description = `${environment} build from git id: ${gitRevisionStr}`;
   }

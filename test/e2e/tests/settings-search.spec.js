@@ -19,7 +19,7 @@ describe('Settings Search', function () {
     security: 'Reveal Secret',
     alerts: 'Browsing a website',
     networks: 'Ethereum Mainnet',
-    experimental: 'Enable security alerts',
+    experimental: 'Security alerts',
     about: 'Terms of Use',
   };
 

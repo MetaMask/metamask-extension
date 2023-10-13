@@ -17,11 +17,11 @@ export default function TokenListDisplay({ clickHandler }) {
   );
 
   const tokens = useSelector(getTokens, isEqual);
-  const { loading, tokensWithBalances } = useTokenTracker(
+  const { loading, tokensWithBalances } = useTokenTracker({
     tokens,
-    true,
-    shouldHideZeroBalanceTokens,
-  );
+    includeFailedTokens: true,
+    hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
+  });
   if (loading) {
     return <div className="loading-span">{t('loadingTokens')}</div>;
   }

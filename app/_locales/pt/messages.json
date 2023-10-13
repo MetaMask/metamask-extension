@@ -611,18 +611,9 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buy": {
-    "message": "Comprar"
-  },
   "buyAsset": {
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Segure seus criptoativos e ganhe lucros em potencial"
-  },
-  "buyDisabled": {
-    "message": "A compra não está disponível nesta rede"
   },
   "buyMoreAsset": {
     "message": "Comprar mais $1",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Descartar o lembrete de backup da Frase de Recuperação Secreta"
   },
-  "displayNftMedia": {
-    "message": "Exibir mídias de NFTs"
-  },
   "domain": {
     "message": "Domínio"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Ative nas Configurações."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Habilitar API do OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
   "enableSmartSwaps": {
     "message": "Ativar trocas inteligentes"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explorar os snaps da MetaMask"
-  },
   "extendWalletWithSnaps": {
-    "message": "Personalize sua experiência com a carteira."
+    "message": "Personalize sua experiência com a carteira.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Extensão externa"
@@ -2395,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3030,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Abrir no explorador de blocos"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3193,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Permitir que o snap use ganchos de ciclo de vida para executar códigos em momentos específicos durante seu ciclo de vida.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Executar indefinidamente.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Permitir que o snap seja executado indefinidamente, por exemplo, enquanto processa grandes volumes de dados.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Adicionar e controlar contas Ethereum",
@@ -3935,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Criar uma conta $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3970,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Instalado"
-  },
-  "snapError": {
-    "message": "Erro no snap: '$1'. Código de erro: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Instalar snap"
@@ -4815,9 +4789,6 @@
   "termsOfService": {
     "message": "Termos de Serviço"
   },
-  "termsOfUse": {
-    "message": "termos de uso"
-  },
   "termsOfUseAgreeText": {
     "message": " Eu concordo com os Termos de Uso, que se aplicam ao meu uso da MetaMask e de todos os seus recursos"
   },
@@ -4845,10 +4816,6 @@
   },
   "thisCollection": {
     "message": "esta coleção"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Esse serviço é experimental. Ao ativar esse recurso, você concorda com os $1 da OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Hora"
@@ -5064,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Ativar alertas de segurança"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Usamos APIs de terceiros para detectar e exibir riscos envolvidos em solicitações de assinatura e de transações não assinadas antes que você as assine. Esses serviços terão acesso às suas solicitações de assinatura e de transações não assinadas, ao endereço de sua conta e ao seu idioma preferencial."
   },
   "transactionSettings": {
     "message": "Configurações da transação"
@@ -5288,9 +5249,6 @@
   },
   "viewOnOpensea": {
     "message": "Ver na OpenSea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Ver painel do portfólio"
   },
   "viewinCustodianApp": {
     "message": "Ver no app custodiante"

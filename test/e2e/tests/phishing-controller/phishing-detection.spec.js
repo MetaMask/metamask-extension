@@ -58,6 +58,7 @@ describe('Phishing Detection', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
         await openDapp(driver);
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
           text: 'continue to the site.',
         });
@@ -177,6 +178,7 @@ describe('Phishing Detection', function () {
         await driver.press('#password', driver.Key.ENTER);
         await openDapp(driver);
 
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({ text: 'report a detection problem.' });
 
         // wait for page to load before checking URL.
@@ -215,6 +217,7 @@ describe('Phishing Detection', function () {
         await driver.press('#password', driver.Key.ENTER);
         await driver.openNewPage(phishingSite.href);
 
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({ text: 'report a detection problem.' });
 
         // wait for page to load before checking URL.
@@ -252,6 +255,7 @@ describe('Phishing Detection', function () {
         await driver.press('#password', driver.Key.ENTER);
         await driver.openNewPage('http://127.0.0.1:8080');
 
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({ text: 'report a detection problem.' });
 
         // wait for page to load before checking URL.

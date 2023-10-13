@@ -611,18 +611,9 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buy": {
-    "message": "Satın Al"
-  },
   "buyAsset": {
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
-  "buyDisabled": {
-    "message": "Satın al bu ağda kullanılamaz"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -1286,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma uyarısını yoksay"
   },
-  "displayNftMedia": {
-    "message": "NFT medyasını göster"
-  },
   "domain": {
     "message": "Alan"
   },
@@ -1413,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API'yi etkinleştir"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
   "enableSmartSwaps": {
     "message": "Akıllı swap'ları etkinleştirin"
@@ -1544,11 +1538,9 @@
   "experimental": {
     "message": "Deneysel"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaplerini keşfedin"
-  },
   "extendWalletWithSnaps": {
-    "message": "Cüzdan deneyimini kişiselleştirin."
+    "message": "Cüzdan deneyimini kişiselleştirin.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Harici uzantı"
@@ -2395,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3030,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Blok gezgininde aç"
   },
-  "openSea": {
-    "message": "OpenSea + Blockad (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3193,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Bu yaşam döngüsü sırasında belirli zamanlarda kod çalıştırmak için snapin yaşam döngüsü kancalarını kullanmasına izin verin.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Süresiz çalıştır.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Snapin örneğin büyük miktarda veri işlerken belirsiz süreyle çalışmasına izin verin.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum hesaplarını ekle ve kontrol et",
@@ -3935,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Bir $1 hesabı oluştur",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3970,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Yüklendi"
-  },
-  "snapError": {
-    "message": "Snap Hatası: '$1'. Hata Kodu: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Snap yükle"
@@ -4815,9 +4789,6 @@
   "termsOfService": {
     "message": "Hizmet şartları"
   },
-  "termsOfUse": {
-    "message": "kullanım şartları"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum"
   },
@@ -4845,10 +4816,6 @@
   },
   "thisCollection": {
     "message": "bu koleksiyon"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Hizmet deneyseldir. Bu özelliği etkinleştirerek OpenSea'nin $1 bölümünü kabul edersiniz.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Zaman"
@@ -5064,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
-  },
-  "transactionSecurityCheck": {
-    "message": "Güvenlik uyarılarını etkinleştir"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "İmzalanmamış işleme dahil olan riskleri ve onları imzalamadan önce imza taleplerini algılamak ve göstermek için üçüncü taraf API'lerini kullanırız. Bu hizmetler imzalanmamış işlem ve imza taleplerinize, hesap adresinize ve tercih ettiğiniz dile erişim sağlar."
   },
   "transactionSettings": {
     "message": "İşlem ayarları"
@@ -5288,9 +5249,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea'de görüntüle"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portföy Kontrol Panelini görüntüle"
   },
   "viewinCustodianApp": {
     "message": "Saklayıcı kurum uygulamasında görüntüle"
