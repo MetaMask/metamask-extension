@@ -405,6 +405,8 @@ export enum BlockSize {
   Max = 'max',
   Min = 'min',
   Full = 'full',
+  MinContent = 'min-content',
+  MaxContent = 'max-content',
 }
 
 /**

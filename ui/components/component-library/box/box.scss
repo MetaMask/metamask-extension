@@ -316,6 +316,11 @@ $attributesToApplyExtraProperties: margin;
   &--width-max {
     width: max-content;
   }
+
+  &--width-max-content {
+    width: max-content;
+  }
+
   // breakpoint classes
   @each $breakpoint, $min-width in $screen-sizes-map {
     @media screen and (min-width: $min-width) {
@@ -340,6 +345,10 @@ $attributesToApplyExtraProperties: margin;
   &--width-min {
     width: min-content;
   }
+  &--width-min-content {
+    width: min-content;
+  }
+
   // breakpoint classes
   @each $breakpoint, $min-width in $screen-sizes-map {
     @media screen and (min-width: $min-width) {
