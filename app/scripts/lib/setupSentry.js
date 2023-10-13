@@ -293,12 +293,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   PPOMController: {
     chainStatus: {
-      '0x539': {
-        chainId: '0x539',
-        dataFetched: false,
-        lastVisited: 1697106969233,
-        versionInfo: [],
-      },
+      [AllProperties]: false,
     },
     securityAlertsEnabled: false,
     storageMetadata: [],
