@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { SubjectType } from '@metamask/permission-controller';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,9 +24,12 @@ import {
   Text,
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
+import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
+  const isSnap = connection.subjectType === SubjectType.Snap;
+
   return (
     <Box
       as="button"
@@ -38,18 +42,27 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       padding={4}
       gap={4}
     >
-      <BadgeWrapper
-        badge={
-          <Icon
-            name={IconName.Global}
-            color={IconColor.iconDefault}
-            size={IconSize.Xs}
-            backgroundColor={BackgroundColor.backgroundDefault}
-          />
-        }
-      >
-        <AvatarFavicon src={connection.iconUrl} />
-      </BadgeWrapper>
+      {isSnap ? (
+        <SnapAvatar
+          snapId={connection.id}
+          badgeSize={IconSize.Xs}
+          avatarSize={IconSize.Md}
+          borderWidth={0}
+        />
+      ) : (
+        <BadgeWrapper
+          badge={
+            <Icon
+              name={IconName.Global}
+              color={IconColor.iconDefault}
+              size={IconSize.Xs}
+              borderColor={BackgroundColor.backgroundDefault}
+            />
+          }
+        >
+          <AvatarFavicon src={connection.iconUrl} />
+        </BadgeWrapper>
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -78,16 +91,18 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         style={{ flex: '1' }}
         gap={2}
       >
-        <Text
-          width={BlockSize.Max}
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodyMd}
-        >
-          {connection.addresses.length}{' '}
-          {connection.addresses.length > 1
-            ? t('connectedaccounts')
-            : t('connectedaccount')}
-        </Text>
+        {!isSnap && (
+          <Text
+            width={BlockSize.Max}
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMd}
+          >
+            {connection.addresses.length}{' '}
+            {connection.addresses.length > 1
+              ? t('connectedaccounts')
+              : t('connectedaccount')}
+          </Text>
+        )}
         <Icon
           display={Display.Flex}
           name={IconName.ArrowRight}

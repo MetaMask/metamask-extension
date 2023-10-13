@@ -10,7 +10,10 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Color } from '../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { getConnectedSubjectsForAllAddresses } from '../../../../selectors';
+import {
+  getConnectedSubjectsForAllAddresses,
+  getSnapsList,
+} from '../../../../selectors';
 import { ConnectionListItem } from './connection-list-item';
 
 export const AllConnections = () => {
@@ -19,7 +22,6 @@ export const AllConnections = () => {
   const connectedSubjectsForAllAddresses = useSelector(
     getConnectedSubjectsForAllAddresses,
   );
-
   const connectedAddresses = Object.keys(connectedSubjectsForAllAddresses);
   const connectedSiteData = {};
 
@@ -33,6 +35,8 @@ export const AllConnections = () => {
   });
 
   const allConnectionsList = {};
+  const allSnapsList = {};
+  const connectedSnapsData = useSelector((state) => getSnapsList(state));
 
   Object.keys(connectedSiteData).forEach((siteKey) => {
     const siteData = connectedSiteData[siteKey];
@@ -51,6 +55,21 @@ export const AllConnections = () => {
     }
 
     allConnectionsList[name].addresses.push(...addresses);
+  });
+
+  Object.keys(connectedSnapsData).forEach((snap) => {
+    const snapData = connectedSnapsData[snap];
+    const { id, name, packageName, iconUrl, subjectType } = snapData;
+
+    if (!allSnapsList[name]) {
+      allSnapsList[name] = {
+        id,
+        name,
+        packageName,
+        iconUrl,
+        subjectType,
+      };
+    }
   });
 
   const handleConnectionClick = (connection) => {
@@ -78,6 +97,17 @@ export const AllConnections = () => {
     >
       {Object.keys(allConnectionsList).map((itemKey) => {
         const connection = allConnectionsList[itemKey];
+        return (
+          <ConnectionListItem
+            key={itemKey}
+            connection={connection}
+            onClick={() => handleConnectionClick(connection)}
+          />
+        );
+      })}
+      Snaps
+      {Object.keys(allSnapsList).map((itemKey) => {
+        const connection = allSnapsList[itemKey];
         return (
           <ConnectionListItem
             key={itemKey}

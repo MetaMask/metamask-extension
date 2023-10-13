@@ -1682,10 +1682,11 @@ export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps).map(([key, snap]) => {
     const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
-
     return {
       key,
       id: snap.id,
+      iconUrl: targetSubjectMetadata.iconUrl,
+      subjectType: targetSubjectMetadata.subjectType,
       packageName: removeSnapIdPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
