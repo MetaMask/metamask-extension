@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Δημιουργήστε έναν $1 λογαριασμό",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Εγκαταστάθηκε"
-  },
-  "snapError": {
-    "message": "Σφάλμα Snap: '$1'. Κωδικός Σφάλματος: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Εγκατάσταση του snap"
@@ -5035,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Η συναλλαγή υποβλήθηκε ξανά με το εκτιμώμενο τέλος συναλλαγής να έχει αυξηθεί στα $1 στις $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Χρησιμοποιούμε API τρίτων για τον εντοπισμό και την εμφάνιση των κινδύνων που ενέχουν τα ανυπόγραφα αιτήματα συναλλαγών και υπογραφών πριν τα υπογράψετε. Αυτές οι υπηρεσίες θα έχουν πρόσβαση στα ανυπόγραφα αιτήματα συναλλαγών και υπογραφών σας, στη διεύθυνση του λογαριασμού σας και στην προτιμώμενη γλώσσα σας."
   },
   "transactionSettings": {
     "message": "Ρυθμίσεις συναλλαγών"

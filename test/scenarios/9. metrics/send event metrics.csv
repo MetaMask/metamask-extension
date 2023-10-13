@@ -13,6 +13,6 @@ Chrome: chrome://extensions/",The extensions page is displayed.,
 8,Enable developer mode/debug addons.,,,
 9,Inspect background.html using the browsers developer tools.,,The browsers developer tools window opens.,
 10,Select the Network tab.,,,
-11,Close the browsers extension page and switch back to the wallet.,,,
-12,Proceed to General in the Settings menu.,,"A request to Sentry is made - https://api.segment.io/v1/batch.
+11,Keep the background console open and head over to the wallet.,,,
+12,Proceed to General in the Settings menu.,,"A request to Sentry is made in the networks tab under payload - https://api.segment.io/v1/batch.
 The request payload is valid JSON and contains the name General Settings Page.",

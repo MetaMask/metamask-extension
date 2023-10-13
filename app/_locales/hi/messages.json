@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "एक $1 वाला अकाउंट बनाएं",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "Snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "इंस्टॉल किया गया"
-  },
-  "snapError": {
-    "message": "Snap एरर: '$1'. एरर कोड: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Snap इंस्टाल करें"
@@ -5035,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "$2 गैस फ़ीस में $1 वृद्धि के साथ ट्रांसेक्शन फिर से सबमिट किया गया"
-  },
-  "transactionSecurityCheck": {
-    "message": "सुरक्षा अलर्ट एनेबल करें"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "आपके हस्ताक्षर करने से पहले अहस्ताक्षरित ट्रांसेक्शन और हस्ताक्षर रिक्वेस्ट्स में शामिल जोखिमों का पता लगाने और दिखाने के लिए हम थर्ड-पार्टी एपीआई का इस्तेमाल करते हैं। इन सेवाओं के पास आपके अहस्ताक्षरित ट्रांसेक्शन और हस्ताक्षर अनुरोध, आपके अकाउंट का एड्रेस और आपकी पसंदीदा भाषा तक पहुंच होगी।"
   },
   "transactionSettings": {
     "message": "ट्रांसेक्शन संबंधी सेटिंग्स"

@@ -166,6 +166,9 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
@@ -873,12 +876,16 @@ export default class MetamaskController extends EventEmitter {
     const getSnapController = () => this.snapController;
     const getApprovalController = () => this.approvalController;
     const getKeyringController = () => this.keyringController;
+    const getPreferencesController = () => this.preferencesController;
+    const getPhishingController = () => this.phishingController;
 
     additionalKeyrings.push(
       snapKeyringBuilder(
         getSnapController,
         getApprovalController,
         getKeyringController,
+        getPreferencesController,
+        getPhishingController,
         (address) => this.removeAccount(address),
       ),
     );
@@ -1232,6 +1239,22 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    // This gets used as a ...spread parameter in two places: new TransactionController() and createRPCMethodTrackingMiddleware()
+    this.snapAndHardwareMetricsParams = {
+      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(
+        this.preferencesController,
+      ),
+      getAccountType: this.getAccountType.bind(this),
+      getDeviceModel: this.getDeviceModel.bind(this),
+      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+        name: 'SnapAndHardwareMessenger',
+        allowedActions: [
+          'KeyringController:getKeyringForAccount',
+          'SnapController:get',
+        ],
+      }),
+    };
+
     this.txController = new TransactionController({
       initState:
         initState.TransactionController || initState.TransactionManager,
@@ -1290,10 +1313,9 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
-      getAccountType: this.getAccountType.bind(this),
-      getDeviceModel: this.getDeviceModel.bind(this),
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      ...this.snapAndHardwareMetricsParams,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IN
@@ -2792,10 +2814,6 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // snaps
-      removeSnapError: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:removeSnapError',
-      ),
       disableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:disable',
@@ -3507,10 +3525,10 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Retrieves the keyring for the selected address and using the .type returns
-   * a subtype for the account. Either 'hardware', 'imported' or 'MetaMask'.
+   * a subtype for the account. Either 'hardware', 'imported', 'snap', or 'MetaMask'.
    *
    * @param {string} address - Address to retrieve keyring for
-   * @returns {'hardware' | 'imported' | 'MetaMask'}
+   * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
     const keyringType = await this.keyringController.getAccountKeyringType(
@@ -3524,6 +3542,8 @@ export default class MetamaskController extends EventEmitter {
         return 'hardware';
       case KeyringType.imported:
         return 'imported';
+      case KeyringType.snap:
+        return 'snap';
       default:
         return 'MetaMask';
     }
@@ -3532,10 +3552,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Retrieves the keyring for the selected address and using the .type
    * determines if a more specific name for the device is available. Returns
-   * 'N/A' for non hardware wallets.
+   * undefined for non hardware wallets.
    *
    * @param {string} address - Address to retrieve keyring for
-   * @returns {'ledger' | 'lattice' | 'N/A' | string}
+   * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
@@ -3551,7 +3571,7 @@ export default class MetamaskController extends EventEmitter {
         // TODO: get model after lattice keyring exposes method
         return HardwareDeviceNames.lattice;
       default:
-        return 'N/A';
+        return undefined;
     }
   }
 
@@ -4265,6 +4285,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.store,
         ),
         securityProviderRequest: this.securityProviderRequest.bind(this),
+        ...this.snapAndHardwareMetricsParams,
       }),
     );
 
@@ -4424,6 +4445,24 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:install',
           origin,
         ),
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+        hasPermission: this.permissionController.hasPermission.bind(
+          this.permissionController,
+        ),
+        getSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:get',
+        ),
+        handleSnapRpcRequest: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:handleRequest',
+        ),
+        getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
+          this.subjectMetadataController,
+        ),
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
     );
     ///: END:ONLY_INCLUDE_IN

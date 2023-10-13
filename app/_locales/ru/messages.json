@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Создать новый счет $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Установлена"
-  },
-  "snapError": {
-    "message": "Ошибка snap: '$1'. Код ошибки: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Установить snap"
@@ -5035,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Транзакция отправлена повторно с платой за газ, увеличенной до $1, в $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Включить оповещения безопасности"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Мы используем сторонние API для обнаружения и отображения рисков, связанных с неподписанными транзакциями и запросами подписи, прежде чем вы их подпишете. Эти службы будут иметь доступ к вашим неподписанным транзакциям и запросам подписи, адресу вашего счета и предпочитаемому вами языку."
   },
   "transactionSettings": {
     "message": "Настройки транзакции"

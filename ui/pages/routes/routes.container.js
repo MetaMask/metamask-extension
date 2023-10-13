@@ -31,7 +31,10 @@ import { hideSelectActionModal } from '../../components/multichain/app-footer/ap
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import {
+  getIsUnlocked,
+  getProviderConfig,
+} from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import Routes from './routes.component';
 
@@ -48,7 +51,7 @@ function mapStateToProps(state) {
     textDirection: state.metamask.textDirection,
     isLoading,
     loadingMessage,
-    isUnlocked: state.metamask.isUnlocked,
+    isUnlocked: getIsUnlocked(state),
     isNetworkLoading: isNetworkLoading(state),
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,

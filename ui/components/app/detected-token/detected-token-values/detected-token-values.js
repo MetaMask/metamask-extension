@@ -21,7 +21,7 @@ const DetectedTokenValues = ({
     return tokensListDetected[token.address]?.selected;
   });
 
-  const { tokensWithBalances } = useTokenTracker([token]);
+  const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
   const balanceString = tokensWithBalances[0]?.string;
   const formattedFiatBalance = useTokenFiatAmount(
     token.address,
