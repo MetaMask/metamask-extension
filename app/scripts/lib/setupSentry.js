@@ -155,6 +155,12 @@ export const SENTRY_BACKGROUND_STATE = {
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
+  PPOMController: {
+    chainStatus: true,
+    securityAlertsEnabled: false,
+    storageMetadata: [],
+    versionInfo: [],
+  },
   PermissionController: {
     subjects: false,
   },
@@ -290,14 +296,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TxController: {
     transactions: false,
-  },
-  PPOMController: {
-    chainStatus: {
-      [AllProperties]: false,
-    },
-    securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
   },
 };
 
