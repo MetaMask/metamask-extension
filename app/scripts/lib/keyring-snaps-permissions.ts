@@ -46,6 +46,21 @@ const ALLOWED_PROTOCOLS: string[] = [
 ];
 
 /**
+ * List of local domains.
+ */
+const LOCAL_DOMAINS: string[] = ['localhost', '127.0.0.1'];
+
+/**
+ * Checks if the value is a boolean and returns its value.
+ *
+ * @param value - Value to check.
+ * @returns `true` if the value is a boolean and `true`, `false` otherwise.
+ */
+function asBoolean(value: unknown): boolean {
+  return typeof value === 'boolean' && value;
+}
+
+/**
  * Checks if the protocol of the origin is allowed.
  *
  * @param origin - The origin to check.
@@ -53,7 +68,16 @@ const ALLOWED_PROTOCOLS: string[] = [
  */
 export function isProtocolAllowed(origin: string): boolean {
   try {
-    const url = new URL(origin);
+    const url: URL = new URL(origin);
+
+    // For testing, allow local domains regardless of the protocol.
+    if (
+      asBoolean(process.env.ALLOW_LOCAL_SNAPS) &&
+      LOCAL_DOMAINS.includes(url.hostname)
+    ) {
+      return true;
+    }
+
     return ALLOWED_PROTOCOLS.includes(url.protocol);
   } catch (error) {
     return false;
