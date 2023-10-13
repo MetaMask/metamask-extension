@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { LegacyMetaMetricsProvider } from '../../../contexts/metametrics';
@@ -85,5 +85,22 @@ describe('ExperimentalTab', () => {
     fireEvent.click(toggle[1]);
     expect(setTransactionSecurityCheckEnabled).toHaveBeenCalledWith(true);
     expect(setSecurityAlertsEnabled).toHaveBeenCalledWith(false);
+  });
+
+  it('should enable add account snap', async () => {
+    const setAddSnapAccountEnabled = jest.fn();
+    const { getByTestId } = render(
+      { desktopEnabled: true },
+      {
+        setAddSnapAccountEnabled,
+      },
+    );
+
+    const toggle = getByTestId('add-snap-account-toggle');
+    fireEvent.click(toggle);
+
+    await waitFor(() => {
+      expect(setAddSnapAccountEnabled).toHaveBeenCalledWith(true);
+    });
   });
 });
