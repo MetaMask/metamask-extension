@@ -17,6 +17,7 @@ buildTypes:
     features:
       - build-main
       - snaps
+      - keyring-snaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
