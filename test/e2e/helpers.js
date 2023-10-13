@@ -595,7 +595,12 @@ const sendTransaction = async (
   quantity,
   isAsyncFlow = false,
 ) => {
-  await driver.clickElement('[data-testid="eth-overview-send"]');
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement('[data-testid="app-footer-actions-button"]');
+    await driver.clickElement('[data-testid="select-action-modal-item-send"]');
+  } else {
+    await driver.clickElement('[data-testid="eth-overview-send"]');
+  }
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
   await driver.clickElement({
@@ -645,8 +650,10 @@ const TEST_SEED_PHRASE_TWO =
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
   await driver.findElement({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
+    css: process.env.MULTICHAIN
+      ? '[data-testid="token-balance-overview-currency-display"]'
+      : '[data-testid="eth-overview__primary-currency"]',
+    text: `${balance}${process.env.MULTICHAIN ? '\n' : ''}ETH`,
   });
 };
 
@@ -668,7 +675,9 @@ const generateGanacheOptions = (overrides) => ({
 
 async function waitForAccountRendered(driver) {
   await driver.waitForSelector(
-    '[data-testid="eth-overview__primary-currency"]',
+    process.env.MULTICHAIN
+      ? '[data-testid="token-balance-overview-currency-display"]'
+      : '[data-testid="eth-overview__primary-currency"]',
   );
 }
 

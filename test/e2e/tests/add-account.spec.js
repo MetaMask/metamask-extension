@@ -79,7 +79,9 @@ describe('Add account', function () {
         // Check address of 1st account
         await waitForAccountRendered(driver);
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(firstAccount),
         });
 
@@ -98,7 +100,9 @@ describe('Add account', function () {
         // Check address of 2nd account
         await waitForAccountRendered(driver);
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(secondAccount),
         });
 
@@ -147,7 +151,9 @@ describe('Add account', function () {
 
         // Check address of 1st account
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(firstAccount),
         });
 
@@ -160,7 +166,9 @@ describe('Add account', function () {
         await driver.clickElement(accountTwoSelector);
 
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(secondAccount),
         });
       },

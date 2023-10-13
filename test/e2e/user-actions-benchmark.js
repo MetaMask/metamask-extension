@@ -66,7 +66,14 @@ async function confirmTx() {
       await driver.fill('#password', 'correct horse battery staple');
       await driver.press('#password', driver.Key.ENTER);
 
-      await driver.clickElement('[data-testid="eth-overview-send"]');
+      if (process.env.MULTICHAIN) {
+        await driver.clickElement('[data-testid="app-footer-actions-button"]');
+        await driver.clickElement(
+          '[data-testid="select-action-modal-item-send"]',
+        );
+      } else {
+        await driver.clickElement('[data-testid="eth-overview-send"]');
+      }
 
       await driver.fill(
         'input[placeholder="Enter public address (0x) or ENS name"]',

@@ -32,7 +32,16 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send ETH
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement(
+            '[data-testid="app-footer-actions-button"]',
+          );
+          await driver.clickElement(
+            '[data-testid="select-action-modal-item-send"]',
+          );
+        } else {
+          await driver.clickElement('[data-testid="eth-overview-send"]');
+        }
 
         // Paste address without hex prefix
         await driver.pasteIntoField(
@@ -76,7 +85,16 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send ETH
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement(
+            '[data-testid="app-footer-actions-button"]',
+          );
+          await driver.clickElement(
+            '[data-testid="select-action-modal-item-send"]',
+          );
+        } else {
+          await driver.clickElement('[data-testid="eth-overview-send"]');
+        }
 
         // Type address without hex prefix
         await driver.fill(

@@ -42,7 +42,16 @@ describe('Address Book', function () {
         await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement(
+            '[data-testid="app-footer-actions-button"]',
+          );
+          await driver.clickElement(
+            '[data-testid="select-action-modal-item-send"]',
+          );
+        } else {
+          await driver.clickElement('[data-testid="eth-overview-send"]');
+        }
         const recipientRowTitle = await driver.findElement(
           '.send__select-recipient-wrapper__group-item__title',
         );

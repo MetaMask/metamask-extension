@@ -115,7 +115,15 @@ describe('MV3 - Restart service worker multiple times', function () {
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
 
-      await driver.clickElement('[data-testid="eth-overview-send"]');
+      if (process.env.MULTICHAIN) {
+        await driver.clickElement('[data-testid="app-footer-actions-button"]');
+        await driver.clickElement(
+          '[data-testid="select-action-modal-item-send"]',
+        );
+      } else {
+        await driver.clickElement('[data-testid="eth-overview-send"]');
+      }
+
       await driver.fill('[data-testid="ens-input"]', recipient);
       const formattedValue = `${value}`.replace('.', ',');
       await driver.fill('.unit-input__input', formattedValue);
@@ -146,7 +154,7 @@ describe('MV3 - Restart service worker multiple times', function () {
           css: process.env.MULTICHAIN
             ? '[data-testid="token-balance-overview-currency-display"]'
             : '[data-testid="eth-overview__primary-currency"]',
-          text: `${expectedBalance} ETH`,
+          text: `${expectedBalance}${process.env.MULTICHAIN ? '\n' : ' '}ETH`,
         });
 
       assert.equal(
