@@ -35,7 +35,6 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
     marginLeftValue = '-16px';
   }
   const tagValue = `+${(membersCount - limit).toLocaleString()}`;
-  console.log(tagValue, typeof tagValue, showTag);
   return (
     <Box
       alignItems={AlignItems.center}
