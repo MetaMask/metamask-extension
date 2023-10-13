@@ -47,7 +47,15 @@ const colors = {
 };
 
 const ToggleButton = (props) => {
-  const { value, onToggle, offLabel, onLabel, disabled, className } = props;
+  const {
+    value,
+    onToggle,
+    offLabel,
+    onLabel,
+    disabled,
+    className,
+    dataTestId,
+  } = props;
 
   const modifier = value ? 'on' : 'off';
 
@@ -77,6 +85,9 @@ const ToggleButton = (props) => {
         thumbStyle={thumbStyle}
         thumbAnimateRange={[3, 18]}
         colors={colors}
+        passThroughInputProps={{
+          'data-testId': dataTestId,
+        }}
       />
       <div className="toggle-button__status">
         <span className="toggle-button__label-off">{offLabel}</span>
@@ -111,6 +122,10 @@ ToggleButton.propTypes = {
    * Additional className to add to the ToggleButton
    */
   className: PropTypes.string,
+  /**
+   * A test id for the toggle button
+   */
+  dataTestId: PropTypes.string,
 };
 
 export default ToggleButton;
