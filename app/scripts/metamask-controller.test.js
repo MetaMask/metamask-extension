@@ -52,7 +52,7 @@ const browserPolyfillMock = {
     },
   },
   alarms: {
-    getAll: jest.fn(),
+    getAll: jest.fn(() => Promise.resolve([])),
     create: jest.fn(),
     clear: jest.fn(),
     onAlarm: {
