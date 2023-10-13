@@ -13,6 +13,7 @@ exports[`Balance Overview and Portfolio for Tokens should output correct ETH tot
       >
         <div
           class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+          data-testid="token-balance-overview-currency-display"
           title="0.001 ETH"
         >
           <span
@@ -54,6 +55,7 @@ exports[`Balance Overview and Portfolio for Tokens should output correct USD tot
       >
         <div
           class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+          data-testid="token-balance-overview-currency-display"
           title="$2.05 USD"
         >
           <span
