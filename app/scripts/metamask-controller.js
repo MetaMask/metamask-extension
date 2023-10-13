@@ -166,6 +166,7 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+import { createSwapsTransaction } from './lib/transaction-swaps';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IN
@@ -1315,6 +1316,13 @@ export default class MetamaskController extends EventEmitter {
         this.getExternalPendingTransactions.bind(this),
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      createSwapsTransaction: createSwapsTransaction({
+        cancelTransaction: this.txController.cancelTransaction.bind(this),
+        setApproveTxId: this.txController.setApproveTxId.bind(this),
+        updateTransactionSwapProperties:
+          this.txController.updateTransactionSwapProperties.bind(this),
+        setTradeTxId: this.txController.setTradeTxId.bind(this),
+      }),
       ...this.snapAndHardwareMetricsParams,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
@@ -1614,14 +1622,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     }).init();
     ///: END:ONLY_INCLUDE_IN
-
-    this.txController.on('newSwapApproval', (txMeta) => {
-      this.swapsController.setApproveTxId(txMeta.id);
-    });
-
-    this.txController.on('newSwap', (txMeta) => {
-      this.swapsController.setTradeTxId(txMeta.id);
-    });
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
