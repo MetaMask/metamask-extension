@@ -10,7 +10,11 @@ import { setBackgroundConnection } from '../../../test/jest';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import {
   TransactionStatus,
   TransactionType,
@@ -34,14 +38,14 @@ const mockNetworkId = '5';
 const mockTxParamsFromAddress = '0x123456789';
 
 const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
-const mockTxParamsToAddressConcat = '0x85c...D65e';
+const mockTxParamsToAddressConcat = '0x85c16...DD65e';
 
 const mockParsedTxDataToAddressWithout0x =
   'e57e7847fd3661a9b7c86aaf1daea08d9da5750a';
-const mockParsedTxDataToAddress = '0xe57...750A';
+const mockParsedTxDataToAddress = '0xe57E7...5750A';
 
 const mockPropsToAddress = '0x33m1685cfceaa5c0bdb1609fc536e9a8387dd567';
-const mockPropsToAddressConcat = '0x33m...d567';
+const mockPropsToAddressConcat = '0x33m16...dd567';
 
 const mockTxParams = {
   from: mockTxParamsFromAddress,
@@ -102,6 +106,8 @@ const baseStore = {
     currentCurrency: 'USD',
     providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
+      nickname: GOERLI_DISPLAY_NAME,
+      type: NETWORK_TYPES.GOERLI,
     },
     nativeCurrency: 'ETH',
     featureFlags: {

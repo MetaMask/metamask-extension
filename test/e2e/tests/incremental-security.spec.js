@@ -17,7 +17,7 @@ describe('Incremental Security', function () {
       },
     ],
   };
-  it('Back up Secret Recovery Phrase from backup reminder', async function () {
+  it('Back up Secret Recovery Phrase from backup reminder @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

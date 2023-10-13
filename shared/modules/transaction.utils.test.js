@@ -1,4 +1,4 @@
-import EthQuery from 'ethjs-query';
+import EthQuery from '@metamask/ethjs-query';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { TransactionType } from '../constants/transaction';
 import {

@@ -4,6 +4,7 @@
   },
   "appState": {
     "networkDropdownOpen": false,
+    "importNftsModal": { "open": false },
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {
@@ -18,6 +19,14 @@
     },
     "warning": null,
     "customTokenAmount": "10"
+  },
+  "confirmTransaction": {
+    "txData": {
+      "txParams": {
+        "gas": "0x153e2",
+        "value": "0x0"
+      }
+    }
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
@@ -151,6 +160,10 @@
       {
         "type": "Snap Keyring",
         "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
+      },
+      {
+        "type": "Custody test",
+        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
       }
     ],
     "identities": {
@@ -169,6 +182,10 @@
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "name": "Test Account 3",
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "name": "Custody test",
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
       }
     },
     "selectedNetworkClientId": "goerli",
@@ -1379,6 +1396,7 @@
       }
     ],
     "desktopEnabled": false,
+    "addSnapAccountEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
@@ -1389,7 +1407,40 @@
         "requestState": { "test": "value" }
       }
     },
-    "pendingApprovalCount": 1
+    "pendingApprovalCount": 1,
+    "database": {
+      "verifiedSnaps": {
+        "npm:@metamask/test-snap-bip44": {
+          "id": "npm:@metamask/test-snap-bip44",
+          "metadata": {
+            "name": "BIP-44",
+            "author": {
+              "name": "Consensys",
+              "website": "https://consensys.io/"
+            },
+            "website": "https://snaps.consensys.io/",
+            "summary": "An example Snap that signs messages using BLS.",
+            "description": "An example Snap that signs messages using BLS.",
+            "audits": [
+              {
+                "auditor": "Consensys Diligence",
+                "report": "https://consensys.io/diligence/audits/"
+              }
+            ],
+            "category": "interoperability",
+            "support": {
+              "contact": "https://github.com/MetaMask"
+            },
+            "sourceCode": "https://github.com/MetaMask/test-snaps"
+          },
+          "versions": {
+            "5.1.2": {
+              "checksum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            }
+          }
+        }
+      }
+    }
   },
   "send": {
     "amountMode": "INPUT",

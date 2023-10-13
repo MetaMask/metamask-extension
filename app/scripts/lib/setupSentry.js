@@ -113,7 +113,9 @@ export const SENTRY_BACKGROUND_STATE = {
   KeyringController: {
     isUnlocked: true,
     keyrings: false,
-    keyringTypes: false,
+  },
+  LoggingController: {
+    logs: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -170,7 +172,6 @@ export const SENTRY_BACKGROUND_STATE = {
     forgottenPassword: true,
     identities: false,
     incomingTransactionsPreferences: true,
-    infuraBlocked: true,
     ipfsGateway: false,
     isLineaMainnetReleased: true,
     knownMethodData: false,
@@ -318,6 +319,11 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    useSafeChainsListValidation: true,
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    addSnapAccountEnabled: false,
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IN
   },
   unconnectedAccount: true,
 };

@@ -611,18 +611,9 @@
   "busy": {
     "message": "Занят"
   },
-  "buy": {
-    "message": "Купить"
-  },
   "buyAsset": {
     "message": "Купить $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Держите свою криптовалюту и зарабатывайте потенциально прибыль"
-  },
-  "buyDisabled": {
-    "message": "В этой сети недоступна покупка"
   },
   "buyMoreAsset": {
     "message": "Купить еще $1",
@@ -1408,9 +1399,6 @@
   "enableAutoDetect": {
     "message": " Включить автоопределение"
   },
-  "enableForAllNetworks": {
-    "message": "Включить для всех сетей"
-  },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },
@@ -1550,11 +1538,9 @@
   "experimental": {
     "message": "Экспериментальные"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Обзор MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Настройте кошелек под себя."
+    "message": "Настройте кошелек под себя.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Внешнее расширение"
@@ -1584,9 +1570,6 @@
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Добавленный файл слишком велик."
   },
   "flaskWelcomeUninstall": {
     "message": "вам нужно должны удалить это расширение",
@@ -2404,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3039,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Открыть в обозревателе блоков"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (бета-версия)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3202,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Разрешите snap использовать обработчики жизненного цикла для запуска кода в определенное время в течение его жизненного цикла.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Выполнять бесконечно.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Разрешите snap работать бесконечно, например, при обработке больших объемов данных.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Добавляйте счета Ethereum и управляйте ими",
@@ -3944,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Создать новый счет $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3979,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Установлена"
-  },
-  "snapError": {
-    "message": "Ошибка snap: '$1'. Код ошибки: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Установить snap"
@@ -4824,9 +4789,6 @@
   "termsOfService": {
     "message": "Условия обслуживания"
   },
-  "termsOfUse": {
-    "message": "условия использования"
-  },
   "termsOfUseAgreeText": {
     "message": " Я согласен(-на) с Условиями использования, которые применяются к использованию мною MetaMask и всех его функций"
   },
@@ -4854,10 +4816,6 @@
   },
   "thisCollection": {
     "message": "эта коллекция"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Эта услуга является экспериментальной. Включив эту функцию, вы соглашаетесь с $1 OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Время"
@@ -5073,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Транзакция отправлена повторно с платой за газ, увеличенной до $1, в $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Включить оповещения безопасности"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Мы используем сторонние API для обнаружения и отображения рисков, связанных с неподписанными транзакциями и запросами подписи, прежде чем вы их подпишете. Эти службы будут иметь доступ к вашим неподписанным транзакциям и запросам подписи, адресу вашего счета и предпочитаемому вами языку."
   },
   "transactionSettings": {
     "message": "Настройки транзакции"
@@ -5297,9 +5249,6 @@
   },
   "viewOnOpensea": {
     "message": "Смотреть на OpenSea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Просмотр панели инструментов Portfolio"
   },
   "viewinCustodianApp": {
     "message": "Смотреть в приложении депозитария"

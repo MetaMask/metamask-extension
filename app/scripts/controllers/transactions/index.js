@@ -1,7 +1,7 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
-import EthQuery from 'ethjs-query';
+import EthQuery from '@metamask/ethjs-query';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
@@ -68,6 +68,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import getSnapAndHardwareInfoForMetrics from '../../lib/snap-keyring/metrics';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -166,10 +167,12 @@ export default class TransactionController extends EventEmitter {
     this.updateEventFragment = opts.updateEventFragment;
     this.finalizeEventFragment = opts.finalizeEventFragment;
     this.getEventFragmentById = opts.getEventFragmentById;
-    this.getDeviceModel = opts.getDeviceModel;
-    this.getAccountType = opts.getAccountType;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
+    this.getSelectedAddress = opts.getSelectedAddress;
+    this.getAccountType = opts.getAccountType;
+    this.getDeviceModel = opts.getDeviceModel;
+    this.snapAndHardwareMessenger = opts.snapAndHardwareMessenger;
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
 
@@ -963,6 +966,7 @@ export default class TransactionController extends EventEmitter {
       if (blockTimestamp) {
         txMeta.blockTimestamp = blockTimestamp;
       }
+      txMeta.verifiedOnBlockchain = true;
 
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
@@ -2424,7 +2428,10 @@ export default class TransactionController extends EventEmitter {
       ) {
         if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
           transactionApprovalAmountType = TransactionApprovalAmountType.revoke;
-        } else if (customTokenAmount) {
+        } else if (
+          customTokenAmount &&
+          customTokenAmount !== dappProposedTokenAmount
+        ) {
           transactionApprovalAmountType = TransactionApprovalAmountType.custom;
         } else if (dappProposedTokenAmount) {
           transactionApprovalAmountType =
@@ -2492,8 +2499,6 @@ export default class TransactionController extends EventEmitter {
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
       gas_edit_attempted: 'none',
-      account_type: await this.getAccountType(this.getSelectedAddress()),
-      device_model: await this.getDeviceModel(this.getSelectedAddress()),
       asset_type: assetType,
       token_standard: tokenStandard,
       transaction_type: transactionType,
@@ -2506,6 +2511,16 @@ export default class TransactionController extends EventEmitter {
         securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
       ///: END:ONLY_INCLUDE_IN
     };
+
+    const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+      this.getSelectedAddress,
+      this.getAccountType,
+      this.getDeviceModel,
+      this.snapAndHardwareMessenger,
+    );
+
+    // merge the snapAndHardwareInfo into the properties
+    Object.assign(properties, snapAndHardwareInfo);
 
     if (transactionContractMethod === contractMethodNames.APPROVE) {
       properties = {
@@ -2840,7 +2855,7 @@ export default class TransactionController extends EventEmitter {
       const { origin } = txMeta;
 
       const approvalResult = await this._requestApproval(
-        String(txId),
+        txId,
         origin,
         { txId },
         {
