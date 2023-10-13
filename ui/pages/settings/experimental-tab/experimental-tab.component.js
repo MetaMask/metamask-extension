@@ -20,7 +20,7 @@ import {
   TextColor,
   TextVariant,
   Display,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid,desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid,desktop,keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
