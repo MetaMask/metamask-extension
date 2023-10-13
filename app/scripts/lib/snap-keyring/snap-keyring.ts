@@ -5,10 +5,13 @@ import type {
   ResultComponent,
 } from '@metamask/approval-controller';
 import type { KeyringController } from '@metamask/keyring-controller';
+import { PhishingController } from '@metamask/phishing-controller';
+import browser from 'webextension-polyfill';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import PreferencesController from '../../controllers/preferences';
+import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**
  * Get the addresses of the accounts managed by a given Snap.
@@ -32,6 +35,7 @@ export const getAccountsBySnapId = async (
  * @param getApprovalController - A function that retrieves the Approval Controller instance.
  * @param getKeyringController - A function that retrieves the Keyring Controller instance.
  * @param getPreferencesController - A function that retrieves the Preferences Controller instance.
+ * @param getPhishingController - A function that retrieves the Phishing Controller instance
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
@@ -43,6 +47,7 @@ export const snapKeyringBuilder = (
   getApprovalController: () => ApprovalController,
   getKeyringController: () => KeyringController,
   getPreferencesController: () => PreferencesController,
+  getPhishingController: () => PhishingController,
   removeAccountHelper: (address: string) => Promise<any>,
 ) => {
   const builder = (() => {
@@ -50,6 +55,29 @@ export const snapKeyringBuilder = (
       addressExists: async (address) => {
         const addresses = await getKeyringController().getAccounts();
         return addresses.includes(address.toLowerCase());
+      },
+      redirectUser: async (snapId: string, url: string, message: string) => {
+        // Either url or message must be defined
+        if (url.length > 0 || message.length > 0) {
+          const isBlocked = await isBlockedUrl(url, getPhishingController());
+
+          const confirmationResult: boolean =
+            (await getApprovalController().addAndShowApprovalRequest({
+              origin: snapId,
+              requestData: { url, message, isBlockedUrl: isBlocked },
+              type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+            })) as boolean;
+
+          if (confirmationResult && url.length > 0) {
+            browser.tabs.create({ url });
+          } else {
+            console.log('User refused snap account redirection to:', url);
+          }
+        } else {
+          console.log(
+            'Error occurred when redirecting snap account. url or message must be defined',
+          );
+        }
       },
       saveState: async () => {
         await getKeyringController().persistAllKeyrings();

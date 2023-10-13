@@ -1,4 +1,5 @@
 import React from 'react';
+import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from './asset-list-conversion-button';
 import { AssetListConversionButton } from '.';
 
 export default {
@@ -12,7 +13,6 @@ export default {
   args: {
     variant: 'buy',
     onClick: () => undefined,
-    onClose: () => undefined,
   },
 };
 
@@ -20,6 +20,9 @@ export const DefaultStory = (args) => <AssetListConversionButton {...args} />;
 DefaultStory.storyName = 'Default';
 
 export const ReceiveStory = (args) => (
-  <AssetListConversionButton {...args} variant="receive" />
+  <AssetListConversionButton
+    {...args}
+    variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
+  />
 );
 ReceiveStory.storyName = 'Receive';
