@@ -11,13 +11,16 @@ import {
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
+import { showSnapAccountExperimentalToggle } from '../../../../shared/modules/snap-accounts';
+///: END:ONLY_INCLUDE_IN
 
 import { Text, Box, Tag } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
   Display,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid,desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid,desktop,keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -263,7 +266,7 @@ export default class ExperimentalTab extends PureComponent {
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  renderKeyringSnapsToggle() {
+  keyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
 
@@ -335,6 +338,21 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
   ///: END:ONLY_INCLUDE_IN
+
+  renderKeyringSnapsToggle() {
+    let toggle = null;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    toggle = this.keyringSnapsToggle();
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+    if (!showSnapAccountExperimentalToggle()) {
+      toggle = null;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    return toggle;
+  }
 
   render() {
     return (

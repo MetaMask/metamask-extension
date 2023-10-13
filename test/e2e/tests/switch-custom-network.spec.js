@@ -88,7 +88,7 @@ describe('Switch ethereum chain', function () {
         await driver.switchToWindow(extension);
 
         const currentNetworkName = await driver.findElement({
-          tag: 'p',
+          tag: 'span',
           text: 'Localhost 8546',
         });
 
