@@ -52,6 +52,7 @@ async function mockInfura(mockServer) {
       },
     ],
     ['eth_estimateGas'],
+    ['eth_feeHistory'],
     ['eth_gasPrice'],
     ['eth_getBalance'],
     ['eth_getBlockByNumber'],
@@ -62,6 +63,7 @@ async function mockInfura(mockServer) {
         params: [CONTRACT_ADDRESS.BUSD],
       },
     ],
+    ['eth_getTransactionCount'],
   ]);
 
   await mockServer

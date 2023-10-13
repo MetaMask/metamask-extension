@@ -18,8 +18,10 @@ async function mockInfura(mockServer) {
     ['eth_blockNumber'],
     ['eth_call'],
     ['eth_estimateGas'],
+    ['eth_feeHistory'],
     ['eth_gasPrice'],
     ['eth_getBalance'],
+    ['eth_getTransactionCount'],
   ]);
 }
 
