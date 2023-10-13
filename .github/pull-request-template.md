@@ -1,29 +1,32 @@
 ## **Description**
-_Write a short description of the changes included in this pull request, also include relevant motivation and context. Have in mind the following questions:_
-_1. What is the reason for the change?_
-_2. What is the improvement/solution?_
 
-## **Manual testing steps**
-
-_1. Step1:_
-_2. Step2:_
-_3. ..._
-
-## **Screenshots/Recordings**
-
-_If applicable, add screenshots and/or recordings to visualize the before and after of your change._
-
-### **Before**
-
-_[screenshot]_
-
-### **After**
-
-_[screenshot]_
+<!--
+Write a short description of the changes included in this pull request, also include relevant motivation and context. Have in mind the following questions:
+1. What is the reason for the change?
+2. What is the improvement/solution?
+-->
 
 ## **Related issues**
 
-_Fixes #???_
+Fixes: #???
+
+## **Manual testing steps**
+
+1. Go to this page...
+2.
+3.
+
+## **Screenshots/Recordings**
+
+<!-- If applicable, add screenshots and/or recordings to visualize the before and after of your change. -->
+
+### **Before**
+
+[screenshot / recording]
+
+### **After**
+
+[screenshot / recording]
 
 ## **Pre-merge author checklist**
 
