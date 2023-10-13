@@ -95,7 +95,6 @@ describe('Add account', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await waitForAccountRendered(driver);
 
         // Check address of 2nd account
         await waitForAccountRendered(driver);
@@ -147,7 +146,10 @@ describe('Add account', function () {
 
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
-        await waitForAccountRendered(driver);
+
+        if (!process.env.MULTICHAIN) {
+          await waitForAccountRendered(driver);
+        }
 
         // Check address of 1st account
         await driver.findElement({
