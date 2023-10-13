@@ -72,7 +72,9 @@ describe('MetaMask Responsive UI', function () {
 
         // assert balance
         const balance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
+          process.env.MULTICHAIN
+            ? '[data-testid="token-balance-overview-currency-display"]'
+            : '[data-testid="eth-overview__primary-currency"]',
         );
         assert.ok(/^0\sETH$/u.test(await balance.getText()));
       },

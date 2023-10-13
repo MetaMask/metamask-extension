@@ -143,7 +143,9 @@ describe('MV3 - Restart service worker multiple times', function () {
 
       const isETHBalanceOverviewPresentAndVisible =
         await driver.isElementPresentAndVisible({
-          css: '[data-testid="eth-overview__primary-currency"]',
+          css: process.env.MULTICHAIN
+            ? '[data-testid="token-balance-overview-currency-display"]'
+            : '[data-testid="eth-overview__primary-currency"]',
           text: `${expectedBalance} ETH`,
         });
 
