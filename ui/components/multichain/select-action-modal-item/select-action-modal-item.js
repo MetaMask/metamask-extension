@@ -27,6 +27,7 @@ export const SelectActionModalItem = ({
   primaryText,
   secondaryText,
   disabled,
+  ...props
 }) => {
   if (disabled) {
     return null;
@@ -44,8 +45,8 @@ export const SelectActionModalItem = ({
         onClick();
       }}
       className="select-action-modal-item"
-      data-testid="select-action-modal-item"
       width={BlockSize.Full}
+      {...props}
     >
       <Box>
         <AvatarIcon

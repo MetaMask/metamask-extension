@@ -202,6 +202,7 @@ export const SelectActionModal = ({ onClose }) => {
               history.push(SEND_ROUTE);
               onClose();
             }}
+            data-testid="select-action-modal-item-send"
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
