@@ -33,15 +33,35 @@ DefaultStory.storyName = 'Default';
 
 export const Size: StoryFn<typeof SelectButton> = (args) => {
   return (
-    <SelectWrapper
-      triggerComponent={
-        <SelectButton size={SelectButtonSize.Sm} {...args}>
-          {SelectButtonSize.Sm}
-        </SelectButton>
-      }
-    >
-      Demo
-    </SelectWrapper>
+    <>
+      <SelectWrapper
+        triggerComponent={
+          <SelectButton size={SelectButtonSize.Sm} {...args}>
+            {SelectButtonSize.Sm}
+          </SelectButton>
+        }
+      >
+        Demo
+      </SelectWrapper>
+      <SelectWrapper
+        triggerComponent={
+          <SelectButton size={SelectButtonSize.Md} {...args}>
+            {SelectButtonSize.Md}
+          </SelectButton>
+        }
+      >
+        Demo
+      </SelectWrapper>
+      <SelectWrapper
+        triggerComponent={
+          <SelectButton size={SelectButtonSize.Lg} {...args}>
+            {SelectButtonSize.Lg}
+          </SelectButton>
+        }
+      >
+        Demo
+      </SelectWrapper>
+    </>
   );
 };
 Size.args = {};

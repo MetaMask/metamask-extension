@@ -6,8 +6,7 @@ exports[`SelectButton should render the SelectButton without crashing 1`] = `
     class="mm-box mm-select-wrapper"
   >
     <button
-      class="mm-box mm-select-button mm-select-button--size-auto mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-border-default box--border-style-solid box--border-width-1"
-      style="width: 100%;"
+      class="mm-box mm-select-button mm-select-button--size-md mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-border-default box--border-style-solid box--border-width-1"
     >
       <span>
         Trigger

@@ -67,7 +67,6 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       popoverProps,
       children,
       // To Do: Figure out the below props
-      // onBlur,
       // onFocus,
       // onChange,
       ...props

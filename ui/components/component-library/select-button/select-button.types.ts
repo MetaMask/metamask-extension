@@ -7,7 +7,6 @@ export enum SelectButtonSize {
   Sm = 'sm',
   Md = 'md',
   Lg = 'lg',
-  Auto = 'auto',
 }
 
 export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
@@ -17,7 +16,7 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   className?: string;
   /**
    * The size of the SelectButton using SelectButtonSize enum
-   * Possible values: 'SelectButtonSize.Sm', 'SelectButtonSize.Md', 'SelectButtonSize.Lg', 'SelectButtonSize.Auto
+   * Possible values: 'SelectButtonSize.Sm', 'SelectButtonSize.Md', 'SelectButtonSize.Lg'
    */
   size?: SelectButtonSize;
   /*

@@ -24,7 +24,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       className = '',
       placeholder,
       children,
-      size = SelectButtonSize.Auto,
+      size = SelectButtonSize.Md,
       onClick,
       ...props
     }: SelectButtonProps<C>,
@@ -56,6 +56,19 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       WrapperPlaceholder ||
       children;
 
+    const getPaddingBySize = () => {
+      switch (size) {
+        case SelectButtonSize.Sm:
+          return 1;
+        case SelectButtonSize.Md:
+          return 2;
+        case SelectButtonSize.Lg:
+          return 3;
+        default:
+          return 1;
+      }
+    };
+
     return (
       <Box
         className={classnames(
@@ -79,6 +92,8 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         }
         borderRadius={BorderRadius.MD}
         backgroundColor={BackgroundColor.backgroundDefault}
+        paddingTop={getPaddingBySize()}
+        paddingBottom={getPaddingBySize()}
         paddingLeft={4}
         paddingRight={4}
         display={Display.Flex}
@@ -86,7 +101,6 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         gap={2}
-        style={{ width: '100%' }}
       >
         <span>{contentToRender}</span>
         <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
