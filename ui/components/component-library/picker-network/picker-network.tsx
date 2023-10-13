@@ -7,7 +7,6 @@ import {
   IconColor,
   BackgroundColor,
   Display,
-  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -39,9 +38,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
   ) => {
     return (
       <Box
-        className={classnames('mm-picker-network', className, {
-          'mm-picker-network--full': props.width === BlockSize.Full,
-        })}
+        className={classnames('mm-picker-network', className)}
         ref={ref}
         as="button"
         backgroundColor={BackgroundColor.backgroundAlternative}
