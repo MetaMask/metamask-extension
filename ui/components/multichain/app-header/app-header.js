@@ -234,6 +234,9 @@ export const AppHeader = ({ location }) => {
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
                       aria-label={t('networkMenu')}
+                      labelProps={{
+                        display: Display.None,
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
