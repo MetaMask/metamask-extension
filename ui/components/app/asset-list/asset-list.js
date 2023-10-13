@@ -38,6 +38,7 @@ import { Display } from '../../../helpers/constants/design-system';
 
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -115,7 +116,7 @@ const AssetList = ({ onClickAsset }) => {
         >
           {shouldShowBuy ? (
             <AssetListConversionButton
-              variant="buy"
+              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({
@@ -133,7 +134,7 @@ const AssetList = ({ onClickAsset }) => {
           ) : null}
           {shouldShowReceive ? (
             <AssetListConversionButton
-              variant="receive"
+              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
               onClick={() => setShowReceiveModal(true)}
             />
           ) : null}
