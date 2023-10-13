@@ -4144,19 +4144,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:1.0.0-rc.2":
-  version: 1.0.0-rc.2
-  resolution: "@metamask/eth-snap-keyring@npm:1.0.0-rc.2"
+"@metamask/eth-snap-keyring@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/eth-snap-keyring@npm:1.0.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@metamask/eth-sig-util": "npm:^7.0.0"
-    "@metamask/keyring-api": "npm:^1.0.0-rc.1"
+    "@metamask/keyring-api": "npm:^1.0.0"
     "@metamask/snaps-controllers": "npm:^3.0.0"
     "@metamask/utils": "npm:^8.1.0"
     "@types/uuid": "npm:^9.0.1"
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
-  checksum: 02e3392db1e0bbea0aac8fa99e55ad2490d99d23568fb1587a31a1510ff41aad3bc29ec5514256e727ec2c6a34c111327600cee8a2d48e4745bdc8665d30770b
+  checksum: 67a28b657f236da51e88fa127a73b3767bf9cab3b8562236aa77c7eb6cd3f73fad1b0d4f497c13c3afa1937d4e65057c7a72a1c6992033ac5b5042ab079aa072
   languageName: node
   linkType: hard
 
@@ -4272,9 +4272,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^1.0.0-rc.1":
-  version: 1.0.0-rc.1
-  resolution: "@metamask/keyring-api@npm:1.0.0-rc.1"
+"@metamask/keyring-api@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/keyring-api@npm:1.0.0"
   dependencies:
     "@metamask/providers": "npm:^13.0.0"
     "@metamask/rpc-methods": "npm:^3.0.0"
@@ -4284,7 +4284,7 @@ __metadata:
     "@types/uuid": "npm:^9.0.1"
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
-  checksum: 60c418d430d01ec6e8a0ed8e6407bb62bcabfe6933d20f8efd31f82e9ae6d1f2b34009affc621f9bf2570d35fad20e4565305369232742b7830c11a27b053e6f
+  checksum: f7e5f4f043b53407752348ddc5825217ecacc3e80446c81fadf1ca4b1b27fc2f82ba9b71221769b241d43877762ed7c82ffc5caa550214134de30548810c7025
   languageName: node
   linkType: hard
 
@@ -23823,7 +23823,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
     "@metamask/eth-keyring-controller": "npm:^13.0.1"
     "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
-    "@metamask/eth-snap-keyring": "npm:1.0.0-rc.2"
+    "@metamask/eth-snap-keyring": "npm:^1.0.0"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^1.1.0"
     "@metamask/etherscan-link": "npm:^2.2.0"
@@ -23832,7 +23832,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^6.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/keyring-api": "npm:^1.0.0-rc.1"
+    "@metamask/keyring-api": "npm:^1.0.0"
     "@metamask/keyring-controller": "npm:^8.0.1"
     "@metamask/logging-controller": "npm:^1.0.1"
     "@metamask/logo": "npm:^3.1.2"
