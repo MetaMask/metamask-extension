@@ -816,6 +816,15 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {string} txId - The transaction id to be updated
    * @param {object} swapProperties - Swap specific properties to be updated
+   * @param {string} swapProperties.sourceTokenSymbol
+   * @param {string} swapProperties.destinationTokenSymbol
+   * @param {string} swapProperties.type
+   * @param {string} swapProperties.destinationTokenDecimals
+   * @param {string} swapProperties.destinationTokenAddress
+   * @param {string} swapProperties.swapMetaData
+   * @param {string} swapProperties.swapTokenValue
+   * @param {string} swapProperties.estimatedBaseFee
+   * @param {string} swapProperties.approvalTxId
    */
   updateTransactionSwapProperties(
     txId,

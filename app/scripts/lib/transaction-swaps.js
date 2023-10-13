@@ -5,19 +5,14 @@ import {
 } from '../../../shared/constants/transaction';
 
 export const createSwapsTransaction =
-  ({
-    cancelTransaction,
-    setApproveTxId,
-    updateTransactionSwapProperties,
-    setTradeTxId,
-  }) =>
+  ({ txController, swapsController }) =>
   async (swapOptions, transactionType, transactionMeta) => {
     if (
       transactionType === TransactionType.swap &&
       swapOptions?.hasApproveTx === false &&
       transactionMeta.simulationFails
     ) {
-      await cancelTransaction(transactionMeta.id);
+      await txController.cancelTransaction(transactionMeta.id);
       throw new Error('Simulation failed');
     }
 
@@ -28,7 +23,7 @@ export const createSwapsTransaction =
     }
 
     if (transactionType === TransactionType.swapApproval) {
-      setApproveTxId(transactionMeta.id);
+      swapsController.setApproveTxId(transactionMeta.id);
       throwErrorIfNotUnapprovedTx(transactionMeta);
 
       const swapApprovalTransaction = pickBy({
@@ -40,13 +35,13 @@ export const createSwapsTransaction =
         swapApprovalTransaction,
       );
 
-      await updateTransactionSwapProperties(finalTransactionMeta);
+      await txController.updateTransactionSwapProperties(finalTransactionMeta);
 
       return finalTransactionMeta;
     }
 
     if (transactionType === TransactionType.swap) {
-      setTradeTxId(transactionMeta.id);
+      swapsController.setTradeTxId(transactionMeta.id);
       throwErrorIfNotUnapprovedTx(transactionMeta);
 
       const swapApprovalTransaction = pickBy({
@@ -65,7 +60,7 @@ export const createSwapsTransaction =
         swapApprovalTransaction,
       );
 
-      await updateTransactionSwapProperties(finalTransactionMeta);
+      await txController.updateTransactionSwapProperties(finalTransactionMeta);
 
       return finalTransactionMeta;
     }

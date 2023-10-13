@@ -1317,11 +1317,8 @@ export default class MetamaskController extends EventEmitter {
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
       createSwapsTransaction: createSwapsTransaction({
-        cancelTransaction: this.txController.cancelTransaction.bind(this),
-        setApproveTxId: this.txController.setApproveTxId.bind(this),
-        updateTransactionSwapProperties:
-          this.txController.updateTransactionSwapProperties.bind(this),
-        setTradeTxId: this.txController.setTradeTxId.bind(this),
+        txController: this.txController,
+        swapsController: this.swapsController,
       }),
       ...this.snapAndHardwareMetricsParams,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
