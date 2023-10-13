@@ -82,12 +82,18 @@ export const useAccountTotalFiatBalance = (
   const formattedFiat = formatCurrency(totalFiatBalance, currentCurrency);
 
   // WEI Number which can be used with UserPreferencedCurrencyDisplay component
-  const totalWeiBalance = getWeiHexFromDecimalValue({
+  let totalWeiBalance = getWeiHexFromDecimalValue({
     value: totalFiatBalance,
     fromCurrency: currentCurrency,
     conversionRate,
     invertConversionRate: true,
   });
+
+  // If we have a totalFiatBalance of "0" and conversionRate of "0",
+  // getWeiHexFromDecimalValue responds with "NaN"
+  if (totalWeiBalance === 'NaN') {
+    totalWeiBalance = '0x0';
+  }
 
   return {
     formattedFiat,
