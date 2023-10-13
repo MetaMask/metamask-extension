@@ -113,6 +113,11 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
+  "PPOMController": {
+    "versionInfo": {},
+    "storageMetadata": {},
+    "chainStatus": { "0x539": "object" }
+  },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionHistory": "object",
@@ -131,6 +136,7 @@
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
     "openSeaEnabled": false,
+    "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},

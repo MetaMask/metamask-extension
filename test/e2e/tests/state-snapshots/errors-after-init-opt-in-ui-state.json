@@ -45,6 +45,7 @@
     "fullScreenGasPollTokens": [],
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
+    "securityAlertsEnabled": "boolean",
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
@@ -57,6 +58,7 @@
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
+    "storageMetadata": {},
     "serviceWorkerLastActiveTime": 0,
     "currentAppVersion": "string",
     "previousAppVersion": "",
@@ -80,6 +82,9 @@
       }
     },
     "cachedBalances": "object",
+    "chainStatus": {
+      "0x539": "object"
+    },
     "keyrings": "object",
     "useNonceField": false,
     "usePhishDetect": true,
@@ -118,6 +123,7 @@
     "usdConversionRate": 1300,
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
+    "versionInfo": {},
     "web3ShimUsageOrigins": "object",
     "seedPhraseBackedUp": true,
     "onboardingTabs": "object",
