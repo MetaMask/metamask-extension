@@ -652,12 +652,21 @@ const TEST_SEED_PHRASE_TWO =
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
-  await driver.findElement({
-    css: process.env.MULTICHAIN
-      ? '[data-testid="token-balance-overview-currency-display"]'
-      : '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance}${process.env.MULTICHAIN ? '\n' : ''}ETH`,
-  });
+  if (process.env.MULTICHAIN) {
+    await driver.findElement({
+      css: '[data-testid="token-balance-overview-currency-display"] .currency-display-component__text',
+      text: balance,
+    });
+    await driver.findElement({
+      css: '[data-testid="token-balance-overview-currency-display"] .currency-display-component__suffix',
+      text: 'ETH',
+    });
+  } else {
+    await driver.findElement({
+      css: '[data-testid="eth-overview__primary-currency"]',
+      text: `${balance} ETH`,
+    });
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
