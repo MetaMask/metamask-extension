@@ -458,7 +458,7 @@ describe('Custom network', function () {
           });
           // verify network switched
           const networkDisplayed = await driver.findElement({
-            tag: 'p',
+            tag: 'span',
             text: 'Arbitrum One',
           });
           assert.equal(
