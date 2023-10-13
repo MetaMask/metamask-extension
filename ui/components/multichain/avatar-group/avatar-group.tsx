@@ -35,6 +35,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
     marginLeftValue = '-16px';
   }
   const tagValue = `+${(membersCount - limit).toLocaleString()}`;
+  console.log(tagValue, typeof tagValue, showTag);
   return (
     <Box
       alignItems={AlignItems.center}
@@ -43,17 +44,17 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       data-testid="avatar-group"
     >
       <Box display={Display.Flex}>
-        {visibleMembers.map((x, i) => (
+        {visibleMembers.map((member, i) => (
           <Box
             borderRadius={BorderRadius.full}
-            key={x.symbol}
+            key={member.symbol}
             style={
-              i === 0 ? { marginLeft: '0px' } : { marginLeft: marginLeftValue }
+              i === 0 ? { marginLeft: '0' } : { marginLeft: marginLeftValue }
             }
           >
             <AvatarToken
-              src={x.image}
-              name={x.symbol}
+              src={member.image}
+              name={member.symbol}
               size={size}
               borderColor={borderColor}
             />
@@ -62,16 +63,9 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       </Box>
       {showTag ? (
         <Box>
-          {typeof tagValue === 'string' ? (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-            >
-              {tagValue}
-            </Text>
-          ) : (
-            tagValue
-          )}
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {tagValue}
+          </Text>
         </Box>
       ) : null}
     </Box>
