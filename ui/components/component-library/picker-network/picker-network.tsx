@@ -7,6 +7,7 @@ import {
   IconColor,
   BackgroundColor,
   Display,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -48,6 +49,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
         gap={2}
         borderRadius={BorderRadius.pill}
         display={Display.Flex}
+        width={BlockSize.Max}
         {...(props as BoxProps<C>)}
       >
         <AvatarNetwork
