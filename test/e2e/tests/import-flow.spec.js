@@ -74,13 +74,6 @@ describe('Import flow @no-mmi', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // Create a new account
-        // switches to localhost
-        await driver.delay(largeDelayMs);
-        await driver.clickElement('[data-testid="network-display"]');
-        await driver.clickElement('.toggle-button');
-        await driver.clickElement({ text: 'Localhost', tag: 'button' });
-
         // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
