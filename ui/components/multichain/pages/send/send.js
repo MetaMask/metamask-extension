@@ -5,7 +5,9 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonPrimary,
+  ButtonPrimarySize,
   ButtonSecondary,
+  ButtonSecondarySize,
   IconName,
 } from '../../../component-library';
 
@@ -27,8 +29,10 @@ export const SendPage = () => {
       </Header>
       <Content></Content>
       <Footer>
-        <ButtonSecondary block>{t('cancel')}</ButtonSecondary>
-        <ButtonPrimary block disabled>
+        <ButtonSecondary size={ButtonSecondarySize.Lg} block>
+          {t('cancel')}
+        </ButtonSecondary>
+        <ButtonPrimary size={ButtonPrimarySize.Lg} block disabled>
           {t('confirm')}
         </ButtonPrimary>
       </Footer>
