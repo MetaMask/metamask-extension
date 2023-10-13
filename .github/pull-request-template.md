@@ -8,7 +8,7 @@ Write a short description of the changes included in this pull request, also inc
 
 ## **Related issues**
 
-Fixes: #???
+Fixes: #
 
 ## **Manual testing steps**
 
@@ -22,22 +22,20 @@ Fixes: #???
 
 ### **Before**
 
-[screenshot / recording]
+<!-- [screenshots/recordings] -->
 
 ### **After**
 
-[screenshot / recording]
+<!-- [screenshots/recordings] -->
 
 ## **Pre-merge author checklist**
 
 - [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md).
-- [ ] I've clearly explained:
-  - [ ] What problem this PR is solving.
-  - [ ] How this problem was solved.
-  - [ ] How reviewers can test my changes.
-- [ ] I’ve indicated what issue this PR is linked to: Fixes #???
-- [ ] I’ve included tests if applicable.
-- [ ] I’ve documented any added code.
+- [ ] I've clearly explained what problem this PR is solving and how it is solved.
+- [ ] I've linked related issues
+- [ ] I've included manual testing steps
+- [ ] I've included screenshots/recordings if applicable
+- [ ] I’ve included tests if applicable
 - [ ] I’ve applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/LABELING_GUIDELINES.md)).
 - [ ] I’ve properly set the pull request status:
   - [ ] In case it's not yet "ready for review", I've set it to "draft".
