@@ -7,7 +7,7 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { convertToHexValue, withFixtures } = require('./helpers');
+const { convertToHexValue, withFixtures, openActionMenuAndStartSendFlow } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
 const ganacheOptions = {
@@ -66,14 +66,7 @@ async function confirmTx() {
       await driver.fill('#password', 'correct horse battery staple');
       await driver.press('#password', driver.Key.ENTER);
 
-      if (process.env.MULTICHAIN) {
-        await driver.clickElement('[data-testid="app-footer-actions-button"]');
-        await driver.clickElement(
-          '[data-testid="select-action-modal-item-send"]',
-        );
-      } else {
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-      }
+      await openActionMenuAndStartSendFlow(driver);
 
       await driver.fill(
         'input[placeholder="Enter public address (0x) or ENS name"]',

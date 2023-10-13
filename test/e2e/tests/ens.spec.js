@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openActionMenuAndStartSendFlow } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('ENS', function () {
@@ -90,16 +90,7 @@ describe('ENS', function () {
 
         await driver.waitForElementNotPresent('.loading-overlay');
 
-        if (process.env.MULTICHAIN) {
-          await driver.clickElement(
-            '[data-testid="app-footer-actions-button"]',
-          );
-          await driver.clickElement(
-            '[data-testid="select-action-modal-item-send"]',
-          );
-        } else {
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-        }
+        await openActionMenuAndStartSendFlow(driver);
 
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',

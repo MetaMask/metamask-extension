@@ -13,6 +13,7 @@ const {
   largeDelayMs,
   genRandInitBal,
   roundToXDecimalPlaces,
+  openActionMenuAndStartSendFlow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -115,14 +116,7 @@ describe('MV3 - Restart service worker multiple times', function () {
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
 
-      if (process.env.MULTICHAIN) {
-        await driver.clickElement('[data-testid="app-footer-actions-button"]');
-        await driver.clickElement(
-          '[data-testid="select-action-modal-item-send"]',
-        );
-      } else {
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-      }
+      await openActionMenuAndStartSendFlow(driver);
 
       await driver.fill('[data-testid="ens-input"]', recipient);
       const formattedValue = `${value}`.replace('.', ',');
