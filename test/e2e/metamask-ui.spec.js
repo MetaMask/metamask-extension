@@ -10,6 +10,7 @@ const {
   largeDelayMs,
   veryLargeDelayMs,
   openDapp,
+  openActionMenuAndStartSendFlow,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
@@ -286,14 +287,7 @@ describe('MetaMask @no-mmi', function () {
 
   describe('Send token from inside MetaMask', function () {
     it('starts to send a transaction', async function () {
-      if (process.env.MULTICHAIN) {
-        await driver.clickElement('[data-testid="app-footer-actions-button"]');
-        await driver.clickElement(
-          '[data-testid="select-action-modal-item-send"]',
-        );
-      } else {
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-      }
+      await openActionMenuAndStartSendFlow(driver);
       await driver.delay(regularDelayMs);
 
       await driver.fill(

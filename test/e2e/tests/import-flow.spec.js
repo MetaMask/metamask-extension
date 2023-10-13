@@ -9,6 +9,7 @@ const {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   findAnotherAccountFromAccountList,
+  openActionMenuAndStartSendFlow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -110,16 +111,7 @@ describe('Import flow @no-mmi', function () {
 
         // Send ETH from inside MetaMask
         // starts a send transaction
-        if (process.env.MULTICHAIN) {
-          await driver.clickElement(
-            '[data-testid="app-footer-actions-button"]',
-          );
-          await driver.clickElement(
-            '[data-testid="select-action-modal-item-send"]',
-          );
-        } else {
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-        }
+        await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',

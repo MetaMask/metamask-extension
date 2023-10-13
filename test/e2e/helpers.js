@@ -595,12 +595,7 @@ const sendTransaction = async (
   quantity,
   isAsyncFlow = false,
 ) => {
-  if (process.env.MULTICHAIN) {
-    await driver.clickElement('[data-testid="app-footer-actions-button"]');
-    await driver.clickElement('[data-testid="select-action-modal-item-send"]');
-  } else {
-    await driver.clickElement('[data-testid="eth-overview-send"]');
-  }
+  await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
   await driver.clickElement({
@@ -699,6 +694,15 @@ const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
   await locateAccountBalanceDOM(driver, ganacheServer);
 };
+
+const openActionMenuAndStartSendFlow = async (driver) => {
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement('[data-testid="app-footer-actions-button"]');
+    await driver.clickElement('[data-testid="select-action-modal-item-send"]');
+  } else {
+    await driver.clickElement('[data-testid="eth-overview-send"]');
+  }
+}
 
 async function sleepSeconds(sec) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
@@ -896,4 +900,5 @@ module.exports = {
   onboardingPinExtension,
   assertInAnyOrder,
   genRandInitBal,
+  openActionMenuAndStartSendFlow,
 };
