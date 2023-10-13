@@ -30,10 +30,7 @@ describe('Settings', function () {
             ? '[data-testid="token-balance-overview-currency-display"]'
             : '[data-testid="multichain-token-list-item-value"]',
         );
-        assert.equal(
-          await tokenListAmount.getText(),
-          tokenValue,
-        );
+        assert.equal(await tokenListAmount.getText(), tokenValue);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
@@ -79,10 +76,7 @@ describe('Settings', function () {
             ? '[data-testid="token-balance-overview-currency-display"]'
             : '[data-testid="multichain-token-list-item-value"]',
         );
-        assert.equal(
-          (await tokenListAmount.getText()),
-          tokenValue,
-        );
+        assert.equal(await tokenListAmount.getText(), tokenValue);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
