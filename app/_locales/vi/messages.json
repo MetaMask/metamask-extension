@@ -371,9 +371,6 @@
   "amount": {
     "message": "Số tiền"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Lưu ký"
-  },
-  "custodianAccount": {
-    "message": "Tài khoản lưu ký"
   },
   "custodianAccountAddedDesc": {
     "message": "Giờ đây bạn có thể sử dụng tài khoản lưu ký của mình trong MetaMask Institutional."
@@ -2331,9 +2325,6 @@
   "missingSettingRequest": {
     "message": "Yêu cầu tại đây"
   },
-  "mmiAddToken": {
-    "message": "Trang tại $1 muốn ủy quyền token lưu ký sau trong MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional được thiết kế và xây dựng trên khắp thế giới."
   },
@@ -2878,6 +2869,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Đánh dấu đã đọc tất cả"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Tìm hiểu thêm"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "Chúng tôi vui mừng thông báo về phiên bản Open Beta của MetaMask Snaps!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Cá nhân hóa ví của bạn bằng các snap do cộng đồng nhà lập trình xây dựng!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snap giúp bạn làm được nhiều việc hơn với MetaMask — chẳng hạn như kết nối với nhiều mạng hơn, xem thông tin chuyên sâu về giao dịch và nhận thông báo tùy chỉnh."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "Giới thiệu MetaMask Snaps"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "Tìm thấy $1 token mới trong tài khoản này",
@@ -4059,6 +4065,10 @@
   },
   "snapsNoInsight": {
     "message": "Snap không trả về bất kỳ thông tin chi tiết nào"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Mọi thông tin mà bạn chia sẻ với Dịch vụ bên thứ ba sẽ được Dịch vụ bên thứ ba đó thu thập trực tiếp theo chính sách quyền riêng tư của họ. Vui lòng tham khảo chính sách quyền riêng tư của họ để biết thêm thông tin.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Quản lý Snap"

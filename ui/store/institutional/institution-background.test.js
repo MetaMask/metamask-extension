@@ -1,4 +1,30 @@
-import { mmiActionsFactory } from './institution-background';
+import {
+  hideLoadingIndication,
+  showLoadingIndication,
+  forceUpdateMetamaskState,
+} from '../actions';
+import { submitRequestToBackground } from '../action-queue';
+import {
+  mmiActionsFactory,
+  showInteractiveReplacementTokenBanner,
+  setTypedMessageInProgress,
+  setPersonalMessageInProgress,
+} from './institution-background';
+
+jest.mock('../actions', () => ({
+  displayWarning: jest.fn(),
+  showLoadingIndication: jest.fn(),
+  hideLoadingIndication: jest.fn(),
+  forceUpdateMetamaskState: jest.fn(),
+}));
+
+jest.mock('../action-queue', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
+
+jest.mock('../../../shared/modules/error', () => ({
+  isErrorWithMessage: jest.fn(),
+}));
 
 describe('Institution Actions', () => {
   describe('#mmiActionsFactory', () => {
@@ -95,6 +121,54 @@ describe('Institution Actions', () => {
       connectCustodyAddresses(jest.fn());
       expect(connectCustodyAddresses).toBeDefined();
       expect(setWaitForConfirmDeepLinkDialog).toBeDefined();
+    });
+  });
+
+  describe('#showInteractiveReplacementTokenBanner', () => {
+    it('should test showInteractiveReplacementTokenBanner action', async () => {
+      const dispatch = jest.fn();
+
+      await showInteractiveReplacementTokenBanner({
+        url: 'testUrl',
+        oldRefreshToken: 'testToken',
+      })(dispatch);
+
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'showInteractiveReplacementTokenBanner',
+        [{ url: 'testUrl', oldRefreshToken: 'testToken' }],
+      );
+    });
+  });
+
+  describe('#setTypedMessageInProgress', () => {
+    it('should test setTypedMessageInProgress action', async () => {
+      const dispatch = jest.fn();
+
+      await setTypedMessageInProgress('testMsgId')(dispatch);
+
+      expect(showLoadingIndication).toHaveBeenCalled();
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'setTypedMessageInProgress',
+        ['testMsgId'],
+      );
+      expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
+      expect(hideLoadingIndication).toHaveBeenCalled();
+    });
+  });
+
+  describe('#setPersonalMessageInProgress', () => {
+    it('should test setPersonalMessageInProgress action', async () => {
+      const dispatch = jest.fn();
+
+      await setPersonalMessageInProgress('testMsgId')(dispatch);
+
+      expect(showLoadingIndication).toHaveBeenCalled();
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'setPersonalMessageInProgress',
+        ['testMsgId'],
+      );
+      expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
+      expect(hideLoadingIndication).toHaveBeenCalled();
     });
   });
 });

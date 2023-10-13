@@ -371,9 +371,6 @@
   "amount": {
     "message": "Tutar"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Tarayıcında bir Ethereum Cüzdanı",
     "description": "The description of the application"
@@ -980,9 +977,6 @@
   },
   "custodian": {
     "message": "Saklayıcı Kurum"
-  },
-  "custodianAccount": {
-    "message": "Saklayıcı kurum hesabı"
   },
   "custodianAccountAddedDesc": {
     "message": "Artık saklayıcı kurum hesaplarınızı MetaMask Institutional'da kullanabilirsiniz."
@@ -2331,9 +2325,6 @@
   "missingSettingRequest": {
     "message": "Buradan talep et"
   },
-  "mmiAddToken": {
-    "message": "$1 alanındaki sayfa MetaMask Institutional'daki aşağıdaki saklayıcı kurum tokenine yetki vermek istiyor"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dünya çapında tasarlanmış ve yapılmıştır."
   },
@@ -2878,6 +2869,21 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Tümünü okundu olarak işaretle"
+  },
+  "notificationsOpenBetaSnapsActionText": {
+    "message": "Daha fazla bilgi edinin"
+  },
+  "notificationsOpenBetaSnapsDescriptionOne": {
+    "message": "MetaMask Snaps'in Açık Beta sürümünü duyurmaktan heyecan duyuyoruz!"
+  },
+  "notificationsOpenBetaSnapsDescriptionThree": {
+    "message": "Geliştirici topluluğu tarafından oluşturulan snap'lerle cüzdanınızı kişiselleştirin!"
+  },
+  "notificationsOpenBetaSnapsDescriptionTwo": {
+    "message": "Snap'ler MetaMask ile daha fazla ağa bağlanma, işlem içgörülerini görme ve kişisel bildirimler alma gibi daha çok şey yapmanıza yardımcı olur."
+  },
+  "notificationsOpenBetaSnapsTitle": {
+    "message": "MetaMask Snaps tanıtımı"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "Bu hesapta $1 yeni token bulundu",
@@ -4059,6 +4065,10 @@
   },
   "snapsNoInsight": {
     "message": "Snap herhangi bir ayrıntıya ulaşamadı"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Üçüncü Taraf Hizmetleri ile paylaştığınız tüm bilgiler söz konusu Üçüncü Taraf Hizmetlerinin gizlilik politikalarına göre doğrudan üçüncü taraflar tarafından toplanacaktır. Daha fazla bilgi için lütfen üçüncü tarafların gizlilik politikalarına bakın.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Snaplerini yönet"

@@ -161,6 +161,7 @@ export const CHAIN_IDS = {
   MOONRIVER: '0x505',
   CRONOS: '0x19',
   GNOSIS: '0x64',
+  ZKSYNC_ERA: '0x144',
 } as const;
 
 /**
@@ -640,6 +641,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.LINEA_MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'linea',
+  },
+  [CHAIN_IDS.ZKSYNC_ERA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'zksync',
   },
 };
 
