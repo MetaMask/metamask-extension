@@ -52,7 +52,7 @@ describe('MetaMask', function () {
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         const switchedNetworkDiv = await driver.waitForSelector({
           css: '#network',
-          text: '0x1',
+          text: '1',
         });
         const switchedChainIdDiv = await driver.waitForSelector({
           css: '#chainId',
@@ -60,7 +60,7 @@ describe('MetaMask', function () {
         });
         const accountsDiv = await driver.findElement('#accounts');
 
-        assert.equal(await switchedNetworkDiv.getText(), '0x1');
+        assert.equal(await switchedNetworkDiv.getText(), '1');
         assert.equal(await switchedChainIdDiv.getText(), '0x1');
         assert.equal(await accountsDiv.getText(), publicAddress);
       },
