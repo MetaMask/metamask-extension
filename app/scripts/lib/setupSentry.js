@@ -319,6 +319,10 @@ export const SENTRY_UI_STATE = {
     pendingTokens: false,
     welcomeScreenSeen: true,
     useSafeChainsListValidation: true,
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    addSnapAccountEnabled: false,
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IN
   },
   unconnectedAccount: true,
 };

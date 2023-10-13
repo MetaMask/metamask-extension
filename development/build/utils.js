@@ -1,7 +1,17 @@
 const path = require('path');
+const { readFileSync } = require('fs');
 const semver = require('semver');
+const { capitalize } = require('lodash');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
+
+const BUILD_TYPES_TO_SVG_LOGO_PATH = {
+  main: './app/images/logo/metamask-fox.svg',
+  beta: './app/build-types/beta/images/logo/metamask-fox.svg',
+  flask: './app/build-types/flask/images/logo/metamask-fox.svg',
+  mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
+  desktop: './app/build-types/desktop/images/logo/metamask-fox.svg',
+};
 
 /**
  * Returns whether the current build is a development build or not.
@@ -218,8 +228,69 @@ function getPathInsideNodeModules(packageName, pathToFiles) {
   return targetPath;
 }
 
+/**
+ * Get the name for the current build.
+ *
+ * @param {object} options - The build options.
+ * @param {string} options.buildType - The build type of the current build.
+ * @param {boolean} options.applyLavaMoat - Flag if lavamoat was applied.
+ * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included in the build name.
+ * @param {boolean} options.shouldIncludeMV3 - Flag if mv3 should be included in the build name.
+ * @param options.environment
+ * @returns {string} The build name.
+ */
+function getBuildName({
+  environment,
+  buildType,
+  applyLavaMoat,
+  shouldIncludeSnow,
+  shouldIncludeMV3,
+}) {
+  if (environment === ENVIRONMENT.PRODUCTION) {
+    return 'MetaMask';
+  }
+
+  const mv3Str = shouldIncludeMV3 ? ' MV3' : '';
+  const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
+  const snowStr = shouldIncludeSnow ? ' snow' : '';
+
+  return buildType === 'mmi'
+    ? `MetaMask Institutional${mv3Str}`
+    : `MetaMask ${capitalize(buildType)}${mv3Str}${lavamoatStr}${snowStr}`;
+}
+
+/**
+ * Get the app ID for the current build. Should be valid reverse FQDN.
+ *
+ * @param {object} options - The build options.
+ * @param {string} options.buildType - The build type of the current build.
+ * @returns {string} The build app ID.
+ */
+function getBuildAppId({ buildType }) {
+  const baseDomain = 'io.metamask';
+  return buildType === 'main' ? baseDomain : `${baseDomain}.${buildType}`;
+}
+
+/**
+ * Get the image data uri for the svg icon for the current build.
+ *
+ * @param {object} options - The build options.
+ * @param {string} options.buildType - The build type of the current build.
+ * @returns {string} The image data uri for the icon.
+ */
+function getBuildIcon({ buildType }) {
+  const svgLogoPath =
+    BUILD_TYPES_TO_SVG_LOGO_PATH[buildType] ||
+    BUILD_TYPES_TO_SVG_LOGO_PATH.main;
+  const svg = readFileSync(svgLogoPath, 'utf8');
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 module.exports = {
   getBrowserVersionMap,
+  getBuildName,
+  getBuildAppId,
+  getBuildIcon,
   getEnvironment,
   isDevBuild,
   isTestBuild,

@@ -9,7 +9,9 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
     style="mask-image: url('./images/icons/danger.svg');"
   />
-  <div>
+  <div
+    class="mm-box mm-box--min-width-0"
+  >
     <p
       class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
     >
@@ -55,7 +57,9 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
     style="mask-image: url('./images/icons/danger.svg');"
   />
-  <div>
+  <div
+    class="mm-box mm-box--min-width-0"
+  >
     <p
       class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
     >
@@ -79,7 +83,9 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
     style="mask-image: url('./images/icons/danger.svg');"
   />
-  <div>
+  <div
+    class="mm-box mm-box--min-width-0"
+  >
     <p
       class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
     >
@@ -126,7 +132,9 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
       style="mask-image: url('./images/icons/danger.svg');"
     />
-    <div>
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
       <p
         class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >
@@ -158,7 +166,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
             class="disclosure__content normal"
           >
             <ul
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--color-text-default"
             >
               <li>
                 • 

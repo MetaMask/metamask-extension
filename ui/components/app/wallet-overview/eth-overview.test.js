@@ -2,7 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import EthOverview from './eth-overview';
@@ -29,8 +33,9 @@ describe('EthOverview', () => {
   const mockStore = {
     metamask: {
       providerConfig: {
-        type: 'test',
         chainId: CHAIN_IDS.MAINNET,
+        nickname: MAINNET_DISPLAY_NAME,
+        type: NETWORK_TYPES.MAINNET,
       },
       cachedBalances: {
         '0x1': {

@@ -130,6 +130,7 @@
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
     "openSeaEnabled": false,
+    "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
     "incomingTransactionsPreferences": {},
@@ -150,6 +151,7 @@
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
+    "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
     "selectedAddress": "string"
   },

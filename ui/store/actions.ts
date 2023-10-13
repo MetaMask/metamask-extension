@@ -1195,10 +1195,6 @@ export function removeSnap(
   };
 }
 
-export async function removeSnapError(msgData: string): Promise<void> {
-  return submitRequestToBackground('removeSnapError', [msgData]);
-}
-
 export async function handleSnapRequest(args: {
   snapId: string;
   origin: string;
@@ -2084,8 +2080,9 @@ export function createCancelTransaction(
             return;
           }
           if (newState) {
-            const currentNetworkTxList =
-              getCurrentNetworkTransactions(newState);
+            const currentNetworkTxList = getCurrentNetworkTransactions({
+              metamask: newState,
+            });
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
@@ -4470,6 +4467,31 @@ export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   } catch (error) {
     logErrorWithMessage(error);
   }
+}
+
+export function showKeyringSnapRemovalModal(payload: {
+  snapName: string;
+  result: 'success' | 'failed';
+}) {
+  return {
+    type: actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT,
+    payload,
+  };
+}
+
+export function hideKeyringRemovalResultModal() {
+  return {
+    type: actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT,
+  };
+}
+
+export async function getSnapAccountsById(snapId: string): Promise<string[]> {
+  const addresses: string[] = await submitRequestToBackground(
+    'getAccountsBySnapId',
+    [snapId],
+  );
+
+  return addresses;
 }
 ///: END:ONLY_INCLUDE_IN
 
