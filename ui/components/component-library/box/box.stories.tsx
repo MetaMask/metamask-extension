@@ -62,6 +62,11 @@ export default {
       control: 'multi-select',
       table: { category: 'display' },
     },
+    minWidth: {
+      options: Object.values(BlockSize),
+      control: 'multi-select',
+      table: { category: 'display' },
+    },
     height: {
       options: Object.values(BlockSize),
       control: 'select',
@@ -224,6 +229,7 @@ BoxDefaultStory.args = {
   display: Display.Flex,
   justifyContent: JustifyContent.center,
   alignItems: AlignItems.center,
+  minWidth: BlockSize.Zero,
   width: BlockSize.Half,
   height: BlockSize.Half,
   borderColor: BorderColor.borderDefault,

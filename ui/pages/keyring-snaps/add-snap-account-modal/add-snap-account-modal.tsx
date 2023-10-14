@@ -33,7 +33,7 @@ export default function AddSnapAccountModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose} margin={[4, 4, 4, 4]}>
-          {t('settingAddSnapAccount')}
+          {t('addAccountSnapModalHeader')}
         </ModalHeader>
         <Box
           display={Display.Flex}

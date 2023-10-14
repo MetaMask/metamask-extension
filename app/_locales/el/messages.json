@@ -1277,9 +1277,6 @@
   "dismissReminderField": {
     "message": "Απορρίψτε την υπενθύμιση δημιουργίας αντιγράφων ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
-  "displayNftMedia": {
-    "message": "Εμφάνιση των μέσων NFT"
-  },
   "domain": {
     "message": "Τομέας"
   },
@@ -1404,6 +1401,12 @@
   },
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Ενεργοποίηση OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
   "enableSmartSwaps": {
     "message": "Ενεργοποίηση των έξυπνων ανταλλαγών"
@@ -1535,11 +1538,9 @@
   "experimental": {
     "message": "Πειραματικά"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Εξερευνήστε το MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας."
+    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Εξωτερική επέκταση"
@@ -2386,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3020,9 +3018,6 @@
   },
   "openInBlockExplorer": {
     "message": "Άνοιγμα στο Block Explorer"
-  },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Δοκιμαστικά)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3918,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Δημιουργήστε έναν $1 λογαριασμό",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3953,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Εγκαταστάθηκε"
-  },
-  "snapError": {
-    "message": "Σφάλμα Snap: '$1'. Κωδικός Σφάλματος: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Εγκατάσταση του snap"
@@ -4798,9 +4789,6 @@
   "termsOfService": {
     "message": "Όροι παροχής υπηρεσιών"
   },
-  "termsOfUse": {
-    "message": "όροι χρήσης"
-  },
   "termsOfUseAgreeText": {
     "message": " Συμφωνώ με τους Όρους Χρήσης, οι οποίοι ισχύουν για τη χρήση του MetaMask και όλων των λειτουργιών του"
   },
@@ -4828,10 +4816,6 @@
   },
   "thisCollection": {
     "message": "αυτή η συλλογή"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Η υπηρεσία αυτή είναι πειραματική. Ενεργοποιώντας αυτή τη λειτουργία, συμφωνείτε με τους $1 του OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Ώρα"
@@ -5047,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "Η συναλλαγή υποβλήθηκε ξανά με το εκτιμώμενο τέλος συναλλαγής να έχει αυξηθεί στα $1 στις $2"
-  },
-  "transactionSecurityCheck": {
-    "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Χρησιμοποιούμε API τρίτων για τον εντοπισμό και την εμφάνιση των κινδύνων που ενέχουν τα ανυπόγραφα αιτήματα συναλλαγών και υπογραφών πριν τα υπογράψετε. Αυτές οι υπηρεσίες θα έχουν πρόσβαση στα ανυπόγραφα αιτήματα συναλλαγών και υπογραφών σας, στη διεύθυνση του λογαριασμού σας και στην προτιμώμενη γλώσσα σας."
   },
   "transactionSettings": {
     "message": "Ρυθμίσεις συναλλαγών"
@@ -5271,9 +5249,6 @@
   },
   "viewOnOpensea": {
     "message": "Προβολή στο Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Προβολή πίνακα ελέγχου χαρτοφυλακίου"
   },
   "viewinCustodianApp": {
     "message": "Προβολή στην εφαρμογή θεματοφύλακα"
