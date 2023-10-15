@@ -403,7 +403,7 @@ export const AppHeader = ({ location }) => {
                             location: 'Home',
                           },
                         });
-                        setAccountOptionsMenuOpen(true);
+                        setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
                       }}
                       size={ButtonIconSize.Sm}
                     />

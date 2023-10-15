@@ -20,7 +20,8 @@ import {
   ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../component-library';
 
-import { Menu, MenuItem } from '../../ui/menu';
+import { MenuItem } from '../../ui/menu';
+import { Popover } from '../../component-library/popover';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
@@ -101,7 +102,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   ///: END:ONLY_INCLUDE_IN
 
   return (
-    <Menu anchorElement={anchorElement} onHide={closeMenu}>
+    <Popover referenceElement={anchorElement} isOpen={closeMenu}>
       <AccountDetailsMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
@@ -279,17 +280,23 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       >
         {t('lockMetaMask')}
       </MenuItem>
-    </Menu>
+    </Popover>
   );
 };
 
 GlobalMenu.propTypes = {
   /**
-   * The element that the menu should display next to
+   * Controls whether the menu is open or closed
+   */
+  isOpen: PropTypes.bool.isRequired,
+
+  /**
+   * Function to close the menu
+   */
+  onClose: PropTypes.func.isRequired,
+
+  /**
+   * The element to which the menu should be anchored
    */
   anchorElement: PropTypes.instanceOf(window.Element),
-  /**
-   * Function that closes this menu
-   */
-  closeMenu: PropTypes.func.isRequired,
 };

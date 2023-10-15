@@ -37,7 +37,7 @@ export const Popover: PopoverComponent = React.forwardRef(
       referenceElement,
       isOpen,
       title,
-      isPortal = false,
+      isPortal = true,
       arrowProps,
       onPressEscKey,
       ...props
@@ -79,7 +79,7 @@ export const Popover: PopoverComponent = React.forwardRef(
 
     // Define width to match reference element or auto
     const contentStyle = {
-      width: matchWidth ? referenceElement?.clientWidth : 'auto',
+      width: matchWidth ? referenceElement?.clientWidth : '220px',
     };
 
     // Esc key press
@@ -100,12 +100,32 @@ export const Popover: PopoverComponent = React.forwardRef(
       };
     }, [onPressEscKey]);
 
+    useEffect(() => {
+      const handleDocumentClick = (event: { target: any; }) => {
+        const popoverElement = ref?.current;
+        if (popoverElement && !popoverElement.contains(event.target)) {
+          // Clicked outside the popover, close it
+          if (onPressEscKey) {
+            onPressEscKey();
+          }
+        }
+      };
+
+      if (isOpen) {
+        document.addEventListener('click', handleDocumentClick);
+      }
+
+      return () => {
+        document.removeEventListener('click', handleDocumentClick);
+      };
+    }, [isOpen, ref, onPressEscKey]);
+
     const PopoverContent = (
       <Box
         borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundDefault}
-        padding={4}
+        padding={0}
         role={role}
         className={classnames(
           'mm-popover',
@@ -113,12 +133,13 @@ export const Popover: PopoverComponent = React.forwardRef(
             'mm-popover--open': Boolean(isOpen),
             'mm-popover--reference-hidden': Boolean(referenceHidden),
           },
+          'menu__container',
           className,
         )}
         ref={ref || setPopperElement}
         {...attributes.popper}
         {...(props as BoxProps<C>)}
-        style={{ ...styles.popper, ...contentStyle, ...props.style }}
+        style={{ ...styles.popper, ...contentStyle, ...props.style, zIndex: 1050 }}
       >
         {children}
         {hasArrow && (
