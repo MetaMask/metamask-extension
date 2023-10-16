@@ -286,15 +286,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
 GlobalMenu.propTypes = {
   /**
-   * Controls whether the menu is open or closed
-   */
-  isOpen: PropTypes.bool.isRequired,
-
-  /**
    * Function to close the menu
    */
-  onClose: PropTypes.func.isRequired,
-
+  closeMenu: PropTypes.func.isRequired,
   /**
    * The element to which the menu should be anchored
    */
