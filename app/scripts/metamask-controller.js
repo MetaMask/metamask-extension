@@ -2799,9 +2799,11 @@ export default class MetamaskController extends EventEmitter {
       addTransaction: this.addTransaction.bind(this),
       addTransactionAndWaitForPublish:
         this.addTransactionAndWaitForPublish.bind(this),
-      createTransactionEventFragment: createTransactionEventFragmentWithTxId(
-        this.getTxTrackingEventDependencyMap(),
-      ),
+      createTransactionEventFragment:
+        createTransactionEventFragmentWithTxId.bind(
+          null,
+          this.getTransactionMetricsRequest(),
+        ),
       getTransactions: txController.getTransactions.bind(txController),
 
       updateEditableParams:
