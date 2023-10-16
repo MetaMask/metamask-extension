@@ -436,7 +436,7 @@ class Driver {
     initialWindowHandles,
     delayStep = 1000,
     timeout = this.timeout,
-    { retries = 5, retryDelay = 5000 } = {},
+    { retries = 8, retryDelay = 2500 } = {},
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
