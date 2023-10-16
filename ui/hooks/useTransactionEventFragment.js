@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useGasFeeContext } from '../contexts/gasFee';
 import {
-  createTransactionEventFragmentWithTxId,
+  createTransactionEventFragment,
   updateEventFragment,
 } from '../store/actions';
 import { selectMatchingFragment } from '../selectors';
@@ -23,7 +23,7 @@ export const useTransactionEventFragment = () => {
         return;
       }
       if (!fragment) {
-        await createTransactionEventFragmentWithTxId(transaction.id);
+        await createTransactionEventFragment(transaction.id);
       }
       updateEventFragment(`transaction-added-${transaction.id}`, params);
     },

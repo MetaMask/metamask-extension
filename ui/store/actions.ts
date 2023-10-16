@@ -4136,11 +4136,11 @@ export function createEventFragment(
   ]);
 }
 
-export function createTransactionEventFragmentWithTxId(
+export function createTransactionEventFragment(
   transactionId: string,
 ): Promise<string> {
   const actionId = generateActionId();
-  return submitRequestToBackground('createTransactionEventFragmentWithTxId', [
+  return submitRequestToBackground('createTransactionEventFragment', [
     {
       transactionId,
       actionId,

@@ -107,7 +107,7 @@ jest.mock('../../store/actions', () => ({
   removePollingTokenFromAppState: jest.fn(),
   updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
-  createTransactionEventFragmentWithTxId: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
   getNextNonce: () => jest.fn(),
   showModal: () => mockShowModal,
   updateCustomNonce: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),

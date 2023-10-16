@@ -22,7 +22,7 @@ jest.mock('../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
-  createTransactionEventFragmentWithTxId: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
 }));
 
 const render = ({ componentProps, contextProps } = {}) => {
