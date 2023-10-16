@@ -353,7 +353,7 @@ describe('TokenAllowancePage', () => {
     const nextButton = getByText('Next');
     fireEvent.click(nextButton);
 
-    const backButton = getByText('Back');
+    const backButton = getByText('< Back');
     fireEvent.click(backButton);
 
     const editButton = getByText('Edit');
@@ -408,7 +408,7 @@ describe('TokenAllowancePage', () => {
 
     expect(getByText('Site requested spending cap')).toBeInTheDocument();
 
-    const backButton = getByText('Back');
+    const backButton = getByText('< Back');
     fireEvent.click(backButton);
 
     expect(getByText('Spending cap request for your')).toBeInTheDocument();

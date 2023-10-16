@@ -3,85 +3,96 @@
 exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box token-allowance-container page-container"
+    class="box token-allowance-container page-container box--flex-direction-row"
   >
     <div
-      class="confirm-page-container-navigation"
-      style="display: none;"
+      class="box box--flex-direction-row"
     >
       <div
-        class="confirm-page-container-navigation__container"
-        data-testid="navigation-container"
-        style="visibility: hidden;"
-      >
-        <button
-          class="confirm-page-container-navigation__arrow"
-          data-testid="first-page"
-        >
-          <i
-            class="fa fa-angle-double-left fa-2x"
-          />
-        </button>
-        <button
-          class="confirm-page-container-navigation__arrow"
-          data-testid="previous-page"
-        >
-          <i
-            class="fa fa-angle-left fa-2x"
-          />
-        </button>
-      </div>
-      <div
-        class="confirm-page-container-navigation__textcontainer"
+        class="confirm-page-container-navigation"
+        style="display: none;"
       >
         <div
-          class="confirm-page-container-navigation__navtext"
+          class="confirm-page-container-navigation__container"
+          data-testid="navigation-container"
+          style="visibility: hidden;"
         >
-          0
-           
-          of
-           
-          0
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="first-page"
+          >
+            <i
+              class="fa fa-angle-double-left fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="previous-page"
+          >
+            <i
+              class="fa fa-angle-left fa-2x"
+            />
+          </button>
         </div>
         <div
-          class="confirm-page-container-navigation__longtext"
+          class="confirm-page-container-navigation__textcontainer"
         >
-          requests waiting to be acknowledged
+          <div
+            class="confirm-page-container-navigation__navtext"
+          >
+            0
+             
+            of
+             
+            0
+          </div>
+          <div
+            class="confirm-page-container-navigation__longtext"
+          >
+            requests waiting to be acknowledged
+          </div>
         </div>
-      </div>
-      <div
-        class="confirm-page-container-navigation__container"
-        style="visibility: hidden;"
-      >
-        <button
-          class="confirm-page-container-navigation__arrow"
-          data-testid="next-page"
+        <div
+          class="confirm-page-container-navigation__container"
+          style="visibility: hidden;"
         >
-          <i
-            class="fa fa-angle-right fa-2x"
-          />
-        </button>
-        <button
-          class="confirm-page-container-navigation__arrow"
-          data-testid="last-page"
-        >
-          <i
-            class="fa fa-angle-double-right fa-2x"
-          />
-        </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="next-page"
+          >
+            <i
+              class="fa fa-angle-right fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="last-page"
+          >
+            <i
+              class="fa fa-angle-double-right fa-2x"
+            />
+          </button>
+        </div>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+      class="box box--padding-right-4 box--padding-left-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
     >
-      <p
-        class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-left-auto mm-box--color-text-muted"
+      <div
+        class="box box--flex-direction-row"
+      />
+      <div
+        class="box box--flex-direction-row box--text-align-end"
       >
-        1
-         
-        of
-         2
-      </p>
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-muted"
+        >
+          1
+           
+          of
+           2
+        </h6>
+      </div>
     </div>
     <div
       class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
@@ -179,29 +190,32 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
         </h6>
       </div>
     </div>
+    
     <div
-      class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--align-items-center"
+      class="box box--display-flex box--flex-direction-row box--justify-content-center"
     >
-      
       <div
-        class="mm-box mm-tag-url mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
-        style="max-width: 100%;"
+        class="box token-allowance-container__icon-display-content box--margin-top-6 box--margin-right-12 box--margin-bottom-8 box--margin-left-12 box--padding-top-2 box--padding-right-4 box--padding-bottom-2 box--padding-left-2 box--display-flex box--flex-direction-row box--align-items-center box--border-style-solid box--border-color-border-muted box--border-width-1"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          class=""
         >
           <img
-            alt="https://metamask.github.io logo"
-            class="mm-avatar-favicon__image"
+            alt="https://metamask.github.io"
+            class="url-icon token-allowance-container__icon-display-content__siteimage-identicon"
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io
-        </p>
+        </h6>
       </div>
+    </div>
+    <div
+      class="box box--margin-right-4 box--margin-left-4 box--flex-direction-row"
+    >
       <h3
         align="center"
         class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
@@ -210,7 +224,7 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
            
           Spending cap request for your 
           <div
-            class="mm-box mm-box--margin-top-4"
+            class="box box--margin-top-4 box--flex-direction-row"
           >
             <div
               class="box contract-token-values box--display-flex box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center"
@@ -310,44 +324,54 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
            
         </span>
       </h3>
-      <button
-        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+    </div>
+    <div
+      class="box box--margin-top-1 box--display-flex box--flex-direction-row box--justify-content-center"
+    >
+      <a
+        class="button btn-link token-allowance-container__verify-link"
+        role="button"
+        tabindex="0"
       >
-        Verify third-party details
-      </button>
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
+        >
+          Verify third-party details
+        </h6>
+      </a>
+    </div>
+    <div
+      class="box box--margin-4 box--sm:margin-4 box--md:margin-3 box--lg:margin-4 box--flex-direction-row"
+    >
       <div
-        class="mm-box mm-box--width-full"
+        class="mm-box custom-spending-cap mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--background-color-background-alternative mm-box--rounded-sm"
       >
         <div
-          class="mm-box custom-spending-cap mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--background-color-background-alternative mm-box--rounded-sm"
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full"
         >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full"
-          >
-            <div>
-              <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--margin-right-1 mm-box--display-inline mm-box--align-items-center mm-box--color-text-default"
-                for="custom-spending-cap"
-              >
-                Custom spending cap
-              </label>
-              <div
-                class="mm-box mm-box--display-inline-flex mm-box--align-items-center"
-              >
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-3"
-                    class=""
-                    data-original-title="null"
-                    data-tooltipped=""
-                    style="display: inline;"
-                    tabindex="0"
-                  >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-icon-alternative"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
-                  </div>
+          <div>
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--margin-right-1 mm-box--display-inline mm-box--align-items-center mm-box--color-text-default"
+              for="custom-spending-cap"
+            >
+              Custom spending cap
+            </label>
+            <div
+              class="mm-box mm-box--display-inline-flex mm-box--align-items-center"
+            >
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-3"
+                  class=""
+                  data-original-title="null"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-icon-alternative"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
                 </div>
               </div>
             </div>
@@ -374,45 +398,55 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
           <button
             class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             data-testid="custom-spending-cap-max-button"
-
           >
-            <input
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--padding-inline-end-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              data-testid="custom-spending-cap-input"
-              focused="true"
-              id="custom-spending-cap"
-              placeholder="Enter a number"
-              type="text"
-              value="7"
-            />
-            <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-              data-testid="custom-spending-cap-max-button"
-            >
-              1  
-            </span>
-          </div>
-          <a
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            href="https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Learn more
-          </a>
+            Max
+          </button>
         </div>
+        <div
+          class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
+        >
+          <span>
+             
+            This allows the third party to spend 
+            <span
+              class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
+            >
+              1
+               
+              TST
+            </span>
+             from your current balance.
+             
+          </span>
+        </div>
+        <a
+          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          href="https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Learn more
+        </a>
       </div>
     </div>
-    <button
-      class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+    <div
+      class="box box--display-flex box--flex-direction-row box--justify-content-center"
     >
-      View details
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/arrow-down.svg');"
-      />
-    </button>
+      <a
+        class="button btn-link token-allowance-container__view-details"
+        role="button"
+        tabindex="0"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-right-1 mm-box--color-primary-default"
+        >
+          View details
+        </h6>
+        <i
+          class="fa fa-sm fa-angle-down"
+        />
+      </a>
+    </div>
     <div
       class="page-container__footer"
     >

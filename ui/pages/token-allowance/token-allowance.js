@@ -3,21 +3,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
+import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
+import UrlIcon from '../../components/ui/url-icon/url-icon';
 import {
   AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
+  BorderStyle,
+  Color,
+  DISPLAY,
+  FLEX_DIRECTION,
   FontWeight,
   JustifyContent,
-  Severity,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { I18nContext } from '../../contexts/i18n';
 import ContractTokenValues from '../../components/ui/contract-token-values/contract-token-values';
+import Button from '../../components/ui/button';
 import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-spending-cap';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
@@ -47,6 +50,7 @@ import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ApproveContentCard from '../../components/app/approve-content-card/approve-content-card';
 import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-spending-cap';
+import Dialog from '../../components/ui/dialog';
 import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
@@ -65,16 +69,8 @@ import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWar
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
-import {
-  Icon,
-  IconName,
-  Text,
-  Box,
-  Button,
-  BannerAlert,
-  TagUrl,
-  BUTTON_VARIANT,
-} from '../../components/component-library';
+import { Icon, IconName, Text } from '../../components/component-library';
+import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
@@ -341,27 +337,34 @@ export default function TokenAllowance({
         paddingLeft={4}
         paddingRight={4}
         alignItems={AlignItems.center}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
         justifyContent={JustifyContent.spaceBetween}
       >
-        {!isFirstPage && (
-          <Button
-            variant={BUTTON_VARIANT.LINK}
-            onClick={() => handleBackClick()}
-            startIconName={IconName.ArrowLeft}
+        <Box>
+          {!isFirstPage && (
+            <Button type="inline" onClick={() => handleBackClick()}>
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textMuted}
+                fontWeight={FontWeight.Bold}
+              >
+                {'<'} {t('back')}
+              </Text>
+            </Button>
+          )}
+        </Box>
+        <Box textAlign={TextAlign.End}>
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
+            color={TextColor.textMuted}
+            fontWeight={FontWeight.Bold}
           >
-            {t('back')}
-          </Button>
-        )}
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textMuted}
-          fontWeight={FontWeight.Bold}
-          marginLeft="auto"
-        >
-          {isFirstPage ? 1 : 2} {t('ofTextNofM')} 2
-        </Text>
+            {isFirstPage ? 1 : 2} {t('ofTextNofM')} 2
+          </Text>
+        </Box>
       </Box>
       <NetworkAccountBalanceHeader
         networkName={networkName}
@@ -371,7 +374,6 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
-
       {
         ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
         <BlockaidBannerAlert
@@ -390,78 +392,117 @@ export default function TokenAllowance({
           <ConfirmPageContainerWarning warning={warning} />
         </Box>
       )}
-
       <Box
-        padding={4}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        gap={4}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        justifyContent={JustifyContent.center}
       >
-        {warning && (
-          <BannerAlert
-            severity={Severity.Warning}
-            description={warning}
-            width={BlockSize.Full}
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
+          marginTop={6}
+          marginRight={12}
+          marginBottom={8}
+          marginLeft={12}
+          paddingTop={2}
+          paddingRight={4}
+          paddingBottom={2}
+          paddingLeft={2}
+          borderColor={Color.borderMuted}
+          borderStyle={BorderStyle.solid}
+          borderWidth={1}
+          className="token-allowance-container__icon-display-content"
+        >
+          <UrlIcon
+            className="token-allowance-container__icon-display-content__siteimage-identicon"
+            fallbackClassName="token-allowance-container__icon-display-content__siteimage-identicon"
+            name={origin}
+            url={siteImage}
           />
-        )}
-        <TagUrl label={origin} src={siteImage} style={{ maxWidth: '100%' }} />
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
+            color={TextColor.textAlternative}
+            marginLeft={1}
+          >
+            {origin}
+          </Text>
+        </Box>
+      </Box>
+      <Box marginLeft={4} marginRight={4}>
         <Text variant={TextVariant.headingMd} align={TextAlign.Center}>
           {isFirstPage ? (
             t('spendingCapRequest', [renderContractTokenValues])
           ) : (
-            <>
+            <Box>
               {customSpendingCap === '0' || isEmpty
                 ? t('revokeSpendingCap', [renderContractTokenValues])
                 : t('spendingCapRequest', [renderContractTokenValues])}
-            </>
+            </Box>
           )}
         </Text>
+      </Box>
+      <Box
+        marginTop={1}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        justifyContent={JustifyContent.center}
+      >
         <Button
-          variant={BUTTON_VARIANT.LINK}
+          type="link"
           onClick={() => setShowContractDetails(true)}
+          className="token-allowance-container__verify-link"
         >
-          {t('verifyContractDetails')}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
+            color={Color.primaryDefault}
+          >
+            {t('verifyContractDetails')}
+          </Text>
         </Button>
-        <Box width={BlockSize.Full}>
-          {isFirstPage ? (
-            <CustomSpendingCap
-              txParams={txData?.txParams}
-              tokenName={tokenSymbol}
-              currentTokenBalance={currentTokenBalance}
-              dappProposedValue={dappProposedTokenAmount}
-              siteOrigin={origin}
-              passTheErrorText={(value) => setErrorText(value)}
-              decimals={decimals}
-              setInputChangeInProgress={setInputChangeInProgress}
-              customSpendingCap={customSpendingCap}
-              setCustomSpendingCap={setCustomSpendingCap}
-            />
-          ) : (
-            <ReviewSpendingCap
-              tokenName={tokenSymbol}
-              currentTokenBalance={currentTokenBalance}
-              tokenValue={
-                isNaN(parseFloat(customSpendingCap))
-                  ? dappProposedTokenAmount
-                  : replaceCommaToDot(customSpendingCap)
-              }
-              onEdit={() => handleBackClick()}
-            />
-          )}
-        </Box>
-
-        {!isFirstPage && balanceError && (
-          <BannerAlert
-            severity={Severity.Danger}
-            description={t('insufficientFundsForGas')}
+      </Box>
+      <Box margin={[4, 4, 3, 4]}>
+        {isFirstPage ? (
+          <CustomSpendingCap
+            txParams={txData?.txParams}
+            tokenName={tokenSymbol}
+            currentTokenBalance={currentTokenBalance}
+            dappProposedValue={dappProposedTokenAmount}
+            siteOrigin={origin}
+            passTheErrorText={(value) => setErrorText(value)}
+            decimals={decimals}
+            setInputChangeInProgress={setInputChangeInProgress}
+            customSpendingCap={customSpendingCap}
+            setCustomSpendingCap={setCustomSpendingCap}
+          />
+        ) : (
+          <ReviewSpendingCap
+            tokenName={tokenSymbol}
+            currentTokenBalance={currentTokenBalance}
+            tokenValue={
+              isNaN(parseFloat(customSpendingCap))
+                ? dappProposedTokenAmount
+                : replaceCommaToDot(customSpendingCap)
+            }
+            onEdit={() => handleBackClick()}
           />
         )}
       </Box>
+      {!isFirstPage && balanceError && (
+        <Dialog type="error" className="send__error-dialog">
+          {t('insufficientFundsForGas')}
+        </Dialog>
+      )}
       {!isFirstPage && (
-        <Box width={BlockSize.Full}>
+        <Box className="token-allowance-container__card-wrapper">
           {renderSimulationFailureWarning && (
-            <Box paddingLeft={4} paddingRight={4}>
+            <Box
+              paddingTop={0}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingLeft={4}
+            >
               <SimulationErrorMessage
                 userAcknowledgedGasMissing={userAcknowledgedGasMissing}
                 setUserAcknowledgedGasMissing={() =>
@@ -510,23 +551,39 @@ export default function TokenAllowance({
           />
         </Box>
       )}
-      <Button
-        variant={BUTTON_VARIANT.LINK}
-        onClick={() => setShowFullTxDetails(!showFullTxDetails)}
-        endIconName={showFullTxDetails ? IconName.ArrowUp : IconName.ArrowDown}
-        marginBottom={4}
-        marginTop={4}
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        justifyContent={JustifyContent.center}
       >
-        {t('viewDetails')}
-      </Button>
+        <Button
+          type="link"
+          onClick={() => setShowFullTxDetails(!showFullTxDetails)}
+          className="token-allowance-container__view-details"
+        >
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
+            color={TextColor.primaryDefault}
+            marginRight={1}
+          >
+            {t('viewDetails')}
+          </Text>
+          {showFullTxDetails ? (
+            <i className="fa fa-sm fa-angle-up" />
+          ) : (
+            <i className="fa fa-sm fa-angle-down" />
+          )}
+        </Button>
+      </Box>
       {showFullTxDetails ? (
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
           alignItems={AlignItems.center}
           className="token-allowance-container__full-tx-content"
         >
-          <Box width={BlockSize.Full}>
+          <Box className="token-allowance-container__data">
             <ApproveContentCard
               symbol={<i className="fa fa-file" />}
               title={t('data')}
@@ -561,7 +618,7 @@ export default function TokenAllowance({
       >
         {unapprovedTxCount > 1 && (
           <Button
-            variant={BUTTON_VARIANT.LINK}
+            type="link"
             onClick={(e) => {
               e.preventDefault();
               handleCancelAll();
