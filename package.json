@@ -108,6 +108,7 @@
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
+    "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@babel/traverse": "^7.23.2",
     "@metamask/approval-controller": "^3.4.0",
     "@types/react": "^16.9.53",
