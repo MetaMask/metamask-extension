@@ -3,6 +3,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { mockServerJsonRpc } = require('../mock-server-json-rpc');
 
 const {
+  WINDOW_TITLES,
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
@@ -190,7 +191,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function () {
 
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,
