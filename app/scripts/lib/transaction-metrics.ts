@@ -29,7 +29,7 @@ import {
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
-type ControllerActions = {
+export type TransactionMetricsRequest = {
   createEventFragment: (arg0: any) => any;
   finalizeEventFragment: (arg0: string, arg1?: any) => any;
   getEventFragmentById: () => any;
@@ -40,303 +40,296 @@ type ControllerActions = {
   getSelectedAddress: () => any;
   getTokenStandardAndDetails: () => any;
   getTransaction: (arg0: string) => TransactionMeta;
-};
-
-type TrackerDependencyMap = {
-  controllerActions: ControllerActions;
   provider: Provider;
 };
 
 // transaction-added event doesn't have to update/finalize fragment
-export const onTransactionAdded =
-  ({ controllerActions, provider }: TrackerDependencyMap) =>
-  async ({ transactionMeta }: { transactionMeta: TransactionMeta }) => {
-    if (!transactionMeta) {
-      return;
-    }
-    const { properties, sensitiveProperties } =
-      await buildEventFragmentProperties({
-        transactionMeta,
-        controllerActions,
-        provider,
-      });
-
-    createTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.added,
-      controllerActions,
+export const handleTransactionAdded = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  { transactionMeta }: { transactionMeta: TransactionMeta },
+) => {
+  if (!transactionMeta) {
+    return;
+  }
+  const { properties, sensitiveProperties } =
+    await buildEventFragmentProperties({
       transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
-    });
-  };
-
-export const onTransactionApproved =
-  ({ controllerActions, provider }: TrackerDependencyMap) =>
-  async ({ transactionMeta }: { transactionMeta: TransactionMeta }) => {
-    if (!transactionMeta) {
-      return;
-    }
-    const { properties, sensitiveProperties } =
-      await buildEventFragmentProperties({
-        transactionMeta,
-        controllerActions,
-        provider,
-      });
-
-    createTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.approved,
-      controllerActions,
-      transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
+      transactionMetricsRequest,
     });
 
-    updateTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.approved,
-      controllerActions,
+  createTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.added,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+};
+
+export const handleTransactionApproved = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  { transactionMeta }: { transactionMeta: TransactionMeta },
+) => {
+  if (!transactionMeta) {
+    return;
+  }
+  const { properties, sensitiveProperties } =
+    await buildEventFragmentProperties({
       transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
+      transactionMetricsRequest,
     });
 
-    finalizeTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.approved,
-      controllerActions,
-      transactionMeta,
-    });
-  };
+  createTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.approved,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
 
-export const onTransactionFinalized =
-  ({ controllerActions, provider }: TrackerDependencyMap) =>
-  async ({
+  updateTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.approved,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+
+  finalizeTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.approved,
+    transactionMeta,
+    transactionMetricsRequest,
+  });
+};
+
+export const handleTransactionFinalized = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  {
     transactionMeta,
     error,
-  }: {
-    transactionMeta: TransactionMeta;
-    error: string;
-  }) => {
-    if (!transactionMeta) {
-      return;
+  }: { transactionMeta: TransactionMeta; error: string },
+) => {
+  if (!transactionMeta) {
+    return;
+  }
+
+  const extraParams = {} as Record<string, any>;
+  if (error) {
+    // This is a failed transaction
+    extraParams.error = error;
+  } else {
+    const { txReceipt } = transactionMeta;
+
+    extraParams.gas_used = txReceipt.gasUsed;
+
+    const { submittedTime } = transactionMeta;
+
+    if (submittedTime) {
+      extraParams.completion_time = getTransactionCompletionTime(submittedTime);
     }
 
-    const extraParams = {} as Record<string, any>;
-    if (error) {
-      // This is a failed transaction
-      extraParams.error = error;
-    } else {
-      const { txReceipt } = transactionMeta;
-
-      extraParams.gas_used = txReceipt.gasUsed;
-
-      const { submittedTime } = transactionMeta;
-
-      if (submittedTime) {
-        extraParams.completion_time =
-          getTransactionCompletionTime(submittedTime);
-      }
-
-      if (txReceipt.status === '0x0') {
-        extraParams.status = METRICS_STATUS_FAILED;
-      }
+    if (txReceipt.status === '0x0') {
+      extraParams.status = METRICS_STATUS_FAILED;
     }
+  }
 
-    const { properties, sensitiveProperties } =
-      await buildEventFragmentProperties({
-        transactionMeta,
-        controllerActions,
-        provider,
-        extraParams,
-      });
-
-    createTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.finalized,
-      controllerActions,
+  const { properties, sensitiveProperties } =
+    await buildEventFragmentProperties({
       transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
+      transactionMetricsRequest,
+      extraParams,
     });
 
-    updateTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.finalized,
-      controllerActions,
-      transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
-    });
+  createTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.finalized,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
 
-    finalizeTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.finalized,
-      controllerActions,
-      transactionMeta,
-    });
+  updateTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.finalized,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+
+  finalizeTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.finalized,
+    transactionMeta,
+    transactionMetricsRequest,
+  });
+};
+
+export const handleTransactionDropped = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  { transactionMeta }: { transactionMeta: TransactionMeta },
+) => {
+  if (!transactionMeta) {
+    return;
+  }
+
+  const extraParams = {
+    dropped: true,
   };
 
-export const onTransactionDropped =
-  ({ controllerActions, provider }: TrackerDependencyMap) =>
-  async ({ transactionMeta }: { transactionMeta: TransactionMeta }) => {
-    if (!transactionMeta) {
-      return;
-    }
-
-    const extraParams = {
-      dropped: true,
-    };
-
-    const { properties, sensitiveProperties } =
-      await buildEventFragmentProperties({
-        transactionMeta,
-        controllerActions,
-        provider,
-        extraParams,
-      });
-
-    createTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.finalized,
-      controllerActions,
+  const { properties, sensitiveProperties } =
+    await buildEventFragmentProperties({
       transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
+      transactionMetricsRequest,
+      extraParams,
     });
 
-    updateTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.finalized,
-      controllerActions,
+  createTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.finalized,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+
+  updateTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.finalized,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+
+  finalizeTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.finalized,
+    transactionMeta,
+    transactionMetricsRequest,
+  });
+};
+
+export const handleTransactionRejected = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  { transactionMeta }: { transactionMeta: TransactionMeta },
+) => {
+  if (!transactionMeta) {
+    return;
+  }
+  const { properties, sensitiveProperties } =
+    await buildEventFragmentProperties({
       transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
+      transactionMetricsRequest,
     });
 
-    finalizeTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.finalized,
-      controllerActions,
-      transactionMeta,
-    });
-  };
+  createTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.rejected,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
 
-export const onTransactionRejected =
-  ({ controllerActions, provider }: TrackerDependencyMap) =>
-  async ({ transactionMeta }: { transactionMeta: TransactionMeta }) => {
-    if (!transactionMeta) {
-      return;
-    }
-    const { properties, sensitiveProperties } =
-      await buildEventFragmentProperties({
-        transactionMeta,
-        controllerActions,
-        provider,
-      });
+  updateTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.rejected,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
 
-    createTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.rejected,
-      controllerActions,
-      transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
-    });
-
-    updateTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.rejected,
-      controllerActions,
-      transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
-    });
-
-    finalizeTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.rejected,
-      controllerActions,
-      transactionMeta,
-    });
-  };
+  finalizeTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.rejected,
+    transactionMeta,
+    transactionMetricsRequest,
+  });
+};
 
 // transaction-submitted event doesn't have to update/finalize fragment
-export const onTransactionSubmitted =
-  ({ controllerActions, provider }: TrackerDependencyMap) =>
-  async ({ transactionMeta }: { transactionMeta: TransactionMeta }) => {
-    if (!transactionMeta) {
-      return;
-    }
-    const { properties, sensitiveProperties } =
-      await buildEventFragmentProperties({
-        transactionMeta,
-        controllerActions,
-        provider,
-      });
-
-    createTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.submitted,
-      controllerActions,
+export const handleTransactionSubmitted = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  { transactionMeta }: { transactionMeta: TransactionMeta },
+) => {
+  if (!transactionMeta) {
+    return;
+  }
+  const { properties, sensitiveProperties } =
+    await buildEventFragmentProperties({
       transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
+      transactionMetricsRequest,
     });
-  };
+
+  createTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.submitted,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+};
 
 // This function is needed for a specific case in UI
-export const createTransactionEventFragmentWithTxId =
-  ({ controllerActions, provider }: TrackerDependencyMap) =>
-  async ({
+export const createTransactionEventFragmentWithTxId = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  {
     transactionId,
     actionId,
   }: {
     transactionId: string;
     actionId: string;
-  }) => {
-    const transactionMeta = controllerActions.getTransaction(transactionId);
+  },
+) => {
+  const transactionMeta =
+    transactionMetricsRequest.getTransaction(transactionId);
 
-    transactionMeta.actionId = actionId;
+  transactionMeta.actionId = actionId;
 
-    const { properties, sensitiveProperties } =
-      await buildEventFragmentProperties({
-        transactionMeta,
-        controllerActions,
-        provider,
-      });
-    createTransactionEventFragment({
-      eventName: TransactionMetaMetricsEvent.approved,
-      controllerActions,
+  const { properties, sensitiveProperties } =
+    await buildEventFragmentProperties({
       transactionMeta,
-      payload: {
-        properties,
-        sensitiveProperties,
-      },
+      transactionMetricsRequest,
     });
-  };
+  createTransactionEventFragment({
+    eventName: TransactionMetaMetricsEvent.approved,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+};
 
 function createTransactionEventFragment({
   eventName,
   transactionMeta,
-  controllerActions,
+  transactionMetricsRequest,
   payload,
 }: {
   eventName: TransactionMetaMetricsEvent;
   transactionMeta: TransactionMeta;
-  controllerActions: ControllerActions;
+  transactionMetricsRequest: TransactionMetricsRequest;
   payload: any;
 }) {
   if (
     hasFragment(
-      controllerActions.getEventFragmentById,
+      transactionMetricsRequest.getEventFragmentById,
       eventName,
       transactionMeta,
     )
@@ -357,7 +350,7 @@ function createTransactionEventFragment({
     // then get analytics on the number of transactions in which gas edits
     // occur.
     case TransactionMetaMetricsEvent.added:
-      controllerActions.createEventFragment({
+      transactionMetricsRequest.createEventFragment({
         category: MetaMetricsEventCategory.Transactions,
         initialEvent: TransactionMetaMetricsEvent.added,
         successEvent: TransactionMetaMetricsEvent.approved,
@@ -379,7 +372,7 @@ function createTransactionEventFragment({
     // does not exist.
     case TransactionMetaMetricsEvent.approved:
     case TransactionMetaMetricsEvent.rejected:
-      controllerActions.createEventFragment({
+      transactionMetricsRequest.createEventFragment({
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.approved,
         failureEvent: TransactionMetaMetricsEvent.rejected,
@@ -401,7 +394,7 @@ function createTransactionEventFragment({
     // cancel UI but don't submit. We can record that this happened and add
     // properties to the transaction event.
     case TransactionMetaMetricsEvent.submitted:
-      controllerActions.createEventFragment({
+      transactionMetricsRequest.createEventFragment({
         category: MetaMetricsEventCategory.Transactions,
         initialEvent: TransactionMetaMetricsEvent.submitted,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -421,7 +414,7 @@ function createTransactionEventFragment({
     // this implementation hardens against other possible bugs where a
     // fragment does not exist.
     case TransactionMetaMetricsEvent.finalized:
-      controllerActions.createEventFragment({
+      transactionMetricsRequest.createEventFragment({
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
         properties: payload.properties,
@@ -438,34 +431,34 @@ function createTransactionEventFragment({
 
 function updateTransactionEventFragment({
   eventName,
-  controllerActions,
   transactionMeta,
+  transactionMetricsRequest,
   payload,
 }: {
   eventName: TransactionMetaMetricsEvent;
-  controllerActions: ControllerActions;
   transactionMeta: TransactionMeta;
+  transactionMetricsRequest: TransactionMetricsRequest;
   payload: any;
 }) {
   const uniqueId = getUniqueId(eventName, transactionMeta.id);
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
-      controllerActions.updateEventFragment(uniqueId, {
+      transactionMetricsRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
       break;
 
     case TransactionMetaMetricsEvent.rejected:
-      controllerActions.updateEventFragment(uniqueId, {
+      transactionMetricsRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
       break;
 
     case TransactionMetaMetricsEvent.finalized:
-      controllerActions.updateEventFragment(uniqueId, {
+      transactionMetricsRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
@@ -477,28 +470,28 @@ function updateTransactionEventFragment({
 
 function finalizeTransactionEventFragment({
   eventName,
-  controllerActions,
+  transactionMetricsRequest,
   transactionMeta,
 }: {
   eventName: TransactionMetaMetricsEvent;
-  controllerActions: ControllerActions;
   transactionMeta: TransactionMeta;
+  transactionMetricsRequest: TransactionMetricsRequest;
 }) {
   const uniqueId = getUniqueId(eventName, transactionMeta.id);
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
-      controllerActions.finalizeEventFragment(uniqueId);
+      transactionMetricsRequest.finalizeEventFragment(uniqueId);
       break;
 
     case TransactionMetaMetricsEvent.rejected:
-      controllerActions.finalizeEventFragment(uniqueId, {
+      transactionMetricsRequest.finalizeEventFragment(uniqueId, {
         abandoned: true,
       });
       break;
 
     case TransactionMetaMetricsEvent.finalized:
-      controllerActions.finalizeEventFragment(uniqueId);
+      transactionMetricsRequest.finalizeEventFragment(uniqueId);
       break;
     default:
       break;
@@ -532,21 +525,12 @@ function getUniqueId(
 
 async function buildEventFragmentProperties({
   transactionMeta,
+  transactionMetricsRequest,
   extraParams = {},
-  controllerActions: {
-    getEIP1559GasFeeEstimates,
-    getTokenStandardAndDetails,
-    getAccountType,
-    getDeviceModel,
-    getSelectedAddress,
-    getTransaction,
-  },
-  provider,
 }: {
-  transactionMeta: TransactionMeta;
   extraParams?: Record<string, any>;
-  controllerActions: ControllerActions;
-  provider: Provider;
+  transactionMeta: TransactionMeta;
+  transactionMetricsRequest: TransactionMetricsRequest;
 }) {
   const {
     type,
@@ -578,13 +562,13 @@ async function buildEventFragmentProperties({
     ///: END:ONLY_INCLUDE_IN
   } = transactionMeta;
 
-  const query = new EthQuery(provider);
+  const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
   const { assetType, tokenStandard } = await determineTransactionAssetType(
     transactionMeta,
     query,
-    getTokenStandardAndDetails,
+    transactionMetricsRequest.getTokenStandardAndDetails,
   );
 
   const gasParams = {} as Record<string, any>;
@@ -612,7 +596,8 @@ async function buildEventFragmentProperties({
           GasRecommendations.high,
         ].includes(estimateType)
       ) {
-        const { gasFeeEstimates } = await getEIP1559GasFeeEstimates();
+        const { gasFeeEstimates } =
+          await transactionMetricsRequest.getEIP1559GasFeeEstimates();
         if (gasFeeEstimates?.[estimateType]?.suggestedMaxFeePerGas) {
           defaultMaxFeePerGas =
             gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas;
@@ -715,7 +700,9 @@ async function buildEventFragmentProperties({
     }
   }
 
-  const replacedTransactionMeta = getTransaction(replacedById as string);
+  const replacedTransactionMeta = transactionMetricsRequest.getTransaction(
+    replacedById as string,
+  );
 
   const TRANSACTION_REPLACEMENT_METHODS = {
     RETRY: TransactionType.retry,
@@ -762,8 +749,12 @@ async function buildEventFragmentProperties({
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
-    account_type: await getAccountType(getSelectedAddress()),
-    device_model: await getDeviceModel(getSelectedAddress()),
+    account_type: await transactionMetricsRequest.getAccountType(
+      transactionMetricsRequest.getSelectedAddress(),
+    ),
+    device_model: await transactionMetricsRequest.getDeviceModel(
+      transactionMetricsRequest.getSelectedAddress(),
+    ),
     asset_type: assetType,
     token_standard: tokenStandard,
     transaction_type: transactionType,

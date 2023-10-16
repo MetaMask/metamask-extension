@@ -167,12 +167,12 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
-  onTransactionAdded,
-  onTransactionApproved,
-  onTransactionFinalized,
-  onTransactionDropped,
-  onTransactionRejected,
-  onTransactionSubmitted,
+  handleTransactionAdded,
+  handleTransactionApproved,
+  handleTransactionFinalized,
+  handleTransactionDropped,
+  handleTransactionRejected,
+  handleTransactionSubmitted,
   createTransactionEventFragmentWithTxId,
 } from './lib/transaction-metrics';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -1320,32 +1320,31 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const dependencyMapForTxEventTrackers =
-      this.getTxTrackingEventDependencyMap();
+    const transactionMetricsRequest = this.getTransactionMetricsRequest();
 
     this.txController.on(
       'transaction-added',
-      onTransactionAdded(dependencyMapForTxEventTrackers),
+      handleTransactionAdded.bind(null, transactionMetricsRequest),
     );
     this.txController.on(
       'transaction-approved',
-      onTransactionApproved(dependencyMapForTxEventTrackers),
+      handleTransactionApproved.bind(null, transactionMetricsRequest),
     );
     this.txController.on(
       'transaction-dropped',
-      onTransactionDropped(dependencyMapForTxEventTrackers),
+      handleTransactionDropped.bind(null, transactionMetricsRequest),
     );
     this.txController.on(
       'transaction-finalized',
-      onTransactionFinalized(dependencyMapForTxEventTrackers),
+      handleTransactionFinalized.bind(null, transactionMetricsRequest),
     );
     this.txController.on(
       'transaction-rejected',
-      onTransactionRejected(dependencyMapForTxEventTrackers),
+      handleTransactionRejected.bind(null, transactionMetricsRequest),
     );
     this.txController.on(
       'transaction-submitted',
-      onTransactionSubmitted(dependencyMapForTxEventTrackers),
+      handleTransactionSubmitted.bind(null, transactionMetricsRequest),
     );
     this.txController.on('transaction-swap-failed', (payload) =>
       this.metaMetricsController.trackEvent(payload),
@@ -1962,7 +1961,7 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
   }
 
-  getTxTrackingEventDependencyMap() {
+  getTransactionMetricsRequest() {
     const controllerActions = {
       // Metametrics Actions
       createEventFragment: this.metaMetricsController.createEventFragment.bind(
@@ -1992,7 +1991,7 @@ export default class MetamaskController extends EventEmitter {
       ),
     };
     return {
-      controllerActions,
+      ...controllerActions,
       provider: this.provider,
     };
   }

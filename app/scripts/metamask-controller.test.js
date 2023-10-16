@@ -26,7 +26,6 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import { deferredPromise } from './lib/util';
 import TransactionController from './controllers/transactions';
-import transactionMetricHandlers from './lib/transaction-metrics';
 import MetaMaskController from './metamask-controller';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -105,21 +104,6 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
     return mockIsManifestV3();
   },
 }));
-
-jest.mock('./lib/transaction-metrics', () => {
-  const curryMock = () => () => jest.fn();
-  return {
-    onTransactionAdded: jest.fn().mockImplementation(curryMock),
-    onTransactionApproved: jest.fn().mockImplementation(curryMock),
-    onTransactionFinalized: jest.fn().mockImplementation(curryMock),
-    onTransactionDropped: jest.fn().mockImplementation(curryMock),
-    onTransactionRejected: jest.fn().mockImplementation(curryMock),
-    onTransactionSubmitted: jest.fn().mockImplementation(curryMock),
-    createTransactionEventFragmentWithTxId: jest
-      .fn()
-      .mockImplementation(curryMock),
-  };
-});
 
 const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
@@ -1662,29 +1646,6 @@ describe('MetaMaskController', () => {
 
         expect(
           TransactionController.prototype.updateIncomingTransactions,
-        ).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('transaction events', () => {
-      it('should call metric event listeners for transactions', () => {
-        expect(
-          transactionMetricHandlers.onTransactionAdded,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionApproved,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionFinalized,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionDropped,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionRejected,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionSubmitted,
         ).toHaveBeenCalledTimes(1);
       });
     });

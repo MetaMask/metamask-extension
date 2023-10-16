@@ -18,18 +18,25 @@ import {
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
 import { BlockaidReason } from '../../../shared/constants/security-provider';
 import {
-  onTransactionAdded,
-  onTransactionApproved,
-  onTransactionDropped,
-  onTransactionFinalized,
-  onTransactionRejected,
-  onTransactionSubmitted,
+  handleTransactionAdded,
+  handleTransactionApproved,
+  handleTransactionDropped,
+  handleTransactionFinalized,
+  handleTransactionRejected,
+  handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
 } from './transaction-metrics';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-///: END:ONLY_INCLUDE_IN
 
-const mockControllerActions = {
+const providerResultStub = {
+  eth_getCode: '0x123',
+};
+const { provider } = createTestProviderTools({
+  scaffold: providerResultStub,
+  networkId: '5',
+  chainId: '5',
+});
+
+const mockTransactionMetricsRequest = {
   createEventFragment: jest.fn(),
   finalizeEventFragment: jest.fn(),
   getEventFragmentById: jest.fn(),
@@ -40,16 +47,8 @@ const mockControllerActions = {
   getSelectedAddress: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
+  provider: provider as Provider,
 };
-
-const providerResultStub = {
-  eth_getCode: '0x123',
-};
-const { provider } = createTestProviderTools({
-  scaffold: providerResultStub,
-  networkId: '5',
-  chainId: '5',
-});
 
 describe('Transaction metrics', () => {
   let fromAccount,
@@ -91,22 +90,23 @@ describe('Transaction metrics', () => {
     jest.clearAllMocks();
   });
 
-  describe('onTransactionAdded', () => {
-    const listener = onTransactionAdded({
-      controllerActions: mockControllerActions,
-      provider: provider as Provider,
-    });
-
+  describe('handleTransactionAdded', () => {
     it('should return if transaction meta is not defined', async () => {
-      await listener({} as any);
-      expect(mockControllerActions.createEventFragment).not.toBeCalled();
+      await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).not.toBeCalled();
     });
 
     it('should create event fragment', async () => {
-      await listener({ transactionMeta: mockTransactionMeta as any });
+      await handleTransactionAdded(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta as any,
+      });
 
-      expect(mockControllerActions.createEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.createEventFragment).toBeCalledWith({
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         failureEvent: TransactionMetaMetricsEvent.rejected,
@@ -147,21 +147,24 @@ describe('Transaction metrics', () => {
     });
   });
 
-  describe('onTransactionApproved', () => {
-    const listener = onTransactionApproved({
-      controllerActions: mockControllerActions,
-      provider: provider as Provider,
-    });
-
+  describe('handleTransactionApproved', () => {
     it('should return if transaction meta is not defined', async () => {
-      await listener({} as any);
-      expect(mockControllerActions.createEventFragment).not.toBeCalled();
-      expect(mockControllerActions.updateEventFragment).not.toBeCalled();
-      expect(mockControllerActions.finalizeEventFragment).not.toBeCalled();
+      await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).not.toBeCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
-      await listener({ transactionMeta: mockTransactionMeta as any });
+      await handleTransactionApproved(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta as any,
+      });
 
       const expectedUniqueId = 'transaction-added-1';
       const expectedProperties = {
@@ -195,8 +198,10 @@ describe('Transaction metrics', () => {
         transaction_replaced: undefined,
       };
 
-      expect(mockControllerActions.createEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.createEventFragment).toBeCalledWith({
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.approved,
@@ -207,8 +212,10 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockControllerActions.updateEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.updateEventFragment).toBeCalledWith(
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
         expectedUniqueId,
         {
           properties: expectedProperties,
@@ -216,24 +223,30 @@ describe('Transaction metrics', () => {
         },
       );
 
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledWith(
-        expectedUniqueId,
-      );
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId);
     });
   });
 
-  describe('onTransactionFinalized', () => {
-    const listener = onTransactionFinalized({
-      controllerActions: mockControllerActions,
-      provider: provider as Provider,
-    });
-
+  describe('handleTransactionFinalized', () => {
     it('should return if transaction meta is not defined', async () => {
-      await listener({} as any);
-      expect(mockControllerActions.createEventFragment).not.toBeCalled();
-      expect(mockControllerActions.updateEventFragment).not.toBeCalled();
-      expect(mockControllerActions.finalizeEventFragment).not.toBeCalled();
+      await handleTransactionFinalized(
+        mockTransactionMetricsRequest,
+        {} as any,
+      );
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).not.toBeCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
@@ -243,7 +256,9 @@ describe('Transaction metrics', () => {
       };
       mockTransactionMeta.submittedTime = 123;
 
-      await listener({ transactionMeta: mockTransactionMeta } as any);
+      await handleTransactionFinalized(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta,
+      } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
       const expectedProperties = {
@@ -280,8 +295,10 @@ describe('Transaction metrics', () => {
         status: METRICS_STATUS_FAILED,
       };
 
-      expect(mockControllerActions.createEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.createEventFragment).toBeCalledWith({
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -291,8 +308,10 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockControllerActions.updateEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.updateEventFragment).toBeCalledWith(
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
         expectedUniqueId,
         {
           properties: expectedProperties,
@@ -300,16 +319,18 @@ describe('Transaction metrics', () => {
         },
       );
 
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledWith(
-        expectedUniqueId,
-      );
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId);
     });
 
     it('should append error to event properties', async () => {
       const mockErrorMessage = 'Unexpected error';
 
-      await listener({
+      await handleTransactionFinalized(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         error: mockErrorMessage,
       } as any);
@@ -347,8 +368,10 @@ describe('Transaction metrics', () => {
         transaction_replaced: undefined,
       };
 
-      expect(mockControllerActions.createEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.createEventFragment).toBeCalledWith({
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -358,8 +381,10 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockControllerActions.updateEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.updateEventFragment).toBeCalledWith(
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
         expectedUniqueId,
         {
           properties: expectedProperties,
@@ -367,28 +392,33 @@ describe('Transaction metrics', () => {
         },
       );
 
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledWith(
-        expectedUniqueId,
-      );
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId);
     });
   });
 
-  describe('onTransactionDropped', () => {
-    const listener = onTransactionDropped({
-      controllerActions: mockControllerActions,
-      provider: provider as Provider,
-    });
-
+  describe('handleTransactionDropped', () => {
     it('should return if transaction meta is not defined', async () => {
-      await listener({} as any);
-      expect(mockControllerActions.createEventFragment).not.toBeCalled();
-      expect(mockControllerActions.updateEventFragment).not.toBeCalled();
-      expect(mockControllerActions.finalizeEventFragment).not.toBeCalled();
+      await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).not.toBeCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
-      await listener({ transactionMeta: mockTransactionMeta } as any);
+      await handleTransactionDropped(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta,
+      } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
       const expectedProperties = {
@@ -423,8 +453,10 @@ describe('Transaction metrics', () => {
         transaction_replaced: 'other',
       };
 
-      expect(mockControllerActions.createEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.createEventFragment).toBeCalledWith({
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -434,8 +466,10 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockControllerActions.updateEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.updateEventFragment).toBeCalledWith(
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
         expectedUniqueId,
         {
           properties: expectedProperties,
@@ -443,28 +477,33 @@ describe('Transaction metrics', () => {
         },
       );
 
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledWith(
-        expectedUniqueId,
-      );
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId);
     });
   });
 
-  describe('onTransactionRejected', () => {
-    const listener = onTransactionRejected({
-      controllerActions: mockControllerActions,
-      provider: provider as Provider,
-    });
-
+  describe('handleTransactionRejected', () => {
     it('should return if transaction meta is not defined', async () => {
-      await listener({} as any);
-      expect(mockControllerActions.createEventFragment).not.toBeCalled();
-      expect(mockControllerActions.updateEventFragment).not.toBeCalled();
-      expect(mockControllerActions.finalizeEventFragment).not.toBeCalled();
+      await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).not.toBeCalled();
     });
 
     it('should create, update, finalize event fragment', async () => {
-      await listener({ transactionMeta: mockTransactionMeta } as any);
+      await handleTransactionRejected(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta,
+      } as any);
 
       const expectedUniqueId = 'transaction-added-1';
       const expectedProperties = {
@@ -498,8 +537,10 @@ describe('Transaction metrics', () => {
         transaction_replaced: undefined,
       };
 
-      expect(mockControllerActions.createEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.createEventFragment).toBeCalledWith({
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.approved,
@@ -510,8 +551,10 @@ describe('Transaction metrics', () => {
         sensitiveProperties: expectedSensitiveProperties,
       });
 
-      expect(mockControllerActions.updateEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.updateEventFragment).toBeCalledWith(
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
         expectedUniqueId,
         {
           properties: expectedProperties,
@@ -519,32 +562,37 @@ describe('Transaction metrics', () => {
         },
       );
 
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.finalizeEventFragment).toBeCalledWith(
-        expectedUniqueId,
-        {
-          abandoned: true,
-        },
-      );
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId, {
+        abandoned: true,
+      });
     });
   });
 
-  describe('onTransactionSubmitted', () => {
-    const listener = onTransactionSubmitted({
-      controllerActions: mockControllerActions,
-      provider: provider as Provider,
-    });
-
+  describe('handleTransactionSubmitted', () => {
     it('should return if transaction meta is not defined', async () => {
-      await listener({} as any);
-      expect(mockControllerActions.createEventFragment).not.toBeCalled();
+      await handleTransactionSubmitted(
+        mockTransactionMetricsRequest,
+        {} as any,
+      );
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).not.toBeCalled();
     });
 
     it('should only create event fragment', async () => {
-      await listener({ transactionMeta: mockTransactionMeta as any });
+      await handleTransactionSubmitted(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta as any,
+      });
 
-      expect(mockControllerActions.createEventFragment).toBeCalledTimes(1);
-      expect(mockControllerActions.createEventFragment).toBeCalledWith({
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
         actionId: mockActionId,
         category: MetaMetricsEventCategory.Transactions,
         initialEvent: TransactionMetaMetricsEvent.submitted,
@@ -582,8 +630,12 @@ describe('Transaction metrics', () => {
         },
       });
 
-      expect(mockControllerActions.updateEventFragment).not.toBeCalled();
-      expect(mockControllerActions.finalizeEventFragment).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).not.toBeCalled();
     });
   });
 });
