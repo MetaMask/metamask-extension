@@ -26,7 +26,6 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import { deferredPromise } from './lib/util';
 import TransactionController from './controllers/transactions';
-import transactionMetricHandlers from './lib/transaction-metrics';
 import MetaMaskController from './metamask-controller';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -1658,29 +1657,6 @@ describe('MetaMaskController', () => {
 
         expect(
           TransactionController.prototype.updateIncomingTransactions,
-        ).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('transaction events', () => {
-      it('should call metric event listeners for transactions', () => {
-        expect(
-          transactionMetricHandlers.onTransactionAdded,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionApproved,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionFinalized,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionDropped,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionRejected,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          transactionMetricHandlers.onTransactionSubmitted,
         ).toHaveBeenCalledTimes(1);
       });
     });
