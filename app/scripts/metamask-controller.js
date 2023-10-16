@@ -3174,18 +3174,26 @@ export default class MetamaskController extends EventEmitter {
 
       for (let count = accounts.length; ; count++) {
         const balance = await this.getBalance(address, ethQuery);
+
         if (balance === '0x0') {
           // This account has no balance, so check for tokens
-          // todo make sure this call is needed
           await this.detectTokensController.detectNewTokens({
             selectedAddress: address,
           });
 
+
+          // TODO: tokens are being detected incorrectly
+          // tokens are spilling over from the 'current' account
           const tokens =
+            this.tokensController.state.allTokens?.[chainId]?.[address];
+          const detectedTokens =
             this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
 
-          if ((tokens?.length ?? 0) === 0) {
-            // This account has no balance or detected tokens
+          if (
+            (tokens?.length ?? 0) === 0 &&
+            (detectedTokens?.length ?? 0) === 0
+          ) {
+            // This account has no balance or tokens
             if (count !== 1) {
               await this.removeAccount(address);
             }
@@ -3193,7 +3201,7 @@ export default class MetamaskController extends EventEmitter {
           }
         }
 
-        // This account has assets, so check the next account
+        // The current account has assets, so check the next one
         ({ addedAccountAddress: address } =
           await this.keyringController.addNewAccount(count));
       }
