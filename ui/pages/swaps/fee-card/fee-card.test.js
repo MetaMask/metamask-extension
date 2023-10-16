@@ -57,7 +57,7 @@ const generateUseSelectorRouter = () => (selector) => {
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
-  createTransactionEventFragmentWithTxId: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
 });
 
 const createProps = (customProps = {}) => {
