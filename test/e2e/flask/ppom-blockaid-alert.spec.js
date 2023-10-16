@@ -21,6 +21,7 @@ async function mockInfura(mockServer) {
     ['eth_feeHistory'],
     ['eth_gasPrice'],
     ['eth_getBalance'],
+    ['eth_getCode'],
     ['eth_getTransactionCount'],
   ]);
 }
