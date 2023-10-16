@@ -22,7 +22,6 @@ import {
   FlexDirection,
   IconColor,
   Size,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';

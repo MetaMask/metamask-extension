@@ -62,8 +62,8 @@ describe('AccountListItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the tree-dot menu to lauch the details menu', () => {
-    render();
+  it('renders the three-dot menu to lauch the details menu', () => {
+    render({ showOptions: true });
     const optionsButton = document.querySelector(
       '[aria-label="Test Account Options"]',
     );
@@ -84,7 +84,7 @@ describe('AccountListItem', () => {
 
   it('clicking the three-dot menu opens up options', () => {
     const onClick = jest.fn();
-    render({ onClick });
+    render({ onClick, showOptions: true });
     const item = document.querySelector(
       '[data-testid="account-list-item-menu-button"]',
     );
