@@ -34,17 +34,13 @@ import DomainInput from '../../../../pages/send/send-content/add-recipient/domai
 export const SendPage = () => {
   const t = useContext(I18nContext);
 
-  // TEMPORARY: PickerNetwork
-  // Assumes current network but once wired should
-  // use the network in draft send transaction state
+  // Network
   const currentNetwork = useSelector(getCurrentNetwork);
 
-  // TEMPORARY: AccountPicker
-  // Assume currently selected account but once wired should
-  // use the network in draft send transaction state
+  // Account
   const identity = useSelector(getSelectedIdentity);
 
-  // Accounts
+  // Your Accounts
   const accounts = useSelector(getMetaMaskAccountsOrdered);
 
   const SendPageRow = ({ children }) => (
