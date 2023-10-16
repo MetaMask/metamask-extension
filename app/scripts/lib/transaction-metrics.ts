@@ -25,13 +25,13 @@ import {
 } from '../../../shared/constants/metametrics';
 import { GasRecommendations } from '../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
-
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IN
+import getSnapAndHardwareInfoForMetrics, {
+  type SnapAndHardwareMessenger,
+} from './snap-keyring/metrics';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -70,6 +70,7 @@ export type TransactionMetricsRequest = {
     standard?: TokenStandard;
   };
   getTransaction: (transactionId: string) => TransactionMeta;
+  snapAndHardwareMessenger: SnapAndHardwareMessenger;
   provider: Provider;
 };
 
@@ -797,6 +798,14 @@ async function buildEventFragmentProperties({
       securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
     ///: END:ONLY_INCLUDE_IN
   } as Record<string, any>;
+
+  const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+    transactionMetricsRequest.getSelectedAddress,
+    transactionMetricsRequest.getAccountType,
+    transactionMetricsRequest.getDeviceModel,
+    transactionMetricsRequest.snapAndHardwareMessenger,
+  );
+  Object.assign(properties, snapAndHardwareInfo);
 
   if (transactionContractMethod === contractMethodNames.APPROVE) {
     properties = {

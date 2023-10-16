@@ -36,6 +36,16 @@ const { provider } = createTestProviderTools({
   chainId: '5',
 });
 
+const mockSnapAndHardwareInfo = {
+  account_snap_type: 'snaptype',
+  account_snap_version: 'snapversion',
+};
+jest.mock('./snap-keyring/metrics', () => {
+  return {
+    default: jest.fn().mockResolvedValue(mockSnapAndHardwareInfo),
+  };
+});
+
 const mockTransactionMetricsRequest = {
   createEventFragment: jest.fn(),
   finalizeEventFragment: jest.fn(),
@@ -47,6 +57,7 @@ const mockTransactionMetricsRequest = {
   getSelectedAddress: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
+  snapAndHardwareMessenger: jest.fn() as any,
   provider: provider as Provider,
 };
 

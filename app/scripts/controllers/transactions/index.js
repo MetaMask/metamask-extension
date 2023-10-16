@@ -58,7 +58,6 @@ import {
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import getSnapAndHardwareInfoForMetrics from '../../lib/snap-keyring/metrics';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
