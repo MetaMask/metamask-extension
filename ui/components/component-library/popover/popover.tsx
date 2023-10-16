@@ -100,26 +100,6 @@ export const Popover: PopoverComponent = React.forwardRef(
       };
     }, [onPressEscKey]);
 
-    useEffect(() => {
-      const handleDocumentClick = (event: { target: any; }) => {
-        const popoverElement = ref?.current;
-        if (popoverElement && !popoverElement.contains(event.target)) {
-          // Clicked outside the popover, close it
-          if (onPressEscKey) {
-            onPressEscKey();
-          }
-        }
-      };
-
-      if (isOpen) {
-        document.addEventListener('click', handleDocumentClick);
-      }
-
-      return () => {
-        document.removeEventListener('click', handleDocumentClick);
-      };
-    }, [isOpen, ref, onPressEscKey]);
-
     const PopoverContent = (
       <Box
         borderColor={BorderColor.borderMuted}
@@ -139,7 +119,7 @@ export const Popover: PopoverComponent = React.forwardRef(
         ref={ref || setPopperElement}
         {...attributes.popper}
         {...(props as BoxProps<C>)}
-        style={{ ...styles.popper, ...contentStyle, ...props.style, zIndex: 1050 }}
+        style={{ ...styles.popper, ...contentStyle, ...props.style}}
       >
         {children}
         {hasArrow && (
