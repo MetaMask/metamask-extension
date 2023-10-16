@@ -95,8 +95,8 @@ export default class SignatureRequestOriginal extends Component {
     showSignatureRequestWarning: false,
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   componentDidMount() {
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     const { txData } = this.props;
     if (txData.securityAlertResponse) {
       const blockaidMetricsParams = getBlockaidMetricsParams(
@@ -112,8 +112,8 @@ export default class SignatureRequestOriginal extends Component {
         },
       });
     }
-    ///: END:ONLY_INCLUDE_IN
   }
+  ///: END:ONLY_INCLUDE_IN
 
   msgHexToText = (hex) => {
     try {

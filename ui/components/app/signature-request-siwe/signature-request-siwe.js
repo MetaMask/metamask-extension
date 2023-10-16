@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IN
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -42,14 +49,14 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-///: END:ONLY_INCLUDE_IN
-import LedgerInstructionField from '../ledger-instruction-field';
-
-import SignatureRequestHeader from '../signature-request-header';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
+import LedgerInstructionField from '../ledger-instruction-field';
+
+import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -62,7 +69,9 @@ export default function SignatureRequestSIWE({ txData }) {
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   const trackEvent = useContext(MetaMetricsContext);
+  ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   useEffect(() => {

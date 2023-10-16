@@ -100,8 +100,8 @@ export default class ConfirmApproveContent extends Component {
     setShowContractDetails: false,
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   componentDidMount() {
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     const { txData } = this.props;
     if (txData.securityAlertResponse) {
       const blockaidMetricsParams = getBlockaidMetricsParams(
@@ -117,8 +117,8 @@ export default class ConfirmApproveContent extends Component {
         },
       });
     }
-    ///: END:ONLY_INCLUDE_IN
   }
+  ///: END:ONLY_INCLUDE_IN
 
   renderApproveContentCard({
     showHeader = true,
