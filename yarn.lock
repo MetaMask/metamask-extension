@@ -1631,12 +1631,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.0, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:7.23.2":
   version: 7.23.2
   resolution: "@babel/runtime@npm:7.23.2"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
   checksum: abdcbdd590c7e31762e1bdab94dd466823c8bcedd3ff2fde85eeb94dac7cccaef151ac37c428bda7018ededd27c9a82b4dfeb621f978ad934232475a902f8e3a
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@patch:@babel/runtime@npm%3A7.23.2#~/.yarn/patches/@babel-runtime-npm-7.23.2-d013d6cf7e.patch":
+  version: 7.23.2
+  resolution: "@babel/runtime@patch:@babel/runtime@npm%3A7.23.2#~/.yarn/patches/@babel-runtime-npm-7.23.2-d013d6cf7e.patch::version=7.23.2&hash=7df10d"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: d2857d202706e6fca31e37fb3136466c5e4f75dc9e0e7e6d2e0bf4d59908cdf6034d56b2ad02eed7048965b3d56e6a7f420f393b56d1cdc5e5ea624f7f5c596a
   languageName: node
   linkType: hard
 
