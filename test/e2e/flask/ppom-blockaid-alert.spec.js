@@ -5,7 +5,6 @@ const { mockServerJsonRpc } = require('../mock-server-json-rpc');
 const {
   WINDOW_TITLES,
   defaultGanacheOptions,
-  getWindowHandles,
   openDapp,
   unlockWallet,
   withFixtures,
