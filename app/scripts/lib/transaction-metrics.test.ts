@@ -84,7 +84,6 @@ describe('Transaction metrics', () => {
       securityProviderResponse: {
         flagAsDangerous: 0,
       },
-      actionId: mockActionId,
     };
 
     jest.clearAllMocks();
@@ -101,6 +100,7 @@ describe('Transaction metrics', () => {
     it('should create event fragment', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
+        actionId: mockActionId,
       });
 
       expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
@@ -164,6 +164,7 @@ describe('Transaction metrics', () => {
     it('should create, update, finalize event fragment', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
+        actionId: mockActionId,
       });
 
       const expectedUniqueId = 'transaction-added-1';
@@ -258,6 +259,7 @@ describe('Transaction metrics', () => {
 
       await handleTransactionFinalized(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
+        actionId: mockActionId,
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -332,6 +334,7 @@ describe('Transaction metrics', () => {
 
       await handleTransactionFinalized(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
+        actionId: mockActionId,
         error: mockErrorMessage,
       } as any);
 
@@ -418,6 +421,7 @@ describe('Transaction metrics', () => {
     it('should create, update, finalize event fragment', async () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
+        actionId: mockActionId,
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -503,6 +507,7 @@ describe('Transaction metrics', () => {
     it('should create, update, finalize event fragment', async () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
+        actionId: mockActionId,
       } as any);
 
       const expectedUniqueId = 'transaction-added-1';
@@ -587,6 +592,7 @@ describe('Transaction metrics', () => {
     it('should only create event fragment', async () => {
       await handleTransactionSubmitted(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
+        actionId: mockActionId,
       });
 
       expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
