@@ -46,7 +46,7 @@ export enum BlockaidReason {
 
   other = 'other',
 
-  // Locally defined
+  // MetaMask defined reasons
   failed = 'Failed',
   notApplicable = 'NotApplicable',
 }
@@ -55,7 +55,8 @@ export enum BlockaidResultType {
   Malicious = 'Malicious',
   Warning = 'Warning',
   Benign = 'Benign',
-  // Locally defined
+
+  // MetaMask defined result types
   Failed = 'Failed',
   NotApplicable = 'NotApplicable',
 }
