@@ -7,22 +7,15 @@ import {
   JustifyContent,
   Display,
   BlockSize,
-  IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-  Box,
-} from '../../../component-library';
+import { Text, Box } from '../../../component-library';
 import SnapAvatar from '../snap-avatar';
 
-const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {
+const SnapListItem = ({ name, packageName, onClick, snapId }) => {
   return (
     <Box
-      className="snap-settings-card"
+      className="snap-list-item"
       data-testid={snapId}
       display={Display.Flex}
       alignItems={AlignItems.center}
@@ -31,7 +24,7 @@ const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {
       padding={4}
     >
       <Box
-        className="snap-settings-card__inner-wrapper"
+        className="snap-list-item__inner-wrapper"
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexStart}
@@ -43,14 +36,14 @@ const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {
         </Box>
         <Box paddingLeft={4} paddingRight={4} width={BlockSize.Full}>
           <Text
-            className="snap-settings-card__title"
+            className="snap-list-item__title"
             color={Color.textDefault}
             variant={TextVariant.bodyMd}
           >
             {name}
           </Text>
           <Text
-            className="snap-settings-card__url"
+            className="snap-list-item__url"
             color={Color.textAlternative}
             variant={TextVariant.bodySm}
           >
@@ -58,18 +51,11 @@ const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {
           </Text>
         </Box>
       </Box>
-      <Box className="snap-settings-card__caret" onClick={onClick}>
-        <Icon
-          name={IconName.ArrowRight}
-          size={IconSize.Md}
-          color={IconColor.iconMuted}
-        />
-      </Box>
     </Box>
   );
 };
 
-SnapSettingsCard.propTypes = {
+SnapListItem.propTypes = {
   /**
    * Name of the snap
    */
@@ -87,4 +73,4 @@ SnapSettingsCard.propTypes = {
    */
   snapId: PropTypes.string.isRequired,
 };
-export default SnapSettingsCard;
+export default SnapListItem;

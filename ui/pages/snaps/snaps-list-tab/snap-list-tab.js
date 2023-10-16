@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import SnapSettingsCard from '../../../components/app/snaps/snap-settings-card';
+import SnapListItem from '../../../components/app/snaps/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   JustifyContent,
@@ -66,18 +66,18 @@ const SnapListTab = () => {
         </div>
       </div>
       <Box
-        className="snap-list-tab"
+        className="snaps__list-tab"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         height={BlockSize.Full}
       >
         {snapsList.length > 0 && (
-          <div className="snap-list-tab__body">
-            <div className="snap-list-tab__wrapper">
+          <div className="snaps__list-tab__body">
+            <div className="snaps__list-tab__wrapper">
               {snapsList.map((snap) => {
                 return (
-                  <SnapSettingsCard
-                    className="snap-settings-card"
+                  <SnapListItem
+                    className="snaps__list-item"
                     key={snap.key}
                     packageName={snap.packageName}
                     name={snap.name}
@@ -98,11 +98,11 @@ const SnapListTab = () => {
             flexDirection={FlexDirection.Row}
             flexWrap={FlexWrap.Wrap}
             justifyContent={JustifyContent.center}
-            className="snap-list-tab__container--snaps-info-content"
+            className="snaps__list-tab__container--snaps-info-content"
           >
             {snapsList.length < 1 && (
               <Box
-                className="snap-list-tab__container--no-snaps_inner"
+                className="snaps__list-tab__container--no-snaps_inner"
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
                 justifyContent={JustifyContent.center}
@@ -111,7 +111,7 @@ const SnapListTab = () => {
                 <Icon
                   name={IconName.Snaps}
                   color={IconColor.iconMuted}
-                  className="snap-list-tab__no-snaps_icon"
+                  className="snaps__list-tab__no-snaps_icon"
                   size={IconSize.Inherit}
                 />
                 <Text
@@ -129,7 +129,7 @@ const SnapListTab = () => {
               height={BlockSize.Min}
             ></Box>
             <Box
-              className="snap-list-tab__container--no-snaps_banner-tip"
+              className="snaps__list-tab__container--no-snaps_banner-tip"
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               justifyContent={JustifyContent.flexEnd}

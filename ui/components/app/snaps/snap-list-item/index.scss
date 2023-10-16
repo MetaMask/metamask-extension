@@ -1,0 +1,9 @@
+.snap-list-item {
+  &__inner-wrapper {
+    cursor: pointer;
+  }
+
+  &:hover {
+    background: var(--color-background-default-hover);
+  }
+}
