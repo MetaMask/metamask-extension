@@ -43,7 +43,13 @@ export type TransactionMetricsRequest = {
   provider: Provider;
 };
 
-// transaction-added event doesn't have to update/finalize fragment
+/**
+ * This function is called when a transaction is added to the controller.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param eventPayload - The event payload
+ * @param eventPayload.transactionMeta - The transaction meta object
+ */
 export const handleTransactionAdded = async (
   transactionMetricsRequest: TransactionMetricsRequest,
   { transactionMeta }: { transactionMeta: TransactionMeta },
@@ -68,6 +74,13 @@ export const handleTransactionAdded = async (
   });
 };
 
+/**
+ * This function is called when a transaction is approved by the user.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param eventPayload - The event payload
+ * @param eventPayload.transactionMeta - The transaction meta object
+ */
 export const handleTransactionApproved = async (
   transactionMetricsRequest: TransactionMetricsRequest,
   { transactionMeta }: { transactionMeta: TransactionMeta },
@@ -75,39 +88,22 @@ export const handleTransactionApproved = async (
   if (!transactionMeta) {
     return;
   }
-  const { properties, sensitiveProperties } =
-    await buildEventFragmentProperties({
-      transactionMeta,
-      transactionMetricsRequest,
-    });
 
-  createTransactionEventFragment({
-    eventName: TransactionMetaMetricsEvent.approved,
-    transactionMeta,
-    transactionMetricsRequest,
-    payload: {
-      properties,
-      sensitiveProperties,
-    },
-  });
-
-  updateTransactionEventFragment({
-    eventName: TransactionMetaMetricsEvent.approved,
-    transactionMeta,
-    transactionMetricsRequest,
-    payload: {
-      properties,
-      sensitiveProperties,
-    },
-  });
-
-  finalizeTransactionEventFragment({
+  await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.approved,
     transactionMeta,
     transactionMetricsRequest,
   });
 };
 
+/**
+ * This function is called when a transaction is finalized.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param eventPayload - The event payload
+ * @param eventPayload.transactionMeta - The transaction meta object
+ * @param eventPayload.error - The error message if the transaction failed
+ */
 export const handleTransactionFinalized = async (
   transactionMetricsRequest: TransactionMetricsRequest,
   {
@@ -139,40 +135,21 @@ export const handleTransactionFinalized = async (
     }
   }
 
-  const { properties, sensitiveProperties } =
-    await buildEventFragmentProperties({
-      transactionMeta,
-      transactionMetricsRequest,
-      extraParams,
-    });
-
-  createTransactionEventFragment({
+  await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     transactionMeta,
     transactionMetricsRequest,
-    payload: {
-      properties,
-      sensitiveProperties,
-    },
-  });
-
-  updateTransactionEventFragment({
-    eventName: TransactionMetaMetricsEvent.finalized,
-    transactionMeta,
-    transactionMetricsRequest,
-    payload: {
-      properties,
-      sensitiveProperties,
-    },
-  });
-
-  finalizeTransactionEventFragment({
-    eventName: TransactionMetaMetricsEvent.finalized,
-    transactionMeta,
-    transactionMetricsRequest,
+    extraParams,
   });
 };
 
+/**
+ * This function is called when a transaction is dropped.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param eventPayload - The event payload
+ * @param eventPayload.transactionMeta - The transaction meta object
+ */
 export const handleTransactionDropped = async (
   transactionMetricsRequest: TransactionMetricsRequest,
   { transactionMeta }: { transactionMeta: TransactionMeta },
@@ -185,40 +162,21 @@ export const handleTransactionDropped = async (
     dropped: true,
   };
 
-  const { properties, sensitiveProperties } =
-    await buildEventFragmentProperties({
-      transactionMeta,
-      transactionMetricsRequest,
-      extraParams,
-    });
-
-  createTransactionEventFragment({
+  await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     transactionMeta,
     transactionMetricsRequest,
-    payload: {
-      properties,
-      sensitiveProperties,
-    },
-  });
-
-  updateTransactionEventFragment({
-    eventName: TransactionMetaMetricsEvent.finalized,
-    transactionMeta,
-    transactionMetricsRequest,
-    payload: {
-      properties,
-      sensitiveProperties,
-    },
-  });
-
-  finalizeTransactionEventFragment({
-    eventName: TransactionMetaMetricsEvent.finalized,
-    transactionMeta,
-    transactionMetricsRequest,
+    extraParams,
   });
 };
 
+/**
+ * This function is called when a transaction is rejected by the user.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param eventPayload - The event payload
+ * @param eventPayload.transactionMeta - The transaction meta object
+ */
 export const handleTransactionRejected = async (
   transactionMetricsRequest: TransactionMetricsRequest,
   { transactionMeta }: { transactionMeta: TransactionMeta },
@@ -226,40 +184,21 @@ export const handleTransactionRejected = async (
   if (!transactionMeta) {
     return;
   }
-  const { properties, sensitiveProperties } =
-    await buildEventFragmentProperties({
-      transactionMeta,
-      transactionMetricsRequest,
-    });
 
-  createTransactionEventFragment({
-    eventName: TransactionMetaMetricsEvent.rejected,
-    transactionMeta,
-    transactionMetricsRequest,
-    payload: {
-      properties,
-      sensitiveProperties,
-    },
-  });
-
-  updateTransactionEventFragment({
-    eventName: TransactionMetaMetricsEvent.rejected,
-    transactionMeta,
-    transactionMetricsRequest,
-    payload: {
-      properties,
-      sensitiveProperties,
-    },
-  });
-
-  finalizeTransactionEventFragment({
+  await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.rejected,
     transactionMeta,
     transactionMetricsRequest,
   });
 };
 
-// transaction-submitted event doesn't have to update/finalize fragment
+/**
+ * This function is called when a transaction is submitted to the network.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param eventPayload - The event payload
+ * @param eventPayload.transactionMeta - The transaction meta object
+ */
 export const handleTransactionSubmitted = async (
   transactionMetricsRequest: TransactionMetricsRequest,
   { transactionMeta }: { transactionMeta: TransactionMeta },
@@ -284,7 +223,14 @@ export const handleTransactionSubmitted = async (
   });
 };
 
-// This function is needed for a specific case in UI
+/**
+ * UI needs this specific create function in order to be sure that event fragment exists when updating transaction gas values.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param eventPayload - The event payload
+ * @param eventPayload.actionId - The action id of the transaction
+ * @param eventPayload.transactionId - The transaction id
+ */
 export const createTransactionEventFragmentWithTxId = async (
   transactionMetricsRequest: TransactionMetricsRequest,
   {
@@ -496,6 +442,51 @@ function finalizeTransactionEventFragment({
     default:
       break;
   }
+}
+
+async function createUpdateFinalizeTransactionEventFragment({
+  eventName,
+  transactionMeta,
+  transactionMetricsRequest,
+  extraParams = {},
+}: {
+  eventName: TransactionMetaMetricsEvent;
+  transactionMeta: TransactionMeta;
+  transactionMetricsRequest: TransactionMetricsRequest;
+  extraParams?: Record<string, any>;
+}) {
+  const { properties, sensitiveProperties } =
+    await buildEventFragmentProperties({
+      transactionMeta,
+      transactionMetricsRequest,
+      extraParams,
+    });
+
+  createTransactionEventFragment({
+    eventName,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+
+  updateTransactionEventFragment({
+    eventName,
+    transactionMeta,
+    transactionMetricsRequest,
+    payload: {
+      properties,
+      sensitiveProperties,
+    },
+  });
+
+  finalizeTransactionEventFragment({
+    eventName,
+    transactionMeta,
+    transactionMetricsRequest,
+  });
 }
 
 function hasFragment(
