@@ -105,20 +105,6 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
   },
 }));
 
-jest.mock('./lib/transaction-metrics', () => {
-  const curryMock = () => () => jest.fn();
-  return {
-    onTransactionAdded: jest.fn().mockImplementation(curryMock),
-    onTransactionApproved: jest.fn().mockImplementation(curryMock),
-    onTransactionFinalized: jest.fn().mockImplementation(curryMock),
-    onTransactionDropped: jest.fn().mockImplementation(curryMock),
-    onTransactionRejected: jest.fn().mockImplementation(curryMock),
-    onTransactionSubmitted: jest.fn().mockImplementation(curryMock),
-    createTransactionEventFragmentWithTxId: jest
-      .fn()
-      .mockImplementation(curryMock),
-  };
-});
 const currentChainId = '0x5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
