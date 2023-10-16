@@ -3908,9 +3908,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@file:../core/packages/assets-controllers::locator=metamask-crx%40workspace%3A.":
+"@metamask/assets-controllers@npm:^16.0.0":
   version: 16.0.0
-  resolution: "@metamask/assets-controllers@file:../core/packages/assets-controllers#../core/packages/assets-controllers::hash=fc1b59&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/assets-controllers@npm:16.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -3939,7 +3939,7 @@ __metadata:
     "@metamask/approval-controller": ^4.0.1
     "@metamask/network-controller": ^15.0.0
     "@metamask/preferences-controller": ^4.4.3
-  checksum: 7379357de9fd4a8f4a49922f7ca872de374029f74d1bea15abd7bee29f10ee77a1b160be4da839e16673c9f739a559411918eeb0102e8a45287ce01a28952ea9
+  checksum: 3aeb86a5ad56bdd49f77a1b7c0639d966f57db1a528834554ff6e1dedd8bec76fbb43f5dda1fd04bfa2e2eb02f0641eef040e0cb43bc8cce769d699e818fdf73
   languageName: node
   linkType: hard
 
