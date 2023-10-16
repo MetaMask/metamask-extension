@@ -102,7 +102,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   ///: END:ONLY_INCLUDE_IN
 
   return (
-    <Popover referenceElement={anchorElement} isOpen={closeMenu}>
+    <Popover referenceElement={anchorElement} onBlur={closeMenu}>
       <AccountDetailsMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
