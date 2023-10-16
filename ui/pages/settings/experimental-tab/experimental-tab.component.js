@@ -88,7 +88,7 @@ export default class ExperimentalTab extends PureComponent {
       category: MetaMetricsEventCategory.Settings,
       event: 'Settings Updated',
       properties: {
-        security_alerts_enabled: newValue,
+        blockaid_alerts_enabled: newValue,
       },
     });
     setSecurityAlertsEnabled(newValue);
@@ -109,10 +109,9 @@ export default class ExperimentalTab extends PureComponent {
       this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: 'Enabled/Disable TransactionSecurityCheck',
+      event: 'Settings Updated',
       properties: {
-        action: 'Enabled/Disable TransactionSecurityCheck',
-        legacy_event: true,
+        opensea_alerts_enabled: newValue,
       },
     });
     setTransactionSecurityCheckEnabled(newValue);
