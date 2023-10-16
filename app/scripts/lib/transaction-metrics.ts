@@ -25,16 +25,16 @@ import {
 } from '../../../shared/constants/metametrics';
 import { GasRecommendations } from '../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+///: END:ONLY_INCLUDE_IN
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from './snap-keyring/metrics';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-///: END:ONLY_INCLUDE_IN
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
