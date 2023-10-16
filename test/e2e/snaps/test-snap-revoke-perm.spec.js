@@ -123,10 +123,6 @@ describe('Test Snap revoke permission', function () {
           '[data-testid="account-options-menu-button"]',
         );
 
-        // try to click on the notification item
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.delay(1000);
-
         // try to click on the snaps item
         await driver.clickElement({
           text: 'Snaps',
