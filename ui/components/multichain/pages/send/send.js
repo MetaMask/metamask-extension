@@ -98,9 +98,8 @@ export const SendPage = () => {
               textAlign: TextAlign.Start,
             }}
             labelProps={{
-              style: { flexGrow: 1 },
-              textAlign: TextAlign.Start,
-              paddingInlineStart: 5,
+              style: { flexGrow: 1, textAlign: 'start' },
+              paddingInlineStart: 2,
             }}
             textProps={{
               display: Display.Flex,

@@ -35,7 +35,6 @@ export const AccountPicker = ({
   onClick,
   disabled = false,
   showAddress = false,
-  block = false,
   addressProps = {},
   labelProps = {},
   textProps = {},
@@ -92,9 +91,7 @@ export const AccountPicker = ({
             {showAddress ? (
               <Text
                 color={TextColor.textAlternative}
-                textAlign={block ? TextAlign.Start : TextAlign.Center}
                 variant={TextVariant.bodySm}
-                paddingInlineStart={block ? 5 : 0}
                 ellipsis
                 {...addressProps}
               >
