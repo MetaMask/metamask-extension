@@ -36,13 +36,12 @@ const { provider } = createTestProviderTools({
   chainId: '5',
 });
 
-const mockSnapAndHardwareInfo = {
-  account_snap_type: 'snaptype',
-  account_snap_version: 'snapversion',
-};
 jest.mock('./snap-keyring/metrics', () => {
   return {
-    default: jest.fn().mockResolvedValue(mockSnapAndHardwareInfo),
+    getSnapAndHardwareInfoForMetrics: jest.fn().mockResolvedValue({
+      account_snap_type: 'snaptype',
+      account_snap_version: 'snapversion',
+    }),
   };
 });
 
@@ -126,6 +125,8 @@ describe('Transaction metrics', () => {
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
         properties: {
+          account_snap_type: 'snaptype',
+          account_snap_version: 'snapversion',
           account_type: undefined,
           asset_type: AssetType.native,
           chain_id: mockChainId,
@@ -180,6 +181,8 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-added-1';
       const expectedProperties = {
+        account_snap_type: 'snaptype',
+        account_snap_version: 'snapversion',
         account_type: undefined,
         asset_type: AssetType.native,
         chain_id: mockChainId,
@@ -275,6 +278,8 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
       const expectedProperties = {
+        account_snap_type: 'snaptype',
+        account_snap_version: 'snapversion',
         account_type: undefined,
         asset_type: AssetType.native,
         chain_id: mockChainId,
@@ -351,6 +356,8 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
       const expectedProperties = {
+        account_snap_type: 'snaptype',
+        account_snap_version: 'snapversion',
         account_type: undefined,
         asset_type: AssetType.native,
         chain_id: mockChainId,
@@ -437,6 +444,8 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-submitted-1';
       const expectedProperties = {
+        account_snap_type: 'snaptype',
+        account_snap_version: 'snapversion',
         account_type: undefined,
         asset_type: AssetType.native,
         chain_id: mockChainId,
@@ -523,6 +532,8 @@ describe('Transaction metrics', () => {
 
       const expectedUniqueId = 'transaction-added-1';
       const expectedProperties = {
+        account_snap_type: 'snaptype',
+        account_snap_version: 'snapversion',
         account_type: undefined,
         asset_type: AssetType.native,
         chain_id: mockChainId,
@@ -617,6 +628,8 @@ describe('Transaction metrics', () => {
         uniqueIdentifier: 'transaction-submitted-1',
         persist: true,
         properties: {
+          account_snap_type: 'snaptype',
+          account_snap_version: 'snapversion',
           account_type: undefined,
           asset_type: AssetType.native,
           chain_id: mockChainId,

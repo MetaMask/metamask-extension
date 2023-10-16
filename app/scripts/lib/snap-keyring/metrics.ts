@@ -13,7 +13,7 @@ export type SnapAndHardwareMessenger = RestrictedControllerMessenger<
   never
 >;
 
-export default async function getSnapAndHardwareInfoForMetrics(
+export async function getSnapAndHardwareInfoForMetrics(
   getSelectedAddress: () => string,
   getAccountType: (address: string) => Promise<string>,
   getDeviceModel: (address: string) => Promise<string>,
