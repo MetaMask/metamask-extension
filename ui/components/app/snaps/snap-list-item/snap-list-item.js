@@ -22,6 +22,7 @@ const SnapListItem = ({ name, packageName, onClick, snapId }) => {
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
       padding={4}
+      onClick={onClick}
     >
       <Box
         className="snap-list-item__inner-wrapper"
@@ -29,7 +30,6 @@ const SnapListItem = ({ name, packageName, onClick, snapId }) => {
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexStart}
         width={BlockSize.Full}
-        onClick={onClick}
       >
         <Box>
           <SnapAvatar snapId={snapId} />
