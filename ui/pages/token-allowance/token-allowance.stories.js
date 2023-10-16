@@ -224,6 +224,8 @@ const storeWithErrors = configureStore({
   ...testData,
   metamask: {
     ...testData.metamask,
+    // TODO: Mock state correctly to show insufficient funds error
+    //
     accounts: {
       ...testData.metamask.accounts,
       '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
