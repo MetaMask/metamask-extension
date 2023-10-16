@@ -16,7 +16,6 @@ import {
   MetaMetricsEventCategory,
 } from '../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
-import { BlockaidReason } from '../../../shared/constants/security-provider';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -26,6 +25,10 @@ import {
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
 } from './transaction-metrics';
+
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import { BlockaidReason } from '../../../shared/constants/security-provider';
+///: END:ONLY_INCLUDE_IN
 
 const providerResultStub = {
   eth_getCode: '0x123',
