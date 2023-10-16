@@ -150,6 +150,10 @@ export type MetaMetricsEventOptions = {
 
 export type MetaMetricsEventFragment = {
   /**
+   * The action ID of transaction metadata object.
+   */
+  actionId?: string;
+  /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
   successEvent: string;
