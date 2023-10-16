@@ -38,6 +38,7 @@ export const AccountPicker = ({
   block = false,
   addressProps = {},
   labelProps = {},
+  textProps = {},
   ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
@@ -45,9 +46,7 @@ export const AccountPicker = ({
 
   return (
     <ButtonBase
-      className={classnames('multichain-account-picker', {
-        'multichain-account-picker--full': block,
-      })}
+      className="multichain-account-picker"
       data-testid="account-menu-icon"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
@@ -57,6 +56,7 @@ export const AccountPicker = ({
         display: Display.Flex,
         gap: 2,
         alignItems: AlignItems.center,
+        ...textProps,
       }}
       size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Md}
       disabled={disabled}
@@ -147,4 +147,8 @@ AccountPicker.propTypes = {
    * Props to be added to the label element
    */
   labelProps: PropTypes.object,
+  /**
+   * Props to be added to the text element
+   */
+  textProps: PropTypes.object,
 };

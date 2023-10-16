@@ -16,6 +16,7 @@ import {
   PickerNetwork,
 } from '../../../component-library';
 import {
+  BlockSize,
   BorderColor,
   Display,
   FlexDirection,
@@ -96,6 +97,16 @@ export const SendPage = () => {
               display: Display.Flex,
               textAlign: TextAlign.Start,
             }}
+            labelProps={{
+              style: { flexGrow: 1 },
+              textAlign: TextAlign.Start,
+              paddingInlineStart: 5,
+            }}
+            textProps={{
+              display: Display.Flex,
+              width: BlockSize.Full,
+            }}
+            width={BlockSize.Full}
           />
         </SendPageRow>
         <SendPageRow>
@@ -112,7 +123,11 @@ export const SendPage = () => {
         <SendPageRow>
           <Label paddingBottom={2}>{t('yourAccounts')}</Label>
           {accounts.map((account) => (
-            <AccountListItem identity={account} key={account.address} />
+            <AccountListItem
+              identity={account}
+              key={account.address}
+              onClick={() => undefined}
+            />
           ))}
         </SendPageRow>
       </Content>
