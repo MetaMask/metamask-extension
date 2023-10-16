@@ -1228,9 +1228,10 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {number} txId - the tx's Id
    * @param {string} rawTx - the hex string of the serialized signed transaction
+   * @param {string} actionId - actionId passed from UI
    * @returns {Promise<void>}
    */
-  async _publishTransaction(txId, rawTx) {
+  async _publishTransaction(txId, rawTx, actionId) {
     const txMeta = this.txStateManager.getTransaction(txId);
     txMeta.rawTx = rawTx;
     if (txMeta.type === TransactionType.swap) {
@@ -1258,6 +1259,7 @@ export default class TransactionController extends EventEmitter {
 
     this.emit('transaction-submitted', {
       transactionMeta: txMeta,
+      actionId,
     });
   }
 
@@ -1782,13 +1784,14 @@ export default class TransactionController extends EventEmitter {
       await this._publishTransaction(txId, rawTx, actionId);
       this.emit('transaction-approved', {
         transactionMeta: txMeta,
+        actionId,
       });
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock();
     } catch (err) {
       // this is try-catch wrapped so that we can guarantee that the nonceLock is released
       try {
-        this._failTransaction(txId, err);
+        this._failTransaction(txId, err, actionId);
       } catch (err2) {
         log.error(err2);
       }
@@ -1807,13 +1810,15 @@ export default class TransactionController extends EventEmitter {
    * Convenience method for the ui thats sets the transaction to rejected
    *
    * @param {number} txId - the tx's Id
+   * @param {string} actionId - actionId passed from UI
    * @returns {Promise<void>}
    */
-  async _cancelTransaction(txId) {
+  async _cancelTransaction(txId, actionId) {
     const txMeta = this.txStateManager.getTransaction(txId);
     this.txStateManager.setTxStatusRejected(txId);
     this.emit('transaction-rejected', {
       transactionMeta: txMeta,
+      actionId,
     });
   }
 
@@ -2176,12 +2181,13 @@ export default class TransactionController extends EventEmitter {
     return gasValuesInGwei;
   }
 
-  _failTransaction(txId, error) {
+  _failTransaction(txId, error, actionId) {
     this.txStateManager.setTxStatusFailed(txId, error);
     const txMeta = this.txStateManager.getTransaction(txId);
     this.emit('transaction-finalized', {
-      transactionMeta: txMeta,
+      actionId,
       error: error.message,
+      transactionMeta: txMeta,
     });
   }
 
@@ -2204,6 +2210,7 @@ export default class TransactionController extends EventEmitter {
     this.emit(`${txMeta.id}:unapproved`, txMeta);
     this.emit('transaction-added', {
       transactionMeta: txMeta,
+      actionId: txMeta.actionId,
     });
   }
 
@@ -2284,9 +2291,9 @@ export default class TransactionController extends EventEmitter {
 
       if (transaction && !this._isTransactionCompleted(transaction)) {
         if (error.code === errorCodes.provider.userRejectedRequest) {
-          await this._cancelTransaction(txId);
+          await this._cancelTransaction(txId, actionId);
         } else {
-          this._failTransaction(txId, error);
+          this._failTransaction(txId, error, actionId);
         }
       }
 
