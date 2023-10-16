@@ -33,6 +33,8 @@ import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from './snap-keyring/metrics';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: END:ONLY_INCLUDE_IN
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
