@@ -29,7 +29,8 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-import getSnapAndHardwareInfoForMetrics, {
+import {
+  getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from './snap-keyring/metrics';
 
