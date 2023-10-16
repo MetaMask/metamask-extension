@@ -1389,7 +1389,7 @@ export default class TransactionController extends EventEmitter {
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
       fromAddress,
-      this._getAdditionalSignArguments?.(txMeta),
+      this._getAdditionalSignArguments?.(...txMeta),
     );
 
     if (this._afterSign?.(txMeta, signedEthTx)) {
