@@ -1257,22 +1257,6 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    // This gets used as a ...spread parameter in two places: new TransactionController() and createRPCMethodTrackingMiddleware()
-    this.snapAndHardwareMetricsParams = {
-      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(
-        this.preferencesController,
-      ),
-      getAccountType: this.getAccountType.bind(this),
-      getDeviceModel: this.getDeviceModel.bind(this),
-      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
-        name: 'SnapAndHardwareMessenger',
-        allowedActions: [
-          'KeyringController:getKeyringForAccount',
-          'SnapController:get',
-        ],
-      }),
-    };
-
     this.txController = new TransactionController({
       initState:
         initState.TransactionController || initState.TransactionManager,
@@ -1314,7 +1298,6 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
-      ...this.snapAndHardwareMetricsParams,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IN
@@ -2001,6 +1984,13 @@ export default class MetamaskController extends EventEmitter {
     };
     return {
       ...controllerActions,
+      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+        name: 'SnapAndHardwareMessenger',
+        allowedActions: [
+          'KeyringController:getKeyringForAccount',
+          'SnapController:get',
+        ],
+      }),
       provider: this.provider,
     };
   }
@@ -4393,7 +4383,18 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.store,
         ),
         securityProviderRequest: this.securityProviderRequest.bind(this),
-        ...this.snapAndHardwareMetricsParams,
+        getSelectedAddress: this.preferencesController.getSelectedAddress.bind(
+          this.preferencesController,
+        ),
+        getAccountType: this.getAccountType.bind(this),
+        getDeviceModel: this.getDeviceModel.bind(this),
+        snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+          name: 'SnapAndHardwareMessenger',
+          allowedActions: [
+            'KeyringController:getKeyringForAccount',
+            'SnapController:get',
+          ],
+        }),
       }),
     );
 
