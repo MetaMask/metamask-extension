@@ -59,10 +59,10 @@ describe('MMI hooks', () => {
       expect(result).toEqual([1, 2, 3, 4]);
     });
 
-    it('returns an empty array', () => {
-      const args = undefined;
+    it('returns the single argument directly when only one argument is provided', () => {
+      const args = '123';
       const result = getAdditionalSignArguments(args);
-      expect(result).toStrictEqual([]);
+      expect(result).toStrictEqual(args);
     });
   });
 });

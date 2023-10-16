@@ -43,6 +43,9 @@ export const beforePublish = (txMeta: any): boolean => {
  *
  * @param args - The list of arguments to filter.
  */
-export const getAdditionalSignArguments = <T>(...args: T[]): T[] => {
+export const getAdditionalSignArguments = <T>(...args: T[]): T[] | T => {
+  if (args.length === 1) {
+    return args[0];
+  }
   return args.filter((arg) => arg !== undefined);
 };
