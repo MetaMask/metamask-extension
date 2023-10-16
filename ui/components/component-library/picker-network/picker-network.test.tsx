@@ -65,4 +65,17 @@ describe('PickerNetwork', () => {
     );
     expect(getByTestId('picker-network')).toHaveClass('test-class');
   });
+  it('should render with labelProps', () => {
+    const { getByTestId } = render(
+      <PickerNetwork
+        data-testid="picker-network"
+        label="test"
+        labelProps={{
+          'data-testid': 'picker-network-label',
+          className: 'test-class',
+        }}
+      />,
+    );
+    expect(getByTestId('picker-network-label')).toHaveClass('test-class');
+  });
 });
