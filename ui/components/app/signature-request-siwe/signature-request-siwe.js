@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -40,10 +40,16 @@ import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-pa
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -56,6 +62,26 @@ export default function SignatureRequestSIWE({ txData }) {
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const trackEvent = useContext(MetaMetricsContext);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useEffect(() => {
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+  }, [txData?.securityAlertResponse]);
+  ///: END:ONLY_INCLUDE_IN
 
   const {
     msgParams: {

@@ -24,6 +24,11 @@ import { ConfirmPageContainerWarning } from '../../../components/app/confirm-pag
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import BlockaidBannerAlert from '../../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
@@ -94,6 +99,26 @@ export default class ConfirmApproveContent extends Component {
     copied: false,
     setShowContractDetails: false,
   };
+
+  componentDidMount() {
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    const { txData } = this.props;
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+    ///: END:ONLY_INCLUDE_IN
+  }
 
   renderApproveContentCard({
     showHeader = true,
