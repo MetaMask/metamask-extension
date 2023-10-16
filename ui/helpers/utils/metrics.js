@@ -1,7 +1,9 @@
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+///: END:ONLY_INCLUDE_IN
 
 export function getMethodName(camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
