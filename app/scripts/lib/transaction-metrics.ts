@@ -2,6 +2,7 @@ import { isHexString } from 'ethereumjs-util';
 import EthQuery from 'eth-query';
 import { BigNumber } from 'bignumber.js';
 import type { Provider } from '@metamask/network-controller';
+import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
@@ -16,7 +17,12 @@ import {
   TransactionMetaMetricsEvent,
   TransactionMeta,
 } from '../../../shared/constants/transaction';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventFragment,
+  MetaMetricsPageObject,
+  MetaMetricsReferrerObject,
+} from '../../../shared/constants/metametrics';
 import { GasRecommendations } from '../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
 
@@ -30,16 +36,40 @@ import {
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
 export type TransactionMetricsRequest = {
-  createEventFragment: (arg0: any) => any;
-  finalizeEventFragment: (arg0: string, arg1?: any) => any;
-  getEventFragmentById: () => any;
-  updateEventFragment: (arg0: string, arg1: any) => any;
-  getAccountType: (arg0: string) => Promise<any>;
-  getDeviceModel: (arg0: string) => Promise<any>;
-  getEIP1559GasFeeEstimates: () => any;
-  getSelectedAddress: () => any;
-  getTokenStandardAndDetails: () => any;
-  getTransaction: (arg0: string) => TransactionMeta;
+  createEventFragment: (
+    options: MetaMetricsEventFragment,
+  ) => MetaMetricsEventFragment;
+  finalizeEventFragment: (
+    fragmentId: string,
+    options?: {
+      abandoned?: boolean;
+      page?: MetaMetricsPageObject;
+      referrer?: MetaMetricsReferrerObject;
+    },
+  ) => void;
+  getEventFragmentById: (fragmentId: string) => MetaMetricsEventFragment;
+  updateEventFragment: (
+    fragmentId: string,
+    payload: Partial<MetaMetricsEventFragment>,
+  ) => void;
+  getAccountType: (
+    address: string,
+  ) => Promise<'hardware' | 'imported' | 'MetaMask'>;
+  getDeviceModel: (
+    address: string,
+  ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
+  // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
+  // doesn't include some properties used in buildEventFragmentProperties,
+  // hence returning any here to avoid type errors.
+  getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
+  getSelectedAddress: () => string;
+  getTokenStandardAndDetails: () => {
+    decimals?: string;
+    balance?: string;
+    symbol?: string;
+    standard?: TokenStandard;
+  };
+  getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
 };
 
