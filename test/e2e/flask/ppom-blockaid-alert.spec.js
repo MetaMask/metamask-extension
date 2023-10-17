@@ -12,6 +12,7 @@ const {
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
 
 const expectedMaliciousTitle = 'This is a deceptive request';
 
@@ -88,9 +89,52 @@ async function mockInfura(mockServer) {
     ['eth_feeHistory'],
     ['eth_gasPrice'],
     ['eth_getBalance'],
+    ['eth_getBlockByNumber'],
     ['eth_getCode'],
     ['eth_getTransactionCount'],
   ]);
+}
+
+async function mockInfuraWithMaliciousResponses(mockServer) {
+  await mockInfura(mockServer);
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'debug_traceCall',
+      params: [{ accessList: [], data: '0x00000000' }],
+    })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result: {
+            calls: [
+              {
+                error: 'execution reverted',
+                from: '0x0000000000000000000000000000000000000000',
+                gas: '0x1d55c2cb',
+                gasUsed: '0x39c',
+                input: '0x00000000',
+                to: mockMaliciousAddress,
+                type: 'DELEGATECALL',
+                value: '0x0',
+              },
+            ],
+            error: 'execution reverted',
+            from: '0x0000000000000000000000000000000000000000',
+            gas: '0x1dcd6500',
+            gasUsed: '0x721e',
+            input: '0x00000000',
+            to: mockMaliciousAddress,
+            type: 'CALL',
+            value: '0x0',
+          },
+        },
+      };
+    });
 }
 
 /**
@@ -180,7 +224,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
               })
               .build(),
             defaultGanacheOptions,
-            testSpecificMock: mockInfura,
+            testSpecificMock: mockInfuraWithMaliciousResponses,
             title: this.test.title,
           },
 
