@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { SeverityLevel } from '@metamask/snaps-utils';
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
 import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
-import { getInsightSnaps } from '../selectors';
+import { getInsightSnaps, getSubjectMetadata } from '../selectors';
+import { getSnapName } from '../helpers/utils/util';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -23,9 +23,9 @@ const isAllowedTransactionTypes = (transactionType) =>
 // Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
   const { txParams, chainId, origin } = txData;
-  const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-  const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
+  const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
+  const subjectMetadata = useSelector(getSubjectMetadata);
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
@@ -59,22 +59,23 @@ const useTransactionInsights = ({ txData }) => {
   // the logic inside of tabs.component.js is re-done to account for nested tabs
   let insightComponent;
 
-  if (data && insightSnaps.length === 1) {
+  if (insightSnaps.length === 1) {
     insightComponent = (
       <Tab
         className="confirm-page-container-content__tab"
-        name={selectedSnap?.manifest.proposedName}
+        name={getSnapName(selectedSnap?.id, subjectMetadata[selectedSnap?.id])}
       >
         <SnapInsight data={data?.[0]} loading={loading} />
       </Tab>
     );
-  } else if (data && insightSnaps.length > 1) {
-    const dropdownOptions = insightSnaps?.map(
-      ({ id, manifest: { proposedName } }) => ({
+  } else if (insightSnaps.length > 1) {
+    const dropdownOptions = insightSnaps?.map(({ id }) => {
+      const name = getSnapName(id, subjectMetadata[id]);
+      return {
         value: id,
-        name: proposedName,
-      }),
-    );
+        name,
+      };
+    });
 
     const selectedSnapData = data?.find(
       (promise) => promise?.snapId === selectedInsightSnapId,

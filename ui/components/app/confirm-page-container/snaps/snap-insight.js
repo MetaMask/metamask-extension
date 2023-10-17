@@ -36,11 +36,7 @@ import { trackInsightSnapUsage } from '../../../../store/actions';
 
 export const SnapInsight = ({ data, loading }) => {
   const t = useI18nContext();
-  const {
-    error,
-    snapId,
-    response: { content },
-  } = data;
+  const { error, snapId, response: { content } = {} } = data ?? {};
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   const dispatch = useDispatch();
 
