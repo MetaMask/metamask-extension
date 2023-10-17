@@ -208,9 +208,7 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
 function saveTimestamp() {
   const timestamp = new Date().toISOString();
 
-  browser.storage.session.set({ timestamp }, () => {
-    console.log('Timestamp saved to `browser.storage.session`', timestamp);
-  });
+  browser.storage.session.set({ timestamp });
 }
 
 /**
@@ -920,8 +918,6 @@ function setupSentryGetStateGlobal(store) {
 async function initBackground() {
   await onInstall();
   initialize().catch(log.error);
-
-  console.log('after initialize');
 }
 
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
