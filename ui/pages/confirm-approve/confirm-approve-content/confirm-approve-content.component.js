@@ -51,6 +51,7 @@ import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
