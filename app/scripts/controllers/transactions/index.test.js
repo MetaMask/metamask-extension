@@ -2732,6 +2732,86 @@ describe('Transaction Controller', function () {
       );
     });
 
+    it('should call _trackMetaMetricsEvent with the correct payload when providerRequestsCount is provided', async function () {
+      const txMeta = {
+        id: 1,
+        status: TransactionStatus.unapproved,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: TransactionType.simpleSend,
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+        securityProviderResponse: {
+          flagAsDangerous: 1,
+          providerRequestsCount: {
+            eth_call: 5,
+            eth_getCode: 3,
+          }
+        },
+      };
+      const expectedPayload = {
+        actionId,
+        initialEvent: 'Transaction Added',
+        successEvent: 'Transaction Approved',
+        failureEvent: 'Transaction Rejected',
+        uniqueIdentifier: 'transaction-added-1',
+        persist: true,
+        category: MetaMetricsEventCategory.Transactions,
+        properties: {
+          network: '5',
+          referrer: 'other',
+          source: MetaMetricsTransactionEventSource.Dapp,
+          transaction_type: TransactionType.simpleSend,
+          chain_id: '0x5',
+          eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
+          asset_type: AssetType.native,
+          token_standard: TokenStandard.none,
+          transaction_speed_up: false,
+          ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.notApplicable,
+          security_alert_response: BlockaidResultType.NotApplicable,
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
+          status: 'unapproved',
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          transaction_contract_method: undefined,
+          transaction_replaced: undefined,
+          first_seen: 1624408066355,
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+        },
+      };
+
+      await txController._trackTransactionMetricsEvent(
+        txMeta,
+        TransactionMetaMetricsEvent.added,
+        actionId,
+        {
+          baz: 3.0,
+          foo: 'bar',
+        },
+      );
+      assert.equal(createEventFragmentSpy.callCount, 1);
+      assert.equal(finalizeEventFragmentSpy.callCount, 0);
+      assert.deepEqual(
+        createEventFragmentSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+
     it('should call _trackMetaMetricsEvent with the correct payload (extra params) when flagAsDangerous is malicious', async function () {
       const txMeta = {
         id: 1,
