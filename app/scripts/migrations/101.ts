@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 100;
+export const version = 101;
 
 /**
  * Remove network controller `networkId` state.
