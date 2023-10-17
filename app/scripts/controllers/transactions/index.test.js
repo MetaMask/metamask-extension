@@ -2753,7 +2753,7 @@ describe('Transaction Controller', function () {
           providerRequestsCount: {
             eth_call: 5,
             eth_getCode: 3,
-          }
+          },
         },
       };
       const expectedPayload = {
