@@ -45,7 +45,6 @@
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
     "test:e2e:firefox:snaps": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js --snaps",
     "test:e2e:single": "node test/e2e/run-e2e-test.js",
-    "test:e2e:report": "node ./test/e2e/e2e-process-report.js && jrm ./test/test-results/e2e.xml \"./test/test-results/e2e/*.xml\"",
     "test:coverage:mocha": "node ./test/run-unit-tests.js --mocha --coverage",
     "test:coverage:jest": "node ./test/run-unit-tests.js --jestGlobal --coverage",
     "test:coverage:jest:dev": "node ./test/run-unit-tests.js --jestDev --coverage",

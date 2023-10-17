@@ -167,25 +167,30 @@ async function main() {
   }
 
   // For running E2Es in parallel in CI
+  await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
+
   const fullTestList = testPaths.join('\n');
   console.log('Full test list:', fullTestList);
-  fs.writeFileSync('fullTestList.txt', fullTestList);
+  fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
 
   // Use `circleci tests run` on `testList.txt` to do two things:
   // 1. split the test files into chunks based on how long they take to run
   // 2. support "Rerun failed tests" on CircleCI
-  execSync(
-    'circleci tests run --command=">myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < fullTestList.txt',
-  );
+  const result = execSync(
+    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
+  ).toString('utf8');
+
+  if (result.indexOf('There were no tests found') !== -1) {
+    console.log(`run-all.js info: Skipping this node because "${result}"`);
+    return;
+  }
 
   // take the space-delimited result and split into an array
   const myTestList = fs
-    .readFileSync('myTestList.txt', { encoding: 'utf8' })
+    .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
     .split(' ');
 
   console.log('My test list:', myTestList);
-
-  fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {

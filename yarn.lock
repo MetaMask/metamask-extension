@@ -4421,13 +4421,13 @@ __metadata:
   linkType: hard
 
 "@metamask/logging-controller@npm:^1.0.1, @metamask/logging-controller@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@metamask/logging-controller@npm:1.0.3"
+  version: 1.0.4
+  resolution: "@metamask/logging-controller@npm:1.0.4"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.2"
-    "@metamask/controller-utils": "npm:^5.0.1"
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/controller-utils": "npm:^5.0.2"
     uuid: "npm:^8.3.2"
-  checksum: acb1cfd4c5fd20fc858d90847328bd0bd07760fead6fcbc8557f69adfb38ba25b490aac98cc5e15a2d3dfc8692a56bbd947434008a6bd15dd2ae1802b78da84d
+  checksum: 8b119a11e302ca43b0d7b90e4462426a53aee48bafdac308cab70a64f06e639209c9fb72868ed026d1730938a239ce2bdf6702e3c1cc5ec3e58ea8ed6bd30adf
   languageName: node
   linkType: hard
 
