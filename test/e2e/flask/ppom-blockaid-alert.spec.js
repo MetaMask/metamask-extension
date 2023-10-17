@@ -142,8 +142,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             }
 
             // Wait for confirmation pop-up
-            await driver.waitUntilXWindowHandles(3);
-            const windowHandles = await driver.getAllWindowHandles();
+            const windowHandles = await driver.waitUntilXWindowHandles(3);
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.Notification,
               windowHandles,
@@ -197,8 +196,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             await driver.clickElement(btnSelector);
 
             // Wait for confirmation pop-up
-            await driver.waitUntilXWindowHandles(3);
-            const windowHandles = await driver.getAllWindowHandles();
+            const windowHandles = await driver.waitUntilXWindowHandles(3);
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.Notification,
               windowHandles,
@@ -253,8 +251,11 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.clickElement('#maliciousApprovalButton');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Notification,
+          windowHandles,
+        );
 
         // Find element by title
         const expectedTitle = 'Request may not be safe';
