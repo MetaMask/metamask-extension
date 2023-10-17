@@ -51,7 +51,9 @@ import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     trackEvent: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static propTypes = {
