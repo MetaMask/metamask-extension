@@ -20,13 +20,11 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       isDisabled,
       isOpen,
       onOpenChange,
-      isMultiSelect, // Prevents from the uncontrolled open state from being toggled
+      isMultiSelect, // Prevents the uncontrolled open state from being toggled
       triggerComponent,
       popoverProps,
       children,
-      // To Do: Figure out the below props
-      // onFocus,
-      // onChange,
+      onBlur, // Controlled onBlur prop
       ...props
     }: SelectWrapperProps<C>,
     ref?: PolymorphicRef<C>,
@@ -45,11 +43,31 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       setIsUncontrolledOpen(!isUncontrolledOpen);
     };
 
+    // const handleBlur = (e: any) => {
+    //   if (onBlur) {
+    //     onBlur(e);
+    //   } else {
+    //     const wrapper = e.currentTarget;
+    //     const { relatedTarget } = e;
+
+    //     if (!wrapper.contains(relatedTarget)) {
+    //       // Close the popover only if the related target is not inside the wrapper
+    //       setIsUncontrolledOpen(false);
+    //       // If you have a controlled isOpen state, update it to close
+    //       if (onOpenChange) {
+    //         onOpenChange(false);
+    //       }
+    //     }
+    //   }
+    // };
+
     const handleBlur = (e: any) => {
       const wrapper = e.currentTarget;
       const { relatedTarget } = e;
 
-      if (!wrapper.contains(relatedTarget)) {
+      if (onBlur) {
+        onBlur(e);
+      } else if (!wrapper.contains(relatedTarget)) {
         // Close the popover only if the related target is not inside the wrapper
         setIsUncontrolledOpen(false);
         // If you have a controlled isOpen state, update it to close
@@ -85,9 +103,10 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
           ref={ref}
           {...(props as BoxProps<C>)}
         >
-          {React.cloneElement(triggerComponent, {
-            ref: setBoxRef,
-          })}
+          {triggerComponent &&
+            React.cloneElement(triggerComponent, {
+              ref: setBoxRef,
+            })}
           <Popover
             isOpen={isOpen || isUncontrolledOpen}
             position={PopoverPosition.Bottom}

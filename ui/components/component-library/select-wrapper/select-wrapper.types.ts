@@ -6,10 +6,10 @@ import { PopoverStyleUtilityProps } from '../popover';
 
 export type SelectContextType = {
   isOpen: boolean | undefined;
-  onOpenChange: React.Dispatch<React.SetStateAction<boolean | undefined>>; // Double check this is correct type
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   isUncontrolledOpen: boolean;
   setIsUncontrolledOpen: React.Dispatch<React.SetStateAction<any | null>>;
-  toggleUncontrolledOpen: () => void; // Function to quickly toggle the open state
+  toggleUncontrolledOpen: () => void;
   isDisabled: boolean;
   isMultiSelect: boolean;
   value: any | null;
@@ -19,60 +19,61 @@ export type SelectContextType = {
   defaultValue: any | null;
   placeholder: any;
   isDanger: boolean;
-  // onBlur?: React.FocusEventHandler;
-  // onFocus?: React.FocusEventHandler;
 };
 
 export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
-  /*
-   * Additional classNames to be added to the SelectWrapper component
+  /**
+   * Additional classNames to be added to the SelectWrapper component.
    */
   className?: string;
-  /*
-   * Children of SelectWrapper component are put inside the select menu which uses the Popover component
+  /**
+   * Children of SelectWrapper component are put inside the select menu which uses the Popover component.
    */
   children?: React.ReactNode;
-  /*
-   * Placeholder for SelectWrapper component to be displayed when no value or defaultValue is set
-   * Can be accessed within any component inside the SelectWrapper
+  /**
+   * Placeholder for SelectWrapper component to be displayed when no value or defaultValue is set.
+   * Can be accessed within any component inside the SelectWrapper.
    */
   placeholder?: any;
-  /*
-   * Selected value of SelectWrapper component
-   * Can be accessed within any component inside the SelectWrapper
+  /**
+   * Selected value of SelectWrapper component.
+   * Can be accessed within any component inside the SelectWrapper.
    */
   value?: any;
   /**
-   * Default value of SelectWrapper component
-   * Can be accessed within any component inside the SelectWrapper
+   * Default value of SelectWrapper component.
+   * Can be accessed within any component inside the SelectWrapper.
    */
   defaultValue?: any;
-  /*
-   * TODO: write info about type here
-   */
-  onValueChange?: any;
-  /*
-   * TODO: write info about type here
-   */
-  name?: string;
   /**
-   * TODO: write info about type here
+   * Callback function that is called when the value of the SelectWrapper component changes.
+   * The new value is passed as an argument to the function.
+   */
+  onValueChange?: (newValue: any) => void;
+  /**
+   * isOpen boolean determines whether the SelectWrapper popover is open or closed.
    */
   isOpen?: boolean;
-  /*
-   * TODO: write info about type here
+  /**
+   * Callback function that is called when the SelectWrapper component receives focus.
    */
   onFocus?: () => void;
-  /*
-   * TODO: write info about type here
+  /**
+   * Callback function that is called when the SelectWrapper component loses focus.
+   * The event object is passed as an argument to the function.
    */
-  onBlur?: () => void;
-  /*
-   * TODO: write info about type here
+  onBlur?: (event: React.FocusEvent) => void;
+  /**
+   * The trigger component that will commonly be used with components like SelectButton.
+   * SelectWrapper's popover will be anchored to this component.
    */
-  triggerComponent: any;
-  /*
-   * TODO: write info about type here
+  triggerComponent: React.ReactElement<
+    any,
+    string | React.JSXElementConstructor<any>
+  > | null;
+
+  /**
+   * Use props from the Popover component to customize the SelectWrapper popover via popoverProps.
    */
   popoverProps?: PopoverStyleUtilityProps;
 }

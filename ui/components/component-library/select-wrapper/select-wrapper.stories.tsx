@@ -293,20 +293,19 @@ PopoverProps.args = {
 
 PopoverProps.storyName = 'popoverProps';
 
-// popoverProps,
-
-export const WIP: StoryFn<typeof SelectWrapper> = (args) => {
+export const OnBlur: StoryFn<typeof SelectWrapper> = (args) => {
+  const [onBlur, setOnBlur] = React.useState(0);
   return (
     <>
       <SelectWrapper
         {...args}
-        onBlur={() => console.log('blur')}
-        triggerComponent={<SelectButton>Uncontrolled Example</SelectButton>}
+        onBlur={() => setOnBlur(onBlur + 1)}
+        triggerComponent={<SelectButton>onBlur Count: {onBlur}</SelectButton>}
       >
-        <SelectOption value="Option 1">Option 1</SelectOption>
-        <SelectOption value="Option 2">Option 2</SelectOption>
-        <SelectOption value="Option 3">Option 3</SelectOption>
+        <Text>This is a demo of controlled onBlur.</Text>
       </SelectWrapper>
     </>
   );
 };
+
+OnBlur.storyName = 'onBlur';
