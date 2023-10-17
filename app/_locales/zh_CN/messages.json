@@ -2387,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3916,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "创建 $1 账户",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3951,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "已安装"
-  },
-  "snapError": {
-    "message": "Snap错误：'$1'。错误代码：'$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "安装Snap"
@@ -5038,12 +5031,6 @@
   },
   "transactionResubmitted": {
     "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
-  },
-  "transactionSecurityCheck": {
-    "message": "启用安全提醒"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "我们使用第三方 API 来检测和显示未签名交易和签名请求中涉及的风险，然后您再进行签名。这些服务将访问您的未签名交易和签名请求、您的账户地址以及首选语言。"
   },
   "transactionSettings": {
     "message": "交易设置"

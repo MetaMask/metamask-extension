@@ -71,6 +71,12 @@ export const UI_MAPPING = {
       text: props.value,
     },
   }),
+  image: (props) => ({
+    element: 'SnapUIImage',
+    props: {
+      value: props.value,
+    },
+  }),
 };
 
 // TODO: Stop exporting this when we remove the mapToTemplate hack in confirmation templates.

@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { shallowEqual, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
+import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -12,18 +11,12 @@ import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
-  getTokenExchangeRates,
-  getCurrentCurrency,
   getIsBuyableChain,
   getCurrentChainId,
   getSwapsDefaultToken,
   getSelectedAddress,
 } from '../../../selectors';
-import {
-  getConversionRate,
-  getNativeCurrency,
-  getTokens,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import Box from '../../ui/box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -40,19 +33,12 @@ import {
   AssetListConversionButton,
 } from '../../multichain';
 
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import {
-  getValueFromWeiHex,
-  sumDecimals,
-} from '../../../../shared/modules/conversion.utils';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
-
 import useRamps from '../../../hooks/experiences/useRamps';
 import { Display } from '../../../helpers/constants/design-system';
 
 import { ReceiveModal } from '../../multichain/receive-modal';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -63,6 +49,9 @@ const AssetList = ({ onClickAsset }) => {
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
   const selectedAddress = useSelector(getSelectedAddress);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
@@ -95,66 +84,8 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
-    shallowEqual,
-  );
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
-
-  const nativeFiat = getValueFromWeiHex({
-    value: balance,
-    toCurrency: currentCurrency,
-    conversionRate,
-    numberOfDecimals: 2,
-  });
-
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  // use `isEqual` comparison function because the token array is serialized
-  // from the background so it has a new reference with each background update,
-  // even if the tokens haven't changed
-  const tokens = useSelector(getTokens, isEqual);
-  const { loading, tokensWithBalances } = useTokenTracker(
-    tokens,
-    true,
-    shouldHideZeroBalanceTokens,
-  );
-
-  // An array of string balances (ex: ["1.90", "22290.01", ...])
-  const dollarBalances = tokensWithBalances.map((token) => {
-    const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-      (key) => isEqualCaseInsensitive(key, token.address),
-    );
-    const tokenExchangeRate =
-      (contractExchangeTokenKey &&
-        contractExchangeRates[contractExchangeTokenKey]) ??
-      0;
-
-    const fiat = getTokenFiatAmount(
-      tokenExchangeRate,
-      conversionRate,
-      currentCurrency,
-      token.string,
-      token.symbol,
-      false,
-      false,
-    );
-
-    return fiat;
-  });
-
-  // Total native and token fiat balance as a string (ex: "8.90")
-  const totalFiatBalance = sumDecimals(nativeFiat, ...dollarBalances).toString(
-    10,
-  );
-
-  // Fiat balance formatted in user's desired currency (ex: "$8.90")
-  const formattedTotalFiatBalance = formatCurrency(
-    totalFiatBalance,
-    currentCurrency,
-  );
+  const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
+    useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
 
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -167,10 +98,7 @@ const AssetList = ({ onClickAsset }) => {
   return (
     <>
       {process.env.MULTICHAIN ? (
-        <BalanceOverview
-          balance={formattedTotalFiatBalance}
-          loading={loading}
-        />
+        <BalanceOverview balance={totalWeiBalance} loading={loading} />
       ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
@@ -188,7 +116,7 @@ const AssetList = ({ onClickAsset }) => {
         >
           {shouldShowBuy ? (
             <AssetListConversionButton
-              variant="buy"
+              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({
@@ -206,7 +134,7 @@ const AssetList = ({ onClickAsset }) => {
           ) : null}
           {shouldShowReceive ? (
             <AssetListConversionButton
-              variant="receive"
+              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
               onClick={() => setShowReceiveModal(true)}
             />
           ) : null}
