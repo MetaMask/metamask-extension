@@ -66,7 +66,6 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
     isPopup: PropTypes.bool,
-    isSnapViewPage: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
   };
@@ -113,7 +112,6 @@ class SettingsPage extends PureComponent {
       currentPath,
       mostRecentOverviewPage,
       addNewNetwork,
-      isSnapViewPage,
     } = this.props;
 
     const { searchResults, isSearchList, searchText } = this.state;
@@ -198,7 +196,7 @@ class SettingsPage extends PureComponent {
             {this.renderTabs()}
           </div>
           <div className="settings-page__content__modules">
-            {isSnapViewPage ? null : this.renderSubHeader()}
+            {this.renderSubHeader()}
             {this.renderContent()}
           </div>
         </div>
@@ -208,12 +206,9 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const { isPopup, pathnameI18nKey, addressName, isSnapViewPage } =
-      this.props;
+    const { isPopup, pathnameI18nKey, addressName } = this.props;
     let titleText;
-    if (isSnapViewPage) {
-      titleText = t('snaps');
-    } else if (isPopup && addressName) {
+    if (isPopup && addressName) {
       titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
