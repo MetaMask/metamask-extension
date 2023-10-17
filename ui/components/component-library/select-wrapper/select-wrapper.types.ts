@@ -4,6 +4,25 @@ import type {
 } from '../box';
 import { PopoverStyleUtilityProps } from '../popover';
 
+export type SelectContextType = {
+  isOpen: boolean | undefined;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean | undefined>>; // Double check this is correct type
+  isUncontrolledOpen: boolean;
+  setIsUncontrolledOpen: React.Dispatch<React.SetStateAction<any | null>>;
+  toggleUncontrolledOpen: () => void; // Function to quickly toggle the open state
+  isDisabled: boolean;
+  isMultiSelect: boolean;
+  value: any | null;
+  onValueChange?: any;
+  uncontrolledValue: any | null;
+  setUncontrolledValue: React.Dispatch<React.SetStateAction<any | null>>;
+  defaultValue: any | null;
+  placeholder: any;
+  isDanger: boolean;
+  // onBlur?: React.FocusEventHandler;
+  // onFocus?: React.FocusEventHandler;
+};
+
 export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
   /*
    * Additional classNames to be added to the SelectWrapper component

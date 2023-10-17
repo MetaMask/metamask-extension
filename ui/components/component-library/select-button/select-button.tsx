@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import classnames from 'classnames';
-import { SelectContext } from '../select-wrapper/select-wrapper';
+import { SelectContext } from '../select-wrapper';
 import type { PolymorphicRef, BoxProps } from '../box';
 import { Box, Icon, IconName, IconSize } from '..';
 import {

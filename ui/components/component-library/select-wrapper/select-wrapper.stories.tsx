@@ -7,7 +7,7 @@ import { Text } from '../text';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 
-import { SelectWrapper, useSelectContext } from './select-wrapper';
+import { SelectWrapper, useSelectContext } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/SelectWrapper',
