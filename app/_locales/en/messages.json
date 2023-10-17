@@ -4162,6 +4162,12 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "siteConnections": {
+    "message": "Site Connections"
+  },
+  "sites": {
+    "message": "Sites"
+  },
   "skip": {
     "message": "Skip"
   },
@@ -4241,6 +4247,9 @@
   "snapConnectionWarning": {
     "message": "$1 wants to connect to $2. Only continue if you trust this website.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapConnections": {
+    "message": "Snap Connections"
   },
   "snapContent": {
     "message": "This content is coming from $1",

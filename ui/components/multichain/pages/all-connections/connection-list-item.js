@@ -67,6 +67,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         width={BlockSize.FiveTwelfths}
+        style={{ flexGrow: '1' }}
       >
         <Text
           variant={TextVariant.bodyLgMedium}
@@ -81,7 +82,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
           color={TextColor.textAlternative}
           variant={TextVariant.bodyMd}
         >
-          {getURLHost(connection.origin)}
+          {isSnap ? connection.packageName : getURLHost(connection.origin)}
         </Text>
       </Box>
       <Box
