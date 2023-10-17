@@ -7,7 +7,7 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu } from '..';
+import { AccountListItemMenu, AvatarGroup } from '..';
 import {
   AvatarAccount,
   Box,
@@ -90,7 +90,9 @@ export const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
 
-  const { totalWeiBalance } = useAccountTotalFiatBalance(identity.address);
+  const { totalWeiBalance, sortedTokenList } = useAccountTotalFiatBalance(
+    identity.address,
+  );
   const balanceToTranslate = process.env.MULTICHAIN
     ? totalWeiBalance
     : identity.balance;
@@ -223,18 +225,22 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          <Text
-            variant={TextVariant.bodySm}
-            color={Color.textAlternative}
-            textAlign={TextAlign.End}
-            as="div"
-          >
-            <UserPreferencedCurrencyDisplay
-              ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-              value={balanceToTranslate}
-              type={SECONDARY}
-            />
-          </Text>
+          {process.env.MULTICHAIN ? (
+            <AvatarGroup members={sortedTokenList} limit={4} />
+          ) : (
+            <Text
+              variant={TextVariant.bodySm}
+              color={Color.textAlternative}
+              textAlign={TextAlign.End}
+              as="div"
+            >
+              <UserPreferencedCurrencyDisplay
+                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                value={balanceToTranslate}
+                type={SECONDARY}
+              />
+            </Text>
+          )}
         </Box>
         {label ? (
           <Tag

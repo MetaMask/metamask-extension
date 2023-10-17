@@ -52,7 +52,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
             }
           >
             <AvatarToken
-              src={member.image}
+              src={member.iconUrl}
               name={member.symbol}
               size={size}
               borderColor={borderColor}

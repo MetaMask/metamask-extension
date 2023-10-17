@@ -129,7 +129,6 @@ export const useAccountTotalFiatBalance = (
     (a, b) => parseFloat(b.fiatBalance) - parseFloat(a.fiatBalance),
   );
 
-  console.log(sortedTokenList);
   // Total native and token fiat balance as a string (ex: "8.90")
   const totalFiatBalance = sumDecimals(
     nativeFiat,
@@ -153,5 +152,6 @@ export const useAccountTotalFiatBalance = (
     totalFiatBalance,
     tokensWithBalances,
     loading,
+    sortedTokenList,
   };
 };
