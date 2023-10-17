@@ -250,7 +250,7 @@ import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
-import { QueuedRequestController } from './controllers/queued-request-controller';
+import { QueuedRequestController, createQueuedRequestMiddleware } from '@metamask/queued-request-controller';
 
 import {
   CaveatMutatorFactories,
@@ -4284,145 +4284,12 @@ export default class MetamaskController extends EventEmitter {
       providerForDomain = this.selectedNetworkController.getProviderAndBlockTracker(origin).provider;
     }
 
-    // add some middleware that will switch chain on each request (as needed)
-    engine.push(
-      createAsyncMiddleware(async (req, res, next) => {
-        if (this.preferencesController.getUseRequestQueue() === false) {
-          // eslint-disable-next-line node/callback-return
-          await next();
-          return;
-        }
-
-        const confirmationMethods = [
-          'eth_sendTransaction',
-          'wallet_watchAsset',
-          'wallet_switchEthereumChain',
-          'eth_signTypedData_v4'
-        ];
-
-        if (confirmationMethods.includes(req.method) === false) {
-          // eslint-disable-next-line node/callback-return
-          await next();
-          return;
-        }
-
-        const networkClientIdForRequest = req.networkClientId;
-        // const sameNetworkClientIdAsCurrent = () =>
-        //   networkClientIdForRequest ===
-        //   this.networkController.state.selectedNetworkClientId;
-        const isSwitchEthChainCall =
-          req.method === 'wallet_switchEthereumChain';
-
-        // if (isSwitchEthChainCall) {// need to queue these, remove this code
-        //   // eslint-disable-next-line node/callback-return
-        //   await next();
-        //   return;
-        // }
-        // if (!isSwitchEthChainCall) {
-        //   const selfProvider = providerFromEngine(engine);
-        //   try {
-        //     // check if we need to switch ethereum chain or not..
-        //     // if we do, queue request to switch
-        //      this.queuedRequestController.enqueueRequest(() => {
-        //       return new Promise((resolve, reject) => {
-        //         const isBuiltIn =
-        //           BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
-        //           BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
-        //         const chainId = isBuiltIn
-        //           ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId
-        //           : this.networkController.getNetworkClientById(
-        //               networkClientIdForRequest,
-        //             ).configuration.chainId;
-
-        //         selfProvider.sendAsync(
-        //           {
-        //             id: Math.floor(Math.random() * 1000000),
-        //             jsonrpc: '2.0',
-        //             method: 'wallet_switchEthereumChain',
-        //             params: [{ chainId }],
-        //           },
-        //           (err, result) => {
-        //             if (err) {
-        //               console.error(
-        //                 'per-dapp-network:: switch ethereum chain errored: ',
-        //                 err,
-        //               );
-        //               reject(err);
-        //             } else {
-        //               resolve(result);
-        //             }
-        //           },
-        //         );
-        //       });
-        //     });
-        //   } catch (e) {
-        //     console.error(e);
-        //     res.error = e;
-        //     return;
-        //   }
-
-          await this.queuedRequestController
-            .enqueueRequest(async () => {
-                const isBuiltIn =
-                    BUILT_IN_NETWORKS[networkClientIdForRequest] !== undefined &&
-                    BUILT_IN_NETWORKS[networkClientIdForRequest].chainId;
-              const chainIdForOrigin = isBuiltIn
-                    ? BUILT_IN_NETWORKS[networkClientIdForRequest].chainId
-                    : this.networkController.getNetworkClientById(
-                      networkClientIdForRequest,
-                    ).configuration.chainId;
-
-              const requestData = {
-                toNetworkConfiguration: findExistingNetwork(
-                  chainIdForOrigin,
-                  this.networkController.findNetworkConfigurationBy,
-                ),
-                fromNetworkConfiguration: this.networkController.state.providerConfig
-              };
-              const currentChainId = this.networkController.state.providerConfig.chainId;
-
-              // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
-
-              const networkClientId = this.networkController.state.selectedNetworkClientId;
-
-              // if is switch eth chain call
-              // clear request queue when the switch ethereum chain call completes (success or fail)
-              // This is because a dapp-requested switch ethereum chain invalidates any requests they've made after this switch, since we dont know if they were expecting the chain after the switch or before.
-
-              // with the queue batching approach, this would mean clearing any batch for that origin (batches being per-origin.)
-
-              // refetch chainIdForOrigin
-              if (currentChainId !== chainIdForOrigin && !isSwitchEthChainCall) {
-                try {
-                  const approvedRequestData = await this.approvalController.addAndShowApprovalRequest({
-                    origin,
-                    type: ApprovalType.SwitchEthereumChain,
-                    requestData,
-                  });
-                  if (
-                    Object.values(BUILT_IN_NETWORKS)
-                      .map(({ chainId: id }) => id)
-                      .includes(chainIdForOrigin)
-                  ) {
-                    await this.networkController.setProviderType(approvedRequestData.type);
-                  } else {
-                    await this.networkController.setActiveNetwork(approvedRequestData.id);
-                  }
-                  this.selectedNetworkController.setNetworkClientIdForDomain(req.origin, networkClientIdForRequest);
-                } catch (error) {
-                  res.error = error;
-                  return;
-                }
-              }
-              console.log('calling next');
-              await next();
-              console.log('finished approval');
-              return;
-            });
-
-          return;
-      }),
+    const requestQueueMiddleware = createQueuedRequestMiddleware(
+      this.controllerMessenger,
+      this.preferencesController.getUseRequestQueue.bind(this.preferencesController),
     );
+    // add some middleware that will switch chain on each request (as needed)
+    engine.push(requestQueueMiddleware);
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker });

@@ -209,10 +209,13 @@
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
     "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
-    "@metamask/selected-network-controller@^1.0.1": "npm:@metamask-previews/selected-network-controller@1.0.1-preview.dbee2e4"
+    "@metamask/selected-network-controller": "npm:@metamask-previews/selected-network-controller@2.0.1-preview.885fefd",
+    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@1.0.0-preview.885fefd",
+    "@metamask/network-controller": "npm:@metamask-previews/network-controller@14.0.0-preview.885fefd"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
+    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@1.0.0-preview.885fefd",
     "@blockaid/ppom_release": "^1.2.8",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
