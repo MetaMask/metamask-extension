@@ -75,7 +75,15 @@ const ConfirmTxScreen = ({ match }) => {
   const history = useHistory();
 
   useEffect(() => {
-    const unconfTxList = txHelper(unapprovedTxs || {}, {}, {}, {}, {}, {}, chainId);
+    const unconfTxList = txHelper(
+      unapprovedTxs || {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      chainId,
+    );
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
