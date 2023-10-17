@@ -8,6 +8,7 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   removeAndIgnoreNft,
@@ -111,7 +112,7 @@ describe('NFT Details', () => {
     const copyAddressButton = queryByTestId('nft-address-copy');
     fireEvent.click(copyAddressButton);
 
-    expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address);
+    expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address, COPY_OPTIONS);
   });
 
   it('should navigate to draft transaction send route with ERC721 data', async () => {
