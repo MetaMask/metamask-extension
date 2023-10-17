@@ -3,9 +3,6 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
 
   @include screen-sm-min {
     width: $width-screen-sm-min;
@@ -25,9 +22,22 @@
   background-position: bottom;
 }
 
+.snap-account-subtitle {
+  @include screen-sm-min {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+
+  @include screen-md-min {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+
+  text-align: center;
+}
+
 .snap-account-cards {
   grid-template-columns: repeat(3, 1fr);
-  height: 100%;
 }
 
 .snap-account-color-text {

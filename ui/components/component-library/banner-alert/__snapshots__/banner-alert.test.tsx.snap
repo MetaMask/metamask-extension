@@ -10,7 +10,9 @@ exports[`BannerAlert should render BannerAlert element correctly 1`] = `
       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-primary-default"
       style="mask-image: url('./images/icons/info.svg');"
     />
-    <div>
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
       <p
         class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >
