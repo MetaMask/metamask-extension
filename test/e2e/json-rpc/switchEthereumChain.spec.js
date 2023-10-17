@@ -285,7 +285,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Initiate send tx on dapp one
         await driver.clickElement('#sendButton');
 
-        // Switch to nofication that should still be switchEthereumChain request but with an warning.
+        // Switch to notification that should still be switchEthereumChain request but with an warning.
         await switchToNotificationWindow(driver, 4);
 
         await driver.findElement({
