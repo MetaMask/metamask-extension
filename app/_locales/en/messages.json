@@ -4023,6 +4023,9 @@
   "send": {
     "message": "Send"
   },
+  "sendAToken": {
+    "message": "Send a token"
+  },
   "sendBugReport": {
     "message": "Send us a bug report."
   },

@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.1.2",
+  "version": "11.2.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -205,7 +205,7 @@
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "lavamoat-core@npm:^14.4.1": "patch:lavamoat-core@npm%3A14.4.1#~/.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch",
-    "@metamask/signature-controller@^6.0.0": "patch:@metamask/signature-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-signature-controller-npm-6.0.0-90e8e479a9.patch",
+    "@metamask/signature-controller@^6.1.2": "patch:@metamask/signature-controller@npm%3A6.1.2#~/.yarn/patches/@metamask-signature-controller-npm-6.1.2-f60d8a4960.patch",
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
     "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch"
@@ -257,7 +257,7 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^9.0.0",
     "@metamask/keyring-api": "^1.0.0",
-    "@metamask/keyring-controller": "^8.0.1",
+    "@metamask/keyring-controller": "^8.0.3",
     "@metamask/logging-controller": "^1.0.1",
     "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^7.3.0",
@@ -276,7 +276,7 @@
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^1.0.0",
-    "@metamask/signature-controller": "^6.0.0",
+    "@metamask/signature-controller": "^6.1.2",
     "@metamask/slip44": "^3.1.0",
     "@metamask/smart-transactions-controller": "^4.0.0",
     "@metamask/snaps-controllers": "^3.0.0",
@@ -391,7 +391,7 @@
     "@metamask/eslint-config-typescript": "^9.0.1",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^2.1.0",
-    "@metamask/test-dapp": "^7.1.0",
+    "@metamask/test-dapp": "^7.2.0",
     "@sentry/cli": "^2.19.4",
     "@storybook/addon-a11y": "^7.0.11",
     "@storybook/addon-actions": "^7.0.11",
