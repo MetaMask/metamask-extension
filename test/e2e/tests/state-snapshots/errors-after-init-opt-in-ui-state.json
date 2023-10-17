@@ -90,6 +90,7 @@
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
     "openSeaEnabled": false,
+    "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "incomingTransactionsPreferences": {},
@@ -195,7 +196,12 @@
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
-    "approvalFlows": "object"
+    "approvalFlows": "object",
+    "versionInfo": {},
+    "storageMetadata": {},
+    "chainStatus": {
+      "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
+    }
   },
   "send": "object",
   "swaps": "object",
