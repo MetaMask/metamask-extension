@@ -44,8 +44,8 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
-import SnapListTab from '../snaps/snaps-list-tab';
-import ViewSnap from '../snaps/view-snap';
+import SnapList from '../snaps/snaps-list-tab';
+import SnapView from '../snaps/snap-view';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
@@ -285,12 +285,12 @@ export default class Routes extends Component {
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          <Authenticated exact path={SNAPS_ROUTE} component={SnapListTab} />
+          <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
           ///: END:ONLY_INCLUDE_IN
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          <Authenticated path={SNAPS_VIEW_ROUTE} component={ViewSnap} />
+          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
           ///: END:ONLY_INCLUDE_IN
         }
         <Authenticated

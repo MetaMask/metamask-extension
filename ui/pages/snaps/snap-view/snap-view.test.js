@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { waitFor, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import ViewSnap from './view-snap';
+import SnapView from './snap-view';
 
 jest.mock('../../../store/actions.ts', () => {
   return {
@@ -38,7 +38,7 @@ const mockStore = configureMockStore([thunk])(mockState);
 describe('ViewSnap', () => {
   it('should properly display Snap View elements', async () => {
     const { getByText, container, getByTestId } = renderWithProvider(
-      <ViewSnap />,
+      <SnapView />,
       mockStore,
     );
 

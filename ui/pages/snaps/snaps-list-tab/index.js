@@ -1,1 +1,1 @@
-export { default } from './snap-list-tab';
+export { default } from './snap-list';

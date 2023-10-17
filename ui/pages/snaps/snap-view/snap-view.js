@@ -55,7 +55,7 @@ import { DelineatorType } from '../../../helpers/constants/snaps';
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IN
 
-function ViewSnap() {
+function SnapView() {
   const t = useI18nContext();
   const history = useHistory();
   const location = useLocation();
@@ -317,4 +317,4 @@ function ViewSnap() {
   );
 }
 
-export default ViewSnap;
+export default SnapView;

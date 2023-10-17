@@ -35,7 +35,7 @@ import {
   ButtonIconSize,
 } from '../../../components/component-library';
 
-const SnapListTab = () => {
+const SnapList = () => {
   const t = useI18nContext();
   const history = useHistory();
   const settingsRef = useRef();
@@ -66,14 +66,14 @@ const SnapListTab = () => {
         </div>
       </div>
       <Box
-        className="snaps__list-tab"
+        className="snaps__list"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         height={BlockSize.Full}
       >
         {snapsList.length > 0 && (
-          <div className="snaps__list-tab__body">
-            <div className="snaps__list-tab__wrapper">
+          <div className="snaps__list__body">
+            <div className="snaps__list__wrapper">
               {snapsList.map((snap) => {
                 return (
                   <SnapListItem
@@ -98,11 +98,11 @@ const SnapListTab = () => {
             flexDirection={FlexDirection.Row}
             flexWrap={FlexWrap.Wrap}
             justifyContent={JustifyContent.center}
-            className="snaps__list-tab__container--snaps-info-content"
+            className="snaps__list__container--snaps-info-content"
           >
             {snapsList.length < 1 && (
               <Box
-                className="snaps__list-tab__container--no-snaps_inner"
+                className="snaps__list__container--no-snaps_inner"
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
                 justifyContent={JustifyContent.center}
@@ -111,7 +111,7 @@ const SnapListTab = () => {
                 <Icon
                   name={IconName.Snaps}
                   color={IconColor.iconMuted}
-                  className="snaps__list-tab__no-snaps_icon"
+                  className="snaps__list__no-snaps_icon"
                   size={IconSize.Inherit}
                 />
                 <Text
@@ -129,7 +129,7 @@ const SnapListTab = () => {
               height={BlockSize.Min}
             ></Box>
             <Box
-              className="snaps__list-tab__container--no-snaps_banner-tip"
+              className="snaps__list__container--no-snaps_banner-tip"
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               justifyContent={JustifyContent.flexEnd}
@@ -163,4 +163,4 @@ const SnapListTab = () => {
   );
 };
 
-export default SnapListTab;
+export default SnapList;
