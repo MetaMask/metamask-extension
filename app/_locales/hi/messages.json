@@ -4035,9 +4035,6 @@
     "message": "थर्ड पार्टी सेवाओं के साथ आप जो भी सूचना शेयर करते हैं, उसे उन थर्ड पार्टी सेवाओं द्वारा उनकी अपनी गोपनीयता नीतियों के अनुसार सीधे एकत्र की जाएगी। अधिक जानकारी के लिए कृपया उनकी गोपनीयता नीतियां देखें।",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
-  "snapsSettingsDescription": {
-    "message": "अपने Snaps प्रबंधित करें"
-  },
   "snapsTermsOfUse": {
     "message": "इस्तेमाल की शर्तें"
   },
