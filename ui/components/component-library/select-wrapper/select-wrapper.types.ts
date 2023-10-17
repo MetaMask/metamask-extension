@@ -10,7 +10,7 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
    */
   className?: string;
   /*
-   * Children of SelectWrapper component are put inside the popover
+   * Children of SelectWrapper component are put inside the select menu which uses the Popover component
    */
   children?: React.ReactNode;
   /*
