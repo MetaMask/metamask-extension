@@ -3,10 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { NetworkType } from '@metamask/controller-utils';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   MOCKS,
 } from '../../../../test/jest';
 import ReviewQuote from './review-quote';

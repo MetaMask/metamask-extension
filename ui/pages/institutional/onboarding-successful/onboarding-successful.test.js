@@ -1,10 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import OnboardingSuccessful from './onboarding-successful';
 
 const mockHistoryPush = jest.fn();

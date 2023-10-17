@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
-import { _setBackgroundConnection } from '../action-queue';
+import { setBackgroundConnection } from '../background-connection';
 import {
   showInteractiveReplacementTokenModal,
   showCustodyConfirmLink,
@@ -107,7 +107,7 @@ describe('#InstitutionActions', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const expectedActions = [
       {
@@ -130,7 +130,7 @@ describe('#InstitutionActions', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const expectedActions = [
       {
@@ -199,7 +199,7 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {
@@ -223,7 +223,7 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {
@@ -276,7 +276,7 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {

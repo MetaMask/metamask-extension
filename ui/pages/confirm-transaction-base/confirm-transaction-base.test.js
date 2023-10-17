@@ -6,7 +6,7 @@ import { fireEvent } from '@testing-library/react';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';

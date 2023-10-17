@@ -2,9 +2,9 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
-import { setBackgroundConnection } from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import NftsTab from '.';
 
 const NFTS = [

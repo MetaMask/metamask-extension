@@ -22,7 +22,7 @@ import {
   TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
   generateERC20TransferData,
   generateERC721TransferData,

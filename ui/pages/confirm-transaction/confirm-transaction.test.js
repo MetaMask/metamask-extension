@@ -8,7 +8,7 @@ import * as ConfirmTransactionDucks from '../../ducks/confirm-transaction/confir
 import * as Actions from '../../store/actions';
 import _mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,

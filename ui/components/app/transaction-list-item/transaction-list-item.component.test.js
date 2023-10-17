@@ -12,11 +12,8 @@ import {
   getShouldShowFiat,
   getCurrentNetwork,
 } from '../../../selectors';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
-
+import { renderWithProvider } from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { getTokens } from '../../../ducks/metamask/metamask';
