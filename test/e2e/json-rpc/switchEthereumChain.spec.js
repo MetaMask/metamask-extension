@@ -271,7 +271,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        // Switch to notifaction of switchEthereumChain
+        // Switch to notification of switchEthereumChain
         await switchToNotificationWindow(driver, 4);
         await driver.findClickableElements({
           text: 'Switch network',
