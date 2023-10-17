@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const { mockServerJsonRpc } = require('../mock-server-json-rpc');
-const { retry } = require('../../../development/lib/retry');
 
 const {
   WINDOW_TITLES,
@@ -194,13 +193,9 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function () {
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
-        // Find element by title
-        let bannerAlertFoundByTitle;
-        await retry({ retries: 4, delay: 2000 }, async () => {
-          bannerAlertFoundByTitle = await driver.findElement({
-            css: bannerAlertSelector,
-            text: expectedTitle,
-          });
+        const bannerAlertFoundByTitle = await driver.findElement({
+          css: bannerAlertSelector,
+          text: expectedTitle,
         });
         const bannerAlertText = await bannerAlertFoundByTitle.getText();
 

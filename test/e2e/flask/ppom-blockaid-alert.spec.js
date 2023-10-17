@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const { mockServerJsonRpc } = require('../mock-server-json-rpc');
-const { retry } = require('../../../development/lib/retry');
 
 const {
   WINDOW_TITLES,
@@ -203,14 +202,10 @@ describe('Confirmation Security Alert - Blockaid', function () {
             );
 
             // Find element by title
-            let bannerAlertFoundByTitle;
-            await retry({ retries: 4, delay: 2000 }, async () => {
-              bannerAlertFoundByTitle = await driver.findElement({
-                css: bannerAlertSelector,
-                text: expectedMaliciousTitle,
-              });
+            const bannerAlertFoundByTitle = await driver.findElement({
+              css: bannerAlertSelector,
+              text: expectedMaliciousTitle,
             });
-
             const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
             assert(
@@ -257,15 +252,11 @@ describe('Confirmation Security Alert - Blockaid', function () {
           windowHandles,
         );
 
-        // Find element by title
         const expectedTitle = 'Request may not be safe';
-        let bannerAlert;
 
-        await retry({ retries: 4, delay: 2000 }, async () => {
-          bannerAlert = await driver.findElement({
-            css: bannerAlertSelector,
-            text: expectedTitle,
-          });
+        const bannerAlert = await driver.findElement({
+          css: bannerAlertSelector,
+          text: expectedTitle,
         });
 
         assert(
