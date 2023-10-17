@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.1.2",
+  "version": "11.2.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -257,7 +257,7 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^9.0.0",
     "@metamask/keyring-api": "^1.0.0",
-    "@metamask/keyring-controller": "^8.0.1",
+    "@metamask/keyring-controller": "^8.0.3",
     "@metamask/logging-controller": "^1.0.1",
     "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^7.3.0",
@@ -391,7 +391,7 @@
     "@metamask/eslint-config-typescript": "^9.0.1",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^2.1.0",
-    "@metamask/test-dapp": "^7.1.0",
+    "@metamask/test-dapp": "^7.2.0",
     "@sentry/cli": "^2.19.4",
     "@storybook/addon-a11y": "^7.0.11",
     "@storybook/addon-actions": "^7.0.11",
