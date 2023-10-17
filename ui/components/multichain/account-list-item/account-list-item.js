@@ -18,6 +18,8 @@ import {
   IconSize,
   AvatarAccountVariant,
   Text,
+  AvatarToken,
+  AvatarTokenSize,
 } from '../../component-library';
 import {
   Color,
@@ -37,14 +39,17 @@ import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wall
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
-import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
+import {
+  findKeyringForAddress,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getUseBlockie } from '../../../selectors';
+import { getNativeCurrencyImage, getUseBlockie } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -112,6 +117,8 @@ export const AccountListItem = ({
   const label = getLabel(keyring, t);
 
   const trackEvent = useContext(MetaMetricsContext);
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
   return (
     <Box
@@ -226,7 +233,37 @@ export const AccountListItem = ({
             </Text>
           </Box>
           {process.env.MULTICHAIN ? (
-            <AvatarGroup members={sortedTokenList} limit={4} />
+            <>
+              {sortedTokenList.length > 1 ? (
+                <AvatarGroup members={sortedTokenList} limit={4} />
+              ) : (
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  justifyContent={JustifyContent.center}
+                  gap={1}
+                >
+                  <AvatarToken
+                    src={primaryTokenImage}
+                    name={nativeCurrency}
+                    size={AvatarTokenSize.Xs}
+                    borderColor={BorderColor.borderDefault}
+                  />
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={Color.textAlternative}
+                    textAlign={TextAlign.End}
+                    as="div"
+                  >
+                    <UserPreferencedCurrencyDisplay
+                      ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                      value={balanceToTranslate}
+                      type={SECONDARY}
+                    />
+                  </Text>
+                </Box>
+              )}
+            </>
           ) : (
             <Text
               variant={TextVariant.bodySm}
