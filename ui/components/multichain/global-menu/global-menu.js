@@ -69,7 +69,7 @@ import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
 const METRICS_LOCATION = 'Global Menu';
 
-export const GlobalMenu = ({ closeMenu, anchorElement }) => {
+export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -102,7 +102,12 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   ///: END:ONLY_INCLUDE_IN
 
   return (
-    <Popover referenceElement={anchorElement} isOpen={closeMenu}>
+    <Popover
+      referenceElement={anchorElement}
+      isOpen={isOpen}
+      onBlur={closeMenu}
+      className="mm-popover-global-menu"
+    >
       <AccountDetailsMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
@@ -286,11 +291,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
 GlobalMenu.propTypes = {
   /**
-   * Function to close the menu
-   */
-  closeMenu: PropTypes.func.isRequired,
-  /**
-   * The element to which the menu should be anchored
+   * The element that the menu should display next to
    */
   anchorElement: PropTypes.instanceOf(window.Element),
+  /**
+   * Function that closes this menu
+   */
+  closeMenu: PropTypes.func.isRequired,
 };

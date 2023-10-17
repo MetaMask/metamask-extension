@@ -413,6 +413,7 @@ export const AppHeader = ({ location }) => {
                   <GlobalMenu
                     anchorElement={menuRef.current}
                     closeMenu={() => setAccountOptionsMenuOpen(false)}
+                    isOpen={accountOptionsMenuOpen}
                   />
                 ) : null}
                 {showProductTour &&

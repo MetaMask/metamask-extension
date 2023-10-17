@@ -1,7 +1,6 @@
 
 .mm-popover {
   box-shadow: var(--shadow-size-md) var(--color-shadow-default);
-  z-index: 1050;
 
   /* Hide the popper when the reference is hidden */
   &--reference-hidden[data-popper-reference-hidden="true"] {
@@ -68,4 +67,18 @@
   &::before {
     transform: rotate(-45deg);
   }
+}
+
+.mm-popover.mm-popover-global-menu {
+  @include H6;
+  width: 225px !important;  // Higher specificity than using !important
+  padding: 0;
+  background: var(--color-background-default);
+  box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+  border-radius: 8px;
+  color: var(--color-text-default);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1050;
 }

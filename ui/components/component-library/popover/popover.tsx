@@ -37,7 +37,7 @@ export const Popover: PopoverComponent = React.forwardRef(
       referenceElement,
       isOpen,
       title,
-      isPortal = true,
+      isPortal = false,
       arrowProps,
       onPressEscKey,
       ...props
@@ -79,7 +79,7 @@ export const Popover: PopoverComponent = React.forwardRef(
 
     // Define width to match reference element or auto
     const contentStyle = {
-      width: matchWidth ? referenceElement?.clientWidth : '220px',
+      width: matchWidth ? referenceElement?.clientWidth : 'auto',
     };
 
     // Esc key press
@@ -105,7 +105,7 @@ export const Popover: PopoverComponent = React.forwardRef(
         borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundDefault}
-        padding={0}
+        padding={4}
         role={role}
         className={classnames(
           'mm-popover',
@@ -113,13 +113,12 @@ export const Popover: PopoverComponent = React.forwardRef(
             'mm-popover--open': Boolean(isOpen),
             'mm-popover--reference-hidden': Boolean(referenceHidden),
           },
-          'menu__container',
-          className,
+          className
         )}
         ref={ref || setPopperElement}
         {...attributes.popper}
         {...(props as BoxProps<C>)}
-        style={{ ...styles.popper, ...contentStyle, ...props.style}}
+        style={{ ...styles.popper, ...contentStyle, ...props.style }}
       >
         {children}
         {hasArrow && (
