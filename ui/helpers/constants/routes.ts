@@ -46,7 +46,7 @@ const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const NOTIFICATIONS_ROUTE = '/notifications';
 const SNAPS_ROUTE = '/snaps';
-const SNAPS_VIEW_ROUTE = '/snaps-view';
+const SNAPS_VIEW_ROUTE = '/snaps/view';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 const ADD_SNAP_ACCOUNT_ROUTE = '/add-snap-account';

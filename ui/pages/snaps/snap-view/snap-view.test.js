@@ -26,7 +26,7 @@ jest.mock('react-router-dom', () => {
   return {
     ...original,
     useLocation: jest.fn(() => ({
-      pathname: `/settings/snaps-view/${encodeURIComponent(
+      pathname: `/snaps/view/${encodeURIComponent(
         'npm:@metamask/test-snap-bip44',
       )}`,
     })),
