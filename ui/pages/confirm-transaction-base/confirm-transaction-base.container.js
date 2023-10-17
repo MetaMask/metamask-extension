@@ -77,7 +77,7 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getAccountType } from '../../selectors/selectors';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getIsNoteToTraderSupported } from '../../selectors/institutional/selectors';
+import { getIsNoteToTraderSupported, getIsCustodianPublishesTransactionSupported } from '../../selectors/institutional/selectors';
 import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -221,6 +221,11 @@ const mapStateToProps = (state, ownProps) => {
     state,
     fromChecksumHexAddress,
   );
+  const custodianPublishesTransaction = getIsCustodianPublishesTransactionSupported(
+    state,
+    fromChecksumHexAddress,
+  )
+  const { rpcUrl } = getProviderConfig(state);
   ///: END:ONLY_INCLUDE_IN
 
   const hardwareWalletRequiresConnection =
@@ -283,6 +288,8 @@ const mapStateToProps = (state, ownProps) => {
     accountType,
     isNoteToTraderSupported,
     isNotification,
+    custodianPublishesTransaction,
+    rpcUrl
     ///: END:ONLY_INCLUDE_IN
   };
 };
