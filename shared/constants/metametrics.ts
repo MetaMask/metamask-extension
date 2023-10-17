@@ -559,6 +559,7 @@ export enum MetaMetricsEventName {
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
   ServiceWorkerRestarted = 'Service Worker Restarted',
+  SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',

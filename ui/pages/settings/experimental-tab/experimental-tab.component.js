@@ -7,9 +7,7 @@ import {
 } from '../../../helpers/utils/settings-search';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   MetaMetricsEventName,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main)
 import { showSnapAccountExperimentalToggle } from '../../../../shared/modules/snap-accounts';
@@ -86,7 +84,7 @@ export default class ExperimentalTab extends PureComponent {
       this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: 'Settings Updated',
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
         blockaid_alerts_enabled: newValue,
       },
@@ -109,7 +107,7 @@ export default class ExperimentalTab extends PureComponent {
       this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: 'Settings Updated',
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
         opensea_alerts_enabled: newValue,
       },
