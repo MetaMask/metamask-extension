@@ -877,6 +877,7 @@ export default class MetamaskController extends EventEmitter {
     const getApprovalController = () => this.approvalController;
     const getKeyringController = () => this.keyringController;
     const getPreferencesController = () => this.preferencesController;
+    const getPhishingController = () => this.phishingController;
 
     additionalKeyrings.push(
       snapKeyringBuilder(
@@ -884,6 +885,7 @@ export default class MetamaskController extends EventEmitter {
         getApprovalController,
         getKeyringController,
         getPreferencesController,
+        getPhishingController,
         (address) => this.removeAccount(address),
       ),
     );
@@ -1473,6 +1475,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.keyringController.name}:signMessage`,
           `${this.keyringController.name}:signPersonalMessage`,
           `${this.keyringController.name}:signTypedMessage`,
+          `${this.loggingController.name}:add`,
         ],
       }),
       isEthSignEnabled: () =>

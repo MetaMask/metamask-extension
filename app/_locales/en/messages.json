@@ -1827,6 +1827,9 @@
   "goBack": {
     "message": "Go back"
   },
+  "goToSite": {
+    "message": "Go to site"
+  },
   "goerli": {
     "message": "Goerli test network"
   },
@@ -3399,6 +3402,14 @@
     "message": "Let this Snap access your preferred language from your MetaMask settings. This can be used to localize and display the Snap's content using your language.",
     "description": "An extended description for the `snap_getLocale` permission"
   },
+  "permission_keyring": {
+    "message": "Allow requests for adding and controlling Ethereum accounts",
+    "description": "The description for the `endowment:keyring` permission"
+  },
+  "permission_keyringDescription": {
+    "message": "Let this Snap receive requests to add or remove accounts, plus sign and transact on behalf of these accounts.",
+    "description": "An extended description for the `endowment:keyring` permission"
+  },
   "permission_lifecycleHooks": {
     "message": "Use lifecycle hooks.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
@@ -4012,6 +4023,9 @@
   "send": {
     "message": "Send"
   },
+  "sendAToken": {
+    "message": "Send a token"
+  },
   "sendBugReport": {
     "message": "Send us a bug report."
   },
@@ -4167,6 +4181,12 @@
   "snapAccountCreated": {
     "message": "Your account is ready!"
   },
+  "snapAccountRedirectFinishSigningTitle": {
+    "message": "Finish signing"
+  },
+  "snapAccountRedirectSiteDescription": {
+    "message": "Follow the instructions from $1"
+  },
   "snapAccountRemoved": {
     "message": "Account removed"
   },
@@ -4297,6 +4317,9 @@
   },
   "snapUpdateSuccess": {
     "message": "Update complete"
+  },
+  "snapUrlIsBlocked": {
+    "message": "This Snap wants to take you to a blocked site. $1."
   },
   "snaps": {
     "message": "Snaps"
@@ -5322,6 +5345,12 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "transactionInsightsDeprecationInfo": {
+    "message": "Explore more ways to get transaction insights with"
+  },
+  "transactionInsightsDeprecationTitle": {
+    "message": "This feature will be deprecated soon"
   },
   "transactionNote": {
     "message": "Transaction note"
