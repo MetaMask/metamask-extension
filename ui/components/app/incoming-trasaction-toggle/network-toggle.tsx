@@ -46,26 +46,13 @@ const NetworkToggle = ({
 
   const networkName = networkPreferences.label;
 
-  // console.log({ ETHERSCAN_SUPPORTED_NETWORKS, chainId });
-
   type SupportedChainId = keyof typeof ETHERSCAN_SUPPORTED_NETWORKS;
 
   const networkDomainAndSubdomain =
     ETHERSCAN_SUPPORTED_NETWORKS?.[chainId as SupportedChainId];
 
-  // console.log({ stuff });
-
   const domain = networkDomainAndSubdomain?.domain;
 
-  // console.log({ domain });
-
-  console.log({
-    ETHERSCAN_SUPPORTED_NETWORKS,
-    domain,
-    chainId,
-  });
-
-  // const upperCaseDomain = domain?.charAt(0)?.toUpperCase() + domain?.slice(1);
   const upperCaseDomain = domain?.charAt(0)?.toUpperCase() + domain?.slice(1);
 
   return (
@@ -74,44 +61,56 @@ const NetworkToggle = ({
       marginBottom={6}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
+      gap={4}
       justifyContent={JustifyContent.spaceBetween}
       data-testid={`network-toggle-${chainId}`}
       className="network-toggle-wrapper"
     >
       <Box
-        gap={2}
         backgroundColor={BackgroundColor.transparent}
         display={Display.Flex}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
+        gap={4}
+        className="network-toggle-wrapper__overflow-container"
       >
         <AvatarNetwork
           size={AvatarNetworkSize.Sm}
           src={networkPreferences.imageUrl}
           name={networkName}
         />
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <Text
-            color={TextColor.textDefault}
-            backgroundColor={BackgroundColor.transparent}
-            variant={TextVariant.bodyMd}
-            ellipsis
-            marginLeft={2}
-          >
-            {networkName.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-              <Tooltip title={networkName} position="bottom">
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          className="network-toggle-wrapper__overflow-container"
+        >
+          {networkName.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+            <Tooltip position="bottom">
+              <Text
+                color={TextColor.textDefault}
+                backgroundColor={BackgroundColor.transparent}
+                variant={TextVariant.bodyMd}
+                ellipsis
+              >
                 {networkName}
-              </Tooltip>
-            ) : (
-              networkName
-            )}
-          </Text>
+              </Text>
+            </Tooltip>
+          ) : (
+            <Text
+              color={TextColor.textDefault}
+              backgroundColor={BackgroundColor.transparent}
+              variant={TextVariant.bodyMd}
+              ellipsis
+            >
+              {networkName}
+            </Text>
+          )}
+
           <Text
             color={TextColor.primaryDefault}
             backgroundColor={BackgroundColor.transparent}
             variant={TextVariant.bodySm}
             ellipsis
-            marginLeft={2}
           >
             {
               // For tests, we have localhost in the network list, but obviously
@@ -131,13 +130,14 @@ const NetworkToggle = ({
           </Text>
         </Box>
       </Box>
-
-      <ToggleButton
-        value={isShowIncomingTransactions}
-        onToggle={(value) => toggleSingleNetwork(chainId, !value)}
-        offLabel={t('off')}
-        onLabel={t('on')}
-      />
+      <Box marginLeft="auto">
+        <ToggleButton
+          value={isShowIncomingTransactions}
+          onToggle={(value) => toggleSingleNetwork(chainId, !value)}
+          offLabel={t('off')}
+          onLabel={t('on')}
+        />
+      </Box>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from 'react';
+import React, { useContext, useRef, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -81,30 +81,37 @@ export const AccountListItemMenu = ({
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     removeJWTItemRef.current,
     removeAccountItemRef.current,
     accountDetailsItemRef.current,
   ]);
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Tab' && event.target === lastItemRef.current) {
-      // If Tab is pressed at the last item to close popover and focus to next element in DOM
-      onClose();
-    }
-  };
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Tab' && event.target === lastItemRef.current) {
+        // If Tab is pressed at the last item to close popover and focus to next element in DOM
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   // Handle click outside of the popover to close it
   const popoverDialogRef = useRef(null);
 
-  const handleClickOutside = (event) => {
-    if (
-      popoverDialogRef?.current &&
-      !popoverDialogRef.current.contains(event.target)
-    ) {
-      onClose();
-    }
-  };
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (
+        popoverDialogRef?.current &&
+        !popoverDialogRef.current.contains(event.target)
+      ) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -112,7 +119,7 @@ export const AccountListItemMenu = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   return (
     <Popover
@@ -178,12 +185,14 @@ export const AccountListItemMenu = ({
                   const token = await dispatch(
                     mmiActions.getCustodianToken(identity.address),
                   );
+
                   const custodyAccountDetails = await dispatch(
                     mmiActions.getAllCustodianAccountsWithToken(
                       keyring.type.split(' - ')[1],
                       token,
                     ),
                   );
+
                   dispatch(
                     showModal({
                       name: 'CONFIRM_REMOVE_JWT',
@@ -232,9 +241,6 @@ AccountListItemMenu.propTypes = {
    * Represents if the account should be removable
    */
   isRemovable: PropTypes.bool.isRequired,
-  /**
-   * Identity of the account
-   */
   /**
    * Identity of the account
    */

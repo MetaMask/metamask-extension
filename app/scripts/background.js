@@ -28,6 +28,9 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -245,7 +248,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
- * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
@@ -259,6 +261,27 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {MetaMaskState} data - The data emitted from MetaMask controller, or used to initialize it.
  * @property {number} version - The latest migration version that has been run.
  */
+
+// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
+const addAppInstalledEvent = () => {
+  if (controller) {
+    controller.metaMetricsController.updateTraits({
+      [MetaMetricsUserTrait.InstallDateExt]: new Date()
+        .toISOString()
+        .split('T')[0], // yyyy-mm-dd
+    });
+    controller.metaMetricsController.addEventBeforeMetricsOptIn({
+      category: MetaMetricsEventCategory.App,
+      event: MetaMetricsEventName.AppInstalled,
+      properties: {},
+    });
+    return;
+  }
+  setTimeout(() => {
+    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
+    addAppInstalledEvent();
+  }, 1000);
+};
 
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
@@ -293,6 +316,9 @@ async function initialize() {
       isFirstMetaMaskControllerSetup,
       initData.meta,
     );
+
+    await fireFirstInstallActions();
+
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
@@ -301,6 +327,24 @@ async function initialize() {
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
+  }
+}
+
+/**
+ * Store the value `isFirstTimeInstalled` as true when first time install the extension
+ * where we would stack AppInstalled events
+ * and open the extension automatically
+ * Finally we set the flag as false so they won't be triggered for updating
+ */
+async function fireFirstInstallActions() {
+  const sessionData = await localStore.get();
+  const isFirstTimeInstalled = sessionData?.isFirstTimeInstalled === undefined;
+  if (isFirstTimeInstalled) {
+    if (!(process.env.METAMASK_DEBUG || process.env.IN_TEST)) {
+      addAppInstalledEvent();
+      platform.openExtensionInBrowser();
+    }
+    await localStore.set({ isFirstTimeInstalled: false });
   }
 }
 
@@ -802,6 +846,13 @@ export function setupController(
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
           default:
             controller.approvalController.reject(
               id,
@@ -867,38 +918,6 @@ async function triggerUi() {
     }
   }
 }
-
-// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = () => {
-  if (controller) {
-    controller.metaMetricsController.updateTraits({
-      [MetaMetricsUserTrait.InstallDateExt]: new Date()
-        .toISOString()
-        .split('T')[0], // yyyy-mm-dd
-    });
-    controller.metaMetricsController.addEventBeforeMetricsOptIn({
-      category: MetaMetricsEventCategory.App,
-      event: MetaMetricsEventName.AppInstalled,
-      properties: {},
-    });
-    return;
-  }
-  setTimeout(() => {
-    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    addAppInstalledEvent();
-  }, 1000);
-};
-
-// On first install, open a new tab with MetaMask
-browser.runtime.onInstalled.addListener(({ reason }) => {
-  if (
-    reason === 'install' &&
-    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
-  ) {
-    addAppInstalledEvent();
-    platform.openExtensionInBrowser();
-  }
-});
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {

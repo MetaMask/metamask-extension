@@ -244,7 +244,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 class="sender-to-recipient__name"
                 data-testid="sender-to-recipient__name"
               >
-                0x0c5...AaFb
+                0x0c54F...7AaFb
               </div>
             </div>
           </div>
@@ -288,16 +288,18 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           >
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              ethlogoheight="24"
               title="0"
             >
               <div
                 class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
                 variant="inherit"
               >
-                <i
-                  class="fab fa-ethereum"
-                  style="font-size: 24px;"
-                />
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  C
+                </div>
               </div>
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -321,11 +323,30 @@ exports[`ConfirmSendEther should render correct information for for confirm send
               class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
               style="mask-image: url('./images/icons/danger.svg');"
             />
-            <div>
+            <div
+              class="mm-box mm-box--min-width-0"
+            >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
                 Network is busy. Gas prices are high and estimates are less accurate.
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
+              style="mask-image: url('./images/icons/danger.svg');"
+            />
+            <div
+              class="mm-box mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                You are sending 0 ETH.
               </p>
             </div>
           </div>
@@ -635,16 +656,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           <button
             class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
             data-testid="page-container-footer-cancel"
-            role="button"
-            tabindex="0"
           >
             Reject
           </button>
           <button
             class="button btn--rounded btn-primary page-container__footer-button"
             data-testid="page-container-footer-next"
-            role="button"
-            tabindex="0"
           >
             Confirm
           </button>

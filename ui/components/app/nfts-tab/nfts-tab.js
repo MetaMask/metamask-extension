@@ -1,29 +1,31 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import NftsItems from '../nfts-items';
 import {
-  JustifyContent,
-  FlexDirection,
   AlignItems,
-  Size,
   Display,
+  FlexDirection,
+  JustifyContent,
+  Size,
   TextAlign,
-  TextVariant,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getIsMainnet, getUseNftDetection } from '../../../selectors';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useNftsCollections } from '../../../hooks/useNftsCollections';
+import { getIsMainnet, getUseNftDetection } from '../../../selectors';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   showImportNftsModal,
 } from '../../../store/actions';
-import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
-import NftsDetectionNotice from '../nfts-detection-notice';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
+import NftsItems from '../nfts-items';
+import { AssetListConversionButton } from '../../multichain';
+import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -46,14 +48,16 @@ export default function NftsTab() {
     checkAndUpdateAllNftsOwnershipStatus();
   };
 
+  const hasAnyNfts = Object.keys(collections).length > 0;
+  const showNftBanner = process.env.MULTICHAIN && hasAnyNfts === false;
+
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
   }
 
   return (
     <Box className="nfts-tab">
-      {Object.keys(collections).length > 0 ||
-      previouslyOwnedCollection.nfts.length > 0 ? (
+      {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
         <NftsItems
           collections={collections}
           previouslyOwnedCollection={previouslyOwnedCollection}
@@ -61,8 +65,23 @@ export default function NftsTab() {
       ) : (
         <>
           {isMainnet && !useNftDetection ? (
-            <Box padding={4}>
-              <NftsDetectionNotice />
+            <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
+              <NFTsDetectionNoticeNFTsTab />
+            </Box>
+          ) : null}
+          {showNftBanner ? (
+            <Box
+              paddingInlineStart={4}
+              paddingInlineEnd={4}
+              display={Display.Flex}
+              paddingTop={4}
+            >
+              <AssetListConversionButton
+                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
+                onClick={() =>
+                  global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS })
+                }
+              />
             </Box>
           ) : null}
           <Box

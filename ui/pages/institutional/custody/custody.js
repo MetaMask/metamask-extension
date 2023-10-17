@@ -53,6 +53,7 @@ import {
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
+import { setSelectedAddress } from '../../../store/actions';
 
 const GK8_DISPLAY_NAME = 'gk8';
 
@@ -95,9 +96,11 @@ const CustodyPage = () => {
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
 
-    const sortedCustodians = [...custodians].sort((a, b) =>
-      a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
-    );
+    const sortedCustodians = [...custodians]
+      .filter((item) => item.type !== 'Jupiter')
+      .sort((a, b) =>
+        a.envName.toLowerCase().localeCompare(b.envName.toLowerCase()),
+      );
 
     function shouldShowInProduction(custodian) {
       return (
@@ -260,7 +263,7 @@ const CustodyPage = () => {
         if (connectRequest && Object.keys(connectRequest).length) {
           const {
             token,
-            environment: custodianName,
+            environment: custodianName, // this is the env name
             service: custodianType,
             apiUrl: custodianApiUrl,
           } = connectRequest;
@@ -608,6 +611,7 @@ const CustodyPage = () => {
                 const selectedCustodian = custodians.find(
                   (custodian) => custodian.envName === selectedCustodianName,
                 );
+                const firstAccountKey = Object.keys(selectedAccounts).shift();
 
                 await dispatch(
                   mmiActions.connectCustodyAddresses(
@@ -616,6 +620,8 @@ const CustodyPage = () => {
                     selectedAccounts,
                   ),
                 );
+
+                dispatch(setSelectedAddress(firstAccountKey.toLowerCase()));
 
                 trackEvent({
                   category: MetaMetricsEventCategory.MMI,
