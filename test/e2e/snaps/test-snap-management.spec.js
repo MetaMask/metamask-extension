@@ -146,7 +146,7 @@ describe('Test Snap Management', function () {
         // check the results of the removal
         await driver.delay(2000);
         const removeResult = await driver.findElement(
-          '.snaps__list-tab__container--no-snaps_inner',
+          '.snaps__list__container--no-snaps_inner',
         );
         assert.equal(
           await removeResult.getText(),

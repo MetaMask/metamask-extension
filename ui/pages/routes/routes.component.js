@@ -44,7 +44,7 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
-import SnapList from '../snaps/snaps-list-tab';
+import SnapList from '../snaps/snaps-list';
 import SnapView from '../snaps/snap-view';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)

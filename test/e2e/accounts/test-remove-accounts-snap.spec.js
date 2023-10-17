@@ -129,7 +129,7 @@ describe('Remove Account Snap', function () {
 
         // Assert that the snap was removed.
         const removeResult = await driver.findElement(
-          '.snaps__list-tab__container--no-snaps_inner',
+          '.snaps__list__container--no-snaps_inner',
         );
         assert.equal(
           await removeResult.getText(),
