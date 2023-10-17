@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openActionMenuAndStartSendFlow } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openActionMenuAndStartSendFlow,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('ENS', function () {

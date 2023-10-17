@@ -7,7 +7,11 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { convertToHexValue, withFixtures, openActionMenuAndStartSendFlow } = require('./helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openActionMenuAndStartSendFlow,
+} = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
 const ganacheOptions = {
