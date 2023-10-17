@@ -45,6 +45,7 @@ export const SelectActionModalItem = ({
         onClick();
       }}
       className="select-action-modal-item"
+      data-testid="select-action-modal-item"
       width={BlockSize.Full}
       {...props}
     >
