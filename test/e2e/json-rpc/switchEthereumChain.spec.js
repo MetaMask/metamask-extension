@@ -231,7 +231,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('should queue send tx after switchEthereum request with a warning, denying presents pending tx', async function () {
+  it('should queue send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
