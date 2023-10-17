@@ -434,35 +434,47 @@ class Driver {
   async switchToWindowWithTitle(
     title,
     initialWindowHandles,
+    mode = 'switchOnly',
     delayStep = 1000,
     timeout = this.timeout,
-    { retries = 8, retryDelay = 2500 } = {},
   ) {
-    let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
 
-    while (timeElapsed <= timeout) {
-      for (const handle of windowHandles) {
-        const handleTitle = await retry(
-          {
-            retries,
-            delay: retryDelay,
-          },
-          async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getTitle();
-          },
-        );
+    let windowHandles =
+      initialWindowHandles || (await this.driver.getAllWindowHandles());
 
+    while (timeElapsed <= timeout) {
+      // Wait for the popup to close before refreshing the window handles list
+      if (
+        mode === 'closeThenSwitch' &&
+        windowHandles.length > initialWindowHandles.length
+      ) {
+        await this.delay(delayStep);
+        windowHandles = await this.driver.getAllWindowHandles();
+      }
+
+      // Wait for a popup to open before refreshing the window handles list.
+      else if (
+        mode === 'openThenSwitch' &&
+        windowHandles.length <= initialWindowHandles.length
+      ) {
+        await this.delay(delayStep);
+        windowHandles = await this.driver.getAllWindowHandles();
+      }
+
+      for (const handle of windowHandles) {
+        await this.driver.switchTo().window(handle);
+        const handleTitle = await this.driver.getTitle();
         if (handleTitle === title) {
           return handle;
         }
       }
-      await this.delay(delayStep);
+
+      if (mode === 'switchOnly') {
+        await this.delay(delayStep);
+      }
+
       timeElapsed += delayStep;
-      // refresh the window handles
-      windowHandles = await this.driver.getAllWindowHandles();
     }
 
     throw new Error(`No window with title: ${title}`);
