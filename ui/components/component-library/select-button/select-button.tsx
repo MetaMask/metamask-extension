@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import classnames from 'classnames';
 import { SelectContext } from '../select-wrapper';
-import type { PolymorphicRef, BoxProps } from '../box';
-import { Box, Icon, IconName, IconSize } from '..';
+import type { PolymorphicRef } from '../box';
+import { Text, Icon, IconName, IconSize } from '..';
+import type { TextProps } from '../text';
 import {
   AlignItems,
   BackgroundColor,
@@ -70,7 +71,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
     };
 
     return (
-      <Box
+      <Text
         className={classnames(
           'mm-select-button',
           {
@@ -83,7 +84,6 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
           className,
         )}
         ref={ref}
-        {...(props as BoxProps<C>)}
         disabled={isDisabled}
         as="button"
         onClick={onClick || toggleUncontrolledOpen}
@@ -101,10 +101,11 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         gap={2}
+        {...(props as TextProps<C>)}
       >
         <span>{contentToRender}</span>
         <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
-      </Box>
+      </Text>
     );
   },
 );
