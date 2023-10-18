@@ -9,6 +9,7 @@ ignores:
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  - '@metamask/snaps-execution-environments'
 
   #
   # dev deps
