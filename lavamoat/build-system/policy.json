@@ -76,7 +76,6 @@
         "@babel/core>@babel/helpers": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true,
-        "@babel/core>@babel/traverse": true,
         "@babel/core>@babel/types": true,
         "@babel/core>convert-source-map": true,
         "@babel/core>gensync": true,
@@ -89,6 +88,7 @@
         "@babel/preset-env": true,
         "@babel/preset-react": true,
         "@babel/preset-typescript": true,
+        "depcheck>@babel/traverse": true,
         "depcheck>json5": true,
         "nock>debug": true
       }
@@ -108,24 +108,10 @@
         "console.warn": true
       },
       "packages": {
-        "@babel/core>@babel/generator>@jridgewell/trace-mapping": true,
         "@babel/core>@babel/generator>jsesc": true,
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@babel/core>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "@babel/core>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -139,11 +125,16 @@
         "process.versions.node": true
       },
       "packages": {
+        "@babel/core>@babel/helper-compilation-targets>lru-cache": true,
         "@babel/core>@babel/helper-compilation-targets>semver": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
-        "mockttp>@httptoolkit/proxy-agent>lru-cache": true,
         "webpack>browserslist": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets>lru-cache": {
+      "packages": {
+        "@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets>semver": {
@@ -160,10 +151,10 @@
       },
       "packages": {
         "@babel/core": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-environment-visitor": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
@@ -180,88 +171,17 @@
         "@babel/core>@babel/types": true
       }
     },
-    "@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
     "@babel/core>@babel/helpers": {
       "packages": {
-        "@babel/core>@babel/helpers>@babel/traverse": true,
         "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/helpers>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "@babel/core>@babel/helpers>@babel/traverse>@babel/helper-environment-visitor": true,
-        "@babel/core>@babel/helpers>@babel/traverse>@babel/helper-function-name": true,
-        "@babel/core>@babel/helpers>@babel/traverse>@babel/helper-hoist-variables": true,
-        "@babel/core>@babel/helpers>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "@babel/core>@babel/parser": true,
         "@babel/core>@babel/types": true,
-        "depcheck>@babel/traverse>globals": true,
-        "nock>debug": true
-      }
-    },
-    "@babel/core>@babel/helpers>@babel/traverse>@babel/helper-function-name": {
-      "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/helpers>@babel/traverse>@babel/helper-hoist-variables": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/helpers>@babel/traverse>@babel/helper-split-export-declaration": {
-      "packages": {
-        "@babel/core>@babel/types": true
+        "depcheck>@babel/traverse": true
       }
     },
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/traverse>@babel/helper-environment-visitor": true,
-        "@babel/core>@babel/traverse>@babel/helper-function-name": true,
-        "@babel/core>@babel/traverse>@babel/helper-hoist-variables": true,
-        "@babel/core>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "@babel/core>@babel/types": true,
-        "depcheck>@babel/traverse>globals": true,
-        "nock>debug": true
-      }
-    },
-    "@babel/core>@babel/traverse>@babel/helper-function-name": {
-      "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/traverse>@babel/helper-hoist-variables": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/core>@babel/traverse>@babel/helper-split-export-declaration": {
-      "packages": {
         "@babel/core>@babel/types": true
       }
     },
@@ -534,29 +454,8 @@
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-syntax-async-generators": true,
-        "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-environment-visitor": true,
-        "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-environment-visitor": true,
-        "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function": {
-      "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function>@babel/helper-function-name": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function>@babel/helper-function-name": {
-      "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
+        "@babel/preset-env>@babel/plugin-transform-async-to-generator>@babel/helper-remap-async-to-generator": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-async-to-generator": {
@@ -572,14 +471,14 @@
         "@babel/core": true,
         "@babel/preset-env>@babel/plugin-transform-async-to-generator>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-environment-visitor": true
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-async-to-generator>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function": {
       "packages": {
         "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-function-name": true
+        "depcheck>@babel/traverse>@babel/helper-function-name": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-block-scoped-functions": {
@@ -613,22 +512,16 @@
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-environment-visitor": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-function-name": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-split-export-declaration": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
+        "depcheck>@babel/traverse>@babel/helper-function-name": true,
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
         "depcheck>@babel/traverse>globals": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
       "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-function-name": {
-      "packages": {
-        "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true
       }
     },
@@ -641,16 +534,11 @@
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-environment-visitor": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-split-export-declaration": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -762,7 +650,7 @@
       "packages": {
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-function-name": true
+        "depcheck>@babel/traverse>@babel/helper-function-name": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-json-strings": {
@@ -812,13 +700,8 @@
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-transform-modules-systemjs>@babel/helper-hoist-variables": true,
+        "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-modules-systemjs>@babel/helper-hoist-variables": {
-      "packages": {
-        "@babel/core>@babel/types": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-modules-umd": {
@@ -864,13 +747,7 @@
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-syntax-object-rest-spread": true,
-        "@babel/preset-env>@babel/plugin-transform-object-rest-spread>@babel/plugin-transform-parameters": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-object-rest-spread>@babel/plugin-transform-parameters": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true
+        "@babel/preset-env>@babel/plugin-transform-parameters": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-object-super": {
@@ -916,22 +793,11 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
-        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-environment-visitor": true,
-        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-function-name": true,
-        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-split-export-declaration": true,
         "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": true,
-        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-function-name": {
-      "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-split-export-declaration": {
-      "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
+        "depcheck>@babel/traverse>@babel/helper-function-name": true,
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": {
@@ -1600,16 +1466,8 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "brfs>resolve>is-core-module": true,
-        "brfs>resolve>path-parse": true
-      }
-    },
-    "brfs>resolve>is-core-module": {
-      "globals": {
-        "process.versions": true
-      },
-      "packages": {
-        "browserify>has": true
+        "brfs>resolve>path-parse": true,
+        "depcheck>is-core-module": true
       }
     },
     "brfs>resolve>path-parse": {
@@ -2357,57 +2215,37 @@
       }
     },
     "depcheck>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
-        "babel/preset-env>b@babel/types": true
+        "@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/types": true,
+        "babel/preset-env>b@babel/types": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
+        "depcheck>@babel/traverse>@babel/helper-function-name": true,
+        "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "depcheck>@babel/traverse>globals": true,
+        "nock>debug": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-function-name": {
       "packages": {
         "@babel/core>@babel/template": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name>@babel/types": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/helper-function-name>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-string-parser": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-validator-identifier": true
+        "@babel/core>@babel/types": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-hoist-variables": {
       "packages": {
-        "depcheck>@babel/traverse>@babel/helper-hoist-variables>@babel/types": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/helper-hoist-variables>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "depcheck>@babel/traverse>@babel/helper-hoist-variables>@babel/types>@babel/helper-string-parser": true,
-        "depcheck>@babel/traverse>@babel/helper-hoist-variables>@babel/types>@babel/helper-validator-identifier": true
+        "@babel/core>@babel/types": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-split-export-declaration": {
       "packages": {
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-string-parser": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-validator-identifier": true
+        "@babel/core>@babel/types": true
       }
     },
     "depcheck>cosmiconfig>parse-json": {
@@ -6478,14 +6316,19 @@
       "packages": {
         "@babel/register>clone-deep>is-plain-object": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true,
-        "lavamoat>lavamoat-core>merge-deep>kind-of": true
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
       "packages": {
         "gulp>undertaker>object.reduce>for-own>for-in": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -6532,60 +6375,7 @@
       },
       "packages": {
         "@babel/core>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
-        "nock>debug": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@babel/core>@babel/generator>jsesc": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true
+        "depcheck>@babel/traverse": true
       }
     },
     "lodash": {
@@ -6697,11 +6487,6 @@
         "process.getgid": true,
         "process.getuid": true,
         "process.platform": true
-      }
-    },
-    "mockttp>@httptoolkit/proxy-agent>lru-cache": {
-      "packages": {
-        "mockttp>@httptoolkit/proxy-agent>lru-cache>yallist": true
       }
     },
     "mockttp>portfinder>mkdirp": {
@@ -8758,8 +8543,8 @@
         "process": true
       },
       "packages": {
-        "terser>@jridgewell/source-map": true,
-        "terser>acorn": true
+        "jsdom>acorn": true,
+        "terser>@jridgewell/source-map": true
       }
     },
     "terser>@jridgewell/source-map": {
@@ -8802,12 +8587,6 @@
     },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
-        "define": true
-      }
-    },
-    "terser>acorn": {
-      "globals": {
-        "console": true,
         "define": true
       }
     },

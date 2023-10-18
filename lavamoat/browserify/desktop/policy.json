@@ -478,7 +478,7 @@
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "react-focus-lock>focus-lock>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -1446,7 +1446,7 @@
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "react-focus-lock>focus-lock>tslib": true,
+        "mockttp>graphql-tag>tslib": true,
         "webpack>events": true
       }
     },
@@ -1462,7 +1462,7 @@
       },
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": {
@@ -1532,11 +1532,6 @@
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs>@protobufjs/aspromise": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs>@protobufjs/inquire": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": {
-      "globals": {
-        "define": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": {
@@ -2365,7 +2360,7 @@
       },
       "packages": {
         "@metamask/snaps-controllers>@metamask/post-message-stream>@metamask/utils": true,
-        "@metamask/snaps-controllers>@metamask/post-message-stream>readable-stream": true
+        "@metamask/snaps-controllers>concat-stream>readable-stream": true
       }
     },
     "@metamask/snaps-controllers>@metamask/post-message-stream>@metamask/utils": {
@@ -2378,17 +2373,6 @@
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/post-message-stream>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
       }
     },
     "@metamask/snaps-controllers>@metamask/utils": {
@@ -2933,6 +2917,11 @@
         "browserify>process": true
       }
     },
+    "@storybook/addon-knobs>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "@truffle/codec": {
       "packages": {
         "@truffle/codec>@truffle/abi-utils": true,
@@ -3454,6 +3443,15 @@
         "define": true
       }
     },
+    "brfs>static-module>object-inspect": {
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "browserify>assert": {
       "globals": {
         "Buffer": true
@@ -3732,8 +3730,8 @@
     },
     "browserify>url": {
       "packages": {
-        "browserify>punycode": true,
-        "browserify>querystring-es3": true
+        "@storybook/addon-knobs>qs": true,
+        "browserify>punycode": true
       }
     },
     "browserify>util": {
@@ -3759,28 +3757,11 @@
     },
     "browserify>util>is-typed-array": {
       "packages": {
-        "browserify>util>is-typed-array>es-abstract": true,
         "browserify>util>is-typed-array>for-each": true,
         "koa>is-generator-function>has-tostringtag": true,
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>available-typed-arrays": true
-      }
-    },
-    "browserify>util>is-typed-array>es-abstract": {
-      "packages": {
-        "browserify>util>is-typed-array>es-abstract>get-intrinsic": true
-      }
-    },
-    "browserify>util>is-typed-array>es-abstract>get-intrinsic": {
-      "globals": {
-        "AggregateError": true,
-        "FinalizationRegistry": true,
-        "WeakRef": true
-      },
-      "packages": {
-        "browserify>has": true,
-        "browserify>has>function-bind": true,
-        "string.prototype.matchall>has-symbols": true
+        "string.prototype.matchall>es-abstract>available-typed-arrays": true,
+        "string.prototype.matchall>es-abstract>gopd": true
       }
     },
     "browserify>util>is-typed-array>for-each": {
@@ -3790,16 +3771,7 @@
     },
     "browserify>util>which-typed-array": {
       "packages": {
-        "browserify>util>is-typed-array>for-each": true,
-        "browserify>util>which-typed-array>is-typed-array": true,
-        "koa>is-generator-function>has-tostringtag": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>available-typed-arrays": true,
-        "string.prototype.matchall>es-abstract>gopd": true
-      }
-    },
-    "browserify>util>which-typed-array>is-typed-array": {
-      "packages": {
+        "browserify>util>is-typed-array": true,
         "browserify>util>is-typed-array>for-each": true,
         "koa>is-generator-function>has-tostringtag": true,
         "string.prototype.matchall>call-bind": true,
@@ -3967,7 +3939,7 @@
         "setTimeout": true
       },
       "packages": {
-        "react-focus-lock>focus-lock>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -4721,6 +4693,11 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
+    "mockttp>graphql-tag>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
     "nanoid": {
       "globals": {
         "crypto": true,
@@ -4925,12 +4902,7 @@
         "setTimeout": true
       },
       "packages": {
-        "react-focus-lock>focus-lock>tslib": true
-      }
-    },
-    "react-focus-lock>focus-lock>tslib": {
-      "globals": {
-        "define": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "react-focus-lock>react-clientside-effect": {
@@ -4949,8 +4921,8 @@
         "console.error": true
       },
       "packages": {
+        "mockttp>graphql-tag>tslib": true,
         "react": true,
-        "react-focus-lock>focus-lock>tslib": true,
         "react-focus-lock>use-sidecar>detect-node-es": true
       }
     },
@@ -5426,6 +5398,13 @@
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
+      }
+    },
+    "string.prototype.matchall>side-channel": {
+      "packages": {
+        "brfs>static-module>object-inspect": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "superstruct": {
