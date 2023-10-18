@@ -32,7 +32,6 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.rawSignatureFarming]: 'blockaidDescriptionMightLoseAssets',
   [BlockaidReason.tradeOrderFarming]: 'blockaidDescriptionMightLoseAssets',
-  [BlockaidReason.unfairTrade]: 'blockaidDescriptionMightLoseAssets',
 
   [BlockaidReason.rawNativeTokenTransfer]: 'blockaidDescriptionTransferFarming',
   [BlockaidReason.transferFarming]: 'blockaidDescriptionTransferFarming',
