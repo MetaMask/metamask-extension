@@ -35,7 +35,7 @@ jest.mock('react-router-dom', () => {
 
 const mockStore = configureMockStore([thunk])(mockState);
 
-describe('ViewSnap', () => {
+describe('SnapView', () => {
   it('should properly display Snap View elements', async () => {
     const { getByText, container, getByTestId, getAllByText } =
       renderWithProvider(<SnapView />, mockStore);
