@@ -117,7 +117,6 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
-    "networkId": "5",
     "providerConfig": {
       "type": "rpc",
       "nickname": "goerli",
@@ -724,7 +723,6 @@
         "id": 8393540981007587,
         "time": 1536268017676,
         "status": "unapproved",
-        "metamaskNetworkId": "4",
         "loadingDefaults": false,
         "txParams": {
           "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
@@ -739,7 +737,7 @@
             "id": 8393540981007587,
             "time": 1536268017676,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -773,7 +771,7 @@
         "id": 3387511061307736,
         "time": 1528133130531,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -788,7 +786,7 @@
             "id": 3387511061307736,
             "time": 1528133130531,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -905,7 +903,7 @@
         "id": 3387511061307737,
         "time": 1528133149983,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -920,7 +918,7 @@
             "id": 3387511061307737,
             "time": 1528133149983,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1037,7 +1035,7 @@
         "id": 3387511061307738,
         "time": 1528133180635,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1052,7 +1050,7 @@
             "id": 3387511061307738,
             "time": 1528133180635,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1169,7 +1167,7 @@
         "id": 3387511061307739,
         "time": 1528133223918,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1185,7 +1183,7 @@
             "id": 3387511061307739,
             "time": 1528133223918,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1306,7 +1304,7 @@
         "id": 3387511061307740,
         "time": 1528133291381,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1322,7 +1320,7 @@
             "id": 3387511061307740,
             "time": 1528133291381,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1440,7 +1438,7 @@
         "id": 3387511061307741,
         "time": 1528133318440,
         "status": "rejected",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1454,7 +1452,7 @@
             "id": 3387511061307741,
             "time": 1528133318440,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
