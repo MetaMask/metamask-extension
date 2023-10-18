@@ -62,7 +62,6 @@ export const BalanceOverview = ({ balance, loading }) => {
     return mmiPortfolioEnabled ? (
       <ButtonSecondary
         className="token-balance-mmi-portfolio"
-        data-testid="token-balance-mmi-portfolio"
         onClick={() => {
           portfolioEvent();
           window.open(mmiPortfolioUrl, '_blank');
@@ -124,6 +123,7 @@ export const BalanceOverview = ({ balance, loading }) => {
         ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         <ButtonSecondary
           className="token-balance-portfolio"
+          data-testid="token-balance-portfolio"
           endIconName={IconName.Export}
           onClick={() => {
             const url = getPortfolioUrl(

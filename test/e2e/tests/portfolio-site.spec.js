@@ -27,11 +27,10 @@ describe('Portfolio site', function () {
 
         // Click Portfolio site
         if (process.env.MULTICHAIN) {
-          await driver.clickElement(
-            '[data-testid="token-balance-mmi-portfolio"]',
-          );
+          await driver.clickElement('[data-testid="token-balance-portfolio"]');
+        } else {
+          await driver.clickElement('[data-testid="eth-overview-portfolio"]');
         }
-        await driver.clickElement('[data-testid="eth-overview-portfolio"]');
         await driver.waitUntilXWindowHandles(2);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
