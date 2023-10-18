@@ -2,32 +2,33 @@ import { Provider } from '@metamask/network-controller';
 import {
   createTestProviderTools,
   getTestAccounts,
-} from '../../../test/stub/provider';
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+} from '../../../../test/stub/provider';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   TransactionType,
   TransactionStatus,
   AssetType,
   TokenStandard,
   TransactionMetaMetricsEvent,
-} from '../../../shared/constants/transaction';
+} from '../../../../shared/constants/transaction';
 import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
-} from '../../../shared/constants/metametrics';
-import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
+} from '../../../../shared/constants/metametrics';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { BlockaidReason } from '../../../shared/constants/security-provider';
+import { BlockaidReason } from '../../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN(blockaid)
 import {
-  handleTransactionAdded,
-  handleTransactionApproved,
-  handleTransactionDropped,
-  handleTransactionFinalized,
-  handleTransactionRejected,
-  handleTransactionSubmitted,
+  onTransactionAdded,
+  onTransactionApproved,
+  onTransactionConfirmed,
+  onTransactionDropped,
+  onTransactionFailed,
+  onTransactionRejected,
+  onTransactionSubmitted,
   METRICS_STATUS_FAILED,
-} from './transaction-metrics';
+} from './metrics';
 
 const providerResultStub = {
   eth_getCode: '0x123',
@@ -38,7 +39,7 @@ const { provider } = createTestProviderTools({
   chainId: '5',
 });
 
-jest.mock('./snap-keyring/metrics', () => {
+jest.mock('../snap-keyring/metrics', () => {
   return {
     getSnapAndHardwareInfoForMetrics: jest.fn().mockResolvedValue({
       account_snap_type: 'snaptype',
@@ -56,10 +57,12 @@ const mockTransactionMetricsRequest = {
   getDeviceModel: jest.fn(),
   getEIP1559GasFeeEstimates: jest.fn(),
   getSelectedAddress: jest.fn(),
+  getParticipateInMetrics: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
-  snapAndHardwareMessenger: jest.fn() as any,
   provider: provider as Provider,
+  snapAndHardwareMessenger: jest.fn() as any,
+  trackEvent: jest.fn(),
 };
 
 describe('Transaction metrics', () => {
@@ -101,16 +104,16 @@ describe('Transaction metrics', () => {
     jest.clearAllMocks();
   });
 
-  describe('handleTransactionAdded', () => {
+  describe('onTransactionAdded', () => {
     it('should return if transaction meta is not defined', async () => {
-      await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
+      await onTransactionAdded(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
     });
 
     it('should create event fragment', async () => {
-      await handleTransactionAdded(mockTransactionMetricsRequest, {
+      await onTransactionAdded(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
@@ -161,9 +164,9 @@ describe('Transaction metrics', () => {
     });
   });
 
-  describe('handleTransactionApproved', () => {
+  describe('onTransactionApproved', () => {
     it('should return if transaction meta is not defined', async () => {
-      await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
+      await onTransactionApproved(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
@@ -176,7 +179,7 @@ describe('Transaction metrics', () => {
     });
 
     it('should create, update, finalize event fragment', async () => {
-      await handleTransactionApproved(mockTransactionMetricsRequest, {
+      await onTransactionApproved(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
@@ -249,12 +252,9 @@ describe('Transaction metrics', () => {
     });
   });
 
-  describe('handleTransactionFinalized', () => {
+  describe('onTransactionConfirmed', () => {
     it('should return if transaction meta is not defined', async () => {
-      await handleTransactionFinalized(
-        mockTransactionMetricsRequest,
-        {} as any,
-      );
+      await onTransactionConfirmed(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
@@ -273,7 +273,7 @@ describe('Transaction metrics', () => {
       };
       mockTransactionMeta.submittedTime = 123;
 
-      await handleTransactionFinalized(mockTransactionMetricsRequest, {
+      await onTransactionConfirmed(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
       } as any);
@@ -346,11 +346,26 @@ describe('Transaction metrics', () => {
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toBeCalledWith(expectedUniqueId);
     });
+  });
+
+  describe('onTransactionFailed', () => {
+    it('should return if transaction meta is not defined', async () => {
+      await onTransactionFailed(mockTransactionMetricsRequest, {} as any);
+      expect(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.updateEventFragment,
+      ).not.toBeCalled();
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).not.toBeCalled();
+    });
 
     it('should append error to event properties', async () => {
       const mockErrorMessage = 'Unexpected error';
 
-      await handleTransactionFinalized(mockTransactionMetricsRequest, {
+      await onTransactionFailed(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
@@ -424,9 +439,9 @@ describe('Transaction metrics', () => {
     });
   });
 
-  describe('handleTransactionDropped', () => {
+  describe('onTransactionDropped', () => {
     it('should return if transaction meta is not defined', async () => {
-      await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
+      await onTransactionDropped(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
@@ -439,7 +454,7 @@ describe('Transaction metrics', () => {
     });
 
     it('should create, update, finalize event fragment', async () => {
-      await handleTransactionDropped(mockTransactionMetricsRequest, {
+      await onTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
       } as any);
@@ -512,9 +527,9 @@ describe('Transaction metrics', () => {
     });
   });
 
-  describe('handleTransactionRejected', () => {
+  describe('onTransactionRejected', () => {
     it('should return if transaction meta is not defined', async () => {
-      await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
+      await onTransactionRejected(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
@@ -527,7 +542,7 @@ describe('Transaction metrics', () => {
     });
 
     it('should create, update, finalize event fragment', async () => {
-      await handleTransactionRejected(mockTransactionMetricsRequest, {
+      await onTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
       } as any);
@@ -602,19 +617,16 @@ describe('Transaction metrics', () => {
     });
   });
 
-  describe('handleTransactionSubmitted', () => {
+  describe('onTransactionSubmitted', () => {
     it('should return if transaction meta is not defined', async () => {
-      await handleTransactionSubmitted(
-        mockTransactionMetricsRequest,
-        {} as any,
-      );
+      await onTransactionSubmitted(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
     });
 
     it('should only create event fragment', async () => {
-      await handleTransactionSubmitted(mockTransactionMetricsRequest, {
+      await onTransactionSubmitted(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
