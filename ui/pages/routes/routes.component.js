@@ -596,7 +596,11 @@ export default class Routes extends Component {
           'mouse-user-styles': isMouseUser,
         })}
         dir={textDirection}
-        onClick={() => setMouseUserState(true)}
+        onClick={() => {
+          if (isMouseUser === false) {
+            setMouseUserState(true);
+          }
+        }}
         onKeyDown={(e) => {
           if (e.keyCode === 9) {
             setMouseUserState(false);
