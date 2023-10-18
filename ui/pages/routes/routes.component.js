@@ -124,6 +124,8 @@ import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-i
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IN
 
+import { SendPage } from '../../components/multichain/pages/send';
+
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
@@ -283,7 +285,7 @@ export default class Routes extends Component {
         />
         <Authenticated
           path={SEND_ROUTE}
-          component={SendTransactionScreen}
+          component={process.env.MULTICHAIN ? SendPage : SendTransactionScreen}
           exact
         />
         <Authenticated
@@ -468,6 +470,16 @@ export default class Routes extends Component {
         exact: false,
       }),
     );
+
+    const isMultichainSend = Boolean(
+      matchPath(location.pathname, {
+        path: SEND_ROUTE,
+        exact: false,
+      }),
+    );
+    if (process.env.MULTICHAIN && isMultichainSend) {
+      return true;
+    }
 
     const isHandlingAddEthereumChainRequest = Boolean(
       matchPath(location.pathname, {

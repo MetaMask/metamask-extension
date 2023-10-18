@@ -29,6 +29,7 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import TransactionInsightsDeprecationAlert from '../confirm-data/transaction-insights-deprecation-alert';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -138,7 +139,7 @@ export default class TransactionListItemDetails extends PureComponent {
     });
 
     this.setState({ justCopied: true }, () => {
-      copyToClipboard(hash);
+      copyToClipboard(hash, COPY_OPTIONS);
       setTimeout(() => this.setState({ justCopied: false }), SECOND);
     });
   };

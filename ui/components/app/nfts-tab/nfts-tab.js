@@ -25,6 +25,7 @@ import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
 import { AssetListConversionButton } from '../../multichain';
+import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -76,7 +77,7 @@ export default function NftsTab() {
               paddingTop={4}
             >
               <AssetListConversionButton
-                variant="nft"
+                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
                 onClick={() =>
                   global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS })
                 }

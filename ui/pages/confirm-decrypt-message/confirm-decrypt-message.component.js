@@ -17,6 +17,7 @@ import { Icon, IconName } from '../../components/component-library';
 import { IconColor } from '../../helpers/constants/design-system';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
+import { COPY_OPTIONS } from '../../../shared/constants/copy';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -50,7 +51,7 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   copyMessage = () => {
-    copyToClipboard(this.state.rawMessage);
+    copyToClipboard(this.state.rawMessage, COPY_OPTIONS);
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Messages,
       event: 'Copy',

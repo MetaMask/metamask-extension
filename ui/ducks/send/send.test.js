@@ -481,6 +481,33 @@ describe('Send Slice', () => {
         );
       });
 
+      it('should update hex data if its not the initial asset set', () => {
+        const updateAssetState = getInitialSendStateWithExistingTxState({
+          asset: {
+            type: 'old type',
+            balance: 'old balance',
+          },
+          userInputHexData: '0xTestHexData',
+        });
+
+        const action = {
+          type: 'send/updateAsset',
+          payload: {
+            asset: {
+              type: 'new type',
+              balance: 'new balance',
+            },
+            initialAssetSet: false,
+          },
+        };
+
+        const result = sendReducer(updateAssetState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.userInputHexData).toStrictEqual('');
+      });
+
       it('should nullify old contract address error when asset types is not TOKEN', () => {
         const recipientErrorState = getInitialSendStateWithExistingTxState({
           recipient: {
