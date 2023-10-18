@@ -167,15 +167,15 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
-  handlePostTransactionBalanceUpdated,
+  handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
   handleTransactionApproved,
   handleTransactionFinalized,
   handleTransactionDropped,
   handleTransactionRejected,
   handleTransactionSubmitted,
-  createTransactionEventFragmentWithTxId,
-} from './lib/transaction/metrics';
+} from './lib/transaction/handlers';
+import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 import { createSwapsTransaction } from './lib/transaction/swaps';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
@@ -1308,35 +1308,35 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const transactionMetricsRequest = this.getTransactionMetricsRequest();
+    const transactionHandlerRequest = this.getTransactionHandlerRequest();
 
     this.txController.on(
       'transaction-added',
-      handleTransactionAdded.bind(null, transactionMetricsRequest),
+      handleTransactionAdded.bind(null, transactionHandlerRequest),
     );
     this.txController.on(
       'transaction-approved',
-      handleTransactionApproved.bind(null, transactionMetricsRequest),
+      handleTransactionApproved.bind(null, transactionHandlerRequest),
     );
     this.txController.on(
       'transaction-dropped',
-      handleTransactionDropped.bind(null, transactionMetricsRequest),
+      handleTransactionDropped.bind(null, transactionHandlerRequest),
     );
     this.txController.on(
       'transaction-finalized',
-      handleTransactionFinalized.bind(null, transactionMetricsRequest),
+      handleTransactionFinalized.bind(null, transactionHandlerRequest),
     );
     this.txController.on(
       'transaction-rejected',
-      handleTransactionRejected.bind(null, transactionMetricsRequest),
+      handleTransactionRejected.bind(null, transactionHandlerRequest),
     );
     this.txController.on(
       'transaction-submitted',
-      handleTransactionSubmitted.bind(null, transactionMetricsRequest),
+      handleTransactionSubmitted.bind(null, transactionHandlerRequest),
     );
     this.txController.on(
       'post-transaction-balance-updated',
-      handlePostTransactionBalanceUpdated.bind(null, transactionMetricsRequest),
+      handlePostTransactionBalanceUpdate.bind(null, transactionHandlerRequest),
     );
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
@@ -1939,7 +1939,7 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
   }
 
-  getTransactionMetricsRequest() {
+  getTransactionHandlerRequest() {
     const controllerActions = {
       // Metametrics Actions
       createEventFragment: this.metaMetricsController.createEventFragment.bind(

@@ -28,10 +28,11 @@ type SwapApprovalTransaction = {
 /**
  * Creates a new transaction with swap-specific metadata
  *
- * @param {SwapOptions} swapOptions - Swap-specific options
- * @param {TransactionType} transactionType - The type of transaction
- * @param {TransactionMeta} transactionMeta - The transaction metadata
- * @returns {Promise<TransactionMeta>} The updated transaction metadata
+ * @param this - MetamaskController
+ * @param swapOptions - Swap-specific options
+ * @param transactionType - The type of transaction
+ * @param transactionMeta - The transaction metadata
+ * @returns The updated transaction metadata
  */
 export async function createSwapsTransaction(
   this: MetamaskController,
