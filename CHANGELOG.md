@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure disconnecting a single dapp from a snap only disconnects that dapp ([#20983](https://github.com/MetaMask/metamask-extension/pull/20983))
 - Fix the Snap npm link so that it leads to the stated version of the npm package ([#20897](https://github.com/MetaMask/metamask-extension/pull/20897))
 - Fix to prevent crashes when switching network during a snaps confirmation ([#21088](https://github.com/MetaMask/metamask-extension/pull/21088))
+- Fix issue that could cause crashes when attempting to render certain NFTs ([#21418](https://github.com/MetaMask/metamask-extension/pull/21418))
 
 
 ## [11.2.0]
