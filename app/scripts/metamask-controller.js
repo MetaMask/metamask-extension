@@ -117,6 +117,7 @@ import {
   TransactionStatus,
   TransactionType,
   TokenStandard,
+  TransactionEvent,
 } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -1311,31 +1312,31 @@ export default class MetamaskController extends EventEmitter {
     const transactionEventRequest = this.getTransactionEventRequest();
 
     this.txController.on(
-      'transaction-added',
+      TransactionEvent.added,
       handleTransactionAdded.bind(null, transactionEventRequest),
     );
     this.txController.on(
-      'transaction-approved',
+      TransactionEvent.approved,
       handleTransactionApproved.bind(null, transactionEventRequest),
     );
     this.txController.on(
-      'transaction-dropped',
+      TransactionEvent.dropped,
       handleTransactionDropped.bind(null, transactionEventRequest),
     );
     this.txController.on(
-      'transaction-finalized',
+      TransactionEvent.finalized,
       handleTransactionFinalized.bind(null, transactionEventRequest),
     );
     this.txController.on(
-      'transaction-rejected',
+      TransactionEvent.rejected,
       handleTransactionRejected.bind(null, transactionEventRequest),
     );
     this.txController.on(
-      'transaction-submitted',
+      TransactionEvent.submitted,
       handleTransactionSubmitted.bind(null, transactionEventRequest),
     );
     this.txController.on(
-      'post-transaction-balance-updated',
+      TransactionEvent.postTransactionBalanceUpdated,
       handlePostTransactionBalanceUpdate.bind(null, transactionEventRequest),
     );
 

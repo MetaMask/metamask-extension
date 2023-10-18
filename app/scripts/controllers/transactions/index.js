@@ -22,6 +22,7 @@ import {
   TransactionType,
   TransactionEnvelopeType,
   TransactionApprovalAmountType,
+  TransactionEvent,
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
@@ -700,7 +701,7 @@ export default class TransactionController extends EventEmitter {
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
 
-      this.emit('transaction-finalized', {
+      this.emit(TransactionEvent.finalized, {
         transactionMeta: txMeta,
       });
 
@@ -956,7 +957,7 @@ export default class TransactionController extends EventEmitter {
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
 
-      this.emit('transaction-finalized', {
+      this.emit(TransactionEvent.finalized, {
         transactionMeta: txMeta,
       });
 
@@ -1276,7 +1277,7 @@ export default class TransactionController extends EventEmitter {
         latestTxMeta,
         'transactions#confirmTransaction - add postTxBalance',
       );
-      this.emit('transaction-post-balance-updated', {
+      this.emit(TransactionEvent.postTransactionBalanceUpdated, {
         transactionMeta: latestTxMeta,
         approvalTransactionMeta: approvalTxMeta,
       });
@@ -1317,7 +1318,7 @@ export default class TransactionController extends EventEmitter {
 
     this.txStateManager.setTxStatusSubmitted(txId);
 
-    this.emit('transaction-submitted', {
+    this.emit(TransactionEvent.submitted, {
       transactionMeta: txMeta,
       actionId,
     });
@@ -1730,7 +1731,7 @@ export default class TransactionController extends EventEmitter {
       // sign transaction
       const rawTx = await this._signTransaction(txId);
       await this._publishTransaction(txId, rawTx, actionId);
-      this.emit('transaction-approved', {
+      this.emit(TransactionEvent.submitted, {
         transactionMeta: txMeta,
         actionId,
       });
@@ -1764,7 +1765,7 @@ export default class TransactionController extends EventEmitter {
   async _cancelTransaction(txId, actionId) {
     const txMeta = this.txStateManager.getTransaction(txId);
     this.txStateManager.setTxStatusRejected(txId);
-    this.emit('transaction-rejected', {
+    this.emit(TransactionEvent.rejected, {
       transactionMeta: txMeta,
       actionId,
     });
@@ -2045,7 +2046,7 @@ export default class TransactionController extends EventEmitter {
   _failTransaction(txId, error, actionId) {
     this.txStateManager.setTxStatusFailed(txId, error);
     const txMeta = this.txStateManager.getTransaction(txId);
-    this.emit('transaction-finalized', {
+    this.emit(TransactionEvent.finalized, {
       actionId,
       error: error.message,
       transactionMeta: txMeta,
@@ -2055,7 +2056,7 @@ export default class TransactionController extends EventEmitter {
   _dropTransaction(txId) {
     this.txStateManager.setTxStatusDropped(txId);
     const txMeta = this.txStateManager.getTransaction(txId);
-    this.emit('transaction-dropped', {
+    this.emit(TransactionEvent.dropped, {
       transactionMeta: txMeta,
     });
   }
@@ -2069,7 +2070,7 @@ export default class TransactionController extends EventEmitter {
   _addTransaction(txMeta) {
     this.txStateManager.addTransaction(txMeta);
     this.emit(`${txMeta.id}:unapproved`, txMeta);
-    this.emit('transaction-added', {
+    this.emit(TransactionEvent.added, {
       transactionMeta: txMeta,
       actionId: txMeta.actionId,
     });
