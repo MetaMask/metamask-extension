@@ -160,7 +160,7 @@ async function mockInfura(mockServer) {
     });
 }
 
-describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
+describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
   it('should show banner alert', async function () {
     await withFixtures(
       {

@@ -9,7 +9,7 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('PPOM Settings', function () {
-  it('should not show the PPOM warning when toggle is off', async function () {
+  it('should not show the PPOM warning when toggle is off @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

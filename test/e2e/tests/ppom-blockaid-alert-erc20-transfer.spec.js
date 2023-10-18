@@ -157,7 +157,7 @@ async function mockInfura(mockServer) {
     });
 }
 
-describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function () {
+describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
   it('should show banner alert', async function () {
     await withFixtures(
       {
