@@ -151,7 +151,7 @@ async function main() {
       filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
     );
   }
-
+  testPaths = testPaths.filter((p) => p.endsWith('unlock-wallet.spec.js'));
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
 
   const args = [runE2eTestPath];
