@@ -43,6 +43,7 @@ const defaultState = {
       {
         id: 0,
         time: 0,
+        chainId: '0x1',
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -53,6 +54,7 @@ const defaultState = {
       {
         id: 1,
         time: 1,
+        chainId: '0x1',
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -236,6 +238,7 @@ describe('#updateCustodyState', () => {
         {
           id: 0,
           time: 0,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -246,6 +249,7 @@ describe('#updateCustodyState', () => {
         {
           id: 1,
           time: 1,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -289,6 +293,7 @@ describe('#updateCustodyState', () => {
         {
           id: 0,
           time: 0,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -299,6 +304,7 @@ describe('#updateCustodyState', () => {
         {
           id: 1,
           time: 1,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
