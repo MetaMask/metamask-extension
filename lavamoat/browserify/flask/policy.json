@@ -5,11 +5,6 @@
         "regeneratorRuntime": "write"
       }
     },
-    "@babel/runtime>regenerator-runtime": {
-      "globals": {
-        "regeneratorRuntime": "write"
-      }
-    },
     "@download/blockies": {
       "globals": {
         "document.createElement": true
@@ -2871,6 +2866,11 @@
         "browserify>process": true
       }
     },
+    "@storybook/addon-knobs>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "@truffle/codec": {
       "packages": {
         "@truffle/codec>@truffle/abi-utils": true,
@@ -3392,6 +3392,15 @@
         "define": true
       }
     },
+    "brfs>static-module>object-inspect": {
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "browserify>assert": {
       "globals": {
         "Buffer": true
@@ -3670,8 +3679,8 @@
     },
     "browserify>url": {
       "packages": {
-        "browserify>punycode": true,
-        "browserify>querystring-es3": true
+        "@storybook/addon-knobs>qs": true,
+        "browserify>punycode": true
       }
     },
     "browserify>util": {
@@ -4404,8 +4413,8 @@
     },
     "ethjs-contract>babel-runtime": {
       "packages": {
-        "@babel/runtime>regenerator-runtime": true,
-        "ethjs-contract>babel-runtime>core-js": true
+        "ethjs-contract>babel-runtime>core-js": true,
+        "ethjs-contract>babel-runtime>regenerator-runtime": true
       }
     },
     "ethjs-contract>babel-runtime>core-js": {
@@ -4416,6 +4425,11 @@
         "document.createTextNode": true,
         "postMessage": true,
         "setTimeout": true
+      }
+    },
+    "ethjs-contract>babel-runtime>regenerator-runtime": {
+      "globals": {
+        "regeneratorRuntime": "write"
       }
     },
     "ethjs-contract>ethjs-abi": {
@@ -5351,6 +5365,13 @@
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
+      }
+    },
+    "string.prototype.matchall>side-channel": {
+      "packages": {
+        "brfs>static-module>object-inspect": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "superstruct": {
