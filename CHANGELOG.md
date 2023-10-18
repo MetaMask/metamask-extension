@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disable the "Buy" button on the Sepolia network ([#20839](https://github.com/MetaMask/metamask-extension/pull/20839))
 - Update the "Buy" button to a "Buy & Sell" button ([#20891](https://github.com/MetaMask/metamask-extension/pull/20891))
 - Only display the Notification item in the dropdown menu if the user has installed a snap using the notifications permission ([#20913](https://github.com/MetaMask/metamask-extension/pull/20913))
-- Update Snaps Settings designs ([#21061](https://github.com/MetaMask/metamask-extension/pull/21061))
+- Update Snaps Settings screen ([#21061](https://github.com/MetaMask/metamask-extension/pull/21061))
 - Site connection icon now indicates a connection if a dapp is connected to a snap ([#20811](https://github.com/MetaMask/metamask-extension/pull/20811))
 - Update copy on the remove snap modal ([#21065](https://github.com/MetaMask/metamask-extension/pull/21065))
 - Update the padding of the transaction insight dropdown ([#21022](https://github.com/MetaMask/metamask-extension/pull/21022))
