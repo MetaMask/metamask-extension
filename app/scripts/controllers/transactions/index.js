@@ -345,7 +345,7 @@ export default class TransactionController extends EventEmitter {
       this._requestTransactionApproval(txMeta, {
         shouldShowRequest: false,
       }).catch((error) => {
-        if (error.code === errorCodes.provider.userRejectedRequest) {
+        if (error?.code === errorCodes.provider.userRejectedRequest) {
           return;
         }
         log.error('Error during persisted transaction approval', error);
