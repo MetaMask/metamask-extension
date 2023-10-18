@@ -21,8 +21,10 @@ const validateChecksum = async (
 };
 
 export class IndexedDBPPOMStorage implements StorageBackend {
+  /* eslint-disable-next-line no-restricted-syntax,@typescript-eslint/prefer-readonly */
   private storeName: string;
 
+  /* eslint-disable-next-line no-restricted-syntax,@typescript-eslint/prefer-readonly */
   private dbVersion: number;
 
   constructor(storeName: string, dbVersion: number) {
@@ -30,6 +32,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     this.dbVersion = dbVersion;
   }
 
+  /* eslint-disable-next-line @typescript-eslint/promise-function-async */
   #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.storeName, this.dbVersion);
@@ -63,6 +66,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     });
   }
 
+  /* eslint-disable no-restricted-syntax */
   private async objectStoreAction(
     method: 'get' | 'delete' | 'put' | 'getAllKeys',
     args?: any,
@@ -95,7 +99,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
 
   async read(key: StorageKey, checksum: string): Promise<ArrayBuffer> {
     const event = await this.objectStoreAction('get', [key.name, key.chainId]);
-    const data = (event.target as any)?.result?.data;
+    const data = event.target?.result?.data;
     await validateChecksum(key, data, checksum);
     return data;
   }
@@ -119,7 +123,7 @@ export class IndexedDBPPOMStorage implements StorageBackend {
 
   async dir(): Promise<StorageKey[]> {
     const event = await this.objectStoreAction('getAllKeys');
-    return (event.target as any)?.result.map(([name, chainId]: string[]) => ({
+    return event.target?.result.map(([name, chainId]: string[]) => ({
       name,
       chainId,
     }));

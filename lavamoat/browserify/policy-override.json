@@ -1,5 +1,10 @@
 {
   "resources": {
+    "@typescript-eslint/eslint-plugin": {
+      "packages": {
+        "@typescript-eslint/eslint-plugin>graphemer": true
+      }
+    },
     "browserify>browser-resolve": {
       "packages": {
         "ethjs-query>babel-runtime>core-js": true

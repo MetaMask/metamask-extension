@@ -24,7 +24,7 @@ function runFitnessFunctionRule(rule: IRule, diff: string): void {
   const { name, fn, docURL } = rule;
   console.log(`Checking rule "${name}"...`);
 
-  const hasRulePassed: boolean = fn(diff) as boolean;
+  const hasRulePassed: boolean = fn(diff);
   if (hasRulePassed === true) {
     console.log(`...OK`);
   } else {

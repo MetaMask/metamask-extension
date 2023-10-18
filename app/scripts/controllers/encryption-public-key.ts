@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/prefer-readonly */
+/* eslint-disable-next-line import/no-nodejs-modules */
 import EventEmitter from 'events';
 import log from 'loglevel';
 import {
@@ -94,6 +96,7 @@ export type EncryptionPublicKeyControllerOptions = {
 /**
  * Controller for requesting encryption public key requests requiring user approval.
  */
+/* eslint-disable no-restricted-syntax */
 export default class EncryptionPublicKeyController extends BaseControllerV2<
   typeof controllerName,
   EncryptionPublicKeyControllerState,

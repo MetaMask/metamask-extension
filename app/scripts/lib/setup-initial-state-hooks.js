@@ -39,6 +39,7 @@ const persistedStateMask = {
  */
 globalThis.stateHooks.getSentryState = function () {
   const sentryState = {
+    /* eslint-disable-next-line no-restricted-globals */
     browser: window.navigator.userAgent,
     version: platform.getVersion(),
   };

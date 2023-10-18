@@ -1,3 +1,4 @@
+/* eslint-disable import/no-nodejs-modules */
 import path from 'path';
 import fs from 'fs-extra';
 import yargs from 'yargs/yargs';

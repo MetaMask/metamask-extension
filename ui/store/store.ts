@@ -106,7 +106,7 @@ export default function configureStore(preloadedState: any) {
         hostname: 'localhost',
         port: 8000,
         realtime: true,
-      }) as StoreEnhancer,
+      }),
     );
   }
 

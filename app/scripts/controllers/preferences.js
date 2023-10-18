@@ -96,6 +96,7 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       useAddressBarEnsResolution: true,
+      /* eslint-disable-next-line no-restricted-globals */
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,

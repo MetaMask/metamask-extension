@@ -139,6 +139,7 @@ export function restartExtension() {
   browser.runtime.reload();
 }
 
+/* eslint-disable no-restricted-globals */
 export function openOrDownloadMMD() {
   openCustomProtocol('metamask-desktop://pair').catch(() => {
     window.open(MMD_DOWNLOAD_LINK, '_blank').focus();

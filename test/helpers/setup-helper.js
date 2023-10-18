@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable-next-line */
 import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
@@ -99,7 +100,7 @@ if (!window.crypto) {
   window.crypto = {};
 }
 if (!window.crypto.getRandomValues) {
-  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line n/global-require
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues');
 }
 

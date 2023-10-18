@@ -13,8 +13,15 @@ module.exports = {
 
   rules: {
     'default-param-last': 'off',
+    'id-denylist': 'off',
+    'id-length': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
+
+    // TODO: enable
+    'no-restricted-globals': 'off',
+    'no-restricted-syntax': 'off',
+    'import/order': 'off',
 
     // This is the same as our default config, but for the noted exceptions
     'spaced-comment': [

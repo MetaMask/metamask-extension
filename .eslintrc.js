@@ -100,6 +100,11 @@ module.exports = {
       ],
       parserOptions: {
         sourceType: 'module',
+        tsconfigRootDir: __dirname,
+        project: ['tsconfig.json'],
+      },
+      rules: {
+        'no-restricted-globals': 'off',
       },
       settings: {
         'import/resolver': {
@@ -120,16 +125,28 @@ module.exports = {
       },
     },
     /**
-     * TypeScript files
+     * TypeScript test files
      */
     {
-      files: ['*.{ts,tsx}'],
+      files: ['*.test.{ts,tsx}', '*.stories.{ts,tsx}'],
+      excludedFiles: [
+        'ui/**/*.test.tsx',
+        'ui/**/*.test.ts',
+        'components/component-library/**/stories.tsx',
+      ],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
         '@metamask/eslint-config-typescript',
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
+      parserOptions: {
+        sourceType: 'module',
+        tsconfigRootDir: __dirname,
+        project: ['tsconfig.test.json'],
+      },
       rules: {
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        'import/no-nodejs-modules': 'off',
         // Turn these off, as it's recommended by typescript-eslint.
         // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
         'import/named': 'off',
@@ -139,17 +156,71 @@ module.exports = {
         // Disabled due to incompatibility with Record<string, unknown>.
         // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
         '@typescript-eslint/consistent-type-definitions': 'off',
-        // Modified to include the 'ignoreRestSiblings' option.
-        // TODO: Migrate this rule change back into `@metamask/eslint-config`
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          {
-            vars: 'all',
-            args: 'all',
-            argsIgnorePattern: '[_]+',
-            ignoreRestSiblings: true,
+        // TODO: enable
+        'import/order': 'off',
+        '@typescript-eslint/await-thenable': 'warn',
+        '@typescript-eslint/consistent-type-imports': 'off',
+        '@typescript-eslint/no-floating-promises': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-shadow': 'warn',
+        '@typescript-eslint/no-throw-literal': 'off',
+        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'warn',
+        '@typescript-eslint/naming-convention': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
+        '@typescript-eslint/unbound-method': 'off',
+      },
+      settings: {
+        'import/resolver': {
+          // When determining the location of an `import`, prefer TypeScript's
+          // resolution algorithm. Note that due to how we've configured
+          // TypeScript in `tsconfig.json`, we are able to import JavaScript
+          // files from TypeScript files.
+          typescript: {
+            // Always try to resolve types under `<root>/@types` directory even
+            // it doesn't contain any source code, like `@types/unist`
+            alwaysTryTypes: true,
           },
-        ],
+        },
+      },
+    },
+    /**
+     * TypeScript files
+     */
+    {
+      files: ['*.{ts,tsx}'],
+      excludedFiles: ['*.test.{ts,tsx}', '*.stories.{ts,tsx}'],
+      extends: [
+        path.resolve(__dirname, '.eslintrc.base.js'),
+        '@metamask/eslint-config-typescript',
+        path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
+      ],
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: ['tsconfig.json'],
+      },
+      rules: {
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        // Turn these off, as it's recommended by typescript-eslint.
+        // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
+        'import/named': 'off',
+        'import/namespace': 'off',
+        'import/default': 'off',
+        'import/no-named-as-default-member': 'off',
+        // Disabled due to incompatibility with Record<string, unknown>.
+        // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
+        '@typescript-eslint/consistent-type-definitions': 'off',
+        // TODO: enable
+        'import/order': 'off',
+        '@typescript-eslint/await-thenable': 'warn',
+        '@typescript-eslint/consistent-type-imports': 'off',
+        '@typescript-eslint/no-floating-promises': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-shadow': 'warn',
+        '@typescript-eslint/no-throw-literal': 'off',
+        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'warn',
+        '@typescript-eslint/naming-convention': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
+        '@typescript-eslint/unbound-method': 'off',
       },
       settings: {
         'import/resolver': {
@@ -169,6 +240,8 @@ module.exports = {
       files: ['*.d.ts'],
       parserOptions: {
         sourceType: 'script',
+        tsconfigRootDir: __dirname,
+        project: ['tsconfig.json'],
       },
     },
     /**
@@ -198,6 +271,7 @@ module.exports = {
       },
       plugins: ['react'],
       rules: {
+        'no-restricted-globals': 'off',
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
         'react/jsx-boolean-value': 'error',
@@ -252,6 +326,8 @@ module.exports = {
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
+        // TODO: enable
+        'no-restricted-globals': 'off',
         // In Mocha tests, it is common to use `this` to store values or do
         // things like force the test to fail.
         '@babel/no-invalid-this': 'off',
@@ -291,6 +367,7 @@ module.exports = {
         sourceType: 'module',
       },
       rules: {
+        'no-restricted-globals': 'off',
         'import/unambiguous': 'off',
         'import/named': 'off',
         'jest/no-large-snapshots': [
@@ -301,6 +378,7 @@ module.exports = {
           },
         ],
         'jest/no-restricted-matchers': 'off',
+        'no-restricted-globals': 'off',
 
         /**
          * jest/prefer-to-be is a new rule that was disabled to reduce churn
@@ -330,6 +408,7 @@ module.exports = {
     {
       files: ['app/scripts/migrations/*.js', '**/*.stories.js'],
       rules: {
+        'no-restricted-globals': 'off',
         'import/no-anonymous-default-export': [
           'error',
           {
@@ -355,8 +434,8 @@ module.exports = {
         'test/merge-coverage.js',
       ],
       rules: {
-        'node/no-process-exit': 'off',
-        'node/shebang': 'off',
+        'n/no-process-exit': 'off',
+        'n/shebang': 'off',
       },
     },
     /**

@@ -16,6 +16,7 @@ const errorMock = 'TestError';
 jest.mock('loglevel');
 
 jest.mock('./fetch-with-timeout', () =>
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   jest.fn(() => (url: string) => {
     return Promise.resolve({
       json: () => {

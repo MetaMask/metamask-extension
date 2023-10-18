@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const {

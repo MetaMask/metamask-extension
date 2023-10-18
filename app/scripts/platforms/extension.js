@@ -109,6 +109,7 @@ export default class ExtensionPlatform {
       getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
       !keepWindowOpen
     ) {
+      // eslint-disable-next-line no-restricted-globals
       window.close();
     }
   }

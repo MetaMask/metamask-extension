@@ -53,6 +53,7 @@ function isDecimalHex(value: string): boolean {
  */
 function hexadecimalToBigNumber(value: string | number): BigNumber {
   const stringified = typeof value === 'number' ? `${value}` : value;
+  // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
   const isNegative = stripHexPrefix(stringified)[0] === '-';
   const valueWithoutNegation = stringified.replace('-', '');
 

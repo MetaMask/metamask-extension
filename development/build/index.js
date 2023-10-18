@@ -49,7 +49,7 @@ require('eslint-import-resolver-node');
 require('eslint-import-resolver-typescript');
 require('eslint-plugin-import');
 require('eslint-plugin-jsdoc');
-require('eslint-plugin-node');
+require('eslint-plugin-n');
 require('eslint-plugin-prettier');
 require('eslint-plugin-react');
 require('eslint-plugin-react-hooks');

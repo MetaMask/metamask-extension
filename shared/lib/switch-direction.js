@@ -11,6 +11,7 @@ const switchDirection = async (direction) => {
   }
 
   let updatedLink;
+  // eslint-disable-next-line no-restricted-globals
   [...document.querySelectorAll('link[rel=stylesheet]')].forEach((link) => {
     if (link.title === direction && link.disabled) {
       link.disabled = false;

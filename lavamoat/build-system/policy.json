@@ -1170,6 +1170,7 @@
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
+        "@typescript-eslint/eslint-plugin>graphemer": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint": true,
@@ -1186,6 +1187,7 @@
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
         "madge>debug": true,
@@ -2705,52 +2707,58 @@
         "eslint-plugin-mocha>eslint-utils>eslint-visitor-keys": true
       }
     },
-    "eslint-plugin-node": {
+    "eslint-plugin-n": {
       "builtin": {
-        "fs.readFileSync": true,
-        "fs.readdirSync": true,
-        "fs.statSync": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.isAbsolute": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
+        "assert": true,
+        "fs": true,
+        "path": true,
+        "url.URL": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true,
+        "util.format": true,
+        "util.inspect": true
       },
       "globals": {
-        "process.cwd": true
+        "process.cwd": true,
+        "process.emitWarning": true,
+        "process.platform": true
       },
       "packages": {
         "brfs>resolve": true,
-        "eslint-plugin-node>eslint-plugin-es": true,
-        "eslint-plugin-node>eslint-utils": true,
-        "eslint-plugin-node>semver": true,
+        "depcheck>is-core-module": true,
+        "eslint-plugin-n>builtins": true,
+        "eslint-plugin-n>eslint-plugin-es": true,
+        "eslint-plugin-n>eslint-utils": true,
         "eslint>ignore": true,
-        "eslint>minimatch": true
+        "eslint>minimatch": true,
+        "semver": true
       }
     },
-    "eslint-plugin-node>eslint-plugin-es": {
-      "packages": {
-        "@typescript-eslint/eslint-plugin>regexpp": true,
-        "eslint-plugin-node>eslint-plugin-es>eslint-utils": true
-      }
-    },
-    "eslint-plugin-node>eslint-plugin-es>eslint-utils": {
-      "packages": {
-        "eslint-plugin-node>eslint-plugin-es>eslint-utils>eslint-visitor-keys": true
-      }
-    },
-    "eslint-plugin-node>eslint-utils": {
-      "packages": {
-        "eslint-plugin-node>eslint-utils>eslint-visitor-keys": true
-      }
-    },
-    "eslint-plugin-node>semver": {
+    "eslint-plugin-n>builtins": {
       "globals": {
-        "console": true,
+        "process.version": true
+      },
+      "packages": {
+        "semver": true
+      }
+    },
+    "eslint-plugin-n>eslint-plugin-es": {
+      "globals": {
         "process": true
+      },
+      "packages": {
+        "eslint-plugin-n>eslint-plugin-es>eslint-utils": true,
+        "eslint-plugin-n>eslint-plugin-es>regexpp": true
+      }
+    },
+    "eslint-plugin-n>eslint-plugin-es>eslint-utils": {
+      "packages": {
+        "eslint-plugin-n>eslint-plugin-es>eslint-utils>eslint-visitor-keys": true
+      }
+    },
+    "eslint-plugin-n>eslint-utils": {
+      "packages": {
+        "eslint-plugin-n>eslint-utils>eslint-visitor-keys": true
       }
     },
     "eslint-plugin-prettier": {
@@ -2934,7 +2942,7 @@
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
         "eslint-plugin-jsdoc": true,
-        "eslint-plugin-node": true,
+        "eslint-plugin-n": true,
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,

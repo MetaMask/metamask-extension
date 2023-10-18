@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /**
  * Determines if the provider should be injected
  *

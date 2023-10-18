@@ -1,3 +1,4 @@
+/* eslint-disable-next-line import/no-nodejs-modules */
 import assert from 'assert';
 import AppMetadataController from './app-metadata';
 

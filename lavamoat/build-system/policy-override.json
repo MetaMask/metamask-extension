@@ -62,7 +62,7 @@
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
         "eslint-plugin-jsdoc": true,
-        "eslint-plugin-node": true,
+        "eslint-plugin-n": true,
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true
@@ -165,6 +165,7 @@
     },
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": {
       "packages": {
+        "@typescript-eslint/parser>@typescript-eslint/typescript-estree": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
@@ -187,6 +188,7 @@
     "@typescript-eslint/eslint-plugin": {
       "packages": {
         "typescript": true,
+        "@typescript-eslint/eslint-plugin>graphemer": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,

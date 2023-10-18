@@ -2223,13 +2223,7 @@
     },
     "@metamask/snaps-utils>validate-npm-package-name": {
       "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
-      }
-    },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
-      "packages": {
-        "browserify>process": true,
-        "semver": true
+        "eslint-plugin-n>builtins": true
       }
     },
     "@metamask/utils": {
@@ -2905,6 +2899,11 @@
         "@truffle/decoder>@truffle/source-map-utils>node-interval-tree>shallowequal": true
       }
     },
+    "@typescript-eslint/eslint-plugin": {
+      "packages": {
+        "@typescript-eslint/eslint-plugin>graphemer": true
+      }
+    },
     "@zxing/browser": {
       "globals": {
         "HTMLElement": true,
@@ -3410,6 +3409,12 @@
       "packages": {
         "browserify>process": true,
         "pump>once": true
+      }
+    },
+    "eslint-plugin-n>builtins": {
+      "packages": {
+        "browserify>process": true,
+        "semver": true
       }
     },
     "eslint>optionator>fast-levenshtein": {

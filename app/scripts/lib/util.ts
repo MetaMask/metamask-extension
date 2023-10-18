@@ -1,3 +1,4 @@
+/* eslint-disable-next-line import/no-nodejs-modules */
 import urlLib from 'url';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';

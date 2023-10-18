@@ -48,7 +48,7 @@ declare module 'react-tippy' {
     inertia?: boolean;
     transitionFlip?: boolean;
     popperOptions?: any;
-    html?: React.ReactElement<any>;
+    html?: React.ReactElement;
     unmountHTMLWhenHide?: boolean;
     size?: Size;
     sticky?: boolean;

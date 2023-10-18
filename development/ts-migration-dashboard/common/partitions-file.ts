@@ -10,9 +10,9 @@ import { INTERMEDIATE_BUILD_DIRECTORY_PATH } from './constants';
 // through the rest of browserify. However, `brfs` should handle this. There is
 // an active bug for this, but there isn't a known workaround yet:
 // <https://github.com/browserify/brfs/issues/39>
-/* eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires */
+/* eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires,import/no-nodejs-modules  */
 const fs = require('fs');
-/* eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires */
+/* eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires,import/no-nodejs-modules  */
 const path = require('path');
 
 export const PARTITIONS_FILE = path.join(

@@ -1,3 +1,4 @@
+/* eslint-disable-next-line import/no-nodejs-modules */
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 
