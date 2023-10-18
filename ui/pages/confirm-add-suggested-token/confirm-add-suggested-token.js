@@ -88,7 +88,7 @@ const ConfirmAddSuggestedToken = () => {
   const knownTokenBannerAlert = useMemo(() => {
     return (
       hasDuplicateAddress(suggestedTokens, tokens) && (
-        <BannerAlert severity={Severity.Warning}>
+        <BannerAlert severity={Severity.Warning} marginTop={4}>
           {t('knownTokenWarning', [
             <Button
               variant={ButtonVariant.Link}
@@ -110,6 +110,7 @@ const ConfirmAddSuggestedToken = () => {
     return (
       hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) && (
         <BannerAlert
+          marginTop={4}
           severity={Severity.Warning}
           description={t('reusedTokenNameWarning')}
         />
