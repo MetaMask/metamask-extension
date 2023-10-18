@@ -4,7 +4,7 @@ const {
   withFixtures,
   openDapp,
   defaultGanacheOptions,
-  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
   SERVICE_WORKER_URL,
   regularDelayMs,
   WALLET_PASSWORD,
@@ -60,7 +60,7 @@ describe('Phishing warning page', function () {
         windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         await driver.switchToWindow(extension);
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver, ganacheServer);
 
         // Open the dapp site and extension detect it as phishing warning page
         await openDapp(driver);

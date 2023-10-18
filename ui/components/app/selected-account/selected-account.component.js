@@ -13,6 +13,7 @@ import CustodyLabels from '../../institutional/custody-labels/custody-labels';
 ///: END:ONLY_INCLUDE_IN
 import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
 class SelectedAccount extends Component {
   state = {
@@ -66,8 +67,9 @@ class SelectedAccount extends Component {
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const custodyLabels = accountDetails
-      ? accountDetails[toChecksumHexAddress(selectedIdentity.address)]?.labels
+      ? accountDetails[checksummedAddress]?.labels
       : {};
+
     const showCustodyLabels =
       getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
       accountType === 'custody' &&
@@ -103,7 +105,7 @@ class SelectedAccount extends Component {
                 () => this.setState({ copied: false }),
                 SECOND * 3,
               );
-              copyToClipboard(checksummedAddress);
+              copyToClipboard(checksummedAddress, COPY_OPTIONS);
             }}
           >
             <div className="selected-account__name">
@@ -117,7 +119,10 @@ class SelectedAccount extends Component {
               }
               {shortenAddress(checksummedAddress)}
               {showAccountCopyIcon && (
-                <div className="selected-account__copy">
+                <div
+                  data-testid="selected-account-copy"
+                  className="selected-account__copy"
+                >
                   <Icon
                     name={
                       this.state.copied ? IconName.CopySuccess : IconName.Copy

@@ -17,7 +17,7 @@ const Ganache = require('./ganache');
 const ganacheServer = new Ganache();
 const dappPort = 8080;
 
-describe('MetaMask', function () {
+describe('MetaMask @no-mmi', function () {
   let driver;
   let dappServer;
   let tokenAddress;
@@ -232,7 +232,7 @@ describe('MetaMask', function () {
       await driver.delay(tinyDelayMs);
 
       const tokenContractAddress = await driver.waitForSelector({
-        css: '#tokenAddress',
+        css: '#tokenAddresses',
         text: '0x',
       });
       tokenAddress = await tokenContractAddress.getText();

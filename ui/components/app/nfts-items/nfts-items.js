@@ -22,6 +22,7 @@ import {
   getIpfsGateway,
   getSelectedAddress,
   getCurrentNetwork,
+  getOpenSeaEnabled,
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -53,6 +54,7 @@ export default function NftsItems({
   const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
   useEffect(() => {
     if (
@@ -90,6 +92,21 @@ export default function NftsItems({
   const history = useHistory();
 
   const renderCollectionImage = (collectionImage, collectionName) => {
+    if (collectionImage?.startsWith('ipfs') && !ipfsGateway) {
+      return (
+        <div className="nfts-items__collection-image-alt">
+          {collectionName?.[0]?.toUpperCase() ?? null}
+        </div>
+      );
+    }
+    if (!openSeaEnabled && !collectionImage?.startsWith('ipfs')) {
+      return (
+        <div className="nfts-items__collection-image-alt">
+          {collectionName?.[0]?.toUpperCase() ?? null}
+        </div>
+      );
+    }
+
     if (collectionImage) {
       return (
         <img
@@ -170,12 +187,17 @@ export default function NftsItems({
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
               const { image, address, tokenId, name, imageOriginal } = nft;
-              const nftImage = getAssetImageURL(imageOriginal, ipfsGateway);
+              const nftImage = getAssetImageURL(
+                imageOriginal ?? image,
+                ipfsGateway,
+              );
               const nftImageAlt = getNftImageAlt(nft);
-              const nftImageURL = imageOriginal?.includes('ipfs')
+              const isImageHosted = image?.startsWith('https:');
+              const nftImageURL = imageOriginal?.startsWith('ipfs')
                 ? nftImage
                 : image;
-
+              const nftSrcUrl = imageOriginal ?? image;
+              const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
               return (
@@ -188,12 +210,13 @@ export default function NftsItems({
                   <NftItem
                     nftImageURL={nftImageURL}
                     alt={nftImageAlt}
-                    src={image}
+                    src={isImageHosted ? image : nftImage}
                     name={name}
                     tokenId={tokenId}
                     networkName={currentChain.nickname}
                     networkSrc={currentChain.rpcPrefs?.imageUrl}
                     onClick={handleImageClick}
+                    isIpfsURL={isIpfsURL}
                     clickable
                   />
                 </Box>
