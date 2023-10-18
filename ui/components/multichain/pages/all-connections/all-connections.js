@@ -17,6 +17,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import {
+  getAllConnectedAccounts,
   getConnectedSubjectsForAllAddresses,
   getSnapsList,
 } from '../../../../selectors';
@@ -31,7 +32,7 @@ export const AllConnections = () => {
   const connectedSubjectsForAllAddresses = useSelector(
     getConnectedSubjectsForAllAddresses,
   );
-  const connectedAddresses = Object.keys(connectedSubjectsForAllAddresses);
+  const connectedAddresses = useSelector(getAllConnectedAccounts);
   const connectedSiteData = {};
   connectedAddresses.forEach((connectedAddress) => {
     connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
@@ -64,7 +65,7 @@ export const AllConnections = () => {
   });
 
   const snapsConnectionsList = {};
-  const connectedSnapsData = useSelector((state) => getSnapsList(state));
+  const connectedSnapsData = useSelector(getSnapsList);
   Object.keys(connectedSnapsData).forEach((snap) => {
     const snapData = connectedSnapsData[snap];
     const { id, name, packageName, iconUrl, subjectType } = snapData;
@@ -90,6 +91,16 @@ export const AllConnections = () => {
     // TODO: go to connection details page
     console.log('connection clicked: ', connection);
   };
+  const connectionsList = (connectionList) =>
+    Object.entries(connectionList).map((connection) => {
+      return (
+        <ConnectionListItem
+          key={connection[0]}
+          connection={connection[1]}
+          onClick={() => handleConnectionClick(connection[1])}
+        />
+      );
+    });
   return (
     <Page
       header={
@@ -119,28 +130,10 @@ export const AllConnections = () => {
       {shouldShowTabsView ? (
         <Tabs tabsClassName="all-connections__tabs">
           <Tab name={t('sites')} tabKey="sites">
-            {Object.keys(sitesConnectionsList).map((itemKey) => {
-              const connection = sitesConnectionsList[itemKey];
-              return (
-                <ConnectionListItem
-                  key={itemKey}
-                  connection={connection}
-                  onClick={() => handleConnectionClick(connection)}
-                />
-              );
-            })}
+            {connectionsList(sitesConnectionsList)}
           </Tab>
           <Tab name={t('snaps')} tabKey="snaps">
-            {Object.keys(snapsConnectionsList).map((itemKey) => {
-              const connection = snapsConnectionsList[itemKey];
-              return (
-                <ConnectionListItem
-                  key={itemKey}
-                  connection={connection}
-                  onClick={() => handleConnectionClick(connection)}
-                />
-              );
-            })}
+            {connectionsList(snapsConnectionsList)}
           </Tab>
         </Tabs>
       ) : (
@@ -156,16 +149,7 @@ export const AllConnections = () => {
               >
                 {t('siteConnections')}
               </Text>
-              {Object.keys(sitesConnectionsList).map((itemKey) => {
-                const connection = sitesConnectionsList[itemKey];
-                return (
-                  <ConnectionListItem
-                    key={itemKey}
-                    connection={connection}
-                    onClick={() => handleConnectionClick(connection)}
-                  />
-                );
-              })}
+              {connectionsList(sitesConnectionsList)}
             </>
           )}
           {Object.keys(snapsConnectionsList).length > 0 && (
@@ -178,21 +162,12 @@ export const AllConnections = () => {
               >
                 {t('snapConnections')}
               </Text>
-              {Object.keys(snapsConnectionsList).map((itemKey) => {
-                const connection = snapsConnectionsList[itemKey];
-                return (
-                  <ConnectionListItem
-                    key={itemKey}
-                    connection={connection}
-                    onClick={() => handleConnectionClick(connection)}
-                  />
-                );
-              })}
+              {connectionsList(snapsConnectionsList)}
             </>
           )}
         </>
       )}
-      {totalConnections === 0 && (
+      {totalConnections === 0 ? (
         <Text
           variant={TextVariant.bodyLgMedium}
           backgroundColor={BackgroundColor.backgroundDefault}
@@ -202,7 +177,7 @@ export const AllConnections = () => {
           {/* TODO: get copy for this edge case */}
           No Connected Sites or Snaps
         </Text>
-      )}
+      ) : null}
     </Page>
   );
 };

@@ -101,7 +101,10 @@ import {
 } from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 // eslint-disable-next-line import/order
-import { getPermissionSubjects } from './permissions';
+import {
+  getPermissionSubjects,
+  getConnectedSubjectsForAllAddresses,
+} from './permissions';
 ///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
 
@@ -919,6 +922,13 @@ export const getFullTxData = createDeepEqualSelector(
       };
     }
     return fullTxData;
+  },
+);
+
+export const getAllConnectedAccounts = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  (connectedSubjects) => {
+    return Object.keys(connectedSubjects);
   },
 );
 
