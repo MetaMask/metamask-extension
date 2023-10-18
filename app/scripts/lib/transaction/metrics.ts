@@ -4,37 +4,45 @@ import { BigNumber } from 'bignumber.js';
 import type { Provider } from '@metamask/network-controller';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
   isEIP1559Transaction,
-} from '../../../shared/modules/transaction.utils';
-import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
+} from '../../../../shared/modules/transaction.utils';
+import {
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+} from '../../../../shared/modules/conversion.utils';
 import {
   TransactionType,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
   TransactionMeta,
-} from '../../../shared/constants/transaction';
+} from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
+  MetaMetricsEventName,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
-} from '../../../shared/constants/metametrics';
-import { GasRecommendations } from '../../../shared/constants/gas';
-import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
+} from '../../../../shared/constants/metametrics';
+import { GasRecommendations } from '../../../../shared/constants/gas';
+import {
+  calcGasTotal,
+  getSwapsTokensReceivedFromTxMeta,
+  TRANSACTION_ENVELOPE_TYPE_NAMES,
+} from '../../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../shared/constants/security-provider';
+} from '../../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
-} from './snap-keyring/metrics';
+} from '../snap-keyring/metrics';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -65,6 +73,7 @@ export type TransactionMetricsRequest = {
   // doesn't include some properties used in buildEventFragmentProperties,
   // hence returning any here to avoid type errors.
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
+  getParticipateInMetrics: () => boolean;
   getSelectedAddress: () => string;
   getTokenStandardAndDetails: () => {
     decimals?: string;
@@ -73,8 +82,9 @@ export type TransactionMetricsRequest = {
     standard?: TokenStandard;
   };
   getTransaction: (transactionId: string) => TransactionMeta;
-  snapAndHardwareMessenger: SnapAndHardwareMessenger;
   provider: Provider;
+  snapAndHardwareMessenger: SnapAndHardwareMessenger;
+  trackEvent: (payload: any) => void;
 };
 
 type TransactionEventPayload = {
@@ -304,6 +314,117 @@ export const createTransactionEventFragmentWithTxId = async (
     },
   });
 };
+
+/**
+ * This function is called when a post transaction balance is updated.
+ *
+ * @param transactionMetricsRequest - Contains controller actions
+ * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
+ * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
+ * @param transactionEventPayload - The event payload
+ * @param transactionEventPayload.transactionMeta - The updated transaction meta
+ * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
+ */
+export const handlePostTransactionBalanceUpdated = async (
+  { getParticipateInMetrics, trackEvent }: TransactionMetricsRequest,
+  {
+    transactionMeta,
+    approvalTransactionMeta,
+  }: {
+    transactionMeta: TransactionMeta;
+    approvalTransactionMeta: TransactionMeta;
+  },
+) => {
+  if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
+    if (transactionMeta.txReceipt.status === '0x0') {
+      trackEvent({
+        event: 'Swap Failed',
+        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        category: MetaMetricsEventCategory.Swaps,
+      });
+    } else {
+      const tokensReceived = getSwapsTokensReceivedFromTxMeta(
+        transactionMeta.destinationTokenSymbol,
+        transactionMeta,
+        transactionMeta.destinationTokenAddress,
+        transactionMeta.txParams.from,
+        transactionMeta.destinationTokenDecimals,
+        approvalTransactionMeta,
+        transactionMeta.chainId,
+      );
+
+      const quoteVsExecutionRatio = tokensReceived
+        ? `${new BigNumber(tokensReceived, 10)
+            .div(transactionMeta.swapMetaData.token_to_amount, 10)
+            .times(100)
+            .round(2)}%`
+        : null;
+
+      const estimatedVsUsedGasRatio =
+        transactionMeta.txReceipt.gasUsed &&
+        transactionMeta.swapMetaData.estimated_gas
+          ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
+              .div(transactionMeta.swapMetaData.estimated_gas, 10)
+              .times(100)
+              .round(2)}%`
+          : null;
+
+      const transactionsCost = calculateTransactionsCost(
+        transactionMeta,
+        approvalTransactionMeta,
+      );
+
+      trackEvent({
+        event: MetaMetricsEventName.SwapCompleted,
+        category: MetaMetricsEventCategory.Swaps,
+        sensitiveProperties: {
+          ...transactionMeta.swapMetaData,
+          token_to_amount_received: tokensReceived,
+          quote_vs_executionRatio: quoteVsExecutionRatio,
+          estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
+          approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
+          trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
+          trade_and_approval_gas_cost_in_eth:
+            transactionsCost.tradeAndApprovalGasCostInEth,
+          // Firefox and Chrome have different implementations of the APIs
+          // that we rely on for communication accross the app. On Chrome big
+          // numbers are converted into number strings, on firefox they remain
+          // Big Number objects. As such, we convert them here for both
+          // browsers.
+          token_to_amount:
+            transactionMeta.swapMetaData.token_to_amount.toString(10),
+        },
+      });
+    }
+  }
+};
+
+function calculateTransactionsCost(
+  transactionMeta: TransactionMeta,
+  approvalTransactionMeta: TransactionMeta,
+) {
+  let approvalGasCost = '0x0';
+  if (approvalTransactionMeta?.txReceipt) {
+    approvalGasCost = calcGasTotal(
+      approvalTransactionMeta.txReceipt.gasUsed,
+      approvalTransactionMeta.txReceipt.effectiveGasPrice,
+    );
+  }
+  const tradeGasCost = calcGasTotal(
+    transactionMeta.txReceipt.gasUsed,
+    transactionMeta.txReceipt.effectiveGasPrice,
+  );
+  const tradeAndApprovalGasCost = new BigNumber(tradeGasCost, 16)
+    .plus(approvalGasCost, 16)
+    .toString(16);
+  return {
+    approvalGasCostInEth: Number(hexWEIToDecETH(approvalGasCost)),
+    tradeGasCostInEth: Number(hexWEIToDecETH(tradeGasCost)),
+    tradeAndApprovalGasCostInEth: Number(
+      hexWEIToDecETH(tradeAndApprovalGasCost),
+    ),
+  };
+}
 
 function createTransactionEventFragment({
   eventName,

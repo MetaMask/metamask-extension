@@ -167,6 +167,7 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
+  handlePostTransactionBalanceUpdated,
   handleTransactionAdded,
   handleTransactionApproved,
   handleTransactionFinalized,
@@ -174,7 +175,8 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
   createTransactionEventFragmentWithTxId,
-} from './lib/transaction-metrics';
+} from './lib/transaction/metrics';
+import { createSwapsTransaction } from './lib/transaction/swaps';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IN
@@ -1290,6 +1292,9 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      // We need to access txController but it's not yet initialized,
+      // so entire context needs to be passed to the function
+      createSwapsTransaction: createSwapsTransaction.bind(this),
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IN
@@ -1329,11 +1334,9 @@ export default class MetamaskController extends EventEmitter {
       'transaction-submitted',
       handleTransactionSubmitted.bind(null, transactionMetricsRequest),
     );
-    this.txController.on('transaction-swap-failed', (payload) =>
-      this.metaMetricsController.trackEvent(payload),
-    );
-    this.txController.on('transaction-swap-finalized', (payload) =>
-      this.metaMetricsController.trackEvent(payload),
+    this.txController.on(
+      'post-transaction-balance-updated',
+      handlePostTransactionBalanceUpdated.bind(null, transactionMetricsRequest),
     );
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
@@ -1621,14 +1624,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     }).init();
     ///: END:ONLY_INCLUDE_IN
-
-    this.txController.on('newSwapApproval', (txMeta) => {
-      this.swapsController.setApproveTxId(txMeta.id);
-    });
-
-    this.txController.on('newSwap', (txMeta) => {
-      this.swapsController.setTradeTxId(txMeta.id);
-    });
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
@@ -1958,6 +1953,11 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController.getEventFragmentById.bind(
           this.metaMetricsController,
         ),
+      getParticipateInMetrics: () =>
+        this.metaMetricsController.state.participateInMetaMetrics,
+      trackEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
       updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
         this.metaMetricsController,
       ),

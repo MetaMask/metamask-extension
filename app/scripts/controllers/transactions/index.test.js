@@ -24,7 +24,6 @@ import {
 } from '../../../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
-import TxGasUtil from './tx-gas-utils';
 import * as IncomingTransactionHelperClass from './IncomingTransactionHelper';
 import TransactionController from '.';
 
@@ -133,6 +132,7 @@ describe('Transaction Controller', function () {
       getParticipateInMetrics: () => false,
       getEIP1559GasFeeEstimates: () => undefined,
       securityProviderRequest: () => undefined,
+      createSwapsTransaction: () => undefined,
       preferencesStore,
       messenger: messengerMock,
     });
@@ -434,132 +434,6 @@ describe('Transaction Controller', function () {
           }),
         { message: 'MetaMask is having trouble connecting to the network' },
       );
-    });
-
-    it('updates meta if type is swap approval', async function () {
-      await txController.addTransaction(
-        {
-          from: selectedAddress,
-          to: recipientAddress,
-        },
-        {
-          origin: ORIGIN_METAMASK,
-          type: TransactionType.swapApproval,
-          actionId: '12345',
-          swaps: { meta: { type: 'swapApproval', sourceTokenSymbol: 'XBN' } },
-        },
-      );
-
-      const transaction = txController.getTransactions({
-        searchCriteria: { id: getLastTxMeta().id },
-      })[0];
-
-      assert.equal(transaction.type, 'swapApproval');
-      assert.equal(transaction.sourceTokenSymbol, 'XBN');
-    });
-
-    it('updates meta if type is swap', async function () {
-      await txController.addTransaction(
-        {
-          from: selectedAddress,
-          to: recipientAddress,
-        },
-        {
-          origin: ORIGIN_METAMASK,
-          type: TransactionType.swap,
-          actionId: '12345',
-          swaps: {
-            meta: {
-              sourceTokenSymbol: 'BTCX',
-              destinationTokenSymbol: 'ETH',
-              type: 'swapped',
-              destinationTokenDecimals: 8,
-              destinationTokenAddress: VALID_ADDRESS_TWO,
-              swapTokenValue: '0x0077',
-            },
-          },
-        },
-      );
-
-      const transaction = txController.getTransactions({
-        searchCriteria: { id: getLastTxMeta().id },
-      })[0];
-
-      assert.equal(transaction.sourceTokenSymbol, 'BTCX');
-      assert.equal(transaction.destinationTokenSymbol, 'ETH');
-      assert.equal(transaction.type, 'swapped');
-      assert.equal(transaction.destinationTokenDecimals, 8);
-      assert.equal(transaction.destinationTokenAddress, VALID_ADDRESS_TWO);
-      assert.equal(transaction.swapTokenValue, '0x0077');
-    });
-
-    describe('if swaps trade with no approval transaction and simulation fails', function () {
-      let analyzeGasUsageOriginal;
-
-      beforeEach(function () {
-        analyzeGasUsageOriginal = TxGasUtil.prototype.analyzeGasUsage;
-
-        sinon.stub(TxGasUtil.prototype, 'analyzeGasUsage').returns({
-          simulationFails: true,
-        });
-      });
-
-      afterEach(function () {
-        // Sinon restore didn't work
-        TxGasUtil.prototype.analyzeGasUsage = analyzeGasUsageOriginal;
-      });
-
-      it('throws error', async function () {
-        await assert.rejects(
-          txController.addTransaction(
-            {
-              from: selectedAddress,
-              to: recipientAddress,
-            },
-            {
-              origin: ORIGIN_METAMASK,
-              type: TransactionType.swap,
-              actionId: '12345',
-              swaps: {
-                hasApproveTx: false,
-              },
-            },
-          ),
-          new Error('Simulation failed'),
-        );
-      });
-
-      it('cancels transaction', async function () {
-        const listener = sinon.spy();
-
-        txController.on('tx:status-update', listener);
-
-        try {
-          await txController.addTransaction(
-            {
-              from: selectedAddress,
-              to: recipientAddress,
-            },
-            {
-              origin: ORIGIN_METAMASK,
-              type: TransactionType.swap,
-              actionId: '12345',
-              swaps: {
-                hasApproveTx: false,
-              },
-            },
-          );
-        } catch (error) {
-          // Expected error
-        }
-
-        assert.equal(listener.callCount, 1, listener.args);
-
-        const [txId, status] = listener.args[0];
-
-        assert.equal(status, TransactionStatus.rejected);
-        assert.equal(txId, getLastTxMeta().id);
-      });
     });
 
     describe('with actionId', function () {

@@ -34,14 +34,9 @@ import {
 import {
   bnToHex,
   decGWEIToHexWEI,
-  hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
   NETWORK_TYPES,
@@ -53,10 +48,6 @@ import {
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import {
-  calcGasTotal,
-  getSwapsTokensReceivedFromTxMeta,
-} from '../../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
@@ -156,6 +147,7 @@ export default class TransactionController extends EventEmitter {
     this.snapAndHardwareMessenger = opts.snapAndHardwareMessenger;
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
+    this.createSwapsTransaction = opts.createSwapsTransaction;
 
     this.memStore = new ObservableStore({});
 
@@ -753,6 +745,56 @@ export default class TransactionController extends EventEmitter {
     await this.incomingTransactionHelper.update();
   }
 
+  /**
+   * Updates Transaction swap specific properties
+   *
+   * @param {string} txId - The transaction id to be updated
+   * @param {object} swapProperties - Swap specific properties to be updated
+   * @param {string} swapProperties.sourceTokenSymbol
+   * @param {string} swapProperties.destinationTokenSymbol
+   * @param {string} swapProperties.type
+   * @param {string} swapProperties.destinationTokenDecimals
+   * @param {string} swapProperties.destinationTokenAddress
+   * @param {string} swapProperties.swapMetaData
+   * @param {string} swapProperties.swapTokenValue
+   * @param {string} swapProperties.estimatedBaseFee
+   * @param {string} swapProperties.approvalTxId
+   */
+  updateTransactionSwapProperties(
+    txId,
+    {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+      estimatedBaseFee,
+      approvalTxId,
+    },
+  ) {
+    const swapProperties = pickBy({
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+      estimatedBaseFee,
+      approvalTxId,
+    });
+
+    const note = `Update Swap Transaction for ${txId}`;
+    this._updateTransaction(txId, swapProperties, note);
+    return this._getTransaction(txId);
+  }
+
+  async cancelTransaction(txId) {
+    this._cancelTransaction(txId);
+  }
+
   //
   //           PRIVATE METHODS
   //
@@ -1234,7 +1276,10 @@ export default class TransactionController extends EventEmitter {
         latestTxMeta,
         'transactions#confirmTransaction - add postTxBalance',
       );
-      this._trackSwapsMetrics(latestTxMeta, approvalTxMeta);
+      this.emit('transaction-post-balance-updated', {
+        transactionMeta: latestTxMeta,
+        approvalTransactionMeta: approvalTxMeta,
+      });
     }
   }
 
@@ -1558,122 +1603,10 @@ export default class TransactionController extends EventEmitter {
     txMeta = await this._addTransactionGasDefaults(txMeta);
 
     if ([TransactionType.swap, TransactionType.swapApproval].includes(type)) {
-      txMeta = await this._createSwapsTransaction(swaps, type, txMeta);
+      txMeta = await this.createSwapsTransaction(swaps, type, txMeta);
     }
 
     return { txMeta, isExisting: false };
-  }
-
-  async _createSwapsTransaction(swapOptions, transactionType, txMeta) {
-    // The simulationFails property is added if the estimateGas call fails. In cases
-    // when no swaps approval tx is required, this indicates that the swap will likely
-    // fail. There was an earlier estimateGas call made by the swaps controller,
-    // but it is possible that external conditions have change since then, and
-    // a previously succeeding estimate gas call could now fail. By checking for
-    // the `simulationFails` property here, we can reduce the number of swap
-    // transactions that get published to the blockchain only to fail and thereby
-    // waste the user's funds on gas.
-    if (
-      transactionType === TransactionType.swap &&
-      swapOptions?.hasApproveTx === false &&
-      txMeta.simulationFails
-    ) {
-      await this._cancelTransaction(txMeta.id);
-      throw new Error('Simulation failed');
-    }
-
-    const swapsMeta = swapOptions?.meta;
-
-    if (!swapsMeta) {
-      return txMeta;
-    }
-
-    if (transactionType === TransactionType.swapApproval) {
-      this.emit('newSwapApproval', txMeta);
-      return this._updateSwapApprovalTransaction(txMeta.id, swapsMeta);
-    }
-
-    if (transactionType === TransactionType.swap) {
-      this.emit('newSwap', txMeta);
-      return this._updateSwapTransaction(txMeta.id, swapsMeta);
-    }
-
-    return txMeta;
-  }
-
-  /**
-   * updates a swap approval transaction with provided metadata and source token symbol
-   *  if the transaction state is unapproved.
-   *
-   * @param {string} txId
-   * @param {object} swapApprovalTransaction - holds the metadata and token symbol
-   * @param {string} swapApprovalTransaction.type
-   * @param {string} swapApprovalTransaction.sourceTokenSymbol
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  _updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapApprovalTransaction');
-
-    let swapApprovalTransaction = { type, sourceTokenSymbol };
-    // only update what is defined
-    swapApprovalTransaction = pickBy(swapApprovalTransaction);
-
-    const note = `Update Swap Approval Transaction for ${txId}`;
-    this._updateTransaction(txId, swapApprovalTransaction, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
-   * updates a swap transaction with provided metadata and source token symbol
-   *  if the transaction state is unapproved.
-   *
-   * @param {string} txId
-   * @param {object} swapTransaction - holds the metadata
-   * @param {string} swapTransaction.sourceTokenSymbol
-   * @param {string} swapTransaction.destinationTokenSymbol
-   * @param {string} swapTransaction.type
-   * @param {string} swapTransaction.destinationTokenDecimals
-   * @param {string} swapTransaction.destinationTokenAddress
-   * @param {string} swapTransaction.swapMetaData
-   * @param {string} swapTransaction.swapTokenValue
-   * @param {string} swapTransaction.estimatedBaseFee
-   * @param {string} swapTransaction.approvalTxId
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  _updateSwapTransaction(
-    txId,
-    {
-      sourceTokenSymbol,
-      destinationTokenSymbol,
-      type,
-      destinationTokenDecimals,
-      destinationTokenAddress,
-      swapMetaData,
-      swapTokenValue,
-      estimatedBaseFee,
-      approvalTxId,
-    },
-  ) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapTransaction');
-
-    let swapTransaction = {
-      sourceTokenSymbol,
-      destinationTokenSymbol,
-      type,
-      destinationTokenDecimals,
-      destinationTokenAddress,
-      swapMetaData,
-      swapTokenValue,
-      estimatedBaseFee,
-      approvalTxId,
-    };
-
-    // only update what is defined
-    swapTransaction = pickBy(swapTransaction);
-
-    const note = `Update Swap Transaction for ${txId}`;
-    this._updateTransaction(txId, swapTransaction, note);
-    return this._getTransaction(txId);
   }
 
   /**
@@ -2069,93 +2002,6 @@ export default class TransactionController extends EventEmitter {
     this.memStore.updateState({
       transactions,
     });
-  }
-
-  _calculateTransactionsCost(txMeta, approvalTxMeta) {
-    let approvalGasCost = '0x0';
-    if (approvalTxMeta?.txReceipt) {
-      approvalGasCost = calcGasTotal(
-        approvalTxMeta.txReceipt.gasUsed,
-        approvalTxMeta.txReceipt.effectiveGasPrice,
-      );
-    }
-    const tradeGasCost = calcGasTotal(
-      txMeta.txReceipt.gasUsed,
-      txMeta.txReceipt.effectiveGasPrice,
-    );
-    const tradeAndApprovalGasCost = new BigNumber(tradeGasCost, 16)
-      .plus(approvalGasCost, 16)
-      .toString(16);
-    return {
-      approvalGasCostInEth: Number(hexWEIToDecETH(approvalGasCost)),
-      tradeGasCostInEth: Number(hexWEIToDecETH(tradeGasCost)),
-      tradeAndApprovalGasCostInEth: Number(
-        hexWEIToDecETH(tradeAndApprovalGasCost),
-      ),
-    };
-  }
-
-  _trackSwapsMetrics(txMeta, approvalTxMeta) {
-    if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
-      if (txMeta.txReceipt.status === '0x0') {
-        this.emit('transaction-swap-failed', {
-          event: 'Swap Failed',
-          sensitiveProperties: { ...txMeta.swapMetaData },
-          category: MetaMetricsEventCategory.Swaps,
-        });
-      } else {
-        const tokensReceived = getSwapsTokensReceivedFromTxMeta(
-          txMeta.destinationTokenSymbol,
-          txMeta,
-          txMeta.destinationTokenAddress,
-          txMeta.txParams.from,
-          txMeta.destinationTokenDecimals,
-          approvalTxMeta,
-          txMeta.chainId,
-        );
-
-        const quoteVsExecutionRatio = tokensReceived
-          ? `${new BigNumber(tokensReceived, 10)
-              .div(txMeta.swapMetaData.token_to_amount, 10)
-              .times(100)
-              .round(2)}%`
-          : null;
-
-        const estimatedVsUsedGasRatio =
-          txMeta.txReceipt.gasUsed && txMeta.swapMetaData.estimated_gas
-            ? `${new BigNumber(txMeta.txReceipt.gasUsed, 16)
-                .div(txMeta.swapMetaData.estimated_gas, 10)
-                .times(100)
-                .round(2)}%`
-            : null;
-
-        const transactionsCost = this._calculateTransactionsCost(
-          txMeta,
-          approvalTxMeta,
-        );
-
-        this.emit('transaction-swap-finalized', {
-          event: MetaMetricsEventName.SwapCompleted,
-          category: MetaMetricsEventCategory.Swaps,
-          sensitiveProperties: {
-            ...txMeta.swapMetaData,
-            token_to_amount_received: tokensReceived,
-            quote_vs_executionRatio: quoteVsExecutionRatio,
-            estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
-            approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
-            trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
-            trade_and_approval_gas_cost_in_eth:
-              transactionsCost.tradeAndApprovalGasCostInEth,
-            // Firefox and Chrome have different implementations of the APIs
-            // that we rely on for communication accross the app. On Chrome big
-            // numbers are converted into number strings, on firefox they remain
-            // Big Number objects. As such, we convert them here for both
-            // browsers.
-            token_to_amount: txMeta.swapMetaData.token_to_amount.toString(10),
-          },
-        });
-      }
-    }
   }
 
   /**

@@ -291,6 +291,7 @@ export interface TxParams {
 export interface TxReceipt {
   blockHash?: string;
   blockNumber?: string;
+  effectiveGasPrice?: string;
   transactionIndex?: string;
   gasUsed?: string;
   status?: string;
@@ -407,6 +408,7 @@ export interface TransactionMeta {
    */
   submittedTime?: number;
   /** The error encountered during the transaction */
+
   txErr?: TxError;
   /**
    * Whether the transaction is verified on the blockchain.
@@ -414,6 +416,12 @@ export interface TransactionMeta {
   verifiedOnBlockchain?: boolean;
   securityProviderResponse?: Record<string, any>;
   securityAlertResponse?: any;
+
+  swapMetaData?: any;
+  destinationTokenSymbol?: string;
+  destinationTokenAddress?: string;
+  destinationTokenDecimals?: string;
+  simulationFails?: boolean;
 }
 
 /**

@@ -2,22 +2,22 @@ import { Provider } from '@metamask/network-controller';
 import {
   createTestProviderTools,
   getTestAccounts,
-} from '../../../test/stub/provider';
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+} from '../../../../test/stub/provider';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   TransactionType,
   TransactionStatus,
   AssetType,
   TokenStandard,
   TransactionMetaMetricsEvent,
-} from '../../../shared/constants/transaction';
+} from '../../../../shared/constants/transaction';
 import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
-} from '../../../shared/constants/metametrics';
-import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
+} from '../../../../shared/constants/metametrics';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { BlockaidReason } from '../../../shared/constants/security-provider';
+import { BlockaidReason } from '../../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN(blockaid)
 import {
   handleTransactionAdded,
@@ -27,7 +27,7 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
-} from './transaction-metrics';
+} from './metrics';
 
 const providerResultStub = {
   eth_getCode: '0x123',
@@ -56,10 +56,12 @@ const mockTransactionMetricsRequest = {
   getDeviceModel: jest.fn(),
   getEIP1559GasFeeEstimates: jest.fn(),
   getSelectedAddress: jest.fn(),
+  getParticipateInMetrics: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
-  snapAndHardwareMessenger: jest.fn() as any,
   provider: provider as Provider,
+  snapAndHardwareMessenger: jest.fn() as any,
+  trackEvent: jest.fn(),
 };
 
 describe('Transaction metrics', () => {
