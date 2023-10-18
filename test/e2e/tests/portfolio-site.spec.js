@@ -26,6 +26,11 @@ describe('Portfolio site', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Click Portfolio site
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement(
+            '[data-testid="token-balance-mmi-portfolio"]',
+          );
+        }
         await driver.clickElement('[data-testid="eth-overview-portfolio"]');
         await driver.waitUntilXWindowHandles(2);
         const windowHandles = await driver.getAllWindowHandles();

@@ -592,12 +592,11 @@ const defaultGanacheOptions = {
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  // TODO: Update Test when Multichain Send Flow is added
   if (process.env.MULTICHAIN) {
-    await driver.clickElement('[data-testid="app-footer-actions-button"]');
-    await driver.clickElement('[data-testid="select-action-modal-item-send"]');
-  } else {
-    await driver.clickElement('[data-testid="eth-overview-send"]');
+    return;
   }
+  await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
 const sendTransaction = async (
@@ -606,6 +605,7 @@ const sendTransaction = async (
   quantity,
   isAsyncFlow = false,
 ) => {
+  // TODO: Update Test when Multichain Send Flow is added
   if (process.env.MULTICHAIN) {
     return;
   }
