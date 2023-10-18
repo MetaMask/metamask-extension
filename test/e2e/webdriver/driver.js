@@ -8,6 +8,7 @@ const {
   until,
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
+const { retry } = require('../../../development/lib/retry');
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
@@ -435,15 +436,25 @@ class Driver {
     initialWindowHandles,
     delayStep = 1000,
     timeout = this.timeout,
+    { retries = 8, retryDelay = 2500 } = {},
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
+
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
-        await this.driver.switchTo().window(handle);
+        const handleTitle = await retry(
+          {
+            retries,
+            delay: retryDelay,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getTitle();
+          },
+        );
 
-        const handleTitle = await this.driver.getTitle();
         if (handleTitle === title) {
           return handle;
         }
