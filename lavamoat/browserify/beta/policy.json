@@ -2505,11 +2505,6 @@
         "browserify>process": true
       }
     },
-    "@storybook/addon-knobs>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "@truffle/codec": {
       "packages": {
         "@truffle/codec>@truffle/abi-utils": true,
@@ -3031,15 +3026,6 @@
         "define": true
       }
     },
-    "brfs>static-module>object-inspect": {
-      "globals": {
-        "HTMLElement": true,
-        "WeakRef": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "browserify>assert": {
       "globals": {
         "Buffer": true
@@ -3318,8 +3304,8 @@
     },
     "browserify>url": {
       "packages": {
-        "@storybook/addon-knobs>qs": true,
-        "browserify>punycode": true
+        "browserify>punycode": true,
+        "browserify>querystring-es3": true
       }
     },
     "browserify>util": {
@@ -4898,13 +4884,6 @@
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
-      }
-    },
-    "string.prototype.matchall>side-channel": {
-      "packages": {
-        "brfs>static-module>object-inspect": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "superstruct": {
