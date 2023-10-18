@@ -5,11 +5,6 @@
         "regeneratorRuntime": "write"
       }
     },
-    "@babel/runtime>regenerator-runtime": {
-      "globals": {
-        "regeneratorRuntime": "write"
-      }
-    },
     "@download/blockies": {
       "globals": {
         "document.createElement": true
@@ -2219,13 +2214,44 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/logging-controller": true,
         "@metamask/message-manager": true,
+        "@metamask/signature-controller>@metamask/controller-utils": true,
         "browserify>buffer": true,
         "eth-rpc-errors": true,
         "ethereumjs-util": true,
         "lodash": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/signature-controller>@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -2824,6 +2850,11 @@
         "browserify>process": true
       }
     },
+    "@storybook/addon-knobs>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "@truffle/codec": {
       "packages": {
         "@truffle/codec>@truffle/abi-utils": true,
@@ -3345,6 +3376,15 @@
         "define": true
       }
     },
+    "brfs>static-module>object-inspect": {
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "browserify>assert": {
       "globals": {
         "Buffer": true
@@ -3623,8 +3663,8 @@
     },
     "browserify>url": {
       "packages": {
-        "browserify>punycode": true,
-        "browserify>querystring-es3": true
+        "@storybook/addon-knobs>qs": true,
+        "browserify>punycode": true
       }
     },
     "browserify>util": {
@@ -4357,8 +4397,8 @@
     },
     "ethjs-contract>babel-runtime": {
       "packages": {
-        "@babel/runtime>regenerator-runtime": true,
-        "ethjs-contract>babel-runtime>core-js": true
+        "ethjs-contract>babel-runtime>core-js": true,
+        "ethjs-contract>babel-runtime>regenerator-runtime": true
       }
     },
     "ethjs-contract>babel-runtime>core-js": {
@@ -4369,6 +4409,11 @@
         "document.createTextNode": true,
         "postMessage": true,
         "setTimeout": true
+      }
+    },
+    "ethjs-contract>babel-runtime>regenerator-runtime": {
+      "globals": {
+        "regeneratorRuntime": "write"
       }
     },
     "ethjs-contract>ethjs-abi": {
@@ -5280,6 +5325,13 @@
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
+      }
+    },
+    "string.prototype.matchall>side-channel": {
+      "packages": {
+        "brfs>static-module>object-inspect": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "superstruct": {
