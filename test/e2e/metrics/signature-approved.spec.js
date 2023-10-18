@@ -81,6 +81,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
         assert.deepStrictEqual(events[1].properties, {
           account_type: 'MetaMask',
@@ -89,6 +91,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
       },
     );
@@ -126,6 +130,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
         assert.deepStrictEqual(events[1].properties, {
           account_type: 'MetaMask',
@@ -134,6 +140,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
       },
     );
@@ -170,6 +178,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
         assert.deepStrictEqual(events[1].properties, {
           account_type: 'MetaMask',
@@ -178,6 +188,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
       },
     );
@@ -214,6 +226,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
         assert.deepStrictEqual(events[1].properties, {
           account_type: 'MetaMask',
@@ -222,6 +236,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
       },
     );
@@ -267,6 +283,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
         assert.deepStrictEqual(events[1].properties, {
           account_type: 'MetaMask',
@@ -275,6 +293,8 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          security_alert_reason: 'NotApplicable',
+          security_alert_response: 'NotApplicable',
         });
       },
     );
