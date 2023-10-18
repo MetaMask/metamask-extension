@@ -194,7 +194,7 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      this.extension.alarms.getAll((alarms) => {
+      this.extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
@@ -756,6 +756,13 @@ export default class MetaMetricsController {
         : null;
     ///: END:ONLY_INCLUDE_IN
     const { traits, previousUserTraits } = this.store.getState();
+    let securityProvider;
+    if (metamaskState.securityAlertsEnabled) {
+      securityProvider = 'blockaid';
+    }
+    if (metamaskState.transactionSecurityCheckEnabled) {
+      securityProvider = 'opensea';
+    }
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -799,8 +806,9 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IN
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
+      [MetaMetricsUserTrait.SecurityProviders]: securityProvider
+        ? [securityProvider]
+        : [],
       ///: BEGIN:ONLY_INCLUDE_IN(petnames)
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),

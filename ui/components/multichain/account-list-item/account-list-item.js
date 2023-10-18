@@ -45,6 +45,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseBlockie } from '../../../selectors';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -88,6 +89,11 @@ export const AccountListItem = ({
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
+
+  const { totalWeiBalance } = useAccountTotalFiatBalance(identity.address);
+  const balanceToTranslate = process.env.MULTICHAIN
+    ? totalWeiBalance
+    : identity.balance;
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -194,7 +200,7 @@ export const AccountListItem = ({
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={identity.balance}
+                value={balanceToTranslate}
                 type={PRIMARY}
               />
             </Text>
@@ -225,7 +231,7 @@ export const AccountListItem = ({
           >
             <UserPreferencedCurrencyDisplay
               ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-              value={identity.balance}
+              value={balanceToTranslate}
               type={SECONDARY}
             />
           </Text>
