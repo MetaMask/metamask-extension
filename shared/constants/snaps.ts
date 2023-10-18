@@ -156,7 +156,7 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     name: 'Secret Network',
   },
   {
-    path: ['m', `44'`, `397'`],
+    path: ['m', `44'`, `397'`, `0'`],
     curve: 'ed25519',
     name: 'NEAR Protocol',
   },
