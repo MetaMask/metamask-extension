@@ -132,7 +132,7 @@ function useAlertState(
     return () => {
       isMounted = false;
     };
-  }, [pendingConfirmation, unapprovedTxsCount]);
+  }, [pendingConfirmation, unapprovedTxsCount, useSafeChainsListValidation]);
 
   const dismissAlert = useCallback(
     (alertId) => {

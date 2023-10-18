@@ -37,7 +37,11 @@ export const useScrollRequired = (dependencies = []) => {
     }
   };
 
-  useEffect(update, [ref, ...dependencies]);
+  const effectDependencies = [ref, ...dependencies]; // Create a new array
+
+  useEffect(() => {
+    update();
+  }, effectDependencies);
 
   const scrollToBottom = () => {
     setIsScrolledToBottom(true);

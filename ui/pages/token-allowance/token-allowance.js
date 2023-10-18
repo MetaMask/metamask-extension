@@ -288,7 +288,7 @@ export default function TokenAllowance({
 
   useEffect(() => {
     handleNextNonce();
-  }, [dispatch]);
+  }, [dispatch, handleNextNonce]);
 
   const handleUpdateCustomNonce = (value) => {
     dispatch(updateCustomNonce(value));

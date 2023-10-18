@@ -403,7 +403,7 @@ const NetworksForm = ({
 
       return null;
     },
-    [t],
+    [t, useSafeChainsListValidation],
   );
 
   const validateRPCUrl = useCallback(

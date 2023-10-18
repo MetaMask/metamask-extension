@@ -298,4 +298,8 @@ GlobalMenu.propTypes = {
    * Function that closes this menu
    */
   closeMenu: PropTypes.func.isRequired,
+  /**
+   * Flag to indicate if the menu is open
+   */
+  isOpen: PropTypes.bool.isRequired,
 };

@@ -83,7 +83,7 @@ const TransactionAlerts = ({
         external_link_clicked: 'security_alert_support_link',
       },
     });
-  }, []);
+  }, [trackEvent, txData?.origin]);
   ///: END:ONLY_INCLUDE_IN
 
   return (

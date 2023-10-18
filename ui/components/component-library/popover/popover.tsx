@@ -113,7 +113,7 @@ export const Popover: PopoverComponent = React.forwardRef(
             'mm-popover--open': Boolean(isOpen),
             'mm-popover--reference-hidden': Boolean(referenceHidden),
           },
-          className
+          className,
         )}
         ref={ref || setPopperElement}
         {...attributes.popper}

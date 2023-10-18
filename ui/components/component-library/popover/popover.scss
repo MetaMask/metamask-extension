@@ -71,6 +71,7 @@
 
 .mm-popover.mm-popover-global-menu {
   @include H6;
+
   width: 225px !important;  // Higher specificity than using !important
   padding: 0;
   background: var(--color-background-default);

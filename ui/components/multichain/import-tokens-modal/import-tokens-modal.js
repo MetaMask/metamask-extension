@@ -184,7 +184,7 @@ export const ImportTokensModal = ({ onClose }) => {
     if (firstTokenAddress) {
       history.push(`${ASSET_ROUTE}/${firstTokenAddress}`);
     }
-  }, [dispatch, history, pendingTokens, trackEvent]);
+  }, [dispatch, history, pendingTokens, trackEvent, networkClientId]);
 
   useEffect(() => {
     const pendingTokenKeys = Object.keys(pendingTokens);
@@ -214,7 +214,7 @@ export const ImportTokensModal = ({ onClose }) => {
     setCustomAddress(initialCustomToken.address);
     setCustomSymbol(initialCustomToken.symbol);
     setCustomDecimals(initialCustomToken.decimals);
-  }, [pendingTokens]);
+  }, [pendingTokens, selectedTokens]);
 
   const handleCustomSymbolChange = (value) => {
     const symbol = value.trim();
