@@ -33,8 +33,6 @@ setBackgroundConnection({
   getNextNonce: jest.fn(),
 });
 
-const mockNetworkId = '5';
-
 const mockTxParamsFromAddress = '0x123456789';
 
 const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
@@ -73,7 +71,7 @@ const baseStore = {
     transactions: [
       {
         id: 1,
-        metamaskNetworkId: mockNetworkId,
+        chainId: '0x5',
         txParams: { ...mockTxParams },
         status: 'unapproved',
       },
@@ -91,7 +89,6 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    networkId: mockNetworkId,
     selectedNetworkClientId: NetworkType.mainnet,
     networksMetadata: {
       [NetworkType.mainnet]: {
@@ -139,7 +136,6 @@ const baseStore = {
   confirmTransaction: {
     txData: {
       id: 1,
-      metamaskNetworkId: mockNetworkId,
       txParams: { ...mockTxParams },
       time: 1675012496170,
       status: TransactionStatus.unapproved,

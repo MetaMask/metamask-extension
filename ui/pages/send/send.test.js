@@ -230,7 +230,6 @@ describe('Send Page', () => {
             id: 3111025347726181,
             time: 1620723786838,
             status: 'unapproved',
-            metamaskNetworkId: '5',
             chainId: '0x5',
             loadingDefaults: false,
             txParams: {
@@ -276,7 +275,6 @@ describe('Send Page', () => {
             id: 3111025347726181,
             time: 1620723786838,
             status: 'unapproved',
-            metamaskNetworkId: '5',
             chainId: '0x5',
             loadingDefaults: false,
             txParams: {
