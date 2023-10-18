@@ -16,7 +16,7 @@ The `PickerNetwork` is used for the action of changing a network.
 
 ### Label
 
-Use the `label` prop for the text content of the `PickerNetwork` component. For long labels set a `max-width` using a `className` and the text will truncate showing an ellipsis.
+Use the `label` prop for the text content of the `PickerNetwork` component. For long labels set a `max-width` using a `className` and the text will truncate showing an ellipsis. If the `src` prop is not set, the `label` prop will be used to generate fallback initial for `AvatarNetwork`.
 
 <Canvas>
   <Story id="components-componentlibrary-pickernetwork--label" />
@@ -24,6 +24,7 @@ Use the `label` prop for the text content of the `PickerNetwork` component. For 
 
 ```jsx
 import { PickerNetwork } from '../../ui/component-library';
+<PickerNetwork src="./images/avax-token.png" label="Avalanche C-Chain" />
 <PickerNetwork label="Arbitrum One" />
 <PickerNetwork label="Polygon Mainnet" />
 <PickerNetwork label="Optimism" />
@@ -32,7 +33,7 @@ import { PickerNetwork } from '../../ui/component-library';
 
 ### Src
 
-Use the `src` prop with an image url to render the `AvatarNetwork`. Use the `avatarNetworkProps` to pass additional props to the `AvatarNetwork` component.
+Use the `src` prop with an image url to render the `AvatarNetwork`. Use the `avatarNetworkProps` to pass additional props to the `AvatarNetwork` component. If the `src` prop is not set, the `label` prop will be used to generate fallback initial for `AvatarNetwork`.
 
 <Canvas>
   <Story id="components-componentlibrary-pickernetwork--src" />
@@ -40,7 +41,27 @@ Use the `src` prop with an image url to render the `AvatarNetwork`. Use the `ava
 
 ```jsx
 import { PickerNetwork } from '../../ui/component-library';
-<PickerNetwork src="./images/arbitrum.svg" />
-<PickerNetwork src="./images/matic-token.png" />
-<PickerNetwork src="./images/optimism.svg" />
+<PickerNetwork src="./images/arbitrum.svg" label="Arbitrum One" />
+<PickerNetwork src="./images/matic-token.png" label="Polygon Mainnet" />
+<PickerNetwork src="./images/optimism.svg" label="Optimism" />
+```
+
+### Width
+
+The width of the `PickerNetwork` is set to auto by default. Use the style utility `width` prop with the `BlockSize` enum to set the width of the `PickerNetwork` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-pickernetwork--width" />
+</Canvas>
+
+```jsx
+import { PickerNetwork } from '../../ui/component-library';
+import { BlockSize } from '../../../helpers/constants/design-system';
+
+<PickerNetwork src="./images/avax-token.png" label="Avalanche C-Chain" />;
+<PickerNetwork
+  src="./images/avax-token.png"
+  label="Avalanche C-Chain"
+  width={BlockSize.Full}
+/>;
 ```

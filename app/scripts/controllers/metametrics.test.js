@@ -1025,6 +1025,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         useNftDetection: false,
+        securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
         desktopEnabled: false,
@@ -1083,7 +1084,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
-        [MetaMetricsUserTrait.SecurityProviders]: [],
+        [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
         [MetaMetricsUserTrait.MmiAccountAddress]: null,

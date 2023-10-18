@@ -442,8 +442,8 @@ export default class MMIController extends EventEmitter {
   }
 
   // Based on a custodian name, get all the tokens associated with that custodian
-  async getCustodianJWTList(custodianName) {
-    console.log('getCustodianJWTList', custodianName);
+  async getCustodianJWTList(custodianEnvName) {
+    console.log('getCustodianJWTList', custodianEnvName);
 
     const { identities } = this.preferencesController.store.getState();
 
@@ -455,7 +455,9 @@ export default class MMIController extends EventEmitter {
 
     const { custodians } = mmiConfiguration;
 
-    const custodian = custodians.find((item) => item.name === custodianName);
+    const custodian = custodians.find(
+      (item) => item.envName === custodianEnvName,
+    );
 
     if (!custodian) {
       return [];
@@ -480,9 +482,11 @@ export default class MMIController extends EventEmitter {
 
         if (
           !custodyAccountDetails ||
-          custodyAccountDetails.custodianName !== custodianName
+          custodyAccountDetails.custodianName !== custodianEnvName
         ) {
-          log.debug(`${address} does not belong to ${custodianName} keyring`);
+          log.debug(
+            `${address} does not belong to ${custodianEnvName} keyring`,
+          );
           continue;
         }
 

@@ -173,7 +173,9 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
                     style="mask-image: url('./images/icons/danger.svg');"
                   />
-                  <div>
+                  <div
+                    class="mm-box mm-box--min-width-0"
+                  >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
                     >

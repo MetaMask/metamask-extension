@@ -225,37 +225,37 @@ describe('Numeric', () => {
       it('should compute correct results for division of big numbers', () => {
         expect(
           new Numeric('175671432', 10).divide('686216', 10).toString(),
-        ).toStrictEqual('256.00019818832554181191');
+        ).toStrictEqual('256.000198188325541811907620924023922497');
 
         expect(
           new Numeric('1756714320', 10)
             .divide(new Numeric('686216', 10))
             .toString(),
-        ).toStrictEqual('2560.00198188325541811908');
+        ).toStrictEqual('2560.001981883255418119076209240239224967');
 
         expect(
           new Numeric('41756714320', 10)
             .divide(new Numeric('6862160', 10))
             .toString(),
-        ).toStrictEqual('6085.06859647691106007438');
+        ).toStrictEqual('6085.068596476911060074378912762162351213');
       });
 
       it('should compute correct results for division of negative big numbers', () => {
         expect(
           new Numeric('175671432', 10).divide('-686216', 10).toString(),
-        ).toStrictEqual('-256.00019818832554181191');
+        ).toStrictEqual('-256.000198188325541811907620924023922497');
 
         expect(
           new Numeric('1756714320', 10)
             .divide(new Numeric('-686216', 10))
             .toString(),
-        ).toStrictEqual('-2560.00198188325541811908');
+        ).toStrictEqual('-2560.001981883255418119076209240239224967');
 
         expect(
           new Numeric('-41756714320', 10)
             .divide(new Numeric('-6862160', 10))
             .toString(),
-        ).toStrictEqual('6085.06859647691106007438');
+        ).toStrictEqual('6085.068596476911060074378912762162351213');
       });
     });
 
@@ -377,7 +377,7 @@ describe('Numeric', () => {
       it('should multiply the value by the inverse of conversionRate supplied when second parameter is true', () => {
         expect(
           new Numeric(10, 10).applyConversionRate(468.5, true).toString(),
-        ).toStrictEqual('0.0213447171824973319');
+        ).toStrictEqual('0.02134471718249733191035218783351121');
       });
 
       it('should multiply the value by the inverse of the BigNumber conversionRate supplied when second parameter is true', () => {
@@ -385,7 +385,22 @@ describe('Numeric', () => {
           new Numeric(10, 10)
             .applyConversionRate(new BigNumber(468.5, 10), true)
             .toString(),
-        ).toStrictEqual('0.0213447171824973319');
+        ).toStrictEqual('0.02134471718249733191035218783351121');
+      });
+      it('should not return 0 if decimals is greater than 20', () => {
+        expect(
+          new Numeric(10, 10)
+            .applyConversionRate(new BigNumber(1e27, 10), true)
+            .toString(),
+        ).toStrictEqual('0.00000000000000000000000001');
+      });
+
+      it('should  return 0 if decimals is greater than 32', () => {
+        expect(
+          new Numeric(10, 10)
+            .applyConversionRate(new BigNumber(1e40, 10), true)
+            .toString(),
+        ).toStrictEqual('0');
       });
     });
   });

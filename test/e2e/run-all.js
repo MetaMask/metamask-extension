@@ -139,10 +139,6 @@ async function main() {
   // These tests should only be run on Flask for now.
   if (buildType !== 'flask') {
     const filteredTests = [
-      'settings-add-snap-account-toggle.spec.js',
-      'test-create-snap-account.spec.js',
-      'test-remove-accounts-snap.spec.js',
-      'test-snap-accounts.spec.js',
       'test-snap-lifecycle.spec.js',
       'test-snap-get-locale.spec.js',
       'ppom-blockaid-alert.spec.js',

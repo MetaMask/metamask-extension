@@ -10,7 +10,11 @@ import { setBackgroundConnection } from '../../../test/jest';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import {
   TransactionStatus,
   TransactionType,
@@ -102,6 +106,8 @@ const baseStore = {
     currentCurrency: 'USD',
     providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
+      nickname: GOERLI_DISPLAY_NAME,
+      type: NETWORK_TYPES.GOERLI,
     },
     nativeCurrency: 'ETH',
     featureFlags: {

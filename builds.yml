@@ -17,6 +17,8 @@ buildTypes:
     features:
       - build-main
       - snaps
+      - keyring-snaps
+      - blockaid
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -27,6 +29,7 @@ buildTypes:
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/3.0.0/index.html
       - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
+      - KEYRING_SNAPS_AVAILABILITY_DATE: 02 Nov 2023 15:00:00 GMT
     # Main build uses the default browser manifest
     manifestOverrides: false
 
@@ -231,6 +234,12 @@ env:
   - METAMASK_VERSION
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - METAMASK_BUILD_TYPE
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_NAME
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_APP_ID
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_ICON
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - NODE_ENV
   # Defined by node itself

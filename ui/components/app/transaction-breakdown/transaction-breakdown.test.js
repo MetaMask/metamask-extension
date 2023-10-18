@@ -2,6 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { within } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import {
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
 import TransactionBreakdown from '.';
 
 function getActualDataFrom(transactionBreakdownRows) {
@@ -22,7 +27,9 @@ describe('TransactionBreakdown', () => {
       nativeCurrency: null,
       preferences: {},
       providerConfig: {
-        chainId: null,
+        chainId: CHAIN_IDS.MAINNET,
+        nickname: MAINNET_DISPLAY_NAME,
+        type: NETWORK_TYPES.MAINNET,
       },
     },
   });
