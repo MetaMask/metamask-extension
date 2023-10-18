@@ -7,6 +7,8 @@ import {
   Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { exportAccount, hideWarning } from '../../../store/actions';
 import {
   BannerAlert,
   Box,
@@ -14,9 +16,6 @@ import {
   ButtonSecondary,
   FormTextField,
 } from '../../component-library';
-
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { exportAccount, hideWarning } from '../../../store/actions';
 
 export const AccountDetailsAuthenticate = ({
   address,
@@ -35,10 +34,14 @@ export const AccountDetailsAuthenticate = ({
   const onSubmit = useCallback(() => {
     dispatch(
       exportAccount(password, address, setPrivateKey, setShowHoldToReveal),
-    ).then((res) => {
-      dispatch(hideWarning());
-      return res;
-    });
+    )
+      .then((res) => {
+        dispatch(hideWarning());
+        return res;
+      })
+      .catch(() => {
+        // No need to do anything more with the caught error here, we already logged the error
+      });
   }, [dispatch, password, address, setPrivateKey, setShowHoldToReveal]);
 
   const handleKeyPress = useCallback(
@@ -57,7 +60,7 @@ export const AccountDetailsAuthenticate = ({
         id="account-details-authenticate"
         label={t('enterYourPassword')}
         placeholder={t('password')}
-        error={warning}
+        error={Boolean(warning)}
         helpText={warning}
         onChange={(e) => setPassword(e.target.value)}
         value={password}
@@ -85,8 +88,20 @@ export const AccountDetailsAuthenticate = ({
 };
 
 AccountDetailsAuthenticate.propTypes = {
+  /**
+   * The account address
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Executes upon Cancel button click
+   */
   onCancel: PropTypes.func.isRequired,
+  /**
+   * Private key setter
+   */
   setPrivateKey: PropTypes.func.isRequired,
+  /**
+   * showHoldToReveal setter
+   */
   setShowHoldToReveal: PropTypes.func.isRequired,
 };

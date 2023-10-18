@@ -16,6 +16,7 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
+  AvatarIconSize,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Icon,
   Text,
@@ -44,7 +45,7 @@ function getLeftIcon(iconName) {
   return (
     <AvatarIcon
       iconName={iconName}
-      size={IconSize.Sm}
+      size={AvatarIconSize.Sm}
       iconProps={{
         size: IconSize.Xs,
       }}
@@ -262,6 +263,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.AddSquare,
     weight: 3,
   }),
+  [RestrictedMethods.snap_getLocale]: ({ t }) => ({
+    label: t('permission_getLocale'),
+    description: t('permission_getLocaleDescription'),
+    leftIcon: IconName.Home,
+    weight: 3,
+  }),
   [RestrictedMethods.wallet_snap]: ({
     t,
     permissionValue,
@@ -306,12 +313,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.DocumentCode,
     rightIcon: null,
     weight: 2,
-  }),
-  [EndowmentPermissions['endowment:long-running']]: ({ t }) => ({
-    label: t('permission_longRunning'),
-    description: t('permission_longRunningDescription'),
-    leftIcon: IconName.Link,
-    weight: 3,
   }),
   [EndowmentPermissions['endowment:transaction-insight']]: ({
     t,
@@ -399,9 +400,17 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
     label: t('permission_manageAccounts'),
+    description: t('permission_manageAccountsDescription'),
     leftIcon: getLeftIcon(IconName.UserCircleAdd),
     rightIcon: null,
-    weight: 3,
+    weight: 2,
+  }),
+  [EndowmentPermissions['endowment:keyring']]: ({ t }) => ({
+    label: t('permission_keyring'),
+    description: t('permission_keyringDescription'),
+    leftIcon: getLeftIcon(IconName.UserCircleAdd),
+    rightIcon: null,
+    weight: 2,
   }),
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({

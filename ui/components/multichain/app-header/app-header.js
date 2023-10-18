@@ -44,6 +44,7 @@ import {
   getSelectedIdentity,
   getShowProductTour,
   getTestNetworkBackgroundColor,
+  getUnapprovedTransactions,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getTheme,
@@ -61,7 +62,10 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../../ducks/metamask/metamask';
 import { getSendStage, SEND_STAGES } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -75,7 +79,7 @@ export const AppHeader = ({ location }) => {
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const isHomePage = location.pathname === DEFAULT_ROUTE;
-  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
+  const isUnlocked = useSelector(getIsUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
 
@@ -136,9 +140,10 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
   );
 
-  const hasUnapprovedTransactions = useSelector(
-    (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
-  );
+  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
+
+  const hasUnapprovedTransactions =
+    Object.keys(unapprovedTransactions).length > 0;
 
   const disableAccountPicker =
     isConfirmationPage || (isSwapsPage && !isSwapsBuildQuotePage);
@@ -229,6 +234,9 @@ export const AppHeader = ({ location }) => {
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
                       aria-label={t('networkMenu')}
+                      labelProps={{
+                        display: Display.None,
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
@@ -295,7 +303,7 @@ export const AppHeader = ({ location }) => {
                     });
                   }}
                   disabled={disableAccountPicker}
-                  showAddress={process.env.MULTICHAIN}
+                  showAddress={Boolean(process.env.MULTICHAIN)}
                 />
               ) : null}
               <Box
@@ -389,7 +397,7 @@ export const AppHeader = ({ location }) => {
                       ariaLabel={t('accountOptions')}
                       onClick={() => {
                         trackEvent({
-                          event: MetaMetricsEventName.NavAccountMenuOpened,
+                          event: MetaMetricsEventName.NavMainMenuOpened,
                           category: MetaMetricsEventCategory.Navigation,
                           properties: {
                             location: 'Home',

@@ -3,12 +3,14 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
-  getSelectedAccount,
+  getTargetAccount,
 } from '../../selectors';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { bnGreaterThan, bnLessThan } from '../../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { PENDING_STATUS_HASH } from '../../helpers/constants/transactions';
+import { TransactionType } from '../../../shared/constants/transaction';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
@@ -267,12 +269,18 @@ export function useGasFeeErrors({
     [gasErrors, gasWarnings],
   );
 
-  const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
-  const balanceError = hasBalanceError(
-    minimumCostInHexWei,
-    transaction,
-    ethBalance,
+  const account = useSelector(
+    (state) => getTargetAccount(state, transaction?.txParams?.from),
+    shallowEqual,
   );
+
+  // Balance check is only relevant for outgoing + pending transactions
+  const balanceError =
+    account !== undefined &&
+    transaction?.type !== TransactionType.incoming &&
+    transaction?.status in PENDING_STATUS_HASH
+      ? hasBalanceError(minimumCostInHexWei, transaction, account.balance)
+      : false;
 
   return {
     gasErrors: errorsAndWarnings,

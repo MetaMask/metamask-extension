@@ -24,6 +24,7 @@ import ToggleButton from '../../ui/toggle-button';
 import {
   BlockSize,
   Display,
+  FlexDirection,
   JustifyContent,
   Size,
   TextColor,
@@ -49,6 +50,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   getCompletedOnboarding,
+  getIsUnlocked,
   isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
 
@@ -74,7 +76,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
-  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
+  const isUnlocked = useSelector(getIsUnlocked);
 
   const showSearch = nonTestNetworks.length > 3;
 
@@ -177,7 +179,12 @@ export const NetworkListMenu = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent
         className="multichain-network-list-menu-content-wrapper"
-        modalDialogProps={{ padding: 0 }}
+        modalDialogProps={{
+          className: 'multichain-network-list-menu-content-wrapper__dialog',
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          padding: 0,
+        }}
       >
         <ModalHeader
           paddingTop={4}

@@ -375,6 +375,7 @@ export const FRACTIONS = {
 };
 
 export enum BlockSize {
+  Zero = '0',
   Half = '1/2',
   OneThird = '1/3',
   TwoThirds = '2/3',
