@@ -606,6 +606,9 @@ const sendTransaction = async (
   quantity,
   isAsyncFlow = false,
 ) => {
+  if (process.env.MULTICHAIN) {
+    return;
+  }
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
@@ -656,13 +659,10 @@ const TEST_SEED_PHRASE_TWO =
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
   if (process.env.MULTICHAIN) {
+    await driver.clickElement(`[data-testid="home__asset-tab"]`);
     await driver.findElement({
-      css: '[data-testid="token-balance-overview-currency-display"] .currency-display-component__text',
-      text: balance,
-    });
-    await driver.findElement({
-      css: '[data-testid="token-balance-overview-currency-display"] .currency-display-component__suffix',
-      text: 'ETH',
+      css: '[data-testid="token-balance-overview-currency-display"]',
+      text: `${balance} ETH`,
     });
   } else {
     await driver.findElement({

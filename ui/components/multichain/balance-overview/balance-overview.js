@@ -96,7 +96,7 @@ export const BalanceOverview = ({ balance, loading }) => {
               ''
             ) : (
               <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={3}
+                ethNumberOfDecimals={4}
                 value={balance}
                 type={PRIMARY}
                 data-testid="token-balance-overview-currency-display"

@@ -180,6 +180,7 @@ export const SelectActionModal = ({ onClose }) => {
               ///: END:ONLY_INCLUDE_IN
               onClose();
             }}
+            data-testid="select-action-modal-item-swap"
           />
           <SelectActionModalItem
             actionIcon={IconName.Arrow2UpRight}
