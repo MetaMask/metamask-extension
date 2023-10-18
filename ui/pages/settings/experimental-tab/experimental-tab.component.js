@@ -20,7 +20,7 @@ import {
   TextColor,
   TextVariant,
   Display,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid,desktop,keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -307,21 +307,20 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <Box data-testid="add-snap-account-toggle">
-                  <ToggleButton
-                    value={addSnapAccountEnabled}
-                    onToggle={(value) => {
-                      trackEvent({
-                        event: MetaMetricsEventName.AddSnapAccountEnabled,
-                        category: MetaMetricsEventCategory.Settings,
-                        properties: {
-                          enabled: !value,
-                        },
-                      });
-                      setAddSnapAccountEnabled(!value);
-                    }}
-                  />
-                </Box>
+                <ToggleButton
+                  dataTestId="add-snap-account-toggle"
+                  value={addSnapAccountEnabled}
+                  onToggle={(value) => {
+                    trackEvent({
+                      event: MetaMetricsEventName.AddSnapAccountEnabled,
+                      category: MetaMetricsEventCategory.Settings,
+                      properties: {
+                        enabled: !value,
+                      },
+                    });
+                    setAddSnapAccountEnabled(!value);
+                  }}
+                />
               </div>
               <Text
                 variant={TextVariant.bodySm}

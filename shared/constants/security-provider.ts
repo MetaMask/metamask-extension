@@ -43,12 +43,10 @@ export enum BlockaidReason {
   transferFarming = 'transfer_farming',
   /** Direct theft of assets using transferFrom  */
   transferFromFarming = 'transfer_from_farming',
-  /** Malicious trade that results in the victim being drained  */
-  unfairTrade = 'unfair_trade',
 
   other = 'other',
 
-  // Locally defined
+  // MetaMask defined reasons
   failed = 'Failed',
   notApplicable = 'NotApplicable',
 }
@@ -57,7 +55,8 @@ export enum BlockaidResultType {
   Malicious = 'Malicious',
   Warning = 'Warning',
   Benign = 'Benign',
-  // Locally defined
+
+  // MetaMask defined result types
   Failed = 'Failed',
   NotApplicable = 'NotApplicable',
 }
