@@ -78,7 +78,7 @@ export default function CreatePassword({
     mmi: base64MetametricsId,
     env: 'production',
   };
-  const analyticsIframeUrl = `https://start.metamask.io/${new URLSearchParams(
+  const analyticsIframeUrl = `https://start.metamask.io/?${new URLSearchParams(
     analyticsIframeQuery,
   )}`;
 
