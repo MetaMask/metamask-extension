@@ -1475,7 +1475,6 @@ export default class MetamaskController extends EventEmitter {
           `${this.keyringController.name}:signMessage`,
           `${this.keyringController.name}:signPersonalMessage`,
           `${this.keyringController.name}:signTypedMessage`,
-          `${this.loggingController.name}:add`,
         ],
       }),
       isEthSignEnabled: () =>
