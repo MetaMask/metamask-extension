@@ -3,6 +3,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { mockServerJsonRpc } = require('../mock-server-json-rpc');
 
 const {
+  WINDOW_TITLES,
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
@@ -52,6 +53,7 @@ async function mockInfura(mockServer) {
       },
     ],
     ['eth_estimateGas'],
+    ['eth_feeHistory'],
     ['eth_gasPrice'],
     ['eth_getBalance'],
     ['eth_getBlockByNumber'],
@@ -62,6 +64,7 @@ async function mockInfura(mockServer) {
         params: [CONTRACT_ADDRESS.USDC],
       },
     ],
+    ['eth_getTransactionCount'],
   ]);
 
   await mockServer
@@ -188,7 +191,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
 
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,
