@@ -55,12 +55,12 @@ import {
 import SnapPermissionsList from '../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../helpers/constants/snaps';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import {
   Content,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IN
 
