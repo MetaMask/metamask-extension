@@ -145,64 +145,67 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
 describe('Confirmation Security Alert - Blockaid', function () {
-  describe('should show security alerts for benign requests', function () {
-    for (const config of testBenignConfigs) {
-      it(`should work for ${config.logExpectedDetail}`, async function () {
-        await withFixtures(
-          {
-            dapp: true,
-            fixtures: new FixtureBuilder()
-              .withNetworkControllerOnMainnet()
-              .withPermissionControllerConnectedToTestDapp()
-              .withPreferencesController({
-                securityAlertsEnabled: true,
-              })
-              .build(),
-            defaultGanacheOptions,
-            testSpecificMock: mockInfura,
-            title: this.test.title,
-          },
+  it('should show security alerts for benign requests', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            securityAlertsEnabled: true,
+          })
+          .build(),
+        defaultGanacheOptions,
+        testSpecificMock: mockInfura,
+        title: this.test.title,
+      },
 
-          async ({ driver }) => {
-            await driver.navigate();
-            await unlockWallet(driver);
-            await openDapp(driver);
+      async ({ driver }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
+        await openDapp(driver);
 
-            const { btnSelector, logExpectedDetail, method, params } = config;
+        for (const config of testBenignConfigs) {
+          const { btnSelector, logExpectedDetail, method, params } = config;
 
-            // Either click TestDapp button to send JSON-RPC request or manually send request
-            if (btnSelector) {
-              await driver.clickElement(btnSelector);
-            } else {
-              const request = JSON.stringify({
-                jsonrpc: '2.0',
-                method,
-                params,
-              });
-              await driver.executeScript(
-                `window.transactionHash = window.ethereum.request(${request})`,
-              );
-            }
-
-            // Wait for confirmation pop-up
-            const windowHandles = await driver.waitUntilXWindowHandles(3);
-            await driver.switchToWindowWithTitle(
-              WINDOW_TITLES.Notification,
-              windowHandles,
+          // Either click TestDapp button to send JSON-RPC request or manually send request
+          if (btnSelector) {
+            await driver.clickElement(btnSelector);
+          } else {
+            const request = JSON.stringify({
+              jsonrpc: '2.0',
+              method,
+              params,
+            });
+            await driver.executeScript(
+              `window.transactionHash = window.ethereum.request(${request})`,
             );
+          }
 
-            const isPresent = await driver.isElementPresent(
-              bannerAlertSelector,
-            );
-            assert.equal(
-              isPresent,
-              false,
-              `Banner alert unexpectedly found. \nExpected detail: ${logExpectedDetail}`,
-            );
-          },
-        );
-      });
-    }
+          const windowHandles = await driver.waitUntilXWindowHandles(3);
+          // Wait for confirmation pop-up
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Notification,
+            windowHandles,
+          );
+
+          const isPresent = await driver.isElementPresent(bannerAlertSelector);
+          assert.equal(
+            isPresent,
+            false,
+            `Banner alert unexpectedly found. \nExpected detail: ${logExpectedDetail}`,
+          );
+
+          // Wait for confirmation pop-up to close
+          await driver.clickElement({ text: 'Reject', tag: 'button' });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.TestDApp,
+            windowHandles,
+          );
+        }
+      },
+    );
   });
 
   /**
@@ -210,60 +213,65 @@ describe('Confirmation Security Alert - Blockaid', function () {
    * 'malicious_domain'. Some other tests are found in other files:
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
-  describe('should show security alerts for malicious requests', function () {
-    for (const config of testMaliciousConfigs) {
-      it(`should work for ${config.expectedReason} reason type`, async function () {
-        await withFixtures(
-          {
-            dapp: true,
-            fixtures: new FixtureBuilder()
-              .withNetworkControllerOnMainnet()
-              .withPermissionControllerConnectedToTestDapp()
-              .withPreferencesController({
-                securityAlertsEnabled: true,
-              })
-              .build(),
-            defaultGanacheOptions,
-            testSpecificMock: mockInfuraWithMaliciousResponses,
-            title: this.test.title,
-          },
+  it('should show security alerts for malicious requests', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            securityAlertsEnabled: true,
+          })
+          .build(),
+        defaultGanacheOptions,
+        testSpecificMock: mockInfuraWithMaliciousResponses,
+        title: this.test.title,
+      },
 
-          async ({ driver }) => {
-            await driver.navigate();
-            await unlockWallet(driver);
-            await openDapp(driver);
+      async ({ driver }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
+        await openDapp(driver);
 
-            const { expectedDescription, expectedReason, btnSelector } = config;
+        for (const config of testMaliciousConfigs) {
+          const { expectedDescription, expectedReason, btnSelector } = config;
 
-            // Click TestDapp button to send JSON-RPC request
-            await driver.clickElement(btnSelector);
+          // Click TestDapp button to send JSON-RPC request
+          await driver.clickElement(btnSelector);
 
-            // Wait for confirmation pop-up
-            const windowHandles = await driver.waitUntilXWindowHandles(3);
-            await driver.switchToWindowWithTitle(
-              WINDOW_TITLES.Notification,
-              windowHandles,
-            );
+          // Wait for confirmation pop-up
+          const windowHandles = await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Notification,
+            windowHandles,
+          );
 
-            // Find element by title
-            const bannerAlertFoundByTitle = await driver.findElement({
-              css: bannerAlertSelector,
-              text: expectedMaliciousTitle,
-            });
-            const bannerAlertText = await bannerAlertFoundByTitle.getText();
+          // Find element by title
+          const bannerAlertFoundByTitle = await driver.findElement({
+            css: bannerAlertSelector,
+            text: expectedMaliciousTitle,
+          });
+          const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
-            assert(
-              bannerAlertFoundByTitle,
-              `Banner alert not found. Expected Title: ${expectedMaliciousTitle} \nExpected reason: ${expectedReason}\n`,
-            );
-            assert(
-              bannerAlertText.includes(expectedDescription),
-              `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
-            );
-          },
-        );
-      });
-    }
+          assert(
+            bannerAlertFoundByTitle,
+            `Banner alert not found. Expected Title: ${expectedMaliciousTitle} \nExpected reason: ${expectedReason}\n`,
+          );
+          assert(
+            bannerAlertText.includes(expectedDescription),
+            `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: ${expectedReason}\n`,
+          );
+
+          // Wait for confirmation pop-up to close
+          await driver.clickElement({ text: 'Reject', tag: 'button' });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.TestDApp,
+            windowHandles,
+          );
+        }
+      },
+    );
   });
 
   it('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
