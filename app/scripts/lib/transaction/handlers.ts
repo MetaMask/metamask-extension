@@ -15,7 +15,7 @@ import { type SnapAndHardwareMessenger } from '../snap-keyring/metrics';
 
 import * as metrics from './metrics';
 
-export type TransactionHandlerRequest = {
+export type TransactionEventRequest = {
   createEventFragment: (
     options: MetaMetricsEventFragment,
   ) => MetaMetricsEventFragment;
@@ -60,23 +60,24 @@ export type TransactionEventPayload = {
   transactionMeta: TransactionMeta;
   actionId?: string;
   error?: string;
+  approvalTransactionMeta?: TransactionMeta;
 };
 
 /**
  * This function is called when a transaction is added to the controller.
  *
- * @param TransactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param TransactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const handleTransactionAdded = async (
-  TransactionHandlerRequest: TransactionHandlerRequest,
+  TransactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   safelyExecute(
     async () =>
       await metrics.onTransactionAdded(
-        TransactionHandlerRequest,
+        TransactionEventRequest,
         transactionEventPayload,
       ),
   );
@@ -85,18 +86,18 @@ export const handleTransactionAdded = async (
 /**
  * This function is called when a transaction is approved by the user.
  *
- * @param TransactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param TransactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const handleTransactionApproved = async (
-  TransactionHandlerRequest: TransactionHandlerRequest,
+  TransactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   safelyExecute(
     async () =>
       await metrics.onTransactionApproved(
-        TransactionHandlerRequest,
+        TransactionEventRequest,
         transactionEventPayload,
       ),
   );
@@ -105,19 +106,19 @@ export const handleTransactionApproved = async (
 /**
  * This function is called when a transaction is finalized.
  *
- * @param TransactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param TransactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  * @param transactionEventPayload.error - The error message if the transaction failed
  */
 export const handleTransactionFinalized = async (
-  TransactionHandlerRequest: TransactionHandlerRequest,
+  TransactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   safelyExecute(
     async () =>
       await metrics.onTransactionFinalized(
-        TransactionHandlerRequest,
+        TransactionEventRequest,
         transactionEventPayload,
       ),
   );
@@ -126,18 +127,18 @@ export const handleTransactionFinalized = async (
 /**
  * This function is called when a transaction is dropped.
  *
- * @param TransactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param TransactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const handleTransactionDropped = async (
-  TransactionHandlerRequest: TransactionHandlerRequest,
+  TransactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   safelyExecute(
     async () =>
       await metrics.onTransactionDropped(
-        TransactionHandlerRequest,
+        TransactionEventRequest,
         transactionEventPayload,
       ),
   );
@@ -146,18 +147,18 @@ export const handleTransactionDropped = async (
 /**
  * This function is called when a transaction is rejected by the user.
  *
- * @param TransactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param TransactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const handleTransactionRejected = async (
-  TransactionHandlerRequest: TransactionHandlerRequest,
+  TransactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   safelyExecute(
     async () =>
       await metrics.onTransactionRejected(
-        TransactionHandlerRequest,
+        TransactionEventRequest,
         transactionEventPayload,
       ),
   );
@@ -166,18 +167,18 @@ export const handleTransactionRejected = async (
 /**
  * This function is called when a transaction is submitted to the network.
  *
- * @param TransactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param TransactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const handleTransactionSubmitted = async (
-  TransactionHandlerRequest: TransactionHandlerRequest,
+  TransactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   safelyExecute(
     async () =>
       await metrics.onTransactionSubmitted(
-        TransactionHandlerRequest,
+        TransactionEventRequest,
         transactionEventPayload,
       ),
   );
@@ -186,22 +187,19 @@ export const handleTransactionSubmitted = async (
 /**
  * This function is called when a post transaction balance is updated.
  *
- * @param TransactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param TransactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const handlePostTransactionBalanceUpdate = async (
-  TransactionHandlerRequest: TransactionHandlerRequest,
-  transactionEventPayload: {
-    transactionMeta: TransactionMeta;
-    approvalTransactionMeta: TransactionMeta;
-  },
+  TransactionEventRequest: TransactionEventRequest,
+  transactionEventPayload: TransactionEventPayload,
 ) => {
   safelyExecute(
     async () =>
       await metrics.onPostTransactionBalanceUpdate(
-        TransactionHandlerRequest,
+        TransactionEventRequest,
         transactionEventPayload,
       ),
   );

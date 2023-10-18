@@ -37,7 +37,7 @@ import {
 import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 
 import {
-  type TransactionHandlerRequest,
+  type TransactionEventRequest,
   type TransactionEventPayload,
 } from './handlers';
 
@@ -46,12 +46,12 @@ export const METRICS_STATUS_FAILED = 'failed on-chain';
 /**
  * This function is called when a transaction is added to the controller.
  *
- * @param transactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const onTransactionAdded = async (
-  transactionHandlerRequest: TransactionHandlerRequest,
+  transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   if (!transactionEventPayload.transactionMeta) {
@@ -60,13 +60,13 @@ export const onTransactionAdded = async (
   const { properties, sensitiveProperties } =
     await buildEventFragmentProperties({
       transactionEventPayload,
-      transactionHandlerRequest,
+      transactionEventRequest,
     });
 
   createTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.added,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
     payload: {
       properties,
       sensitiveProperties,
@@ -77,12 +77,12 @@ export const onTransactionAdded = async (
 /**
  * This function is called when a transaction is approved by the user.
  *
- * @param transactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const onTransactionApproved = async (
-  transactionHandlerRequest: TransactionHandlerRequest,
+  transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   if (!transactionEventPayload.transactionMeta) {
@@ -92,20 +92,20 @@ export const onTransactionApproved = async (
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.approved,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
   });
 };
 
 /**
  * This function is called when a transaction is finalized.
  *
- * @param transactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  * @param transactionEventPayload.error - The error message if the transaction failed
  */
 export const onTransactionFinalized = async (
-  transactionHandlerRequest: TransactionHandlerRequest,
+  transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   if (!transactionEventPayload.transactionMeta) {
@@ -137,19 +137,19 @@ export const onTransactionFinalized = async (
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
   });
 };
 
 /**
  * This function is called when a transaction is dropped.
  *
- * @param transactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const onTransactionDropped = async (
-  transactionHandlerRequest: TransactionHandlerRequest,
+  transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   if (!transactionEventPayload.transactionMeta) {
@@ -164,19 +164,19 @@ export const onTransactionDropped = async (
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
   });
 };
 
 /**
  * This function is called when a transaction is rejected by the user.
  *
- * @param transactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const onTransactionRejected = async (
-  transactionHandlerRequest: TransactionHandlerRequest,
+  transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   if (!transactionEventPayload.transactionMeta) {
@@ -186,19 +186,19 @@ export const onTransactionRejected = async (
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.rejected,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
   });
 };
 
 /**
  * This function is called when a transaction is submitted to the network.
  *
- * @param transactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
 export const onTransactionSubmitted = async (
-  transactionHandlerRequest: TransactionHandlerRequest,
+  transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
   if (!transactionEventPayload.transactionMeta) {
@@ -207,13 +207,13 @@ export const onTransactionSubmitted = async (
   const { properties, sensitiveProperties } =
     await buildEventFragmentProperties({
       transactionEventPayload,
-      transactionHandlerRequest,
+      transactionEventRequest,
     });
 
   createTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.submitted,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
     payload: {
       properties,
       sensitiveProperties,
@@ -224,13 +224,13 @@ export const onTransactionSubmitted = async (
 /**
  * UI needs this specific create function in order to be sure that event fragment exists when updating transaction gas values.
  *
- * @param transactionHandlerRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventRequest - Contains controller actions needed to create/update/finalize event fragments
  * @param eventPayload - The event payload
  * @param eventPayload.actionId - The action id of the transaction
  * @param eventPayload.transactionId - The transaction id
  */
 export const createTransactionEventFragmentWithTxId = async (
-  transactionHandlerRequest: TransactionHandlerRequest,
+  transactionEventRequest: TransactionEventRequest,
   {
     transactionId,
     actionId,
@@ -239,8 +239,7 @@ export const createTransactionEventFragmentWithTxId = async (
     actionId: string;
   },
 ) => {
-  const transactionMeta =
-    transactionHandlerRequest.getTransaction(transactionId);
+  const transactionMeta = transactionEventRequest.getTransaction(transactionId);
 
   transactionMeta.actionId = actionId;
 
@@ -249,7 +248,7 @@ export const createTransactionEventFragmentWithTxId = async (
       transactionEventPayload: {
         transactionMeta,
       },
-      transactionHandlerRequest,
+      transactionEventRequest,
     });
   createTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.approved,
@@ -257,7 +256,7 @@ export const createTransactionEventFragmentWithTxId = async (
       actionId: transactionMeta.actionId,
       transactionMeta,
     },
-    transactionHandlerRequest,
+    transactionEventRequest,
     payload: {
       properties,
       sensitiveProperties,
@@ -268,21 +267,21 @@ export const createTransactionEventFragmentWithTxId = async (
 /**
  * This function is called when a post transaction balance is updated.
  *
- * @param transactionHandlerRequest - Contains controller actions
- * @param transactionHandlerRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
- * @param transactionHandlerRequest.trackEvent - MetaMetrics track event function
+ * @param transactionEventRequest - Contains controller actions
+ * @param transactionEventRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
+ * @param transactionEventRequest.trackEvent - MetaMetrics track event function
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const onPostTransactionBalanceUpdate = async (
-  { getParticipateInMetrics, trackEvent }: TransactionHandlerRequest,
+  { getParticipateInMetrics, trackEvent }: TransactionEventRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
   }: {
     transactionMeta: TransactionMeta;
-    approvalTransactionMeta: TransactionMeta;
+    approvalTransactionMeta?: TransactionMeta;
   },
 ) => {
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
@@ -351,7 +350,7 @@ export const onPostTransactionBalanceUpdate = async (
 
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
-  approvalTransactionMeta: TransactionMeta,
+  approvalTransactionMeta?: TransactionMeta,
 ) {
   let approvalGasCost = '0x0';
   if (approvalTransactionMeta?.txReceipt) {
@@ -379,17 +378,17 @@ function calculateTransactionsCost(
 function createTransactionEventFragment({
   eventName,
   transactionEventPayload: { transactionMeta, actionId },
-  transactionHandlerRequest,
+  transactionEventRequest,
   payload,
 }: {
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
-  transactionHandlerRequest: TransactionHandlerRequest;
+  transactionEventRequest: TransactionEventRequest;
   payload: any;
 }) {
   if (
     hasFragment(
-      transactionHandlerRequest.getEventFragmentById,
+      transactionEventRequest.getEventFragmentById,
       eventName,
       transactionMeta,
     )
@@ -410,7 +409,7 @@ function createTransactionEventFragment({
     // then get analytics on the number of transactions in which gas edits
     // occur.
     case TransactionMetaMetricsEvent.added:
-      transactionHandlerRequest.createEventFragment({
+      transactionEventRequest.createEventFragment({
         category: MetaMetricsEventCategory.Transactions,
         initialEvent: TransactionMetaMetricsEvent.added,
         successEvent: TransactionMetaMetricsEvent.approved,
@@ -432,7 +431,7 @@ function createTransactionEventFragment({
     // does not exist.
     case TransactionMetaMetricsEvent.approved:
     case TransactionMetaMetricsEvent.rejected:
-      transactionHandlerRequest.createEventFragment({
+      transactionEventRequest.createEventFragment({
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.approved,
         failureEvent: TransactionMetaMetricsEvent.rejected,
@@ -454,7 +453,7 @@ function createTransactionEventFragment({
     // cancel UI but don't submit. We can record that this happened and add
     // properties to the transaction event.
     case TransactionMetaMetricsEvent.submitted:
-      transactionHandlerRequest.createEventFragment({
+      transactionEventRequest.createEventFragment({
         category: MetaMetricsEventCategory.Transactions,
         initialEvent: TransactionMetaMetricsEvent.submitted,
         successEvent: TransactionMetaMetricsEvent.finalized,
@@ -474,7 +473,7 @@ function createTransactionEventFragment({
     // this implementation hardens against other possible bugs where a
     // fragment does not exist.
     case TransactionMetaMetricsEvent.finalized:
-      transactionHandlerRequest.createEventFragment({
+      transactionEventRequest.createEventFragment({
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
         properties: payload.properties,
@@ -492,33 +491,33 @@ function createTransactionEventFragment({
 function updateTransactionEventFragment({
   eventName,
   transactionEventPayload: { transactionMeta },
-  transactionHandlerRequest,
+  transactionEventRequest,
   payload,
 }: {
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
-  transactionHandlerRequest: TransactionHandlerRequest;
+  transactionEventRequest: TransactionEventRequest;
   payload: any;
 }) {
   const uniqueId = getUniqueId(eventName, transactionMeta.id);
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
-      transactionHandlerRequest.updateEventFragment(uniqueId, {
+      transactionEventRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
       break;
 
     case TransactionMetaMetricsEvent.rejected:
-      transactionHandlerRequest.updateEventFragment(uniqueId, {
+      transactionEventRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
       break;
 
     case TransactionMetaMetricsEvent.finalized:
-      transactionHandlerRequest.updateEventFragment(uniqueId, {
+      transactionEventRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
@@ -530,28 +529,28 @@ function updateTransactionEventFragment({
 
 function finalizeTransactionEventFragment({
   eventName,
-  transactionHandlerRequest,
+  transactionEventRequest,
   transactionEventPayload: { transactionMeta },
 }: {
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
-  transactionHandlerRequest: TransactionHandlerRequest;
+  transactionEventRequest: TransactionEventRequest;
 }) {
   const uniqueId = getUniqueId(eventName, transactionMeta.id);
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
-      transactionHandlerRequest.finalizeEventFragment(uniqueId);
+      transactionEventRequest.finalizeEventFragment(uniqueId);
       break;
 
     case TransactionMetaMetricsEvent.rejected:
-      transactionHandlerRequest.finalizeEventFragment(uniqueId, {
+      transactionEventRequest.finalizeEventFragment(uniqueId, {
         abandoned: true,
       });
       break;
 
     case TransactionMetaMetricsEvent.finalized:
-      transactionHandlerRequest.finalizeEventFragment(uniqueId);
+      transactionEventRequest.finalizeEventFragment(uniqueId);
       break;
     default:
       break;
@@ -561,25 +560,25 @@ function finalizeTransactionEventFragment({
 async function createUpdateFinalizeTransactionEventFragment({
   eventName,
   transactionEventPayload,
-  transactionHandlerRequest,
+  transactionEventRequest,
   extraParams = {},
 }: {
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
-  transactionHandlerRequest: TransactionHandlerRequest;
+  transactionEventRequest: TransactionEventRequest;
   extraParams?: Record<string, any>;
 }) {
   const { properties, sensitiveProperties } =
     await buildEventFragmentProperties({
       transactionEventPayload,
-      transactionHandlerRequest,
+      transactionEventRequest,
       extraParams,
     });
 
   createTransactionEventFragment({
     eventName,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
     payload: {
       properties,
       sensitiveProperties,
@@ -589,7 +588,7 @@ async function createUpdateFinalizeTransactionEventFragment({
   updateTransactionEventFragment({
     eventName,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
     payload: {
       properties,
       sensitiveProperties,
@@ -599,7 +598,7 @@ async function createUpdateFinalizeTransactionEventFragment({
   finalizeTransactionEventFragment({
     eventName,
     transactionEventPayload,
-    transactionHandlerRequest,
+    transactionEventRequest,
   });
 }
 
@@ -630,12 +629,12 @@ function getUniqueId(
 
 async function buildEventFragmentProperties({
   transactionEventPayload: { transactionMeta },
-  transactionHandlerRequest,
+  transactionEventRequest,
   extraParams = {},
 }: {
   extraParams?: Record<string, any>;
   transactionEventPayload: TransactionEventPayload;
-  transactionHandlerRequest: TransactionHandlerRequest;
+  transactionEventRequest: TransactionEventRequest;
 }) {
   const {
     type,
@@ -667,13 +666,13 @@ async function buildEventFragmentProperties({
     ///: END:ONLY_INCLUDE_IN
   } = transactionMeta;
 
-  const query = new EthQuery(transactionHandlerRequest.provider);
+  const query = new EthQuery(transactionEventRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
   const { assetType, tokenStandard } = await determineTransactionAssetType(
     transactionMeta,
     query,
-    transactionHandlerRequest.getTokenStandardAndDetails,
+    transactionEventRequest.getTokenStandardAndDetails,
   );
 
   const gasParams = {} as Record<string, any>;
@@ -702,7 +701,7 @@ async function buildEventFragmentProperties({
         ].includes(estimateType)
       ) {
         const { gasFeeEstimates } =
-          await transactionHandlerRequest.getEIP1559GasFeeEstimates();
+          await transactionEventRequest.getEIP1559GasFeeEstimates();
         if (gasFeeEstimates?.[estimateType]?.suggestedMaxFeePerGas) {
           defaultMaxFeePerGas =
             gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas;
@@ -805,7 +804,7 @@ async function buildEventFragmentProperties({
     }
   }
 
-  const replacedTransactionMeta = transactionHandlerRequest.getTransaction(
+  const replacedTransactionMeta = transactionEventRequest.getTransaction(
     replacedById as string,
   );
 
@@ -854,11 +853,11 @@ async function buildEventFragmentProperties({
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
-    account_type: await transactionHandlerRequest.getAccountType(
-      transactionHandlerRequest.getSelectedAddress(),
+    account_type: await transactionEventRequest.getAccountType(
+      transactionEventRequest.getSelectedAddress(),
     ),
-    device_model: await transactionHandlerRequest.getDeviceModel(
-      transactionHandlerRequest.getSelectedAddress(),
+    device_model: await transactionEventRequest.getDeviceModel(
+      transactionEventRequest.getSelectedAddress(),
     ),
     asset_type: assetType,
     token_standard: tokenStandard,
@@ -874,10 +873,10 @@ async function buildEventFragmentProperties({
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-    transactionHandlerRequest.getSelectedAddress,
-    transactionHandlerRequest.getAccountType,
-    transactionHandlerRequest.getDeviceModel,
-    transactionHandlerRequest.snapAndHardwareMessenger,
+    transactionEventRequest.getSelectedAddress,
+    transactionEventRequest.getAccountType,
+    transactionEventRequest.getDeviceModel,
+    transactionEventRequest.snapAndHardwareMessenger,
   );
   Object.assign(properties, snapAndHardwareInfo);
 

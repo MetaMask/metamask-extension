@@ -1308,35 +1308,35 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const transactionHandlerRequest = this.getTransactionHandlerRequest();
+    const transactionEventRequest = this.getTransactionEventRequest();
 
     this.txController.on(
       'transaction-added',
-      handleTransactionAdded.bind(null, transactionHandlerRequest),
+      handleTransactionAdded.bind(null, transactionEventRequest),
     );
     this.txController.on(
       'transaction-approved',
-      handleTransactionApproved.bind(null, transactionHandlerRequest),
+      handleTransactionApproved.bind(null, transactionEventRequest),
     );
     this.txController.on(
       'transaction-dropped',
-      handleTransactionDropped.bind(null, transactionHandlerRequest),
+      handleTransactionDropped.bind(null, transactionEventRequest),
     );
     this.txController.on(
       'transaction-finalized',
-      handleTransactionFinalized.bind(null, transactionHandlerRequest),
+      handleTransactionFinalized.bind(null, transactionEventRequest),
     );
     this.txController.on(
       'transaction-rejected',
-      handleTransactionRejected.bind(null, transactionHandlerRequest),
+      handleTransactionRejected.bind(null, transactionEventRequest),
     );
     this.txController.on(
       'transaction-submitted',
-      handleTransactionSubmitted.bind(null, transactionHandlerRequest),
+      handleTransactionSubmitted.bind(null, transactionEventRequest),
     );
     this.txController.on(
       'post-transaction-balance-updated',
-      handlePostTransactionBalanceUpdate.bind(null, transactionHandlerRequest),
+      handlePostTransactionBalanceUpdate.bind(null, transactionEventRequest),
     );
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
@@ -1939,7 +1939,7 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
   }
 
-  getTransactionHandlerRequest() {
+  getTransactionEventRequest() {
     const controllerActions = {
       // Metametrics Actions
       createEventFragment: this.metaMetricsController.createEventFragment.bind(
@@ -2746,7 +2746,7 @@ export default class MetamaskController extends EventEmitter {
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
           null,
-          this.getTransactionMetricsRequest(),
+          this.getTransactionEventRequest(),
         ),
       getTransactions: txController.getTransactions.bind(txController),
 
