@@ -180,8 +180,17 @@ async function main() {
     'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
   ).toString('utf8');
 
+  // Report if no tests found, exit gracefully
   if (result.indexOf('There were no tests found') !== -1) {
     console.log(`run-all.js info: Skipping this node because "${result}"`);
+    return;
+  }
+
+  // If there's no text file, it means this node has no tests, so exit gracefully
+  if (!fs.existsSync('test/test-results/myTestList.txt')) {
+    console.log(
+      'run-all.js info: Skipping this node because there is no myTestList.txt',
+    );
     return;
   }
 
