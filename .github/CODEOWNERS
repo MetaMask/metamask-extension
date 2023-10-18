@@ -9,7 +9,6 @@
 
 *                                    @MetaMask/extension-devs
 **/snaps/**                          @MetaMask/snaps-devs
-**/flask/**                          @MetaMask/extension-devs @MetaMask/snaps-devs
 development/                         @MetaMask/extension-devs @kumavis
 lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
 
@@ -24,6 +23,17 @@ lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-c
 # should be brought to the attention of engineering leadership for
 # discussion
 .circleci/                           @MetaMask/library-admins @kumavis @brad-decker
+
+# The privacy-snapshot.json file includes a list of all hosts that the
+# extension communicates with during the E2E test suite runs. It is not a
+# complete list of all hosts that the extension communicates with until the E2E
+# test suite has full coverage. Anytime the privacy-snapshot file changes,
+# extra scrutiny should be applied to the pull request to confirm that it does
+# not broaden the number of hosts the extension communicates with without also
+# providing a path for users to avoid that communication. MetaMask strives to
+# make all such communication opt IN versus opt OUT.
+privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
+
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
 # of contributors. Modifications to this file result in a modification of

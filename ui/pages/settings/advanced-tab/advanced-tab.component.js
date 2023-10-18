@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Box, BannerAlert } from '../../../components/component-library';
+import {
+  Box,
+  BannerAlert,
+  BannerAlertSeverity,
+} from '../../../components/component-library';
 import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
@@ -34,7 +38,6 @@ import {
   exportAsFile,
   ExportableContentType,
 } from '../../../helpers/utils/export-utils';
-import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
@@ -748,18 +751,23 @@ export default class AdvancedTab extends PureComponent {
             />
           </div>
           {showResultMessage && (
-            <ActionableMessage
-              type={restoreSuccessful ? 'success' : 'danger'}
-              message={restoreMessageToRender}
-              primaryActionV2={{
-                label: t('dismiss'),
-                onClick: () => {
-                  this.setState({
-                    showResultMessage: false,
-                    restoreSuccessful: true,
-                    restoreMessage: null,
-                  });
-                },
+            <BannerAlert
+              severity={
+                restoreSuccessful
+                  ? BannerAlertSeverity.Success
+                  : BannerAlertSeverity.Danger
+              }
+              description={restoreMessageToRender}
+              descriptionProps={{
+                'data-testid': 'restore-user-data-banner-alert-description',
+              }}
+              actionButtonLabel={t('dismiss')}
+              actionButtonOnClick={() => {
+                this.setState({
+                  showResultMessage: false,
+                  restoreSuccessful: true,
+                  restoreMessage: null,
+                });
               }}
             />
           )}

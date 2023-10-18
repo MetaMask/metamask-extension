@@ -106,6 +106,9 @@ describe('Show account details', function () {
         // Create and focus on different account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
@@ -153,6 +156,9 @@ describe('Show account details', function () {
 
         // Create and focus on different account
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );

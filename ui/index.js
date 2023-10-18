@@ -10,6 +10,7 @@ import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
@@ -240,14 +241,27 @@ function setupStateHooks(store) {
     const reduxState = store.getState();
     return maskObject(reduxState, SENTRY_UI_STATE);
   };
+  window.stateHooks.getLogs = function () {
+    // These logs are logged by LoggingController
+    const reduxState = store.getState();
+    const { logs } = reduxState.metamask;
+
+    const logsArray = Object.values(logs).sort((a, b) => {
+      return a.timestamp - b.timestamp;
+    });
+
+    return logsArray;
+  };
 }
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();
+  const logs = window.stateHooks.getLogs();
   browser.runtime
     .getPlatformInfo()
     .then((platform) => {
       state.platform = platform;
+      state.logs = logs;
       const stateString = JSON.stringify(state, null, 2);
       cb(null, stateString);
     })
@@ -261,7 +275,7 @@ window.logState = function (toClipboard) {
     if (err) {
       console.error(err.message);
     } else if (toClipboard) {
-      copyToClipboard(result);
+      copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);

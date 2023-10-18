@@ -403,7 +403,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     description: t('permission_manageAccountsDescription'),
     leftIcon: getLeftIcon(IconName.UserCircleAdd),
     rightIcon: null,
-    weight: 3,
+    weight: 2,
+  }),
+  [EndowmentPermissions['endowment:keyring']]: ({ t }) => ({
+    label: t('permission_keyring'),
+    description: t('permission_keyringDescription'),
+    leftIcon: getLeftIcon(IconName.UserCircleAdd),
+    rightIcon: null,
+    weight: 2,
   }),
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
