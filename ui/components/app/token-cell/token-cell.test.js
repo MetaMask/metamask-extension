@@ -42,15 +42,6 @@ describe('Token Cell', () => {
 
   // two tokens with the same symbol but different addresses
   const MOCK_GET_TOKEN_LIST = {
-    '0xAnotherToken': {
-      name: 'TEST',
-      erc20: true,
-      symbol: 'TEST',
-      decimals: 18,
-      address: '0xAnotherToken',
-      iconUrl: './images/test_image.svg',
-      aggregators: [],
-    },
     '0xAddress': {
       name: 'TEST-2',
       erc20: true,
@@ -58,6 +49,15 @@ describe('Token Cell', () => {
       decimals: 18,
       address: '0xAddress',
       iconUrl: './images/test_1_image.svg',
+      aggregators: [],
+    },
+    '0xAnotherToken': {
+      name: 'TEST',
+      erc20: true,
+      symbol: 'TEST',
+      decimals: 18,
+      address: '0xAnotherToken',
+      iconUrl: './images/test_image.svg',
       aggregators: [],
     },
   };
