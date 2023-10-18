@@ -1,78 +1,33 @@
-.view-snap {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-background-default);
+.snap-view {
+  $height-screen-sm-max: 100%;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
 
-  &__header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    padding: 65px 24px 15px 24px;
-    border-bottom: 1px solid var(--color-border-muted);
+  width: 100%;
+  flex-flow: column nowrap;
 
-    @include screen-sm-max {
-      padding: 10px 20px;
-    }
-
-    &__title-container {
-      display: flex;
-      flex-flow: row;
-      align-items: center;
-      flex: 0 0 auto;
-
-      &__title {
-        @include H3;
-
-        margin-left: 26px;
-
-        @include screen-sm-max {
-          @include H6;
-
-          margin-left: 16px;
-          font-weight: bold;
-        }
-      }
-    }
-
-    &_button {
-      width: auto;
-
-      @include screen-sm-max {
-        font-size: 0.75rem;
-        padding: 3.5px 1rem;
-      }
-    }
+  @include screen-sm-max {
+    height: $height-screen-sm-max;
   }
 
-  &__container {
-    display: flex;
-    overflow: auto;
-    flex-direction: column;
-    flex: 1 1 auto;
+  @include screen-sm-min {
+    width: $width-screen-sm-min;
+  }
 
-    @include screen-sm-max {
-      height: 100%;
-    }
+  @include screen-md-min {
+    width: $width-screen-md-min;
+  }
 
-    &__text {
-      @include H3;
-
-      color: var(--color-text-muted);
-      text-align: center;
-
-      @include screen-sm-max {
-        @include H6;
-      }
-    }
+  @include screen-lg-min {
+    width: $width-screen-lg-min;
   }
 
   &__content {
-    @include screen-md-min {
-      margin-top: 24px;
-      margin-left: 24px;
-      margin-right: 24px;
+    padding: 32px;
+
+    @include screen-sm-max {
+      padding: 16px;
     }
 
     &__description {
@@ -100,7 +55,6 @@
         background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-default) 33%);
       }
     }
-
 
     &__permissions {
       .permission-cell {
@@ -145,5 +99,13 @@
         font-size: 14px;
       }
     }
+
+    &__remove-button,
+    &__remove-button:hover {
+      .mm-box--color-error-default {
+        color: inherit;
+      }
+    }
   }
 }
+

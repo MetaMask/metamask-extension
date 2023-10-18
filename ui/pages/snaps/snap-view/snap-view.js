@@ -6,16 +6,18 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/rpc-methods';
 import classnames from 'classnames';
-import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  BackgroundColor,
+  BlockSize,
   Color,
-  FLEX_WRAP,
+  Display,
+  FlexWrap,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import SnapAuthorshipExpanded from '../../../components/app/snaps/snap-authorship-expanded';
-import Box from '../../../components/ui/box';
 import SnapRemoveWarning from '../../../components/app/snaps/snap-remove-warning';
 import ConnectedSitesList from '../../../components/app/connected-sites-list';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -43,15 +45,22 @@ import {
 } from '../../../selectors';
 import { getSnapName } from '../../../helpers/utils/util';
 import {
+  Box,
+  Button,
   ButtonIcon,
-  ButtonIconSize,
-  IconName,
+  ButtonSize,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import SnapPermissionsList from '../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../helpers/constants/snaps';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import {
+  Content,
+  Header,
+  Page,
+} from '../../../components/multichain/pages/page';
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IN
 
@@ -161,158 +170,170 @@ function SnapView() {
   };
 
   return (
-    <div className="main-container view-snap">
-      <div className="view-snap__header">
-        <div className="view-snap__header__title-container">
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Lg}
-            color={Color.textDefault}
-            onClick={() => history.push(SNAPS_ROUTE)}
-            ariaLabel="back"
-          />
-          <div className="view-snap__header__title-container__title">
-            {t('snaps')}
-          </div>
-        </div>
-      </div>
-      <Box
-        className="view-snap__content"
-        paddingBottom={[4, 8]}
-        paddingTop={[4, 8]}
-        paddingLeft={4}
-        paddingRight={4}
-      >
-        <SnapAuthorshipExpanded snapId={snap.id} snap={snap} />
-        <Box className="view-snap__content__description" marginTop={[4, 7]}>
-          <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
-            <Box
-              className={classnames(
-                'view-snap__content__description__wrapper',
-                {
-                  open: isDescriptionOpen,
-                },
-              )}
-              ref={descriptionRef}
-            >
-              <Text>{snap?.manifest.description}</Text>
-              {shouldDisplayMoreButton && (
-                <Button
-                  className="view-snap__content__description__more-button"
-                  type="link"
-                  onClick={handleMoreClick}
-                >
-                  <Text color={Color.infoDefault}>{t('more')}</Text>
-                </Button>
-              )}
-            </Box>
-          </SnapDelineator>
-        </Box>
-        <Box className="view-snap__content__permissions" marginTop={12}>
-          <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
-          <SnapPermissionsList
-            snapId={decodedSnapId}
-            permissions={permissions ?? {}}
-            targetSubjectMetadata={targetSubjectMetadata}
-            showOptions
-          />
-        </Box>
-        <Box className="view-snap__content__connected-sites" marginTop={12}>
-          <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
-            {t('connectedSites')}
-          </Text>
-          <ConnectedSitesList
-            connectedSubjects={connectedSubjects}
-            onDisconnect={(origin) => {
-              onDisconnect(origin, snap.id);
-            }}
-          />
-        </Box>
-        <Box className="view-snap__content__remove" marginTop={12}>
-          <Text
-            variant={TextVariant.bodyLgMedium}
-            color={TextColor.textDefault}
-          >
-            {t('removeSnap')}
-          </Text>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-            {t('removeSnapDescription')}
-          </Text>
-          <Box marginTop={4}>
-            <Button
-              className="view-snap__content__remove-button"
-              type="danger"
-              onClick={() => setIsShowingRemoveWarning(true)}
-              data-testid="remove-snap-button"
-            >
-              <Text
-                data-testid="remove-snap-button-content"
-                variant={TextVariant.bodyMd}
-                color={TextColor.errorDefault}
-                flexWrap={FLEX_WRAP.NO_WRAP}
-                ellipsis
-                style={{ overflow: 'hidden' }}
-              >
-                {`${t('remove')} ${snapName}`}
-              </Text>
-            </Button>
-            <SnapRemoveWarning
-              isOpen={
-                isShowingRemoveWarning &&
-                (!isKeyringSnap || keyringAccounts.length === 0) &&
-                !isRemovingKeyringSnap
-              }
-              onCancel={() => setIsShowingRemoveWarning(false)}
-              onSubmit={async () => {
-                await dispatch(removeSnap(snap.id));
-              }}
-              snapName={snapName}
+    <div className="snap-view">
+      <Page backgroundColor={BackgroundColor.backgroundDefault}>
+        <Header
+          backgroundColor={BackgroundColor.backgroundDefault}
+          startAccessory={
+            <ButtonIcon
+              ariaLabel="Back"
+              iconName="arrow-left"
+              size="sm"
+              onClick={() => history.push(SNAPS_ROUTE)}
             />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-              <>
-                <KeyringSnapRemovalWarning
-                  snap={snap}
-                  keyringAccounts={keyringAccounts}
-                  snapUrl={snap.url}
-                  onCancel={() => setIsShowingRemoveWarning(false)}
-                  onClose={() => setIsShowingRemoveWarning(false)}
-                  onBack={() => setIsShowingRemoveWarning(false)}
-                  onSubmit={async () => {
-                    try {
-                      setIsRemovingKeyringSnap(true);
-                      await dispatch(removeSnap(snap.id));
-                      setIsShowingRemoveWarning(false);
-                      dispatch(
-                        showKeyringSnapRemovalModal({
-                          snapName,
-                          result: KeyringSnapRemovalResultStatus.Success,
-                        }),
-                      );
-                    } catch {
-                      setIsShowingRemoveWarning(false);
-                      dispatch(
-                        showKeyringSnapRemovalModal({
-                          snapName,
-                          result: KeyringSnapRemovalResultStatus.Failed,
-                        }),
-                      );
-                    } finally {
-                      setIsRemovingKeyringSnap(false);
-                    }
-                  }}
+          }
+        >
+          {snapName}
+        </Header>
+        <Content
+          backgroundColor={BackgroundColor.backgroundDefault}
+          className="snap-view__content"
+        >
+          <Box>
+            <SnapAuthorshipExpanded snapId={snap.id} snap={snap} />
+            <Box className="snap-view__content__description" marginTop={[4, 7]}>
+              <SnapDelineator
+                type={DelineatorType.Description}
+                snapName={snapName}
+              >
+                <Box
+                  className={classnames(
+                    'snap-view__content__description__wrapper',
+                    {
+                      open: isDescriptionOpen,
+                    },
+                  )}
+                  ref={descriptionRef}
+                >
+                  <Text>{snap?.manifest.description}</Text>
+                  {shouldDisplayMoreButton && (
+                    <Button
+                      className="snap-view__content__description__more-button"
+                      type="link"
+                      onClick={handleMoreClick}
+                    >
+                      <Text color={Color.infoDefault}>{t('more')}</Text>
+                    </Button>
+                  )}
+                </Box>
+              </SnapDelineator>
+            </Box>
+            <Box className="snap-view__content__permissions" marginTop={12}>
+              <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
+              <SnapPermissionsList
+                snapId={decodedSnapId}
+                permissions={permissions ?? {}}
+                targetSubjectMetadata={targetSubjectMetadata}
+                showOptions
+              />
+            </Box>
+            <Box className="snap-view__content__connected-sites" marginTop={12}>
+              <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
+                {t('connectedSites')}
+              </Text>
+              <ConnectedSitesList
+                connectedSubjects={connectedSubjects}
+                onDisconnect={(origin) => {
+                  onDisconnect(origin, snap.id);
+                }}
+              />
+            </Box>
+            <Box className="snap-view__content__remove" marginTop={12}>
+              <Text
+                variant={TextVariant.bodyLgMedium}
+                color={TextColor.textDefault}
+              >
+                {t('removeSnap')}
+              </Text>
+              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+                {t('removeSnapDescription')}
+              </Text>
+              <Box
+                marginTop={4}
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+              >
+                <Button
+                  className="snap-view__content__remove-button"
+                  danger="true"
+                  variant={ButtonVariant.Secondary}
+                  width={BlockSize.Full}
+                  size={ButtonSize.Lg}
+                  onClick={() => setIsShowingRemoveWarning(true)}
+                  data-testid="remove-snap-button"
+                >
+                  <Text
+                    as="span"
+                    color={TextColor.inherit}
+                    variant={TextVariant.bodyMd}
+                    flexWrap={FlexWrap.NoWrap}
+                    ellipsis
+                    style={{ overflow: 'hidden' }}
+                    paddingTop={3}
+                    paddingBottom={3}
+                  >
+                    {`${t('remove')} ${snapName}`}
+                  </Text>
+                </Button>
+                <SnapRemoveWarning
                   isOpen={
                     isShowingRemoveWarning &&
-                    isKeyringSnap &&
-                    keyringAccounts.length > 0
+                    (!isKeyringSnap || keyringAccounts.length === 0) &&
+                    !isRemovingKeyringSnap
                   }
+                  onCancel={() => setIsShowingRemoveWarning(false)}
+                  onSubmit={async () => {
+                    await dispatch(removeSnap(snap.id));
+                  }}
+                  snapName={snapName}
                 />
-              </>
-              ///: END:ONLY_INCLUDE_IN
-            }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+                  <>
+                    <KeyringSnapRemovalWarning
+                      snap={snap}
+                      keyringAccounts={keyringAccounts}
+                      snapUrl={snap.url}
+                      onCancel={() => setIsShowingRemoveWarning(false)}
+                      onClose={() => setIsShowingRemoveWarning(false)}
+                      onBack={() => setIsShowingRemoveWarning(false)}
+                      onSubmit={async () => {
+                        try {
+                          setIsRemovingKeyringSnap(true);
+                          await dispatch(removeSnap(snap.id));
+                          setIsShowingRemoveWarning(false);
+                          dispatch(
+                            showKeyringSnapRemovalModal({
+                              snapName,
+                              result: KeyringSnapRemovalResultStatus.Success,
+                            }),
+                          );
+                        } catch {
+                          setIsShowingRemoveWarning(false);
+                          dispatch(
+                            showKeyringSnapRemovalModal({
+                              snapName,
+                              result: KeyringSnapRemovalResultStatus.Failed,
+                            }),
+                          );
+                        } finally {
+                          setIsRemovingKeyringSnap(false);
+                        }
+                      }}
+                      isOpen={
+                        isShowingRemoveWarning &&
+                        isKeyringSnap &&
+                        keyringAccounts.length > 0
+                      }
+                    />
+                  </>
+                  ///: END:ONLY_INCLUDE_IN
+                }
+              </Box>
+            </Box>
           </Box>
-        </Box>
-      </Box>
+        </Content>
+      </Page>
     </div>
   );
 }
