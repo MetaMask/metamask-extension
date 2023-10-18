@@ -899,15 +899,18 @@ const addAppInstalledEvent = () => {
 };
 
 // On first install, open a new tab with MetaMask
-browser.runtime.onInstalled.addListener(({ reason }) => {
+async function onInstall() {
+  const storeAlreadyExisted = Boolean(await localStore.get());
+  // If the store doesn't exist, then this is the first time running this script,
+  // and is therefore an install
   if (
-    reason === 'install' &&
+    !storeAlreadyExisted &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
-});
+}
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
@@ -916,7 +919,8 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-function initBackground() {
+async function initBackground() {
+  await onInstall();
   initialize().catch(log.error);
 }
 
