@@ -263,7 +263,6 @@ function SnapView() {
                   data-testid="remove-snap-button"
                 >
                   <Text
-                    as="span"
                     color={TextColor.inherit}
                     variant={TextVariant.bodyMd}
                     flexWrap={FlexWrap.NoWrap}
