@@ -224,8 +224,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         <MenuItem
           iconName={IconName.Snaps}
           onClick={() => {
-            closeMenu();
             history.push(SNAPS_ROUTE);
+            closeMenu();
           }}
         >
           {t('snaps')}
