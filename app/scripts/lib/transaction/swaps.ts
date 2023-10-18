@@ -112,8 +112,7 @@ export async function createSwapsTransaction(
 function throwErrorIfNotUnapprovedTx(transactionMeta: TransactionMeta) {
   if (!isUnapprovedTransaction(transactionMeta)) {
     throw new Error(
-      `TransactionsController: Can only call createSwapsTransaction on an unapproved transaction.
-         Current tx status: ${transactionMeta.status}`,
+      `TransactionsController: Can only call createSwapsTransaction on an unapproved transaction. Current tx status: ${transactionMeta.status}`,
     );
   }
 }

@@ -38,7 +38,7 @@ const { provider } = createTestProviderTools({
   chainId: '5',
 });
 
-jest.mock('./snap-keyring/metrics', () => {
+jest.mock('../snap-keyring/metrics', () => {
   return {
     getSnapAndHardwareInfoForMetrics: jest.fn().mockResolvedValue({
       account_snap_type: 'snaptype',
