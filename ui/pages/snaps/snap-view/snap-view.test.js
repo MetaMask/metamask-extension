@@ -37,13 +37,11 @@ const mockStore = configureMockStore([thunk])(mockState);
 
 describe('ViewSnap', () => {
   it('should properly display Snap View elements', async () => {
-    const { getByText, container, getByTestId } = renderWithProvider(
-      <SnapView />,
-      mockStore,
-    );
+    const { getByText, container, getByTestId, getAllByText } =
+      renderWithProvider(<SnapView />, mockStore);
 
     // Snap name & Snap authorship component
-    expect(getByText('BIP-44 Test Snap')).toBeDefined();
+    expect(getAllByText('BIP-44 Test Snap')).toHaveLength(2);
     expect(
       container.getElementsByClassName('snaps-authorship-expanded')?.length,
     ).toBe(1);
@@ -82,7 +80,7 @@ describe('ViewSnap', () => {
     ).toBeDefined();
     expect(getByText('Remove BIP-44 Test Snap')).toBeDefined();
     expect(getByTestId('remove-snap-button')).toHaveClass(
-      'button btn--rounded btn-danger view-snap__content__remove-button',
+      'snap-view__content__remove-button',
     );
   });
 });
