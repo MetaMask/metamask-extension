@@ -646,6 +646,7 @@ export enum MetaMetricsEventName {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   InsightSnapViewed = 'Insight Snap Viewed',
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
   ///: END:ONLY_INCLUDE_IN
