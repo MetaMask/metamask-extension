@@ -4,10 +4,10 @@ import thunk from 'redux-thunk';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   MOCKS,
 } from '../../../../test/jest';
 import ViewQuote from '.';
