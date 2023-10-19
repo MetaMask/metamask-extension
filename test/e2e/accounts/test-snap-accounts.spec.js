@@ -89,8 +89,6 @@ describe('Test Snap Account', function () {
           '[data-testid="account-options-menu-button"]',
         );
 
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-
         await driver.clickElement({ text: 'Snaps', tag: 'div' });
 
         await driver.clickElement(

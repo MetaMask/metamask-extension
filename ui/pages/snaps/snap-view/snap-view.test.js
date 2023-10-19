@@ -2,11 +2,11 @@ import * as React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import ViewSnap from './view-snap';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import SnapView from './snap-view';
 
-jest.mock('../../../../store/actions.ts', () => {
+jest.mock('../../../store/actions.ts', () => {
   return {
     disableSnap: jest.fn(),
     enableSnap: jest.fn(),
@@ -26,7 +26,7 @@ jest.mock('react-router-dom', () => {
   return {
     ...original,
     useLocation: jest.fn(() => ({
-      pathname: `/settings/snaps-view/${encodeURIComponent(
+      pathname: `/snaps/view/${encodeURIComponent(
         'npm:@metamask/test-snap-bip44',
       )}`,
     })),
@@ -35,15 +35,13 @@ jest.mock('react-router-dom', () => {
 
 const mockStore = configureMockStore([thunk])(mockState);
 
-describe('ViewSnap', () => {
+describe('SnapView', () => {
   it('should properly display Snap View elements', async () => {
-    const { getByText, container, getByRole } = renderWithProvider(
-      <ViewSnap />,
-      mockStore,
-    );
+    const { getByText, container, getByTestId, getAllByText } =
+      renderWithProvider(<SnapView />, mockStore);
 
     // Snap name & Snap authorship component
-    expect(getByText('BIP-44 Test Snap')).toBeDefined();
+    expect(getAllByText('BIP-44 Test Snap')).toHaveLength(2);
     expect(
       container.getElementsByClassName('snaps-authorship-expanded')?.length,
     ).toBe(1);
@@ -81,8 +79,8 @@ describe('ViewSnap', () => {
       ),
     ).toBeDefined();
     expect(getByText('Remove BIP-44 Test Snap')).toBeDefined();
-    expect(getByRole('button')).toHaveClass(
-      'button btn--rounded btn-danger view-snap__remove-button',
+    expect(getByTestId('remove-snap-button')).toHaveClass(
+      'snap-view__content__remove-button',
     );
   });
 });

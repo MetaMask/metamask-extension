@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../../store/store';
-import testData from '../../../../../.storybook/test-data';
-import SnapListTab from './snap-list-tab';
+import configureStore from '../../../store/store';
+import testData from '../../../../.storybook/test-data';
+import SnapList from './snap-list';
 
 // Using Test Data For Redux
 const store = configureStore(testData);
 
 export default {
-  title: 'Pages/Settings/SnapListTab',
+  title: 'Pages/Settings/SnapList',
 
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argTypes: {
@@ -27,7 +27,7 @@ export const DefaultStory = (args) => {
 
   return (
     <div>
-      <SnapListTab
+      <SnapList
         {...args}
         snaps={state.metamask.snaps}
         viewingSnap={viewingSnap}
