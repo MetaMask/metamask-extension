@@ -115,7 +115,7 @@ Differnt build types have different e2e tests sets. In order to run them look in
 ```console
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
-    "test:e2e:chrome:mv3": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mv3",
+    "test:e2e:chrome:mv3": "ENABLE_MV3=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
 ```
 Note: MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
 
