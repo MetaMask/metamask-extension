@@ -8,7 +8,7 @@ import { TokenListItem } from '../../multichain';
 export default function TokenCell({ address, image, symbol, string, onClick }) {
   const tokenList = useSelector(getTokenList);
   const tokenData = Object.values(tokenList).find(
-    (token) => token.symbol === symbol,
+    (token) => token.symbol === symbol && token.address === address,
   );
   const title = tokenData?.name || symbol;
   const tokenImage = tokenData?.iconUrl || image;

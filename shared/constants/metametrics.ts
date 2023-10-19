@@ -150,6 +150,10 @@ export type MetaMetricsEventOptions = {
 
 export type MetaMetricsEventFragment = {
   /**
+   * The action ID of transaction metadata object.
+   */
+  actionId?: string;
+  /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
   successEvent: string;
@@ -559,6 +563,7 @@ export enum MetaMetricsEventName {
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
   ServiceWorkerRestarted = 'Service Worker Restarted',
+  SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',

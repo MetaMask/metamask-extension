@@ -1,9 +1,9 @@
 import React from 'react';
-import SnapSettingsCard from '.';
+import SnapListItem from '.';
 
 export default {
-  title: 'Components/App/Snaps/SnapSettingsCard',
-  component: SnapSettingsCard,
+  title: 'Components/App/Snaps/SnapListItem',
+  component: SnapListItem,
   argTypes: {
     name: {
       control: 'text',
@@ -25,6 +25,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <SnapSettingsCard {...args} />;
+export const DefaultStory = (args) => <SnapListItem {...args} />;
 
 DefaultStory.storyName = 'Default';

@@ -83,7 +83,6 @@
   },
   "NetworkController": {
     "selectedNetworkClientId": "string",
-    "networkId": "1337",
     "providerConfig": {
       "chainId": "0x539",
       "nickname": "Localhost 8545",
