@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getTransactionOriginCaveat } from '@metamask/snaps-controllers';
 import { handleSnapRequest } from '../../store/actions';
-import { getPermissionSubjects } from '../../selectors';
+import { getPermissionSubjectsDeepEqual } from '../../selectors';
 
 const INSIGHT_PERMISSION = 'endowment:transaction-insight';
 
@@ -15,7 +15,7 @@ export function useTransactionInsightSnaps({
   insightSnapId = '',
   ///: END:ONLY_INCLUDE_IN
 }) {
-  const subjects = useSelector(getPermissionSubjects);
+  const subjects = useSelector(getPermissionSubjectsDeepEqual);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);

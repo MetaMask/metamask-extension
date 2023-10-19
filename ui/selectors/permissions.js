@@ -16,15 +16,25 @@ import {
 // selectors
 
 /**
- * Get the permission subjects object.
+ * Deep equal selector to get the permission subjects object.
  *
  * @param {object} state - The current state.
  * @returns {object} The permissions subjects object.
  */
-export const getPermissionSubjects = createDeepEqualSelector(
+export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
   (state) => state.metamask.subjects || {},
   (subjects) => subjects,
 );
+
+/**
+ * Selector to get the permission subjects object.
+ *
+ * @param {object} state - The current state.
+ * @returns {object} The permissions subjects object.
+ */
+export function getPermissionSubjects(state) {
+  return state.metamask.subjects || {};
+}
 
 /**
  * Selects the permitted accounts from the eth_accounts permission given state

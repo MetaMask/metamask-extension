@@ -99,6 +99,10 @@ import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+// eslint-disable-next-line import/order
+import { getPermissionSubjects } from './permissions';
+///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
 
 /**
@@ -942,7 +946,7 @@ export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
 
 export const getInsightSnaps = createDeepEqualSelector(
   getEnabledSnaps,
-  (state) => state.metamask.subjects || {},
+  getPermissionSubjects,
   (snaps, subjects) => {
     return Object.values(snaps).filter(
       ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
@@ -952,7 +956,7 @@ export const getInsightSnaps = createDeepEqualSelector(
 
 export const getNotifySnaps = createDeepEqualSelector(
   getEnabledSnaps,
-  (state) => state.metamask.subjects || {},
+  getPermissionSubjects,
   (snaps, subjects) => {
     return Object.values(snaps).filter(
       ({ id }) => subjects[id]?.permissions.snap_notify,

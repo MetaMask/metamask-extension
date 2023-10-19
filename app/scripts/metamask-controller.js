@@ -3060,7 +3060,9 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-
+      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+      trackInsightSnapView: this.trackInsightSnapView.bind(this),
+      ///: END:ONLY_INCLUDE_IN
       // approval controller
       resolvePendingApproval: this.resolvePendingApproval,
       rejectPendingApproval: this.rejectPendingApproval,
