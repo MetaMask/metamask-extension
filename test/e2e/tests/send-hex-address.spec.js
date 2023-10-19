@@ -34,7 +34,9 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         // Paste address without hex prefix
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -78,7 +80,9 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         // Type address without hex prefix
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',

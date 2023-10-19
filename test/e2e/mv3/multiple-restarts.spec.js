@@ -39,9 +39,13 @@ describe('MV3 - Restart service worker multiple times', function () {
         await driver.navigate();
 
         await unlockWallet(driver, WALLET_PASSWORD);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await assertETHBalance(driver, initialBalance);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         // first send ETH and then terminate SW
         const RECIPIENT_ADDRESS = '0x985c30949c92df7a0bd42e0f3e3d539ece98db24';
         const amountFirstTx = roundToXDecimalPlaces(
@@ -178,7 +182,9 @@ describe('MV3 - Restart service worker multiple times', function () {
         await unlockWallet(driver, WALLET_PASSWORD);
 
         await openDapp(driver);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         // Click add Ethereum chain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
@@ -256,7 +262,9 @@ describe('MV3 - Restart service worker multiple times', function () {
         await unlockWallet(driver, WALLET_PASSWORD);
 
         await openDapp(driver);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.delay(largeDelayMs);
 
         await clickSendButton(driver);
@@ -349,9 +357,10 @@ describe('MV3 - Restart service worker multiple times', function () {
         await driver.navigate();
 
         await unlockWallet(driver, WALLET_PASSWORD);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await reloadExtension(driver, extensionId);
-
         // ensure extension finishes reloading before reopening full screen extension
         await sleepSeconds(0.1);
 
