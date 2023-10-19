@@ -946,7 +946,7 @@ export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
 
 export const getInsightSnaps = createDeepEqualSelector(
   getEnabledSnaps,
-  getPermissionSubjects,
+  (state) => state.metamask.subjects || {},
   (snaps, subjects) => {
     return Object.values(snaps).filter(
       ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
@@ -956,7 +956,7 @@ export const getInsightSnaps = createDeepEqualSelector(
 
 export const getNotifySnaps = createDeepEqualSelector(
   getEnabledSnaps,
-  getPermissionSubjects,
+  (state) => state.metamask.subjects || {},
   (snaps, subjects) => {
     return Object.values(snaps).filter(
       ({ id }) => subjects[id]?.permissions.snap_notify,
