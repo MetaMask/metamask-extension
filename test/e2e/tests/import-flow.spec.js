@@ -151,9 +151,11 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement('[data-testid="account-list-menu-details"');
         await driver.findVisibleElement('.qr-code__wrapper');
         // shows the correct account address
-        const address = await driver.findElement(
-          '[data-testid="address-copy-button-text"]',
-        );
+        const address = process.env.MULTICHAIN
+          ? await driver.findElement('[data-testid="address-copy-button-text"]')
+          : await driver.findElement(
+              '.qr-code [data-testid="address-copy-button-text"]',
+            );
 
         assert.equal(await address.getText(), testAddress);
       },
