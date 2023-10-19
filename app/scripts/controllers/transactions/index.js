@@ -2495,7 +2495,6 @@ export default class TransactionController extends EventEmitter {
     };
 
     const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-      this.getSelectedAddress,
       this.getAccountType,
       this.getDeviceModel,
       this.snapAndHardwareMessenger,

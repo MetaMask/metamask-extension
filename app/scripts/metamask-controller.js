@@ -71,6 +71,8 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+import { AccountsController } from '@metamask/accounts-controller';
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   CUSTODIAN_TYPES,
@@ -508,14 +510,22 @@ export default class MetamaskController extends EventEmitter {
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'TokensController',
       allowedActions: ['ApprovalController:addRequest'],
-      allowedEvents: ['NetworkController:stateChange'],
+      allowedEvents: [
+        'NetworkController:stateChange',
+        'AccountsController:selectedAccountChange',
+      ],
     });
     this.tokensController = new TokensController({
       messenger: tokensControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
+      // TODO: The tokens controller currently does not support internalAccounts. This is done to match the behavior of the previous tokens controller subscription.
+      onPreferencesStateChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          `AccountsController:selectedAccountChange`,
+          (newlySelectedInternalAccount) => {
+            listener({ selectedAddress: newlySelectedInternalAccount.address });
+          },
+        ),
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
@@ -531,7 +541,13 @@ export default class MetamaskController extends EventEmitter {
       getERC20TokenName: this.assetsContractController.getERC20TokenName.bind(
         this.assetsContractController,
       ),
-      config: { provider: this.provider },
+      config: {
+        provider: this.provider,
+        selectedAddress:
+          initState?.AccountsController?.internalAccounts?.accounts[
+            initState?.AccountsController?.internalAccounts?.selectedAccount
+          ]?.address ?? '',
+      },
       state: initState.TokensController,
     });
 
@@ -754,16 +770,22 @@ export default class MetamaskController extends EventEmitter {
       {
         chainId: this.networkController.state.providerConfig.chainId,
         ticker: this.networkController.state.providerConfig.ticker,
-        selectedAddress: this.preferencesController.getSelectedAddress(),
+        selectedAddress: () =>
+          this.accountsController.getSelectedAccount().address,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        onPreferencesStateChange:
-          this.preferencesController.store.subscribe.bind(
-            this.preferencesController.store,
+        onPreferencesStateChange: (listener) =>
+          this.controllerMessenger.subscribe(
+            `AccountsController:selectedAccountChange`,
+            (newlySelectedInternalAccount) => {
+              listener({
+                selectedAddress: newlySelectedInternalAccount.address,
+              });
+            },
           ),
       },
       {},
@@ -801,58 +823,6 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.OnboardingController,
     });
 
-    // account tracker watches balances, nonces, and any code at their address
-    this.accountTracker = new AccountTracker({
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
-      getNetworkIdentifier: () => {
-        const { type, rpcUrl } = this.networkController.state.providerConfig;
-        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-      },
-      preferencesController: this.preferencesController,
-      onboardingController: this.onboardingController,
-      initState:
-        isManifestV3 &&
-        isFirstMetaMaskControllerSetup === false &&
-        initState.AccountTracker?.accounts
-          ? { accounts: initState.AccountTracker.accounts }
-          : { accounts: {} },
-      onAccountRemoved: this.controllerMessenger.subscribe.bind(
-        this.controllerMessenger,
-        'KeyringController:accountRemoved',
-      ),
-    });
-
-    // start and stop polling for balances based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      const { completedOnboarding } =
-        this.onboardingController.store.getState();
-      if (activeControllerConnections > 0 && completedOnboarding) {
-        this.triggerNetworkrequests();
-      } else {
-        this.stopNetworkRequests();
-      }
-    });
-
-    this.onboardingController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const { completedOnboarding: currCompletedOnboarding } = currState;
-        if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          this.triggerNetworkrequests();
-        }
-      }, this.onboardingController.store.getState()),
-    );
-
-    this.cachedBalancesController = new CachedBalancesController({
-      accountTracker: this.accountTracker,
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
-      initState: initState.CachedBalancesController,
-    });
-
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
     if (this.canUseHardwareWallets()) {
@@ -885,7 +855,7 @@ export default class MetamaskController extends EventEmitter {
     const getSnapController = () => this.snapController;
     const getApprovalController = () => this.approvalController;
     const getKeyringController = () => this.keyringController;
-    const getPreferencesController = () => this.preferencesController;
+    const getAccountsController = () => this.accountsController;
     const getPhishingController = () => this.phishingController;
 
     additionalKeyrings.push(
@@ -893,7 +863,7 @@ export default class MetamaskController extends EventEmitter {
         getSnapController,
         getApprovalController,
         getKeyringController,
-        getPreferencesController,
+        getAccountsController,
         getPhishingController,
         (address) => this.removeAccount(address),
       ),
@@ -932,15 +902,33 @@ export default class MetamaskController extends EventEmitter {
       removeIdentity: this.preferencesController.removeAddress.bind(
         this.preferencesController,
       ),
-      setAccountLabel: this.preferencesController.setAccountLabel.bind(
-        this.preferencesController,
-      ),
-      setSelectedAddress: this.preferencesController.setSelectedAddress.bind(
-        this.preferencesController,
-      ),
-      syncIdentities: this.preferencesController.syncAddresses.bind(
-        this.preferencesController,
-      ),
+      setAccountLabel: (address, label) => {
+        const accountToBeNamed = this.accountsController
+          .listAccounts()
+          .find(
+            (account) =>
+              account.address.toLowerCase() === address.toLowerCase(),
+          );
+        this.accountsController.setAccountName(accountToBeNamed.id, label);
+
+        this.preferencesController.setAccountLabel(address, label);
+      },
+      setSelectedAddress: (address) => {
+        const accountToBeSet = this.accountsController
+          .listAccounts()
+          .find(
+            (account) =>
+              account.address.toLowerCase() === address.toLowerCase(),
+          );
+        if (accountToBeSet) {
+          this.accountsController.setSelectedAccount(accountToBeSet);
+        }
+
+        this.preferencesController.setSelectedAddress(address);
+      },
+      syncIdentities: async (identities) => {
+        this.preferencesController.syncAddresses(identities);
+      },
       updateIdentities: this.preferencesController.setAddresses.bind(
         this.preferencesController,
       ),
@@ -959,8 +947,31 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    const getIdentities = () =>
-      this.preferencesController.store.getState().identities;
+    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+        'AccountsController:selectedAccountChange',
+      ],
+      allowedActions: [
+        'AccountsController:setCurrentAccount',
+        'AccountsController:setAccountName',
+        'AccountsController:listAccounts',
+        'AccountsController:getSelectedAccount',
+        'AccountsController:getAccountByAddress',
+        'AccountsController:updateAccounts',
+        'KeyringController:getAccounts',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+      ],
+    });
+
+    this.accountsController = new AccountsController({
+      messenger: accountsControllerMessenger,
+      state: initState.AccountsController,
+    });
 
     this.permissionController = new PermissionController({
       messenger: this.controllerMessenger.getRestricted({
@@ -976,26 +987,36 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.PermissionController,
-      caveatSpecifications: getCaveatSpecifications({ getIdentities }),
+      caveatSpecifications: getCaveatSpecifications({
+        getInternalAccounts: this.accountsController.listAccounts.bind(
+          this.accountsController,
+        ),
+      }),
       permissionSpecifications: {
         ...getPermissionSpecifications({
-          getIdentities,
+          getInternalAccounts: this.accountsController.listAccounts.bind(
+            this.accountsController,
+          ),
           getAllAccounts: this.keyringController.getAccounts.bind(
             this.keyringController,
           ),
           captureKeyringTypesWithMissingIdentities: (
-            identities = {},
+            internalAccounts = [],
             accounts = [],
           ) => {
             const accountsMissingIdentities = accounts.filter(
-              (address) => !identities[address],
+              (address) =>
+                !internalAccounts.find(
+                  (account) =>
+                    account.address.toLowerCase() === address.toLowerCase(),
+                ),
             );
             const keyringTypesWithMissingIdentities =
               accountsMissingIdentities.map((address) =>
                 this.keyringController.getAccountKeyringType(address),
               );
 
-            const identitiesCount = Object.keys(identities || {}).length;
+            const internalAccountCount = internalAccounts.length;
 
             const accountTrackerCount = Object.keys(
               this.accountTracker.store.getState().accounts || {},
@@ -1003,7 +1024,7 @@ export default class MetamaskController extends EventEmitter {
 
             captureException(
               new Error(
-                `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${identitiesCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
+                `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
               ),
             );
           },
@@ -1185,6 +1206,63 @@ export default class MetamaskController extends EventEmitter {
 
     ///: END:ONLY_INCLUDE_IN
 
+    // account tracker watches balances, nonces, and any code at their address
+    this.accountTracker = new AccountTracker({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+      getCurrentChainId: () =>
+        this.networkController.state.providerConfig.chainId,
+      getNetworkIdentifier: () => {
+        const { type, rpcUrl } = this.networkController.state.providerConfig;
+        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
+      },
+      preferencesController: this.preferencesController,
+      onboardingController: this.onboardingController,
+      controllerMessenger: this.controllerMessenger.getRestricted({
+        name: 'AccountTracker',
+        allowedEvents: ['AccountsController:selectedAccountChange'],
+        allowedActions: ['AccountsController:getSelectedAccount'],
+      }),
+      initState:
+        isManifestV3 &&
+        isFirstMetaMaskControllerSetup === false &&
+        initState.AccountTracker?.accounts
+          ? { accounts: initState.AccountTracker.accounts }
+          : { accounts: {} },
+      onAccountRemoved: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'KeyringController:accountRemoved',
+      ),
+    });
+
+    // start and stop polling for balances based on activeControllerConnections
+    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
+      if (activeControllerConnections > 0 && completedOnboarding) {
+        this.triggerNetworkrequests();
+      } else {
+        this.stopNetworkRequests();
+      }
+    });
+
+    this.onboardingController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          this.triggerNetworkrequests();
+        }
+      }, this.onboardingController.store.getState()),
+    );
+
+    this.cachedBalancesController = new CachedBalancesController({
+      accountTracker: this.accountTracker,
+      getCurrentChainId: () =>
+        this.networkController.state.providerConfig.chainId,
+      initState: initState.CachedBalancesController,
+    });
+
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     this.desktopController = new DesktopController({
       initState: initState.DesktopController,
@@ -1199,12 +1277,17 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:stateChange',
           'KeyringController:lock',
           'KeyringController:unlock',
+          'AccountsController:selectedAccountChange',
         ],
       });
     this.detectTokensController = new DetectTokensController({
       messenger: detectTokensControllerMessenger,
       preferences: this.preferencesController,
       tokensController: this.tokensController,
+      getCurrentSelectedAccount:
+        this.accountsController.getSelectedAccount.bind(
+          this.accountsController,
+        ),
       assetsContractController: this.assetsContractController,
       network: this.networkController,
       tokenList: this.tokenListController,
@@ -1221,6 +1304,11 @@ export default class MetamaskController extends EventEmitter {
     this.alertController = new AlertController({
       initState: initState.AlertController,
       preferencesStore: this.preferencesController.store,
+      controllerMessenger: this.controllerMessenger.getRestricted({
+        name: 'AlertController',
+        allowedEvents: ['AccountsController:selectedAccountChange'],
+        allowedActions: ['AccountsController:getSelectedAccount'],
+      }),
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -1242,6 +1330,7 @@ export default class MetamaskController extends EventEmitter {
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
+      accountsController: this.accountsController,
       networkController: this.networkController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1250,8 +1339,8 @@ export default class MetamaskController extends EventEmitter {
 
     // This gets used as a ...spread parameter in two places: new TransactionController() and createRPCMethodTrackingMiddleware()
     this.snapAndHardwareMetricsParams = {
-      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(
-        this.preferencesController,
+      getSelectedAccount: this.accountsController.getSelectedAccount.bind(
+        this.accountsController,
       ),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
@@ -1260,6 +1349,7 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           'KeyringController:getKeyringForAccount',
           'SnapController:get',
+          'AccountsController:getSelectedAccount',
         ],
       }),
     };
@@ -1684,7 +1774,7 @@ export default class MetamaskController extends EventEmitter {
       ) => {
         if (innerOrigin === ORIGIN_METAMASK) {
           const selectedAddress =
-            this.preferencesController.getSelectedAddress();
+            this.accountsController.getSelectedAccount().address;
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
           return await this.getPermittedAccounts(innerOrigin, {
@@ -1787,6 +1877,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     this.store.updateStructure({
+      AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController.store,
       TransactionController: this.txController.store,
@@ -1838,6 +1929,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.memStore = new ComposableObservableStore({
       config: {
+        AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController.store,
         NetworkController: this.networkController,
@@ -2155,7 +2247,8 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedAddress;
 
     this.preferencesController.store.subscribe(async (state) => {
-      const { selectedAddress, currentLocale } = state;
+      const { currentLocale } = state;
+
       const { chainId } = this.networkController.state.providerConfig;
       await updateCurrentLocale(currentLocale);
 
@@ -2164,12 +2257,17 @@ export default class MetamaskController extends EventEmitter {
       } else {
         this.txController.stopIncomingTransactionPolling();
       }
-
-      if (selectedAddress && selectedAddress !== lastSelectedAddress) {
-        lastSelectedAddress = selectedAddress;
-        await this._onAccountChange(selectedAddress);
-      }
     });
+
+    this.controllerMessenger.subscribe(
+      `${this.accountsController.name}:selectedAccountChange`,
+      async (account) => {
+        if (account.address && account.address !== lastSelectedAddress) {
+          lastSelectedAddress = account.address;
+          await this._onAccountChange(account.address);
+        }
+      },
+    );
 
     // This handles account changes every time relevant permission state
     // changes, for any reason.
@@ -2435,6 +2533,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi() {
     const {
+      accountsController,
       addressBookController,
       alertController,
       appStateController,
@@ -2603,14 +2702,14 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      setSelectedAddress: preferencesController.setSelectedAddress.bind(
-        preferencesController,
-      ),
+      setSelectedAddress: (address) => {
+        this.preferencesController.setSelectedAddress(address);
+        this.accountsController.setSelectedAccount(
+          this.accountsController.getAccountByAddress(address).id,
+        );
+      },
       addToken: tokensController.addToken.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
-      setAccountLabel: preferencesController.setAccountLabel.bind(
-        preferencesController,
-      ),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
@@ -2647,6 +2746,21 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
+
+      // AccountsController
+      setSelectedInternalAccount:
+        accountsController.setSelectedAccount.bind(accountsController),
+
+      setAccountName:
+        accountsController.setAccountName.bind(accountsController),
+
+      setAccountLabel: (address, label) => {
+        this.preferencesController.setAccountLabel(address, label);
+        const account = this.accountsController.getAccountByAddress(address);
+        if (account) {
+          this.accountsController.setAccountLabel(account.id, label);
+        }
+      },
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
@@ -3166,7 +3280,7 @@ export default class MetamaskController extends EventEmitter {
 
       const accounts = await this.keyringController.getAccounts();
       this.preferencesController.setAddresses(accounts);
-      this.selectFirstIdentity();
+      this.selectFirstAccount();
 
       return vault;
     } finally {
@@ -3218,6 +3332,7 @@ export default class MetamaskController extends EventEmitter {
 
       const ethQuery = new EthQuery(this.provider);
       accounts = await this.keyringController.getAccounts();
+      const firstAccount = accounts[0];
       lastBalance = await this.getBalance(
         accounts[accounts.length - 1],
         ethQuery,
@@ -3231,9 +3346,17 @@ export default class MetamaskController extends EventEmitter {
         lastBalance = await this.getBalance(addedAccountAddress, ethQuery);
       }
 
+      const internalAccounts = this.accountsController.listAccounts();
+
       // remove extra zero balance account potentially created from seeking ahead
       if (accounts.length > 1 && lastBalance === '0x0') {
-        await this.removeAccount(accounts[accounts.length - 1]);
+        await this.removeAccount(
+          internalAccounts.find(
+            (account) =>
+              account.address.toLowerCase() ===
+              accounts[accounts.length - 1].toLowerCase(),
+          ).address,
+        );
         accounts = await this.keyringController.getAccounts();
       }
 
@@ -3245,7 +3368,15 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
 
-      this.selectFirstIdentity();
+      this.selectFirstAccount();
+      this.accountsController.setSelectedAccount(
+        this.accountsController
+          .listAccounts()
+          .find(
+            (account) =>
+              account.address.toLowerCase() === firstAccount.toLowerCase(),
+          ).id,
+      );
 
       return vault;
     } finally {
@@ -3325,6 +3456,8 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.error('Error while unlocking extension.', error);
     }
+
+    await this.accountsController.updateAccounts();
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
@@ -3415,12 +3548,15 @@ export default class MetamaskController extends EventEmitter {
    */
 
   /**
-   * Sets the first address in the state to the selected address
+   * Sets the first account in the state to the selected address
    */
-  selectFirstIdentity() {
+  selectFirstAccount() {
     const { identities } = this.preferencesController.store.getState();
     const [address] = Object.keys(identities);
     this.preferencesController.setSelectedAddress(address);
+
+    const [account] = this.accountsController.listAccounts();
+    this.accountsController.setSelectedAccount(account.id);
   }
 
   /**
@@ -3673,8 +3809,10 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
+    const accounts = this.accountsController.listAccounts();
+
     const { identities } = this.preferencesController.store.getState();
-    return { ...keyState, identities };
+    return { ...keyState, identities, accounts };
   }
 
   //
@@ -3732,7 +3870,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The current selected address.
    */
   async resetAccount() {
-    const selectedAddress = this.preferencesController.getSelectedAddress();
+    const selectedAddress =
+      this.accountsController.getSelectedAccount().address;
     this.txController.wipeTransactions(selectedAddress);
     this.networkController.resetConnection();
 

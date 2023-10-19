@@ -1,5 +1,8 @@
 {
   "AccountTracker": { "accounts": "object" },
+  "AccountsController": {
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
+  },
   "AddressBookController": { "addressBook": "object" },
   "AlertController": {
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },

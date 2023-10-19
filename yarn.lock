@@ -3875,6 +3875,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/accounts-controller@git+https://github.com/MetaMask/core.git#a2d19d0713aac58b2e76b6dbdd31fcab92743d6a":
+  version: 82.0.0
+  resolution: "@metamask/accounts-controller@https://github.com/MetaMask/core.git#commit=a2d19d0713aac58b2e76b6dbdd31fcab92743d6a"
+  checksum: e32518cbc753307af8e2525cb7917bae72d8ffbaab5b51aa3ef7cbec2e19e09d88b8188c975593d4df4de90cd079ad60366bd7d9328990cb42c7a388506103fa
+  languageName: node
+  linkType: hard
+
 "@metamask/address-book-controller@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/address-book-controller@npm:3.0.0"
@@ -24556,6 +24563,7 @@ __metadata:
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
     "@metamask-institutional/sdk": "npm:^0.1.20"
     "@metamask-institutional/transaction-update": "npm:^0.1.30"
+    "@metamask/accounts-controller": "git+https://github.com/MetaMask/core.git#a2d19d0713aac58b2e76b6dbdd31fcab92743d6a"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^3.4.0"
