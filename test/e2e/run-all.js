@@ -61,10 +61,6 @@ async function main() {
             description: `run snaps e2e tests`,
             type: 'boolean',
           })
-          .option('mv3', {
-            description: `run mv3 specific e2e tests`,
-            type: 'boolean',
-          })
           .option('rpc', {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
@@ -101,7 +97,6 @@ async function main() {
     retries,
     mmi,
     snaps,
-    mv3,
     rpc,
     buildType,
     updateSnapshot,
