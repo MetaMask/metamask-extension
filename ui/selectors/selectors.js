@@ -99,10 +99,6 @@ import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-// eslint-disable-next-line import/order
-import { getPermissionSubjects } from './permissions';
-///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
 
 /**
