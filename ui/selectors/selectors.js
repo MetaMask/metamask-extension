@@ -101,7 +101,6 @@ import {
 } from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 // eslint-disable-next-line import/order
-import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
