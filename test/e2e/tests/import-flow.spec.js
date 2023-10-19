@@ -386,6 +386,10 @@ describe('Import flow @no-mmi', function () {
   });
 
   it('Connects to a Hardware wallet for trezor', async function () {
+    if (process.env.ENABLE_MV3) {
+      // Hardware wallets not supported in MV3 build yet
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
