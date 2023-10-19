@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -282,9 +282,9 @@ export default function TokenAllowance({
     );
   };
 
-  const handleNextNonce = () => {
+  const handleNextNonce = useCallback(() => {
     dispatch(getNextNonce());
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     handleNextNonce();

@@ -1,5 +1,7 @@
 {
+  "editor.bracketPairColorization.enabled": true,
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.guides.bracketPairs": "active",
   "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
   "javascript.preferences.importModuleSpecifier": "relative"
