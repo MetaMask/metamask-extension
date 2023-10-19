@@ -17,10 +17,7 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-  SNAPS_VIEW_ROUTE,
-} from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getSnapsList } from '../../../selectors';
 import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import {
@@ -39,13 +36,14 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
+import { getSnapRoute } from '../../../helpers/utils/util';
 
 const SnapList = () => {
   const t = useI18nContext();
   const history = useHistory();
   const settingsRef = useRef();
   const onClick = (snap) => {
-    history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`);
+    history.push(getSnapRoute(snap.id));
   };
 
   useEffect(() => {
