@@ -1,4 +1,4 @@
-import getSnapAndHardwareInfoForMetrics from './metrics';
+import { getSnapAndHardwareInfoForMetrics } from './metrics';
 
 describe('getSnapAndHardwareInfoForMetrics', () => {
   let getSelectedAddress: jest.Mock;
