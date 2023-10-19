@@ -107,8 +107,6 @@ async function main() {
     throw error;
   }
 
-  const testFileName = path.basename(e2eTestPath);
-
   if (debug) {
     process.env.E2E_DEBUG = 'true';
   }
@@ -144,19 +142,17 @@ async function main() {
   fs.mkdir(dir, { recursive: true });
 
   await retry({ retries, retryUntilFailure }, async () => {
-    await runInShell(
-      'yarn',
-      [
-        'mocha',
-        `--config=${configFile}`,
-        `--timeout=${testTimeoutInMilliseconds}`,
-        '--reporter=xunit',
-        ...extraArgs,
-        e2eTestPath,
-        exit,
-      ],
-      `${dir}/${testFileName}.xml`,
-    );
+    await runInShell('yarn', [
+      'mocha',
+      `--config=${configFile}`,
+      `--timeout=${testTimeoutInMilliseconds}`,
+      '--reporter=mocha-junit-reporter',
+      '--reporter-options',
+      `mochaFile=test/test-results/e2e/[hash].xml`,
+      ...extraArgs,
+      e2eTestPath,
+      exit,
+    ]);
   });
 }
 
