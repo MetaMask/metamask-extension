@@ -26,6 +26,7 @@ const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
  */
 export const getPermissionSubjects = createDeepEqualSelector(
   (state) => state.metamask.subjects || {},
+  (subjects) => subjects,
 );
 
 /**
