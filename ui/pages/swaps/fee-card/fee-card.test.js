@@ -1,12 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-  MOCKS,
-  fireEvent,
-} from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { renderWithProvider, MOCKS, fireEvent } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
