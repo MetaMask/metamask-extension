@@ -95,7 +95,6 @@ import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
   TransactionMeta,
-  TransactionMetaMetricsEvent,
   TransactionType,
 } from '../../shared/constants/transaction';
 import { NetworkType, RPCDefinition } from '../../shared/constants/network';
@@ -4165,13 +4164,13 @@ export function createEventFragment(
 
 export function createTransactionEventFragment(
   transactionId: string,
-  event: TransactionMetaMetricsEvent,
 ): Promise<string> {
   const actionId = generateActionId();
   return submitRequestToBackground('createTransactionEventFragment', [
-    transactionId,
-    event,
-    actionId,
+    {
+      transactionId,
+      actionId,
+    },
   ]);
 }
 
