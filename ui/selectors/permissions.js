@@ -1,3 +1,5 @@
+import { createSelectorCreator, defaultMemoize } from 'reselect';
+import { isEqual } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
@@ -14,15 +16,17 @@ import {
 
 // selectors
 
+const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
+
 /**
  * Get the permission subjects object.
  *
  * @param {object} state - The current state.
  * @returns {object} The permissions subjects object.
  */
-export function getPermissionSubjects(state) {
-  return state.metamask.subjects || {};
-}
+export const getPermissionSubjects = createDeepEqualSelector(
+  (state) => state.metamask.subjects || {},
+);
 
 /**
  * Selects the permitted accounts from the eth_accounts permission given state
