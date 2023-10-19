@@ -53,10 +53,6 @@ async function main() {
             description: `run snaps e2e tests`,
             type: 'boolean',
           })
-          .option('mv3', {
-            description: `run mv3 specific e2e tests`,
-            type: 'boolean',
-          })
           .option('rpc', {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
@@ -93,7 +89,6 @@ async function main() {
     retries,
     mmi,
     snaps,
-    mv3,
     rpc,
     buildType,
     updateSnapshot,
@@ -120,12 +115,6 @@ async function main() {
       ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
-
-    if (mv3) {
-      testPaths.push(
-        ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
-      );
-    }
   }
 
   // These tests should only be run on Flask for now.
