@@ -285,12 +285,16 @@ export interface TxParams {
   accessList?: AccessList;
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
+  estimateSuggested?: string;
+  estimateUsed?: string;
 }
 
 export interface TxReceipt {
   blockHash?: string;
   blockNumber?: string;
   transactionIndex?: string;
+  gasUsed?: string;
+  status?: string;
 }
 
 export interface TxError {
@@ -321,6 +325,8 @@ interface DappSuggestedGasFees {
  * An object representing a transaction, in whatever state it is in.
  */
 export interface TransactionMeta {
+  /** Unique ID to prevent duplicate requests.*/
+  actionId?: string;
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   custodyStatus: string;
   custodyId?: string;
@@ -343,6 +349,7 @@ export interface TransactionMeta {
   dappProposedTokenAmount: string;
   /** The original gas fees suggested by the dapp that proposed this transaction */
   dappSuggestedGasFees?: DappSuggestedGasFees;
+  defaultGasEstimates?: any;
   /** The balance of the token that is being sent */
   currentTokenBalance: string;
   /** The original dapp proposed token approval amount before edit by user */
@@ -390,6 +397,7 @@ export interface TransactionMeta {
    * network.
    */
   rawTx: string;
+  replacedById?: string;
   /**
    * A hex string of the transaction hash, used to identify the transaction
    * on the network.
@@ -409,6 +417,8 @@ export interface TransactionMeta {
    * Whether the transaction is verified on the blockchain.
    */
   verifiedOnBlockchain?: boolean;
+  securityProviderResponse?: Record<string, any>;
+  securityAlertResponse?: any;
 }
 
 /**

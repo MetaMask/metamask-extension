@@ -13,7 +13,7 @@ body:
     id: description
     attributes:
       label: What is this about?
-      placeholder: Describe the issue here.
+      placeholder: As a user, describe the issue here.
     validations:
       required: true
 
