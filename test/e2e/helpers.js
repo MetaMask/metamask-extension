@@ -704,10 +704,6 @@ const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await locateAccountBalanceDOM(driver, ganacheServer);
 };
 
-async function sleepSeconds(sec) {
-  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
-}
-
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
 }
@@ -887,7 +883,6 @@ module.exports = {
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  sleepSeconds,
   clickSignOnSignatureConfirmation,
   validateContractDetails,
   switchToNotificationWindow,

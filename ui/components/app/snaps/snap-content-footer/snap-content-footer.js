@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import {
   TextVariant,
   JustifyContent,
@@ -23,6 +22,7 @@ import {
   IconName,
   Text,
 } from '../../../component-library';
+import { getSnapRoute } from '../../../../helpers/utils/util';
 
 export default function SnapContentFooter({ snapName, snapId }) {
   const t = useI18nContext();
@@ -30,7 +30,7 @@ export default function SnapContentFooter({ snapName, snapId }) {
 
   const handleNameClick = (e) => {
     e.stopPropagation();
-    history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`);
+    history.push(getSnapRoute(snapId));
   };
 
   return (
