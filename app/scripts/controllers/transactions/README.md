@@ -30,7 +30,8 @@ txMeta = {
   "id": 2828415030114568, // unique id for this txMeta used for look ups
   "time": 1524094064821, // time of creation
   "status": "confirmed",
-  "metamaskNetworkId": "1524091532133", //the network id for the transaction
+  "chainId": "0x1", // the chain id for the transaction
+  "metamaskNetworkId": "1524091532133", // Deprecated: the network id for the transaction. Use chainId instead
   "loadingDefaults": false, // used to tell the ui when we are done calculating gas defaults
   "txParams": { // the txParams object
     "from": "0x8acce2391c0d510a6c5e5d8f819a678f79b7e675",
@@ -45,6 +46,7 @@ txMeta = {
       "id": 2828415030114568,
       "time": 1524094064821,
       "status": "unapproved",
+      "chainId": "0x1",
       "metamaskNetworkId": "1524091532133",
       "loadingDefaults": true,
       "txParams": {
