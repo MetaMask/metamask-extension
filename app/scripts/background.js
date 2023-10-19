@@ -233,7 +233,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} providerConfig - The current selected network provider.
  * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
  * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
- * @property {string} networkId - The stringified number of the current network ID.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
@@ -806,9 +805,8 @@ export function setupController(
           ///: END:ONLY_INCLUDE_IN
           ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
-            controller.approvalController.accept(id, false);
-            break;
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
@@ -900,15 +898,18 @@ const addAppInstalledEvent = () => {
 };
 
 // On first install, open a new tab with MetaMask
-browser.runtime.onInstalled.addListener(({ reason }) => {
+async function onInstall() {
+  const storeAlreadyExisted = Boolean(await localStore.get());
+  // If the store doesn't exist, then this is the first time running this script,
+  // and is therefore an install
   if (
-    reason === 'install' &&
+    !storeAlreadyExisted &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
-});
+}
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
@@ -917,7 +918,8 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-function initBackground() {
+async function initBackground() {
+  await onInstall();
   initialize().catch(log.error);
 }
 

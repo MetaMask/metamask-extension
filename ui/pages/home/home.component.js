@@ -167,11 +167,6 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    errorsToShow: PropTypes.object.isRequired,
-    shouldShowErrors: PropTypes.bool.isRequired,
-    removeSnapError: PropTypes.func.isRequired,
-    ///: END:ONLY_INCLUDE_IN
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     setTermsOfUseLastAgreed: PropTypes.func.isRequired,
@@ -412,11 +407,6 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-      removeSnapError,
-      errorsToShow,
-      shouldShowErrors,
-      ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       showOutdatedBrowserWarning,
       newNftAddedMessage,
@@ -440,43 +430,6 @@ export default class Home extends PureComponent {
 
     return (
       <MultipleNotifications>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          shouldShowErrors
-            ? Object.entries(errorsToShow).map(([errorId, error]) => {
-                return (
-                  <HomeNotification
-                    classNames={['home__error-message']}
-                    infoText={error.data.snapId}
-                    descriptionText={
-                      <>
-                        <Text
-                          variant={TextVariant.bodyMd}
-                          as="h5"
-                          color={TextColor.textAlternative}
-                        >
-                          {t('somethingWentWrong')}
-                        </Text>
-                        <Text
-                          color={TextColor.textAlternative}
-                          variant={TextVariant.bodySm}
-                          as="h6"
-                        >
-                          {t('snapError', [error.message, error.code])}
-                        </Text>
-                      </>
-                    }
-                    onIgnore={async () => {
-                      await removeSnapError(errorId);
-                    }}
-                    ignoreText="Dismiss"
-                    key="home-error-message"
-                  />
-                );
-              })
-            : null
-          ///: END:ONLY_INCLUDE_IN
-        }
         {newNftAddedMessage === 'success' ? (
           <ActionableMessage
             type="success"

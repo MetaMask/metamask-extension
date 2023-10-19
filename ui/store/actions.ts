@@ -87,7 +87,6 @@ import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
   TransactionMeta,
-  TransactionMetaMetricsEvent,
   TransactionType,
 } from '../../shared/constants/transaction';
 import { NetworkType, RPCDefinition } from '../../shared/constants/network';
@@ -107,7 +106,7 @@ import {
   generateActionId,
   callBackgroundMethod,
   submitRequestToBackground,
-} from './action-queue';
+} from './background-connection';
 import {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -980,7 +979,6 @@ export function addTransactionAndRouteToConfirmationPage(
       const transactionMeta = await submitRequestToBackground<TransactionMeta>(
         'addTransaction',
         [txParams, { ...options, actionId, origin: ORIGIN_METAMASK }],
-        actionId,
       );
 
       dispatch(showConfTxPage());
@@ -1032,7 +1030,6 @@ export async function addTransactionAndWaitForPublish(
         actionId,
       },
     ],
-    actionId,
   );
 }
 
@@ -1193,10 +1190,6 @@ export function removeSnap(
       dispatch(hideLoadingIndication());
     }
   };
-}
-
-export async function removeSnapError(msgData: string): Promise<void> {
-  return submitRequestToBackground('removeSnapError', [msgData]);
 }
 
 export async function handleSnapRequest(args: {
@@ -2084,15 +2077,15 @@ export function createCancelTransaction(
             return;
           }
           if (newState) {
-            const currentNetworkTxList =
-              getCurrentNetworkTransactions(newState);
+            const currentNetworkTxList = getCurrentNetworkTransactions({
+              metamask: newState,
+            });
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
             resolve(newState);
           }
         },
-        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -2128,7 +2121,6 @@ export function createSpeedUpTransaction(
             resolve(newState);
           }
         },
-        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -4142,13 +4134,13 @@ export function createEventFragment(
 
 export function createTransactionEventFragment(
   transactionId: string,
-  event: TransactionMetaMetricsEvent,
 ): Promise<string> {
   const actionId = generateActionId();
   return submitRequestToBackground('createTransactionEventFragment', [
-    transactionId,
-    event,
-    actionId,
+    {
+      transactionId,
+      actionId,
+    },
   ]);
 }
 
