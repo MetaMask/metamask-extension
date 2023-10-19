@@ -589,8 +589,6 @@ const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
-const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
-
 const openActionMenuAndStartSendFlow = async (driver) => {
   // TODO: Update Test when Multichain Send Flow is added
   if (process.env.MULTICHAIN) {
