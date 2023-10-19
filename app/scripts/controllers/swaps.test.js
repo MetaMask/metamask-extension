@@ -5,11 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
 import { NetworkType } from '@metamask/controller-utils';
-import {
-  CHAIN_IDS,
-  NETWORK_IDS,
-  NetworkStatus,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
@@ -102,13 +98,15 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 function getMockNetworkController() {
   return {
     state: {
-      networkId: NETWORK_IDS.GOERLI,
       selectedNetworkClientId: NetworkType.goerli,
       networksMetadata: {
         [NetworkType.goerli]: {
           EIPS: {},
           status: NetworkStatus.Available,
         },
+      },
+      providerConfig: {
+        chainId: CHAIN_IDS.GOERLI,
       },
     },
   };
@@ -230,13 +228,15 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
 
       networkController.state = {
-        networkId: NETWORK_IDS.MAINNET,
         selectedNetworkClientId: NetworkType.mainnet,
         networksMetadata: {
           [NetworkType.mainnet]: {
             EIPS: {},
             status: NetworkStatus.Available,
           },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.MAINNET,
         },
       };
       networkStateChangeListener();
@@ -268,13 +268,15 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
 
       networkController.state = {
-        networkId: null,
         selectedNetworkClientId: NetworkType.goerli,
         networksMetadata: {
           [NetworkType.goerli]: {
             EIPS: {},
             status: NetworkStatus.Unknown,
           },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.GOERLI,
         },
       };
       networkStateChangeListener();
@@ -306,13 +308,15 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
 
       networkController.state = {
-        networkId: NETWORK_IDS.GOERLI,
         selectedNetworkClientId: NetworkType.goerli,
         networksMetadata: {
           [NetworkType.goerli]: {
             EIPS: {},
             status: NetworkStatus.Available,
           },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.GOERLI,
         },
       };
       networkStateChangeListener();

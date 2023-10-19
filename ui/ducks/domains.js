@@ -1,15 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
-import networkMap from 'ethereum-ens-network-map';
+import ensNetworkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
 
 import { getCurrentChainId } from '../selectors';
 import {
-  CHAIN_ID_TO_NETWORK_ID_MAP,
-  NETWORK_IDS,
-  NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
+  CHAIN_IDS,
+  CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   CONFUSING_ENS_ERROR,
@@ -37,7 +36,7 @@ const initialState = {
   resolution: null,
   error: null,
   warning: null,
-  network: null,
+  chainId: null,
   domainType: null,
   domainName: null,
 };
@@ -57,7 +56,7 @@ const slice = createSlice({
       state.resolution = null;
       state.error = null;
       state.warning = null;
-      const { address, error, network, domainType, domainName } =
+      const { address, error, chainId, domainType, domainName } =
         action.payload;
       state.domainType = domainType;
       if (state.domainType === ENS) {
@@ -67,7 +66,7 @@ const slice = createSlice({
             error.message === 'ENS name not defined.'
           ) {
             state.error =
-              network === NETWORK_IDS.MAINNET
+              chainId === CHAIN_IDS.MAINNET
                 ? ENS_NO_ADDRESS_FOR_NAME
                 : ENS_NOT_FOUND_ON_NETWORK;
           } else if (error.message === 'Illegal character for ENS.') {
@@ -97,14 +96,14 @@ const slice = createSlice({
       state.error = null;
       state.resolution = null;
       state.warning = null;
-      state.network = action.payload;
+      state.chainId = action.payload;
     },
     disableDomainLookup: (state) => {
       state.stage = 'NO_NETWORK_SUPPORT';
       state.error = null;
       state.warning = null;
       state.resolution = null;
-      state.network = null;
+      state.chainId = null;
     },
     ensNotSupported: (state) => {
       state.resolution = null;
@@ -119,7 +118,7 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(CHAIN_CHANGED, (state, action) => {
-      if (action.payload !== state.currentChainId) {
+      if (action.payload !== state.chainId) {
         state.stage = 'UNINITIALIZED';
         web3Provider = null;
       }
@@ -143,17 +142,17 @@ export function initializeDomainSlice() {
   return (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
-    const ensAddress = networkMap[network];
+    const networkName = CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP[chainId];
+    const chainIdInt = parseInt(chainId, 16);
+    const ensAddress = ensNetworkMap[chainIdInt.toString()];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
       web3Provider = new Web3Provider(global.ethereumProvider, {
-        chainId: parseInt(network, 10),
+        chainId: chainIdInt,
         name: networkName,
         ensAddress,
       });
-      dispatch(enableDomainLookup(network));
+      dispatch(enableDomainLookup(chainId));
     } else {
       web3Provider = null;
       dispatch(disableDomainLookup());
@@ -188,14 +187,12 @@ export function lookupEnsName(domainName) {
         error = err;
       }
       const chainId = getCurrentChainId(state);
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
 
       await dispatch(
         domainLookup({
           address,
           error,
           chainId,
-          network,
           domainType: ENS,
           domainName: trimmedDomainName,
         }),
