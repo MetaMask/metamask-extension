@@ -531,4 +531,4 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking };
+module.exports = { setupMocking, emptyHtmlPage };
