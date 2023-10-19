@@ -141,10 +141,6 @@ async function main() {
     const filteredTests = [
       'test-snap-lifecycle.spec.js',
       'test-snap-get-locale.spec.js',
-      'ppom-blockaid-alert.spec.js',
-      'ppom-blockaid-alert-erc20-approval.spec.js',
-      'ppom-blockaid-alert-erc20-transfer.spec.js',
-      'ppom-toggle-settings.spec.js',
       'petnames.spec.js',
     ];
     testPaths = testPaths.filter((p) =>

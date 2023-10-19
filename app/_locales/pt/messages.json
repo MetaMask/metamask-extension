@@ -4035,9 +4035,6 @@
     "message": "Informações compartilhadas com Serviços de Terceiros serão coletadas diretamente por eles, de acordo com políticas de privacidade próprias. Por favor, consulte-as para obter mais informações.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
-  "snapsSettingsDescription": {
-    "message": "Gerencie seus snaps"
-  },
   "snapsTermsOfUse": {
     "message": "Termos de Uso"
   },

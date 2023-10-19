@@ -37,6 +37,7 @@ import {
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -602,6 +603,10 @@ export const getSnapName = (snapId, subjectMetadata) => {
   }
 
   return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+};
+
+export const getSnapRoute = (snapId) => {
+  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
 };
 
 export const getDedupedSnaps = (request, permissions) => {
