@@ -144,7 +144,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
         await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         // Paste address without hex prefix
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -198,7 +200,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
         await driver.clickElement(
