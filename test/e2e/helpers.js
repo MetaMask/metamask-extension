@@ -256,7 +256,6 @@ const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
   TestDApp: 'E2E Test Dapp',
   Notification: 'MetaMask Notification',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   InstalledExtensions: 'Extensions',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
 });
@@ -590,8 +589,6 @@ const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
-const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
-
 const sendTransaction = async (
   driver,
   recipientAddress,
@@ -712,34 +709,6 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
   return { initialBalance, initialBalanceInHex };
 }
 
-async function terminateServiceWorker(driver) {
-  await driver.openNewPage(SERVICE_WORKER_URL);
-
-  await driver.waitForSelector({
-    text: 'Service workers',
-    tag: 'button',
-  });
-  await driver.clickElement({
-    text: 'Service workers',
-    tag: 'button',
-  });
-
-  await driver.delay(tinyDelayMs);
-  const serviceWorkerElements = await driver.findClickableElements({
-    text: 'terminate',
-    tag: 'span',
-  });
-
-  // 1st one is app-init.js; while 2nd one is service-worker.js
-  await serviceWorkerElements[serviceWorkerElements.length - 1].click();
-
-  const serviceWorkerTab = await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.ServiceWorkerSettings,
-  );
-
-  await driver.closeWindowHandle(serviceWorkerTab);
-}
-
 /**
  * This method handles clicking the sign button on signature confrimation
  * screen.
@@ -858,7 +827,6 @@ function assertInAnyOrder(requests, assertions) {
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
-  SERVICE_WORKER_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
@@ -898,7 +866,6 @@ module.exports = {
   roundToXDecimalPlaces,
   generateRandNumBetween,
   sleepSeconds,
-  terminateServiceWorker,
   clickSignOnSignatureConfirmation,
   validateContractDetails,
   switchToNotificationWindow,
