@@ -955,7 +955,7 @@ describe('TransactionStateManager', function () {
       assert.equal(result.history[1][1].value.message, ERROR_SUBMITTING);
 
       assert.equal(result.history[1][2].op, 'add');
-      assert.equal(result.history[1][2].path, '/err');
+      assert.equal(result.history[1][2].path, '/error');
       assert.equal(
         result.history[1][2].value.message,
         'Invalid transaction envelope type: specified type "0x0" but including maxFeePerGas and maxPriorityFeePerGas requires type: "0x2"',
@@ -1001,7 +1001,7 @@ describe('TransactionStateManager', function () {
         'transactions:tx-state-manager#fail - add error',
       );
       assert.equal(result.history[1][0].op, 'add');
-      assert.equal(result.history[1][0].path, '/err');
+      assert.equal(result.history[1][0].path, '/error');
       assert.equal(
         result.history[1][0].value.message,
         'Testing tx status failed with arbitrary error',
