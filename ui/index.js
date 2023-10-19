@@ -27,7 +27,7 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { _setBackgroundConnection } from './store/action-queue';
+import { setBackgroundConnection } from './store/background-connection';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -39,7 +39,7 @@ let reduxStore;
  * @param backgroundConnection - connection object to background
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
-  _setBackgroundConnection(backgroundConnection);
+  setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
       reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
