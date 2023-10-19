@@ -602,7 +602,7 @@ export default class Routes extends Component {
           }
         }}
         onKeyDown={(e) => {
-          if (e.keyCode === 9) {
+          if (e.keyCode === 9 && isMouseUser === true) {
             setMouseUserState(false);
           }
         }}
