@@ -8,9 +8,6 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  SNAPS_LIST_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
 } from './routes';
 
 export const SETTINGS_CONSTANTS = [
@@ -133,15 +130,6 @@ export const SETTINGS_CONSTANTS = [
     route: CONTACT_LIST_ROUTE,
     iconName: IconName.Book,
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  {
-    tabMessage: (t) => t('snaps'),
-    sectionMessage: (t) => t('snaps'),
-    descriptionMessage: (t) => t('snaps'),
-    route: SNAPS_LIST_ROUTE,
-    iconName: IconName.Snaps,
-  },
-  ///: END:ONLY_INCLUDE_IN
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('revealSeedWords'),

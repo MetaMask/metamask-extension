@@ -96,7 +96,6 @@ describe('Remove Account Snap', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Snaps', tag: 'div' });
         await driver.clickElement({
           text: 'MetaMask Simple Snap Keyring',
@@ -130,7 +129,7 @@ describe('Remove Account Snap', function () {
 
         // Assert that the snap was removed.
         const removeResult = await driver.findElement(
-          '.snap-list-tab__container--no-snaps_inner',
+          '.snaps__content__list__container--no-snaps_inner',
         );
         assert.equal(
           await removeResult.getText(),
