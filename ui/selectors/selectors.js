@@ -965,19 +965,6 @@ export const getNotifySnaps = createDeepEqualSelector(
   },
 );
 
-export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
-  return Object.values(snaps).map((snap) => {
-    return {
-      id: snap.id,
-      tabMessage: () => snap.manifest.proposedName,
-      descriptionMessage: () => snap.manifest.description,
-      sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
-      icon: 'fa fa-flask',
-    };
-  });
-});
-
 /**
  * @typedef {object} Notification
  * @property {string} id - A unique identifier for the notification
