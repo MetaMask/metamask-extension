@@ -97,10 +97,6 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { HandlerType } from '@metamask/snaps-utils';
-///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 import {
   NameController,
