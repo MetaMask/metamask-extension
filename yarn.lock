@@ -4421,13 +4421,13 @@ __metadata:
   linkType: hard
 
 "@metamask/logging-controller@npm:^1.0.1, @metamask/logging-controller@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@metamask/logging-controller@npm:1.0.3"
+  version: 1.0.4
+  resolution: "@metamask/logging-controller@npm:1.0.4"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.2"
-    "@metamask/controller-utils": "npm:^5.0.1"
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/controller-utils": "npm:^5.0.2"
     uuid: "npm:^8.3.2"
-  checksum: acb1cfd4c5fd20fc858d90847328bd0bd07760fead6fcbc8557f69adfb38ba25b490aac98cc5e15a2d3dfc8692a56bbd947434008a6bd15dd2ae1802b78da84d
+  checksum: 8b119a11e302ca43b0d7b90e4462426a53aee48bafdac308cab70a64f06e639209c9fb72868ed026d1730938a239ce2bdf6702e3c1cc5ec3e58ea8ed6bd30adf
   languageName: node
   linkType: hard
 
@@ -5339,43 +5339,6 @@ __metadata:
   dependencies:
     "@octokit/openapi-types": "npm:^12.11.0"
   checksum: 905c8553e46e1a32b27f3f8c665c6a390648204f0b05c23693cd22a874e0bf654534ae2e51de3e09a794c07cc67cfd7f067b57f93cea0f658a369767537a72f0
-  languageName: node
-  linkType: hard
-
-"@oozcitak/dom@npm:1.15.10":
-  version: 1.15.10
-  resolution: "@oozcitak/dom@npm:1.15.10"
-  dependencies:
-    "@oozcitak/infra": "npm:1.0.8"
-    "@oozcitak/url": "npm:1.0.4"
-    "@oozcitak/util": "npm:8.3.8"
-  checksum: cc1ecbde9a1b72b34c4500db16188b831b4d1e6acb16659b31716d26a210c18e9eaabcf990dea56cbd0c308023e7a014c888f7529bf69697af83bf72438aa10d
-  languageName: node
-  linkType: hard
-
-"@oozcitak/infra@npm:1.0.8":
-  version: 1.0.8
-  resolution: "@oozcitak/infra@npm:1.0.8"
-  dependencies:
-    "@oozcitak/util": "npm:8.3.8"
-  checksum: 568833490051825435fd99865d58b258ee7aca1a5d640f5002ec792224a3f2e4808e8ca7cdefa7469dbde6e9ab0e98d2eae388fdbb84ffd871a3e8fff34a564c
-  languageName: node
-  linkType: hard
-
-"@oozcitak/url@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@oozcitak/url@npm:1.0.4"
-  dependencies:
-    "@oozcitak/infra": "npm:1.0.8"
-    "@oozcitak/util": "npm:8.3.8"
-  checksum: f81890a2a21429295ee99e1e5b386ce07621a99d3f10551ea2456eeb338065b6820f80c771921ec4d5e382358f478e1c67d4194892d04f98f84c0449bd6c3c74
-  languageName: node
-  linkType: hard
-
-"@oozcitak/util@npm:8.3.8":
-  version: 8.3.8
-  resolution: "@oozcitak/util@npm:8.3.8"
-  checksum: 844c0e55d13803aff8e0be368c32e5e5b4a96d93b5a359d7899bb657ca14410a67a838070b1d2a554fe743f83f75d0906d836891c0c5d6585b8a5909f96a9e93
   languageName: node
   linkType: hard
 
@@ -12541,6 +12504,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"charenc@npm:0.0.2":
+  version: 0.0.2
+  resolution: "charenc@npm:0.0.2"
+  checksum: 81dcadbe57e861d527faf6dd3855dc857395a1c4d6781f4847288ab23cffb7b3ee80d57c15bba7252ffe3e5e8019db767757ee7975663ad2ca0939bb8fcaf2e5
+  languageName: node
+  linkType: hard
+
 "cheerio-select@npm:^2.1.0":
   version: 2.1.0
   resolution: "cheerio-select@npm:2.1.0"
@@ -13174,13 +13144,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:~9.4.0":
-  version: 9.4.1
-  resolution: "commander@npm:9.4.1"
-  checksum: 9d0d1d7e816545cf5ebf25e303533e45af2f941731063587d04917ac9fb6c81f59690aa8bda60d9b88d8aac018fdef6735ed953e72fdab08bb8b778bd4e0ef95
-  languageName: node
-  linkType: hard
-
 "comment-parser@npm:1.3.1":
   version: 1.3.1
   resolution: "comment-parser@npm:1.3.1"
@@ -13720,6 +13683,13 @@ __metadata:
     shebang-command: "npm:^2.0.0"
     which: "npm:^2.0.1"
   checksum: e1a13869d2f57d974de0d9ef7acbf69dc6937db20b918525a01dacb5032129bd552d290d886d981e99f1b624cb03657084cc87bd40f115c07ecf376821c729ce
+  languageName: node
+  linkType: hard
+
+"crypt@npm:0.0.2":
+  version: 0.0.2
+  resolution: "crypt@npm:0.0.2"
+  checksum: 2c72768de3d28278c7c9ffd81a298b26f87ecdfe94415084f339e6632f089b43fe039f2c93f612bcb5ffe447238373d93b2e8c90894cba6cfb0ac7a74616f8b9
   languageName: node
   linkType: hard
 
@@ -17351,7 +17321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.2, fast-glob@npm:^3.2.4, fast-glob@npm:^3.2.9, fast-glob@npm:~3.2.11":
+"fast-glob@npm:^3.2.2, fast-glob@npm:^3.2.4, fast-glob@npm:^3.2.9":
   version: 3.2.12
   resolution: "fast-glob@npm:3.2.12"
   dependencies:
@@ -20455,7 +20425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-buffer@npm:^1.0.2, is-buffer@npm:^1.1.0, is-buffer@npm:^1.1.5":
+"is-buffer@npm:^1.0.2, is-buffer@npm:^1.1.0, is-buffer@npm:^1.1.5, is-buffer@npm:~1.1.6":
   version: 1.1.6
   resolution: "is-buffer@npm:1.1.6"
   checksum: f63da109e74bbe8947036ed529d43e4ae0c5fcd0909921dce4917ad3ea212c6a87c29f525ba1d17c0858c18331cf1046d4fc69ef59ed26896b25c8288a627133
@@ -22433,18 +22403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:3.14.0":
-  version: 3.14.0
-  resolution: "js-yaml@npm:3.14.0"
-  dependencies:
-    argparse: "npm:^1.0.7"
-    esprima: "npm:^4.0.0"
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 88c96664ed27db929fa046f4e6d1f1cbcab4372379c77af68e8d56ada9ff59566528c053f83260c4e23bd348fc430814ed3637e4b809e1d32b795c74b5d15638
-  languageName: node
-  linkType: hard
-
 "js-yaml@npm:4.1.0, js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
@@ -22978,20 +22936,6 @@ __metadata:
     readable-stream: "npm:~2.3.6"
     setimmediate: "npm:^1.0.5"
   checksum: bfbfbb9b0a27121330ac46ab9cdb3b4812433faa9ba4a54742c87ca441e31a6194ff70ae12acefa5fe25406c432290e68003900541d948a169b23d30c34dd984
-  languageName: node
-  linkType: hard
-
-"junit-report-merger@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "junit-report-merger@npm:4.0.0"
-  dependencies:
-    commander: "npm:~9.4.0"
-    fast-glob: "npm:~3.2.11"
-    xmlbuilder2: "npm:~3.0.2"
-  bin:
-    jrm: cli.js
-    junit-report-merger: cli.js
-  checksum: fa5b9ce3a77f7c5b863069fc3eeafc14e850c08c1a8bc96bcc2e86ea3440bc826a28df794612d8373c1be1d7c17e269e5fac03c211b6bb24a6324c76fc182de0
   languageName: node
   linkType: hard
 
@@ -24169,6 +24113,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"md5@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "md5@npm:2.3.0"
+  dependencies:
+    charenc: "npm:0.0.2"
+    crypt: "npm:0.0.2"
+    is-buffer: "npm:~1.1.6"
+  checksum: 88dce9fb8df1a084c2385726dcc18c7f54e0b64c261b5def7cdfe4928c4ee1cd68695c34108b4fab7ecceb05838c938aa411c6143df9fdc0026c4ddb4e4e72fa
+  languageName: node
+  linkType: hard
+
 "mdast-util-compact@npm:^2.0.0":
   version: 2.0.1
   resolution: "mdast-util-compact@npm:2.0.1"
@@ -24771,7 +24726,6 @@ __metadata:
     jsdom: "npm:^16.7.0"
     json-rpc-engine: "npm:^6.1.0"
     json-rpc-middleware-stream: "npm:^4.2.1"
-    junit-report-merger: "npm:^4.0.0"
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
     lavamoat: "npm:^7.1.2"
@@ -24785,6 +24739,7 @@ __metadata:
     luxon: "npm:^3.2.1"
     madge: "npm:^6.1.0"
     mocha: "npm:^9.2.2"
+    mocha-junit-reporter: "npm:^2.2.1"
     mockttp: "npm:^2.6.0"
     nanoid: "npm:^2.1.6"
     nock: "npm:^13.2.9"
@@ -25634,6 +25589,30 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: d71b8dcd4b5af2fe13ecf3bd24070263489404fe216488c5ba7e38ece1f54daf219e72a833a3a2dc404331e870e9f44963a33399589490956bff003a3404d3b2
+  languageName: node
+  linkType: hard
+
+"mkdirp@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "mkdirp@npm:3.0.1"
+  bin:
+    mkdirp: dist/cjs/src/bin.js
+  checksum: 16fd79c28645759505914561e249b9a1f5fe3362279ad95487a4501e4467abeb714fd35b95307326b8fd03f3c7719065ef11a6f97b7285d7888306d1bd2232ba
+  languageName: node
+  linkType: hard
+
+"mocha-junit-reporter@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "mocha-junit-reporter@npm:2.2.1"
+  dependencies:
+    debug: "npm:^4.3.4"
+    md5: "npm:^2.3.0"
+    mkdirp: "npm:^3.0.0"
+    strip-ansi: "npm:^6.0.1"
+    xml: "npm:^1.0.1"
+  peerDependencies:
+    mocha: ">=2.2.5"
+  checksum: f2e9db2daf4b5de8824ed557a7d6b534683558fadf843de6b4f96385c6edad239ee6194e81f5983809d7223b45f57c7af0337442552cab47103e9e92d5ee4cb3
   languageName: node
   linkType: hard
 
@@ -35579,19 +35558,6 @@ __metadata:
   version: 1.0.1
   resolution: "xml@npm:1.0.1"
   checksum: 6c4c31a1308e45732e5ac6b50edbca0e8f7abe5cb5de10215d8e3c688819fe7c7706e056f6fb59b1a23fdf1000c2d7a8bba0a89e94aa1796cd2376d9a5ba401e
-  languageName: node
-  linkType: hard
-
-"xmlbuilder2@npm:~3.0.2":
-  version: 3.0.2
-  resolution: "xmlbuilder2@npm:3.0.2"
-  dependencies:
-    "@oozcitak/dom": "npm:1.15.10"
-    "@oozcitak/infra": "npm:1.0.8"
-    "@oozcitak/util": "npm:8.3.8"
-    "@types/node": "npm:*"
-    js-yaml: "npm:3.14.0"
-  checksum: 9b0c6317c797748bb1cdd17d645bb00d15b0c12d735fc6e19479f5677bc973460c83562fceae4039d427b4f005bcabea285c42386d5da20f14439be234b9ea13
   languageName: node
   linkType: hard
 
