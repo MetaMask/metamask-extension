@@ -128,12 +128,6 @@ async function main() {
       ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
-
-    if (mv3) {
-      testPaths.push(
-        ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
-      );
-    }
   }
 
   // These tests should only be run on Flask for now.
