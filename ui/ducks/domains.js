@@ -13,7 +13,7 @@ import {
 import { handleSnapRequest } from '../store/actions';
 import {
   CHAIN_IDS,
-  CHAIN_ID_TO_NETWORK_ID_MAP,
+  CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   CONFUSING_ENS_ERROR,
@@ -68,7 +68,8 @@ const slice = createSlice({
       ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
       state.resolvingSnap = null;
       ///: END:ONLY_INCLUDE_IN
-      const { address, error, chainId, domainType, domainName, resolvingSnap } = action.payload;
+      const { address, error, chainId, domainType, domainName, resolvingSnap } =
+        action.payload;
       state.domainType = domainType;
       if (state.domainType === ENS) {
         if (error) {
@@ -176,7 +177,7 @@ export function initializeDomainSlice() {
     } else {
       web3Provider = null;
       if (isSupportedButNotEns) {
-        dispatch(enableDomainLookup(parseInt(chainId, 10)));
+        dispatch(enableDomainLookup(chainId));
       } else {
         dispatch(disableDomainLookup());
       }
@@ -212,7 +213,7 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
         request: {
           jsonrpc: '2.0',
           method: ' ',
-          params: { ...snapRequestArgs },
+          params: snapRequestArgs,
         },
       });
     }),
@@ -263,13 +264,13 @@ export function lookupDomainName(domainName) {
         error = err;
       }
       const chainId = getCurrentChainId(state);
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      const chainIdInt = parseInt(chainId, 16);
       if (!address) {
         // TODO: allow for conflict resolution in future iterations, we don't have designs
         // for this currently, so just displaying the first result.
         fetchedResolutions = await fetchResolutions({
           domain: trimmedDomainName,
-          chainId: `eip155:${parseInt(chainId, 16)}`,
+          chainId: `eip155:${chainIdInt}`,
           state,
         });
         const resolvedAddress = fetchedResolutions[0]?.resolvedAddress;
@@ -284,7 +285,7 @@ export function lookupDomainName(domainName) {
           address,
           error,
           chainId,
-          network: hasSnapResolution ? parseInt(chainId, 16) : network,
+          network: chainIdInt,
           domainType: hasSnapResolution ? 'Other' : ENS,
           domainName: trimmedDomainName,
           ...(hasSnapResolution
