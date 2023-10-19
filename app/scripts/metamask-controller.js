@@ -684,6 +684,9 @@ export default class MetamaskController extends EventEmitter {
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
+      allowedActions: [
+          `${this.networkController.name}:getNetworkClientById`,
+      ]
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
@@ -692,7 +695,7 @@ export default class MetamaskController extends EventEmitter {
     });
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.selectedNetworkClientId,
+        this.networkController.state.selectedNetworkClientId,
       );
     }
 
@@ -1428,7 +1431,7 @@ export default class MetamaskController extends EventEmitter {
           ) {
             await this.currencyRateController.stopAllPolling();
             this.currencyRateController.startPollingByNetworkClientId(
-              this.networkController.selectedNetworkClientId,
+              this.networkController.state.selectedNetworkClientId,
             );
           }
         } catch (error) {
@@ -1953,7 +1956,7 @@ export default class MetamaskController extends EventEmitter {
     this.txController.startIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.selectedNetworkClientId,
+        this.networkController.state.selectedNetworkClientId,
       );
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
