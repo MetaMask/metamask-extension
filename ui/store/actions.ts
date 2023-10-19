@@ -21,9 +21,6 @@ import {
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-import { HandlerType } from '@metamask/snaps-utils';
-///: END:ONLY_INCLUDE_IN
 import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -4643,10 +4640,7 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 export function trackInsightSnapUsage(snapId: string) {
   return async () => {
-    await submitRequestToBackground('_trackSnapExportUsage', [
-      snapId,
-      HandlerType.OnTransaction,
-    ]);
+    await submitRequestToBackground('trackInsightSnapView', [snapId]);
   };
 }
 ///: END:ONLY_INCLUDE_IN

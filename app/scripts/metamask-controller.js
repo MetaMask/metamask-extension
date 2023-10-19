@@ -2054,6 +2054,18 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  trackInsightSnapView(snapId) {
+    this.metaMetricsController.trackEvent({
+      event: MetaMetricsEventName.InsightSnapViewed,
+      category: MetaMetricsEventCategory.Snaps,
+      properties: {
+        snap_id: snapId,
+      },
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   /**
    * Tracks snaps export usage.
@@ -2093,13 +2105,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   handleSnapRequest(args) {
-    // We're not tracking transaction insights at this point in Flask because we eagerly fetch insights in v2.
-    if (
-      args.handler !== HandlerType.OnTransaction &&
-      !this.featureFlags.snapsTransactionInsightsV2
-    ) {
-      this._trackSnapExportUsage(args.snapId, args.handler);
-    }
+    this._trackSnapExportUsage(args.snapId, args.handler);
 
     return this.controllerMessenger.call('SnapController:handleRequest', args);
   }
