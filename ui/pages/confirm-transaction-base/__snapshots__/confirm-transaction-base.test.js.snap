@@ -219,7 +219,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
               class="sender-to-recipient__name"
               data-testid="sender-to-recipient__name"
             >
-              0x85c...D65e
+              0x85c16...DD65e
             </div>
           </div>
         </div>

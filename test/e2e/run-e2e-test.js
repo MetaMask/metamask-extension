@@ -25,6 +25,10 @@ async function main() {
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
+          .option('mmi', {
+            description: 'Run only mmi related tests',
+            type: 'boolean',
+          })
           .option('retries', {
             default: 0,
             description:
@@ -60,6 +64,7 @@ async function main() {
   const {
     browser,
     debug,
+    mmi,
     e2eTestPath,
     retries,
     retryUntilFailure,
@@ -116,6 +121,13 @@ async function main() {
 
   const configFile = path.join(__dirname, '.mocharc.js');
   const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
+
+  // If mmi flag is passed
+  if (mmi) {
+    // Tests that contains `@no-mmi` will be grep (-g) and inverted (-i)
+    // meaning that all tests with @no-mmi in the title will be ignored
+    extraArgs.push('-g', '@no-mmi', '-i');
+  }
 
   const dir = 'test/test-results/e2e';
   fs.mkdir(dir, { recursive: true });

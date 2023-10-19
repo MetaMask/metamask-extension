@@ -128,7 +128,7 @@ const mapStateToProps = (state, ownProps) => {
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
-  const txId = transactionId || Number(paramsTransactionId);
+  const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId);
   const {
     from: fromAddress,

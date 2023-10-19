@@ -34,14 +34,14 @@ const mockNetworkId = '5';
 const mockTxParamsFromAddress = '0x123456789';
 
 const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
-const mockTxParamsToAddressConcat = '0x85c...D65e';
+const mockTxParamsToAddressConcat = '0x85c16...DD65e';
 
 const mockParsedTxDataToAddressWithout0x =
   'e57e7847fd3661a9b7c86aaf1daea08d9da5750a';
-const mockParsedTxDataToAddress = '0xe57...750A';
+const mockParsedTxDataToAddress = '0xe57E7...5750A';
 
 const mockPropsToAddress = '0x33m1685cfceaa5c0bdb1609fc536e9a8387dd567';
-const mockPropsToAddressConcat = '0x33m...d567';
+const mockPropsToAddressConcat = '0x33m16...dd567';
 
 const mockTxParams = {
   from: mockTxParamsFromAddress,

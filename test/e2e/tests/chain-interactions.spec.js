@@ -15,7 +15,7 @@ describe('Chain Interactions', function () {
     ],
     concurrent: { port, chainId },
   };
-  it('should add the Ganache test chain and not switch the network', async function () {
+  it('should add the Ganache test chain and not switch the network @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

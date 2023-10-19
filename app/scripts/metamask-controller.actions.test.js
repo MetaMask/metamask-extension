@@ -177,7 +177,7 @@ describe('MetaMaskController', function () {
         ]),
         Promise.resolve(1).then(() => {
           keyringControllerState1 = JSON.stringify(
-            metamaskController.keyringController.memStore.getState(),
+            metamaskController.coreKeyringController.state,
           );
           metamaskController.importAccountWithStrategy('privateKey', [
             importPrivkey,
@@ -185,7 +185,7 @@ describe('MetaMaskController', function () {
         }),
         Promise.resolve(2).then(() => {
           keyringControllerState2 = JSON.stringify(
-            metamaskController.keyringController.memStore.getState(),
+            metamaskController.coreKeyringController.state,
           );
         }),
       ]);

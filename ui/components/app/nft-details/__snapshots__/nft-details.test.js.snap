@@ -155,7 +155,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           <h6
             class="mm-box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-bottom-4 mm-box--color-text-alternative"
           >
-            0xDc7...6414
+            0xDc738...06414
           </h6>
           <div
             class="nft-details__tooltip-wrapper"

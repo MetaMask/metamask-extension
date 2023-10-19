@@ -399,7 +399,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
     ],
   };
 
-  it('finds the transaction in the transactions list', async function () {
+  it('finds the transaction in the transactions list @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

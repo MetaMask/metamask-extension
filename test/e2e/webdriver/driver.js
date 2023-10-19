@@ -36,6 +36,13 @@ function wrapElementWithAPI(element, driver) {
         throw new Error(`Provided state: '${state}' is not supported`);
     }
   };
+
+  element.nestedFindElement = async (rawLocator) => {
+    const locator = driver.buildLocator(rawLocator);
+    const newElement = await element.findElement(locator);
+    return wrapElementWithAPI(newElement, driver);
+  };
+
   return element;
 }
 
@@ -249,16 +256,35 @@ class Driver {
     await element.click();
   }
 
+  /**
+   * for instances where an element such as a scroll button does not
+   * show up because of render differences, proceed to the next step
+   * without causing a test failure, but provide a console log of why.
+   *
+   * @param rawLocator
+   */
   async clickElementSafe(rawLocator) {
-    // for instances where an element such as a scroll button does not
-    // show up because of render differences, proceed to the next step
-    // without causing a test failure, but provide a console log of why.
     try {
       const element = await this.findClickableElement(rawLocator);
       await element.click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
+  }
+
+  /**
+   * Can fix instances where a normal click produces ElementClickInterceptedError
+   *
+   * @param rawLocator
+   */
+  async clickElementUsingMouseMove(rawLocator) {
+    const element = await this.findClickableElement(rawLocator);
+    await this.scrollToElement(element);
+    await this.driver
+      .actions()
+      .move({ origin: element, x: 1, y: 1 })
+      .click()
+      .perform();
   }
 
   async clickPoint(rawLocator, x, y) {
@@ -343,7 +369,13 @@ class Driver {
   // Navigation
 
   async navigate(page = Driver.PAGES.HOME) {
-    return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+    const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
+    // Wait for asyncronous JavaScript to load
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.metamask-loaded')),
+      10 * 1000,
+    );
+    return response;
   }
 
   async getCurrentUrl() {

@@ -97,13 +97,40 @@ export const NftItem = ({
 };
 
 NftItem.propTypes = {
+  /**
+   * NFT media source
+   */
   src: PropTypes.string,
+  /**
+   * Alt text for the NFT
+   */
   alt: PropTypes.string.isRequired,
+  /**
+   * The NFT's name
+   */
   name: PropTypes.string.isRequired,
+  /**
+   * Name of the network the NFT lives on
+   */
   networkName: PropTypes.string.isRequired,
+  /**
+   * Image that represents the network
+   */
   networkSrc: PropTypes.string.isRequired,
+  /**
+   * Token ID of the NFT
+   */
   tokenId: PropTypes.string.isRequired,
+  /**
+   * Executes when the NFT is clicked
+   */
   onClick: PropTypes.func,
+  /**
+   * Represents if the NFT is clickable for larger image
+   */
   clickable: PropTypes.bool,
+  /**
+   * Whether the src url resolve to ipfs
+   */
   isIpfsURL: PropTypes.bool,
 };

@@ -8,6 +8,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
 import { createSelector } from 'reselect';
+import { NameType } from '@metamask/name-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -31,6 +32,7 @@ import {
   LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -89,6 +91,7 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import {
+  NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
 } from '../../shared/notifications';
@@ -413,8 +416,7 @@ export function isBalanceCached(state) {
 export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
   const selectedAddress = getSelectedAddress(state);
-
-  return cachedBalances && cachedBalances[selectedAddress];
+  return cachedBalances?.[selectedAddress];
 }
 
 export function getSelectedAccount(state) {
@@ -750,7 +752,10 @@ export function getIpfsGateway(state) {
 }
 
 export function getInfuraBlocked(state) {
-  return Boolean(state.metamask.infuraBlocked);
+  return (
+    state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
+      .status === NetworkStatus.Blocked
+  );
 }
 
 export function getUSDConversionRate(state) {
@@ -955,6 +960,16 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
+export const getNotifySnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions.snap_notify,
+    );
+  },
+);
+
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).map((snap) => {
     return {
@@ -1026,7 +1041,6 @@ function getAllowedAnnouncementIds(state) {
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
-  const isSwapsChain = getIsSwapsChain(state);
 
   return {
     1: false,
@@ -1049,8 +1063,8 @@ function getAllowedAnnouncementIds(state) {
     18: false,
     19: false,
     20: currentKeyringIsLedger && isFirefox,
-    21: isSwapsChain,
-    22: true,
+    21: false,
+    22: false,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: true,
     ///: END:ONLY_INCLUDE_IN
@@ -1058,6 +1072,7 @@ function getAllowedAnnouncementIds(state) {
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
+    [NOTIFICATION_BUY_SELL_BUTTON]: true,
   };
 }
 
@@ -1333,7 +1348,18 @@ export function getNonTestNetworks(state) {
     // Custom networks added by the user
     ...Object.values(networkConfigurations)
       .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
-      .map((network) => ({ ...network, removable: true })),
+      .map((network) => ({
+        ...network,
+        rpcPrefs: {
+          ...network.rpcPrefs,
+          // Provide an image based on chainID if a network
+          // has been added without an image
+          imageUrl:
+            network?.rpcPrefs?.imageUrl ??
+            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+        },
+        removable: true,
+      })),
   ];
 }
 
@@ -1532,6 +1558,18 @@ export function getIsSecurityAlertsEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+/**
+ * Get the state of the `addSnapAccountEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `addSnapAccountEnabled` flag.
+ */
+export function getIsAddSnapAccountEnabled(state) {
+  return state.metamask.addSnapAccountEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
@@ -1608,6 +1646,10 @@ export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
 }
 
+export const useSafeChainsListValidationSelector = (state) => {
+  return state.metamask.useSafeChainsListValidation;
+};
+
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
  *
@@ -1616,6 +1658,18 @@ export function getOnboardedInThisUISession(state) {
  */
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
+}
+
+export function getNames(state) {
+  return state.metamask.names || {};
+}
+
+export function getEthereumAddressNames(state) {
+  return state.metamask.names?.[NameType.ETHEREUM_ADDRESS] || {};
+}
+
+export function getNameSources(state) {
+  return state.metamask.nameSources || {};
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)

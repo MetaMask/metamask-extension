@@ -1,7 +1,7 @@
 import { EXCLUDE_E2E_TESTS_REGEX } from '../common/constants';
 import {
-  filterDiffLineAdditions,
   filterDiffByFilePath,
+  filterDiffFileCreations,
   hasNumberOfCodeBlocksIncreased,
 } from '../common/shared';
 
@@ -16,7 +16,7 @@ const codeBlocks = [
 
 function preventSinonAssertSyntax(diff: string): boolean {
   const diffByFilePath = filterDiffByFilePath(diff, EXCLUDE_E2E_TESTS_REGEX);
-  const diffAdditions = filterDiffLineAdditions(diffByFilePath);
+  const diffAdditions = filterDiffFileCreations(diffByFilePath);
   const hashmap = hasNumberOfCodeBlocksIncreased(diffAdditions, codeBlocks);
 
   const haveOccurencesOfAtLeastOneCodeBlockIncreased =

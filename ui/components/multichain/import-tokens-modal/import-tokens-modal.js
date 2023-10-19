@@ -363,7 +363,7 @@ export const ImportTokensModal = ({ onClose }) => {
             <ButtonLink
               className="import-tokens-modal__nft-address-error-link"
               onClick={() => {
-                dispatch(showImportNftsModal());
+                dispatch(showImportNftsModal({ tokenAddress: address }));
                 onClose();
               }}
               color={TextColor.primaryDefault}
@@ -452,7 +452,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                 className="import-tokens-modal__autodetect"
                                 onClick={() => {
                                   history.push(
-                                    `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
+                                    `${SECURITY_ROUTE}#auto-detect-tokens`,
                                   );
                                   onClose();
                                 }}
@@ -505,11 +505,12 @@ export const ImportTokensModal = ({ onClose }) => {
                             <ButtonLink
                               type="link"
                               key="import-token-token-detection-announcement"
-                              onClick={() =>
+                              onClick={() => {
                                 history.push(
-                                  `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
-                                )
-                              }
+                                  `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                );
+                                onClose();
+                              }}
                             >
                               {t('inYourSettings')}
                             </ButtonLink>,

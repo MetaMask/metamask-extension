@@ -74,7 +74,6 @@ const state = {
       },
     ],
     transactions: [],
-    keyringTypes: [],
     keyrings: [
       {
         type: KeyringType.hdKeyTree,

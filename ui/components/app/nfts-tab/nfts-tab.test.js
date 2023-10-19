@@ -295,4 +295,26 @@ describe('NFT Items', () => {
       expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
     });
   });
+
+  describe('nft conversion banner', () => {
+    it('shows the NFT conversion banner when there are no NFTs', () => {
+      process.env.MULTICHAIN = 1;
+      const { queryByText } = render({
+        selectedAddress: ACCOUNT_1,
+        nfts: [],
+      });
+
+      expect(queryByText('Learn more about NFTs')).toBeInTheDocument();
+    });
+
+    it('does not show the NFT conversion banner when there are NFTs', () => {
+      process.env.MULTICHAIN = 1;
+      const { queryByText } = render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+      });
+
+      expect(queryByText('Learn more about NFTs')).not.toBeInTheDocument();
+    });
+  });
 });

@@ -95,6 +95,8 @@
 @import 'network-account-balance-header/index';
 @import 'approve-content-card/index';
 @import 'transaction-alerts/transaction-alerts';
+@import 'name/index';
+@import 'name/name-details/index';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import '../institutional/interactive-replacement-token-notification/index';
 @import '../institutional/confirm-remove-jwt-modal/index';

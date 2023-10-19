@@ -611,18 +611,9 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Bumili"
-  },
   "buyAsset": {
     "message": "Bumili ng $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "I-hold ang iyong crypto at makaipon ng potensyal na tubo"
-  },
-  "buyDisabled": {
-    "message": "Hindi available ang pagbili sa network na ito"
   },
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",
@@ -1408,9 +1399,6 @@
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
-  "enableForAllNetworks": {
-    "message": "Paganahin para sa lahat ng network"
-  },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
   },
@@ -1550,11 +1538,9 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Galugarin ang MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "I-customize ang iyong karanasan sa wallet."
+    "message": "I-customize ang iyong karanasan sa wallet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "External Extension"
@@ -1584,9 +1570,6 @@
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Napakalaki ng na-drop na file."
   },
   "flaskWelcomeUninstall": {
     "message": "dapat mong i-uninstall ang extension na ito",
@@ -3202,14 +3185,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Pinapayagan ang snap na gumamit ng mga lifecycle hook para paganahin ang code sa mga espisipikong panahon sa oras ng lifecycle nito.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Patakbuhin ng walang katapusan.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Payagan ang snap para gumana nang walang limitasyon sa tagal habang, halimbawa, nagpoproseso ng maraming data.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Magdagdag at kontrolin ang mga Ethereum account",

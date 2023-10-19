@@ -58,35 +58,7 @@ describe('AccountListMenu', () => {
     const { getByPlaceholderText, getByText } = render();
 
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
-    expect(getByText('Add account')).toBeInTheDocument();
-    expect(getByText('Import account')).toBeInTheDocument();
-    expect(getByText('Add hardware wallet')).toBeInTheDocument();
-  });
-
-  it('shows the account creation UI when Add Account is clicked', () => {
-    const { getByText, getByPlaceholderText } = render();
-    fireEvent.click(getByText('Add account'));
-    expect(getByText('Create')).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
-
-    fireEvent.click(getByText('Cancel'));
-    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
-  });
-
-  it('shows the account import UI when Import Account is clicked', () => {
-    const { getByText, getByPlaceholderText } = render();
-    fireEvent.click(getByText('Import account'));
-    expect(getByText('Import')).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
-
-    fireEvent.click(getByText('Cancel'));
-    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
-  });
-
-  it('navigates to hardware wallet connection screen when clicked', () => {
-    const { getByText } = render();
-    fireEvent.click(getByText('Add hardware wallet'));
-    expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
+    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
   });
 
   it('displays accounts for list and filters by search', () => {
@@ -94,7 +66,7 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
-    expect(listItems).toHaveLength(4);
+    expect(listItems).toHaveLength(5);
 
     const searchBox = document.querySelector('input[type=search]');
     fireEvent.change(searchBox, {
@@ -157,30 +129,144 @@ describe('AccountListMenu', () => {
     expect(searchBox).toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  it('renders the add snap account button', async () => {
+  it('add / Import / Hardware button functions as it should', () => {
     const { getByText } = render();
-    const addSnapAccountButton = getByText(
-      messages.settingAddSnapAccount.message,
+
+    // Ensure the button is displaying
+    const button = document.querySelectorAll(
+      '[data-testid="multichain-account-menu-popover-action-button"]',
     );
-    expect(addSnapAccountButton).toBeInTheDocument();
+    expect(button).toHaveLength(1);
 
-    fireEvent.click(addSnapAccountButton);
+    // Click the button to ensure the options and close button display
+    button[0].click();
+    expect(getByText('Add a new account')).toBeInTheDocument();
+    expect(getByText('Import account')).toBeInTheDocument();
+    expect(getByText('Add hardware wallet')).toBeInTheDocument();
+    const header = document.querySelector('header');
+    expect(header.innerHTML).toBe('Add account');
+    expect(
+      document.querySelector('button[aria-label="Close"]'),
+    ).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(mockToggleAccountMenu).toHaveBeenCalled();
-    });
+    const backButton = document.querySelector('button[aria-label="Back"]');
+    expect(backButton).toBeInTheDocument();
+    backButton.click();
+
+    expect(getByText('Select an account')).toBeInTheDocument();
   });
 
-  it('pushes history when clicking add snap account from extended view', async () => {
-    const { getByText } = render();
-    mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
-    const addSnapAccountButton = getByText(
-      messages.settingAddSnapAccount.message,
+  it('shows the account creation UI when Add Account is clicked', () => {
+    const { getByText, getByPlaceholderText } = render();
+
+    const button = document.querySelector(
+      '[data-testid="multichain-account-menu-popover-action-button"]',
     );
-    fireEvent.click(addSnapAccountButton);
-    await waitFor(() => {
-      expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
+    button.click();
+
+    fireEvent.click(getByText('Add a new account'));
+    expect(getByText('Create')).toBeInTheDocument();
+    expect(getByText('Cancel')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Cancel'));
+    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
+  });
+
+  it('shows the account import UI when Import Account is clicked', () => {
+    const { getByText, getByPlaceholderText } = render();
+
+    const button = document.querySelector(
+      '[data-testid="multichain-account-menu-popover-action-button"]',
+    );
+    button.click();
+
+    fireEvent.click(getByText('Import account'));
+    expect(getByText('Import')).toBeInTheDocument();
+    expect(getByText('Cancel')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Cancel'));
+    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
+  });
+
+  it('navigates to hardware wallet connection screen when clicked', () => {
+    const { getByText } = render();
+
+    const button = document.querySelector(
+      '[data-testid="multichain-account-menu-popover-action-button"]',
+    );
+    button.click();
+
+    fireEvent.click(getByText('Add hardware wallet'));
+    expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
+  });
+
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  describe('addSnapAccountButton', () => {
+    const renderWithState = (state, props = { onClose: () => jest.fn() }) => {
+      const store = configureStore({
+        ...mockState,
+        ...{
+          metamask: {
+            ...mockState.metamask,
+            ...state,
+          },
+        },
+        activeTab: {
+          id: 113,
+          title: 'E2E Test Dapp',
+          origin: 'https://metamask.github.io',
+          protocol: 'https:',
+          url: 'https://metamask.github.io/test-dapp/',
+        },
+      });
+      return renderWithProvider(<AccountListMenu {...props} />, store);
+    };
+
+    it("doesn't render the add snap account button if it's disabled", async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: false });
+      const button = document.querySelector(
+        '[data-testid="multichain-account-menu-popover-action-button"]',
+      );
+      button.click();
+      expect(() => getByText(messages.settingAddSnapAccount.message)).toThrow(
+        `Unable to find an element with the text: ${messages.settingAddSnapAccount.message}`,
+      );
+    });
+
+    it("renders the add snap account button if it's enabled", async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: true });
+      const button = document.querySelector(
+        '[data-testid="multichain-account-menu-popover-action-button"]',
+      );
+      button.click();
+      const addSnapAccountButton = getByText(
+        messages.settingAddSnapAccount.message,
+      );
+      expect(addSnapAccountButton).toBeInTheDocument();
+
+      fireEvent.click(addSnapAccountButton);
+      await waitFor(() => {
+        expect(mockToggleAccountMenu).toHaveBeenCalled();
+      });
+    });
+
+    it('pushes history when clicking add snap account from extended view', async () => {
+      const { getByText } = renderWithState({ addSnapAccountEnabled: true });
+      mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
+
+      const button = document.querySelector(
+        '[data-testid="multichain-account-menu-popover-action-button"]',
+      );
+      button.click();
+
+      const addSnapAccountButton = getByText(
+        messages.settingAddSnapAccount.message,
+      );
+
+      fireEvent.click(addSnapAccountButton);
+      await waitFor(() => {
+        expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
+      });
     });
   });
   ///: END:ONLY_INCLUDE_IN

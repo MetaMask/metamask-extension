@@ -47,7 +47,7 @@ async function mockSegment(mockServer) {
         batch: [
           {
             type: 'track',
-            event: 'Transaction Submitted',
+            event: 'Transaction Submitted Anon',
           },
         ],
       })
@@ -78,7 +78,7 @@ async function mockSegment(mockServer) {
         batch: [
           {
             type: 'track',
-            event: 'Transaction Finalized',
+            event: 'Transaction Finalized Anon',
           },
         ],
       })
@@ -134,7 +134,7 @@ const eventHasZeroAddressAnonymousId = (payload) =>
   payload.anonymousId === '0x0000000000000000';
 
 describe('Transaction Finalized Event', function () {
-  it('Successfully tracked when sending a transaction', async function () {
+  it('Successfully tracked when sending a transaction @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -213,6 +213,8 @@ describe('Transaction Finalized Event', function () {
               status: 'submitted',
             }),
         ];
+
+        await driver.delay(10000);
 
         const transactionFinalizedWithSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,

@@ -49,7 +49,7 @@ async function mockSegment(mockServer) {
 }
 
 describe('Wallet Created Events', function () {
-  it('are sent when onboarding user who chooses to opt in metrics', async function () {
+  it('are sent when onboarding user who chooses to opt in metrics @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })

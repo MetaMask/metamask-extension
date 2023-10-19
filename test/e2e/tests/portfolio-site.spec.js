@@ -12,7 +12,7 @@ describe('Portfolio site', function () {
       },
     ],
   };
-  it('should link to the portfolio site', async function () {
+  it('should link to the portfolio site @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

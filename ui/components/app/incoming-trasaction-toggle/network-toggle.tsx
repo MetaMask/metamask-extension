@@ -46,26 +46,13 @@ const NetworkToggle = ({
 
   const networkName = networkPreferences.label;
 
-  // console.log({ ETHERSCAN_SUPPORTED_NETWORKS, chainId });
-
   type SupportedChainId = keyof typeof ETHERSCAN_SUPPORTED_NETWORKS;
 
   const networkDomainAndSubdomain =
     ETHERSCAN_SUPPORTED_NETWORKS?.[chainId as SupportedChainId];
 
-  // console.log({ stuff });
-
   const domain = networkDomainAndSubdomain?.domain;
 
-  // console.log({ domain });
-
-  console.log({
-    ETHERSCAN_SUPPORTED_NETWORKS,
-    domain,
-    chainId,
-  });
-
-  // const upperCaseDomain = domain?.charAt(0)?.toUpperCase() + domain?.slice(1);
   const upperCaseDomain = domain?.charAt(0)?.toUpperCase() + domain?.slice(1);
 
   return (

@@ -145,6 +145,7 @@ export default class ConfirmTransactionBase extends Component {
     isNoteToTraderSupported: PropTypes.bool,
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
+    tokenSymbol: PropTypes.string,
   };
 
   state = {
@@ -324,6 +325,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
+      tokenSymbol,
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -461,6 +463,7 @@ export default class ConfirmTransactionBase extends Component {
           networkName={networkName}
           type={txData.type}
           isBuyableChain={isBuyableChain}
+          tokenSymbol={tokenSymbol}
         />
         <TransactionDetail
           disabled={isDisabled()}

@@ -179,6 +179,10 @@ function getCopyTargets(
       dest: 'init-globals.js',
     },
     {
+      src: './app/scripts/load-app.js',
+      dest: 'load-app.js',
+    },
+    {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,

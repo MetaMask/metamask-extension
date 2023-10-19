@@ -66,8 +66,9 @@ class SelectedAccount extends Component {
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const custodyLabels = accountDetails
-      ? accountDetails[toChecksumHexAddress(selectedIdentity.address)]?.labels
+      ? accountDetails[checksummedAddress]?.labels
       : {};
+
     const showCustodyLabels =
       getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
       accountType === 'custody' &&
@@ -117,7 +118,10 @@ class SelectedAccount extends Component {
               }
               {shortenAddress(checksummedAddress)}
               {showAccountCopyIcon && (
-                <div className="selected-account__copy">
+                <div
+                  data-testid="selected-account-copy"
+                  className="selected-account__copy"
+                >
                   <Icon
                     name={
                       this.state.copied ? IconName.CopySuccess : IconName.Copy

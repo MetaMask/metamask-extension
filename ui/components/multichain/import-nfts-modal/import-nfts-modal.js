@@ -52,6 +52,8 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { useNftsCollections } from '../../../hooks/useNftsCollections';
+import { checkTokenIdExists } from '../../../helpers/utils/util';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -62,20 +64,20 @@ export const ImportNftsModal = ({ onClose }) => {
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
-  const addressEnteredOnImportTokensPage =
-    history?.location?.state?.addressEnteredOnImportTokensPage;
-  const contractAddressToConvertFromTokenToNft =
-    history?.location?.state?.tokenAddress;
-
-  const [nftAddress, setNftAddress] = useState(
-    addressEnteredOnImportTokensPage ??
-      contractAddressToConvertFromTokenToNft ??
-      '',
-  );
-  const [tokenId, setTokenId] = useState('');
+  const {
+    tokenAddress: initialTokenAddress,
+    tokenId: initialTokenId,
+    ignoreErc20Token,
+  } = useSelector((state) => state.appState.importNftsModal);
+  const existingNfts = useNftsCollections();
+  const [nftAddress, setNftAddress] = useState(initialTokenAddress ?? '');
+  const [tokenId, setTokenId] = useState(initialTokenId ?? '');
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+  const [nftAddressValidationError, setNftAddressValidationError] =
+    useState(null);
+  const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
 
   const handleAddNft = async () => {
     try {
@@ -98,10 +100,10 @@ export const ImportNftsModal = ({ onClose }) => {
       setNftAddFailed(true);
       return;
     }
-    if (contractAddressToConvertFromTokenToNft) {
+    if (ignoreErc20Token && nftAddress) {
       await dispatch(
         ignoreTokens({
-          tokensToIgnore: contractAddressToConvertFromTokenToNft,
+          tokensToIgnore: nftAddress,
           dontShowLoadingIndicator: true,
         }),
       );
@@ -132,12 +134,32 @@ export const ImportNftsModal = ({ onClose }) => {
   };
 
   const validateAndSetAddress = (val) => {
+    setNftAddressValidationError(null);
+    if (val && !isValidHexAddress(val)) {
+      setNftAddressValidationError(t('invalidAddress'));
+    }
     setDisabled(!isValidHexAddress(val) || !tokenId);
     setNftAddress(val);
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(!isValidHexAddress(nftAddress) || !val || isNaN(Number(val)));
+    setDuplicateTokenIdError(null);
+    // Check if tokenId is already imported
+    const tokenIdExists = checkTokenIdExists(
+      nftAddress,
+      val,
+      existingNfts.collections,
+    );
+    if (tokenIdExists) {
+      setDuplicateTokenIdError(t('nftAlreadyAdded'));
+    }
+    setDisabled(
+      !isValidHexAddress(nftAddress) ||
+        !val ||
+        isNaN(Number(val)) ||
+        tokenIdExists,
+    );
+
     setTokenId(val);
   };
 
@@ -213,6 +235,8 @@ export const ImportNftsModal = ({ onClose }) => {
                   validateAndSetAddress(e.target.value);
                   setNftAddFailed(false);
                 }}
+                helpText={nftAddressValidationError}
+                error={Boolean(nftAddressValidationError)}
               />
             </Box>
             <Box>
@@ -245,6 +269,8 @@ export const ImportNftsModal = ({ onClose }) => {
                   validateAndSetTokenId(e.target.value);
                   setNftAddFailed(false);
                 }}
+                helpText={duplicateTokenIdError}
+                error={duplicateTokenIdError}
               />
             </Box>
           </Box>
@@ -281,5 +307,8 @@ export const ImportNftsModal = ({ onClose }) => {
 };
 
 ImportNftsModal.propTypes = {
+  /**
+   * Executes when the modal closes
+   */
   onClose: PropTypes.func.isRequired,
 };

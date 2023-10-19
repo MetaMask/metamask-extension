@@ -28,7 +28,6 @@ export default class DetectTokensController {
    * @param config.interval
    * @param config.preferences
    * @param config.network
-   * @param config.keyringMemStore
    * @param config.tokenList
    * @param config.tokensController
    * @param config.assetsContractController
@@ -40,7 +39,6 @@ export default class DetectTokensController {
     interval = DEFAULT_INTERVAL,
     preferences,
     network,
-    keyringMemStore,
     tokenList,
     tokensController,
     assetsContractController = null,
@@ -52,7 +50,6 @@ export default class DetectTokensController {
     this.preferences = preferences;
     this.interval = interval;
     this.network = network;
-    this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
@@ -91,6 +88,8 @@ export default class DetectTokensController {
         this.restartTokenDetection({ chainId: this.chainId });
       }
     });
+
+    this.#registerKeyringHandlers();
   }
 
   /**
@@ -237,26 +236,6 @@ export default class DetectTokensController {
   }
 
   /**
-   * In setter when isUnlocked is updated to true, detectNewTokens and restart polling
-   *
-   * @type {object}
-   */
-  set keyringMemStore(keyringMemStore) {
-    if (!keyringMemStore) {
-      return;
-    }
-    this._keyringMemStore = keyringMemStore;
-    this._keyringMemStore.subscribe(({ isUnlocked }) => {
-      if (this.isUnlocked !== isUnlocked) {
-        this.isUnlocked = isUnlocked;
-        if (isUnlocked) {
-          this.restartTokenDetection();
-        }
-      }
-    });
-  }
-
-  /**
    * @type {object}
    */
   set tokenList(tokenList) {
@@ -275,4 +254,22 @@ export default class DetectTokensController {
     return this.isOpen && this.isUnlocked;
   }
   /* eslint-enable accessor-pairs */
+
+  /**
+   * Constructor helper to register listeners on the keyring
+   * locked state changes
+   */
+  #registerKeyringHandlers() {
+    const { isUnlocked } = this.messenger.call('KeyringController:getState');
+    this.isUnlocked = isUnlocked;
+
+    this.messenger.subscribe('KeyringController:unlock', () => {
+      this.isUnlocked = true;
+      this.restartTokenDetection();
+    });
+
+    this.messenger.subscribe('KeyringController:lock', () => {
+      this.isUnlocked = false;
+    });
+  }
 }

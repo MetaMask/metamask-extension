@@ -19,7 +19,6 @@ The total amount is shown.",
 The recipient's hexadecimal address is shown in the activity list item.
 The amount is shown in the activity list item.",
 11,Cancel the transaction.,,"The transaction appears in the activity list.
-The recipient's hexadecimal address is shown in the activity list item.
 The amount is shown in the activity list item.",
 12,Wait for the transaction to complete.,,Another activity item appears.,Two activity items; Send and Receive.
 13,Open the Send activity list item.,,"The updated gas fees are shown in the item details.

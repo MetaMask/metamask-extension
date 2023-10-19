@@ -36,7 +36,10 @@ describe('DropdownTab', () => {
   it('registers selection', () => {
     const { container, getByText } = render(<DropdownTab {...args} />);
 
-    fireEvent.click(container.firstChild);
+    // Find the clickable element (icon box) in the dropdown that contains
+    // ArrowDown icon by walking the nested elements
+    const clickableIconBox = container.firstChild.firstChild.lastChild;
+    fireEvent.click(clickableIconBox);
 
     const element = getByText(args.options[1].name);
 
