@@ -4,6 +4,8 @@ import { withRouter } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
+import { CHAIN_ID_TO_RPC_URL_MAP } from '../../../shared/constants/network';
+
 ///: END:ONLY_INCLUDE_IN
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
@@ -225,7 +227,14 @@ const mapStateToProps = (state, ownProps) => {
     state,
     fromChecksumHexAddress,
   )
-  const { rpcUrl } = getProviderConfig(state);
+  const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
+  const { rpcUrl: customRpcUrl } = getProviderConfig(state);
+
+  let rpcUrl = customRpcUrl;
+  if (!customRpcUrl) {
+    rpcUrl = builtinRpcUrl;
+  }
+
   ///: END:ONLY_INCLUDE_IN
 
   const hardwareWalletRequiresConnection =
