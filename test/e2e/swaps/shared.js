@@ -156,10 +156,13 @@ const checkActivityTransaction = async (driver, options) => {
 };
 
 const checkNotification = async (driver, options) => {
-  const boxTitle = await driver.findElement(
-    '[data-testid="swaps-banner-title"]',
-  );
-  assert.equal(await boxTitle.getText(), options.title, 'Invalid box title');
+  const isExpectedBoxTitlePresentAndVisible =
+    await driver.isElementPresentAndVisible({
+      css: '[data-testid="swaps-banner-title"]',
+      text: options.title,
+    });
+
+  assert.equal(isExpectedBoxTitlePresentAndVisible, true, 'Invalid box title');
 
   const isExpectedBoxContentPresentAndVisible =
     await driver.isElementPresentAndVisible({
