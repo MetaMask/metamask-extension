@@ -755,7 +755,8 @@ export default class ConfirmTransactionBase extends Component {
         };
       }
 
-      txData.metadata.custodianPublishesTransaction = custodianPublishesTransaction;
+      txData.metadata.custodianPublishesTransaction =
+        custodianPublishesTransaction;
       txData.metadata.rpcUrl = rpcUrl;
     }
 

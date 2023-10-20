@@ -79,7 +79,10 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getAccountType } from '../../selectors/selectors';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getIsNoteToTraderSupported, getIsCustodianPublishesTransactionSupported } from '../../selectors/institutional/selectors';
+import {
+  getIsNoteToTraderSupported,
+  getIsCustodianPublishesTransactionSupported,
+} from '../../selectors/institutional/selectors';
 import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -223,17 +226,12 @@ const mapStateToProps = (state, ownProps) => {
     state,
     fromChecksumHexAddress,
   );
-  const custodianPublishesTransaction = getIsCustodianPublishesTransactionSupported(
-    state,
-    fromChecksumHexAddress,
-  )
+  const custodianPublishesTransaction =
+    getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress);
   const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
   const { rpcUrl: customRpcUrl } = getProviderConfig(state);
 
-  let rpcUrl = customRpcUrl;
-  if (!customRpcUrl) {
-    rpcUrl = builtinRpcUrl;
-  }
+  const rpcUrl = customRpcUrl ? customRpcUrl : builtinRpcUrl;
 
   ///: END:ONLY_INCLUDE_IN
 
@@ -298,7 +296,7 @@ const mapStateToProps = (state, ownProps) => {
     isNoteToTraderSupported,
     isNotification,
     custodianPublishesTransaction,
-    rpcUrl
+    rpcUrl,
     ///: END:ONLY_INCLUDE_IN
   };
 };
