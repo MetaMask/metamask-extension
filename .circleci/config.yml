@@ -872,19 +872,11 @@ jobs:
               MULTICHAIN=1 yarn test:e2e:chrome --retries 2 --debug
             fi
           no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
-
+          path: test/test-results/e2e
   test-e2e-chrome-mv3:
     executor: node-browsers
     parallelism: 8
