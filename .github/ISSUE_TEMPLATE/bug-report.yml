@@ -26,10 +26,10 @@ body:
      label: Expected behavior
      description: What did you expect to happen?
  - type: textarea
-   id: screenshot
+   id: screenshot-recording
    attributes:
-     label: Screenshots
-     description: Please include screenshots if applicable!
+     label: Screenshots/Recordings
+     description: Please include screenshots/recordings if applicable! (https://recordit.co/ is recommended)
  - type: textarea
    id: reproduce
    attributes:
