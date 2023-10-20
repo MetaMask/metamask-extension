@@ -55,7 +55,7 @@ const externalContributorLabelDescription = `Issue or PR created by user outside
 
 // Craft invalid issue template label
 const invalidIssueTemplateLabelName = `INVALID-ISSUE-TEMPLATE`;
-const invalidIssueTemplateLabelColor = 'B60205'; // red
+const invalidIssueTemplateLabelColor = 'EDEDED'; // grey
 const invalidIssueTemplateLabelDescription = `Issue's body doesn't match any issue template.`;
 
 main().catch((error: Error): void => {
