@@ -33,5 +33,6 @@
   "token-api.metaswap.codefi.network",
   "tx-insights.metaswap.codefi.network",
   "unresponsive-rpc.url",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "configuration.dev.metamask-institutional.io"
 ]
