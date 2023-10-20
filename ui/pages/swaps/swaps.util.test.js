@@ -15,7 +15,7 @@ import {
   OPTIMISM,
   ARBITRUM,
   ZKSYNC_ERA,
-  LINEA
+  LINEA,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
