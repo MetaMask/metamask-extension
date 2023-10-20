@@ -42,7 +42,7 @@ describe('Multiple ERC20 Watch Asset', function () {
           );
           const tokenAddresses = await tokenAddressesElement.getText();
           return tokenAddresses !== '';
-        }, 20000);
+        }, 10000);
 
         // Create Token 2
         await driver.clickElement({ text: 'Create Token', tag: 'button' });
