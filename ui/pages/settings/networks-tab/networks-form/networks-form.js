@@ -691,6 +691,12 @@ const NetworksForm = ({
         />
         <FormField
           warning={warnings.ticker?.msg || ''}
+          warningProps={{
+            'data-testid': 'network-form-ticker-warning',
+            style: {
+              color: 'var(--color-warning-default)',
+            },
+          }}
           onChange={(value) => {
             setIsEditing(true);
             setTicker(value);

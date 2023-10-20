@@ -717,7 +717,7 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "The network with chain ID $1 may use a different currency symbol ($2) than the one you have entered. Please verify before continuing.",
+    "message": "Potential fraud warning -- currency symbol mismatch detected. You're attempting to add a network with chain ID $1 with the currency called ($2). This could be a well known cryptocurrency which scammers could target to convince you to send more valuable currency in return. Please verify before continuing.",
     "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
   "chooseYourNetwork": {
