@@ -595,6 +595,9 @@ export default class MetamaskController extends EventEmitter {
               source,
             },
           }),
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
       },
       {},
       initState.NftController,
