@@ -1,0 +1,50 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "description": "## Preconditions",
+  "main": "index.js",
+  "EXCLUDED_JSON_RPC_METHODS": "",
+  "scripts": {
+    "setup": "yarn setup:submodule && yarn",
+    "setup:submodule": "sh scripts/init-submodule.sh",
+    "extension:build:test": "sh scripts/init-extension.sh && yarn extension:build:test:ci",
+    "extension:build:test:ci": "cd metamask-extension && yarn && yarn dist --build-type mmi",
+    "build:extension:from:branch": "cd metamask-extension && git checkout $BRANCH && yarn && yarn dist --build-type mmi",
+    "setup:extension:test": "sh scripts/extension.sh",
+    "build:setup:test": "yarn setup && yarn extension:build:test && yarn setup:extension:test",
+    "test:mmi:e2e": "npx playwright test -gv \"${npm_package_EXCLUDED_JSON_RPC_METHODS}\"",
+    "test:mmi:e2e:ci": "xvfb-run yarn test:mmi:e2e",
+    "test:mmi:e2e:report": "npx playwright show-report public/playwright/playwright-reports/html",
+    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:tsc",
+    "lint:fix": "yarn lint:prettier:fix && yarn lint:eslint:fix && yarn lint:styles:fix",
+    "lint:prettier": "prettier '**/*.json' --check",
+    "lint:prettier:fix": "prettier '**/*.json' --write",
+    "lint:eslint": "eslint . --ext js,ts,tsx,snap --cache",
+    "lint:eslint:fix": "yarn lint:eslint --fix",
+    "lint:tsc": "tsc --project tsconfig.json --noEmit",
+    "pretest:mmi:e2e:visual:check": "docker build -t e2e/mmi-dashboard:latest .",
+    "posttest:mmi:e2e:visual:check": "npm run test:visual:docker:clean",
+    "test:mmi:e2e:visual:check": "npm run test:visual:docker:check",
+    "test:mmi:e2e:visual:update": "docker build -t e2e/mmi-dashboard:latest . && npm run test:visual:docker:update && npm run test:visual:docker:clean",
+    "test:visual:docker": "xvfb-run npx playwright test test/e2e/mmi/specs/.*visual.spec",
+    "test:visual:docker:check": "docker run --rm -it --privileged -v `pwd`/public/playwright/playwright-reports:/usr/src/app/public/playwright/playwright-reports -v `pwd`/playwright/specs:/usr/src/app/playwright/specs --network host e2e/mmi-dashboard:latest",
+    "test:visual:docker:update": "docker run --rm -it --privileged -v `pwd`/public/playwright/playwright-reports:/usr/src/app/public/playwright/playwright-reports -v `pwd`/playwright/specs:/usr/src/app/playwright/specs --network host e2e/mmi-dashboard:latest --update-snapshots",
+    "test:visual:docker:clean": "docker image rm e2e/mmi-dashboard:latest",
+    "script:get:mm:branch": "sh scripts/get-repo-http-url.sh",
+    "report:ci": "npx playwright merge-reports --reporter html public/playwright/playwright-reports/test-artifacts/",
+    "format": "prettier --write .",
+    "eslint": "eslint .",
+    "eslint:fix": "eslint . --fix",
+    "lints": "yarn eslint:fix && yarn format"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.39.0",
+    "axios": "^1.1.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1"
+  }
+}

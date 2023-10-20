@@ -65,3 +65,14 @@ test-results/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# Playwright report
+public/playwright
+test/e2e/mmi/.env
+test/e2e/mmi/specs/**/*-darwin.png
