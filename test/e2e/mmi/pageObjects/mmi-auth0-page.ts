@@ -8,7 +8,7 @@ export class Auth0Page {
   }
 
   async goto() {
-    await this.page.goto(process.env.MMI_E2E_AUTH0_SIGNUP_URL as string);
+    await this.page.goto(process.env.MMI_E2E_AUTH0_SIGNIN_URL as string);
   }
 
   async signIn() {
@@ -21,9 +21,8 @@ export class Auth0Page {
     ) {
       await this.page.getByText('Log in').click();
     }
-    await this.page
-      .locator('#username')
-      .fill(process.env.MMI_E2E_E2E_AUTH0_EMAIL as string);
+    const user = await this.page.$('[inputmode="email"]');
+    await user?.fill(process.env.MMI_E2E_E2E_AUTH0_EMAIL as string);
     await this.page
       .locator('#password')
       .fill(process.env.MMI_E2E_E2E_AUTH0_PASSWORD as string);
