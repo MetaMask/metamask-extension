@@ -19,7 +19,6 @@ import {
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
-  setMouseUserState,
   toggleAccountMenu,
   toggleNetworkMenu,
   hideImportTokensModal,
@@ -54,7 +53,6 @@ function mapStateToProps(state) {
     isUnlocked: getIsUnlocked(state),
     isNetworkLoading: isNetworkLoading(state),
     currentCurrency: state.metamask.currentCurrency,
-    isMouseUser: state.appState.isMouseUser,
     autoLockTimeLimit,
     browserEnvironmentOs: state.metamask.browserEnvironment?.os,
     browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
@@ -88,8 +86,6 @@ function mapDispatchToProps(dispatch) {
   return {
     lockMetaMask: () => dispatch(lockMetamask(false)),
     setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('usd')),
-    setMouseUserState: (isMouseUser) =>
-      dispatch(setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
