@@ -64,7 +64,6 @@ import {
 
 import {
   parseStandardTokenTransactionData,
-  transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import {
@@ -128,8 +127,7 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const { conversionRate, identities, addressBook, networkId, nextNonce } =
-    metamask;
+  const { conversionRate, identities, addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
@@ -188,9 +186,7 @@ const mapStateToProps = (state, ownProps) => {
   } = transactionFeeSelector(state, transaction);
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
-    )
+    .filter((key) => unapprovedTxs[key].chainId === chainId)
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
 
