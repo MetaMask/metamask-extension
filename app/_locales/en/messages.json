@@ -2559,6 +2559,9 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
+  "networkNameLinea": {
+    "message": "Linea"
+  },
   "networkNameOpMainnet": {
     "message": "OP Mainnet"
   },
@@ -4350,9 +4353,6 @@
   },
   "snapsSettings": {
     "message": "Snap settings"
-  },
-  "snapsSettingsDescription": {
-    "message": "Manage your Snaps"
   },
   "snapsTermsOfUse": {
     "message": "Terms of Use"
