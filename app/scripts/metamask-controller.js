@@ -178,9 +178,10 @@ import {
 } from './lib/transaction-metrics';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
-  afterSign,
-  beforePublish,
-  getAdditionalSignArguments,
+  afterTransactionSign as afterTransactionSignMMI,
+  beforeTransactionPublish as beforeTransactionPublishMMI,
+  beforeTransactionApproveOnInit as beforeTransactionApproveOnInitMMI,
+  getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/mmi-hooks';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -1307,16 +1308,18 @@ export default class MetamaskController extends EventEmitter {
       securityProviderRequest: this.securityProviderRequest.bind(this),
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        beforePublish: beforePublish.bind(this),
         afterSign: (txMeta, signedEthTx) =>
-          afterSign(
+          afterTransactionSignMMI(
             txMeta,
             signedEthTx,
             this.transactionUpdateController.addTransactionToWatchList.bind(
               this,
             ),
           ),
-        getAdditionalSignArguments: getAdditionalSignArguments.bind(this),
+        beforeTransactionApproveOnInit:
+          beforeTransactionApproveOnInitMMI.bind(this),
+        beforePublish: beforeTransactionPublishMMI.bind(this),
+        getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IN
       },
       messenger: this.controllerMessenger.getRestricted({

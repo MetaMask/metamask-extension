@@ -1,19 +1,21 @@
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import {
-  afterSign,
-  beforePublish,
+  afterTransactionSign,
+  beforeTransactionApproveOnInit,
+  beforeTransactionPublish,
   getAdditionalSignArguments,
 } from './mmi-hooks';
 
 describe('MMI hooks', () => {
   const fromMocked = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
+  const toMocked = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
   const custodyIdMocked = '123';
-  describe('afterSign', () => {
+  describe('afterTransactionSign', () => {
     it('returns false if txMeta has no custodyStatus', () => {
-      const txMeta = { custodyStatus: undefined };
+      const txMeta = { to: toMocked } as any;
       const signedEthTx = {};
-      const result = afterSign(txMeta, signedEthTx, jest.fn());
-      expect(result).toBe(false);
+      const result = afterTransactionSign(txMeta, signedEthTx, jest.fn());
+      expect(result).toBe(true);
     });
 
     it('returns true if txMeta has custodyStatus', () => {
@@ -21,14 +23,18 @@ describe('MMI hooks', () => {
         custodyStatus: TransactionStatus.approved,
         custodyId: custodyIdMocked,
         txParams: { from: fromMocked },
-      };
+      } as any;
       const signedEthTx = {
         custodian_transactionId: custodyIdMocked,
         transactionStatus: TransactionStatus.signed,
       };
       const addTransactionToWatchList = jest.fn();
-      const result = afterSign(txMeta, signedEthTx, addTransactionToWatchList);
-      expect(result).toBe(true);
+      const result = afterTransactionSign(
+        txMeta,
+        signedEthTx,
+        addTransactionToWatchList,
+      );
+      expect(result).toBe(false);
       expect(txMeta.custodyId).toBe(custodyIdMocked);
       expect(txMeta.custodyStatus).toBe(TransactionStatus.signed);
       expect(addTransactionToWatchList).toHaveBeenCalledWith(
@@ -38,31 +44,45 @@ describe('MMI hooks', () => {
     });
   });
 
-  describe('beforePublish', () => {
+  describe('beforeTransactionPublish', () => {
     it('returns true if txMeta has custodyStatus', () => {
-      const txMeta = { custodyStatus: true };
-      const result = beforePublish(txMeta);
-      expect(result).toBe(true);
+      const txMeta = { custodyStatus: TransactionStatus.approved } as any;
+      const result = beforeTransactionPublish(txMeta);
+      expect(result).toBe(false);
     });
 
     it('returns false if txMeta has no custodyStatus', () => {
-      const txMeta = { custodyStatus: false };
-      const result = beforePublish(txMeta);
-      expect(result).toBe(false);
+      const txMeta = { to: toMocked } as any;
+      const result = beforeTransactionPublish(txMeta);
+      expect(result).toBe(true);
     });
   });
 
   describe('getAdditionalSignArguments', () => {
-    it('filters undefined arguments', () => {
-      const args = [1, undefined, 2, 3, undefined, 4];
-      const result = getAdditionalSignArguments(...args);
-      expect(result).toEqual([1, 2, 3, 4]);
+    it('returns an array with txMeta when custodyStatus is truthy', () => {
+      const txMeta = { custodyStatus: TransactionStatus.approved } as any;
+      const result = getAdditionalSignArguments(txMeta);
+      expect(result).toEqual([txMeta]);
     });
 
-    it('returns the single argument directly when only one argument is provided', () => {
-      const args = '123';
-      const result = getAdditionalSignArguments(args);
-      expect(result).toStrictEqual(args);
+    it('returns an empty array when custodyStatus is falsy', () => {
+      const txMeta = { to: toMocked } as any;
+      const result = getAdditionalSignArguments(txMeta);
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('beforeTransactionApproveOnInit', () => {
+    it('returns true if txMeta has custodyStatus', () => {
+      const txMeta = { custodyStatus: TransactionStatus.approved } as any;
+      const result = beforeTransactionApproveOnInit(txMeta);
+      expect(result).toBe(false);
+    });
+
+    it('returns false if txMeta has no custodyStatus', () => {
+      const txMeta = { to: toMocked } as any;
+      const result = beforeTransactionApproveOnInit(txMeta);
+      expect(result).toBe(true);
     });
   });
 });
