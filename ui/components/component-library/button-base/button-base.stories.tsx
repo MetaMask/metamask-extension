@@ -38,6 +38,10 @@ export default {
     docs: {
       page: README,
     },
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/HKpPKij9V3TpsyMV1TpV7C/DS-Components?type=design&node-id=9970-48395&mode=design&t=K6JSdtG11z2wzcXG-4',
+    },
   },
   argTypes: {
     as: {

@@ -964,6 +964,7 @@ const slice = createSlice({
         slice.caseReducers.updateAmountToMax(state);
       } else if (initialAssetSet === false) {
         slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
+        slice.caseReducers.updateUserInputHexData(state, { payload: '' });
       }
       // validate send state
       slice.caseReducers.validateSendState(state);

@@ -8,6 +8,7 @@ import {
   BSC,
   ETHEREUM,
   GOERLI,
+  LINEA,
   OPTIMISM,
   POLYGON,
   ZKSYNC_ERA,
@@ -630,6 +631,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return ARBITRUM;
     case CHAIN_IDS.ZKSYNC_ERA:
       return ZKSYNC_ERA;
+    case CHAIN_IDS.LINEA_MAINNET:
+      return LINEA;
     default:
       return '';
   }
