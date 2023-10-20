@@ -161,13 +161,12 @@ export default class TransactionController extends EventEmitter {
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
 
     const { hooks } = opts ?? {};
-    this._afterSign = hooks?.afterSign;
-    this._beforeApproveOnInit = hooks?.beforeApproveOnInit;
-    this._beforePublish = hooks?.beforePublish;
+    this._afterSign = (...args) => hooks?.afterSign?.(...args) ?? true;
+    this._beforeApproveOnInit = (...args) =>
+      hooks?.beforeApproveOnInit?.(...args) ?? true;
+    this._beforePublish = (...args) => hooks?.beforePublish?.(...args) ?? true;
     this._getAdditionalSignArguments = (txMeta) =>
-      hooks?.getAdditionalSignArguments
-        ? hooks.getAdditionalSignArguments(txMeta)
-        : undefined;
+      hooks?._getAdditionalSignArguments?.(txMeta) ?? [undefined];
 
     this.memStore = new ObservableStore({});
 
@@ -1397,7 +1396,7 @@ export default class TransactionController extends EventEmitter {
       ...this._getAdditionalSignArguments(txMeta),
     );
 
-    if (!this._afterSign?.(txMeta, signedEthTx)) {
+    if (!this._afterSign(txMeta, signedEthTx)) {
       return null;
     }
 
@@ -1736,7 +1735,7 @@ export default class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTransaction(txId);
 
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
-    if (!this._beforePublish?.(txMeta)) {
+    if (!this._beforePublish(txMeta)) {
       this.inProcessOfSigning.delete(txId);
       // Custodial nonces and gas params are set by the custodian, so MMI follows the approve
       // workflow before the transaction parameters are sent to the keyring
@@ -1903,7 +1902,7 @@ export default class TransactionController extends EventEmitter {
       })
       .forEach((txMeta) => {
         // If you create a Tx and its still inside the custodian waiting to be approved we don't want to approve it right away
-        if (this._beforeApproveOnInit?.(txMeta)) {
+        if (this._beforeApproveOnInit(txMeta)) {
           // Line below will try to publish transaction which is in
           // APPROVED state at the time of controller bootup
           this._approveTransaction(txMeta.id);
