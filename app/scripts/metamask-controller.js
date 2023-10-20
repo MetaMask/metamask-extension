@@ -1049,7 +1049,7 @@ export default class MetamaskController extends EventEmitter {
       typeof chrome.offscreen !== 'undefined';
 
     const snapExecutionServiceArgs = {
-      [shouldUseOffscreenExecutionService ? 'iframeUrl' : 'frameUrl']: new URL(
+      [shouldUseOffscreenExecutionService ? 'frameUrl' : 'iframeUrl']: new URL(
         process.env.IFRAME_EXECUTION_ENVIRONMENT_URL,
       ),
       messenger: this.controllerMessenger.getRestricted({
