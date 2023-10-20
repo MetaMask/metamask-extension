@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Content, Footer, Header, Page } from '../page';
@@ -28,7 +28,7 @@ import {
   getMetaMaskAccountsOrdered,
   getSelectedIdentity,
 } from '../../../../selectors';
-import { AccountPicker, AccountListItem } from '../..';
+import { AccountPicker, AccountListItem, AccountListMenu } from '../..';
 import DomainInput from '../../../../pages/send/send-content/add-recipient/domain-input.component';
 
 export const SendPage = () => {
@@ -39,6 +39,7 @@ export const SendPage = () => {
 
   // Account
   const identity = useSelector(getSelectedIdentity);
+  const [showAccountPicker, setShowAccountPicker] = useState(false);
 
   // Your Accounts
   const accounts = useSelector(getMetaMaskAccountsOrdered);
@@ -81,7 +82,7 @@ export const SendPage = () => {
           <AccountPicker
             address={identity.address}
             name={identity.name}
-            onClick={() => undefined}
+            onClick={() => setShowAccountPicker(true)}
             showAddress
             borderColor={BorderColor.borderDefault}
             borderWidth={1}
@@ -103,6 +104,13 @@ export const SendPage = () => {
             }}
             width={BlockSize.Full}
           />
+          {showAccountPicker ? (
+            <AccountListMenu
+              accountListItemProps={{ showOptions: false }}
+              showAccountCreation={false}
+              onClose={() => setShowAccountPicker(false)}
+            />
+          ) : null}
         </SendPageRow>
         <SendPageRow>
           <Label paddingBottom={2}>{t('to')}</Label>

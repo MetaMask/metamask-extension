@@ -14,13 +14,8 @@ import {
 import { AccountListMenu } from '.';
 
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-const mockToggleAccountMenu = jest.fn();
+const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
-
-jest.mock('../../../store/actions.ts', () => ({
-  ...jest.requireActual('../../../store/actions.ts'),
-  toggleAccountMenu: () => mockToggleAccountMenu,
-}));
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -114,11 +109,7 @@ describe('AccountListMenu', () => {
         },
       },
     });
-    const props = { onClose: () => jest.fn() };
-    const { container } = renderWithProvider(
-      <AccountListMenu {...props} />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<AccountListMenu />, mockStore);
     const searchBox = container.querySelector('input[type=search]');
     expect(searchBox).not.toBeInTheDocument();
   });
@@ -202,7 +193,7 @@ describe('AccountListMenu', () => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   describe('addSnapAccountButton', () => {
-    const renderWithState = (state, props = { onClose: () => jest.fn() }) => {
+    const renderWithState = (state, props = { onClose: mockOnClose }) => {
       const store = configureStore({
         ...mockState,
         ...{
@@ -246,7 +237,7 @@ describe('AccountListMenu', () => {
 
       fireEvent.click(addSnapAccountButton);
       await waitFor(() => {
-        expect(mockToggleAccountMenu).toHaveBeenCalled();
+        expect(mockOnClose).toHaveBeenCalled();
       });
     });
 
