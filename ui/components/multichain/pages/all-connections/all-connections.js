@@ -91,13 +91,13 @@ export const AllConnections = () => {
     // TODO: go to connection details page
     console.log('connection clicked: ', connection);
   };
-  const connectionsList = (connectionList) =>
-    Object.entries(connectionList).map((connection) => {
+  const renderConnectionsList = (connectionList) =>
+    Object.entries(connectionList).map(([itemKey, connection]) => {
       return (
         <ConnectionListItem
-          key={connection[0]}
-          connection={connection[1]}
-          onClick={() => handleConnectionClick(connection[1])}
+          key={itemKey}
+          connection={connection}
+          onClick={() => handleConnectionClick(connection)}
         />
       );
     });
@@ -130,15 +130,14 @@ export const AllConnections = () => {
       {shouldShowTabsView ? (
         <Tabs tabsClassName="all-connections__tabs">
           <Tab name={t('sites')} tabKey="sites">
-            {connectionsList(sitesConnectionsList)}
+            {renderConnectionsList(sitesConnectionsList)}
           </Tab>
           <Tab name={t('snaps')} tabKey="snaps">
-            {connectionsList(snapsConnectionsList)}
+            {renderConnectionsList(snapsConnectionsList)}
           </Tab>
         </Tabs>
       ) : (
         <>
-          {' '}
           {Object.keys(sitesConnectionsList).length > 0 && (
             <>
               <Text
@@ -149,7 +148,7 @@ export const AllConnections = () => {
               >
                 {t('siteConnections')}
               </Text>
-              {connectionsList(sitesConnectionsList)}
+              {renderConnectionsList(sitesConnectionsList)}
             </>
           )}
           {Object.keys(snapsConnectionsList).length > 0 && (
@@ -162,7 +161,7 @@ export const AllConnections = () => {
               >
                 {t('snapConnections')}
               </Text>
-              {connectionsList(snapsConnectionsList)}
+              {renderConnectionsList(snapsConnectionsList)}
             </>
           )}
         </>

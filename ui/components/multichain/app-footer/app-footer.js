@@ -54,7 +54,7 @@ export const AppFooter = () => {
   const activeWallet = location.pathname === DEFAULT_ROUTE;
   const activeConnections = location.pathname === CONNECTIONS;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
-
+  const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
   const selectedAddress = useSelector(getSelectedAddress);
 
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -157,8 +157,6 @@ export const AppFooter = () => {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  const isFullScreen =
-                    getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
                   history.push(isFullScreen ? ALL_CONNECTIONS : CONNECTIONS);
                 }}
                 className="app-footer__button"
