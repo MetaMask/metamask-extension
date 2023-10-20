@@ -98,12 +98,12 @@ describe('Multiple ERC20 Watch Asset', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Check only 1 token is added bug.
+        // Check all three tokens have been added to the token list.
         const addedTokens = await driver.findElements({
           tag: 'p',
           text: 'TST',
         });
-        assert.equal(addedTokens.length, 1);
+        assert.equal(addedTokens.length, 3);
       },
     );
   });
