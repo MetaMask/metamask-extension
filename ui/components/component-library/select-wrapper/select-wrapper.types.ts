@@ -57,7 +57,7 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
   /**
    * onOpenChange callback function is called when the SelectWrapper popover is opened or closed.
    */
-  onOpenChange?: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  onOpenChange?: any; // TO DO: confirm type
   /**
    * Callback function that is called when the SelectWrapper component receives focus.
    */
