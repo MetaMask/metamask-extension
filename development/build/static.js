@@ -218,7 +218,7 @@ function getCopyTargets(
     allCopyTargets.push({
       src: getPathInsideNodeModules(
         '@metamask/snaps-execution-environments',
-        'dist/webpack/offscreen',
+        'dist/browserify/offscreen',
       ),
       dest: 'snaps',
     });
