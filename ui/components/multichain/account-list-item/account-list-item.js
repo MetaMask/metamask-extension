@@ -79,6 +79,7 @@ export const AccountListItem = ({
   closeMenu,
   connectedAvatar,
   connectedAvatarName,
+  showOptions = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -246,34 +247,38 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      <ButtonIcon
-        ariaLabel={`${identity.name} ${t('options')}`}
-        iconName={IconName.MoreVertical}
-        size={IconSize.Sm}
-        ref={setAccountListItemMenuRef}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (!accountOptionsMenuOpen) {
-            trackEvent({
-              event: MetaMetricsEventName.AccountDetailMenuOpened,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: 'Account Options',
-              },
-            });
-          }
-          setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
-        }}
-        data-testid="account-list-item-menu-button"
-      />
-      <AccountListItemMenu
-        anchorElement={accountListItemMenuElement}
-        identity={identity}
-        onClose={() => setAccountOptionsMenuOpen(false)}
-        isOpen={accountOptionsMenuOpen}
-        isRemovable={keyring?.type !== KeyringType.hdKeyTree}
-        closeMenu={closeMenu}
-      />
+      {showOptions ? (
+        <ButtonIcon
+          ariaLabel={`${identity.name} ${t('options')}`}
+          iconName={IconName.MoreVertical}
+          size={IconSize.Sm}
+          ref={setAccountListItemMenuRef}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!accountOptionsMenuOpen) {
+              trackEvent({
+                event: MetaMetricsEventName.AccountDetailMenuOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: 'Account Options',
+                },
+              });
+            }
+            setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
+          }}
+          data-testid="account-list-item-menu-button"
+        />
+      ) : null}
+      {showOptions ? (
+        <AccountListItemMenu
+          anchorElement={accountListItemMenuElement}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+          isOpen={accountOptionsMenuOpen}
+          isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+          closeMenu={closeMenu}
+        />
+      ) : null}
     </Box>
   );
 };
@@ -307,6 +312,10 @@ AccountListItem.propTypes = {
    * Text used as the avatar alt text
    */
   connectedAvatarName: PropTypes.string,
+  /**
+   * Represents if the "Options" 3-dot menu should display
+   */
+  showOptions: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

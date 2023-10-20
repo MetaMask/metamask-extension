@@ -145,8 +145,6 @@ export default class Routes extends Component {
     history: PropTypes.object,
     location: PropTypes.object,
     lockMetaMask: PropTypes.func,
-    isMouseUser: PropTypes.bool,
-    setMouseUserState: PropTypes.func,
     providerId: PropTypes.string,
     providerType: PropTypes.string,
     autoLockTimeLimit: PropTypes.number,
@@ -550,8 +548,6 @@ export default class Routes extends Component {
       textDirection,
       loadingMessage,
       isNetworkLoading,
-      setMouseUserState,
-      isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
       isNetworkUsed,
@@ -607,15 +603,8 @@ export default class Routes extends Component {
         className={classnames('app', {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
-          'mouse-user-styles': isMouseUser,
         })}
         dir={textDirection}
-        onClick={() => setMouseUserState(true)}
-        onKeyDown={(e) => {
-          if (e.keyCode === 9) {
-            setMouseUserState(false);
-          }
-        }}
       >
         {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
