@@ -344,6 +344,7 @@ export const AccountListMenu = ({ onClose }) => {
                     closeMenu={onClose}
                     connectedAvatar={connectedSite?.iconUrl}
                     connectedAvatarName={connectedSite?.name}
+                    showOptions
                   />
                 );
               })}
