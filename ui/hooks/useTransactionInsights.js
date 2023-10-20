@@ -31,13 +31,18 @@ const useTransactionInsights = ({ txData }) => {
     insightSnaps[0]?.id,
   );
 
-  const { data, loading } = useTransactionInsightSnaps({
+  const insightHookParams = {
     transaction: txParams,
     chainId: caip2ChainId,
     origin,
     insightSnaps,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
     insightSnapId: selectedInsightSnapId,
+  };
+
+  const { data, loading } = useTransactionInsightSnaps({
+    ...insightHookParams,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+    eagerFetching: false,
     ///: END:ONLY_INCLUDE_IN
   });
 
@@ -65,7 +70,13 @@ const useTransactionInsights = ({ txData }) => {
         className="confirm-page-container-content__tab"
         name={getSnapName(selectedSnap?.id, subjectMetadata[selectedSnap?.id])}
       >
-        <SnapInsight data={data?.[0]} loading={loading} />
+        <SnapInsight
+          data={data?.[0]}
+          loading={loading}
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+          insightHookParams={insightHookParams}
+          ///: END:ONLY_INCLUDE_IN
+        />
       </Tab>
     );
   } else if (insightSnaps.length > 1) {
@@ -88,7 +99,13 @@ const useTransactionInsights = ({ txData }) => {
         selectedOption={selectedInsightSnapId}
         onChange={(snapId) => setSelectedInsightSnapId(snapId)}
       >
-        <SnapInsight loading={loading} data={selectedSnapData} />
+        <SnapInsight
+          loading={loading}
+          data={selectedSnapData}
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+          insightHookParams={insightHookParams}
+          ///: END:ONLY_INCLUDE_IN
+        />
       </DropdownTab>
     );
   }

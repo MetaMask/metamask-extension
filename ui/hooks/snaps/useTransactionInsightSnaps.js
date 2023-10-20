@@ -11,9 +11,8 @@ export function useTransactionInsightSnaps({
   chainId,
   origin,
   insightSnaps,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  eagerFetching = true,
   insightSnapId = '',
-  ///: END:ONLY_INCLUDE_IN
 }) {
   const subjects = useSelector(getPermissionSubjectsDeepEqual);
 
@@ -32,14 +31,20 @@ export function useTransactionInsightSnaps({
         return;
       }
       ///: END:ONLY_INCLUDE_IN
+
+      if (!eagerFetching) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
 
       let snapIds = insightSnaps.map((snap) => snap.id);
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+
       if (insightSnapId.length > 0) {
         snapIds = [insightSnapId];
       }
-      ///: END:ONLY_INCLUDE_IN
+
       const newData = await Promise.allSettled(
         snapIds.map((snapId) => {
           const permission = subjects[snapId]?.permissions[INSIGHT_PERMISSION];
@@ -97,13 +102,12 @@ export function useTransactionInsightSnaps({
     };
   }, [
     transaction,
+    eagerFetching,
     chainId,
     origin,
     subjects,
     insightSnaps,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
     insightSnapId,
-    ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     hasFetchedV2Insight,
     ///: END:ONLY_INCLUDE_IN
