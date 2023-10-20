@@ -227,7 +227,7 @@ const mapStateToProps = (state, ownProps) => {
   const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
   const { rpcUrl: customRpcUrl } = getProviderConfig(state);
 
-  const rpcUrl = customRpcUrl ? customRpcUrl : builtinRpcUrl;
+  const rpcUrl = customRpcUrl || builtinRpcUrl;
 
   ///: END:ONLY_INCLUDE_IN
 
