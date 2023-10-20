@@ -103,7 +103,6 @@ export default class ConfirmTransactionBase extends Component {
     // Component props
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
-    dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     tokenAddress: PropTypes.string,
     customTokenAmount: PropTypes.string,
@@ -516,14 +515,6 @@ export default class ConfirmTransactionBase extends Component {
         ) : null}
       </div>
     );
-  }
-
-  renderData() {
-    const { dataComponent } = this.props;
-    if (dataComponent) {
-      return dataComponent;
-    }
-    return null;
   }
 
   renderDataHex() {
@@ -1028,7 +1019,6 @@ export default class ConfirmTransactionBase extends Component {
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
           detailsComponent={this.renderDetails()}
-          dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
