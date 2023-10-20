@@ -3,6 +3,7 @@ import { StoryFn, Meta } from '@storybook/react';
 import {
   Display,
   FlexDirection,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 
 import { Box } from '..';
@@ -31,15 +32,24 @@ export default {
   },
 } as Meta<typeof PickerNetwork>;
 
-export const DefaultStory = (args) => <PickerNetwork {...args} />;
+const Template = (args) => <PickerNetwork {...args} />;
+
+export const DefaultStory = Template.bind({});
+DefaultStory.storyName = 'Default';
 
 export const Label: StoryFn<typeof PickerNetwork> = (args) => (
-  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
-    <PickerNetwork {...args} label="Arbitrum One" />
-    <PickerNetwork {...args} label="Polygon Mainnet" />
-    <PickerNetwork {...args} label="Optimism" />
+  <Box
+    display={Display.InlineFlex}
+    flexDirection={FlexDirection.Column}
+    gap={2}
+  >
+    <PickerNetwork {...args} />
+    <PickerNetwork {...args} src="" label="Arbitrum One" />
+    <PickerNetwork {...args} src="" label="Polygon Mainnet" />
+    <PickerNetwork {...args} src="" label="Optimism" />
     <PickerNetwork
       {...args}
+      src=""
       label="BNB Smart Chain (previously Binance Smart Chain Mainnet)"
       style={{ maxWidth: '200px' }}
     />
@@ -47,7 +57,11 @@ export const Label: StoryFn<typeof PickerNetwork> = (args) => (
 );
 
 export const Src: StoryFn<typeof PickerNetwork> = (args) => (
-  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
+  <Box
+    display={Display.InlineFlex}
+    flexDirection={FlexDirection.Column}
+    gap={2}
+  >
     <PickerNetwork {...args} label="Arbitrum One" src="./images/arbitrum.svg" />
     <PickerNetwork
       {...args}
@@ -58,4 +72,9 @@ export const Src: StoryFn<typeof PickerNetwork> = (args) => (
   </Box>
 );
 
-DefaultStory.storyName = 'Default';
+export const Width: StoryFn<typeof PickerNetwork> = (args) => (
+  <>
+    <PickerNetwork marginBottom={2} {...args} />
+    <PickerNetwork {...args} width={BlockSize.Full} />
+  </>
+);

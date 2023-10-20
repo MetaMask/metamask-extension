@@ -7,17 +7,18 @@ import {
 } from '../../../helpers/utils/settings-search';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   MetaMetricsEventName,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
+import { showSnapAccountExperimentalToggle } from '../../../../shared/modules/snap-accounts';
+///: END:ONLY_INCLUDE_IN
 
 import { Text, Box, Tag } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
   Display,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid,desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -83,10 +84,9 @@ export default class ExperimentalTab extends PureComponent {
       this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: 'Enabled/Disable security_alerts_enabled',
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
-        action: 'Enabled/Disable security_alerts_enabled',
-        legacy_event: true,
+        blockaid_alerts_enabled: newValue,
       },
     });
     setSecurityAlertsEnabled(newValue);
@@ -107,10 +107,9 @@ export default class ExperimentalTab extends PureComponent {
       this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: 'Enabled/Disable TransactionSecurityCheck',
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
-        action: 'Enabled/Disable TransactionSecurityCheck',
-        legacy_event: true,
+        opensea_alerts_enabled: newValue,
       },
     });
     setTransactionSecurityCheckEnabled(newValue);
@@ -263,7 +262,7 @@ export default class ExperimentalTab extends PureComponent {
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  renderKeyringSnapsToggle() {
+  keyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
 
@@ -304,21 +303,20 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <Box data-testid="add-snap-account-toggle">
-                  <ToggleButton
-                    value={addSnapAccountEnabled}
-                    onToggle={(value) => {
-                      trackEvent({
-                        event: MetaMetricsEventName.AddSnapAccountEnabled,
-                        category: MetaMetricsEventCategory.Settings,
-                        properties: {
-                          enabled: !value,
-                        },
-                      });
-                      setAddSnapAccountEnabled(!value);
-                    }}
-                  />
-                </Box>
+                <ToggleButton
+                  dataTestId="add-snap-account-toggle"
+                  value={addSnapAccountEnabled}
+                  onToggle={(value) => {
+                    trackEvent({
+                      event: MetaMetricsEventName.AddSnapAccountEnabled,
+                      category: MetaMetricsEventCategory.Settings,
+                      properties: {
+                        enabled: !value,
+                      },
+                    });
+                    setAddSnapAccountEnabled(!value);
+                  }}
+                />
               </div>
               <Text
                 variant={TextVariant.bodySm}
@@ -335,6 +333,21 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
   ///: END:ONLY_INCLUDE_IN
+
+  renderKeyringSnapsToggle() {
+    let toggle = null;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    toggle = this.keyringSnapsToggle();
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+    if (!showSnapAccountExperimentalToggle()) {
+      toggle = null;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    return toggle;
+  }
 
   render() {
     return (

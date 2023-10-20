@@ -43,7 +43,7 @@ export class EtherscanRemoteTransactionSource
     this.#includeTokenTransfers = includeTokenTransfers ?? true;
   }
 
-  isSupportedNetwork(chainId: Hex, _networkId: string): boolean {
+  isSupportedNetwork(chainId: Hex): boolean {
     return Object.keys(ETHERSCAN_SUPPORTED_NETWORKS).includes(chainId);
   }
 
@@ -68,19 +68,11 @@ export class EtherscanRemoteTransactionSource
       await Promise.all([transactionPromise, tokenTransactionPromise]);
 
     const transactions = etherscanTransactions.result.map((tx) =>
-      this.#normalizeTransaction(
-        tx,
-        request.currentNetworkId,
-        request.currentChainId,
-      ),
+      this.#normalizeTransaction(tx, request.currentChainId),
     );
 
     const tokenTransactions = etherscanTokenTransactions.result.map((tx) =>
-      this.#normalizeTokenTransaction(
-        tx,
-        request.currentNetworkId,
-        request.currentChainId,
-      ),
+      this.#normalizeTokenTransaction(tx, request.currentChainId),
     );
 
     return [...transactions, ...tokenTransactions];
@@ -88,14 +80,9 @@ export class EtherscanRemoteTransactionSource
 
   #normalizeTransaction(
     txMeta: EtherscanTransactionMeta,
-    currentNetworkId: string,
     currentChainId: Hex,
   ): TransactionMeta {
-    const base = this.#normalizeTransactionBase(
-      txMeta,
-      currentNetworkId,
-      currentChainId,
-    );
+    const base = this.#normalizeTransactionBase(txMeta, currentChainId);
 
     return {
       ...base,
@@ -113,14 +100,9 @@ export class EtherscanRemoteTransactionSource
 
   #normalizeTokenTransaction(
     txMeta: EtherscanTokenTransactionMeta,
-    currentNetworkId: string,
     currentChainId: Hex,
   ): TransactionMeta {
-    const base = this.#normalizeTransactionBase(
-      txMeta,
-      currentNetworkId,
-      currentChainId,
-    );
+    const base = this.#normalizeTransactionBase(txMeta, currentChainId);
 
     return {
       ...base,
@@ -129,7 +111,6 @@ export class EtherscanRemoteTransactionSource
 
   #normalizeTransactionBase(
     txMeta: EtherscanTransactionMetaBase,
-    currentNetworkId: string,
     currentChainId: Hex,
   ): TransactionMeta {
     const time = parseInt(txMeta.timeStamp, 10) * 1000;
@@ -139,7 +120,6 @@ export class EtherscanRemoteTransactionSource
       chainId: currentChainId,
       hash: txMeta.hash,
       id: uuid(),
-      metamaskNetworkId: currentNetworkId,
       status: TransactionStatus.confirmed,
       time,
       txParams: {

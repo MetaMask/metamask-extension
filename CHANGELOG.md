@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.2.0]
+### Added
+- Adds Swaps support for the zkSync Era network ([#20809](https://github.com/MetaMask/metamask-extension/pull/20809))
+
+### Changed
+- Increase account list height, so that it uses all available screen space and displays more accounts ([#20745](https://github.com/MetaMask/metamask-extension/pull/20745))
+- Update Snaps What's New text translations in 14 languages ([#20734](https://github.com/MetaMask/metamask-extension/pull/20734))
+- Remove hover background on Account Picker ([#20794](https://github.com/MetaMask/metamask-extension/pull/20794))
+- Show the first letter or number in a Snap's name as the icon, and not a symbol character, if there is no icon ([#20851](https://github.com/MetaMask/metamask-extension/pull/20851))
+- Set initial background color to system theme ([#20858](https://github.com/MetaMask/metamask-extension/pull/20858))
+- Increase network list height, so that it uses all available screen space and displays more networks ([#20801](https://github.com/MetaMask/metamask-extension/pull/20801))
+- Improve visual spacing and borders on connected sites in the snap details page ([#20854](https://github.com/MetaMask/metamask-extension/pull/20854))
+- [FLASK] Bump snaps packages ([#20567](https://github.com/MetaMask/metamask-extension/pull/20567))
+- [MMI] Added code fences to hide emojis just for MMI build ([#20754](https://github.com/MetaMask/metamask-extension/pull/20754))
+- [MMI] Show the NFT tab content for mmi ([#20830](https://github.com/MetaMask/metamask-extension/pull/20830))
+- [MMI] Changed the wrong privacy policy URL to the good one ([#20884](https://github.com/MetaMask/metamask-extension/pull/20884))
+- [MMI] Shows Stake & Portfolio buttons and hides the Buy and Bridge buttons ([#20767](https://github.com/MetaMask/metamask-extension/pull/20767))
+
+### Fixed
+- Ensure all NFT lists are sorted by the NFT's id ([#20796](https://github.com/MetaMask/metamask-extension/pull/20796))
+- Fix custom amount editing on token approval screens ([#20804](https://github.com/MetaMask/metamask-extension/pull/20804))
+
 ## [11.1.2]
 ### Fixed
 - Prevent crashes for users that have NFTs without an image and/r limited image data ([#21176](https://github.com/MetaMask/metamask-extension/pull/21176))
@@ -4044,7 +4066,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.2.0...HEAD
+[11.2.0]: https://github.com/MetaMask/metamask-extension/compare/v11.1.2...v11.2.0
 [11.1.2]: https://github.com/MetaMask/metamask-extension/compare/v11.1.1...v11.1.2
 [11.1.1]: https://github.com/MetaMask/metamask-extension/compare/v11.1.0...v11.1.1
 [11.1.0]: https://github.com/MetaMask/metamask-extension/compare/v11.0.0...v11.1.0
