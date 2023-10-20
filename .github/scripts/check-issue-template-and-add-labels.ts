@@ -36,7 +36,7 @@ const generalIssueTemplateTitles = [
 const bugReportTemplateTitles = [
   '### Describe the bug',
   '### Expected behavior',
-  '### Screenshots',
+  '### Screenshots/Recordings',
   '### Steps to reproduce',
   '### Error messages or log output',
   '### Version',
