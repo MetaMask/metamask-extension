@@ -160,13 +160,15 @@ const checkNotification = async (driver, options) => {
     '[data-testid="swaps-banner-title"]',
   );
   assert.equal(await boxTitle.getText(), options.title, 'Invalid box title');
-  const boxContent = await driver.findElement({
-    css: '[data-testid="mm-banner-alert-notification-text"]',
-    text: options.text,
-  });
-  const bodyText = await boxContent.getText();
+
+  const isExpectedBoxContentPresentAndVisible =
+    await driver.isElementPresentAndVisible({
+      css: '[data-testid="mm-banner-alert-notification-text"]',
+      text: options.text,
+    });
+
   assert.equal(
-    bodyText.includes(options.text),
+    isExpectedBoxContentPresentAndVisible,
     true,
     'Invalid box text content',
   );
