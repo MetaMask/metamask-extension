@@ -75,7 +75,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         className={classnames(
           'mm-select-button',
           {
-            'mm-select-button--danger': isDanger,
+            'mm-select-button--type-danger': isDanger,
             'mm-select-button--disabled': isDisabled,
             'mm-select-button--open': isOpen || isUncontrolledOpen,
             [`mm-select-button--size-${size}`]:

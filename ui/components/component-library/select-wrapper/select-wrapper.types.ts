@@ -55,6 +55,14 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
    */
   isOpen?: boolean;
   /**
+   * isDisabled boolean determines whether the SelectWrapper component is disabled or not.
+   */
+  isDisabled?: boolean;
+  /**
+   * isDanger boolean determines whether the SelectWrapper component is danger
+   */
+  isDanger?: boolean;
+  /**
    * onOpenChange callback function is called when the SelectWrapper popover is opened or closed.
    */
   onOpenChange?: any; // TO DO: confirm type

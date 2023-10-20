@@ -93,6 +93,36 @@ describe('SelectWrapper', () => {
     );
   };
 
+  it('should render the SelectWrapper isDisabled', () => {
+    const { getByTestId } = render(
+      <SelectWrapper
+        defaultValue="Test Default Value"
+        isDisabled={true}
+        triggerComponent={
+          <SelectButton data-testid="trigger">Test Button</SelectButton>
+        }
+      >
+        <div>Test</div>
+      </SelectWrapper>,
+    );
+    expect(getByTestId('trigger')).toHaveClass('mm-select-button--disabled');
+  });
+
+  it('should render the SelectWrapper isDanger', () => {
+    const { getByTestId } = render(
+      <SelectWrapper
+        defaultValue="Test Default Value"
+        isDanger={true}
+        triggerComponent={
+          <SelectButton data-testid="trigger">Test Button</SelectButton>
+        }
+      >
+        <div>Test</div>
+      </SelectWrapper>,
+    );
+    expect(getByTestId('trigger')).toHaveClass('mm-select-button--type-danger');
+  });
+
   it('should render the SelectWrapper defaultValue then uncontrolled select will change value', () => {
     const { getByText, getByTestId } = render(<OptionValueChangeDemo />);
     expect(getByText('Default Value')).toBeInTheDocument();
