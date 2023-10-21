@@ -23,6 +23,8 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    * Placeholder for SelectButton component
    */
   placeholder?: any;
+  isDanger?: boolean;
+  isDisabled?: boolean;
 }
 
 export type SelectButtonProps<C extends React.ElementType> =

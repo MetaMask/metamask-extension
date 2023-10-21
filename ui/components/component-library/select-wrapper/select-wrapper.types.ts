@@ -10,6 +10,7 @@ export type SelectContextType = {
   isUncontrolledOpen: boolean;
   setIsUncontrolledOpen: React.Dispatch<React.SetStateAction<any | null>>;
   toggleUncontrolledOpen: () => void;
+  isDanger: boolean;
   isDisabled: boolean;
   isMultiSelect: boolean;
   value: any | null;
@@ -18,7 +19,6 @@ export type SelectContextType = {
   setUncontrolledValue: React.Dispatch<React.SetStateAction<any | null>>;
   defaultValue: any | null;
   placeholder: any;
-  isDanger: boolean;
 };
 
 export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
@@ -57,11 +57,11 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
   /**
    * isDisabled boolean determines whether the SelectWrapper component is disabled or not.
    */
-  isDisabled?: boolean;
+  isDisabled: boolean;
   /**
    * isDanger boolean determines whether the SelectWrapper component is danger
    */
-  isDanger?: boolean;
+  isDanger: boolean;
   /**
    * onOpenChange callback function is called when the SelectWrapper popover is opened or closed.
    */
