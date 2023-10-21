@@ -45,9 +45,9 @@ export const SnapInsight = ({
   ///: END:ONLY_INCLUDE_IN
 }) => {
   const t = useI18nContext();
-  let error, snapId, content, isLoading;
+  let error, snapId, content;
+  let isLoading = loading;
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-  isLoading = loading;
   error = data?.error;
   snapId = data?.snapId;
   content = data?.response?.content;
