@@ -63,7 +63,6 @@
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
     "selectedNetworkClientId": "string",
-    "networkId": "1337",
     "providerConfig": {
       "chainId": "0x539",
       "nickname": "Localhost 8545",
@@ -91,6 +90,8 @@
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
     "openSeaEnabled": false,
+    "securityAlertsEnabled": "boolean",
+    "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "incomingTransactionsPreferences": {},
     "lostIdentities": "object",
@@ -101,6 +102,7 @@
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
+    "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
@@ -194,7 +196,12 @@
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
-    "approvalFlows": "object"
+    "approvalFlows": "object",
+    "versionInfo": {},
+    "storageMetadata": {},
+    "chainStatus": {
+      "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
+    }
   },
   "send": "object",
   "swaps": "object",

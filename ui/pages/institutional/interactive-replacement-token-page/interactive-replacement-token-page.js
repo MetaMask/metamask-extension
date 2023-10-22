@@ -63,7 +63,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
   const { url } = interactiveReplacementToken || {};
   const { custodians } = mmiConfiguration;
   const custodian =
-    custodians.find((item) => item.name === custodianName) || {};
+    custodians.find((item) => item.envName === custodianName) || {};
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const metaMaskAccounts = useSelector(getMetaMaskAccounts);
   const connectRequests = useSelector(

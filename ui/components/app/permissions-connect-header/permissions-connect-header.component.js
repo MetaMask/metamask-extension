@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { SubjectType } from '@metamask/subject-metadata-controller';
+import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IN
 import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';
