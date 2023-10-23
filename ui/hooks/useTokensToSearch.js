@@ -70,6 +70,7 @@ export function getRenderableTokenData(
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.OPTIMISM) ||
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.AURORA) ||
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.ARBITRUM) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.LINEA_MAINNET) ||
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.ZKSYNC_ERA)
       ? iconUrl
       : formatIconUrlWithProxy({

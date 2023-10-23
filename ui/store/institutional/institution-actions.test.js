@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
-import { _setBackgroundConnection } from '../action-queue';
+import { setBackgroundConnection } from '../background-connection';
 import {
   showInteractiveReplacementTokenModal,
   showCustodyConfirmLink,
@@ -43,6 +43,7 @@ const defaultState = {
       {
         id: 0,
         time: 0,
+        chainId: '0x1',
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -53,6 +54,7 @@ const defaultState = {
       {
         id: 1,
         time: 1,
+        chainId: '0x1',
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -107,7 +109,7 @@ describe('#InstitutionActions', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const expectedActions = [
       {
@@ -130,7 +132,7 @@ describe('#InstitutionActions', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const expectedActions = [
       {
@@ -199,7 +201,7 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {
@@ -223,7 +225,7 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {
@@ -236,6 +238,7 @@ describe('#updateCustodyState', () => {
         {
           id: 0,
           time: 0,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -246,6 +249,7 @@ describe('#updateCustodyState', () => {
         {
           id: 1,
           time: 1,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -276,7 +280,7 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {
@@ -289,6 +293,7 @@ describe('#updateCustodyState', () => {
         {
           id: 0,
           time: 0,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -299,6 +304,7 @@ describe('#updateCustodyState', () => {
         {
           id: 1,
           time: 1,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',

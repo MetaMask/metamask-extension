@@ -6,7 +6,7 @@ import { fireEvent } from '@testing-library/react';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
@@ -32,8 +32,6 @@ setBackgroundConnection({
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
 });
-
-const mockNetworkId = '5';
 
 const mockTxParamsFromAddress = '0x123456789';
 
@@ -73,7 +71,7 @@ const baseStore = {
     transactions: [
       {
         id: 1,
-        metamaskNetworkId: mockNetworkId,
+        chainId: '0x5',
         txParams: { ...mockTxParams },
         status: 'unapproved',
       },
@@ -91,7 +89,6 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    networkId: mockNetworkId,
     selectedNetworkClientId: NetworkType.mainnet,
     networksMetadata: {
       [NetworkType.mainnet]: {
@@ -139,7 +136,6 @@ const baseStore = {
   confirmTransaction: {
     txData: {
       id: 1,
-      metamaskNetworkId: mockNetworkId,
       txParams: { ...mockTxParams },
       time: 1675012496170,
       status: TransactionStatus.unapproved,
