@@ -68,9 +68,9 @@ export const SnapInsight = ({
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
   const insights = useTransactionInsightSnaps(insightHookParams);
-  error = insights.data?.error;
-  snapId = insights.data?.snapId;
-  content = insights.data?.response?.content;
+  error = insights.data?.[0]?.error;
+  snapId = insights.data?.[0]?.snapId;
+  content = insights.data?.[0]?.response?.content;
   isLoading = insights.loading;
   ///: END:ONLY_INCLUDE_IN
 
@@ -100,7 +100,7 @@ export const SnapInsight = ({
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {content && Object.keys(content).length > 0 ? (
+          {content ? (
             <SnapUIRenderer
               snapId={snapId}
               data={content}
