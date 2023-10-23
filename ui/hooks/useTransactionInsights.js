@@ -129,7 +129,7 @@ const useTransactionInsights = ({ txData }) => {
     return warningsArr;
   }, []);
 
-  return data ? { insightComponent, warnings } : null;
+  return { insightComponent, warnings };
 };
 
 export default useTransactionInsights;
