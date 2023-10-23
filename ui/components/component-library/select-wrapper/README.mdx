@@ -147,7 +147,10 @@ import {
 
 ### Uncontrolled Value
 
-ToDo: Write descript
+By default the `SelectWrapper` will control the value internally if the `value` prop is not passed.
+
+When using `SelectOption` as a child of `SelectWrapper` the `value` prop of `SelectOption` will be used as the value of the `SelectWrapper` when selected.
+Additionally when using `SelectButton` it will display the value of the `SelectWrapper`.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--uncontrolled-value" />
@@ -160,30 +163,19 @@ import {
   SelectOption,
 } from '../../component-library';
 
-<SelectWrapper />;
+<SelectWrapper
+  triggerComponent={<SelectButton>Uncontrolled Example</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
 ```
 
 ### isMultiSelect
 
-ToDo: Write descript
-
-<Canvas>
-  <Story id="components-componentlibrary-selectwrapper--use-select-context" />
-</Canvas>
-
-```jsx
-import {
-  SelectWrapper,
-  SelectButton,
-  SelectOption,
-} from '../../component-library';
-
-<SelectWrapper />;
-```
-
-### To Do
-
-ToDo: Write descript
+Setting the `isMultiSelect` to true will disabled the controlled open and uncontrolled open behavior of the `SelectWrapper`.
+When `isMultiSelect` is true the `SelectWrapper` will not control the open state internally and will not close when an option is selected.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--is-multi-select" />
@@ -196,10 +188,56 @@ import {
   SelectOption,
 } from '../../component-library';
 
-<SelectWrapper />;
+<SelectWrapper
+  isMultiSelect
+  triggerComponent={<SelectButton>Demo</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
 ```
 
-### To Do
+### useSelectContext
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--use-select-context" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+  useSelectContext,
+} from '../../component-library';
+
+const CustomClose = () => {
+  const { toggleUncontrolledOpen } = useSelectContext();
+
+  return (
+    <>
+      <Text>Custom close button using SelectContext</Text>
+      <Button block onClick={toggleUncontrolledOpen}>
+        Close
+      </Button>
+    </>
+  );
+};
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Uncontrolled Example</SelectButton>}
+>
+  <CustomClose />
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Placeholder
 
 ToDo: Write descript
 
@@ -217,7 +255,7 @@ import {
 <SelectWrapper />;
 ```
 
-### To Do
+### isDisabled
 
 ToDo: Write descript
 
@@ -232,10 +270,14 @@ import {
   SelectOption,
 } from '../../component-library';
 
-<SelectWrapper />;
+<SelectWrapper isDisabled triggerComponent={<SelectButton>Demo</SelectButton>}>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
 ```
 
-### To Do
+### isDanger
 
 ToDo: Write descript
 
@@ -250,7 +292,11 @@ import {
   SelectOption,
 } from '../../component-library';
 
-<SelectWrapper />;
+<SelectWrapper isDanger triggerComponent={<SelectButton>Demo</SelectButton>}>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
 ```
 
 ### To Do
@@ -267,6 +313,48 @@ import {
   SelectButton,
   SelectOption,
 } from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 
-<SelectWrapper />;
+<SelectWrapper
+  popoverProps={{
+    backgroundColor: BackgroundColor.goerli,
+    padding: 4,
+    isPortal: false,
+  }}
+  triggerComponent={<SelectButton>Demo</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### onBlur
+
+ToDo: Write descript
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--on-blur" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+
+<SelectWrapper
+  popoverProps={{
+    backgroundColor: BackgroundColor.goerli,
+    padding: 4,
+    isPortal: false,
+  }}
+  triggerComponent={<SelectButton>Demo</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
 ```

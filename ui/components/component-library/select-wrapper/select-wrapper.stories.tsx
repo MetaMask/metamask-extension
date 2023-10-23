@@ -158,7 +158,7 @@ export const UncontrolledValue: StoryFn<typeof SelectWrapper> = (args) => {
 };
 
 export const UseSelectContext: StoryFn<typeof SelectWrapper> = (args) => {
-  // Note thaty the SelectContext is being used inside a component, because the SelectContext needs to be called within the SelectWrapper component and not before
+  // Note that the SelectContext is being used inside a component, because the SelectContext needs to be called within the SelectWrapper component and not before
   const CustomClose = () => {
     const { toggleUncontrolledOpen } = useSelectContext();
 
