@@ -676,10 +676,10 @@ jobs:
           command: MULTICHAIN=1 yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test
+          command: mv ./dist ./dist-test-mutlichain
       - run:
           name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test
+          command: mv ./builds ./builds-test-multichain
       - persist_to_workspace:
           root: .
           paths:
