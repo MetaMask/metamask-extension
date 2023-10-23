@@ -15,7 +15,7 @@ export const SendPageYourAccount = () => {
   return (
     <SendPageRow>
       <Label paddingBottom={2}>{t('yourAccounts')}</Label>
-      {accounts.map((account) => (
+      {accounts.map((account: any) => (
         <AccountListItem
           identity={account}
           key={account.address}
