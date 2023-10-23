@@ -200,7 +200,7 @@ import {
 
 ### useSelectContext
 
-ToDo: Write descript
+When building a component to be used inside `SelectWrapper` you can use `useSelectContext` to access the `SelectWrapper` state and logic.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--use-select-context" />
@@ -239,7 +239,7 @@ const CustomClose = () => {
 
 ### Placeholder
 
-ToDo: Write descript
+Use the `placeholder` prop to set the placeholder value in `SelectWrapper` to be accessed for components within it.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--placeholder" />
@@ -257,7 +257,7 @@ import {
 
 ### isDisabled
 
-ToDo: Write descript
+Use the `isDisabled` prop to set the disable `SelectWrapper` so it can be accessed to components within it.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--is-disabled" />
@@ -279,7 +279,7 @@ import {
 
 ### isDanger
 
-ToDo: Write descript
+Use the `isDanger` prop to set the danger `SelectWrapper` so it can be accessed to components within it.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--is-danger" />
@@ -299,9 +299,9 @@ import {
 </SelectWrapper>;
 ```
 
-### To Do
+### popoverProps
 
-ToDo: Write descript
+Use the `popoverProps` prop to pass props to the `Popover` component that wraps the `SelectWrapper` children.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--popover-props" />
@@ -331,7 +331,8 @@ import { BackgroundColor } from '../../../helpers/constants/design-system';
 
 ### onBlur
 
-ToDo: Write descript
+By default onBlur is setup to close the `SelectWrapper` when the user clicks outside of the `SelectWrapper` or when the user tabs out of the `SelectWrapper`.
+You can use the `onBlur` prop to pass a custom function to handle the onBlur event. This will override the default onBlur behavior and will require you to have setup a controlled open environment. as well.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--on-blur" />
@@ -343,18 +344,13 @@ import {
   SelectButton,
   SelectOption,
 } from '../../component-library';
-import { BackgroundColor } from '../../../helpers/constants/design-system';
+
+const [onBlur, setOnBlur] = React.useState(0);
 
 <SelectWrapper
-  popoverProps={{
-    backgroundColor: BackgroundColor.goerli,
-    padding: 4,
-    isPortal: false,
-  }}
-  triggerComponent={<SelectButton>Demo</SelectButton>}
+  onBlur={() => setOnBlur(onBlur + 1)}
+  triggerComponent={<SelectButton>onBlur Count: {onBlur}</SelectButton>}
 >
-  <SelectOption value="Option 1">Option 1</SelectOption>
-  <SelectOption value="Option 2">Option 2</SelectOption>
-  <SelectOption value="Option 3">Option 3</SelectOption>
+  <Text>This is a demo of controlled onBlur.</Text>
 </SelectWrapper>;
 ```
