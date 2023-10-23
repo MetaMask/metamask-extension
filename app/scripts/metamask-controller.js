@@ -169,17 +169,16 @@ import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
-  handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
   handleTransactionApproved,
-  handleTransactionConfirmed,
   handleTransactionFailed,
+  handleTransactionConfirmed,
   handleTransactionDropped,
   handleTransactionRejected,
   handleTransactionSubmitted,
-} from './lib/transaction/handlers';
-import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
-import { createSwapsTransaction } from './lib/transaction/swaps';
+  handlePostTransactionBalanceUpdate,
+  createTransactionEventFragmentWithTxId,
+} from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IN
@@ -1302,9 +1301,6 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
-      // We need to access txController but it's not yet initialized,
-      // so entire context needs to be passed to the function
-      createSwapsTransaction: createSwapsTransaction.bind(this),
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       transactionUpdateController: this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IN
@@ -1343,6 +1339,15 @@ export default class MetamaskController extends EventEmitter {
     this.txController.on(
       TransactionEvent.failed,
       handleTransactionFailed.bind(null, transactionEventRequest),
+    );
+    this.txController.on(TransactionEvent.newSwap, ({ transactionMeta }) => {
+      this.swapsController.setTradeTxId(transactionMeta.id);
+    });
+    this.txController.on(
+      TransactionEvent.newSwapApproval,
+      ({ transactionMeta }) => {
+        this.swapsController.setApproveTxId(transactionMeta.id);
+      },
     );
     this.txController.on(
       TransactionEvent.rejected,

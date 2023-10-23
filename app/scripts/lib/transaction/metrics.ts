@@ -1,6 +1,8 @@
 import { isHexString } from 'ethereumjs-util';
 import EthQuery from 'eth-query';
 import { BigNumber } from 'bignumber.js';
+import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
+import { type Provider } from '@metamask/network-controller';
 
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
@@ -21,6 +23,9 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventFragment,
+  MetaMetricsPageObject,
+  MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import {
@@ -34,12 +39,58 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
-import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
-
 import {
-  type TransactionEventRequest,
-  type TransactionEventPayload,
-} from './handlers';
+  type SnapAndHardwareMessenger,
+  getSnapAndHardwareInfoForMetrics,
+} from '../snap-keyring/metrics';
+
+export type TransactionEventRequest = {
+  createEventFragment: (
+    options: MetaMetricsEventFragment,
+  ) => MetaMetricsEventFragment;
+  finalizeEventFragment: (
+    fragmentId: string,
+    options?: {
+      abandoned?: boolean;
+      page?: MetaMetricsPageObject;
+      referrer?: MetaMetricsReferrerObject;
+    },
+  ) => void;
+  getEventFragmentById: (fragmentId: string) => MetaMetricsEventFragment;
+  updateEventFragment: (
+    fragmentId: string,
+    payload: Partial<MetaMetricsEventFragment>,
+  ) => void;
+  getAccountType: (
+    address: string,
+  ) => Promise<'hardware' | 'imported' | 'MetaMask'>;
+  getDeviceModel: (
+    address: string,
+  ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
+  // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
+  // doesn't include some properties used in buildEventFragmentProperties,
+  // hence returning any here to avoid type errors.
+  getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
+  getParticipateInMetrics: () => boolean;
+  getSelectedAddress: () => string;
+  getTokenStandardAndDetails: () => {
+    decimals?: string;
+    balance?: string;
+    symbol?: string;
+    standard?: TokenStandard;
+  };
+  getTransaction: (transactionId: string) => TransactionMeta;
+  provider: Provider;
+  snapAndHardwareMessenger: SnapAndHardwareMessenger;
+  trackEvent: (payload: any) => void;
+};
+
+export type TransactionEventPayload = {
+  transactionMeta: TransactionMeta;
+  actionId?: string;
+  error?: string;
+  approvalTransactionMeta?: TransactionMeta;
+};
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -50,7 +101,7 @@ export const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
-export const onTransactionAdded = async (
+export const handleTransactionAdded = async (
   transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
@@ -81,7 +132,7 @@ export const onTransactionAdded = async (
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
-export const onTransactionApproved = async (
+export const handleTransactionApproved = async (
   transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
@@ -104,7 +155,7 @@ export const onTransactionApproved = async (
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  * @param transactionEventPayload.error - The error message if the transaction failed
  */
-export const onTransactionFailed = async (
+export const handleTransactionFailed = async (
   transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
@@ -134,7 +185,7 @@ export const onTransactionFailed = async (
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  * @param transactionEventPayload.error - The error message if the transaction failed
  */
-export const onTransactionConfirmed = async (
+export const handleTransactionConfirmed = async (
   transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
@@ -173,7 +224,7 @@ export const onTransactionConfirmed = async (
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
-export const onTransactionDropped = async (
+export const handleTransactionDropped = async (
   transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
@@ -200,7 +251,7 @@ export const onTransactionDropped = async (
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
-export const onTransactionRejected = async (
+export const handleTransactionRejected = async (
   transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
@@ -222,7 +273,7 @@ export const onTransactionRejected = async (
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The transaction meta object
  */
-export const onTransactionSubmitted = async (
+export const handleTransactionSubmitted = async (
   transactionEventRequest: TransactionEventRequest,
   transactionEventPayload: TransactionEventPayload,
 ) => {
@@ -299,7 +350,7 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
-export const onPostTransactionBalanceUpdate = async (
+export const handlePostTransactionBalanceUpdate = async (
   { getParticipateInMetrics, trackEvent }: TransactionEventRequest,
   {
     transactionMeta,
