@@ -17,7 +17,7 @@ import {
 } from '../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 
-import getSnapAndHardwareInfoForMetrics from './snap-keyring/metrics';
+import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming

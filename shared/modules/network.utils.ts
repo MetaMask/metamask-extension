@@ -1,3 +1,5 @@
+import { isStrictHexString } from '@metamask/utils';
+import { convertHexToDecimal } from '@metamask/controller-utils';
 import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
 
 /**
@@ -39,6 +41,8 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.BSC:
     case CHAIN_IDS.POLYGON:
     case CHAIN_IDS.AVALANCHE:
+    case CHAIN_IDS.LINEA_GOERLI:
+    case CHAIN_IDS.LINEA_MAINNET:
     case CHAIN_IDS.AURORA:
       return true;
     default:
@@ -59,4 +63,24 @@ function isSafeInteger(value: unknown): value is number {
 
 export function shouldShowLineaMainnet(): boolean {
   return new Date().getTime() > Date.UTC(2023, 6, 11, 18);
+}
+
+/**
+ * TODO: Delete when ready to remove `networkVersion` from provider object
+ * Convert the given value into a valid network ID. The ID is accepted
+ * as either a number, a decimal string, or a 0x-prefixed hex string.
+ *
+ * @param value - The network ID to convert, in an unknown format.
+ * @returns A valid network ID (as a decimal string)
+ * @throws If the given value cannot be safely parsed.
+ */
+export function convertNetworkId(value: unknown): string {
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    return `${value}`;
+  } else if (isStrictHexString(value)) {
+    return `${convertHexToDecimal(value)}`;
+  } else if (typeof value === 'string' && /^\d+$/u.test(value)) {
+    return value;
+  }
+  throw new Error(`Cannot parse as a valid network ID: '${value}'`);
 }
