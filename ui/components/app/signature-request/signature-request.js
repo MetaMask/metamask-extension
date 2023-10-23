@@ -96,6 +96,7 @@ import { showCustodyConfirmLink } from '../../../store/institutional/institution
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IN
 
@@ -253,6 +254,27 @@ const SignatureRequest = ({ txData }) => {
     isNotification,
     trackEvent,
   ]);
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useEffect(() => {
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          type,
+          version,
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+  }, [txData?.securityAlertResponse]);
   ///: END:ONLY_INCLUDE_IN
 
   return (
