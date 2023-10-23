@@ -92,9 +92,11 @@ const useTransactionInsights = ({ txData }) => {
       };
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     const selectedSnapData = data?.find(
       (promise) => promise?.snapId === selectedInsightSnapId,
     );
+    ///: END:ONLY_INCLUDE_IN
 
     insightComponent = (
       <DropdownTab
