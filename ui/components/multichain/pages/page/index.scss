@@ -1,1 +1,40 @@
 @import 'components/';
+
+.multichain-page {
+  $height-screen-sm-max: 100%;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  &__inner-container {
+    @include screen-sm-max {
+      height: $height-screen-sm-max;
+    }
+
+    @include screen-sm-min {
+      width: $width-screen-sm-min;
+    }
+
+    @include screen-md-min {
+      width: $width-screen-md-min;
+    }
+
+    @include screen-lg-min {
+      width: $width-screen-lg-min;
+    }
+  }
+
+  &-header {
+    top: 0;
+    position: sticky;
+  }
+
+  &-content {
+    overflow: scroll;
+  }
+
+  &-footer {
+    bottom: 0;
+    position: sticky;
+  }
+}
