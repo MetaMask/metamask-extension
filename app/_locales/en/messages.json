@@ -2556,6 +2556,9 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
+  "networkNameLinea": {
+    "message": "Linea"
+  },
   "networkNameOpMainnet": {
     "message": "OP Mainnet"
   },

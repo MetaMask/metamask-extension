@@ -10,13 +10,13 @@ exports[`AccountPicker renders properly 1`] = `
       class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
     >
       <div
-        class="mm-box multichain-account-picker-container mm-box--display-flex mm-box--flex-direction-column"
+        class="mm-box multichain-account-picker-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
           >
             <canvas
               height="32"
@@ -25,14 +25,14 @@ exports[`AccountPicker renders properly 1`] = `
             />
             <img
               alt=""
-              height="16"
+              height="24"
               src="data:image/png;base64,00"
               style="border-radius: 50%;"
-              width="16"
+              width="24"
             />
           </div>
           <span
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text multichain-account-picker__label mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
           >
             Account 1
           </span>
