@@ -128,7 +128,7 @@ const VALID_UNAPPROVED_TRANSACTION_TYPES = [
  * @param {object} opts.preferencesStore
  * @param {object} hooks
  * @param {Function} hooks.afterSign - Additional logic to execute after signing a transaction. Return false to not change the status to signed.
- * @param {Function} hooks.beforeApproveOnInit - Additional logic to execute logic before approving the transaction when initialized. Return false to prevent the transaction to approved.
+ * @param {Function} hooks.beforeApproveOnInit - Additional logic to execute before starting an approval flow for a transaction during initialization. Return false to skip the transaction.
  * @param {Function} hooks.beforePublish - Additional logic to execute before publishing the transaction. Return false to prevent to broadcast of the transaction.
  * @param {Function} hooks.getAdditionalSignArguments - Returns additional arguments for sign the transaction.
  */
