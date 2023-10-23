@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Header, Page } from '../page';
@@ -24,73 +24,88 @@ import {
 import { Tab, Tabs } from '../../../ui/tabs';
 import { ConnectionListItem } from './connection-list-item';
 
+const TABS_THRESHOLD = 5;
+
 export const AllConnections = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const TABS_THRESHOLD = 5;
   let totalConnections = 0;
   const connectedSubjectsForAllAddresses = useSelector(
     getConnectedSubjectsForAllAddresses,
   );
   const connectedAddresses = useSelector(getAllConnectedAccounts);
-  const connectedSiteData = {};
-  connectedAddresses.forEach((connectedAddress) => {
-    connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
-      if (!connectedSiteData[app.origin]) {
-        connectedSiteData[app.origin] = { ...app, addresses: [] };
-      }
-      connectedSiteData[app.origin].addresses.push(connectedAddress);
-    });
-  });
-
-  const sitesConnectionsList = {};
-  Object.keys(connectedSiteData).forEach((siteKey) => {
-    const siteData = connectedSiteData[siteKey];
-    const { name, iconUrl, origin, subjectType, extensionId, addresses } =
-      siteData;
-
-    if (!sitesConnectionsList[name]) {
-      sitesConnectionsList[name] = {
-        name,
-        iconUrl,
-        origin,
-        subjectType,
-        extensionId,
-        addresses: [],
-      };
-      totalConnections += 1;
-    }
-
-    sitesConnectionsList[name].addresses.push(...addresses);
-  });
-
-  const snapsConnectionsList = {};
   const connectedSnapsData = useSelector(getSnapsList);
-  Object.keys(connectedSnapsData).forEach((snap) => {
-    const snapData = connectedSnapsData[snap];
-    const { id, name, packageName, iconUrl, subjectType } = snapData;
 
-    if (!snapsConnectionsList[name]) {
-      snapsConnectionsList[name] = {
-        id,
-        name,
-        iconUrl,
-        packageName,
-        subjectType,
-      };
-      totalConnections += 1;
-    }
-  });
+  const connectedSiteData = useMemo(() => {
+    const finalResult = {};
+    connectedAddresses.forEach((connectedAddress) => {
+      connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
+        if (!finalResult[app.origin]) {
+          finalResult[app.origin] = { ...app, addresses: [] };
+        }
+        finalResult[app.origin].addresses.push(connectedAddress);
+      });
+    });
+    return finalResult;
+  }, [connectedAddresses, connectedSubjectsForAllAddresses]);
 
-  const shouldShowTabsView =
-    totalConnections > TABS_THRESHOLD &&
-    Object.keys(sitesConnectionsList).length > 0 &&
-    Object.keys(snapsConnectionsList).length > 0;
+  const sitesConnectionsList = useMemo(() => {
+    const finalResults = {};
+    Object.keys(connectedSiteData).forEach((siteKey) => {
+      const siteData = connectedSiteData[siteKey];
+      const { name, iconUrl, origin, subjectType, extensionId, addresses } =
+        siteData;
 
-  const handleConnectionClick = (connection) => {
+      if (!finalResults[name]) {
+        finalResults[name] = {
+          name,
+          iconUrl,
+          origin,
+          subjectType,
+          extensionId,
+          addresses: [],
+        };
+        totalConnections += 1;
+      }
+
+      finalResults[name].addresses.push(...addresses);
+    });
+    return finalResults;
+  }, [connectedSiteData]);
+
+  const snapsConnectionsList = useMemo(() => {
+    const finalResult = {};
+    Object.keys(connectedSnapsData).forEach((snap) => {
+      const snapData = connectedSnapsData[snap];
+      const { id, name, packageName, iconUrl, subjectType } = snapData;
+
+      if (!finalResult[name]) {
+        finalResult[name] = {
+          id,
+          name,
+          iconUrl,
+          packageName,
+          subjectType,
+        };
+        totalConnections += 1;
+      }
+    });
+    return finalResult;
+  }, [connectedSnapsData]);
+
+  const shouldShowTabsView = useMemo(() => {
+    return (
+      totalConnections > TABS_THRESHOLD &&
+      Object.keys(sitesConnectionsList).length > 0 &&
+      Object.keys(snapsConnectionsList).length > 0
+    );
+  }, [totalConnections, sitesConnectionsList, snapsConnectionsList]);
+
+  const handleConnectionClick = useCallback((connection) => {
     // TODO: go to connection details page
     console.log('connection clicked: ', connection);
-  };
+  }, []);
+
   const renderConnectionsList = (connectionList) =>
     Object.entries(connectionList).map(([itemKey, connection]) => {
       return (
@@ -101,6 +116,7 @@ export const AllConnections = () => {
         />
       );
     });
+
   return (
     <Page
       header={
