@@ -98,7 +98,7 @@ export const SnapInsight = ({
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {data && Object.keys(data).length > 0 ? (
+          {content && Object.keys(content).length > 0 ? (
             <SnapUIRenderer
               snapId={snapId}
               data={content}

@@ -36,7 +36,9 @@ const useTransactionInsights = ({ txData }) => {
     chainId: caip2ChainId,
     origin,
     insightSnaps,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
     insightSnapId: selectedInsightSnapId,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   const { data, loading } = useTransactionInsightSnaps({
