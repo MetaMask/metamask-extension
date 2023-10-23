@@ -1,4 +1,4 @@
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../../shared/constants/transaction';
 import {
   afterTransactionSign,
   beforeTransactionApproveOnInit,

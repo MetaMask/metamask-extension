@@ -1,4 +1,4 @@
-import { TransactionMeta } from '../controllers/transactions/tx-state-manager';
+import { TransactionMeta } from '../../controllers/transactions/tx-state-manager';
 
 /**
  * Whether or not to skip publishing the transaction.
@@ -18,13 +18,16 @@ export function afterTransactionSign(
   ) => Promise<void>,
 ): boolean {
   // MMI does not broadcast transactions, as that is the responsibility of the custodian
-  if (txMeta?.custodyStatus) {
-    txMeta.custodyId = signedEthTx.custodian_transactionId;
-    txMeta.custodyStatus = signedEthTx.transactionStatus;
-    addTransactionToWatchList(txMeta.custodyId, txMeta.txParams.from);
-    return false;
+  if (!txMeta?.custodyStatus) {
+    return true;
   }
-  return true;
+
+  txMeta.custodyId = signedEthTx.custodian_transactionId;
+  txMeta.custodyStatus = signedEthTx.transactionStatus;
+
+  addTransactionToWatchList(txMeta.custodyId, txMeta.txParams.from);
+
+  return false;
 }
 
 /**
@@ -34,10 +37,7 @@ export function afterTransactionSign(
  */
 export function beforeTransactionPublish(txMeta: TransactionMeta): boolean {
   // MMI does not broadcast transactions, as that is the responsibility of the custodian
-  if (txMeta?.custodyStatus) {
-    return false;
-  }
-  return true;
+  return !txMeta?.custodyStatus;
 }
 
 /**
@@ -59,8 +59,5 @@ export function getAdditionalSignArguments(
 export function beforeTransactionApproveOnInit(
   txMeta: TransactionMeta,
 ): boolean {
-  if (txMeta?.custodyStatus) {
-    return false;
-  }
-  return true;
+  return !txMeta?.custodyStatus;
 }

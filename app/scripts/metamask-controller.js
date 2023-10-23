@@ -182,7 +182,7 @@ import {
   beforeTransactionPublish as beforeTransactionPublishMMI,
   beforeTransactionApproveOnInit as beforeTransactionApproveOnInitMMI,
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
-} from './lib/mmi-hooks';
+} from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';

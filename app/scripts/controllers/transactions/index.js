@@ -161,12 +161,16 @@ export default class TransactionController extends EventEmitter {
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
 
     const { hooks } = opts ?? {};
-    this._afterSign = (...args) => hooks?.afterSign?.(...args) ?? true;
-    this._beforeApproveOnInit = (...args) =>
-      hooks?.beforeApproveOnInit?.(...args) ?? true;
-    this._beforePublish = (...args) => hooks?.beforePublish?.(...args) ?? true;
-    this._getAdditionalSignArguments = (txMeta) =>
-      hooks?._getAdditionalSignArguments?.(txMeta) ?? [undefined];
+    this._afterSign = hooks?.afterSign ? hooks.afterSign : () => true;
+    this._beforeApproveOnInit = hooks?.beforeApproveOnInit
+      ? hooks.beforeApproveOnInit
+      : () => true;
+    this._beforePublish = hooks?.beforePublish
+      ? hooks.beforePublish
+      : () => true;
+    this._getAdditionalSignArguments = hooks?._getAdditionalSignArguments
+      ? hooks._getAdditionalSignArguments
+      : () => [undefined];
 
     this.memStore = new ObservableStore({});
 
