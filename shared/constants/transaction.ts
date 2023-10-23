@@ -516,6 +516,8 @@ export enum TransactionEvent {
   confirmed = 'transaction-confirmed',
   dropped = 'transaction-dropped',
   failed = 'transaction-failed',
+  newSwap = 'transaction-new-swap',
+  newSwapApproval = 'transaction-new-swap-approval',
   rejected = 'transaction-rejected',
   submitted = 'transaction-submitted',
   postTransactionBalanceUpdated = 'post-transaction-balance-updated',
