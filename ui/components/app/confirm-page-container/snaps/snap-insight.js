@@ -147,10 +147,12 @@ export const SnapInsight = ({
 };
 
 SnapInsight.propTypes = {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   /*
    * The insight object
    */
   data: PropTypes.object,
+  ///: END:ONLY_INCLUDE_IN
   /*
    * Boolean as to whether or not the insights are loading
    */
