@@ -208,7 +208,7 @@ describe('Import flow @no-mmi', function () {
         );
 
         // New imported account has correct name and label
-        await driver.findElement({
+        await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
@@ -235,7 +235,7 @@ describe('Import flow @no-mmi', function () {
         );
 
         // New imported account has correct name and label
-        await driver.findElement({
+        await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 5',
         });
@@ -252,7 +252,7 @@ describe('Import flow @no-mmi', function () {
         // Account 5 can be removed
         await driver.clickElement('[data-testid="account-list-menu-remove"]');
         await driver.clickElement({ text: 'Remove', tag: 'button' });
-        await driver.findElement({
+        await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 1',
         });
@@ -306,7 +306,7 @@ describe('Import flow @no-mmi', function () {
         );
 
         // New imported account has correct name and label
-        await driver.findElement({
+        await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });

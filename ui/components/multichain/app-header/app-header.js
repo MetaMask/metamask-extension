@@ -23,6 +23,7 @@ import {
   BackgroundColor,
   BlockSize,
   Display,
+  FontWeight,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
@@ -304,6 +305,7 @@ export const AppHeader = ({ location }) => {
                   }}
                   disabled={disableAccountPicker}
                   showAddress={Boolean(process.env.MULTICHAIN)}
+                  labelProps={{ fontWeight: FontWeight.Bold }}
                 />
               ) : null}
               <Box

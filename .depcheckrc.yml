@@ -42,6 +42,7 @@ ignores:
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
+  - '@storybook/addon-designs'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
   - '@storybook/addon-mdx-gfm'
