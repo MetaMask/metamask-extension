@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
+import { Button } from '..';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
-import { SelectWrapper } from '.';
+import { SelectWrapper, useSelectContext } from '.';
 
 describe('SelectWrapper', () => {
   it('should render the SelectWrapper without crashing', () => {
@@ -42,6 +43,7 @@ describe('SelectWrapper', () => {
     );
     expect(getByText('Test Value')).toBeInTheDocument();
   });
+
   it('should render the SelectWrapper defaultValue', () => {
     const { getByText } = render(
       <SelectWrapper
@@ -67,31 +69,6 @@ describe('SelectWrapper', () => {
     );
     expect(getByText('Test Placeholder')).toBeInTheDocument();
   });
-
-  const OptionValueChangeDemo = () => {
-    const [isOpen, setIsOpen] = React.useState(false);
-
-    return (
-      <SelectWrapper
-        isOpen={isOpen}
-        onOpenChange={() => setIsOpen(!isOpen)}
-        defaultValue={'Default Value'}
-        data-testid="wrapper-blur"
-        triggerComponent={
-          <SelectButton
-            data-testid="trigger"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            Test Button
-          </SelectButton>
-        }
-      >
-        <SelectOption data-testid="optionButton" value="Changed to option 1">
-          Option 1
-        </SelectOption>
-      </SelectWrapper>
-    );
-  };
 
   it('should render the SelectWrapper isDisabled', () => {
     const { getByTestId } = render(
@@ -123,13 +100,45 @@ describe('SelectWrapper', () => {
     expect(getByTestId('trigger')).toHaveClass('mm-select-button--type-danger');
   });
 
+  const OptionValueChangeDemo = () => {
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    return (
+      <SelectWrapper
+        isOpen={isOpen}
+        onOpenChange={() => setIsOpen(!isOpen)}
+        defaultValue={'Default Value'}
+        data-testid="wrapper-blur"
+        triggerComponent={
+          <SelectButton
+            data-testid="trigger"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            Test Button
+          </SelectButton>
+        }
+      >
+        <SelectOption data-testid="optionButton" value="Changed to option 1">
+          Option 1
+        </SelectOption>
+      </SelectWrapper>
+    );
+  };
   it('should render the SelectWrapper defaultValue then uncontrolled select will change value', () => {
     const { getByText, getByTestId } = render(<OptionValueChangeDemo />);
     expect(getByText('Default Value')).toBeInTheDocument();
     const trigger = getByTestId('trigger');
-    fireEvent.click(trigger);
+
+    act(() => {
+      fireEvent.click(trigger);
+    });
+
     const optionButton = getByTestId('optionButton');
-    fireEvent.click(optionButton);
+
+    act(() => {
+      fireEvent.click(optionButton);
+    });
+
     expect(getByText('Changed to option 1')).toBeInTheDocument();
   });
 
@@ -168,7 +177,10 @@ describe('SelectWrapper', () => {
     );
 
     const triggerButton = getByTestId('trigger');
-    fireEvent.blur(triggerButton);
+
+    act(() => {
+      fireEvent.blur(triggerButton);
+    });
 
     expect(customOnBlur).toHaveBeenCalled();
   });
@@ -197,27 +209,87 @@ describe('SelectWrapper', () => {
 
   it('controlledOpen should toggle open and close', () => {
     const { getByTestId, queryByTestId } = render(<ControlledOpenDemo />);
-
     const triggerButton = getByTestId('trigger');
 
     // Popover should be visible
-    fireEvent.click(triggerButton);
+    act(() => {
+      fireEvent.click(triggerButton);
+    });
     expect(getByTestId('content')).toBeVisible();
-    // Popover should be visible
-    fireEvent.click(triggerButton);
+
+    // Popover should be closed
+    act(() => {
+      fireEvent.click(triggerButton);
+    });
     expect(queryByTestId('content')).not.toBeInTheDocument();
   });
 
   it('should call built-in onBlur when no custom onBlur provided', () => {
     const { getByTestId, queryByTestId } = render(<ControlledOpenDemo />);
-
     const triggerButton = getByTestId('trigger');
-    fireEvent.click(triggerButton);
+
+    act(() => {
+      fireEvent.click(triggerButton);
+    });
     expect(getByTestId('content')).toBeVisible();
 
     const wrapperBlur = getByTestId('wrapper-blur');
-    fireEvent.blur(wrapperBlur);
+
+    act(() => {
+      fireEvent.blur(wrapperBlur);
+    });
+
     // The content should not be visible after the blur event
+    expect(queryByTestId('content')).not.toBeInTheDocument();
+  });
+
+  const UseContextCloseButton = (props) => {
+    const { toggleUncontrolledOpen } = useSelectContext();
+
+    return (
+      <Button block onClick={toggleUncontrolledOpen} {...props}>
+        Close
+      </Button>
+    );
+  };
+
+  const UseContextDemo = () => {
+    return (
+      <>
+        <SelectWrapper
+          value={'TestingValue'}
+          triggerComponent={
+            <SelectButton data-testid="trigger">
+              Uncontrolled Example
+            </SelectButton>
+          }
+        >
+          <UseContextCloseButton data-testid="close" />
+          <div data-testid="content">
+            <SelectOption value="Option 1">Option 1</SelectOption>
+            <SelectOption value="Option 2">Option 2</SelectOption>
+            <SelectOption value="Option 3">Option 3</SelectOption>
+          </div>
+        </SelectWrapper>
+      </>
+    );
+  };
+
+  it('controlledOpen should toggle open and close', () => {
+    const { getByTestId, queryByTestId } = render(<UseContextDemo />);
+    const triggerButton = getByTestId('trigger');
+
+    // Popover should be visible
+    act(() => {
+      fireEvent.click(triggerButton);
+    });
+    expect(getByTestId('content')).toBeVisible();
+    const closeButton = getByTestId('close');
+
+    // Popover should be closed
+    act(() => {
+      fireEvent.click(closeButton);
+    });
     expect(queryByTestId('content')).not.toBeInTheDocument();
   });
 });
