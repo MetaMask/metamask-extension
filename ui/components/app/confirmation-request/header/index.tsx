@@ -1,6 +1,6 @@
 // This is a dummy implementation, to be replaced later
 import 'react';
 
-const Routes = () => null;
+const Footer = () => null;
 
-export default Routes;
+export default Footer;
