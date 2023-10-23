@@ -119,7 +119,7 @@ export const UI_NOTIFICATIONS = {
     id: 21,
     date: null,
     image: {
-      src: 'images/swaps-redesign.jpg',
+      src: 'images/swaps-redesign.svg',
       width: '100%',
     },
   },
