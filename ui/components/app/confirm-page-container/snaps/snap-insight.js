@@ -38,7 +38,9 @@ import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransacti
 ///: END:ONLY_INCLUDE_IN
 
 export const SnapInsight = ({
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   data,
+  ///: END:ONLY_INCLUDE_IN
   loading,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
   insightHookParams,

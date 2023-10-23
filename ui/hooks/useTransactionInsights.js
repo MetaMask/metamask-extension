@@ -73,7 +73,9 @@ const useTransactionInsights = ({ txData }) => {
         name={getSnapName(selectedSnap?.id, subjectMetadata[selectedSnap?.id])}
       >
         <SnapInsight
+          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           data={data?.[0]}
+          ///: END:ONLY_INCLUDE_IN
           loading={loading}
           ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
           insightHookParams={insightHookParams}
@@ -103,7 +105,9 @@ const useTransactionInsights = ({ txData }) => {
       >
         <SnapInsight
           loading={loading}
+          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           data={selectedSnapData}
+          ///: END:ONLY_INCLUDE_IN
           ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
           insightHookParams={insightHookParams}
           ///: END:ONLY_INCLUDE_IN
