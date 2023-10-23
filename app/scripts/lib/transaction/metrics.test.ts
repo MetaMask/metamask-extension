@@ -254,7 +254,10 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionConfirmed', () => {
     it('should return if transaction meta is not defined', async () => {
-      await handleTransactionConfirmed(mockTransactionMetricsRequest, {} as any);
+      await handleTransactionConfirmed(
+        mockTransactionMetricsRequest,
+        {} as any,
+      );
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
@@ -619,7 +622,10 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionSubmitted', () => {
     it('should return if transaction meta is not defined', async () => {
-      await handleTransactionSubmitted(mockTransactionMetricsRequest, {} as any);
+      await handleTransactionSubmitted(
+        mockTransactionMetricsRequest,
+        {} as any,
+      );
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
