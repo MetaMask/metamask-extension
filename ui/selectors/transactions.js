@@ -13,7 +13,11 @@ import {
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedAddress } from './selectors';
-import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import {
+  hasPendingApprovals,
+  getApprovalRequestsByType,
+  getPendingApprovals,
+} from './approvals';
 import { createDeepEqualSelector } from './util';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
@@ -595,4 +599,22 @@ export function hasTransactionPendingApprovals(state) {
     hasUnapprovedTransactionsInCurrentNetwork(state) ||
     TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
   );
+}
+
+const ConfirmationApprovalTypes = [
+  ApprovalType.EthSign,
+  ApprovalType.PersonalSign,
+  ApprovalType.EthSignTypedData,
+  ApprovalType.Transaction,
+];
+
+export function getPendingConfirmations(state) {
+  return getPendingApprovals(state).filter(({ type }) =>
+    ConfirmationApprovalTypes.includes(type),
+  );
+}
+
+export function getLatestPendingConfirmation(state) {
+  const pendingConfirmations = getPendingConfirmations(state);
+  return pendingConfirmations.sort((p1, p2) => p1.time < p2.time)[0];
 }

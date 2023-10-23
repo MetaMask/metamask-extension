@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { ApprovalType } from '@metamask/controller-utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
 
@@ -34,6 +35,11 @@ import {
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
   use4ByteResolutionSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+  getLatestPendingConfirmation,
+  getPendingConfirmations,
+  unapprovedPersonalMsgsSelector,
+  ///: END:ONLY_INCLUDE_IN(conf-redesign)
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -44,6 +50,9 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import ConfirmSignatureRequest from '../confirm-signature-request';
+///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+import Confirm from '../confirm/confirm';
+///: END:ONLY_INCLUDE_IN(conf-redesign)
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -59,6 +68,12 @@ const ConfirmTransaction = () => {
 
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+  const latestPendingConfirmation = useSelector(getLatestPendingConfirmation);
+  const pendingConfirmations = useSelector(getPendingConfirmations);
+  const unapprovedPersonalMsgs = useSelector(unapprovedPersonalMsgsSelector);
+  ///: END:ONLY_INCLUDE_IN(conf-redesign)
 
   const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {
@@ -182,6 +197,27 @@ const ConfirmTransaction = () => {
     transactionId,
     use4ByteResolution,
   ]);
+
+  // Code below is required as we need to support both new and old confirmation pages
+  // Once we migrate all confirmation to new designs we can get rid of this
+  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+  let pendingConfirmation;
+  if (paramsTransactionId) {
+    pendingConfirmation = pendingConfirmations.find(
+      ({ id: confirmId }) => confirmId === paramsTransactionId,
+    );
+  } else {
+    pendingConfirmation = latestPendingConfirmation;
+  }
+  if (pendingConfirmation.type === ApprovalType.PersonalSign) {
+    const unapprovedMsg = unapprovedPersonalMsgs[pendingConfirmation.id];
+    const { siwe } = unapprovedMsg.msgParams;
+
+    if (!siwe?.isSIWEMessage) {
+      return <Confirm />;
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN(conf-redesign)
 
   if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
