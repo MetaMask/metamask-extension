@@ -37,27 +37,27 @@ export const AllConnections = () => {
   const connectedSnapsData = useSelector(getSnapsList);
 
   const connectedSiteData = useMemo(() => {
-    const finalResult = {};
+    const siteData = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
-        if (!finalResult[app.origin]) {
-          finalResult[app.origin] = { ...app, addresses: [] };
+        if (!siteData[app.origin]) {
+          siteData[app.origin] = { ...app, addresses: [] };
         }
-        finalResult[app.origin].addresses.push(connectedAddress);
+        siteData[app.origin].addresses.push(connectedAddress);
       });
     });
-    return finalResult;
+    return siteData;
   }, [connectedAddresses, connectedSubjectsForAllAddresses]);
 
   const sitesConnectionsList = useMemo(() => {
-    const finalResults = {};
+    const sitesList = {};
     Object.keys(connectedSiteData).forEach((siteKey) => {
       const siteData = connectedSiteData[siteKey];
       const { name, iconUrl, origin, subjectType, extensionId, addresses } =
         siteData;
 
-      if (!finalResults[name]) {
-        finalResults[name] = {
+      if (!sitesList[name]) {
+        sitesList[name] = {
           name,
           iconUrl,
           origin,
@@ -68,19 +68,19 @@ export const AllConnections = () => {
         totalConnections += 1;
       }
 
-      finalResults[name].addresses.push(...addresses);
+      sitesList[name].addresses.push(...addresses);
     });
-    return finalResults;
+    return sitesList;
   }, [connectedSiteData]);
 
   const snapsConnectionsList = useMemo(() => {
-    const finalResult = {};
+    const snapsList = {};
     Object.keys(connectedSnapsData).forEach((snap) => {
       const snapData = connectedSnapsData[snap];
       const { id, name, packageName, iconUrl, subjectType } = snapData;
 
-      if (!finalResult[name]) {
-        finalResult[name] = {
+      if (!snapsList[name]) {
+        snapsList[name] = {
           id,
           name,
           iconUrl,
@@ -90,7 +90,7 @@ export const AllConnections = () => {
         totalConnections += 1;
       }
     });
-    return finalResult;
+    return snapsList;
   }, [connectedSnapsData]);
 
   const shouldShowTabsView = useMemo(() => {
