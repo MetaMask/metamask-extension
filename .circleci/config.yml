@@ -683,8 +683,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - dist-test
-            - builds-test
+            - dist-test-multichain
+            - builds-test-multichain
 
   prep-build-storybook:
     executor: node-browsers-large
