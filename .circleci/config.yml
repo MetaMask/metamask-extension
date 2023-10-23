@@ -860,10 +860,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test ./dist
+          command: mv ./dist-test-multichain ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test ./builds
+          command: mv ./builds-test-multichain ./builds
       - run:
           name: test:e2e:chrome-multichain
           command: |
