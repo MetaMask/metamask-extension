@@ -1086,6 +1086,7 @@ export default class MetamaskController extends EventEmitter {
         'SnapsRegistry:get',
         'SnapsRegistry:getMetadata',
         'SnapsRegistry:update',
+        'SnapsRegistry:resolveVersion',
       ],
     });
 
