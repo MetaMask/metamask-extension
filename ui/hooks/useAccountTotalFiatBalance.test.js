@@ -119,7 +119,7 @@ describe('useAccountTotalFiatBalance', () => {
         },
       ],
       loading: false,
-      sortedTokenList: [
+      orderedTokenList: [
         {
           fiatBalance: '1.85',
           iconUrl: './images/eth_logo.png',

@@ -95,7 +95,7 @@ export const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
 
-  const { totalWeiBalance, sortedTokenList } = useAccountTotalFiatBalance(
+  const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
   const balanceToTranslate = process.env.MULTICHAIN
@@ -234,8 +234,8 @@ export const AccountListItem = ({
           </Box>
           {process.env.MULTICHAIN ? (
             <>
-              {sortedTokenList.length > 1 ? (
-                <AvatarGroup members={sortedTokenList} limit={4} />
+              {orderedTokenList.length > 1 ? (
+                <AvatarGroup members={orderedTokenList} limit={4} />
               ) : (
                 <Box
                   display={Display.Flex}

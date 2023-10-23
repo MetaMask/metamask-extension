@@ -124,8 +124,8 @@ export const useAccountTotalFiatBalance = (
     })),
   ];
 
-  // Sort the array in decreasing order based on their fiatBalance
-  const sortedTokenList = allTokensWithFiatValues.sort(
+  // Order of the tokens in this array is in decreasing order based on their fiatBalance
+  const orderedTokenList = allTokensWithFiatValues.sort(
     (a, b) => parseFloat(b.fiatBalance) - parseFloat(a.fiatBalance),
   );
 
@@ -158,6 +158,6 @@ export const useAccountTotalFiatBalance = (
     totalFiatBalance,
     tokensWithBalances,
     loading,
-    sortedTokenList,
+    orderedTokenList,
   };
 };
