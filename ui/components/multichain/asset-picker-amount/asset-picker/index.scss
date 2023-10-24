@@ -7,13 +7,13 @@
   border-radius: 15px;
   background-color: var(--color-background-alternative);
 
+  &:hover {
+    cursor: pointer;
+  }
+
   &__symbol {
     font-size: 11px;
     margin-right: auto;
     margin-left: auto;
   }
-}
-
-.asset-picker:hover {
-  cursor: pointer;
 }

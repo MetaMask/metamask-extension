@@ -3,15 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getSendMaxModeState, toggleSendMaxMode } from '../../../../ducks/send';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
+import {
+  Button,
+  ButtonSecondarySize,
+  ButtonVariant,
+} from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 // A button that updates the send amount to max balance or 0.
 // Modified from ui/pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.js
 export default function MaxClearButton() {
+  const t = useI18nContext();
   const maxModeOn = useSelector(getSendMaxModeState);
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const onMaxClick = () => {
+  const onClick = () => {
     trackEvent({
       event: 'Clicked "Amount Max"',
       category: MetaMetricsEventCategory.Transactions,
@@ -24,8 +31,15 @@ export default function MaxClearButton() {
   };
 
   return (
-    <button onClick={onMaxClick} className="max-clear-button">
-      {maxModeOn ? 'Clear' : 'Max'}
-    </button>
+    <>
+      <Button
+        variant={ButtonVariant.Link}
+        size={ButtonSecondarySize.Sm}
+        onClick={onClick}
+        className="max-clear-button"
+      >
+        {maxModeOn ? t('clear') : t('max')}
+      </Button>
+    </>
   );
 }

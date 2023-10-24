@@ -12,7 +12,7 @@ import {
   Label,
 } from '../../../component-library';
 import DomainInput from '../../../../pages/send/send-content/add-recipient/domain-input.component';
-import AssetPickerAmount from '../../asset-picker-amount';
+import AssetPickerAmount from '../../asset-picker-amount/asset-picker-amount';
 import { SendPageNetworkPicker } from './components/network-picker';
 import {
   SendPageAccountPicker,

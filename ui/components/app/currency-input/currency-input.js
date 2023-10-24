@@ -34,7 +34,7 @@ export default function CurrencyInput({
   onChange,
   onPreferenceToggle,
   swapIcon,
-  className,
+  className = '',
 }) {
   const t = useContext(I18nContext);
 

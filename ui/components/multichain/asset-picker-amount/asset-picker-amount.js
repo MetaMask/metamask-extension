@@ -1,7 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { Box, Icon, IconName, IconSize } from '../../component-library';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Label,
+  Text,
+} from '../../component-library';
 import {
   BorderRadius,
   IconColor,
@@ -12,19 +18,26 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getNativeCurrencyImage, getTokenList } from '../../../selectors';
 import UserPreferencedCurrencyInput from '../../app/user-preferenced-currency-input/user-preferenced-currency-input.container';
 import UserPreferencedTokenInput from '../../app/user-preferenced-token-input/user-preferenced-token-input.component';
-import { getCurrentDraftTransaction } from '../../../ducks/send';
+import {
+  getCurrentDraftTransaction,
+  getSendAmount,
+  getSendAsset,
+  sendAmountIsInError,
+  updateSendAmount,
+} from '../../../ducks/send';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import AssetPicker from './asset-picker/asset-picker';
 import MaxClearButton from './max-clear-button/max-clear-button';
 
 // A component that combines an asset picker with an input for the amount to send.
 // Work in progress.
-export default function AssetPickerAmount({
-  asset,
-  amount,
-  inError,
-  updateSendAmount,
-}) {
+export default function AssetPickerAmount() {
+  const dispatch = useDispatch();
+  const t = useI18nContext();
+  const asset = useSelector(getSendAsset);
+  const amount = useSelector(getSendAmount);
+  const inError = useSelector(sendAmountIsInError);
   const transaction = useSelector(getCurrentDraftTransaction);
   const nativeCurrency = useSelector(getNativeCurrency);
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
@@ -47,8 +60,8 @@ export default function AssetPickerAmount({
 
   return (
     // TODO: Error state when insufficient funds
-    <div className="asset-picker-amount">
-      <span className="asset-picker-amount__amount">Amount</span>
+    <Box className="asset-picker-amount">
+      <Label className="asset-picker-amount__amount">{t('amount')}</Label>
       <MaxClearButton />
       <Box className="asset-picker-amount__box" borderRadius={BorderRadius.LG}>
         <AssetPicker asset={{ symbol, image }} />
@@ -56,7 +69,7 @@ export default function AssetPickerAmount({
         {/* TODO: See if the native and token inputs can be merged into 1 component */}
         {asset.type === AssetType.native ? (
           <UserPreferencedCurrencyInput
-            onChange={(newAmount) => updateSendAmount(newAmount)}
+            onChange={(newAmount) => dispatch(updateSendAmount(newAmount))}
             hexValue={amount}
             error={inError}
             className="asset-picker-amount__input"
@@ -73,27 +86,19 @@ export default function AssetPickerAmount({
         ) : (
           <UserPreferencedTokenInput
             error={inError}
-            onChange={(newAmount) => updateSendAmount(newAmount)}
+            onChange={(newAmount) => dispatch(updateSendAmount(newAmount))}
             token={asset.details}
             value={amount}
             className="asset-picker-amount__input"
-            // TODO: Make this support swapping currencies so you type fiat values.
-            //       (But only when a conversion rate is available)
+            // TODO: Consider supporting swapping currencies for tokens so you can
+            // type fiat values. (But only when a conversion rate is available)
           />
         )}
       </Box>
-      <span className="asset-picker-amount__balance">
+      <Text className="asset-picker-amount__balance">
         {/* TODO: Consider rounding the balance so its not super long? */}
-        {/* TODO: localization everywhere */}
-        Balance: {balance.toString()} {symbol}
-      </span>
-    </div>
+        {t('balance')}: {balance.toString()} {symbol}
+      </Text>
+    </Box>
   );
 }
-
-AssetPickerAmount.propTypes = {
-  asset: PropTypes.object,
-  amount: PropTypes.string,
-  inError: PropTypes.bool,
-  updateSendAmount: PropTypes.func,
-};

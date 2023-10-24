@@ -6,17 +6,19 @@ import {
   IconName,
   IconSize,
   AvatarToken,
+  Text,
+  Box,
 } from '../../../component-library';
 
 // A component that lets the user pick from a list of assets.
 // Work in progress.
 export default function AssetPicker({ asset /** onAssetPicked */ }) {
   return (
-    <div className="asset-picker">
+    <Box className="asset-picker">
       <AvatarToken src={asset.image} size={AvatarNetworkSize.Xs} />
-      <span className="asset-picker__symbol">{asset.symbol}</span>
+      <Text className="asset-picker__symbol">{asset.symbol}</Text>
       <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
-    </div>
+    </Box>
   );
 }
 
