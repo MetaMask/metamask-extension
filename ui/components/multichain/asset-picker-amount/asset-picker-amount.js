@@ -84,6 +84,7 @@ export default function AssetPickerAmount({
       </Box>
       <span className="asset-picker-amount__balance">
         {/* TODO: Consider rounding the balance so its not super long? */}
+        {/* TODO: localization everywhere */}
         Balance: {balance.toString()} {symbol}
       </span>
     </div>
