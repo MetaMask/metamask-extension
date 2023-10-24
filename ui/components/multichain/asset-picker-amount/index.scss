@@ -6,7 +6,7 @@
     margin-bottom: 1px;
     background-color: var(--color-background-default);
     border: 2px solid var(--color-primary-default);
-    padding: 0px 12px 0px 12px;
+    padding: 0 12px 0 12px;
   }
 
   &__swap-icon:hover {
@@ -18,8 +18,8 @@
   }
 
   &__input {
-    padding:0px 0px 0px 8px;
-    width:100%;
-    border:none;
+    padding: 0 0 0 8px;
+    width: 100%;
+    border: none;
   }
 }
