@@ -80,7 +80,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
             'mm-select-button--open': isOpen || isUncontrolledOpen,
             [`mm-select-button--size-${size}`]:
               Object.values(SelectButtonSize).includes(size),
-          },
+          } as Record<string, boolean>, // To Do: In SelectButton PR confirm and adjust this
           className,
         )}
         ref={ref}
