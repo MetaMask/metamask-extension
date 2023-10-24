@@ -1695,8 +1695,8 @@ export function getSnapsList(state) {
     return {
       key,
       id: snap.id,
-      iconUrl: targetSubjectMetadata.iconUrl,
-      subjectType: targetSubjectMetadata.subjectType,
+      iconUrl: targetSubjectMetadata?.iconUrl,
+      subjectType: targetSubjectMetadata?.subjectType,
       packageName: removeSnapIdPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
