@@ -76,21 +76,22 @@ export const TextField: TextFieldComponent = React.forwardRef(
       }
     };
 
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+      setFocused(false);
+      onBlur?.(event);
+    };
+
     const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
       setFocused(true);
       onFocus?.(event);
     };
 
-    const handleInputRef = (inputRefArg: React.RefObject<HTMLInputElement>) => {
-      internalInputRef.current = inputRefArg.current;
-      if (inputRef) {
-        if (typeof inputRef === 'function') {
-          inputRef(inputRefArg.current);
-        } else {
-          (
-            inputRef as React.MutableRefObject<HTMLInputElement | null>
-          ).current = inputRefArg.current;
-        }
+    const handleInputRef = (ref) => {
+      internalInputRef.current = ref;
+      if (inputRef && inputRef.current !== undefined) {
+        inputRef.current = ref;
+      } else if (typeof inputRef === 'function') {
+        inputRef(ref);
       }
     };
 
