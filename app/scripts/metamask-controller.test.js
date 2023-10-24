@@ -15,8 +15,6 @@ import {
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
 import { EthMethod, EthAccountType } from '@metamask/keyring-api';
-import { v4 as uuid } from 'uuid';
-import { sha256FromString } from 'ethereumjs-util';
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
