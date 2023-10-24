@@ -27,6 +27,39 @@ const getTestPathsForTestDir = async (testDir) => {
   return testPaths;
 };
 
+// For running E2Es in parallel in CI
+function runningOnCircleCI(testPaths) {
+  const fullTestList = testPaths.join('\n');
+  console.log('Full test list:', fullTestList);
+  fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
+
+  // Use `circleci tests run` on `testList.txt` to do two things:
+  // 1. split the test files into chunks based on how long they take to run
+  // 2. support "Rerun failed tests" on CircleCI
+  const result = execSync(
+    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
+  ).toString('utf8');
+
+  // Report if no tests found, exit gracefully
+  if (result.indexOf('There were no tests found') !== -1) {
+    console.log(`run-all.js info: Skipping this node because "${result}"`);
+    return [];
+  }
+
+  // If there's no text file, it means this node has no tests, so exit gracefully
+  if (!fs.existsSync('test/test-results/myTestList.txt')) {
+    console.log(
+      'run-all.js info: Skipping this node because there is no myTestList.txt',
+    );
+    return [];
+  }
+
+  // take the space-delimited result and split into an array
+  return fs
+    .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
+    .split(' ');
+}
+
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
     .usage(
@@ -151,38 +184,14 @@ async function main() {
     args.push('--mmi');
   }
 
-  // For running E2Es in parallel in CI
   await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
-  const fullTestList = testPaths.join('\n');
-  console.log('Full test list:', fullTestList);
-  fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
-
-  // Use `circleci tests run` on `testList.txt` to do two things:
-  // 1. split the test files into chunks based on how long they take to run
-  // 2. support "Rerun failed tests" on CircleCI
-  const result = execSync(
-    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
-  ).toString('utf8');
-
-  // Report if no tests found, exit gracefully
-  if (result.indexOf('There were no tests found') !== -1) {
-    console.log(`run-all.js info: Skipping this node because "${result}"`);
-    return;
+  let myTestList;
+  if (process.env.CIRCLECI) {
+    myTestList = runningOnCircleCI(testPaths);
+  } else {
+    myTestList = testPaths;
   }
-
-  // If there's no text file, it means this node has no tests, so exit gracefully
-  if (!fs.existsSync('test/test-results/myTestList.txt')) {
-    console.log(
-      'run-all.js info: Skipping this node because there is no myTestList.txt',
-    );
-    return;
-  }
-
-  // take the space-delimited result and split into an array
-  const myTestList = fs
-    .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
-    .split(' ');
 
   console.log('My test list:', myTestList);
 
