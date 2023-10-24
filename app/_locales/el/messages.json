@@ -3963,16 +3963,8 @@
     "message": "Αφιερώστε λίγο χρόνο για να ελέγξετε την άδεια που ζητείται. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
-  "snapInstallWarningCheckPlural": {
-    "message": "Αφιερώστε λίγο χρόνο για να ελέγξετε την άδεια που ζητείται. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Προχωρήστε με προσοχή"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Δώστε τον έλεγχο λογαριασμού $2 στο $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "Δώστε πρόσβαση με το δημόσιο κλειδί $2 στο $1",

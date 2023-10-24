@@ -142,11 +142,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         ]),
       };
     }),
-  [RestrictedMethods.snap_getBip32Entropy]: ({
-    t,
-    permissionValue,
-    targetSubjectMetadata,
-  }) =>
+  [RestrictedMethods.snap_getBip32Entropy]: ({ t, permissionValue }) =>
     permissionValue.caveats[0].value.map(({ path, curve }, i) => {
       const baseDescription = {
         leftIcon: IconName.Key,
@@ -154,20 +150,9 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         id: `key-access-bip32-${path
           .join('-')
           ?.replace(/'/gu, 'h')}-${curve}-${i}`,
-        message: t('snapInstallWarningKeyAccess', [
-          <Text
-            key="1"
-            color={Color.primaryDefault}
-            fontWeight={FontWeight.Medium}
-            as="span"
-          >
-            {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
-          </Text>,
-          <Text as="span" key="2" fontWeight={FontWeight.Medium}>
-            {getSnapDerivationPathName(path, curve) ??
-              `${path.join('/')} (${curve})`}
-          </Text>,
-        ]),
+        warningMessageSubject:
+          getSnapDerivationPathName(path, curve) ||
+          `${path.join('/')} (${curve})`,
       };
 
       const friendlyName = getSnapDerivationPathName(path, curve);
@@ -211,11 +196,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         ]),
       };
     }),
-  [RestrictedMethods.snap_getBip44Entropy]: ({
-    t,
-    permissionValue,
-    targetSubjectMetadata,
-  }) =>
+  [RestrictedMethods.snap_getBip44Entropy]: ({ t, permissionValue }) =>
     permissionValue.caveats[0].value.map(({ coinType }, i) => ({
       label: t('permission_manageBip44Keys', [
         <span className="permission-label-item" key={`coin-type-${coinType}`}>
@@ -235,20 +216,9 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       leftIcon: IconName.Key,
       weight: 1,
       id: `key-access-bip44-${coinType}-${i}`,
-      message: t('snapInstallWarningKeyAccess', [
-        <Text
-          key="1"
-          color={Color.primaryDefault}
-          fontWeight={FontWeight.Medium}
-          as="span"
-        >
-          {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
-        </Text>,
-        <Text as="span" key="2" fontWeight={FontWeight.Medium}>
-          {coinTypeToProtocolName(coinType) ||
-            t('unrecognizedProtocol', [coinType])}
-        </Text>,
-      ]),
+      warningMessageSubject:
+        coinTypeToProtocolName(coinType) ||
+        t('unrecognizedProtocol', [coinType]),
     })),
   [RestrictedMethods.snap_getEntropy]: ({ t }) => ({
     label: t('permission_getEntropy'),

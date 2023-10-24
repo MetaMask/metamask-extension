@@ -3963,16 +3963,8 @@
     "message": "请勾选选项框以确认您理解。",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
-  "snapInstallWarningCheckPlural": {
-    "message": "请勾选所有方框以确认您理解。",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "请谨慎行事"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "将对 $2 的账户控制权授予 $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "授予 $2 对 $1 的公钥访问权限",

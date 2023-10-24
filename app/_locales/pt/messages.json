@@ -3963,16 +3963,8 @@
     "message": "Reserve alguns minutos para ler a permissão que está sendo solicitada. Prossiga somente se você confia em $1.",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
-  "snapInstallWarningCheckPlural": {
-    "message": "Reserve alguns minutos para ler as permissões que estão sendo solicitadas. Prossiga somente se você confia em $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Prossiga com cautela"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Conceder a $1 o controle de sua conta $2",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "Conceder a $1 acesso à chave pública de $2",

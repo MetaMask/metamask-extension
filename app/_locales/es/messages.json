@@ -3963,16 +3963,8 @@
     "message": "Para confirmar que comprende, verifique la casilla.",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
-  "snapInstallWarningCheckPlural": {
-    "message": "Para confirmar que comprende, marque todas las casillas.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Proceda con precaución"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Otorgar a $1 el control de la cuenta de $2",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "Dar a $2 el acceso de clave pública a $1",

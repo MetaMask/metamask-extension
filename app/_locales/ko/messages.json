@@ -3963,16 +3963,8 @@
     "message": "잠시 시간을 내어 요청한 권한을 검토하세요. $1(을)를 신뢰하는 경우에만 계속하세요.",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
-  "snapInstallWarningCheckPlural": {
-    "message": "잠시 시간을 내어 요청한 권한을 검토하세요. $1(을)를 신뢰하는 경우에만 계속하세요.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "주의하여 진행하세요"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "'$1' 스냅 이용에 필요한 $2 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 $2 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "$1에서 $2 공개 키 액세스 허용",

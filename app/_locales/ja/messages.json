@@ -3963,16 +3963,8 @@
     "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
-  "snapInstallWarningCheckPlural": {
-    "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "慎重に進めてください"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "$2に$1アカウントのコントロールを許可する",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "$2に$1への公開鍵アクセス権を付与する",

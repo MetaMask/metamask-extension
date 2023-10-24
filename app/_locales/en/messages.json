@@ -4316,19 +4316,19 @@
     "message": "Installation complete"
   },
   "snapInstallWarningCheck": {
-    "message": "Take a moment to review the permission being requested. Only continue if you trust $1.",
+    "message": "$1 wants permission to do the following:",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Take a moment to review the permissions being requested. Only continue if you trust $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Proceed with caution"
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "Give $2 account control to $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  "snapInstallWarningPermissionDescription": {
+    "message": "Allow the Snap to derive key pairs based on your Secret Recovery Phrase without revealing it. This grants access to all accounts and assets on the requested networks. With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "description": "Tooltip description used on the Permission Cell component displayed on warning popup"
+  },
+  "snapInstallWarningPermissionName": {
+    "message": "Control your accounts and assets on",
+    "description": "Permission name used for the Permission Cell component displayed on warning popup when installing a Snap."
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "Give $2 public key access to $1",

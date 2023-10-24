@@ -3963,16 +3963,8 @@
     "message": "Luang waktu untuk meninjau izin yang diminta. Lanjutkan hanya jika Anda memercayai $1.",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
-  "snapInstallWarningCheckPlural": {
-    "message": "Luang waktu untuk meninjau izin yang diminta. Lanjutkan hanya jika Anda memercayai $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Lanjutkan dengan hati-hati"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Berikan $2 kendali akun ke $1.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "Berikan $2 akses kunci publik ke $1",

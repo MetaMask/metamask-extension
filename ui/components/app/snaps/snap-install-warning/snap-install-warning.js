@@ -1,10 +1,6 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { produce } from 'immer';
-import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import CheckBox from '../../../ui/check-box/check-box.component';
-
 import {
   BackgroundColor,
   IconColor,
@@ -13,35 +9,22 @@ import {
   JustifyContent,
   FontWeight,
   Display,
+  AlignItems,
+  BorderRadius,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
-import Button from '../../../ui/button';
 import {
   AvatarIcon,
   AvatarIconSize,
+  Checkbox,
   Box,
   IconName,
   Text,
+  Button,
+  ButtonSize,
 } from '../../../component-library';
-
-/**
- * a very simple reducer using produce from Immer to keep checkboxes state manipulation
- * immutable and painless.
- */
-const checkboxStateReducer = produce((state, action) => {
-  switch (action.type) {
-    case 'check':
-      state[action.checkboxId] = state[action.checkboxId]
-        ? !state[action.checkboxId]
-        : true;
-
-      break;
-    default:
-      throw new Error(
-        'You must provide a type when dispatching an action for checkboxState',
-      );
-  }
-});
+import PermissionCell from '../../permission-cell';
 
 export default function SnapInstallWarning({
   onCancel,
@@ -50,13 +33,7 @@ export default function SnapInstallWarning({
   snapName,
 }) {
   const t = useI18nContext();
-  const [checkboxState, dispatch] = useReducer(checkboxStateReducer, {});
-
-  const isAllChecked = warnings.every((warning) => checkboxState[warning.id]);
-
-  const onCheckboxClicked = useCallback((checkboxId) => {
-    dispatch({ type: 'check', checkboxId });
-  }, []);
+  const [userAgree, setUserAgree] = useState(false);
 
   const SnapInstallWarningFooter = () => {
     return (
@@ -64,8 +41,10 @@ export default function SnapInstallWarning({
         <Button
           className="snap-install-warning__footer-button"
           type="primary"
-          disabled={!isAllChecked}
+          disabled={!userAgree}
           onClick={onSubmit}
+          width={BlockSize.Full}
+          size={ButtonSize.Lg}
         >
           {t('confirm')}
         </Button>
@@ -73,18 +52,41 @@ export default function SnapInstallWarning({
     );
   };
 
+  const warningElements = [];
+  for (let i = 0; i < warnings.length; i++) {
+    const warning = warnings[i];
+    if (i > 0) {
+      warningElements.push(', ');
+    }
+    if (i === warnings.length - 1) {
+      warningElements.push(' and ');
+    }
+    warningElements.push(
+      <span key={i}>
+        <Text fontWeight={FontWeight.Medium} as="span">
+          {warning.warningMessageSubject}
+        </Text>
+      </span>,
+    );
+  }
+  const permissionName = (
+    <Text>
+      {t('snapInstallWarningPermissionName')} {warningElements}
+    </Text>
+  );
+
   return (
     <Popover
       className="snap-install-warning"
       footer={<SnapInstallWarningFooter />}
-      headerProps={{ padding: [6, 6, 0] }}
+      headerProps={{ padding: [4, 4, 0] }}
       contentProps={{
-        paddingLeft: [6, 4],
-        paddingRight: [6, 4],
+        paddingLeft: [4, 4],
+        paddingRight: [4, 4],
         paddingTop: 0,
-        paddingBottom: [6, 4],
+        paddingBottom: [4, 4],
       }}
-      footerProps={{ padding: [4, 6] }}
+      footerProps={{ padding: [4, 4] }}
       onClose={onCancel}
     >
       <Box
@@ -108,43 +110,51 @@ export default function SnapInstallWarning({
         {t('snapInstallWarningHeading')}
       </Text>
       <Text paddingBottom={6} textAlign={TextAlign.Center}>
-        {warnings.length > 1
-          ? t('snapInstallWarningCheckPlural', [
-              <Text
-                key="snapNameInWarningDescription"
-                fontWeight={FontWeight.Medium}
-                as="span"
-              >
-                {snapName}
-              </Text>,
-            ])
-          : t('snapInstallWarningCheck', [
-              <Text
-                key="snapNameInWarningDescription"
-                fontWeight={FontWeight.Medium}
-                as="span"
-              >
-                {snapName}
-              </Text>,
-            ])}
+        {t('snapInstallWarningCheck', [
+          <Text
+            key="snapNameInWarningDescription"
+            fontWeight={FontWeight.Medium}
+            as="span"
+          >
+            {snapName}
+          </Text>,
+        ])}
       </Text>
-      {warnings.map((warning, i) => (
-        <div
-          className={classnames('checkbox-label', {
-            'checkbox-label--first': i === 0,
-          })}
-          key={warning.id}
-        >
-          <CheckBox
-            checked={checkboxState[warning.id] ?? false}
-            id={warning.id}
-            onClick={() => onCheckboxClicked(warning.id)}
-          />
-          <label htmlFor={warning.id}>
-            <Text variant={TextVariant.bodyMd}>{warning.message}</Text>
-          </label>
-        </div>
-      ))}
+      <PermissionCell
+        permissionName={permissionName}
+        title={permissionName}
+        description={t('snapInstallWarningPermissionDescription')}
+        weight={1}
+        avatarIcon={IconName.Key}
+        key={`${permissionName}`}
+        hideStatus
+      />
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        padding={4}
+        borderRadius={BorderRadius.SM}
+        backgroundColor={
+          userAgree
+            ? BackgroundColor.infoMuted
+            : BackgroundColor.backgroundAlternative
+        }
+      >
+        <Checkbox
+          isRequired
+          onChange={() => setUserAgree(!userAgree)}
+          isChecked={userAgree}
+          label={
+            <Text as="span">
+              Install{' '}
+              <Text as="span" fontWeight={FontWeight.Medium}>
+                {snapName}
+              </Text>
+            </Text>
+          }
+        />
+      </Box>
     </Popover>
   );
 }
@@ -162,7 +172,7 @@ SnapInstallWarning.propTypes = {
    * warnings list
    */
   warnings: PropTypes.arrayOf({
-    message: PropTypes.node,
+    warningMessageSubject: PropTypes.string,
     id: PropTypes.string,
   }),
   /**

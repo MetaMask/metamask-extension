@@ -3963,16 +3963,8 @@
     "message": "Nehmen Sie sich einen Moment Zeit, um die angeforderte Genehmigung zu prüfen. Fahren Sie nur fort, wenn Sie $1 vertrauen.",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
-  "snapInstallWarningCheckPlural": {
-    "message": "Nehmen Sie sich einen Moment Zeit, um die angeforderten Genehmigungen zu prüfen. Fahren Sie nur fort, wenn Sie $1 vertrauen.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Seien Sie vorsichtig"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Geben Sie $2 Kontokontrolle an $1.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
     "message": "Geben Sie dem öffentlichen Schlüssel $2 Zugriff auf $1.",
