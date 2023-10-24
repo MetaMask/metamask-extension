@@ -1172,6 +1172,7 @@ async function setEnvironmentVariables({
   const testing = isTestBuild(buildTarget);
 
   variables.set({
+    DEBUG: devMode ? variables.getMaybe('DEBUG') : undefined,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,

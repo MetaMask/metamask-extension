@@ -32,37 +32,49 @@ index a45b30c1572f248d2c7ec6527b2dfa04f10ba735..00000000000000000000000000000000
 \ No newline at end of file
 diff --git a/dist/PendingTransactionTracker.d.ts b/dist/PendingTransactionTracker.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..9bbfe4ea1cf48bec8e7f6658bed536a607e1b877
+index 0000000000000000000000000000000000000000..999e1e91222b145091b59ee432f09470b401ef1f
 --- /dev/null
 +++ b/dist/PendingTransactionTracker.d.ts
-@@ -0,0 +1,20 @@
+@@ -0,0 +1,32 @@
 +/// <reference types="node" />
 +import type EthQuery from '@metamask/eth-query';
 +import type { BlockTracker } from '@metamask/network-controller';
 +import EventEmitter from 'events';
++import type { TransactionState } from './TransactionController';
 +import type { TransactionMeta } from './types';
-+import NonceTracker from 'nonce-tracker';
++declare type Events = {
++    'transaction-confirmed': [txMeta: TransactionMeta];
++    'transaction-dropped': [txMeta: TransactionMeta];
++    'transaction-failed': [txMeta: TransactionMeta, error: Error];
++    'transaction-updated': [txMeta: TransactionMeta, note: string];
++};
++export interface PendingTransactionTrackerEventEmitter extends EventEmitter {
++    on<T extends keyof Events>(eventName: T, listener: (...args: Events[T]) => void): this;
++    emit<T extends keyof Events>(eventName: T, ...args: Events[T]): boolean;
++}
 +export declare class PendingTransactionTracker {
 +    #private;
-+    hub: EventEmitter;
-+    constructor({ blockTracker, failTransaction, getChainId, getEthQuery, getTransactions, nonceTracker, }: {
++    hub: PendingTransactionTrackerEventEmitter;
++    constructor({ approveTransaction, blockTracker, getChainId, getEthQuery, getTransactions, isResubmitEnabled, onStateChange, publishTransaction, }: {
++        approveTransaction: (transactionId: string) => Promise<void>;
 +        blockTracker: BlockTracker;
-+        failTransaction: (txMeta: TransactionMeta, error: Error) => void;
 +        getChainId: () => string;
 +        getEthQuery: () => EthQuery;
 +        getTransactions: () => TransactionMeta[];
-+        nonceTracker: NonceTracker;
++        isResubmitEnabled?: boolean;
++        onStateChange: (listener: (state: TransactionState) => void) => void;
++        publishTransaction: (rawTx: string) => Promise<string>;
 +    });
-+    start(): void;
 +}
++export {};
 +//# sourceMappingURL=PendingTransactionTracker.d.ts.map
 \ No newline at end of file
 diff --git a/dist/PendingTransactionTracker.js b/dist/PendingTransactionTracker.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..0110130e5478d506b63e726755257acff45f76bb
+index 0000000000000000000000000000000000000000..b08d35e6572fdbe282ec43f2a337201503adf28d
 --- /dev/null
 +++ b/dist/PendingTransactionTracker.js
-@@ -0,0 +1,164 @@
+@@ -0,0 +1,308 @@
 +"use strict";
 +var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
 +    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -87,149 +99,293 @@ index 0000000000000000000000000000000000000000..0110130e5478d506b63e726755257acf
 +var __importDefault = (this && this.__importDefault) || function (mod) {
 +    return (mod && mod.__esModule) ? mod : { "default": mod };
 +};
-+var _PendingTransactionTracker_instances, _PendingTransactionTracker_blockTracker, _PendingTransactionTracker_failTransaction, _PendingTransactionTracker_getChainId, _PendingTransactionTracker_getEthQuery, _PendingTransactionTracker_getTransactions, _PendingTransactionTracker_nonceTracker, _PendingTransactionTracker_onLatestBlock, _PendingTransactionTracker_blockchainTransactionStateReconciler, _PendingTransactionTracker_checkTxReceiptStatusIsFailed;
++var _PendingTransactionTracker_instances, _PendingTransactionTracker_approveTransaction, _PendingTransactionTracker_blockTracker, _PendingTransactionTracker_droppedBlockCountByHash, _PendingTransactionTracker_getChainId, _PendingTransactionTracker_getEthQuery, _PendingTransactionTracker_getTransactions, _PendingTransactionTracker_isResubmitEnabled, _PendingTransactionTracker_listener, _PendingTransactionTracker_onStateChange, _PendingTransactionTracker_publishTransaction, _PendingTransactionTracker_running, _PendingTransactionTracker_start, _PendingTransactionTracker_stop, _PendingTransactionTracker_onLatestBlock, _PendingTransactionTracker_checkTransactions, _PendingTransactionTracker_resubmitTransactions, _PendingTransactionTracker_isKnownTransactionError, _PendingTransactionTracker_resubmitTransaction, _PendingTransactionTracker_isResubmitDue, _PendingTransactionTracker_checkTransaction, _PendingTransactionTracker_onTransactionConfirmed, _PendingTransactionTracker_isTransactionDropped, _PendingTransactionTracker_isNonceTaken, _PendingTransactionTracker_getPendingTransactions, _PendingTransactionTracker_warnTransaction, _PendingTransactionTracker_failTransaction, _PendingTransactionTracker_dropTransaction, _PendingTransactionTracker_updateTransaction, _PendingTransactionTracker_getTransactionReceipt, _PendingTransactionTracker_getBlockByHash, _PendingTransactionTracker_getNetworkTransactionCount;
 +Object.defineProperty(exports, "__esModule", { value: true });
 +exports.PendingTransactionTracker = void 0;
 +const controller_utils_1 = require("@metamask/controller-utils");
 +const events_1 = __importDefault(require("events"));
 +const logger_1 = require("./logger");
 +const types_1 = require("./types");
++/**
++ * We wait this many blocks before emitting a 'transaction-dropped' event
++ * This is because we could be talking to a node that is out of sync
++ */
++const DROPPED_BLOCK_COUNT = 3;
++const MAX_RETRY_BLOCK_DISTANCE = 50;
++const KNOWN_TRANSACTION_ERRORS = [
++    'replacement transaction underpriced',
++    'known transaction',
++    'gas price too low to replace',
++    'transaction with the same hash was already imported',
++    'gateway timeout',
++    'nonce too low',
++];
 +class PendingTransactionTracker {
-+    constructor({ blockTracker, failTransaction, getChainId, getEthQuery, getTransactions, nonceTracker, }) {
++    constructor({ approveTransaction, blockTracker, getChainId, getEthQuery, getTransactions, isResubmitEnabled, onStateChange, publishTransaction, }) {
 +        _PendingTransactionTracker_instances.add(this);
++        _PendingTransactionTracker_approveTransaction.set(this, void 0);
 +        _PendingTransactionTracker_blockTracker.set(this, void 0);
-+        _PendingTransactionTracker_failTransaction.set(this, void 0);
++        _PendingTransactionTracker_droppedBlockCountByHash.set(this, void 0);
 +        _PendingTransactionTracker_getChainId.set(this, void 0);
 +        _PendingTransactionTracker_getEthQuery.set(this, void 0);
 +        _PendingTransactionTracker_getTransactions.set(this, void 0);
-+        _PendingTransactionTracker_nonceTracker.set(this, void 0);
++        _PendingTransactionTracker_isResubmitEnabled.set(this, void 0);
++        _PendingTransactionTracker_listener.set(this, void 0);
++        _PendingTransactionTracker_onStateChange.set(this, void 0);
++        _PendingTransactionTracker_publishTransaction.set(this, void 0);
++        _PendingTransactionTracker_running.set(this, void 0);
 +        this.hub = new events_1.default();
++        __classPrivateFieldSet(this, _PendingTransactionTracker_approveTransaction, approveTransaction, "f");
 +        __classPrivateFieldSet(this, _PendingTransactionTracker_blockTracker, blockTracker, "f");
-+        __classPrivateFieldSet(this, _PendingTransactionTracker_failTransaction, failTransaction, "f");
++        __classPrivateFieldSet(this, _PendingTransactionTracker_droppedBlockCountByHash, new Map(), "f");
 +        __classPrivateFieldSet(this, _PendingTransactionTracker_getChainId, getChainId, "f");
 +        __classPrivateFieldSet(this, _PendingTransactionTracker_getEthQuery, getEthQuery, "f");
 +        __classPrivateFieldSet(this, _PendingTransactionTracker_getTransactions, getTransactions, "f");
-+        __classPrivateFieldSet(this, _PendingTransactionTracker_nonceTracker, nonceTracker, "f");
-+    }
-+    start() {
-+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-+        __classPrivateFieldGet(this, _PendingTransactionTracker_blockTracker, "f").on('latest', () => __awaiter(this, void 0, void 0, function* () {
-+            const nonceGlobalLock = yield __classPrivateFieldGet(this, _PendingTransactionTracker_nonceTracker, "f").getGlobalLock();
-+            try {
-+                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_onLatestBlock).call(this);
++        __classPrivateFieldSet(this, _PendingTransactionTracker_isResubmitEnabled, isResubmitEnabled !== null && isResubmitEnabled !== void 0 ? isResubmitEnabled : true, "f");
++        __classPrivateFieldSet(this, _PendingTransactionTracker_listener, __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_onLatestBlock).bind(this), "f");
++        __classPrivateFieldSet(this, _PendingTransactionTracker_onStateChange, onStateChange, "f");
++        __classPrivateFieldSet(this, _PendingTransactionTracker_publishTransaction, publishTransaction, "f");
++        __classPrivateFieldSet(this, _PendingTransactionTracker_running, false, "f");
++        __classPrivateFieldGet(this, _PendingTransactionTracker_onStateChange, "f").call(this, (state) => {
++            const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this, state.transactions);
++            if (pendingTransactions.length) {
++                __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_start).call(this);
 +            }
-+            catch (error) {
-+                (0, logger_1.pendingTransactionsLogger)('Error', error);
++            else {
++                __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_stop).call(this);
 +            }
-+            finally {
-+                nonceGlobalLock.releaseLock();
-+            }
-+        }));
++        });
 +    }
 +}
 +exports.PendingTransactionTracker = PendingTransactionTracker;
-+_PendingTransactionTracker_blockTracker = new WeakMap(), _PendingTransactionTracker_failTransaction = new WeakMap(), _PendingTransactionTracker_getChainId = new WeakMap(), _PendingTransactionTracker_getEthQuery = new WeakMap(), _PendingTransactionTracker_getTransactions = new WeakMap(), _PendingTransactionTracker_nonceTracker = new WeakMap(), _PendingTransactionTracker_instances = new WeakSet(), _PendingTransactionTracker_onLatestBlock = function _PendingTransactionTracker_onLatestBlock() {
++_PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransactionTracker_blockTracker = new WeakMap(), _PendingTransactionTracker_droppedBlockCountByHash = new WeakMap(), _PendingTransactionTracker_getChainId = new WeakMap(), _PendingTransactionTracker_getEthQuery = new WeakMap(), _PendingTransactionTracker_getTransactions = new WeakMap(), _PendingTransactionTracker_isResubmitEnabled = new WeakMap(), _PendingTransactionTracker_listener = new WeakMap(), _PendingTransactionTracker_onStateChange = new WeakMap(), _PendingTransactionTracker_publishTransaction = new WeakMap(), _PendingTransactionTracker_running = new WeakMap(), _PendingTransactionTracker_instances = new WeakSet(), _PendingTransactionTracker_start = function _PendingTransactionTracker_start() {
++    if (__classPrivateFieldGet(this, _PendingTransactionTracker_running, "f")) {
++        return;
++    }
++    __classPrivateFieldGet(this, _PendingTransactionTracker_blockTracker, "f").on('latest', __classPrivateFieldGet(this, _PendingTransactionTracker_listener, "f"));
++    __classPrivateFieldSet(this, _PendingTransactionTracker_running, true, "f");
++    (0, logger_1.pendingTransactionsLogger)('Started polling');
++}, _PendingTransactionTracker_stop = function _PendingTransactionTracker_stop() {
++    if (!__classPrivateFieldGet(this, _PendingTransactionTracker_running, "f")) {
++        return;
++    }
++    __classPrivateFieldGet(this, _PendingTransactionTracker_blockTracker, "f").removeListener('latest', __classPrivateFieldGet(this, _PendingTransactionTracker_listener, "f"));
++    __classPrivateFieldSet(this, _PendingTransactionTracker_running, false, "f");
++    (0, logger_1.pendingTransactionsLogger)('Stopped polling');
++}, _PendingTransactionTracker_onLatestBlock = function _PendingTransactionTracker_onLatestBlock(latestBlockNumber) {
 +    return __awaiter(this, void 0, void 0, function* () {
-+        (0, logger_1.pendingTransactionsLogger)('Checking transactions');
-+        const transactions = __classPrivateFieldGet(this, _PendingTransactionTracker_getTransactions, "f").call(this);
-+        const currentChainId = __classPrivateFieldGet(this, _PendingTransactionTracker_getChainId, "f").call(this);
-+        (0, logger_1.pendingTransactionsLogger)('Current state', {
-+            transactionCount: transactions.length,
-+            currentChainId,
-+        });
-+        let gotUpdates = false;
 +        try {
-+            yield Promise.all(transactions.map((meta, index) => __awaiter(this, void 0, void 0, function* () {
-+                if (!meta.verifiedOnBlockchain && meta.chainId === currentChainId) {
-+                    const [reconciledTx, updateRequired] = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_blockchainTransactionStateReconciler).call(this, meta);
-+                    if (updateRequired) {
-+                        transactions[index] = reconciledTx;
-+                        gotUpdates = updateRequired;
-+                    }
-+                }
-+            })));
++            yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTransactions).call(this);
 +        }
 +        catch (error) {
-+            (0, logger_1.pendingTransactionsLogger)('Error checking pending transactions', error);
++            /* istanbul ignore next */
++            (0, logger_1.pendingTransactionsLogger)('Failed to check transactions', error);
 +        }
-+        /* istanbul ignore else */
-+        if (gotUpdates) {
-+            this.hub.emit('transactions', transactions);
++        try {
++            yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_resubmitTransactions).call(this, latestBlockNumber);
++        }
++        catch (error) {
++            /* istanbul ignore next */
++            (0, logger_1.pendingTransactionsLogger)('Failed to resubmit transactions', error);
 +        }
 +    });
-+}, _PendingTransactionTracker_blockchainTransactionStateReconciler = function _PendingTransactionTracker_blockchainTransactionStateReconciler(meta) {
++}, _PendingTransactionTracker_checkTransactions = function _PendingTransactionTracker_checkTransactions() {
 +    return __awaiter(this, void 0, void 0, function* () {
-+        const { status, hash, id, chainId, txParams: { to }, } = meta;
-+        switch (status) {
-+            case types_1.TransactionStatus.confirmed:
-+                (0, logger_1.pendingTransactionsLogger)('Checking confirmed transaction', {
-+                    id,
-+                    chainId,
-+                    to,
-+                });
-+                const txReceipt = yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionReceipt', [hash]);
-+                if (!txReceipt) {
-+                    return [meta, false];
-+                }
-+                const txBlock = yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getBlockByHash', [
-+                    txReceipt.blockHash,
-+                ]);
-+                meta.verifiedOnBlockchain = true;
-+                meta.txParams.gasUsed = txReceipt.gasUsed;
-+                meta.txReceipt = txReceipt;
-+                meta.baseFeePerGas = txBlock === null || txBlock === void 0 ? void 0 : txBlock.baseFeePerGas;
-+                meta.blockTimestamp = txBlock === null || txBlock === void 0 ? void 0 : txBlock.timestamp;
-+                // According to the Web3 docs:
-+                // TRUE if the transaction was successful, FALSE if the EVM reverted the transaction.
-+                if (Number(txReceipt.status) === 0) {
-+                    const error = new Error('Transaction failed. The transaction was reversed');
-+                    __classPrivateFieldGet(this, _PendingTransactionTracker_failTransaction, "f").call(this, meta, error);
-+                    return [meta, false];
-+                }
-+                return [meta, true];
-+            case types_1.TransactionStatus.submitted:
-+                (0, logger_1.pendingTransactionsLogger)('Checking submitted transaction', {
-+                    id,
-+                    chainId,
-+                    to,
-+                });
-+                const txObj = yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionByHash', [
-+                    hash,
-+                ]);
-+                if (!txObj) {
-+                    const receiptShowsFailedStatus = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTxReceiptStatusIsFailed).call(this, hash);
-+                    // Case the txObj is evaluated as false, a second check will
-+                    // determine if the tx failed or it is pending or confirmed
-+                    if (receiptShowsFailedStatus) {
-+                        const error = new Error('Transaction failed. The transaction was dropped or replaced by a new one');
-+                        __classPrivateFieldGet(this, _PendingTransactionTracker_failTransaction, "f").call(this, meta, error);
-+                    }
-+                }
++        (0, logger_1.pendingTransactionsLogger)('Checking transactions');
++        const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this);
++        if (!pendingTransactions.length) {
++            return;
++        }
++        (0, logger_1.pendingTransactionsLogger)('Found pending transactions to check', {
++            count: pendingTransactions.length,
++            ids: pendingTransactions.map((tx) => tx.id),
++        });
++        yield Promise.all(pendingTransactions.map((tx) => __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTransaction).call(this, tx)));
++    });
++}, _PendingTransactionTracker_resubmitTransactions = function _PendingTransactionTracker_resubmitTransactions(latestBlockNumber) {
++    var _a, _b;
++    return __awaiter(this, void 0, void 0, function* () {
++        if (!__classPrivateFieldGet(this, _PendingTransactionTracker_isResubmitEnabled, "f")) {
++            return;
++        }
++        (0, logger_1.pendingTransactionsLogger)('Resubmitting transactions');
++        const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this);
++        if (!pendingTransactions.length) {
++            return;
++        }
++        (0, logger_1.pendingTransactionsLogger)('Found pending transactions to resubmit', {
++            count: pendingTransactions.length,
++            ids: pendingTransactions.map((tx) => tx.id),
++        });
++        for (const txMeta of pendingTransactions) {
++            try {
++                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_resubmitTransaction).call(this, txMeta, latestBlockNumber);
++            }
++            catch (error) {
 +                /* istanbul ignore next */
-+                if (txObj === null || txObj === void 0 ? void 0 : txObj.blockNumber) {
-+                    meta.status = types_1.TransactionStatus.confirmed;
-+                    this.hub.emit('transaction-confirmed', meta);
-+                    return [meta, true];
++                const errorMessage = ((_b = (_a = error.value) === null || _a === void 0 ? void 0 : _a.message) === null || _b === void 0 ? void 0 : _b.toLowerCase()) || error.message.toLowerCase();
++                if (__classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isKnownTransactionError).call(this, errorMessage)) {
++                    (0, logger_1.pendingTransactionsLogger)('Ignoring known transaction error', errorMessage);
++                    return;
 +                }
-+                return [meta, false];
-+            default:
-+                return [meta, false];
++                __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_warnTransaction).call(this, txMeta, error.message, 'There was an error when resubmitting this transaction.');
++            }
 +        }
 +    });
-+}, _PendingTransactionTracker_checkTxReceiptStatusIsFailed = function _PendingTransactionTracker_checkTxReceiptStatusIsFailed(txHash) {
++}, _PendingTransactionTracker_isKnownTransactionError = function _PendingTransactionTracker_isKnownTransactionError(errorMessage) {
++    return KNOWN_TRANSACTION_ERRORS.some((knownError) => errorMessage.includes(knownError));
++}, _PendingTransactionTracker_resubmitTransaction = function _PendingTransactionTracker_resubmitTransaction(txMeta, latestBlockNumber) {
++    var _a;
 +    return __awaiter(this, void 0, void 0, function* () {
-+        const txReceipt = yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionReceipt', [txHash]);
-+        if (!txReceipt) {
-+            // Transaction is pending
++        if (!__classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isResubmitDue).call(this, txMeta, latestBlockNumber)) {
++            return;
++        }
++        (0, logger_1.pendingTransactionsLogger)('Resubmitting transaction', txMeta.id);
++        const { rawTx } = txMeta;
++        if (!(rawTx === null || rawTx === void 0 ? void 0 : rawTx.length)) {
++            (0, logger_1.pendingTransactionsLogger)('Approving transaction as no raw value');
++            yield __classPrivateFieldGet(this, _PendingTransactionTracker_approveTransaction, "f").call(this, txMeta.id);
++            return;
++        }
++        yield __classPrivateFieldGet(this, _PendingTransactionTracker_publishTransaction, "f").call(this, rawTx);
++        txMeta.retryCount = ((_a = txMeta.retryCount) !== null && _a !== void 0 ? _a : 0) + 1;
++        __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_updateTransaction).call(this, txMeta, 'PendingTransactionTracker:transaction-retry - Retry count increased');
++    });
++}, _PendingTransactionTracker_isResubmitDue = function _PendingTransactionTracker_isResubmitDue(txMeta, latestBlockNumber) {
++    if (!txMeta.firstRetryBlockNumber) {
++        txMeta.firstRetryBlockNumber = latestBlockNumber;
++        __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_updateTransaction).call(this, txMeta, 'PendingTransactionTracker:#isResubmitDue - First retry block number set');
++    }
++    const firstRetryBlockNumber = txMeta.firstRetryBlockNumber || latestBlockNumber;
++    const blocksSinceFirstRetry = Number.parseInt(latestBlockNumber, 16) -
++        Number.parseInt(firstRetryBlockNumber, 16);
++    const retryCount = txMeta.retryCount || 0;
++    // Exponential backoff to limit retries at publishing
++    // Capped at ~15 minutes between retries
++    const requiredBlocksSinceFirstRetry = Math.min(MAX_RETRY_BLOCK_DISTANCE, Math.pow(2, retryCount));
++    return blocksSinceFirstRetry >= requiredBlocksSinceFirstRetry;
++}, _PendingTransactionTracker_checkTransaction = function _PendingTransactionTracker_checkTransaction(txMeta) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { hash, id } = txMeta;
++        if (!hash) {
++            const error = new Error('We had an error while submitting this transaction, please try again.');
++            error.name = 'NoTxHashError';
++            __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_failTransaction).call(this, txMeta, error);
++            return;
++        }
++        if (__classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isNonceTaken).call(this, txMeta)) {
++            (0, logger_1.pendingTransactionsLogger)('Nonce already taken', id);
++            __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_dropTransaction).call(this, txMeta);
++            return;
++        }
++        try {
++            const receipt = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getTransactionReceipt).call(this, hash);
++            const isSuccess = (receipt === null || receipt === void 0 ? void 0 : receipt.status) === '0x1';
++            if (receipt && !isSuccess) {
++                (0, logger_1.pendingTransactionsLogger)('Transaction receipt has failed status');
++                __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_failTransaction).call(this, txMeta, new Error('Transaction dropped or replaced'));
++                return;
++            }
++            if ((receipt === null || receipt === void 0 ? void 0 : receipt.blockNumber) && isSuccess) {
++                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_onTransactionConfirmed).call(this, txMeta, receipt);
++                return;
++            }
++        }
++        catch (error) {
++            (0, logger_1.pendingTransactionsLogger)('Failed to check transaction', id, error);
++            __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_warnTransaction).call(this, txMeta, error.message, 'There was a problem loading this transaction.');
++            return;
++        }
++        if (yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isTransactionDropped).call(this, txMeta)) {
++            __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_dropTransaction).call(this, txMeta);
++        }
++    });
++}, _PendingTransactionTracker_onTransactionConfirmed = function _PendingTransactionTracker_onTransactionConfirmed(txMeta, receipt) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { id } = txMeta;
++        (0, logger_1.pendingTransactionsLogger)('Transaction confirmed', id);
++        const { baseFeePerGas, timestamp: blockTimestamp } = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getBlockByHash).call(this, receipt.blockHash, false);
++        txMeta.baseFeePerGas = baseFeePerGas;
++        txMeta.blockTimestamp = blockTimestamp;
++        txMeta.status = types_1.TransactionStatus.confirmed;
++        txMeta.txParams.gasUsed = receipt.gasUsed;
++        txMeta.txReceipt = receipt;
++        txMeta.verifiedOnBlockchain = true;
++        __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_updateTransaction).call(this, txMeta, 'PendingTransactionTracker:#onTransactionConfirmed - Transaction confirmed');
++        this.hub.emit('transaction-confirmed', txMeta);
++    });
++}, _PendingTransactionTracker_isTransactionDropped = function _PendingTransactionTracker_isTransactionDropped(txMeta) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { hash, id, txParams: { nonce, from }, } = txMeta;
++        /* istanbul ignore next */
++        if (!nonce || !hash) {
 +            return false;
 +        }
-+        return Number(txReceipt.status) === 0;
++        const networkNextNonceHex = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getNetworkTransactionCount).call(this, from);
++        const networkNextNonceNumber = parseInt(networkNextNonceHex, 16);
++        const nonceNumber = parseInt(nonce, 16);
++        if (nonceNumber >= networkNextNonceNumber) {
++            return false;
++        }
++        let droppedBlockCount = __classPrivateFieldGet(this, _PendingTransactionTracker_droppedBlockCountByHash, "f").get(hash);
++        if (droppedBlockCount === undefined) {
++            droppedBlockCount = 0;
++            __classPrivateFieldGet(this, _PendingTransactionTracker_droppedBlockCountByHash, "f").set(hash, droppedBlockCount);
++        }
++        if (droppedBlockCount < DROPPED_BLOCK_COUNT) {
++            (0, logger_1.pendingTransactionsLogger)('Incrementing dropped block count', { id, droppedBlockCount });
++            __classPrivateFieldGet(this, _PendingTransactionTracker_droppedBlockCountByHash, "f").set(hash, droppedBlockCount + 1);
++            return false;
++        }
++        (0, logger_1.pendingTransactionsLogger)('Hit dropped block count', id);
++        __classPrivateFieldGet(this, _PendingTransactionTracker_droppedBlockCountByHash, "f").delete(hash);
++        return true;
++    });
++}, _PendingTransactionTracker_isNonceTaken = function _PendingTransactionTracker_isNonceTaken(txMeta) {
++    const { id, txParams } = txMeta;
++    return __classPrivateFieldGet(this, _PendingTransactionTracker_getTransactions, "f").call(this).some((tx) => tx.id !== id &&
++        tx.txParams.from === txParams.from &&
++        tx.status === types_1.TransactionStatus.confirmed &&
++        tx.txParams.nonce === txParams.nonce);
++}, _PendingTransactionTracker_getPendingTransactions = function _PendingTransactionTracker_getPendingTransactions(transactions) {
++    const currentChainId = __classPrivateFieldGet(this, _PendingTransactionTracker_getChainId, "f").call(this);
++    return (transactions !== null && transactions !== void 0 ? transactions : __classPrivateFieldGet(this, _PendingTransactionTracker_getTransactions, "f").call(this)).filter((tx) => tx.status === types_1.TransactionStatus.submitted &&
++        tx.chainId === currentChainId &&
++        !tx.verifiedOnBlockchain);
++}, _PendingTransactionTracker_warnTransaction = function _PendingTransactionTracker_warnTransaction(txMeta, error, message) {
++    txMeta.warning = {
++        error,
++        message,
++    };
++    __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_updateTransaction).call(this, txMeta, 'PendingTransactionTracker:#warnTransaction - Warning added');
++}, _PendingTransactionTracker_failTransaction = function _PendingTransactionTracker_failTransaction(txMeta, error) {
++    (0, logger_1.pendingTransactionsLogger)('Transaction failed', txMeta.id, error);
++    this.hub.emit('transaction-failed', txMeta, error);
++}, _PendingTransactionTracker_dropTransaction = function _PendingTransactionTracker_dropTransaction(txMeta) {
++    (0, logger_1.pendingTransactionsLogger)('Transaction dropped', txMeta.id);
++    this.hub.emit('transaction-dropped', txMeta);
++}, _PendingTransactionTracker_updateTransaction = function _PendingTransactionTracker_updateTransaction(txMeta, note) {
++    this.hub.emit('transaction-updated', txMeta, note);
++}, _PendingTransactionTracker_getTransactionReceipt = function _PendingTransactionTracker_getTransactionReceipt(txHash) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionReceipt', [txHash]);
++    });
++}, _PendingTransactionTracker_getBlockByHash = function _PendingTransactionTracker_getBlockByHash(blockHash, includeTransactionDetails) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getBlockByHash', [
++            blockHash,
++            includeTransactionDetails,
++        ]);
++    });
++}, _PendingTransactionTracker_getNetworkTransactionCount = function _PendingTransactionTracker_getNetworkTransactionCount(address) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionCount', [address]);
 +    });
 +};
 +//# sourceMappingURL=PendingTransactionTracker.js.map
 \ No newline at end of file
 diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
-index d8fa996c21bc45df84598be8aa7f870910184244..8982abfea48c84b087d4b999b05052b68f5d846b 100644
+index d8fa996c21bc45df84598be8aa7f870910184244..45d8faa922ac02cd7ddda74702255ec541bd00e2 100644
 --- a/dist/TransactionController.d.ts
 +++ b/dist/TransactionController.d.ts
 @@ -4,10 +4,12 @@ import type { TypedTransaction } from '@ethereumjs/tx';
@@ -383,7 +539,15 @@ index d8fa996c21bc45df84598be8aa7f870910184244..8982abfea48c84b087d4b999b05052b6
      /**
       * Updates an existing transaction in state.
       *
-@@ -359,23 +371,6 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -323,6 +335,7 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @param transactionId - The ID of the transaction to approve.
+      */
+     private approveTransaction;
++    private publishTransaction;
+     /**
+      * Cancels a transaction based on its ID by setting its status to "rejected"
+      * and emitting a `<tx.id>:finished` hub event.
+@@ -359,23 +372,6 @@ export declare class TransactionController extends BaseController<TransactionCon
       * @returns Whether the transaction is in a final state.
       */
      private isLocalFinalState;
@@ -407,15 +571,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..8982abfea48c84b087d4b999b05052b6
      private requestApproval;
      private getTransaction;
      private getApprovalId;
-@@ -394,6 +389,7 @@ export declare class TransactionController extends BaseController<TransactionCon
-     private getCommonConfiguration;
-     private onIncomingTransactions;
-     private onUpdatedLastFetchedBlockNumbers;
-+    private onPendingTransactionsUpdate;
-     private generateDappSuggestedGasFees;
-     /**
-      * Validates and adds external provided transaction to state.
-@@ -431,6 +427,26 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -431,6 +427,27 @@ export declare class TransactionController extends BaseController<TransactionCon
       */
      private updateTransactionMetaRSV;
      private getEIP1559Compatibility;
@@ -439,6 +595,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..8982abfea48c84b087d4b999b05052b6
 +    private createSwapsTransaction;
 +    private updateSwapApprovalTransaction;
 +    private updateSwapTransaction;
++    private addPendingTransactionTrackerListeners;
  }
  export default TransactionController;
  //# sourceMappingURL=TransactionController.d.ts.map
@@ -452,19 +609,18 @@ index 083b07c332887c5dc2bca0074f22794962934600..00000000000000000000000000000000
 -{"version":3,"file":"TransactionController.d.ts","sourceRoot":"","sources":["../src/TransactionController.ts"],"names":[],"mappings":"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"}
 \ No newline at end of file
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff456ddf33f 100644
+index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f6b1fbd86 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
-@@ -28,11 +28,17 @@ const nonce_tracker_1 = __importDefault(require("nonce-tracker"));
+@@ -28,11 +28,16 @@ const nonce_tracker_1 = __importDefault(require("nonce-tracker"));
  const uuid_1 = require("uuid");
  const EtherscanRemoteTransactionSource_1 = require("./EtherscanRemoteTransactionSource");
  const external_transactions_1 = require("./external-transactions");
 +const gas_1 = require("./gas");
-+const gasFees_1 = require("./gasFees");
++const gas_fees_1 = require("./gas-fees");
  const history_1 = require("./history");
  const IncomingTransactionHelper_1 = require("./IncomingTransactionHelper");
 +const logger_1 = require("./logger");
-+const logger_2 = require("./logger");
 +const PendingTransactionTracker_1 = require("./PendingTransactionTracker");
  const transaction_type_1 = require("./transaction-type");
  const types_1 = require("./types");
@@ -473,7 +629,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
  exports.HARDFORK = common_1.Hardfork.London;
  /**
   * Multiplier used to determine a transaction's increased gas fee during cancellation
-@@ -59,7 +65,9 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -59,7 +64,9 @@ class TransactionController extends base_controller_1.BaseController {
       * @param options.disableSendFlowHistory - Explicitly disable transaction metadata history.
       * @param options.getCurrentAccountEIP1559Compatibility - Whether or not the account supports EIP-1559.
       * @param options.getCurrentNetworkEIP1559Compatibility - Whether or not the network supports EIP-1559.
@@ -483,7 +639,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
       * @param options.getSelectedAddress - Gets the address of the currently selected account.
       * @param options.incomingTransactions - Configuration options for incoming transaction support.
       * @param options.incomingTransactions.includeTokenTransfers - Whether or not to include ERC20 token transfers.
-@@ -69,10 +77,11 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -69,10 +76,11 @@ class TransactionController extends base_controller_1.BaseController {
       * @param options.messenger - The controller messenger.
       * @param options.onNetworkStateChange - Allows subscribing to network controller state changes.
       * @param options.provider - The provider used to create the underlying EthQuery instance.
@@ -496,7 +652,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
          super(config, state);
          this.mutex = new async_mutex_1.Mutex();
          /**
-@@ -84,7 +93,6 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -84,7 +92,6 @@ class TransactionController extends base_controller_1.BaseController {
           */
          this.name = 'TransactionController';
          this.defaultConfig = {
@@ -504,7 +660,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
              txHistoryLimit: 40,
          };
          this.defaultState = {
-@@ -96,6 +104,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -96,6 +103,7 @@ class TransactionController extends base_controller_1.BaseController {
          this.provider = provider;
          this.messagingSystem = messenger;
          this.getNetworkState = getNetworkState;
@@ -512,7 +668,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
          this.ethQuery = new eth_query_1.default(provider);
          this.isSendFlowHistoryDisabled = disableSendFlowHistory !== null && disableSendFlowHistory !== void 0 ? disableSendFlowHistory : false;
          this.isHistoryDisabled = disableHistory !== null && disableHistory !== void 0 ? disableHistory : false;
-@@ -104,6 +113,10 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -104,6 +112,10 @@ class TransactionController extends base_controller_1.BaseController {
              getCurrentAccountEIP1559Compatibility;
          this.getCurrentNetworkEIP1559Compatibility =
              getCurrentNetworkEIP1559Compatibility;
@@ -523,27 +679,26 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
          this.nonceTracker = new nonce_tracker_1.default({
              provider,
              blockTracker,
-@@ -125,14 +138,32 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -125,14 +137,31 @@ class TransactionController extends base_controller_1.BaseController {
          });
          this.incomingTransactionHelper.hub.on('transactions', this.onIncomingTransactions.bind(this));
          this.incomingTransactionHelper.hub.on('updatedLastFetchedBlockNumbers', this.onUpdatedLastFetchedBlockNumbers.bind(this));
 +        this.pendingTransactionTracker = new PendingTransactionTracker_1.PendingTransactionTracker({
++            approveTransaction: this.approveTransaction.bind(this),
 +            blockTracker,
-+            failTransaction: this.failTransaction.bind(this),
 +            getChainId: this.getChainId.bind(this),
 +            getEthQuery: () => this.ethQuery,
 +            getTransactions: () => this.state.transactions,
-+            nonceTracker: this.nonceTracker,
++            onStateChange: this.subscribe.bind(this),
++            publishTransaction: this.publishTransaction.bind(this),
 +        });
-+        this.pendingTransactionTracker.hub.on('transactions', this.onPendingTransactionsUpdate.bind(this));
-+        this.pendingTransactionTracker.hub.on('transaction-confirmed', (transactionMeta) => this.hub.emit(`${transactionMeta.id}:confirmed`, transactionMeta));
++        this.addPendingTransactionTrackerListeners();
          onNetworkStateChange(() => {
 +            // @ts-expect-error TODO: Provider type alignment
              this.ethQuery = new eth_query_1.default(this.provider);
              this.registry = new eth_method_registry_1.default({ provider: this.provider });
          });
 -        this.poll();
-+        this.pendingTransactionTracker.start();
      }
      failTransaction(transactionMeta, error) {
 -        const newTransactionMeta = Object.assign(Object.assign({}, transactionMeta), { error, status: types_1.TransactionStatus.failed });
@@ -558,7 +713,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
          this.updateTransaction(newTransactionMeta, 'TransactionController#failTransaction - Add error message and set status to failed');
          this.hub.emit(`${transactionMeta.id}:finished`, newTransactionMeta);
      }
-@@ -143,21 +174,6 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -143,21 +172,6 @@ class TransactionController extends base_controller_1.BaseController {
              return { registryMethod, parsedRegistryMethod };
          });
      }
@@ -580,7 +735,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
      /**
       * Handle new method data request.
       *
-@@ -193,25 +209,32 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -193,25 +207,32 @@ class TransactionController extends base_controller_1.BaseController {
       * @param opts - Additional options to control how the transaction is added.
       * @param opts.actionId - Unique ID to prevent duplicate requests.
       * @param opts.deviceConfirmedOn - An enum to indicate what device confirmed the transaction.
@@ -616,7 +771,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
                  // Add actionId to txMeta to check if same actionId is seen again
                  actionId,
                  chainId,
-@@ -227,18 +250,17 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -227,18 +248,17 @@ class TransactionController extends base_controller_1.BaseController {
                  verifiedOnBlockchain: false,
                  type: transactionType,
              };
@@ -643,7 +798,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
                  if (!this.isSendFlowHistoryDisabled) {
                      transactionMeta.sendFlowHistory = sendFlowHistory !== null && sendFlowHistory !== void 0 ? sendFlowHistory : [];
                  }
-@@ -287,6 +309,14 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -287,6 +307,14 @@ class TransactionController extends base_controller_1.BaseController {
                  console.error('Error during persisted transaction approval', error);
              });
          }
@@ -658,7 +813,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
      }
      /**
       * Attempts to cancel a transaction based on its ID by setting its status to "rejected"
-@@ -432,93 +462,12 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -432,93 +460,12 @@ class TransactionController extends base_controller_1.BaseController {
       */
      estimateGas(transaction) {
          return __awaiter(this, void 0, void 0, function* () {
@@ -758,7 +913,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
          });
      }
      /**
-@@ -530,7 +479,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -530,7 +477,7 @@ class TransactionController extends base_controller_1.BaseController {
      updateTransaction(transactionMeta, note) {
          const { transactions } = this.state;
          transactionMeta.txParams = (0, utils_1.normalizeTxParams)(transactionMeta.txParams);
@@ -767,7 +922,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
          if (!this.isHistoryDisabled) {
              (0, history_1.updateTransactionHistory)(transactionMeta, note);
          }
-@@ -702,7 +651,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -702,7 +649,7 @@ class TransactionController extends base_controller_1.BaseController {
                      if (!isTxCompleted) {
                          if (error.code === rpc_errors_1.errorCodes.provider.userRejectedRequest) {
                              this.cancelTransaction(transactionId);
@@ -776,7 +931,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
                          }
                          else {
                              this.failTransaction(meta, error);
-@@ -739,6 +688,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -739,6 +686,7 @@ class TransactionController extends base_controller_1.BaseController {
       */
      approveTransaction(transactionId) {
          return __awaiter(this, void 0, void 0, function* () {
@@ -784,7 +939,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
              const { transactions } = this.state;
              const releaseLock = yield this.mutex.acquire();
              const chainId = this.getChainId();
-@@ -771,13 +721,9 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -771,13 +719,9 @@ class TransactionController extends base_controller_1.BaseController {
                  const baseTxParams = Object.assign(Object.assign({}, transactionMeta.txParams), { gasLimit: transactionMeta.txParams.gas });
                  const isEIP1559 = (0, utils_1.isEIP1559Transaction)(transactionMeta.txParams);
                  const txParams = isEIP1559
@@ -799,15 +954,30 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
                  const unsignedEthTx = this.prepareUnsignedEthTx(txParams);
                  const signedTx = yield this.sign(unsignedEthTx, from);
                  yield this.updateTransactionMetaRSV(transactionMeta, signedTx);
-@@ -788,6 +734,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -786,8 +730,9 @@ class TransactionController extends base_controller_1.BaseController {
+                 const rawTx = (0, ethereumjs_util_1.bufferToHex)(signedTx.serialize());
+                 transactionMeta.rawTx = rawTx;
                  this.updateTransaction(transactionMeta, 'TransactionController#approveTransaction - RawTransaction added');
-                 const hash = yield (0, controller_utils_1.query)(this.ethQuery, 'sendRawTransaction', [rawTx]);
+-                const hash = yield (0, controller_utils_1.query)(this.ethQuery, 'sendRawTransaction', [rawTx]);
++                const hash = yield this.publishTransaction(rawTx);
                  transactionMeta.hash = hash;
 +                (0, logger_1.projectLogger)('Submitted transaction', { txParams, rawTx, hash });
                  transactionMeta.status = types_1.TransactionStatus.submitted;
                  transactionMeta.submittedTime = new Date().getTime();
                  this.updateTransaction(transactionMeta, 'TransactionController#approveTransaction - Transaction submitted');
-@@ -884,85 +831,6 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -805,6 +750,11 @@ class TransactionController extends base_controller_1.BaseController {
+             }
+         });
+     }
++    publishTransaction(rawTransaction) {
++        return __awaiter(this, void 0, void 0, function* () {
++            return yield (0, controller_utils_1.query)(this.ethQuery, 'sendRawTransaction', [rawTransaction]);
++        });
++    }
+     /**
+      * Cancels a transaction based on its ID by setting its status to "rejected"
+      * and emitting a `<tx.id>:finished` hub event.
+@@ -884,85 +834,6 @@ class TransactionController extends base_controller_1.BaseController {
              types_1.TransactionStatus.submitted,
          ].includes(status);
      }
@@ -893,18 +1063,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
      requestApproval(txMeta, { shouldShowRequest }) {
          return __awaiter(this, void 0, void 0, function* () {
              const id = this.getApprovalId(txMeta);
-@@ -1043,6 +911,10 @@ class TransactionController extends base_controller_1.BaseController {
-         this.update({ lastFetchedBlockNumbers });
-         this.hub.emit('incomingTransactionBlock', blockNumber);
-     }
-+    onPendingTransactionsUpdate(transactions) {
-+        (0, logger_2.pendingTransactionsLogger)('Updated pending transactions');
-+        this.update({ transactions: this.trimTransactionsForState(transactions) });
-+    }
-     generateDappSuggestedGasFees(txParams, origin) {
-         if (!origin || origin === controller_utils_1.ORIGIN_METAMASK) {
-             return undefined;
-@@ -1182,6 +1054,135 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1182,6 +1053,141 @@ class TransactionController extends base_controller_1.BaseController {
              return (currentNetworkIsEIP1559Compatible && currentAccountIsEIP1559Compatible);
          });
      }
@@ -965,7 +1124,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
 +        return __awaiter(this, void 0, void 0, function* () {
 +            const eip1559Compatibility = txMeta.txParams.type !== types_1.TransactionEnvelopeType.legacy && eip1559;
 +            const { providerConfig } = this.getNetworkState();
-+            yield (0, gasFees_1.updateGasFees)({
++            yield (0, gas_fees_1.updateGasFees)({
 +                eip1559: eip1559Compatibility,
 +                ethQuery: this.ethQuery,
 +                getGasFeeEstimates: this.getGasFeeEstimates.bind(this),
@@ -1037,6 +1196,12 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..720ead500e2d26b0e45d949f7320dff4
 +        });
 +        return (0, lodash_1.merge)(txMeta, swapTransaction);
 +    }
++    addPendingTransactionTrackerListeners() {
++        this.pendingTransactionTracker.hub.on('transaction-confirmed', (transactionMeta) => this.hub.emit(`${transactionMeta.id}:confirmed`, transactionMeta));
++        this.pendingTransactionTracker.hub.on('transaction-dropped', this.setTransactionStatusDropped.bind(this));
++        this.pendingTransactionTracker.hub.on('transaction-failed', this.failTransaction.bind(this));
++        this.pendingTransactionTracker.hub.on('transaction-updated', this.updateTransaction.bind(this));
++    }
  }
  exports.TransactionController = TransactionController;
  exports.default = TransactionController;
@@ -1096,171 +1261,11 @@ index d92c9fcb12b13fc2100858b5eb5bb081ae31eeb9..00000000000000000000000000000000
 @@ -1 +0,0 @@
 -{"version":3,"file":"external-transactions.js","sourceRoot":"","sources":["../src/external-transactions.ts"],"names":[],"mappings":";;;AAAA,oGAAoG;AACpG,qDAAiD;AAEjD,mCAA4C;AAG5C;;;;;;GAMG;AACH,SAAgB,oCAAoC,CAClD,eAAiC,EACjC,YAAgC,EAChC,UAA8B;IAE9B,IAAI,CAAC,eAAe,IAAI,CAAC,eAAe,CAAC,QAAQ,EAAE;QACjD,MAAM,sBAAS,CAAC,aAAa,CAC3B,4DAA4D,CAC7D,CAAC;KACH;IAED,IAAI,eAAe,CAAC,MAAM,KAAK,yBAAiB,CAAC,SAAS,EAAE;QAC1D,MAAM,sBAAS,CAAC,aAAa,CAC3B,mDAAmD,CACpD,CAAC;KACH;IAED,MAAM,eAAe,GAAG,eAAe,CAAC,QAAQ,CAAC,KAAK,CAAC;IACvD,IAAI,UAAU,IAAI,UAAU,CAAC,MAAM,GAAG,CAAC,EAAE;QACvC,MAAM,qBAAqB,GAAG,UAAU,CAAC,IAAI,CAC3C,CAAC,EAAE,EAAE,EAAE,WAAC,OAAA,CAAA,MAAA,EAAE,CAAC,QAAQ,0CAAE,KAAK,MAAK,eAAe,CAAA,EAAA,CAC/C,CAAC;QACF,IAAI,qBAAqB,EAAE;YACzB,MAAM,sBAAS,CAAC,aAAa,CAC3B,yDAAyD,CAC1D,CAAC;SACH;KACF;IAED,IAAI,YAAY,IAAI,YAAY,CAAC,MAAM,GAAG,CAAC,EAAE;QAC3C,MAAM,uBAAuB,GAAG,YAAY,CAAC,IAAI,CAC/C,CAAC,EAAE,EAAE,EAAE,WAAC,OAAA,CAAA,MAAA,EAAE,CAAC,QAAQ,0CAAE,KAAK,MAAK,eAAe,CAAA,EAAA,CAC/C,CAAC;QACF,IAAI,uBAAuB,EAAE;YAC3B,MAAM,sBAAS,CAAC,aAAa,CAC3B,2DAA2D,CAC5D,CAAC;SACH;KACF;AACH,CAAC;AAvCD,oFAuCC","sourcesContent":["// These utility functions are exclusively used by `confirmExternalTransaction` method in controller\nimport { rpcErrors } from '@metamask/rpc-errors';\n\nimport { TransactionStatus } from './types';\nimport type { TransactionMeta } from './types';\n\n/**\n * Validates the external provided transaction meta.\n *\n * @param transactionMeta - The transaction meta to validate.\n * @param confirmedTxs - The confirmed transactions in controller state.\n * @param pendingTxs - The submitted transactions in controller state.\n */\nexport function validateConfirmedExternalTransaction(\n  transactionMeta?: TransactionMeta,\n  confirmedTxs?: TransactionMeta[],\n  pendingTxs?: TransactionMeta[],\n) {\n  if (!transactionMeta || !transactionMeta.txParams) {\n    throw rpcErrors.invalidParams(\n      '\"transactionMeta\" or \"transactionMeta.txParams\" is missing',\n    );\n  }\n\n  if (transactionMeta.status !== TransactionStatus.confirmed) {\n    throw rpcErrors.invalidParams(\n      'External transaction status should be \"confirmed\"',\n    );\n  }\n\n  const externalTxNonce = transactionMeta.txParams.nonce;\n  if (pendingTxs && pendingTxs.length > 0) {\n    const foundPendingTxByNonce = pendingTxs.find(\n      (tx) => tx.txParams?.nonce === externalTxNonce,\n    );\n    if (foundPendingTxByNonce) {\n      throw rpcErrors.invalidParams(\n        'External transaction nonce should not be in pending txs',\n      );\n    }\n  }\n\n  if (confirmedTxs && confirmedTxs.length > 0) {\n    const foundConfirmedTxByNonce = confirmedTxs.find(\n      (tx) => tx.txParams?.nonce === externalTxNonce,\n    );\n    if (foundConfirmedTxByNonce) {\n      throw rpcErrors.invalidParams(\n        'External transaction nonce should not be in confirmed txs',\n      );\n    }\n  }\n}\n"]}
 \ No newline at end of file
-diff --git a/dist/gas.d.ts b/dist/gas.d.ts
+diff --git a/dist/gas-fees.d.ts b/dist/gas-fees.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..bc833c77e5506469a0142d51a86757606d8275a3
+index 0000000000000000000000000000000000000000..c4b55256c583972f480dfd5aeb494dc72da93329
 --- /dev/null
-+++ b/dist/gas.d.ts
-@@ -0,0 +1,25 @@
-+/// <reference types="debug" />
-+import type EthQuery from '@metamask/eth-query';
-+import type { ProviderConfig } from '@metamask/network-controller';
-+import type { TransactionMeta, TransactionParams } from './types';
-+export declare type UpdateGasRequest = {
-+    ethQuery: EthQuery;
-+    txMeta: TransactionMeta;
-+    providerConfig: ProviderConfig;
-+};
-+export declare const log: import("debug").Debugger;
-+export declare function updateGas(request: UpdateGasRequest): Promise<void>;
-+export declare function estimateGas(txParams: TransactionParams, ethQuery: EthQuery): Promise<{
-+    blockGasLimit: string;
-+    estimatedGas: string;
-+    estimateGasError: string | undefined;
-+    simulationFails: {
-+        reason: any;
-+        errorKey: any;
-+        debug: {
-+            blockNumber: string;
-+            blockGasLimit: string;
-+        };
-+    } | undefined;
-+}>;
-+//# sourceMappingURL=gas.d.ts.map
-\ No newline at end of file
-diff --git a/dist/gas.js b/dist/gas.js
-new file mode 100644
-index 0000000000000000000000000000000000000000..32f147977fe99a8077d57b89aaa0fdcb5eed7195
---- /dev/null
-+++ b/dist/gas.js
-@@ -0,0 +1,121 @@
-+"use strict";
-+/* eslint-disable jsdoc/require-jsdoc */
-+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-+    return new (P || (P = Promise))(function (resolve, reject) {
-+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-+        step((generator = generator.apply(thisArg, _arguments || [])).next());
-+    });
-+};
-+Object.defineProperty(exports, "__esModule", { value: true });
-+exports.estimateGas = exports.updateGas = exports.log = void 0;
-+const controller_utils_1 = require("@metamask/controller-utils");
-+const utils_1 = require("@metamask/utils");
-+const ethereumjs_util_1 = require("ethereumjs-util");
-+const logger_1 = require("./logger");
-+const utils_2 = require("./utils");
-+exports.log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas');
-+const FIXED_GAS = '0x5208';
-+function updateGas(request) {
-+    return __awaiter(this, void 0, void 0, function* () {
-+        const { txMeta } = request;
-+        const { blockGasLimit, estimatedGas, simulationFails } = yield estimateGas(txMeta.txParams, request.ethQuery);
-+        txMeta.txParams.gas = yield getGas(Object.assign(Object.assign({}, request), { blockGasLimit,
-+            estimatedGas }));
-+        txMeta.simulationFails = simulationFails;
-+    });
-+}
-+exports.updateGas = updateGas;
-+function getGas(request) {
-+    return __awaiter(this, void 0, void 0, function* () {
-+        const { blockGasLimit, estimatedGas, providerConfig, txMeta } = request;
-+        if (txMeta.txParams.gas) {
-+            (0, exports.log)('Using value from request', txMeta.txParams.gas);
-+            return txMeta.txParams.gas;
-+        }
-+        if (yield requiresFixedGas(request)) {
-+            (0, exports.log)('Using fixed value', FIXED_GAS);
-+            return FIXED_GAS;
-+        }
-+        const estimatedGasBN = (0, controller_utils_1.hexToBN)(estimatedGas);
-+        const maxGasBN = (0, controller_utils_1.hexToBN)(blockGasLimit).muln(0.9);
-+        const paddedGasBN = estimatedGasBN.muln(1.5);
-+        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
-+        if (estimatedGasBN.gt(maxGasBN) || isCustomNetwork) {
-+            const estimatedGasHex = (0, ethereumjs_util_1.addHexPrefix)(estimatedGas);
-+            (0, exports.log)('Using estimated value', estimatedGasHex);
-+            return estimatedGasHex;
-+        }
-+        if (paddedGasBN.lt(maxGasBN)) {
-+            const paddedHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN));
-+            (0, exports.log)('Using 150% of estimated value', paddedHex);
-+            return paddedHex;
-+        }
-+        const maxHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN));
-+        (0, exports.log)('Using 90% of block gas limit', maxHex);
-+        return maxHex;
-+    });
-+}
-+function estimateGas(txParams, ethQuery) {
-+    return __awaiter(this, void 0, void 0, function* () {
-+        const request = Object.assign({}, txParams);
-+        const { data, value } = request;
-+        const { gasLimit: gasLimitHex, number: blockNumber } = yield getLatestBlock(ethQuery);
-+        const gasLimitBN = (0, controller_utils_1.hexToBN)(gasLimitHex);
-+        request.data = data ? (0, ethereumjs_util_1.addHexPrefix)(data) : data;
-+        request.gas = (0, controller_utils_1.BNToHex)((0, controller_utils_1.fractionBN)(gasLimitBN, 19, 20));
-+        request.value = value || '0x0';
-+        let estimatedGas = request.gas;
-+        let estimateGasError;
-+        let simulationFails;
-+        try {
-+            estimatedGas = yield (0, controller_utils_1.query)(ethQuery, 'estimateGas', [request]);
-+        }
-+        catch (error) {
-+            estimateGasError = utils_2.ESTIMATE_GAS_ERROR;
-+            simulationFails = {
-+                reason: error.message,
-+                errorKey: error.errorKey,
-+                debug: {
-+                    blockNumber,
-+                    blockGasLimit: gasLimitHex,
-+                },
-+            };
-+            (0, exports.log)('Estimation failed', Object.assign(Object.assign({}, simulationFails), { fallback: estimateGas }));
-+        }
-+        return {
-+            blockGasLimit: gasLimitHex,
-+            estimatedGas,
-+            estimateGasError,
-+            simulationFails,
-+        };
-+    });
-+}
-+exports.estimateGas = estimateGas;
-+function requiresFixedGas({ ethQuery, txMeta, providerConfig, }) {
-+    return __awaiter(this, void 0, void 0, function* () {
-+        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
-+        const { txParams: { to, data }, } = txMeta;
-+        if (isCustomNetwork) {
-+            return false;
-+        }
-+        if (!to) {
-+            return true;
-+        }
-+        const code = yield getCode(ethQuery, to);
-+        return !data && (!code || code === '0x');
-+    });
-+}
-+function getCode(ethQuery, address) {
-+    return __awaiter(this, void 0, void 0, function* () {
-+        return yield (0, controller_utils_1.query)(ethQuery, 'getCode', [address]);
-+    });
-+}
-+function getLatestBlock(ethQuery) {
-+    return __awaiter(this, void 0, void 0, function* () {
-+        return yield (0, controller_utils_1.query)(ethQuery, 'getBlockByNumber', ['latest', false]);
-+    });
-+}
-+//# sourceMappingURL=gas.js.map
-\ No newline at end of file
-diff --git a/dist/gasFees.d.ts b/dist/gasFees.d.ts
-new file mode 100644
-index 0000000000000000000000000000000000000000..4a6ce751663091dc58bea20f0658d05221622873
---- /dev/null
-+++ b/dist/gasFees.d.ts
++++ b/dist/gas-fees.d.ts
 @@ -0,0 +1,26 @@
 +import type EthQuery from '@metamask/eth-query';
 +import type { GasFeeState } from '@metamask/gas-fee-controller';
@@ -1287,13 +1292,13 @@ index 0000000000000000000000000000000000000000..4a6ce751663091dc58bea20f0658d052
 +    maxPriorityFeePerGas?: undefined;
 +}>;
 +export {};
-+//# sourceMappingURL=gasFees.d.ts.map
++//# sourceMappingURL=gas-fees.d.ts.map
 \ No newline at end of file
-diff --git a/dist/gasFees.js b/dist/gasFees.js
+diff --git a/dist/gas-fees.js b/dist/gas-fees.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..412f1fbe88eb169056a0f980e3675246f170118a
+index 0000000000000000000000000000000000000000..562324f841eed1cce3f5ecded9814af0237490e3
 --- /dev/null
-+++ b/dist/gasFees.js
++++ b/dist/gas-fees.js
 @@ -0,0 +1,183 @@
 +"use strict";
 +/* eslint-disable jsdoc/require-jsdoc */
@@ -1477,7 +1482,167 @@ index 0000000000000000000000000000000000000000..412f1fbe88eb169056a0f980e3675246
 +function gweiDecimalToWeiHex(value) {
 +    return (0, controller_utils_1.toHex)((0, controller_utils_1.gweiDecToWEIBN)(value));
 +}
-+//# sourceMappingURL=gasFees.js.map
++//# sourceMappingURL=gas-fees.js.map
+\ No newline at end of file
+diff --git a/dist/gas.d.ts b/dist/gas.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..bc833c77e5506469a0142d51a86757606d8275a3
+--- /dev/null
++++ b/dist/gas.d.ts
+@@ -0,0 +1,25 @@
++/// <reference types="debug" />
++import type EthQuery from '@metamask/eth-query';
++import type { ProviderConfig } from '@metamask/network-controller';
++import type { TransactionMeta, TransactionParams } from './types';
++export declare type UpdateGasRequest = {
++    ethQuery: EthQuery;
++    txMeta: TransactionMeta;
++    providerConfig: ProviderConfig;
++};
++export declare const log: import("debug").Debugger;
++export declare function updateGas(request: UpdateGasRequest): Promise<void>;
++export declare function estimateGas(txParams: TransactionParams, ethQuery: EthQuery): Promise<{
++    blockGasLimit: string;
++    estimatedGas: string;
++    estimateGasError: string | undefined;
++    simulationFails: {
++        reason: any;
++        errorKey: any;
++        debug: {
++            blockNumber: string;
++            blockGasLimit: string;
++        };
++    } | undefined;
++}>;
++//# sourceMappingURL=gas.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas.js b/dist/gas.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..32f147977fe99a8077d57b89aaa0fdcb5eed7195
+--- /dev/null
++++ b/dist/gas.js
+@@ -0,0 +1,121 @@
++"use strict";
++/* eslint-disable jsdoc/require-jsdoc */
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.estimateGas = exports.updateGas = exports.log = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const utils_1 = require("@metamask/utils");
++const ethereumjs_util_1 = require("ethereumjs-util");
++const logger_1 = require("./logger");
++const utils_2 = require("./utils");
++exports.log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas');
++const FIXED_GAS = '0x5208';
++function updateGas(request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { txMeta } = request;
++        const { blockGasLimit, estimatedGas, simulationFails } = yield estimateGas(txMeta.txParams, request.ethQuery);
++        txMeta.txParams.gas = yield getGas(Object.assign(Object.assign({}, request), { blockGasLimit,
++            estimatedGas }));
++        txMeta.simulationFails = simulationFails;
++    });
++}
++exports.updateGas = updateGas;
++function getGas(request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { blockGasLimit, estimatedGas, providerConfig, txMeta } = request;
++        if (txMeta.txParams.gas) {
++            (0, exports.log)('Using value from request', txMeta.txParams.gas);
++            return txMeta.txParams.gas;
++        }
++        if (yield requiresFixedGas(request)) {
++            (0, exports.log)('Using fixed value', FIXED_GAS);
++            return FIXED_GAS;
++        }
++        const estimatedGasBN = (0, controller_utils_1.hexToBN)(estimatedGas);
++        const maxGasBN = (0, controller_utils_1.hexToBN)(blockGasLimit).muln(0.9);
++        const paddedGasBN = estimatedGasBN.muln(1.5);
++        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
++        if (estimatedGasBN.gt(maxGasBN) || isCustomNetwork) {
++            const estimatedGasHex = (0, ethereumjs_util_1.addHexPrefix)(estimatedGas);
++            (0, exports.log)('Using estimated value', estimatedGasHex);
++            return estimatedGasHex;
++        }
++        if (paddedGasBN.lt(maxGasBN)) {
++            const paddedHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN));
++            (0, exports.log)('Using 150% of estimated value', paddedHex);
++            return paddedHex;
++        }
++        const maxHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN));
++        (0, exports.log)('Using 90% of block gas limit', maxHex);
++        return maxHex;
++    });
++}
++function estimateGas(txParams, ethQuery) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const request = Object.assign({}, txParams);
++        const { data, value } = request;
++        const { gasLimit: gasLimitHex, number: blockNumber } = yield getLatestBlock(ethQuery);
++        const gasLimitBN = (0, controller_utils_1.hexToBN)(gasLimitHex);
++        request.data = data ? (0, ethereumjs_util_1.addHexPrefix)(data) : data;
++        request.gas = (0, controller_utils_1.BNToHex)((0, controller_utils_1.fractionBN)(gasLimitBN, 19, 20));
++        request.value = value || '0x0';
++        let estimatedGas = request.gas;
++        let estimateGasError;
++        let simulationFails;
++        try {
++            estimatedGas = yield (0, controller_utils_1.query)(ethQuery, 'estimateGas', [request]);
++        }
++        catch (error) {
++            estimateGasError = utils_2.ESTIMATE_GAS_ERROR;
++            simulationFails = {
++                reason: error.message,
++                errorKey: error.errorKey,
++                debug: {
++                    blockNumber,
++                    blockGasLimit: gasLimitHex,
++                },
++            };
++            (0, exports.log)('Estimation failed', Object.assign(Object.assign({}, simulationFails), { fallback: estimateGas }));
++        }
++        return {
++            blockGasLimit: gasLimitHex,
++            estimatedGas,
++            estimateGasError,
++            simulationFails,
++        };
++    });
++}
++exports.estimateGas = estimateGas;
++function requiresFixedGas({ ethQuery, txMeta, providerConfig, }) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
++        const { txParams: { to, data }, } = txMeta;
++        if (isCustomNetwork) {
++            return false;
++        }
++        if (!to) {
++            return true;
++        }
++        const code = yield getCode(ethQuery, to);
++        return !data && (!code || code === '0x');
++    });
++}
++function getCode(ethQuery, address) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(ethQuery, 'getCode', [address]);
++    });
++}
++function getLatestBlock(ethQuery) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(ethQuery, 'getBlockByNumber', ['latest', false]);
++    });
++}
++//# sourceMappingURL=gas.js.map
 \ No newline at end of file
 diff --git a/dist/history.d.ts.map b/dist/history.d.ts.map
 deleted file mode 100644
@@ -1573,10 +1738,32 @@ index fc7d6688b16bf302ad949725f78e6b505da8a266..00000000000000000000000000000000
 -{"version":3,"file":"transaction-type.js","sourceRoot":"","sources":["../src/transaction-type.ts"],"names":[],"mappings":"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","sourcesContent":["import type { TransactionDescription } from '@ethersproject/abi';\nimport { Interface } from '@ethersproject/abi';\nimport { query } from '@metamask/controller-utils';\nimport type EthQuery from '@metamask/eth-query';\nimport { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';\n\nimport type { InferTransactionTypeResult, TransactionParams } from './types';\nimport { TransactionType } from './types';\n\nexport const ESTIMATE_GAS_ERROR = 'eth_estimateGas rpc method error';\n\nconst ERC20Interface = new Interface(abiERC20);\nconst ERC721Interface = new Interface(abiERC721);\nconst ERC1155Interface = new Interface(abiERC1155);\n\n/**\n * Determines the type of the transaction by analyzing the txParams.\n * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these\n * represent specific events that we specify manually at transaction creation.\n *\n * @param txParams - Parameters for the transaction.\n * @param ethQuery - EthQuery instance.\n * @returns A object with the transaction type and the contract code response in Hex.\n */\nexport async function determineTransactionType(\n  txParams: TransactionParams,\n  ethQuery: EthQuery,\n): Promise<InferTransactionTypeResult> {\n  const { data, to } = txParams;\n  const name = parseStandardTokenTransactionData(data)?.name;\n\n  if (data && !to) {\n    return { type: TransactionType.deployContract, getCodeResponse: undefined };\n  }\n\n  const { contractCode: resultCode, isContractAddress } =\n    await readAddressAsContract(ethQuery, to);\n\n  if (!isContractAddress) {\n    return { type: TransactionType.simpleSend, getCodeResponse: resultCode };\n  }\n\n  const hasValue = txParams.value && Number(txParams.value) !== 0;\n\n  const tokenMethodName = [\n    TransactionType.tokenMethodApprove,\n    TransactionType.tokenMethodSetApprovalForAll,\n    TransactionType.tokenMethodTransfer,\n    TransactionType.tokenMethodTransferFrom,\n    TransactionType.tokenMethodSafeTransferFrom,\n  ].find((methodName) => methodName.toLowerCase() === name?.toLowerCase());\n\n  if (data && tokenMethodName && !hasValue) {\n    return { type: tokenMethodName, getCodeResponse: resultCode };\n  }\n\n  return {\n    type: TransactionType.contractInteraction,\n    getCodeResponse: resultCode,\n  };\n}\n\n/**\n * Attempts to decode transaction data using ABIs for three different token standards: ERC20, ERC721, ERC1155.\n * The data will decode correctly if the transaction is an interaction with a contract that matches one of these\n * contract standards\n *\n * @param data - Encoded transaction data.\n * @returns A representation of an ethereum contract call.\n */\nfunction parseStandardTokenTransactionData(\n  data?: string,\n): TransactionDescription | undefined {\n  if (!data) {\n    return undefined;\n  }\n\n  try {\n    return ERC20Interface.parseTransaction({ data });\n  } catch {\n    // ignore and next try to parse with erc721 ABI\n  }\n\n  try {\n    return ERC721Interface.parseTransaction({ data });\n  } catch {\n    // ignore and next try to parse with erc1155 ABI\n  }\n\n  try {\n    return ERC1155Interface.parseTransaction({ data });\n  } catch {\n    // ignore and return undefined\n  }\n\n  return undefined;\n}\n\n/**\n * Reads an Ethereum address and determines if it is a contract address.\n *\n * @param ethQuery - The Ethereum query object used to interact with the Ethereum blockchain.\n * @param address - The Ethereum address.\n * @returns An object containing the contract code and a boolean indicating if it is a contract address.\n */\nasync function readAddressAsContract(\n  ethQuery: EthQuery,\n  address?: string,\n): Promise<{\n  contractCode: string | null;\n  isContractAddress: boolean;\n}> {\n  let contractCode;\n  try {\n    contractCode = await query(ethQuery, 'getCode', [address]);\n  } catch (e) {\n    contractCode = null;\n  }\n\n  const isContractAddress = contractCode\n    ? contractCode !== '0x' && contractCode !== '0x0'\n    : false;\n  return { contractCode, isContractAddress };\n}\n"]}
 \ No newline at end of file
 diff --git a/dist/types.d.ts b/dist/types.d.ts
-index fb94e7b8f531f2f0c86f44a9d678447d7205ade8..d2c8385c144770d8dc10db76fa73f81d79eb6888 100644
+index fb94e7b8f531f2f0c86f44a9d678447d7205ade8..ad11ea47d2ffa2378a76719ea6f3596c87453923 100644
 --- a/dist/types.d.ts
 +++ b/dist/types.d.ts
-@@ -111,11 +111,23 @@ declare type TransactionMetaBase = {
+@@ -57,6 +57,10 @@ declare type TransactionMetaBase = {
+      * Which estimate level was used
+      */
+     estimateUsed?: string;
++    /**
++     * The number of the latest block when the transaction submit was first retried.
++     */
++    firstRetryBlockNumber?: string;
+     /**
+      * A hex string of the transaction hash, used to identify the transaction on the network.
+      */
+@@ -103,6 +107,10 @@ declare type TransactionMetaBase = {
+      * When the transaction is dropped, this is the replacement transaction ID.
+      */
+     replacedById?: string;
++    /**
++     * The number of times that the transaction submit has been retried.
++     */
++    retryCount?: number;
+     /**
+      * The transaction's 's' value as a hex string.
+      */
+@@ -111,11 +119,23 @@ declare type TransactionMetaBase = {
       * Response from security validator.
       */
      securityAlertResponse?: Record<string, unknown>;
@@ -1600,7 +1787,7 @@ index fb94e7b8f531f2f0c86f44a9d678447d7205ade8..d2c8385c144770d8dc10db76fa73f81d
      /**
       * The time the transaction was submitted to the network, in Unix epoch time (ms).
       */
-@@ -155,7 +167,7 @@ declare type TransactionMetaBase = {
+@@ -155,7 +175,7 @@ declare type TransactionMetaBase = {
      /**
       * Estimate level user selected.
       */
@@ -1609,7 +1796,21 @@ index fb94e7b8f531f2f0c86f44a9d678447d7205ade8..d2c8385c144770d8dc10db76fa73f81d
      /**
       * The transaction's 'v' value as a hex string.
       */
-@@ -499,5 +511,41 @@ export declare type InferTransactionTypeResult = {
+@@ -164,6 +184,13 @@ declare type TransactionMetaBase = {
+      * Whether the transaction is verified on the blockchain.
+      */
+     verifiedOnBlockchain?: boolean;
++    /**
++     * Warning information for the transaction.
++     */
++    warning?: {
++        error: string;
++        message: string;
++    };
+ };
+ export declare type SendFlowHistoryEntry = {
+     /**
+@@ -499,5 +526,41 @@ export declare type InferTransactionTypeResult = {
       */
      type: TransactionType;
  };
