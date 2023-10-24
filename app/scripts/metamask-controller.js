@@ -1389,6 +1389,10 @@ export default class MetamaskController extends EventEmitter {
           name: 'TransactionController',
           allowedActions: [`${this.approvalController.name}:addRequest`],
         }),
+        // TODO add this to the new transactionController
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
         onNetworkStateChange: (listener) => {
           networkControllerMessenger.subscribe(
             'NetworkController:stateChange',
@@ -1586,6 +1590,9 @@ export default class MetamaskController extends EventEmitter {
           ),
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
+        ),
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
         ),
       },
       initState.SwapsController,
@@ -2677,13 +2684,11 @@ export default class MetamaskController extends EventEmitter {
       removeNetworkConfiguration:
         networkController.removeNetworkConfiguration.bind(networkController),
       upsertNetworkConfiguration:
-        this.networkController.upsertNetworkConfiguration.bind(
-          this.networkController,
-        ),
+        networkController.upsertNetworkConfiguration.bind(networkController),
+      getNetworkClientById:
+        networkController.getNetworkClientById.bind(networkController),
       getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
+        networkController.getEIP1559Compatibility.bind(networkController),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,

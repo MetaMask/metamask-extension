@@ -182,6 +182,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     }
   }, [history, quotes, routeState]);
 
+  // TODO replace this with a passed contextual prop(?) once there is no longer a globally selected network
+  // const networkClientId = useSelector(getSelectedNetworkClientId);
+
   const quotesLastFetched = useSelector(getQuotesLastFetched);
   const prevQuotesLastFetched = usePrevious(quotesLastFetched);
 

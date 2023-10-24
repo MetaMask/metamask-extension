@@ -95,7 +95,7 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 });
 
 const EMPTY_INIT_STATE = {
-  swapsState: {
+  singleChainSwapsState: {
     quotes: {},
     quotesPollingLimitEnabled: false,
     fetchParams: null,
@@ -150,6 +150,11 @@ describe('SwapsController', function () {
       fetchTradesInfo: fetchTradesInfoStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
+      getNetworkClientById: sinon.stub().returns({
+        configuration: {
+          chainId: '0x1',
+        },
+      }),
     });
   };
 
@@ -201,7 +206,7 @@ describe('SwapsController', function () {
         const selectedAggId = 'test';
         swapsController.setSelectedQuoteAggId(selectedAggId);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.selectedAggId,
+          swapsController.store.getState().singleChainSwapsState.selectedAggId,
           selectedAggId,
         );
       });
@@ -210,7 +215,7 @@ describe('SwapsController', function () {
         const tokens = [];
         swapsController.setSwapsTokens(tokens);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.tokens,
+          swapsController.store.getState().singleChainSwapsState.tokens,
           tokens,
         );
       });
@@ -219,7 +224,7 @@ describe('SwapsController', function () {
         const tradeTxId = 'test';
         swapsController.setTradeTxId(tradeTxId);
         assert.strictEqual(
-          swapsController.store.getState().swapsState.tradeTxId,
+          swapsController.store.getState().singleChainSwapsState.tradeTxId,
           tradeTxId,
         );
       });
@@ -228,7 +233,7 @@ describe('SwapsController', function () {
         const gasPrice = 1;
         swapsController.setSwapsTxGasPrice(gasPrice);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.customGasPrice,
+          swapsController.store.getState().singleChainSwapsState.customGasPrice,
           gasPrice,
         );
       });
@@ -237,7 +242,7 @@ describe('SwapsController', function () {
         const gasLimit = '1';
         swapsController.setSwapsTxGasLimit(gasLimit);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.customMaxGas,
+          swapsController.store.getState().singleChainSwapsState.customMaxGas,
           gasLimit,
         );
       });
@@ -246,7 +251,7 @@ describe('SwapsController', function () {
         const routeState = 'test';
         swapsController.setBackgroundSwapRouteState(routeState);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.routeState,
+          swapsController.store.getState().singleChainSwapsState.routeState,
           routeState,
         );
       });
@@ -255,7 +260,7 @@ describe('SwapsController', function () {
         const errorKey = 'test';
         swapsController.setSwapsErrorKey(errorKey);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.errorKey,
+          swapsController.store.getState().singleChainSwapsState.errorKey,
           errorKey,
         );
       });
@@ -265,10 +270,13 @@ describe('SwapsController', function () {
         const baseGasEstimate = 10;
         const { maxGas, estimatedRefund } = getMockQuotes()[TEST_AGG_ID_1];
 
-        const { swapsState } = swapsController.store.getState();
+        const { singleChainSwapsState } = swapsController.store.getState();
         // Set mock quotes in order to have data for the test agg
         swapsController.store.updateState({
-          swapsState: { ...swapsState, quotes: getMockQuotes() },
+          singleChainSwapsState: {
+            ...singleChainSwapsState,
+            quotes: getMockQuotes(),
+          },
         });
 
         await swapsController.setInitialGasEstimate(
@@ -279,7 +287,9 @@ describe('SwapsController', function () {
         const { gasLimit: bufferedGasLimit } =
           await swapsController.getBufferedGasLimit();
         const { gasEstimate, gasEstimateWithRefund } =
-          swapsController.store.getState().swapsState.quotes[initialAggId];
+          swapsController.store.getState().singleChainSwapsState.quotes[
+            initialAggId
+          ];
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
@@ -293,7 +303,8 @@ describe('SwapsController', function () {
         const data = 'test';
         swapsController.setCustomApproveTxData(data);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.customApproveTxData,
+          swapsController.store.getState().singleChainSwapsState
+            .customApproveTxData,
           data,
         );
       });
@@ -301,9 +312,12 @@ describe('SwapsController', function () {
 
     describe('_findTopQuoteAndCalculateSavings', function () {
       beforeEach(function () {
-        const { swapsState } = swapsController.store.getState();
+        const { singleChainSwapsState } = swapsController.store.getState();
         swapsController.store.updateState({
-          swapsState: { ...swapsState, customGasPrice: '0x174876e800' },
+          singleChainSwapsState: {
+            ...singleChainSwapsState,
+            customGasPrice: '0x174876e800',
+          },
         });
       });
 
@@ -924,11 +938,11 @@ describe('SwapsController', function () {
 
     describe('resetSwapsState', function () {
       it('resets the swaps state correctly', function () {
-        const { swapsState: old } = swapsController.store.getState();
+        const { singleChainSwapsState: old } = swapsController.store.getState();
         swapsController.resetSwapsState();
-        const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState, {
-          ...EMPTY_INIT_STATE.swapsState,
+        const { singleChainSwapsState } = swapsController.store.getState();
+        assert.deepStrictEqual(singleChainSwapsState, {
+          ...EMPTY_INIT_STATE.singleChainSwapsState,
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime:
@@ -961,9 +975,9 @@ describe('SwapsController', function () {
 
       it('resets quotes state correctly', function () {
         swapsController.stopPollingForQuotes();
-        const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState.quotes, {});
-        assert.strictEqual(swapsState.quotesLastFetched, null);
+        const { singleChainSwapsState } = swapsController.store.getState();
+        assert.deepStrictEqual(singleChainSwapsState.quotes, {});
+        assert.strictEqual(singleChainSwapsState.quotesLastFetched, null);
       });
     });
 
@@ -987,7 +1001,7 @@ describe('SwapsController', function () {
         const swapsStxBatchStatusRefreshTime = 0;
         const swapsStxGetTransactionsRefreshTime = 0;
         swapsController.store.updateState({
-          swapsState: {
+          singleChainSwapsState: {
             tokens,
             fetchParams,
             swapsFeatureIsLive,
@@ -1001,9 +1015,9 @@ describe('SwapsController', function () {
 
         swapsController.resetPostFetchState();
 
-        const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState, {
-          ...EMPTY_INIT_STATE.swapsState,
+        const { singleChainSwapsState } = swapsController.store.getState();
+        assert.deepStrictEqual(singleChainSwapsState, {
+          ...EMPTY_INIT_STATE.singleChainSwapsState,
           tokens,
           fetchParams,
           swapsFeatureIsLive,

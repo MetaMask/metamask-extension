@@ -60,6 +60,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getUseCurrencyRateCheck,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -118,6 +119,8 @@ export default function BuildQuote({
   selectedAccountAddress,
   shuffledTokensList,
 }) {
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  console.log('build-quote.js', selectedNetworkClientId);
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -540,13 +543,14 @@ export default function BuildQuote({
     const prefetchQuotesWithoutRedirecting = async () => {
       const pageRedirectionDisabled = true;
       await dispatch(
-        fetchQuotesAndSetQuoteState(
+        fetchQuotesAndSetQuoteState({
           history,
-          fromTokenInputValue,
+          inputValue: fromTokenInputValue,
           maxSlippage,
           trackEvent,
           pageRedirectionDisabled,
-        ),
+          networkClientId: selectedNetworkClientId,
+        }),
       );
     };
     // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
@@ -795,12 +799,13 @@ export default function BuildQuote({
             if (timeoutIdForQuotesPrefetching) {
               clearTimeout(timeoutIdForQuotesPrefetching);
               dispatch(
-                fetchQuotesAndSetQuoteState(
+                fetchQuotesAndSetQuoteState({
                   history,
-                  fromTokenInputValue,
+                  inputValue: fromTokenInputValue,
                   maxSlippage,
                   trackEvent,
-                ),
+                  networkClientId: selectedNetworkClientId,
+                }),
               );
             } else if (areQuotesPresent) {
               // If there are prefetched quotes already, go directly to the View Quote page.

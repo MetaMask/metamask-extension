@@ -303,6 +303,7 @@ export default class Home extends PureComponent {
     } else if (canRedirect && haveSwapsQuotes) {
       history.push(VIEW_QUOTE_ROUTE);
     } else if (canRedirect && swapsFetchParams) {
+      console.log('in home component, swapsFetchParams: ', swapsFetchParams);
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);

@@ -118,8 +118,13 @@ export default function Swap() {
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname, state } = location;
+  // TODO use the networkClient from the state instead of the chainId
+  // pass it to the duck and use it in the selectors
+  const { networkClientId } = state || {};
+  // should throw an error if networkClientId is undefined
+  // if someone navigates to the swaps page without going through the home page
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
   const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
@@ -133,6 +138,7 @@ export default function Swap() {
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
+  // TODO a ton of selectors here need to be parameterized by networkClient/chainId
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
   const quotes = useSelector(getQuotes, isEqual);
@@ -144,6 +150,7 @@ export default function Swap() {
   const fetchingQuotes = useSelector(getFetchingQuotes);
   let swapsErrorKey = useSelector(getSwapsErrorKey);
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
+
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const networkAndAccountSupports1559 = useSelector(

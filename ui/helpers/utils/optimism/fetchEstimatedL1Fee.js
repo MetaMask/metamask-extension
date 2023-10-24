@@ -26,9 +26,9 @@ export default async function fetchEstimatedL1Fee(
   ethersProvider,
 ) {
   const chainIdAsDecimalNumber = Number(hexToDecimal(chainId));
-  const provider = global.ethereumProvider
-    ? new Web3Provider(global.ethereumProvider, chainIdAsDecimalNumber)
-    : ethersProvider;
+  const provider =
+    ethersProvider ??
+    new Web3Provider(global.ethereumProvider, chainIdAsDecimalNumber);
 
   if (process.env.IN_TEST) {
     provider.detectNetwork = async () => ({

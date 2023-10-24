@@ -65,6 +65,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
+  // getSelectedNetworkClientId,
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
@@ -183,6 +184,10 @@ export default function ViewQuote() {
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+
+  // TODO replace this with a passed contextual prop(?) once there is no longer a globally selected network
+  // const networkClientId = useSelector(getSelectedNetworkClientId);
+  // TODO chainId/nativeCurrentSymbol should be derived from networkClientId;
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);

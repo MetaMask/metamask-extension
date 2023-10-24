@@ -64,6 +64,7 @@ import {
   getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
   getValueFromWeiHex,
@@ -219,6 +220,8 @@ export default function PrepareSwapPage({
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
@@ -629,13 +632,14 @@ export default function PrepareSwapPage({
       setPrefetchingQuotes(true);
       const pageRedirectionDisabled = true;
       await dispatch(
-        fetchQuotesAndSetQuoteState(
+        fetchQuotesAndSetQuoteState({
           history,
-          fromTokenInputValue,
+          inputValue: fromTokenInputValue,
           maxSlippage,
           trackEvent,
           pageRedirectionDisabled,
-        ),
+          networkClientId: selectedNetworkClientId,
+        }),
       );
     };
     // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,

@@ -38,6 +38,7 @@ import {
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
+  getSelectedNetworkClientId,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -94,6 +95,7 @@ const EthOverview = ({ className, showAddress }) => {
 
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -301,11 +303,17 @@ const EthOverview = ({ className, showAddress }) => {
                     chain_id: chainId,
                   },
                 });
+                // set swaps networkclientid
                 dispatch(setSwapsFromToken(defaultSwapsToken));
+
                 if (usingHardwareWallet) {
+                  // TODO figure out if its possible to pass state here
                   global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
                 } else {
-                  history.push(BUILD_QUOTE_ROUTE);
+                  history.push({
+                    pathname: BUILD_QUOTE_ROUTE,
+                    state: { networkClientId: selectedNetworkClientId },
+                  });
                 }
               }
               ///: END:ONLY_INCLUDE_IN
