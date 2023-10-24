@@ -4146,7 +4146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-infura@npm:^8.1.0, @metamask/eth-json-rpc-infura@npm:^8.1.1":
+"@metamask/eth-json-rpc-infura@npm:^8.1.0":
   version: 8.1.1
   resolution: "@metamask/eth-json-rpc-infura@npm:8.1.1"
   dependencies:
@@ -4172,7 +4172,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^11.0.0, @metamask/eth-json-rpc-middleware@npm:^11.0.2":
+"@metamask/eth-json-rpc-middleware@npm:^11.0.0":
   version: 11.0.2
   resolution: "@metamask/eth-json-rpc-middleware@npm:11.0.2"
   dependencies:
@@ -4576,28 +4576,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^13.0.0":
-  version: 13.0.1
-  resolution: "@metamask/network-controller@npm:13.0.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.2"
-    "@metamask/controller-utils": "npm:^5.0.1"
-    "@metamask/eth-json-rpc-infura": "npm:^8.1.1"
-    "@metamask/eth-json-rpc-middleware": "npm:^11.0.2"
-    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^6.2.0"
-    async-mutex: "npm:^0.2.6"
-    eth-block-tracker: "npm:^7.0.1"
-    eth-rpc-errors: "npm:^4.0.2"
-    immer: "npm:^9.0.6"
-    json-rpc-engine: "npm:^6.1.0"
-    uuid: "npm:^8.3.2"
-  checksum: 68bb0073799ef1568b88db44c7dd0189c0a2043af7ab3c285b23d33b0950bddcf20f239089b8a5b327e8317bb6aace9ea94a34c46535967acb2097a3c005b6ff
-  languageName: node
-  linkType: hard
-
 "@metamask/network-controller@npm:^15.0.0, @metamask/network-controller@npm:^15.1.0":
   version: 15.1.0
   resolution: "@metamask/network-controller@npm:15.1.0"
@@ -4901,16 +4879,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/selected-network-controller@npm:2.0.0"
+"@metamask/selected-network-controller@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/selected-network-controller@npm:3.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.1"
-    "@metamask/network-controller": "npm:^13.0.0"
-    json-rpc-engine: "npm:^6.1.0"
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/json-rpc-engine": "npm:^7.1.1"
+    "@metamask/network-controller": "npm:^15.1.0"
+    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
   peerDependencies:
-    "@metamask/network-controller": ^13.0.0
-  checksum: dc4519b743f1ce9d47d4dd8d80a90131f248e55f6ebdd99e623356ec4b2d4ab6a4c0d6830083bcd96110f4d52f343358764e4c7bf9de2f65e35e03ca3a16557f
+    "@metamask/network-controller": ^15.1.0
+  checksum: 1ad1bebcefa5a41b388daad834fa1c64dcd46335d146044ae8ce19e523bc1bf28558f8a8305a115c9bcef358edd101c7fd99b06f6ba7d6a974a22dcee5ec6b18
   languageName: node
   linkType: hard
 
@@ -4963,20 +4942,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/smart-transactions-controller@npm:4.0.0"
+"@metamask/smart-transactions-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:6.0.0"
   dependencies:
-    "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^3.0.0"
-    "@metamask/controller-utils": "npm:^4.1.0"
-    "@metamask/network-controller": "npm:^10.3.0"
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^5.0.0"
+    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/network-controller": "npm:^15.0.0"
+    "@metamask/polling-controller": "npm:^0.2.0"
     bignumber.js: "npm:^9.0.1"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 92e0874937dbc410588512532b04160cdbf86ceca4a0c4db0dfffebaccb4ed919743e8ba69ebe5a923f72e085293db9216101016482390e2e0c8ed60d4f20ad2
+  checksum: 97f15ddf8f8e2d36bef0daa80d16241d5fc8420d71117db7bf88ea3cd884e0d7058a3851cd68e6e5c48ed5e042b2618e7bf339e0b875f41a23c4ba537bb81345
   languageName: node
   linkType: hard
 
@@ -24550,10 +24529,10 @@ __metadata:
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^2.0.0"
+    "@metamask/selected-network-controller": "npm:^3.1.0"
     "@metamask/signature-controller": "npm:^6.1.2"
     "@metamask/slip44": "npm:^3.1.0"
-    "@metamask/smart-transactions-controller": "npm:^4.0.0"
+    "@metamask/smart-transactions-controller": "npm:^6.0.0"
     "@metamask/snaps-controllers": "npm:^3.2.0"
     "@metamask/snaps-rpc-methods": "npm:^3.2.1"
     "@metamask/snaps-ui": "npm:^3.1.0"
