@@ -1314,135 +1314,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const transactionEventRequest = this.getTransactionEventRequest();
-
-    this.txController.on(
-      TransactionEvent.postTransactionBalanceUpdated,
-      handlePostTransactionBalanceUpdate.bind(null, transactionEventRequest),
-    );
-    this.txController.on(
-      TransactionEvent.added,
-      handleTransactionAdded.bind(null, transactionEventRequest),
-    );
-    this.txController.on(
-      TransactionEvent.approved,
-      handleTransactionApproved.bind(null, transactionEventRequest),
-    );
-    this.txController.on(
-      TransactionEvent.dropped,
-      handleTransactionDropped.bind(null, transactionEventRequest),
-    );
-    this.txController.on(
-      TransactionEvent.confirmed,
-      handleTransactionConfirmed.bind(null, transactionEventRequest),
-    );
-    this.txController.on(
-      TransactionEvent.failed,
-      handleTransactionFailed.bind(null, transactionEventRequest),
-    );
-    this.txController.on(TransactionEvent.newSwap, ({ transactionMeta }) => {
-      this.swapsController.setTradeTxId(transactionMeta.id);
-    });
-    this.txController.on(
-      TransactionEvent.newSwapApproval,
-      ({ transactionMeta }) => {
-        this.swapsController.setApproveTxId(transactionMeta.id);
-      },
-    );
-    this.txController.on(
-      TransactionEvent.rejected,
-      handleTransactionRejected.bind(null, transactionEventRequest),
-    );
-    this.txController.on(
-      TransactionEvent.submitted,
-      handleTransactionSubmitted.bind(null, transactionEventRequest),
-    );
-
-    this.txController.on(`tx:status-update`, async (txId, status) => {
-      if (
-        status === TransactionStatus.confirmed ||
-        status === TransactionStatus.failed
-      ) {
-        const txMeta = this.txController.txStateManager.getTransaction(txId);
-        let rpcPrefs = {};
-        if (txMeta.chainId) {
-          const { networkConfigurations } = this.networkController.state;
-          const matchingNetworkConfig = Object.values(
-            networkConfigurations,
-          ).find(
-            (networkConfiguration) =>
-              networkConfiguration.chainId === txMeta.chainId,
-          );
-          rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
-        }
-
-        try {
-          await this.platform.showTransactionNotification(txMeta, rpcPrefs);
-        } catch (error) {
-          log.error('Failed to create transaction notification', error);
-        }
-
-        const { txReceipt } = txMeta;
-
-        // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
-        // in which case we will want to check and update ownership status of the transferred NFT.
-        if (
-          txMeta.type === TransactionType.tokenMethodTransferFrom &&
-          txMeta.txParams !== undefined
-        ) {
-          const {
-            data,
-            to: contractAddress,
-            from: userAddress,
-          } = txMeta.txParams;
-          const { chainId } = txMeta;
-          const transactionData = parseStandardTokenTransactionData(data);
-          // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
-          // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
-          // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
-          const transactionDataTokenId =
-            getTokenIdParam(transactionData) ??
-            getTokenValueParam(transactionData);
-          const { allNfts } = this.nftController.state;
-
-          // check if its a known NFT
-          const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
-            ({ address, tokenId }) =>
-              isEqualCaseInsensitive(address, contractAddress) &&
-              tokenId === transactionDataTokenId,
-          );
-
-          // if it is we check and update ownership status.
-          if (knownNft) {
-            this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-              knownNft,
-              false,
-              { userAddress, chainId },
-            );
-          }
-        }
-
-        const metamaskState = this.getState();
-
-        if (txReceipt && txReceipt.status === '0x0') {
-          this.metaMetricsController.trackEvent(
-            {
-              event: 'Tx Status Update: On-Chain Failure',
-              category: MetaMetricsEventCategory.Background,
-              properties: {
-                action: 'Transactions',
-                errorMessage: txMeta.simulationFails?.reason,
-                numberOfTokens: metamaskState.tokens.length,
-                numberOfAccounts: Object.keys(metamaskState.accounts).length,
-              },
-            },
-            {
-              matomoEvent: true,
-            },
-          );
-        }
-      }
-    });
+    this._addTransactionControllerListeners();
 
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
@@ -1957,53 +1829,6 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
-  }
-
-  getTransactionEventRequest() {
-    const controllerActions = {
-      // Metametrics Actions
-      createEventFragment: this.metaMetricsController.createEventFragment.bind(
-        this.metaMetricsController,
-      ),
-      finalizeEventFragment:
-        this.metaMetricsController.finalizeEventFragment.bind(
-          this.metaMetricsController,
-        ),
-      getEventFragmentById:
-        this.metaMetricsController.getEventFragmentById.bind(
-          this.metaMetricsController,
-        ),
-      getParticipateInMetrics: () =>
-        this.metaMetricsController.state.participateInMetaMetrics,
-      trackEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
-        this.metaMetricsController,
-      ),
-      // Other dependencies
-      getAccountType: this.getAccountType.bind(this),
-      getDeviceModel: this.getDeviceModel.bind(this),
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
-      getSelectedAddress: () =>
-        this.preferencesController.store.getState().selectedAddress,
-      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
-      getTransaction: this.txController.txStateManager.getTransaction.bind(
-        this.txController,
-      ),
-    };
-    return {
-      ...controllerActions,
-      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
-        name: 'SnapAndHardwareMessenger',
-        allowedActions: [
-          'KeyringController:getKeyringForAccount',
-          'SnapController:get',
-        ],
-      }),
-      provider: this.provider,
-    };
   }
 
   triggerNetworkrequests() {
@@ -2803,7 +2628,7 @@ export default class MetamaskController extends EventEmitter {
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
           null,
-          this.getTransactionEventRequest(),
+          this.getTransactionMetricsRequest(),
         ),
       getTransactions: txController.getTransactions.bind(txController),
 
@@ -4907,9 +4732,191 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  getTransactionMetricsRequest() {
+    const controllerActions = {
+      // Metametrics Actions
+      createEventFragment: this.metaMetricsController.createEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      finalizeEventFragment:
+        this.metaMetricsController.finalizeEventFragment.bind(
+          this.metaMetricsController,
+        ),
+      getEventFragmentById:
+        this.metaMetricsController.getEventFragmentById.bind(
+          this.metaMetricsController,
+        ),
+      getParticipateInMetrics: () =>
+        this.metaMetricsController.state.participateInMetaMetrics,
+      trackEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      // Other dependencies
+      getAccountType: this.getAccountType.bind(this),
+      getDeviceModel: this.getDeviceModel.bind(this),
+      getEIP1559GasFeeEstimates:
+        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
+      getSelectedAddress: () =>
+        this.preferencesController.store.getState().selectedAddress,
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
+      getTransaction: this.txController.txStateManager.getTransaction.bind(
+        this.txController,
+      ),
+    };
+    return {
+      ...controllerActions,
+      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+        name: 'SnapAndHardwareMessenger',
+        allowedActions: [
+          'KeyringController:getKeyringForAccount',
+          'SnapController:get',
+        ],
+      }),
+      provider: this.provider,
+    };
+  }
+
   //=============================================================================
   // CONFIG
   //=============================================================================
+
+  /**
+   * A method for setting TransactionController event listeners
+   */
+  _addTransactionControllerListeners() {
+    const transactionMetricsRequest = this.getTransactionMetricsRequest();
+
+    this.txController.on(
+      TransactionEvent.postTransactionBalanceUpdated,
+      handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.added,
+      handleTransactionAdded.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.approved,
+      handleTransactionApproved.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.dropped,
+      handleTransactionDropped.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.confirmed,
+      handleTransactionConfirmed.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.failed,
+      handleTransactionFailed.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(TransactionEvent.newSwap, ({ transactionMeta }) => {
+      this.swapsController.setTradeTxId(transactionMeta.id);
+    });
+    this.txController.on(
+      TransactionEvent.newSwapApproval,
+      ({ transactionMeta }) => {
+        this.swapsController.setApproveTxId(transactionMeta.id);
+      },
+    );
+    this.txController.on(
+      TransactionEvent.rejected,
+      handleTransactionRejected.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.submitted,
+      handleTransactionSubmitted.bind(null, transactionMetricsRequest),
+    );
+
+    this.txController.on(`tx:status-update`, async (txId, status) => {
+      if (
+        status === TransactionStatus.confirmed ||
+        status === TransactionStatus.failed
+      ) {
+        const txMeta = this.txController.txStateManager.getTransaction(txId);
+        let rpcPrefs = {};
+        if (txMeta.chainId) {
+          const { networkConfigurations } = this.networkController.state;
+          const matchingNetworkConfig = Object.values(
+            networkConfigurations,
+          ).find(
+            (networkConfiguration) =>
+              networkConfiguration.chainId === txMeta.chainId,
+          );
+          rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
+        }
+
+        try {
+          await this.platform.showTransactionNotification(txMeta, rpcPrefs);
+        } catch (error) {
+          log.error('Failed to create transaction notification', error);
+        }
+
+        const { txReceipt } = txMeta;
+
+        // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
+        // in which case we will want to check and update ownership status of the transferred NFT.
+        if (
+          txMeta.type === TransactionType.tokenMethodTransferFrom &&
+          txMeta.txParams !== undefined
+        ) {
+          const {
+            data,
+            to: contractAddress,
+            from: userAddress,
+          } = txMeta.txParams;
+          const { chainId } = txMeta;
+          const transactionData = parseStandardTokenTransactionData(data);
+          // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
+          // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
+          // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
+          const transactionDataTokenId =
+            getTokenIdParam(transactionData) ??
+            getTokenValueParam(transactionData);
+          const { allNfts } = this.nftController.state;
+
+          // check if its a known NFT
+          const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
+            ({ address, tokenId }) =>
+              isEqualCaseInsensitive(address, contractAddress) &&
+              tokenId === transactionDataTokenId,
+          );
+
+          // if it is we check and update ownership status.
+          if (knownNft) {
+            this.nftController.checkAndUpdateSingleNftOwnershipStatus(
+              knownNft,
+              false,
+              { userAddress, chainId },
+            );
+          }
+        }
+
+        const metamaskState = this.getState();
+
+        if (txReceipt && txReceipt.status === '0x0') {
+          this.metaMetricsController.trackEvent(
+            {
+              event: 'Tx Status Update: On-Chain Failure',
+              category: MetaMetricsEventCategory.Background,
+              properties: {
+                action: 'Transactions',
+                errorMessage: txMeta.simulationFails?.reason,
+                numberOfTokens: metamaskState.tokens.length,
+                numberOfAccounts: Object.keys(metamaskState.accounts).length,
+              },
+            },
+            {
+              matomoEvent: true,
+            },
+          );
+        }
+      }
+    });
+  }
 
   /**
    * Returns the first network configuration object that matches at least one field of the
