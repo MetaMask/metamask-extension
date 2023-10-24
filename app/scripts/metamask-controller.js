@@ -4284,10 +4284,10 @@ export default class MetamaskController extends EventEmitter {
       providerForDomain = this.selectedNetworkController.getProviderAndBlockTracker(origin).provider;
     }
 
-    const requestQueueMiddleware = createQueuedRequestMiddleware(
-      this.controllerMessenger,
-      this.preferencesController.getUseRequestQueue.bind(this.preferencesController),
-    );
+    const requestQueueMiddleware = createQueuedRequestMiddleware({
+      messenger: this.controllerMessenger,
+      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(this.preferencesController),
+    });
     // add some middleware that will switch chain on each request (as needed)
     engine.push(requestQueueMiddleware);
 

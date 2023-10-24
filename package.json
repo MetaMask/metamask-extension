@@ -214,7 +214,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
-    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@1.0.0-preview.885fefd",
     "@blockaid/ppom_release": "^1.2.8",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
@@ -277,6 +276,7 @@
     "@metamask/post-message-stream": "^6.2.0",
     "@metamask/ppom-validator": "^0.8.0",
     "@metamask/providers": "^13.1.0",
+    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@1.0.0-preview.885fefd",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
