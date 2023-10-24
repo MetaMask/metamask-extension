@@ -217,6 +217,7 @@ describe('DetectTokensController', function () {
 
     const tokenListMessenger = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
+      allowedEvents: ['TokenListController:stateChange'],
     });
     tokenListController = new TokenListController({
       chainId: toHex(1),
@@ -249,6 +250,11 @@ describe('DetectTokensController', function () {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: (listener) =>
+        tokenListMessenger.subscribe(
+          `${tokenListController.name}:stateChange`,
+          listener,
+        ),
     });
 
     assetsContractController = new AssetsContractController({
@@ -363,6 +369,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
 
@@ -384,6 +391,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
   });
@@ -417,6 +425,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
     const tokenAddressToAdd = erc20ContractAddresses[1];
@@ -435,6 +444,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
@@ -443,6 +453,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
   });

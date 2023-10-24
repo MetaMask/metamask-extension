@@ -177,6 +177,15 @@ describe('Create Snap Account', function () {
           tag: 'p',
           text: 'Successful request',
         });
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Account 2',
+        });
       },
     );
   });

@@ -4,7 +4,7 @@ set -x
 gource \
   --seconds-per-day .025 \
   --user-scale 1.5 \
-  --default-user-image "./images/icon-512.png" \
+  --default-user-image "./app/images/icon-512.png" \
   --viewport 1280x720 \
   --auto-skip-seconds .05 \
   --multi-sampling \
@@ -21,4 +21,13 @@ gource \
   --title "MetaMask Development History" \
   --output-ppm-stream - \
   --output-framerate 30 \
-  | ffmpeg -y -r 30 -f image2pipe -vcodec ppm -i - -b 65536K metamask-dev-history.mp4
+  | \
+ffmpeg \
+  -y \
+  -r 30 \
+  -f image2pipe \
+  -vcodec ppm \
+  -i \
+  - \
+  -b:v 65536K \
+  metamask-dev-history.mp4

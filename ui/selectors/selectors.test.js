@@ -780,4 +780,22 @@ describe('Selectors', () => {
     isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
     expect(isInfuraBlocked).toBe(true);
   });
+
+  it('#getSnapRegistryData', () => {
+    const mockSnapId = 'npm:@metamask/test-snap-bip44';
+    expect(selectors.getSnapRegistryData(mockState, mockSnapId)).toStrictEqual(
+      expect.objectContaining({
+        id: mockSnapId,
+        versions: {
+          '5.1.2': {
+            checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+          },
+        },
+        metadata: expect.objectContaining({
+          website: 'https://snaps.consensys.io/',
+          name: 'BIP-44',
+        }),
+      }),
+    );
+  });
 });

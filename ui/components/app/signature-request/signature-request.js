@@ -1,4 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useCallback,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react';
 import {
   useDispatch,
   useSelector,
@@ -49,7 +56,7 @@ import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi,blockaid)
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
@@ -89,6 +96,7 @@ import { showCustodyConfirmLink } from '../../../store/institutional/institution
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IN
 
@@ -154,6 +162,21 @@ const SignatureRequest = ({ txData }) => {
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
     return { sanitizedMessage, domain, primaryType };
   });
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  const onClickSupportLink = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        action: 'Sign Request',
+        type,
+        version,
+        external_link_clicked: 'security_alert_support_link',
+      },
+    });
+  }, []);
+  ///: END:ONLY_INCLUDE_IN
 
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -233,6 +256,27 @@ const SignatureRequest = ({ txData }) => {
   ]);
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useEffect(() => {
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          type,
+          version,
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+  }, [txData?.securityAlertResponse]);
+  ///: END:ONLY_INCLUDE_IN
+
   return (
     <div className="signature-request">
       <ConfirmPageContainerNavigation />
@@ -250,6 +294,7 @@ const SignatureRequest = ({ txData }) => {
             marginLeft={4}
             marginRight={4}
             marginBottom={4}
+            onClickSupportLink={onClickSupportLink}
           />
           ///: END:ONLY_INCLUDE_IN
         }

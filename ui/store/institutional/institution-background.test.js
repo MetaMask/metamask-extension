@@ -3,7 +3,7 @@ import {
   showLoadingIndication,
   forceUpdateMetamaskState,
 } from '../actions';
-import { submitRequestToBackground } from '../action-queue';
+import { submitRequestToBackground } from '../background-connection';
 import {
   mmiActionsFactory,
   showInteractiveReplacementTokenBanner,
@@ -18,7 +18,7 @@ jest.mock('../actions', () => ({
   forceUpdateMetamaskState: jest.fn(),
 }));
 
-jest.mock('../action-queue', () => ({
+jest.mock('../background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 

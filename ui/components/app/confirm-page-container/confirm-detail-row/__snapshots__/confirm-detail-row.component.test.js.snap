@@ -13,17 +13,9 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
     >
       <div
         class="mm-box currency-display-component confirm-detail-row__primary mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+        ethlogoheight="18"
         title="0"
       >
-        <div
-          class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
-          variant="inherit"
-        >
-          <i
-            class="fab fa-ethereum"
-            style="font-size: 18px;"
-          />
-        </div>
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
@@ -34,15 +26,6 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         class="mm-box currency-display-component confirm-detail-row__secondary mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
         title="0"
       >
-        <div
-          class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
-          variant="inherit"
-        >
-          <i
-            class="fab fa-ethereum"
-            style="font-size: 14px;"
-          />
-        </div>
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
