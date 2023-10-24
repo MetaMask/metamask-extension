@@ -3994,7 +3994,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1, @metamask/base-controller@npm:^3.2.2, @metamask/base-controller@npm:^3.2.3":
+"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1, @metamask/base-controller@npm:^3.2.2, @metamask/base-controller@npm:^3.2.3":
   version: 3.2.3
   resolution: "@metamask/base-controller@npm:3.2.3"
   dependencies:
@@ -4018,7 +4018,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0":
+"@metamask/controller-utils@npm:^4.0.0":
   version: 4.3.2
   resolution: "@metamask/controller-utils@npm:4.3.2"
   dependencies:
@@ -4143,19 +4143,6 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     ethereum-cryptography: "npm:^1.1.2"
   checksum: 0a4821efc40828959519c58dcfdf8a817677a522177b9ae9adcfb23db7592b5b6664de903b383e90a735ce3ec10f91025716a3f5e3222427b8355ea6eb725d7e
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-infura@npm:^8.1.0":
-  version: 8.1.1
-  resolution: "@metamask/eth-json-rpc-infura@npm:8.1.1"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
-    "@metamask/utils": "npm:^4.0.0"
-    eth-rpc-errors: "npm:^4.0.3"
-    json-rpc-engine: "npm:^6.1.0"
-    node-fetch: "npm:^2.6.7"
-  checksum: 97b6ac62b48b7aa731531c2d46f47557d976889c9c1d85315e002d3c68eddb6b05ec192b5b12308936d4664ac56f162959f1cbec9af161e33dade25984f55b68
   languageName: node
   linkType: hard
 
@@ -4405,24 +4392,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@metamask/gas-fee-controller@npm:6.0.1"
+"@metamask/gas-fee-controller@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/gas-fee-controller@npm:10.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^3.0.0"
-    "@metamask/controller-utils": "npm:^4.1.0"
-    "@metamask/network-controller": "npm:^10.3.0"
-    "@metamask/utils": "npm:^5.0.2"
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/controller-utils": "npm:^5.0.2"
+    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/network-controller": "npm:^15.1.0"
+    "@metamask/polling-controller": "npm:^1.0.0"
+    "@metamask/utils": "npm:^8.1.0"
     "@types/uuid": "npm:^8.3.0"
-    babel-runtime: "npm:^6.26.0"
-    eth-query: "npm:^2.1.2"
     ethereumjs-util: "npm:^7.0.10"
     ethjs-unit: "npm:^0.1.6"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/network-controller": ^10.3.0
-  checksum: c5579738838d0344eca59df0e02b987c725e28e79c0b03078f27e0f5fadc0456231b5c5710f58ae0fb1f106ac13fc3837e0f2d62b098e1a6ece3e5b1c555cfb2
+    "@metamask/network-controller": ^15.1.0
+  checksum: b1730553ecac69f752e9394fdde8057bd580fbd69c965ea116364aad997136e549d7f622a87977ec787ee68441d2a85997d17006e53fcbc239c0951655441329
   languageName: node
   linkType: hard
 
@@ -4550,29 +4537,6 @@ __metadata:
     async-mutex: "npm:^0.2.6"
     immer: "npm:^9.0.6"
   checksum: 8754f3b2e64c9bdac36d882fd4cbc650eef7322beaa6fb5095f5e289bae15f8658aa74f9183832423aaeec40edebfd14c14cb6da7a38224789f35f080079425a
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@npm:^10.3.0":
-  version: 10.3.1
-  resolution: "@metamask/network-controller@npm:10.3.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.1.0"
-    "@metamask/controller-utils": "npm:^4.2.0"
-    "@metamask/eth-json-rpc-infura": "npm:^8.1.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
-    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^5.0.2"
-    async-mutex: "npm:^0.2.6"
-    babel-runtime: "npm:^6.26.0"
-    eth-block-tracker: "npm:^7.0.1"
-    eth-query: "npm:^2.1.2"
-    eth-rpc-errors: "npm:^4.0.2"
-    immer: "npm:^9.0.6"
-    json-rpc-engine: "npm:^6.1.0"
-    uuid: "npm:^8.3.2"
-  checksum: 48b30bee12f90ca5e818dd99d3e164b4330368498e6388cc1044141be2f70eea28b2a85310bacb176d1c12027e2d8c996effa3902238aff75e6c20e31351740d
   languageName: node
   linkType: hard
 
@@ -4748,7 +4712,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^1.0.1":
+"@metamask/polling-controller@npm:^1.0.0, @metamask/polling-controller@npm:^1.0.1":
   version: 1.0.1
   resolution: "@metamask/polling-controller@npm:1.0.1"
   dependencies:
@@ -24506,7 +24470,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^2.2.0"
     "@metamask/ethjs-query": "npm:^0.5.0"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "npm:^6.0.1"
+    "@metamask/gas-fee-controller": "npm:^10.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^1.0.0"
