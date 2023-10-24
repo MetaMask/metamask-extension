@@ -71,6 +71,7 @@ async function switchEthereumChainHandler(
       }),
     );
   }
+  debugger;
 
   const { origin } = req;
 
@@ -106,7 +107,9 @@ async function switchEthereumChainHandler(
   const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
   if (requestData) {
     const currentChainId = getCurrentChainId();
+    const networkClientId = findNetworkClientIdByChainId(_chainId);
     if (currentChainId === _chainId) {
+      setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
       return end();
     }
@@ -125,7 +128,6 @@ async function switchEthereumChainHandler(
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
-      const networkClientId = findNetworkClientIdByChainId(_chainId);
       setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
     } catch (error) {
