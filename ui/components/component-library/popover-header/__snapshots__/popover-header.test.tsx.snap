@@ -7,7 +7,7 @@ exports[`PopoverHeader should render PopoverHeader correctly 1`] = `
     data-testid="popover-header"
   >
     <div
-      class="mm-box mm-box--width-full"
+      class="mm-box"
     >
       <h4
         class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-inherit"

@@ -33,6 +33,11 @@ interface AppState {
     ignoreErc20Token?: boolean;
   };
   showIpfsModalOpen: boolean;
+  keyringRemovalSnapModal: {
+    snapName: string;
+    result: 'success' | 'failure' | 'none';
+  };
+  showKeyringRemovalSnapModal: boolean;
   importTokensModalOpen: boolean;
   showSelectActionModal: boolean;
   accountDetail: {
@@ -45,7 +50,6 @@ interface AppState {
   scrollToBottom: boolean;
   warning: string | null | undefined;
   buyView: Record<string, any>;
-  isMouseUser: boolean;
   defaultHdPaths: {
     trezor: string;
     ledger: string;
@@ -105,6 +109,11 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModal: { open: false },
   showIpfsModalOpen: false,
+  keyringRemovalSnapModal: {
+    snapName: '',
+    result: 'none',
+  },
+  showKeyringRemovalSnapModal: false,
   importTokensModalOpen: false,
   showSelectActionModal: false,
   accountDetail: {
@@ -116,7 +125,6 @@ const initialState: AppState = {
   // Used to display error text
   warning: null,
   buyView: {},
-  isMouseUser: false,
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
@@ -408,12 +416,6 @@ export default function reduceApp(
         },
       };
 
-    case actionConstants.SET_MOUSE_USER_STATE:
-      return {
-        ...appState,
-        isMouseUser: action.payload,
-      };
-
     case actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID:
       return {
         ...appState,
@@ -505,6 +507,26 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
+      return {
+        ...appState,
+        showKeyringRemovalSnapModal: true,
+        keyringRemovalSnapModal: {
+          ...action.payload,
+        },
+      };
+    case actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT:
+      return {
+        ...appState,
+        showKeyringRemovalSnapModal: false,
+        keyringRemovalSnapModal: {
+          snapName: '',
+          result: 'none',
+        },
+      };
+    ///: END:ONLY_INCLUDE_IN
+
     default:
       return appState;
   }

@@ -238,7 +238,7 @@ export default function PrepareSwapPage({
     ? defaultSwapsToken
     : sourceTokenInfo;
 
-  const { tokensWithBalances } = useTokenTracker(tokens);
+  const { tokensWithBalances } = useTokenTracker({ tokens });
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
@@ -569,7 +569,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch]);
+  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (

@@ -5,11 +5,13 @@ import { useLocation } from 'react-router-dom';
 import { NetworkType } from '@metamask/controller-utils';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { domainInitialState } from '../../ducks/domains';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../test/jest';
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
+import { renderWithProvider } from '../../../test/jest';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
@@ -226,7 +228,6 @@ describe('Send Page', () => {
             id: 3111025347726181,
             time: 1620723786838,
             status: 'unapproved',
-            metamaskNetworkId: '5',
             chainId: '0x5',
             loadingDefaults: false,
             txParams: {
@@ -240,6 +241,14 @@ describe('Send Page', () => {
             type: 'transfer',
             origin: 'https://metamask.github.io',
             transactionCategory: 'approve',
+          },
+        },
+        metamask: {
+          ...baseStore.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
           },
         },
       });
@@ -264,7 +273,6 @@ describe('Send Page', () => {
             id: 3111025347726181,
             time: 1620723786838,
             status: 'unapproved',
-            metamaskNetworkId: '5',
             chainId: '0x5',
             loadingDefaults: false,
             txParams: {
@@ -278,6 +286,14 @@ describe('Send Page', () => {
             type: 'transfer',
             origin: 'https://metamask.github.io',
             transactionCategory: 'approve',
+          },
+        },
+        metamask: {
+          ...baseStore.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
           },
         },
       });

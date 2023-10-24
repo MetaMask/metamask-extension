@@ -51,7 +51,7 @@ exports[`NameDetails renders proposed names 1`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-box--width-full"
+              class="mm-box"
             >
               <header
                 class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
@@ -275,7 +275,7 @@ exports[`NameDetails renders with no saved name 1`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-box--width-full"
+              class="mm-box"
             >
               <header
                 class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
@@ -468,7 +468,7 @@ exports[`NameDetails renders with saved name 1`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-box--width-full"
+              class="mm-box"
             >
               <header
                 class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
