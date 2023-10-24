@@ -5,6 +5,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
 import { captureException } from '@sentry/browser';
+import { PollingControllerOnly } from '@metamask/polling-controller';
 
 import {
   decGWEIToHexWEI,
@@ -109,7 +110,7 @@ const initialState = {
   },
 };
 
-export default class SwapsController {
+export default class SwapsController extends PollingControllerOnly {
   constructor(
     {
       getBufferedGasLimit,
@@ -122,9 +123,11 @@ export default class SwapsController {
       getEIP1559GasFeeEstimates,
       onNetworkStateChange,
       trackMetaMetricsEvent,
+      getNetworkClientById,
     },
     state,
   ) {
+    super();
     this.store = new ObservableStore({
       swapsState: {
         ...initialState.swapsState,
@@ -144,6 +147,7 @@ export default class SwapsController {
     this._fetchTradesInfo = fetchTradesInfo;
     this._getCurrentChainId = getCurrentChainId;
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
+    this._getNetworkClientById = getNetworkClientById;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
     this.getTokenRatesState = getTokenRatesState;
@@ -271,7 +275,15 @@ export default class SwapsController {
     fetchParams,
     fetchParamsMetaData = {},
     isPolledRequest,
+    networkClientId,
   ) {
+    let { ethersProvider } = this;
+    if (networkClientId) {
+      const { provider: networkProvider } =
+        this._getNetworkClientById(networkClientId);
+      ethersProvider = new Web3Provider(networkProvider);
+    }
+    // TODO we should perhaps replace the chainId with the networkClientId in the fetchParamsMetaData
     const { chainId } = fetchParamsMetaData;
     const {
       swapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
@@ -335,7 +347,7 @@ export default class SwapsController {
                 txParams: quote.trade,
                 chainId,
               },
-              this.ethersProvider,
+              ethersProvider,
             );
             quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
           }
