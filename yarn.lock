@@ -3994,7 +3994,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.2, @metamask/base-controller@npm:^3.2.3":
+"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1, @metamask/base-controller@npm:^3.2.2, @metamask/base-controller@npm:^3.2.3":
   version: 3.2.3
   resolution: "@metamask/base-controller@npm:3.2.3"
   dependencies:
@@ -4961,20 +4961,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/smart-transactions-controller@npm:4.0.0"
+"@metamask/smart-transactions-controller@npm:^6.0.0":
+  version: 6.2.1
+  resolution: "@metamask/smart-transactions-controller@npm:6.2.1"
   dependencies:
-    "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^3.0.0"
-    "@metamask/controller-utils": "npm:^4.1.0"
-    "@metamask/network-controller": "npm:^10.3.0"
+    "@metamask/base-controller": "npm:^3.2.1"
+    "@metamask/controller-utils": "npm:^5.0.0"
+    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/network-controller": "npm:^15.0.0"
+    "@metamask/polling-controller": "npm:^0.2.0"
     bignumber.js: "npm:^9.0.1"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 92e0874937dbc410588512532b04160cdbf86ceca4a0c4db0dfffebaccb4ed919743e8ba69ebe5a923f72e085293db9216101016482390e2e0c8ed60d4f20ad2
+  checksum: 32d59f034e4f931fe8e8c66a024791908ffeb322db19c4975b63534e29056f1ee06a5e5b6b70df1842412da4b17e29c2b589330df896c0d9bcda1a511cd34803
   languageName: node
   linkType: hard
 
@@ -24554,7 +24554,7 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^3.1.0"
     "@metamask/signature-controller": "npm:^6.1.2"
     "@metamask/slip44": "npm:^3.1.0"
-    "@metamask/smart-transactions-controller": "npm:^4.0.0"
+    "@metamask/smart-transactions-controller": "npm:^6.0.0"
     "@metamask/snaps-controllers": "npm:^3.2.0"
     "@metamask/snaps-rpc-methods": "npm:^3.2.1"
     "@metamask/snaps-ui": "npm:^3.1.0"
