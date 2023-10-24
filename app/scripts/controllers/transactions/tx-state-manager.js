@@ -568,16 +568,16 @@ export default class TransactionStateManager extends EventEmitter {
    * the error on the TransactionMeta object.
    *
    * @param {number} txId - the target TransactionMeta's Id
-   * @param {Error} err - error object
+   * @param {Error} error - error object
    */
-  setTxStatusFailed(txId, err) {
-    const error = err || new Error('Internal metamask failure');
+  setTxStatusFailed(txId, error) {
+    const err = error || new Error('Internal metamask failure');
 
     const txMeta = this.getTransaction(txId);
-    txMeta.err = {
-      message: error.message?.toString() || error.toString(),
-      rpc: error.value,
-      stack: error.stack,
+    txMeta.error = {
+      message: err.message?.toString() || err.toString(),
+      rpc: err.value,
+      stack: err.stack,
     };
     this._updateTransactionHistory(
       txMeta,
