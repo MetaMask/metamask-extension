@@ -98,8 +98,8 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             color={TextColor.textAlternative}
             variant={TextVariant.bodyMd}
           >
-            {connection.addresses.length}{' '}
-            {connection.addresses.length > 1
+            {connection.addresses?.length}{' '}
+            {connection.addresses?.length > 1
               ? t('connectedaccounts')
               : t('connectedaccount')}
           </Text>
