@@ -2850,15 +2850,6 @@ export function completeOnboarding() {
   };
 }
 
-export function setMouseUserState(
-  isMouseUser: boolean,
-): PayloadAction<boolean> {
-  return {
-    type: actionConstants.SET_MOUSE_USER_STATE,
-    payload: isMouseUser,
-  };
-}
-
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {
