@@ -52,7 +52,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
     }: TextFieldProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const internalInputRef = useRef<HTMLInputElement>(null);
+    const internalInputRef = useRef<HTMLInputElement | null>(null);
     const [focused, setFocused] = useState(false);
 
     useEffect(() => {
@@ -81,27 +81,16 @@ export const TextField: TextFieldComponent = React.forwardRef(
       onFocus?.(event);
     };
 
-    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-      setFocused(false);
-      onBlur?.(event);
-    };
-
-    // const handleInputRef = (ref) => {
-    //   internalInputRef.current = ref;
-    //   if (inputRef?.current !== undefined) {
-    //     inputRef.current = ref;
-    //   } else if (typeof inputRef === 'function') {
-    //     inputRef(ref);
-    //   }
-    // };
-
     const handleInputRef = (inputRefArg: React.RefObject<HTMLInputElement>) => {
-      if (inputRefArg.current) {
-        internalInputRef.current = inputRefArg.current;
-      }
-
-      if (typeof inputRef === 'function') {
-        inputRef(inputRefArg.current);
+      internalInputRef.current = inputRefArg.current;
+      if (inputRef) {
+        if (typeof inputRef === 'function') {
+          inputRef(inputRefArg.current);
+        } else {
+          (
+            inputRef as React.MutableRefObject<HTMLInputElement | null>
+          ).current = inputRefArg.current;
+        }
       }
     };
 
