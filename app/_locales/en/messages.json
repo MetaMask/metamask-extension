@@ -176,7 +176,10 @@
     "message": "Experimental Beta"
   },
   "snapAccountLegalDisclaimerExperimentalBetaDescription": {
-    "message": "Account Management Snaps are released as part of an experimental Beta release. You agree that you will only use one of these Snaps if you understand how it functions and how to use it, and you have fully read and understand all risk warnings and other disclosures made available by the Third Party Service provider relating to use of their Snap. You agree that Consensys is not responsible for any injury that you incur as a result of your use of this Snap.\nYou will not be able to use your MetaMask Secret Recovery Phrase to recover accounts added through Account Management Snaps. If your account credentials are lost or compromised, MetaMask will not be able to help you. If the Snap or the associated dapp is hacked or ceases to function, you may not be able to access your account and the funds in your account."
+    "message": "Account Management Snaps are released as part of an experimental Beta release. You agree that you will only use one of these Snaps if you understand how it functions and how to use it, and you have fully read and understand all risk warnings and other disclosures made available by the Third Party Service provider relating to use of their Snap. You agree that Consensys is not responsible for any injury that you incur as a result of your use of this Snap.\n\nYou will not be able to use your MetaMask Secret Recovery Phrase to recover accounts added through Account Management Snaps. If your account credentials are lost or compromised, MetaMask will not be able to help you. If the Snap or the associated dapp is hacked or ceases to function, you may not be able to access your account and the funds in your account."
+  },
+  "snapAccountLegalDisclaimerTermsOfUseLink": {
+    "message": "Consensys Terms of Use"
   },
   "accountsConnected": {
     "message": "Accounts connected"
