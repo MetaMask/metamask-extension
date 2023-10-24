@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { getSelectedIdentity } from '../../../../../selectors';
 import { Label } from '../../../../component-library';
@@ -11,14 +11,11 @@ import {
   TextAlign,
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
-import { AccountListMenu } from '../../..';
 import { SendPageRow } from '.';
 
 export const SendPageAccountPicker = () => {
   const t = useContext(I18nContext);
   const identity = useSelector(getSelectedIdentity);
-
-  const [showAccountPicker, setShowAccountPicker] = useState(false);
 
   return (
     <SendPageRow>
@@ -26,7 +23,7 @@ export const SendPageAccountPicker = () => {
       <AccountPicker
         address={identity.address}
         name={identity.name}
-        onClick={() => setShowAccountPicker(true)}
+        onClick={() => undefined}
         showAddress
         borderColor={BorderColor.borderDefault}
         borderWidth={1}
@@ -48,13 +45,6 @@ export const SendPageAccountPicker = () => {
         }}
         width={BlockSize.Full}
       />
-      {showAccountPicker ? (
-        <AccountListMenu
-          accountListItemProps={{ showOptions: false }}
-          showAccountCreation={false}
-          onClose={() => setShowAccountPicker(false)}
-        />
-      ) : null}
     </SendPageRow>
   );
 };
