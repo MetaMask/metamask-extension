@@ -78,10 +78,6 @@ describe('Test Snap Management', function () {
           '[data-testid="account-options-menu-button"]',
         );
 
-        // try to click on the notification item
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.delay(1000);
-
         // try to click on the snaps item
         await driver.clickElement({
           text: 'Snaps',
@@ -150,7 +146,7 @@ describe('Test Snap Management', function () {
         // check the results of the removal
         await driver.delay(2000);
         const removeResult = await driver.findElement(
-          '.snap-list-tab__container--no-snaps_inner',
+          '.snaps__content__list__container--no-snaps_inner',
         );
         assert.equal(
           await removeResult.getText(),

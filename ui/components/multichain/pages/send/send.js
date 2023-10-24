@@ -9,7 +9,15 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
+  Label,
 } from '../../../component-library';
+import DomainInput from '../../../../pages/send/send-content/add-recipient/domain-input.component';
+import { SendPageNetworkPicker } from './components/network-picker';
+import {
+  SendPageAccountPicker,
+  SendPageRow,
+  SendPageYourAccount,
+} from './components';
 
 export const SendPage = () => {
   const t = useContext(I18nContext);
@@ -27,7 +35,22 @@ export const SendPage = () => {
       >
         {t('sendAToken')}
       </Header>
-      <Content></Content>
+      <Content>
+        <SendPageNetworkPicker />
+        <SendPageAccountPicker />
+        <SendPageRow>
+          <Label paddingBottom={2}>{t('to')}</Label>
+          <DomainInput
+            userInput=""
+            onChange={() => undefined}
+            onReset={() => undefined}
+            lookupEnsName={() => undefined}
+            initializeDomainSlice={() => undefined}
+            resetDomainResolution={() => undefined}
+          />
+        </SendPageRow>
+        <SendPageYourAccount />
+      </Content>
       <Footer>
         <ButtonSecondary size={ButtonSecondarySize.Lg} block>
           {t('cancel')}

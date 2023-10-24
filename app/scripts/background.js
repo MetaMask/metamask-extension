@@ -114,9 +114,6 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
-const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
-
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 const OVERRIDE_ORIGIN = {
   EXTENSION: 'EXTENSION',
@@ -208,6 +205,12 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   connectExternal(...args);
 });
 
+function saveTimestamp() {
+  const timestamp = new Date().toISOString();
+
+  browser.storage.session.set({ timestamp });
+}
+
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
  */
@@ -261,27 +264,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {number} version - The latest migration version that has been run.
  */
 
-// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = () => {
-  if (controller) {
-    controller.metaMetricsController.updateTraits({
-      [MetaMetricsUserTrait.InstallDateExt]: new Date()
-        .toISOString()
-        .split('T')[0], // yyyy-mm-dd
-    });
-    controller.metaMetricsController.addEventBeforeMetricsOptIn({
-      category: MetaMetricsEventCategory.App,
-      event: MetaMetricsEventName.AppInstalled,
-      properties: {},
-    });
-    return;
-  }
-  setTimeout(() => {
-    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    addAppInstalledEvent();
-  }, 1000);
-};
-
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
@@ -299,6 +281,13 @@ async function initialize() {
 
     let isFirstMetaMaskControllerSetup;
     if (isManifestV3) {
+      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+      // miliseconds. This keeps the service worker alive.
+      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+      saveTimestamp();
+      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+
       const sessionData = await browser.storage.session.get([
         'isFirstMetaMaskControllerSetup',
       ]);
@@ -315,35 +304,15 @@ async function initialize() {
       isFirstMetaMaskControllerSetup,
       initData.meta,
     );
-
-    await fireFirstInstallActions();
-
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
-  }
-}
-
-/**
- * Store the value `isFirstTimeInstalled` as true when first time install the extension
- * where we would stack AppInstalled events
- * and open the extension automatically
- * Finally we set the flag as false so they won't be triggered for updating
- */
-async function fireFirstInstallActions() {
-  const sessionData = await localStore.get();
-  const isFirstTimeInstalled = sessionData?.isFirstTimeInstalled === undefined;
-  if (isFirstTimeInstalled) {
-    if (!(process.env.METAMASK_DEBUG || process.env.IN_TEST)) {
-      addAppInstalledEvent();
-      platform.openExtensionInBrowser();
-    }
-    await localStore.set({ isFirstTimeInstalled: false });
   }
 }
 
@@ -642,20 +611,6 @@ export function setupController(
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      if (isManifestV3) {
-        // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
-        remotePort.onMessage.addListener((message) => {
-          if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
-            // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
-            remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
-
-            controller.appStateController.setServiceWorkerLastActiveTime(
-              Date.now(),
-            );
-          }
-        });
-      }
-
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
@@ -918,6 +873,41 @@ async function triggerUi() {
   }
 }
 
+// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
+const addAppInstalledEvent = () => {
+  if (controller) {
+    controller.metaMetricsController.updateTraits({
+      [MetaMetricsUserTrait.InstallDateExt]: new Date()
+        .toISOString()
+        .split('T')[0], // yyyy-mm-dd
+    });
+    controller.metaMetricsController.addEventBeforeMetricsOptIn({
+      category: MetaMetricsEventCategory.App,
+      event: MetaMetricsEventName.AppInstalled,
+      properties: {},
+    });
+    return;
+  }
+  setTimeout(() => {
+    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
+    addAppInstalledEvent();
+  }, 1000);
+};
+
+// On first install, open a new tab with MetaMask
+async function onInstall() {
+  const storeAlreadyExisted = Boolean(await localStore.get());
+  // If the store doesn't exist, then this is the first time running this script,
+  // and is therefore an install
+  if (
+    !storeAlreadyExisted &&
+    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
+  ) {
+    addAppInstalledEvent();
+    platform.openExtensionInBrowser();
+  }
+}
+
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
     const backgroundState = store.memStore.getState();
@@ -925,7 +915,8 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-function initBackground() {
+async function initBackground() {
+  await onInstall();
   initialize().catch(log.error);
 }
 
