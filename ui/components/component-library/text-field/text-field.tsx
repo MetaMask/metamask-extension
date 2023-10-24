@@ -86,12 +86,22 @@ export const TextField: TextFieldComponent = React.forwardRef(
       onBlur?.(event);
     };
 
-    const handleInputRef = (ref) => {
-      internalInputRef.current = ref;
-      if (inputRef?.current !== undefined) {
-        inputRef.current = ref;
-      } else if (typeof inputRef === 'function') {
-        inputRef(ref);
+    // const handleInputRef = (ref) => {
+    //   internalInputRef.current = ref;
+    //   if (inputRef?.current !== undefined) {
+    //     inputRef.current = ref;
+    //   } else if (typeof inputRef === 'function') {
+    //     inputRef(ref);
+    //   }
+    // };
+
+    const handleInputRef = (inputRefArg: React.RefObject<HTMLInputElement>) => {
+      if (inputRefArg.current) {
+        internalInputRef.current = inputRefArg.current;
+      }
+
+      if (typeof inputRef === 'function') {
+        inputRef(inputRefArg.current);
       }
     };
 
