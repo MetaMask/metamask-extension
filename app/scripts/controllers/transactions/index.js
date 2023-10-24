@@ -168,8 +168,8 @@ export default class TransactionController extends EventEmitter {
     this._beforePublish = hooks?.beforePublish
       ? hooks.beforePublish
       : () => true;
-    this._getAdditionalSignArguments = hooks?._getAdditionalSignArguments
-      ? hooks._getAdditionalSignArguments
+    this._getAdditionalSignArguments = hooks?.getAdditionalSignArguments
+      ? hooks.getAdditionalSignArguments
       : () => [undefined];
 
     this.memStore = new ObservableStore({});
