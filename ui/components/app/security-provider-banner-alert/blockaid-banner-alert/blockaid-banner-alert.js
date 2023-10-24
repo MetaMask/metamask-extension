@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 
 import { Text } from '../../../component-library';
-import { Severity } from '../../../../helpers/constants/design-system';
+import {
+  OverflowWrap,
+  Severity,
+} from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
 
 import {
@@ -29,7 +32,6 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.rawSignatureFarming]: 'blockaidDescriptionMightLoseAssets',
   [BlockaidReason.tradeOrderFarming]: 'blockaidDescriptionMightLoseAssets',
-  [BlockaidReason.unfairTrade]: 'blockaidDescriptionMightLoseAssets',
 
   [BlockaidReason.rawNativeTokenTransfer]: 'blockaidDescriptionTransferFarming',
   [BlockaidReason.transferFarming]: 'blockaidDescriptionTransferFarming',
@@ -64,7 +66,7 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
   const description = t(REASON_TO_DESCRIPTION_TKEY[reason] || 'other');
 
   const details = features?.length ? (
-    <Text as="ul">
+    <Text as="ul" overflowWrap={OverflowWrap.BreakWord}>
       {features.map((feature, i) => (
         <li key={`blockaid-detail-${i}`}>• {feature}</li>
       ))}

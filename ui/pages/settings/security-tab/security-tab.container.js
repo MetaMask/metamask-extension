@@ -14,6 +14,9 @@ import {
   setUseNftDetection,
   setUse4ByteResolution,
   setUseSafeChainsListValidation,
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  setUseExternalNameSources,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
 import { getAllNetworks } from '../../../selectors';
 import SecurityTab from './security-tab.component';
@@ -37,6 +40,9 @@ const mapStateToProps = (state) => {
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    useExternalNameSources,
+    ///: END:ONLY_INCLUDE_IN
   } = metamask;
 
   const allNetworks = getAllNetworks(state);
@@ -56,6 +62,9 @@ const mapStateToProps = (state) => {
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    useExternalNameSources,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -80,6 +89,11 @@ const mapDispatchToProps = (dispatch) => {
     setUse4ByteResolution: (value) => {
       return dispatch(setUse4ByteResolution(value));
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    setUseExternalNameSources: (value) => {
+      return dispatch(setUseExternalNameSources(value));
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

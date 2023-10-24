@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 import mockState from '../../../test/data/mock-state.json';
 import {
   CONFIRM_SEND_ETHER_PATH,
@@ -39,7 +39,7 @@ describe('Confirm Transaction', () => {
       store,
       `${CONFIRM_TRANSACTION_ROUTE}/${unapprovedTransactionId}${CONFIRM_SEND_ETHER_PATH}`,
     );
-    expect(getByText('0xb19...0c5e')).toBeInTheDocument();
+    expect(getByText('0xb19Ac...f0c5e')).toBeInTheDocument();
     expect(getByRole('button', { name: 'Details' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Data' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Hex' })).toBeInTheDocument();

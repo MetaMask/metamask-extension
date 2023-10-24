@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { toHex } from '@metamask/controller-utils';
+import { NameType } from '@metamask/name-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -1024,10 +1025,43 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         useNftDetection: false,
+        securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
         desktopEnabled: false,
         security_providers: [],
+        names: {
+          [NameType.ETHEREUM_ADDRESS]: {
+            '0x123': {
+              '0x1': {
+                name: 'Test 1',
+              },
+              '0x2': {
+                name: 'Test 2',
+              },
+              '0x3': {
+                name: null,
+              },
+            },
+            '0x456': {
+              '0x1': {
+                name: 'Test 3',
+              },
+            },
+            '0x789': {
+              '0x1': {
+                name: null,
+              },
+            },
+          },
+          otherType: {
+            otherValue: {
+              otherVariation: {
+                name: 'Test 4',
+              },
+            },
+          },
+        },
       });
 
       assert.deepEqual(traits, {
@@ -1050,11 +1084,14 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
-        [MetaMetricsUserTrait.SecurityProviders]: [],
+        [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
         [MetaMetricsUserTrait.MmiAccountAddress]: null,
         [MetaMetricsUserTrait.MmiIsCustodian]: false,
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        [MetaMetricsUserTrait.PetnameAddressCount]: 3,
         ///: END:ONLY_INCLUDE_IN
       });
     });

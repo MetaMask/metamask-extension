@@ -5,6 +5,7 @@
   align-items: center;
   gap: 5px;
   font-size: 12px;
+  max-width: 100%;
 
   &__missing {
     background-color: var(--color-warning-muted);
@@ -23,15 +24,17 @@
   }
 
   &__value,
-  &__proposed {
+  &__name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__value {
     color: var(--color-warning-default);
   }
 
   &__name {
     color: var(--color-info-default);
-  }
-
-  &__proposed {
-    font-style: italic;
   }
 }

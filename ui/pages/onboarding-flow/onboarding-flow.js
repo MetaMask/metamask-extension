@@ -15,6 +15,9 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MMI_ONBOARDING_COMPLETION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
@@ -36,6 +39,9 @@ import {
 } from '../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful';
 ///: END:ONLY_INCLUDE_IN
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
@@ -157,6 +163,16 @@ export default function OnboardingFlow() {
             path={ONBOARDING_COMPLETION_ROUTE}
             component={CreationSuccessful}
           />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          }
+          <Route
+            path={MMI_ONBOARDING_COMPLETION_ROUTE}
+            component={OnboardingSuccessful}
+          />
+          {
+            ///: END:ONLY_INCLUDE_IN
+          }
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
             component={OnboardingWelcome}

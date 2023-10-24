@@ -38,6 +38,9 @@ import Loading from '../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+///: END:ONLY_INCLUDE_IN
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -213,7 +216,15 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
   ];
+  ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_DIALOG_TYPE.push(
+    ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
+  );
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
 
   // When pendingConfirmation is undefined, this will also be undefined
@@ -252,7 +263,7 @@ export default function ConfirmationPage({
     t,
     dispatch,
     history,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
     ///: END:ONLY_INCLUDE_IN
@@ -408,7 +419,7 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
-        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
         style={
           isSnapDialog
             ? {

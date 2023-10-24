@@ -28,7 +28,6 @@ import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-
 import { ButtonIcon, IconName, Text } from '../../../component-library';
 import Name from '../../name/name';
 import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
-import { DEFAULT_NAME_SOURCE_PRIORITY } from '../../../../../shared/constants/names';
 
 export default function ContractDetailsModal({
   onClose,
@@ -219,11 +218,7 @@ export default function ContractDetailsModal({
           <Box data-testid="recipient">
             {petnamesEnabled ? (
               <Text variant={TextVariant.bodyMd} as="h5">
-                <Name
-                  value={toAddress}
-                  type={NameType.ETHEREUM_ADDRESS}
-                  sourcePriority={DEFAULT_NAME_SOURCE_PRIORITY}
-                />
+                <Name value={toAddress} type={NameType.ETHEREUM_ADDRESS} />
               </Text>
             ) : (
               <Text

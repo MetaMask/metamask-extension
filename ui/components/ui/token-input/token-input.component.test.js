@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { NETWORK_TYPES, CHAIN_IDS } from '../../../../shared/constants/network';
 import TokenInput from '.';
 
 describe('TokenInput Component', () => {
@@ -53,6 +54,32 @@ describe('TokenInput Component', () => {
       );
 
       expect(queryByTitle('0 ETH')).toBeInTheDocument();
+    });
+
+    it('should render conversionRate on polygon', () => {
+      const showFiatState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          nativeCurrency: 'MATIC',
+          preferences: {
+            ...mockState.metamask.preferences,
+            showFiatInTestnets: true,
+          },
+          providerConfig: {
+            chainId: CHAIN_IDS.POLYGON,
+            type: NETWORK_TYPES.MAINNET,
+          },
+        },
+      };
+      const mockStore = configureMockStore()(showFiatState);
+
+      const { queryByTitle } = renderWithProvider(
+        <TokenInput {...props} />,
+        mockStore,
+      );
+
+      expect(queryByTitle('0 MATIC')).toBeInTheDocument();
     });
 
     it('should render showFiat', () => {

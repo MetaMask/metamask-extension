@@ -10,9 +10,13 @@ import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+// eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
+// eslint-disable-next-line import/no-duplicates
+import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
@@ -30,8 +34,11 @@ import {
   SNAPS_METADATA,
 } from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IN
-
 // formatData :: ( date: <Unix Timestamp> ) -> String
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
     return '';
@@ -207,7 +214,7 @@ export function getRandomFileName() {
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.
  *
- * Example output: 0xabcd...1234
+ * Example output: 0xabcde...12345
  *
  * @param {string} address - The address to shorten.
  * @returns {string} The shortened address, or the original if it was no longer
@@ -498,7 +505,36 @@ export function getAssetImageURL(image, ipfsGateway) {
   }
 
   if (ipfsGateway && image.startsWith('ipfs://')) {
-    return getFormattedIpfsUrl(ipfsGateway, image, true);
+    // With v11.1.0, we started seeing errors thrown that included this
+    // line in the stack trace. The cause is that the `getIpfsCIDv1AndPath`
+    // method within assets-controllers/src/assetsUtil.ts can throw
+    // if part of the ipfsUrl, i.e. the `image` variable within this function,
+    // contains characters not in the Base58 alphabet. Details on that are
+    // here https://digitalbazaar.github.io/base58-spec/#alphabet. This happens
+    // with some NFTs, when we attempt to parse part of their IPFS image address
+    // with the `CID.parse` function (CID is part of the multiform package)
+    //
+    // Before v11.1.0 `getFormattedIpfsUrl` was not used in the extension codebase.
+    // Its use within assets-controllers always ensures that errors are caught
+    // and ignored. So while we were handling NFTs that can cause this error before,
+    // we were always catching and ignoring the error. As of PR #20172, we started
+    // passing all NFTs image URLs to `getAssetImageURL` from nft-items.js, which is
+    // why we started seeing these errors cause crashes for users in v11.1.0
+    //
+    // For the sake of a quick fix, we are wrapping this call in a try-catch, which
+    // the assets-controllers already do in some form in all cases where this function
+    // is called. This probably does not affect user experience, as we would not have
+    // correctly rendered these NFTs before v11.1.0 either (due to the same error
+    // disuccessed in this code comment).
+    //
+    // In the future, we can look into solving the root cause, which might require
+    // no longer using multiform's CID.parse() method within the assets-controller
+    try {
+      return getFormattedIpfsUrl(ipfsGateway, image, true);
+    } catch (e) {
+      logErrorWithMessage(e);
+      return '';
+    }
   }
   return image;
 }
@@ -569,6 +605,10 @@ export const getSnapName = (snapId, subjectMetadata) => {
   return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
 };
 
+export const getSnapRoute = (snapId) => {
+  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
+};
+
 export const getDedupedSnaps = (request, permissions) => {
   const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY];
   const requestedSnaps = permission?.caveats[0].value;
@@ -630,4 +670,35 @@ export const getNetworkNameFromProviderType = (providerName) => {
  */
 export const isAbleToExportAccount = (keyringType = '') => {
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
+};
+
+/**
+ * Checks if a tokenId in Hex or decimal format already exists in an object.
+ *
+ * @param {string} address - collection address.
+ * @param {string} tokenId - tokenId to search for
+ * @param {*} obj - object to look into
+ * @returns {boolean} `false` if tokenId does not already exist.
+ */
+export const checkTokenIdExists = (address, tokenId, obj) => {
+  // check if input tokenId is hexadecimal
+  // If it is convert to decimal and compare with existing tokens
+  const isHex = isStrictHexString(tokenId);
+  let convertedTokenId = tokenId;
+  if (isHex) {
+    // Convert to decimal
+    convertedTokenId = hexToDecimal(tokenId);
+  }
+
+  if (obj[address]) {
+    const value = obj[address];
+    return lodash.some(value.nfts, (nft) => {
+      return (
+        nft.address === address &&
+        (isEqualCaseInsensitive(nft.tokenId, tokenId) ||
+          isEqualCaseInsensitive(nft.tokenId, convertedTokenId.toString()))
+      );
+    });
+  }
+  return false;
 };

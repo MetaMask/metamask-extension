@@ -170,8 +170,6 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, a third party known for scams will take all your assets.',
       [BlockaidReason.transferFarming]:
         'If you approve this request, a third party known for scams will take all your assets.',
-      [BlockaidReason.unfairTrade]:
-        'If you approve this request, you might lose your assets.',
     }).forEach(([reason, expectedDescription]) => {
       it(`should render for '${reason}' correctly`, () => {
         const { getByText } = renderWithLocalization(
