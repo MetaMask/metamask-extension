@@ -12,6 +12,7 @@ import {
   Label,
 } from '../../../component-library';
 import DomainInput from '../../../../pages/send/send-content/add-recipient/domain-input.component';
+import AssetPickerAmount from '../../asset-picker-amount';
 import { SendPageNetworkPicker } from './components/network-picker';
 import {
   SendPageAccountPicker,
@@ -50,6 +51,7 @@ export const SendPage = () => {
           />
         </SendPageRow>
         <SendPageYourAccount />
+        <AssetPickerAmount />
       </Content>
       <Footer>
         <ButtonSecondary size={ButtonSecondarySize.Lg} block>

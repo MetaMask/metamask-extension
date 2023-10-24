@@ -1,0 +1,19 @@
+.asset-picker {
+    display: flex;
+    align-items: center;
+    padding: 7px;
+    min-width: 80px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: var(--color-background-alternative);
+
+  &__symbol {
+    font-size: 11px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.asset-picker:hover {
+  cursor: pointer;
+}
