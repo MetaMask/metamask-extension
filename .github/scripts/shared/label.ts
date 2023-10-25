@@ -10,7 +10,7 @@ export interface Label {
 
 export const externalContributorLabel: Label = {
   name: 'external-contributor',
-  color: 'B60205',
+  color: '7057FF',
   description: 'Issue or PR created by user outside org',
 };
 
