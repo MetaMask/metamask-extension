@@ -23,6 +23,7 @@ import {
   SendPageAccountPicker,
   SendPageRecipientInput,
   SendPageNetworkPicker,
+  SendPageRecipient,
 } from './components';
 
 export const SendPage = () => {
@@ -93,6 +94,7 @@ export const SendPage = () => {
         <SendPageNetworkPicker />
         <SendPageAccountPicker />
         <SendPageRecipientInput />
+        <SendPageRecipient />
       </Content>
       <Footer>
         <ButtonSecondary size={ButtonSecondarySize.Lg} block>
