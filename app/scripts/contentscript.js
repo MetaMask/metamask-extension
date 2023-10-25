@@ -1,12 +1,10 @@
-import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import ObjectMultiplex from 'obj-multiplex';
-import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
+import ObjectMultiplex from 'obj-multiplex';
+import pump from 'pump';
 import { obj as createThoughStream } from 'through2';
-import log from 'loglevel';
-
-import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
+import browser from 'webextension-polyfill';
+import { EXTENSION_MESSAGES } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
@@ -83,72 +81,6 @@ function injectScript(content) {
 }
 
 /**
- * SERVICE WORKER LOGIC
- */
-
-const EXTENSION_CONTEXT_INVALIDATED_CHROMIUM_ERROR =
-  'Extension context invalidated.';
-
-const WORKER_KEEP_ALIVE_INTERVAL = 1000;
-const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
-const TIME_45_MIN_IN_MS = 45 * 60 * 1000;
-
-/**
- * Don't run the keep-worker-alive logic for JSON-RPC methods called on initial load.
- * This is to prevent the service worker from being kept alive when accounts are not
- * connected to the dapp or when the user is not interacting with the extension.
- * The keep-alive logic should not work for non-dapp pages.
- */
-const IGNORE_INIT_METHODS_FOR_KEEP_ALIVE = [
-  MESSAGE_TYPE.GET_PROVIDER_STATE,
-  MESSAGE_TYPE.SEND_METADATA,
-];
-
-let keepAliveInterval;
-let keepAliveTimer;
-
-/**
- * Sending a message to the extension to receive will keep the service worker alive.
- *
- * If the extension is unloaded or reloaded during a session and the user attempts to send a
- * message to the extension, an "Extension context invalidated." error will be thrown from
- * chromium browsers. When this happens, prompt the user to reload the extension. Note: Handling
- * this error is not supported in Firefox here.
- */
-const sendMessageWorkerKeepAlive = () => {
-  browser.runtime
-    .sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE })
-    .catch((e) => {
-      e.message === EXTENSION_CONTEXT_INVALIDATED_CHROMIUM_ERROR
-        ? log.error(`Please refresh the page. MetaMask: ${e}`)
-        : log.error(`MetaMask: ${e}`);
-    });
-};
-
-/**
- * Running this method will ensure the service worker is kept alive for 45 minutes.
- * The first message is sent immediately and subsequent messages are sent at an
- * interval of WORKER_KEEP_ALIVE_INTERVAL.
- */
-const runWorkerKeepAliveInterval = () => {
-  clearTimeout(keepAliveTimer);
-
-  keepAliveTimer = setTimeout(() => {
-    clearInterval(keepAliveInterval);
-  }, TIME_45_MIN_IN_MS);
-
-  clearInterval(keepAliveInterval);
-
-  sendMessageWorkerKeepAlive();
-
-  keepAliveInterval = setInterval(() => {
-    if (browser.runtime.id) {
-      sendMessageWorkerKeepAlive();
-    }
-  }, WORKER_KEEP_ALIVE_INTERVAL);
-};
-
-/**
  * PHISHING STREAM LOGIC
  */
 
@@ -158,10 +90,6 @@ function setupPhishingPageStreams() {
     name: CONTENT_SCRIPT,
     target: PHISHING_WARNING_PAGE,
   });
-
-  if (isManifestV3) {
-    runWorkerKeepAliveInterval();
-  }
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -299,14 +227,6 @@ const setupPageStreams = () => {
     target: INPAGE,
   });
 
-  if (isManifestV3) {
-    pageStream.on('data', ({ data: { method } }) => {
-      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
-        runWorkerKeepAliveInterval();
-      }
-    });
-  }
-
   // create and connect channel muxers
   // so we can handle the channels individually
   pageMux = new ObjectMultiplex();
@@ -380,14 +300,6 @@ const setupLegacyPageStreams = () => {
     name: LEGACY_CONTENT_SCRIPT,
     target: LEGACY_INPAGE,
   });
-
-  if (isManifestV3) {
-    legacyPageStream.on('data', ({ data: { method } }) => {
-      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
-        runWorkerKeepAliveInterval();
-      }
-    });
-  }
 
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
