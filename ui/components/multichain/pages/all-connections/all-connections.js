@@ -110,6 +110,7 @@ export const AllConnections = () => {
     Object.entries(connectionList).map(([itemKey, connection]) => {
       return (
         <ConnectionListItem
+          data-testid="connection-list-item"
           key={itemKey}
           connection={connection}
           onClick={() => handleConnectionClick(connection)}
@@ -119,6 +120,7 @@ export const AllConnections = () => {
 
   return (
     <Page
+      data-testid="all-connections"
       header={
         <Header
           backgroundColor={BackgroundColor.backgroundDefault}
@@ -145,10 +147,18 @@ export const AllConnections = () => {
     >
       {shouldShowTabsView ? (
         <Tabs tabsClassName="all-connections__tabs">
-          <Tab name={t('sites')} tabKey="sites">
+          <Tab
+            data-testid="all-connections-sites-tab"
+            name={t('sites')}
+            tabKey="sites"
+          >
             {renderConnectionsList(sitesConnectionsList)}
           </Tab>
-          <Tab name={t('snaps')} tabKey="snaps">
+          <Tab
+            data-testid="all-connections-snaps-tab"
+            name={t('snaps')}
+            tabKey="snaps"
+          >
             {renderConnectionsList(snapsConnectionsList)}
           </Tab>
         </Tabs>
@@ -157,6 +167,7 @@ export const AllConnections = () => {
           {Object.keys(sitesConnectionsList).length > 0 && (
             <>
               <Text
+                data-testid="sites-connections"
                 backgroundColor={BackgroundColor.backgroundDefault}
                 variant={TextVariant.bodyLgMedium}
                 textAlign={TextAlign.Center}
@@ -170,6 +181,7 @@ export const AllConnections = () => {
           {Object.keys(snapsConnectionsList).length > 0 && (
             <>
               <Text
+                data-testid="snaps-connections"
                 variant={TextVariant.bodyLgMedium}
                 backgroundColor={BackgroundColor.backgroundDefault}
                 textAlign={TextAlign.Center}
@@ -184,6 +196,7 @@ export const AllConnections = () => {
       )}
       {totalConnections === 0 ? (
         <Text
+          data-testid="no-connections"
           variant={TextVariant.bodyLgMedium}
           backgroundColor={BackgroundColor.backgroundDefault}
           textAlign={TextAlign.Center}
