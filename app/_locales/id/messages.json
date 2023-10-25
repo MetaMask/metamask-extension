@@ -153,6 +153,12 @@
   "accountSelectionRequired": {
     "message": "Anda harus memilih satu akun!"
   },
+  "accountSnapsFeedback": {
+    "message": "Kirim masukan tentang fitur ini"
+  },
+  "accountsConnected": {
+    "message": "Akun terhubung"
+  },
   "active": {
     "message": "Aktif"
   },
@@ -176,6 +182,9 @@
   },
   "addAccount": {
     "message": "Tambahkan akun"
+  },
+  "addAccountSnapModalHeader": {
+    "message": "Tambahkan Akun Snap"
   },
   "addAcquiredTokens": {
     "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
@@ -243,6 +252,9 @@
   "addIPFSGateway": {
     "message": "Tambahkan gateway IPFS pilihan Anda"
   },
+  "addImportAccount": {
+    "message": "Tambahkan akun atau dompet perangkat keras"
+  },
   "addMemo": {
     "message": "Tambahkan memo"
   },
@@ -256,6 +268,9 @@
     "message": "Koneksi jaringan ini mengandalkan pihak ketiga. Koneksi ini mungkin kurang bisa diandalkan atau memungkinkan pihak ketiga melacak aktivitas. $1",
     "description": "$1 is Learn more link"
   },
+  "addNewAccount": {
+    "message": "Tambahkan akun baru"
+  },
   "addNewToken": {
     "message": "Tambahkan token baru"
   },
@@ -267,6 +282,12 @@
   },
   "addSnapAccountModalDescription": {
     "message": "Temukan opsi untuk menjaga keamanan akun Anda dengan MetaMask Snap"
+  },
+  "addSnapAccountToggle": {
+    "message": "Aktifkan \"Tambahkan akun Snap (Beta)\""
+  },
+  "addSnapAccountsDescription": {
+    "message": "Mengaktifkan fitur ini akan memberi opsi untuk menambahkan akun Snap Beta baru langsung dari daftar akun Anda. Jika Anda menginstal akun Snap, harap diingat bahwa ini adalah layanan pihak ketiga."
   },
   "addSuggestedNFTs": {
     "message": "Tambahkan NFT yang disarankan"
@@ -351,8 +372,14 @@
     "message": "Seluruh NFT Anda dari $1 ",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
+  "allow": {
+    "message": "Izinkan"
+  },
   "allowExternalExtensionTo": {
     "message": "Izinkan ekstensi eksternal ini untuk:"
+  },
+  "allowMmiToConnectToCustodian": {
+    "message": "Ini akan memungkinkan MMI terhubung ke $1 untuk mengimpor akun Anda."
   },
   "allowSpendToken": {
     "message": "Berikan izin untuk mengakses $1 Anda?",
@@ -486,6 +513,9 @@
   "backupApprovalNotice": {
     "message": "Cadangkan Frasa Pemulihan Rahasia Anda untuk menjaga keamanan dompet dan dana Anda."
   },
+  "backupKeyringSnapReminder": {
+    "message": "Pastikan Anda dapat mengakses sendiri akun yang dibuat oleh Snap ini sebelum menghapusnya"
+  },
   "backupNow": {
     "message": "Cadangkan sekarang"
   },
@@ -578,6 +608,9 @@
   "blockaidDescriptionTransferFarming": {
     "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan akan mengambil semua aset Anda."
   },
+  "blockaidMessage": {
+    "message": "Menjaga privasi - tidak ada data yang dibagikan kepada pihak ketiga. Tersedia di Mainnet Ethereum."
+  },
   "blockaidTitleDeceptive": {
     "message": "Ini adalah permintaan tipuan"
   },
@@ -610,6 +643,18 @@
   },
   "busy": {
     "message": "Sibuk"
+  },
+  "buy": {
+    "message": "Beli"
+  },
+  "buyAndSell": {
+    "message": "Jual & Beli"
+  },
+  "buyAndSellDescription": {
+    "message": "Beli kripto atau jual kripto untuk mendapatkan uang tunai"
+  },
+  "buyAndSellDisabled": {
+    "message": "Beli & Jual tidak tersedia di jaringan ini"
   },
   "buyAsset": {
     "message": "Beli $1",
@@ -702,6 +747,10 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "comboNoOptions": {
+    "message": "Opsi tidak ditemukan",
+    "description": "Default text shown in the combo field dropdown if no options."
+  },
   "configureSnapPopupDescription": {
     "message": "Sekarang, Anda akan meninggalkan MetaMask untuk mengonfigurasi snap ini."
   },
@@ -719,6 +768,15 @@
   },
   "confirm": {
     "message": "Konfirmasikan"
+  },
+  "confirmConnectCustodianRedirect": {
+    "message": "Kami akan mengarahkan Anda ke $1 setelah mengeklik lanjutkan."
+  },
+  "confirmConnectCustodianText": {
+    "message": "Untuk menghubungkan akun, masuk ke akun $1 dan klik tombol 'hubungkan ke MMI'."
+  },
+  "confirmConnectionTitle": {
+    "message": "Konfirmasikan koneksi ke $1"
   },
   "confirmPassword": {
     "message": "Konfirmasikan kata sandi"
@@ -752,6 +810,9 @@
   },
   "connectCustodialAccountTitle": {
     "message": "Akun Kustodian"
+  },
+  "connectCustodianAccounts": {
+    "message": "Hubungkan akun $1"
   },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
@@ -804,6 +865,9 @@
     "message": "$1 tidak terhubung ke situs mana pun.",
     "description": "$1 is the account name"
   },
+  "connectedSnapAndNoAccountDescription": {
+    "message": "MetaMask terhubung ke situs ini, tetapi belum ada akun yang terhubung"
+  },
   "connecting": {
     "message": "Menghubungkan..."
   },
@@ -850,6 +914,9 @@
   },
   "continue": {
     "message": "Lanjutkan"
+  },
+  "continueMmiOnboarding": {
+    "message": "Lanjutkan orientasi MetaMask Institutional"
   },
   "contract": {
     "message": "Kontrak"
@@ -919,6 +986,12 @@
   },
   "createPassword": {
     "message": "Buat kata sandi"
+  },
+  "createSnapAccountDescription": {
+    "message": "$1 ingin menambahkan akun Snap baru ke dompet Anda"
+  },
+  "createSnapAccountTitle": {
+    "message": "Buat akun Snap"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1268,6 +1341,10 @@
   "disconnectThisAccount": {
     "message": "Putuskan koneksi akun ini"
   },
+  "discoverSnaps": {
+    "message": "Temukan Snap",
+    "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
+  },
   "dismiss": {
     "message": "Lewatkan"
   },
@@ -1435,6 +1512,18 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Saat ini, deteksi token lanjutan tersedia di $1. $2"
   },
+  "ensDomainsSettingDescriptionIntroduction": {
+    "message": "MetaMask memungkinkan Anda melihat domain ENS pada bilah alamat browser Anda. Berikut cara kerjanya:"
+  },
+  "ensDomainsSettingDescriptionOutroduction": {
+    "message": "Ingatlah bahwa alamat IP akan diketahui oleh layanan pihak ketiga IPFS saat menggunakan fitur ini."
+  },
+  "ensDomainsSettingDescriptionPart1": {
+    "message": "MetaMask memeriksa kontrak ENS Ethereum untuk menemukan kode yang terhubung ke nama ENS."
+  },
+  "ensDomainsSettingDescriptionPart2": {
+    "message": "Jika kode terhubung ke IPFS, Anda dapat melihat konten yang dikaitkan dengannya (umumnya situs web)."
+  },
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
   },
@@ -1542,8 +1631,20 @@
     "message": "Perluas pengalaman dompet.",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
+  "extensionInsallCompleteDescription": {
+    "message": "Kembali ke orientasi produk MetaMask Institutional untuk menghubungkan akun kustodian atau kustodian mandiri milik Anda."
+  },
+  "extensionInsallCompleteTitle": {
+    "message": "Penginstalan ekstensi selesai"
+  },
   "externalExtension": {
     "message": "Ekstensi eksternal"
+  },
+  "externalNameSourcesSetting": {
+    "message": "Sarankan nama alamat"
+  },
+  "externalNameSourcesSettingDescription": {
+    "message": "Kami mengambil data dari pihak ketiga seperti Etherscan, Infura, dan Lens Protocol, untuk menyarankan nama alamat pada permintaan tanda tangan. Alamat IP Anda akan diketahui oleh pihak ketiga ini apabila mengaktifkan saran nama."
   },
   "failed": {
     "message": "Gagal"
@@ -1725,6 +1826,9 @@
   },
   "goBack": {
     "message": "Kembali"
+  },
+  "goToSite": {
+    "message": "Buka situs"
   },
   "goerli": {
     "message": "Jaringan uji Goerli"
@@ -1950,6 +2054,12 @@
   "install": {
     "message": "Instal"
   },
+  "installExtension": {
+    "message": "Instal ekstensi"
+  },
+  "installExtensionDescription": {
+    "message": "Versi dompet web3 terkemuka di dunia yang sesuai dengan institusi, MetaMask."
+  },
   "installOrigin": {
     "message": "Instal asal"
   },
@@ -2065,6 +2175,24 @@
   "jsonFile": {
     "message": "File JSON",
     "description": "format for importing an account"
+  },
+  "keyringAccountName": {
+    "message": "Nama akun"
+  },
+  "keyringAccountPublicAddress": {
+    "message": "Alamat Publik"
+  },
+  "keyringSnapRemovalResult1": {
+    "message": "$1 $2dihapus",
+    "description": "Displays the result after removal of a keyring snap. $1 is the snap name, $2 is whether it is successful or not"
+  },
+  "keyringSnapRemovalResultNotSuccessful": {
+    "message": "tidak ",
+    "description": "Displays the `not` word in $2."
+  },
+  "keyringSnapRemoveConfirmation": {
+    "message": "Ketik $1 untuk mengonfirmasi bahwa Anda ingin menghapus snap ini:",
+    "description": "Asks user to input the name nap prior to deleting the snap. $1 is the snap name"
   },
   "keystone": {
     "message": "Keystone"
@@ -2184,6 +2312,12 @@
   },
   "loadingNFTs": {
     "message": "Memuat NFT..."
+  },
+  "loadingScreenHardwareWalletMessage": {
+    "message": "Selesaikan transaksi di dompet perangkat keras."
+  },
+  "loadingScreenSnapMessage": {
+    "message": "Selesaikan transaksi di Snap."
   },
   "loadingTokens": {
     "message": "Memuat token..."
@@ -2311,6 +2445,12 @@
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dirancang dan dibangun di seluruh dunia."
   },
+  "mmiNewNFTDetectedInNFTsTabMessage": {
+    "message": "Izinkan MetaMask Institutional mendeteksi dan menampilkan NFT di dompet secara otomatis."
+  },
+  "mmiPasswordSetupDetails": {
+    "message": "Kata sandi ini hanya akan membuka ekstensi MetaMask Institutional."
+  },
   "more": {
     "message": "selengkapnya"
   },
@@ -2323,6 +2463,38 @@
   },
   "name": {
     "message": "Nama"
+  },
+  "nameAddressLabel": {
+    "message": "Alamat",
+    "description": "Label above address field in name component modal."
+  },
+  "nameInstructionsNew": {
+    "message": "Anda berinteraksi dengan alamat kontrak yang tidak dikenal. Jika memercayai pencipta ini, atur nama tampilan pribadi untuk mengidentifikasinya di masa mendatang.",
+    "description": "Instruction text in name component modal when value is not recognised."
+  },
+  "nameInstructionsSaved": {
+    "message": "Interaksi dengan alamat ini akan selalu diidentifikasi menggunakan nama tampilan pribadi ini.",
+    "description": "Instruction text in name component modal when value is saved."
+  },
+  "nameLabel": {
+    "message": "Nama tampilan",
+    "description": "Label above name input field in name component modal."
+  },
+  "nameModalTitleNew": {
+    "message": "Alamat tidak dikenal",
+    "description": "Title of the modal created by the name component when value is not recognised."
+  },
+  "nameModalTitleSaved": {
+    "message": "Alamat tersimpan",
+    "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameNoProposedNames": {
+    "message": "Nama yang diusulkan tidak ditemukan",
+    "description": "Text shown in the proposed name dropdown if none found."
+  },
+  "nameSetPlaceholder": {
+    "message": "Atur nama tampilan pribadi...",
+    "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
     "message": "Token asli di jaringan ini adalah $1. Ini merupakan token yang digunakan untuk biaya gas.",
@@ -2387,11 +2559,20 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
+  "networkNameLinea": {
+    "message": "Linea"
+  },
+  "networkNameOpMainnet": {
+    "message": "OP Mainnet"
+  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkNameZkSyncEra": {
+    "message": "zkSync Era"
   },
   "networkProvider": {
     "message": "Penyedia jaringan"
@@ -2445,6 +2626,19 @@
   "newContract": {
     "message": "Kontrak baru"
   },
+  "newNFTDetectedInImportNFTsMessage": {
+    "message": "Untuk menggunakan OpenSea, lihat NFT, atur ke 'Aktifkan API OpenSea' di $1.",
+    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
+  },
+  "newNFTDetectedInImportNFTsMessageStrongText": {
+    "message": "Pengaturan > Keamanan dan privasi"
+  },
+  "newNFTDetectedInNFTsTabMessage": {
+    "message": "Izinkan MetaMask mendeteksi dan menampilkan NFT di dompet secara otomatis."
+  },
+  "newNFTsAutodetected": {
+    "message": "Autodeteksi NFT"
+  },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
   },
@@ -2475,8 +2669,14 @@
     "message": "Token ini merupakan NFT. Tambahkan ke $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
+  "nftAlreadyAdded": {
+    "message": "NFT telah ditambahkan."
+  },
   "nftDisclaimer": {
     "message": "Penafian: MetaMask mengambil file media dari url sumber. URL ini terkadang diubah oleh pasar tempat NFT dicetak."
+  },
+  "nftLearnMore": {
+    "message": "Pelajari selengkapnya seputar NFT"
   },
   "nftOptions": {
     "message": "Opsi NFT"
@@ -2829,6 +3029,15 @@
   "notifications9Title": {
     "message": ".👓 Kami membuat transaksi lebih mudah untuk dibaca."
   },
+  "notificationsBuySellActionText": {
+    "message": "Cobalah di Portofolio MetaMask"
+  },
+  "notificationsBuySellDescription": {
+    "message": "Memperkenalkan tombol 'Beli & Jual', memberikan akses yang mudah ke fitur terbaru kami: Jual. Saat diklik, Anda akan diarahkan ke Portofolio MetaMask. Di sini, Anda bisa mengonversi kripto menjadi uang tunai dalam sekejap. Awalnya tersedia untuk ETH pada mainnet di AS (pembatasan negara bagian berlaku), Inggris, dan sebagian wilayah Eropa."
+  },
+  "notificationsBuySellTitle": {
+    "message": "Jual kripto, dapatkan uang tunai"
+  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox tidak lagi mendukung U2F, sehingga Ledger tidak akan berfungsi dengan MetaMask di Firefox. Cobalah MetaMask di Google Chrome sebagai gantinya.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3002,6 +3211,9 @@
   "onboardingPinExtensionTitle": {
     "message": "Pemasangan MetaMask Anda selesai!"
   },
+  "onboardingPinMmiExtensionLabel": {
+    "message": "Sematkan MetaMask Institutional"
+  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Peringatan deteksi pengelabuan bergantung pada komunikasi dengan $1. jsDeliver akan mendapat akses ke alamat IP Anda. Lihat $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -3012,12 +3224,22 @@
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
   },
+  "openCustodianApp": {
+    "message": "Buka aplikasi $1",
+    "description": "The $1 is the name of the Custodian that will be open"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Buka layar penuh untuk menghubungkan Ledger Anda.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "Buka di block explorer"
+  },
+  "openSeaLabel": {
+    "message": "OpenSea + Blockaid"
+  },
+  "openSeaMessage": {
+    "message": "Data dibagikan kepada pihak ketiga. Penyedia keamanan akan menerima transaksi yang tidak ditandatangani dan permintaan tanda tangan Anda."
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3064,6 +3286,9 @@
   },
   "password": {
     "message": "Kata sandi"
+  },
+  "passwordMmiTermsWarning": {
+    "message": "Saya memahami bahwa MetaMask Institutional tidak dapat memulihkan kata sandi ini untuk saya. $1"
   },
   "passwordNotLongEnough": {
     "message": "Kata sandi kurang panjang"
@@ -3172,6 +3397,22 @@
     "message": "Izinkan snap untuk mendapatkan kunci arbitrer unik untuk snap ini, tanpa mengeksposnya. Kunci ini terpisah dari akun MetaMask dan tidak terkait dengan kunci pribadi atau Frasa Pemulihan Rahasia. Snap lain tidak dapat mengakses informasi ini.",
     "description": "An extended description for the `snap_getEntropy` permission"
   },
+  "permission_getLocale": {
+    "message": "Lihat bahasa pilihan Anda.",
+    "description": "The description for the `snap_getLocale` permission"
+  },
+  "permission_getLocaleDescription": {
+    "message": "Izinkan Snap ini mengakses bahasa pilihan Anda dari pengaturan MetaMask. Ini dapat digunakan untuk melokalisasi dan menampilkan konten Snap menggunakan bahasa Anda.",
+    "description": "An extended description for the `snap_getLocale` permission"
+  },
+  "permission_keyring": {
+    "message": "Izinkan permintaan untuk menambah dan mengontrol akun Ethereum",
+    "description": "The description for the `endowment:keyring` permission"
+  },
+  "permission_keyringDescription": {
+    "message": "Izinkan Snap ini menerima permintaan untuk menambah atau menghapus akun, serta menandatangani dan bertransaksi atas nama akun tersebut.",
+    "description": "An extended description for the `endowment:keyring` permission"
+  },
   "permission_lifecycleHooks": {
     "message": "Gunakan lifecycle hook.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
@@ -3183,6 +3424,10 @@
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
+  },
+  "permission_manageAccountsDescription": {
+    "message": "Izinkan Snap ini untuk menambah atau menghapus akun Ethereum, lalu bertransaksi dan menandatanganinya menggunakan akun ini.",
+    "description": "An extended description for the `snap_manageAccounts` permission"
   },
   "permission_manageBip32Keys": {
     "message": "Kontrol akun dan aset Anda dengan $1 ($2).",
@@ -3280,6 +3525,12 @@
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
   },
+  "pinExtensionDescription": {
+    "message": "Navigasikan ke menu ekstensi dan sematkan MetaMask Institutional untuk akses tanpa batas."
+  },
+  "pinExtensionTitle": {
+    "message": "Sematkan ekstensi"
+  },
   "pleaseConfirm": {
     "message": "Harap konfirmasikan"
   },
@@ -3299,6 +3550,9 @@
   "preferredLedgerConnectionType": {
     "message": "Jenis koneksi Ledger yang dipilih",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
+  },
+  "preferredProvider": {
+    "message": "Pilih penyedia favorit Anda"
   },
   "preparingSwap": {
     "message": "Mempersiapkan pertukaran..."
@@ -3440,6 +3694,12 @@
   "removeJWTDescription": {
     "message": "Yakin ingin menghapus token ini? Semua akun yang ditetapkan ke token ini juga akan dihapus dari ekstensi:"
   },
+  "removeKeyringSnap": {
+    "message": "Akun berikut akan dihapus dari MetaMask saat menghapus Snap ini:"
+  },
+  "removeKeyringSnapToolTip": {
+    "message": "Snap mengontrol akun. Jika dihapus, maka akun tersebut akan dihapus juga dari MetaMask, tetapi akun tersebut akan tetap berada di blockchain."
+  },
   "removeNFT": {
     "message": "Hapus NFT"
   },
@@ -3448,6 +3708,15 @@
   },
   "removeSnap": {
     "message": "Hapus Snap"
+  },
+  "removeSnapAccountBannerDescription": {
+    "message": "Pastikan Anda dapat mengakses akun ini sendiri sebelum menghapusnya"
+  },
+  "removeSnapAccountDescription": {
+    "message": "$1 ingin menghapus akun ini dari MetaMask:"
+  },
+  "removeSnapAccountTitle": {
+    "message": "Hapus akun"
   },
   "removeSnapConfirmation": {
     "message": "Yakin ingin menghapus $1?",
@@ -3733,6 +4002,9 @@
   "selectAnAction": {
     "message": "Pilih tindakan"
   },
+  "selectEnableOpenseaAPIPrivacyPreference": {
+    "message": "Atur ke Aktifkan API OpenSea"
+  },
   "selectHdPath": {
     "message": "Pilih path HD"
   },
@@ -3753,6 +4025,9 @@
   },
   "send": {
     "message": "Kirim"
+  },
+  "sendAToken": {
+    "message": "Kirimkan token"
   },
   "sendBugReport": {
     "message": "Kirimi kami laporan bug."
@@ -3781,6 +4056,9 @@
     "message": "Peringatan: Anda akan mengirim kontrak token yang berpotensi mengakibatkan hilangnya dana. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
+  "sendingZeroAmount": {
+    "message": "Anda sedang mengirim 0 $1."
+  },
   "sepolia": {
     "message": "Jaringan uji Sepolia"
   },
@@ -3803,6 +4081,9 @@
   "settingsSearchMatchingNotFound": {
     "message": "Tidak menemukan hasil yang cocok."
   },
+  "settingsSubHeadingSignatures": {
+    "message": "Permintaan tanda tangan"
+  },
   "show": {
     "message": "Tampil"
   },
@@ -3824,6 +4105,9 @@
   "showIncomingTransactionsDescription": {
     "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
+  },
+  "showIncomingTransactionsExplainer": {
+    "message": "Ini bergantung pada API pihak ketiga yang berbeda untuk setiap jaringan, yang mengungkap alamat Ethereum dan alamat IP Anda."
   },
   "showMore": {
     "message": "Tampilkan selengkapnya"
@@ -3896,6 +4180,24 @@
   },
   "smartSwapsSubDescription": {
     "message": "* Smart Swap akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Swap telah berhasil dilakukan."
+  },
+  "snapAccountCreated": {
+    "message": "Akun Anda sudah siap!"
+  },
+  "snapAccountRedirectFinishSigningTitle": {
+    "message": "Selesaikan penandatanganan"
+  },
+  "snapAccountRedirectSiteDescription": {
+    "message": "Ikuti petunjuk dari $1"
+  },
+  "snapAccountRemoved": {
+    "message": "Akun dihapus"
+  },
+  "snapAccounts": {
+    "message": "Akun Snap"
+  },
+  "snapAccountsDescription": {
+    "message": "Akun yang dikontrol oleh Snap pihak ketiga."
   },
   "snapConfigure": {
     "message": "Konfigurasikan"
@@ -4019,8 +4321,14 @@
   "snapUpdateSuccess": {
     "message": "Pembaruan selesai"
   },
+  "snapUrlIsBlocked": {
+    "message": "Snap ini ingin mengarahkan Anda ke situs yang diblokir. $1."
+  },
   "snaps": {
     "message": "Snap"
+  },
+  "snapsConnected": {
+    "message": "Snap terhubung"
   },
   "snapsInsightLoading": {
     "message": "Memuat wawasan transaksi..."
@@ -4031,9 +4339,20 @@
   "snapsNoInsight": {
     "message": "Snap tidak mengembalikan wawasan apa pun"
   },
+  "snapsPrivacyWarningFirstMessage": {
+    "message": "Anda menyatakan bahwa Snap yang diinstal adalah Layanan Pihak Ketiga, kecuali jika diidentifikasi lain, sebagaimana dijelaskan dalam $1 Consensys. Penggunaan Layanan Pihak Ketiga diatur oleh syarat dan ketentuan terpisah yang ditetapkan oleh penyedia Layanan Pihak Ketiga. Consensys tidak merekomendasikan penggunaan Snap oleh orang tertentu karena alasan tertentu. Anda mengakses, mengandalkan, atau menggunakan Layanan Pihak Ketiga dengan risiko sendiri. Consensys menafikan semua tanggung jawab dan kewajiban atas kerugian yang timbul karena penggunaan Layanan Pihak Ketiga.",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
+  },
   "snapsPrivacyWarningSecondMessage": {
     "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningThirdMessage": {
+    "message": "Consensys tidak memiliki akses ke informasi yang Anda bagikan kepada Layanan Pihak Ketiga.",
+    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsSettings": {
+    "message": "Pengaturan Snap"
   },
   "snapsTermsOfUse": {
     "message": "Ketentuan Penggunaan"
@@ -4047,6 +4366,10 @@
   },
   "someNetworksMayPoseSecurity": {
     "message": "Beberapa jaringan dapat menimbulkan risiko keamanan dan/atau privasi. Pahami risikonya sebelum menambahkan dan menggunakan jaringan."
+  },
+  "somethingDoesntLookRight": {
+    "message": "Ada yang tidak beres? $1",
+    "description": "A false positive message for users to contact support. $1 is a link to the support page."
   },
   "somethingIsWrong": {
     "message": "Terjadi kesalahan. Coba muat ulang halaman."
@@ -5023,6 +5346,12 @@
   "transactionHistoryTotalGasFee": {
     "message": "Total biaya gas"
   },
+  "transactionInsightsDeprecationInfo": {
+    "message": "Jelajahi lebih banyak cara mendapatkan wawasan transaksi"
+  },
+  "transactionInsightsDeprecationTitle": {
+    "message": "Fitur ini tidak akan digunakan lagi dalam waktu dekat"
+  },
   "transactionNote": {
     "message": "Catatan transaksi"
   },
@@ -5173,11 +5502,24 @@
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"
   },
+  "useNftDetectionDescriptionText": {
+    "message": "Izinkan MetaMask menambahkan NFT yang Anda miliki menggunakan layanan pihak ketiga (seperti OpenSea). Autodeteksi NFT mengekspos alamat IP dan akun Anda ke layanan ini. Mengaktifkan fitur ini dapat mengaitkan alamat IP dengan alamat Ethereum Anda dan menampilkan NFT palsu yang di-airdrop oleh penipu. Anda dapat menambahkan token secara manual untuk menghindari risiko ini."
+  },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"
   },
   "usePhishingDetectionDescription": {
     "message": "Menampilkan peringatan untuk domain phishing yang menargetkan pengguna Ethereum"
+  },
+  "useSafeChainsListValidation": {
+    "message": "Pemeriksaan detail jaringan"
+  },
+  "useSafeChainsListValidationDescription": {
+    "message": "MetaMask menggunakan layanan pihak ketiga yang disebut $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi. Hal ini dapat mengurangi kemungkinan Anda untuk terhubung ke jaringan berbahaya atau salah. Saat menggunakan fitur ini, alamat IP akan diketahui oleh chainid.network."
+  },
+  "useSafeChainsListValidationWebsite": {
+    "message": "chainid.network",
+    "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useSiteSuggestion": {
     "message": "Gunakan saran situs"

@@ -153,6 +153,12 @@
   "accountSelectionRequired": {
     "message": "アカウントを選択する必要があります！"
   },
+  "accountSnapsFeedback": {
+    "message": "この機能のフィードバックを送信"
+  },
+  "accountsConnected": {
+    "message": "アカウントが接続されました"
+  },
   "active": {
     "message": "アクティブ"
   },
@@ -176,6 +182,9 @@
   },
   "addAccount": {
     "message": "アカウントを追加"
+  },
+  "addAccountSnapModalHeader": {
+    "message": "アカウントSnapの追加"
   },
   "addAcquiredTokens": {
     "message": "MetaMaskを使用して取得したトークンを追加します"
@@ -243,6 +252,9 @@
   "addIPFSGateway": {
     "message": "優先IPFSゲートウェイを追加"
   },
+  "addImportAccount": {
+    "message": "アカウントまたはハードウェアウォレットを追加"
+  },
   "addMemo": {
     "message": "メモを追加"
   },
@@ -256,6 +268,9 @@
     "message": "このネットワーク接続はサードパーティに依存しているため、信頼性が低かったり、サードパーティによるアクティビティの追跡が可能になる可能性があります。$1",
     "description": "$1 is Learn more link"
   },
+  "addNewAccount": {
+    "message": "新しいアカウントを追加"
+  },
   "addNewToken": {
     "message": "新しいトークンを追加"
   },
@@ -267,6 +282,12 @@
   },
   "addSnapAccountModalDescription": {
     "message": "MetaMask Snapsでアカウントのセキュリティを確保する方法をご覧ください"
+  },
+  "addSnapAccountToggle": {
+    "message": "「アカウントSnapの追加 (ベータ版)」を有効にする"
+  },
+  "addSnapAccountsDescription": {
+    "message": "この機能をオンにすると、アカウントリストから直接新しいベータ版のアカウントSnapを追加できるようになります。アカウントSnapをインストールする際は、サードパーティサービスである点にご注意ください。"
   },
   "addSuggestedNFTs": {
     "message": "推奨されたNFTを追加"
@@ -351,8 +372,14 @@
     "message": "$1のすべてのNFT",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
+  "allow": {
+    "message": "許可する"
+  },
   "allowExternalExtensionTo": {
     "message": "この外部拡張機能に次の操作を許可します"
+  },
+  "allowMmiToConnectToCustodian": {
+    "message": "これにより、MMIが$1に接続してアカウントをインポートできるようになります。"
   },
   "allowSpendToken": {
     "message": "$1へのアクセス許可を与えますか？",
@@ -486,6 +513,9 @@
   "backupApprovalNotice": {
     "message": "シークレットリカバリーフレーズをバックアップして、ウォレットと資金の安全を確保してください。"
   },
+  "backupKeyringSnapReminder": {
+    "message": "削除する前に、このSnapが作成したすべてのアカウントに自分でアクセスできることを確認してください"
+  },
   "backupNow": {
     "message": "今すぐバックアップ"
   },
@@ -578,6 +608,9 @@
   "blockaidDescriptionTransferFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われます。"
   },
+  "blockaidMessage": {
+    "message": "プライバシー保護 - サードパーティとデータは一切共有されません。イーサリアムメインネットで利用可能。"
+  },
   "blockaidTitleDeceptive": {
     "message": "これは虚偽のリクエストです"
   },
@@ -610,6 +643,18 @@
   },
   "busy": {
     "message": "ビジー状態"
+  },
+  "buy": {
+    "message": "購入"
+  },
+  "buyAndSell": {
+    "message": "購入・売却"
+  },
+  "buyAndSellDescription": {
+    "message": "仮想通貨を購入または売却して現金化します"
+  },
+  "buyAndSellDisabled": {
+    "message": "このネットワークでは購入・売却を利用できません"
   },
   "buyAsset": {
     "message": "$1を購入",
@@ -702,6 +747,10 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "comboNoOptions": {
+    "message": "オプションが見つかりません",
+    "description": "Default text shown in the combo field dropdown if no options."
+  },
   "configureSnapPopupDescription": {
     "message": "MetaMaskから移動してこのsnapを構成します。"
   },
@@ -719,6 +768,15 @@
   },
   "confirm": {
     "message": "確認"
+  },
+  "confirmConnectCustodianRedirect": {
+    "message": "「続行」をクリックすると、$1にリダイレクトされます。"
+  },
+  "confirmConnectCustodianText": {
+    "message": "アカウントを接続するには、$1アカウントにログインして「MMIに接続」ボタンをクリックしてください。"
+  },
+  "confirmConnectionTitle": {
+    "message": "$1への接続の確定"
   },
   "confirmPassword": {
     "message": "パスワードの確認"
@@ -752,6 +810,9 @@
   },
   "connectCustodialAccountTitle": {
     "message": "カストディアルアカウント"
+  },
+  "connectCustodianAccounts": {
+    "message": "$1アカウントの接続"
   },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
@@ -804,6 +865,9 @@
     "message": "$1はどのサイトとも接続されていません。",
     "description": "$1 is the account name"
   },
+  "connectedSnapAndNoAccountDescription": {
+    "message": "MetaMaskはこのサイトに接続されていますが、まだアカウントは接続されていません"
+  },
   "connecting": {
     "message": "接続中..."
   },
@@ -850,6 +914,9 @@
   },
   "continue": {
     "message": "続行"
+  },
+  "continueMmiOnboarding": {
+    "message": "MetaMask Institutionalのオンボーディングを続ける"
   },
   "contract": {
     "message": "コントラクト"
@@ -919,6 +986,12 @@
   },
   "createPassword": {
     "message": "パスワードを作成"
+  },
+  "createSnapAccountDescription": {
+    "message": "$1がウォレットに新しいSnapアカウントを追加しようとしています"
+  },
+  "createSnapAccountTitle": {
+    "message": "Snapアカウントを作成"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1268,6 +1341,10 @@
   "disconnectThisAccount": {
     "message": "このアカウントを接続解除"
   },
+  "discoverSnaps": {
+    "message": "Snapのご紹介",
+    "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
+  },
   "dismiss": {
     "message": "閉じる"
   },
@@ -1435,6 +1512,18 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "改善されたトークン検出は現在$1で利用可能です。$2"
   },
+  "ensDomainsSettingDescriptionIntroduction": {
+    "message": "MetaMaskは、ENSドメインをブラウザのアドレスバーに直接表示します。使い方は次の通りです:"
+  },
+  "ensDomainsSettingDescriptionOutroduction": {
+    "message": "この機能を使用すると、IPアドレスがIPFSのサードパーティサービスに公開されます。"
+  },
+  "ensDomainsSettingDescriptionPart1": {
+    "message": "MetaMaskはイーサリアムのENSコントラクトを確認し、ENS名に接続されたコードを取得します。"
+  },
+  "ensDomainsSettingDescriptionPart2": {
+    "message": "コードがIPFSにリンクしている場合、関連付けられたコンテンツ (通常Webサイト) を見ることができます。"
+  },
   "ensDomainsSettingTitle": {
     "message": "アドレスバーにENSドメインを表示する"
   },
@@ -1542,8 +1631,20 @@
     "message": "ウォレットのユーザー体験をカスタマイズします。",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
+  "extensionInsallCompleteDescription": {
+    "message": "MetaMask Institutionalの製品オンボーディングに戻って、カストディアルまたはセルフカストディアルアカウントを接続します。"
+  },
+  "extensionInsallCompleteTitle": {
+    "message": "拡張機能のインストールが完了しました"
+  },
   "externalExtension": {
     "message": "外部拡張機能"
+  },
+  "externalNameSourcesSetting": {
+    "message": "アドレス名を提案"
+  },
+  "externalNameSourcesSettingDescription": {
+    "message": "当社はEtherscan、Infura、Lens Protocolなどのサードパーティからデータを取得し、署名要求のアドレス名を提案しています。名前の提案をオンにすると、ユーザーのIPアドレスがこれらのサードパーティに公開されます。"
   },
   "failed": {
     "message": "失敗しました"
@@ -1725,6 +1826,9 @@
   },
   "goBack": {
     "message": "戻る"
+  },
+  "goToSite": {
+    "message": "サイトに移動"
   },
   "goerli": {
     "message": "Goerliテストネットワーク"
@@ -1950,6 +2054,12 @@
   "install": {
     "message": "インストール"
   },
+  "installExtension": {
+    "message": "拡張機能をインストール"
+  },
+  "installExtensionDescription": {
+    "message": "世界をリードするWeb3ウォレット、MetaMaskの企業対応版です。"
+  },
   "installOrigin": {
     "message": "インストール元"
   },
@@ -2065,6 +2175,24 @@
   "jsonFile": {
     "message": "JSONファイル",
     "description": "format for importing an account"
+  },
+  "keyringAccountName": {
+    "message": "アカウント名"
+  },
+  "keyringAccountPublicAddress": {
+    "message": "パブリックアドレス"
+  },
+  "keyringSnapRemovalResult1": {
+    "message": "$1の削除を完了$2",
+    "description": "Displays the result after removal of a keyring snap. $1 is the snap name, $2 is whether it is successful or not"
+  },
+  "keyringSnapRemovalResultNotSuccessful": {
+    "message": "できませんでした",
+    "description": "Displays the `not` word in $2."
+  },
+  "keyringSnapRemoveConfirmation": {
+    "message": "「$1」と入力して、このSnapを削除することを確定してください:",
+    "description": "Asks user to input the name nap prior to deleting the snap. $1 is the snap name"
   },
   "keystone": {
     "message": "Keystone"
@@ -2184,6 +2312,12 @@
   },
   "loadingNFTs": {
     "message": "NFTをロードしています..."
+  },
+  "loadingScreenHardwareWalletMessage": {
+    "message": "ハードウェアウォレットでトランザクションを完了させてください。"
+  },
+  "loadingScreenSnapMessage": {
+    "message": "Snapでトランザクションを完了させてください。"
   },
   "loadingTokens": {
     "message": "トークンをロードしています..."
@@ -2311,6 +2445,12 @@
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
   },
+  "mmiNewNFTDetectedInNFTsTabMessage": {
+    "message": "MetaMask Institutionalによるウォレット内のNFTの自動検出と表示を許可します。"
+  },
+  "mmiPasswordSetupDetails": {
+    "message": "このパスワードはMetaMask Institutional拡張機能のロックしか解除しません。"
+  },
   "more": {
     "message": "他"
   },
@@ -2323,6 +2463,38 @@
   },
   "name": {
     "message": "名前"
+  },
+  "nameAddressLabel": {
+    "message": "アドレス",
+    "description": "Label above address field in name component modal."
+  },
+  "nameInstructionsNew": {
+    "message": "不明なコントラクトアドレスとやり取りしています。この作成者を信頼する場合は、個人的な表示名を設定して、今後この作成者を識別できるようにしてください。",
+    "description": "Instruction text in name component modal when value is not recognised."
+  },
+  "nameInstructionsSaved": {
+    "message": "このアドレスとのやり取りは、常にこの個人的な表示名を使用して識別されます。",
+    "description": "Instruction text in name component modal when value is saved."
+  },
+  "nameLabel": {
+    "message": "表示名",
+    "description": "Label above name input field in name component modal."
+  },
+  "nameModalTitleNew": {
+    "message": "不明なアドレス",
+    "description": "Title of the modal created by the name component when value is not recognised."
+  },
+  "nameModalTitleSaved": {
+    "message": "保存したアドレス",
+    "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameNoProposedNames": {
+    "message": "推奨名が見つかりません",
+    "description": "Text shown in the proposed name dropdown if none found."
+  },
+  "nameSetPlaceholder": {
+    "message": "個人的な表示名を設定...",
+    "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
     "message": "このネットワークのネイティブトークンは$1です。ガス代にもこのトークンが使用されます。",
@@ -2387,11 +2559,20 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
+  "networkNameLinea": {
+    "message": "Linea"
+  },
+  "networkNameOpMainnet": {
+    "message": "OPメインネット"
+  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameTestnet": {
     "message": "テストネット"
+  },
+  "networkNameZkSyncEra": {
+    "message": "zkSync Era"
   },
   "networkProvider": {
     "message": "ネットワークプロバイダー"
@@ -2445,6 +2626,19 @@
   "newContract": {
     "message": "新しいコントラクト"
   },
+  "newNFTDetectedInImportNFTsMessage": {
+    "message": "OpenSeaを利用してNFTを表示するには、$1で「OpenSea APIを有効にする」をオンにしてください。",
+    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
+  },
+  "newNFTDetectedInImportNFTsMessageStrongText": {
+    "message": "「設定」>「セキュリティとプライバシー」"
+  },
+  "newNFTDetectedInNFTsTabMessage": {
+    "message": "MetaMaskによるウォレット内のNFTの自動検出と表示を許可します。"
+  },
+  "newNFTsAutodetected": {
+    "message": "NFTの自動検出"
+  },
   "newNetworkAdded": {
     "message": "「$1」が追加されました！"
   },
@@ -2475,8 +2669,14 @@
     "message": "このトークンはNFTです。$1で追加してください",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
+  "nftAlreadyAdded": {
+    "message": "NFTがすでに追加されています。"
+  },
   "nftDisclaimer": {
     "message": "開示事項: MetaMaskはソースURLからメディアファイルを取得します。このURLは時々、NFTがミントされたマーケットプレイスにより変更されることがあります。"
+  },
+  "nftLearnMore": {
+    "message": "NFTの詳細"
   },
   "nftOptions": {
     "message": "NFTオプション"
@@ -2829,6 +3029,15 @@
   "notifications9Title": {
     "message": "👓 トランザクションが読みやすくなりました。"
   },
+  "notificationsBuySellActionText": {
+    "message": "MetaMask Portfolioで試す"
+  },
+  "notificationsBuySellDescription": {
+    "message": "最新機能の「売却」に簡単にアクセスできる、「購入・売却」ボタンをご紹介します。このボタンをクリックすると、MetaMask Portfolioにリダイレクトされ、仮想通貨を瞬時にキャッシュに換金できます。はじめに米国 (州の制限が適用されます)、英国、欧州の一部のメインネットのETHで利用可能になります。"
+  },
+  "notificationsBuySellTitle": {
+    "message": "仮想通貨を売ってキャッシュを入手"
+  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "FirefoxはU2Fをサポートしなくなったため、LedgerはFirefox版の MetaMaskでは機能しません。代わりにGoogle Chrome版のMetaMaskをお試しください。",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3002,6 +3211,9 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"
   },
+  "onboardingPinMmiExtensionLabel": {
+    "message": "MetaMask Institutionalをピン留めする"
+  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "フィッシング検出アラートには$1との通信が必要です。jsDeliverはユーザーのIPアドレスにアクセスします。$2をご覧ください。",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -3012,12 +3224,22 @@
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。"
   },
+  "openCustodianApp": {
+    "message": "$1アプリを開く",
+    "description": "The $1 is the name of the Custodian that will be open"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "全画面モードにしてLedgerを接続します。",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "ブロックエクスプローラーで開く"
+  },
+  "openSeaLabel": {
+    "message": "OpenSea + Blockaid"
+  },
+  "openSeaMessage": {
+    "message": "データはサードパーティと共有されます。セキュリティプロバイダーはユーザーの未署名のトランザクションと署名要求を受信します。"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3064,6 +3286,9 @@
   },
   "password": {
     "message": "パスワード"
+  },
+  "passwordMmiTermsWarning": {
+    "message": "私は、MetaMask Institutionalがこのパスワードを復元できないことを理解しています。$1"
   },
   "passwordNotLongEnough": {
     "message": "パスワードの長さが足りません"
@@ -3172,6 +3397,22 @@
     "message": "snapが、このsnapに固有の任意のキーを公開せずに導出することを許可します。これらのキーはMetaMaskアカウントとは別で、秘密鍵やシークレットリカバリーフレーズとは関連性がありません。他のsnapはこの情報にアクセスできません。",
     "description": "An extended description for the `snap_getEntropy` permission"
   },
+  "permission_getLocale": {
+    "message": "言語設定の表示",
+    "description": "The description for the `snap_getLocale` permission"
+  },
+  "permission_getLocaleDescription": {
+    "message": "このSnapがMetaMaskの言語設定にアクセスできるようにします。これは、Snapのコンテンツをユーザーの言語にローカライズして表示するために使用されます。",
+    "description": "An extended description for the `snap_getLocale` permission"
+  },
+  "permission_keyring": {
+    "message": "イーサリアムアカウントの追加と制御の要求を許可する",
+    "description": "The description for the `endowment:keyring` permission"
+  },
+  "permission_keyringDescription": {
+    "message": "このSnapによるアカウントの追加または削除に加え、これらのアカウントの代理での署名や取引も許可します。",
+    "description": "An extended description for the `endowment:keyring` permission"
+  },
   "permission_lifecycleHooks": {
     "message": "ライフサイクルフックを使用します。",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
@@ -3183,6 +3424,10 @@
   "permission_manageAccounts": {
     "message": "イーサリアムアカウントを追加して管理します",
     "description": "The description for `snap_manageAccounts` permission"
+  },
+  "permission_manageAccountsDescription": {
+    "message": "このSnapによるイーサリアムアカウントの追加または削除、そしてこれらのアカウントでのトランザクションおよび署名を許可します。",
+    "description": "An extended description for the `snap_manageAccounts` permission"
   },
   "permission_manageBip32Keys": {
     "message": "$1 ($2) のアカウントとアセットを管理します。",
@@ -3280,6 +3525,12 @@
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
   },
+  "pinExtensionDescription": {
+    "message": "拡張機能のメニューに移動し、MetaMask Institutionalをピン留めすると、スムーズにアクセスできます。"
+  },
+  "pinExtensionTitle": {
+    "message": "拡張機能をピン留めする"
+  },
   "pleaseConfirm": {
     "message": "確認してください"
   },
@@ -3299,6 +3550,9 @@
   "preferredLedgerConnectionType": {
     "message": "優先Ledger接続タイプ",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
+  },
+  "preferredProvider": {
+    "message": "希望のプロバイダーを選択してください"
   },
   "preparingSwap": {
     "message": "スワップを準備しています..."
@@ -3440,6 +3694,12 @@
   "removeJWTDescription": {
     "message": "このトークンを削除してよろしいですか？このトークンに割り当てられているすべてのアカウントが、同時に拡張機能から削除されます: "
   },
+  "removeKeyringSnap": {
+    "message": "このSnapを削除すると、これらのアカウントがMetaMaskから削除されます:"
+  },
+  "removeKeyringSnapToolTip": {
+    "message": "Snapはアカウントをコントロールするため、Snapを削除するとアカウントもMetaMaskから削除されますが、ブロックチェーン上から削除されることはありません。"
+  },
   "removeNFT": {
     "message": "NFTを削除"
   },
@@ -3448,6 +3708,15 @@
   },
   "removeSnap": {
     "message": "snapを削除"
+  },
+  "removeSnapAccountBannerDescription": {
+    "message": "削除する前に、このアカウントに自分でアクセスできることを確認してください"
+  },
+  "removeSnapAccountDescription": {
+    "message": "$1がMetaMaskからこのアカウントを削除しようとしています:"
+  },
+  "removeSnapAccountTitle": {
+    "message": "アカウントを削除"
   },
   "removeSnapConfirmation": {
     "message": "$1を削除してよろしいですか？",
@@ -3733,6 +4002,9 @@
   "selectAnAction": {
     "message": "アクションを選択してください"
   },
+  "selectEnableOpenseaAPIPrivacyPreference": {
+    "message": "「OpenSea APIを有効にする」をオンにする"
+  },
   "selectHdPath": {
     "message": "HDパスを選択"
   },
@@ -3753,6 +4025,9 @@
   },
   "send": {
     "message": "送金"
+  },
+  "sendAToken": {
+    "message": "トークンを送信"
   },
   "sendBugReport": {
     "message": "バグの報告をお送りください。"
@@ -3781,6 +4056,9 @@
     "message": "警告: 資金の喪失に繋がる可能性のあるトークンコントラクトに送信しようとしています。$1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
+  "sendingZeroAmount": {
+    "message": "0 $1を送ろうとしています"
+  },
   "sepolia": {
     "message": "Sepoliaテストネットワーク"
   },
@@ -3803,6 +4081,9 @@
   "settingsSearchMatchingNotFound": {
     "message": "一致する結果が見つかりませんでした。"
   },
+  "settingsSubHeadingSignatures": {
+    "message": "署名の要求"
+  },
   "show": {
     "message": "表示"
   },
@@ -3824,6 +4105,9 @@
   "showIncomingTransactionsDescription": {
     "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする$1に依存します。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
+  },
+  "showIncomingTransactionsExplainer": {
+    "message": "これは、ネットワークごとに異なるサードパーティAPIに依存します。これにより、イーサリアムアドレスとIPアドレスが公開されます。"
   },
   "showMore": {
     "message": "他を表示"
@@ -3896,6 +4180,24 @@
   },
   "smartSwapsSubDescription": {
     "message": "* スマートスワップは、トランザクションの送信を非公開で複数回試行します。すべての試行に失敗した場合、スワップが正常に行われるように、トランザクションが一般公開されます。"
+  },
+  "snapAccountCreated": {
+    "message": "アカウントの準備ができました！"
+  },
+  "snapAccountRedirectFinishSigningTitle": {
+    "message": "署名を完了させる"
+  },
+  "snapAccountRedirectSiteDescription": {
+    "message": "$1の指示に従ってください"
+  },
+  "snapAccountRemoved": {
+    "message": "アカウントが削除されました"
+  },
+  "snapAccounts": {
+    "message": "アカウントSnap"
+  },
+  "snapAccountsDescription": {
+    "message": "サードパーティSnapが制御するアカウント"
   },
   "snapConfigure": {
     "message": "構成"
@@ -4019,8 +4321,14 @@
   "snapUpdateSuccess": {
     "message": "更新完了"
   },
+  "snapUrlIsBlocked": {
+    "message": "このSnapがブロックされたサイトに移動しようとしています。$1。"
+  },
   "snaps": {
     "message": "Snaps"
+  },
+  "snapsConnected": {
+    "message": "Snapが接続されました"
   },
   "snapsInsightLoading": {
     "message": "トランザクションインサイトを読み込み中..."
@@ -4031,9 +4339,20 @@
   "snapsNoInsight": {
     "message": "snapがインサイトを返しませんでした"
   },
+  "snapsPrivacyWarningFirstMessage": {
+    "message": "ユーザーは、別途特定されていない限り、インストールするSnapがConsensys$1で定義されているサードパーティサービスであることを認めたものとみなされます。サードパーティサービスの使用には、当該サードパーティサービスプロバイダーにより定められた、別の諸条件が適用されます。Consensysは、いかなる理由であっても、特定の人物によるSnapの使用を一切推奨しません。サードパーティサービスへのアクセス、依存、使用は、ユーザーの自己責任で行うものとします。Consensysは、サードパーティサービスの使用によりアカウントで発生する損失について、一切責任および賠償責任を負いません。",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
+  },
   "snapsPrivacyWarningSecondMessage": {
     "message": "サードパーティサービスと共有する情報は、当該サードパーティサービスにより、それぞれのプライバシーポリシーに従い直接収集されます。詳細は、各サードパーティサービスのプライバシーポリシーをご覧ください。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningThirdMessage": {
+    "message": "Consensysは、ユーザーがサードパーティと共有した情報に一切アクセスできません。",
+    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsSettings": {
+    "message": "Snapの設定"
   },
   "snapsTermsOfUse": {
     "message": "利用規約"
@@ -4047,6 +4366,10 @@
   },
   "someNetworksMayPoseSecurity": {
     "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
+  },
+  "somethingDoesntLookRight": {
+    "message": "何か不審な点があれば、$1",
+    "description": "A false positive message for users to contact support. $1 is a link to the support page."
   },
   "somethingIsWrong": {
     "message": "エラーが発生しました。ページを再度読み込んでみてください。"
@@ -5023,6 +5346,12 @@
   "transactionHistoryTotalGasFee": {
     "message": "ガス代合計"
   },
+  "transactionInsightsDeprecationInfo": {
+    "message": "次の手段でトランザクション分析情報を取得する他の方法をご覧ください:"
+  },
+  "transactionInsightsDeprecationTitle": {
+    "message": "この機能は近日中に廃止になります"
+  },
   "transactionNote": {
     "message": "トランザクション備考"
   },
@@ -5173,11 +5502,24 @@
   "useNftDetection": {
     "message": "NFTを自動検出"
   },
+  "useNftDetectionDescriptionText": {
+    "message": "MetaMaskが、サードパーティサービス (例: OpenSea) を使って、ユーザーが所有するNFTを追加することを許可します。NFTの自動検出機能を利用すると、ユーザーのIPとアカウントアドレスがこれらのサービスに公開されます。この機能を有効にした場合、ユーザーのIPアドレスとイーサリアムアドレスが紐付けられ、詐欺師によりエアドロップされた偽のNFTが表示される可能性があります。このリスクを回避するため、手動でトークンを追加することもできます。"
+  },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
   },
   "usePhishingDetectionDescription": {
     "message": "イーサリアムユーザーを対象としたドメインのフィッシングに対して警告を表示します"
+  },
+  "useSafeChainsListValidation": {
+    "message": "ネットワーク情報の確認"
+  },
+  "useSafeChainsListValidationDescription": {
+    "message": "MetaMaskは$1というサードパーティサービスを利用して、正確かつ標準化されたネットワーク情報を表示しています。これにより、悪質なネットワークや正しくないネットワークに接続してしまう可能性が減ります。この機能を使用すると、ユーザーのIPアドレスがchainid.networkに公開されます。"
+  },
+  "useSafeChainsListValidationWebsite": {
+    "message": "chainid.network",
+    "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useSiteSuggestion": {
     "message": "サイトの提案を使用"
