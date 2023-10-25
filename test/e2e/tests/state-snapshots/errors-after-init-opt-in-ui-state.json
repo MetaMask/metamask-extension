@@ -57,7 +57,6 @@
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
-    "serviceWorkerLastActiveTime": 0,
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,

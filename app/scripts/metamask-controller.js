@@ -166,7 +166,6 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
-import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -1661,25 +1660,6 @@ export default class MetamaskController extends EventEmitter {
         this.approvalController.clear();
       },
     );
-
-    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === undefined) {
-      const { serviceWorkerLastActiveTime } =
-        this.appStateController.store.getState();
-      const metametricsPayload = {
-        category: MetaMetricsEventCategory.ServiceWorkers,
-        event: MetaMetricsEventName.ServiceWorkerRestarted,
-        properties: {
-          service_worker_restarted_time:
-            Date.now() - serviceWorkerLastActiveTime,
-        },
-      };
-
-      try {
-        this.metaMetricsController.trackEvent(metametricsPayload);
-      } catch (e) {
-        log.warn('Failed to track service worker restart metric:', e);
-      }
-    }
 
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
@@ -3743,13 +3723,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The address of the newly-created account.
    */
   async addNewAccount(accountCount) {
-    const isActionMetricsQueueE2ETest =
-      this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
-
-    if (process.env.IN_TEST && isActionMetricsQueueE2ETest) {
-      await new Promise((resolve) => setTimeout(resolve, 5_000));
-    }
-
     const oldAccounts = await this.keyringController.getAccounts();
 
     const { addedAccountAddress } = await this.keyringController.addNewAccount(
