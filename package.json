@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.2.0",
+  "version": "11.3.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -269,7 +269,7 @@
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/phishing-controller": "^6.0.0",
     "@metamask/post-message-stream": "^6.2.0",
-    "@metamask/ppom-validator": "^0.7.0",
+    "@metamask/ppom-validator": "^0.8.0",
     "@metamask/providers": "^13.1.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/rpc-methods": "^3.0.0",
