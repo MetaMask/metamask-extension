@@ -7,6 +7,13 @@ const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
+// These tests should only be run on Flask for now.
+const FLASK_ONLY_TESTS = [
+  'test-snap-lifecycle.spec.js',
+  'test-snap-get-locale.spec.js',
+  'petnames.spec.js',
+];
+
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {
     withFileTypes: true,
@@ -82,10 +89,6 @@ async function main() {
             description: `Run only mmi related tests`,
             type: 'boolean',
           })
-          .option('flask', {
-            description: `run flask e2e tests`,
-            type: 'boolean',
-          })
           .option('rpc', {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
@@ -121,7 +124,6 @@ async function main() {
     debug,
     retries,
     mmi,
-    flask,
     rpc,
     buildType,
     updateSnapshot,
@@ -130,22 +132,34 @@ async function main() {
 
   let testPaths;
 
-  if (flask) {
+  // These test paths should be run against both flask and main builds.
+  // Eventually we should move all features to this array and test them all
+  // on every build type in which they are running to avoid regressions across
+  // builds.
+  const featureTestsOnMain = [
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
+  ];
+
+  if (buildType === 'flask') {
     testPaths = [
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
+      ...featureTestsOnMain,
     ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
+    const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
+      FLASK_ONLY_TESTS.every((filteredTest) => !p.endsWith(filteredTest)),
+    );
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
+      ...filteredFlaskAndMainTests,
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   }
