@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { defaultGanacheOptions, withFixtures } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  unlockWallet,
+  withFixtures,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { setupAutoDetectMocking } = require('./mocks');
 
@@ -19,8 +23,7 @@ describe('NFT detection', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         const collection = await driver.findElement(
           '[data-testid="collection-expander-button"]',
