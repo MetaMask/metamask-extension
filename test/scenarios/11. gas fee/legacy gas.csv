@@ -14,6 +14,6 @@ The selected network is Sepolia.",
 9,"On edit screen, click ""Edit suggested gas fee"".",,Editable gas limit and gas price input fields are displayed.,
 10,"In gas price input field, enter a different value, and click ""Save"".",e.g. 50,"On notification screen, the displayed gas fee is different from previous one.","Take a note for the current gas fee. "
 11,"On notification screen , click ""Confirm"" to proceed the transaction.",,The transaction appears in the activity list. The recipient's hexadecimal address is shown in the activity list item. The amount is shown in the activity list item.,
-12,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount are shown in the item details. Value of displayed gas price and total gas fee are the new values what we changed in previous step.",
+12,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount are shown in the item details. Value of displayed gas price and total gas fee are the new values that we changed in previous step.",
 13,Expand the activity log for the transaction.,,"The created, submitted and confirmed activity are shown in the activity log.",
 14,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab.,
