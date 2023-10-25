@@ -65,7 +65,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
                   Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet. 
                   <a
                     class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--bodyMd mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                    href="http://blockiad.io/legal/metamask-ppom-privacy-policy/"
+                    href="http://blockaid.io/legal/metamask-ppom-privacy-policy/"
                     rel="noopener noreferrer"
                     target="_blank"
                   >

@@ -83,7 +83,7 @@ describe('ExperimentalTab', () => {
     );
     expect(getAllByRole('link', { name: 'Terms of use' })[0]).toHaveAttribute(
       'href',
-      'http://blockiad.io/legal/metamask-ppom-privacy-policy/',
+      'http://blockaid.io/legal/metamask-ppom-privacy-policy/',
     );
     expect(getAllByRole('link', { name: 'Terms of use' })[1]).toHaveAttribute(
       'href',
