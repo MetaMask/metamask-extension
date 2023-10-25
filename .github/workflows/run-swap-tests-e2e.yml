@@ -1,0 +1,41 @@
+name: 'Run Swap tests'
+
+# run every 2 hours
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  run-swap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1 # This retrieves only the latest commit.
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install Yarn
+        run: |
+          npm i --g yarn
+          yarn --immutable
+
+      - name: Build extension
+        run: yarn dist
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
