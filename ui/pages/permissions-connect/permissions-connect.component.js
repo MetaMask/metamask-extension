@@ -331,6 +331,7 @@ export default class PermissionConnect extends Component {
       connectPath,
       confirmPermissionPath,
       hideTopBar,
+      targetSubjectMetadata,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapsConnectPath,
       snapInstallPath,
@@ -340,7 +341,6 @@ export default class PermissionConnect extends Component {
       approvePendingApproval,
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
-      targetSubjectMetadata,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
