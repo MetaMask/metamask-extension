@@ -15,6 +15,6 @@ export const CONSENSYS_TERMS_OF_USE = 'https://consensys.io/terms-of-use';
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 export const BLOCKAID_TERMS_OF_USE =
-  'http://blockaid.io/legal/metamask-ppom-privacy-policy/';
+  'https://blockaid.io/legal/metamask-ppom-privacy-policy/';
 ///: END:ONLY_INCLUDE_IN
 export const OPENSEA_TERMS_OF_USE = 'https://opensea.io/securityproviderterms';
