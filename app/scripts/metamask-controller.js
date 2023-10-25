@@ -4523,9 +4523,6 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.store,
         ),
         securityProviderRequest: this.securityProviderRequest.bind(this),
-        getSelectedAddress: this.preferencesController.getSelectedAddress.bind(
-          this.preferencesController,
-        ),
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
