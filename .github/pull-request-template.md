@@ -1,40 +1,42 @@
 ## **Description**
-_Write a short description of the changes included in this pull request, also include relevant motivation and context. Have in mind the following questions:_
-_1. What is the reason for the change?_
-_2. What is the improvement/solution?_
 
-## **Manual testing steps**
-
-_1. Step1:_
-_2. Step2:_
-_3. ..._
-
-## **Screenshots/Recordings**
-
-_If applicable, add screenshots and/or recordings to visualize the before and after of your change._
-
-### **Before**
-
-_[screenshot]_
-
-### **After**
-
-_[screenshot]_
+<!--
+Write a short description of the changes included in this pull request, also include relevant motivation and context. Have in mind the following questions:
+1. What is the reason for the change?
+2. What is the improvement/solution?
+-->
 
 ## **Related issues**
 
-_Fixes #???_
+Fixes: #
+
+## **Manual testing steps**
+
+1. Go to this page...
+2.
+3.
+
+## **Screenshots/Recordings**
+
+<!-- If applicable, add screenshots and/or recordings to visualize the before and after of your change. -->
+
+### **Before**
+
+<!-- [screenshots/recordings] -->
+
+### **After**
+
+<!-- [screenshots/recordings] -->
 
 ## **Pre-merge author checklist**
 
 - [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md).
-- [ ] I've clearly explained:
-  - [ ] What problem this PR is solving.
-  - [ ] How this problem was solved.
-  - [ ] How reviewers can test my changes.
-- [ ] I’ve indicated what issue this PR is linked to: Fixes #???
-- [ ] I’ve included tests if applicable.
-- [ ] I’ve documented any added code.
+- [ ] I've clearly explained what problem this PR is solving and how it is solved.
+- [ ] I've linked related issues
+- [ ] I've included manual testing steps
+- [ ] I've included screenshots/recordings if applicable
+- [ ] I’ve included tests if applicable
+- [ ] I’ve documented my code using [JSDoc](https://jsdoc.app/) format if applicable
 - [ ] I’ve applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/LABELING_GUIDELINES.md)).
 - [ ] I’ve properly set the pull request status:
   - [ ] In case it's not yet "ready for review", I've set it to "draft".
