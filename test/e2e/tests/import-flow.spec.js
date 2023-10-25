@@ -201,6 +201,7 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -287,6 +288,7 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -353,6 +355,7 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.title,
