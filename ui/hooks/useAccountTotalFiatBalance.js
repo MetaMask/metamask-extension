@@ -5,13 +5,18 @@ import {
   getCurrentCurrency,
   getMetaMaskCachedBalances,
   getTokenExchangeRates,
+  getNativeCurrencyImage,
+  getTokenList,
 } from '../selectors';
 import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
   sumDecimals,
 } from '../../shared/modules/conversion.utils';
-import { getConversionRate } from '../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -39,8 +44,13 @@ export const useAccountTotalFiatBalance = (
     numberOfDecimals: 2,
   });
 
-  const allTokens = useSelector(getAllTokens);
-  const tokens = allTokens?.[currentChainId]?.[address] ?? [];
+  const detectedTokens = useSelector(getAllTokens);
+  const tokens = detectedTokens?.[currentChainId]?.[address] ?? [];
+  // This selector returns all the tokens, we need it to get the image of token
+  const allTokenList = useSelector(getTokenList);
+  const allTokenListValues = Object.values(allTokenList);
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
   const { loading, tokensWithBalances } = useTokenTracker({
     tokens,
@@ -72,6 +82,53 @@ export const useAccountTotalFiatBalance = (
     return totalFiatValue;
   });
 
+  // Create an object with native token info. NOTE: Native token info is fetched from a separate controller
+  const nativeTokenValues = {};
+  nativeTokenValues.iconUrl = primaryTokenImage;
+  nativeTokenValues.symbol = nativeCurrency;
+  nativeTokenValues.fiatBalance = nativeFiat;
+
+  // To match the list of detected tokens with the entire token list to find the image for tokens
+  const findMatchingTokens = (array1, array2) => {
+    const result = [];
+
+    array2.forEach((token2) => {
+      const matchingToken = array1.find(
+        (token1) => token1.symbol === token2.symbol,
+      );
+
+      if (matchingToken) {
+        result.push({
+          ...matchingToken,
+          balance: token2.balance,
+          string: token2.string,
+          balanceError: token2.balanceError,
+        });
+      }
+    });
+
+    return result;
+  };
+
+  const matchingTokens = findMatchingTokens(
+    allTokenListValues,
+    tokensWithBalances,
+  );
+
+  // Combine native token, detected token with image in an array
+  const allTokensWithFiatValues = [
+    nativeTokenValues,
+    ...matchingTokens.map((item, index) => ({
+      ...item,
+      fiatBalance: tokenFiatBalances[index],
+    })),
+  ];
+
+  // Order of the tokens in this array is in decreasing order based on their fiatBalance
+  const orderedTokenList = allTokensWithFiatValues.sort(
+    (a, b) => parseFloat(b.fiatBalance) - parseFloat(a.fiatBalance),
+  );
+
   // Total native and token fiat balance as a string (ex: "8.90")
   const totalFiatBalance = sumDecimals(
     nativeFiat,
@@ -101,5 +158,6 @@ export const useAccountTotalFiatBalance = (
     totalFiatBalance,
     tokensWithBalances,
     loading,
+    orderedTokenList,
   };
 };
