@@ -54,6 +54,8 @@ export default function FeeCard({
         return t('networkNameArbitrum');
       case CHAIN_IDS.ZKSYNC_ERA:
         return t('networkNameZkSyncEra');
+      case CHAIN_IDS.LINEA_MAINNET:
+        return t('networkNameLinea');
       default:
         throw new Error('This network is not supported for token swaps');
     }

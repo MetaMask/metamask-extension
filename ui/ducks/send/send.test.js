@@ -22,7 +22,7 @@ import {
   TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
   generateERC20TransferData,
   generateERC721TransferData,
@@ -479,6 +479,33 @@ describe('Send Slice', () => {
         expect(draftTransaction.asset.balance).toStrictEqual(
           action.payload.asset.balance,
         );
+      });
+
+      it('should update hex data if its not the initial asset set', () => {
+        const updateAssetState = getInitialSendStateWithExistingTxState({
+          asset: {
+            type: 'old type',
+            balance: 'old balance',
+          },
+          userInputHexData: '0xTestHexData',
+        });
+
+        const action = {
+          type: 'send/updateAsset',
+          payload: {
+            asset: {
+              type: 'new type',
+              balance: 'new balance',
+            },
+            initialAssetSet: false,
+          },
+        };
+
+        const result = sendReducer(updateAssetState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.userInputHexData).toStrictEqual('');
       });
 
       it('should nullify old contract address error when asset types is not TOKEN', () => {

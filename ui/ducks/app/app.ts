@@ -50,7 +50,6 @@ interface AppState {
   scrollToBottom: boolean;
   warning: string | null | undefined;
   buyView: Record<string, any>;
-  isMouseUser: boolean;
   defaultHdPaths: {
     trezor: string;
     ledger: string;
@@ -126,7 +125,6 @@ const initialState: AppState = {
   // Used to display error text
   warning: null,
   buyView: {},
-  isMouseUser: false,
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
@@ -416,12 +414,6 @@ export default function reduceApp(
         accountDetail: {
           privateKey: action.payload,
         },
-      };
-
-    case actionConstants.SET_MOUSE_USER_STATE:
-      return {
-        ...appState,
-        isMouseUser: action.payload,
       };
 
     case actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID:

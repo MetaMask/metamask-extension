@@ -159,7 +159,6 @@ export const createSwapsMockStore = () => {
           id: 6571648590592143,
           time: 1667403993369,
           status: 'confirmed',
-          metamaskNetworkId: '5',
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
           chainId: CHAIN_IDS.MAINNET,
