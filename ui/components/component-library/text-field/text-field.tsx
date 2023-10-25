@@ -52,7 +52,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
     }: TextFieldProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const internalInputRef = useRef<any>(null);
+    const internalInputRef = useRef<HTMLInputElement | null>(null);
     const [focused, setFocused] = useState(false);
 
     useEffect(() => {
@@ -114,7 +114,9 @@ export const TextField: TextFieldComponent = React.forwardRef(
       // Check if an external ref (inputRef) is a callback function
       else if (typeof inputRef === 'function') {
         // Call the inputRef function, passing the input element reference
-        inputRef(inputElementRef);
+        //
+        // To Do:  Need to check why this is setup and if we need it
+        // inputRef(inputElementRef);
       }
     };
 
