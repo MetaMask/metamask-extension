@@ -1,5 +1,11 @@
 import React from 'react';
 import { AccountPicker } from '.';
+import {
+  AlignItems,
+  BorderColor,
+  BorderRadius,
+  TextAlign,
+} from '../../../helpers/constants/design-system';
 
 const CHAOS_ACCOUNT = {
   address: '"0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"',
@@ -55,3 +61,23 @@ export const ChaosWithAddressStory = (args) => (
 );
 ChaosWithAddressStory.storyName = 'Chaos with Address';
 ChaosWithAddressStory.args = { name: CHAOS_ACCOUNT.name, showAddress: true };
+
+export const CustomAccountPicker = (args) => (
+  <AccountPicker
+    {...args}
+    style={{ height: 'auto' }} // add via a custom className
+    showAddress
+    borderRadius={BorderRadius.MD}
+    borderColor={BorderColor.borderDefault}
+    paddingTop={3}
+    paddingBottom={3}
+    labelProps={{ textAlign: TextAlign.Left }}
+    block
+    endIconProps={{
+      marginLeft: 'auto',
+    }}
+    textProps={{
+      gap: 2,
+    }}
+  />
+);
