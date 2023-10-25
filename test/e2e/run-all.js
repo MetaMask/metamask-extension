@@ -149,6 +149,15 @@ async function main() {
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
+  } else if (buildType === 'mmi') {
+    const testDir = path.join(__dirname, 'tests');
+    testPaths = [
+      ...(await getTestPathsForTestDir(testDir)),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
+      path.join(__dirname, 'metamask-ui.spec.js'),
+    ];
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
