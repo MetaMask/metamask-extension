@@ -2,17 +2,19 @@ import EventEmitter from 'events';
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
+///: END:ONLY_INCLUDE_IN
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import { Text } from '../../../components/component-library';
 import CheckBox from '../../../components/ui/check-box';
 import Box from '../../../components/ui/box';
 import {
-  FONT_WEIGHT,
-  TEXT_ALIGN,
   TextVariant,
   AlignItems,
+  TextAlign,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -23,11 +25,20 @@ import {
 import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  setParticipateInMetaMetrics,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_METAMETRICS,
+  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
@@ -54,7 +65,7 @@ export default function OnboardingWelcome() {
   }, [currentKeyring, history, firstTimeFlowType]);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const onCreateClick = () => {
+  const onCreateClick = async () => {
     dispatch(setFirstTimeFlowType('create'));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -64,7 +75,15 @@ export default function OnboardingWelcome() {
       },
     });
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     history.push(ONBOARDING_METAMETRICS);
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    await dispatch(setParticipateInMetaMetrics(false));
+    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    ///: END:ONLY_INCLUDE_IN
   };
   const toggleTermsCheck = () => {
     setTermsChecked((currentTermsChecked) => !currentTermsChecked);
@@ -81,7 +100,7 @@ export default function OnboardingWelcome() {
     </a>,
   ]);
 
-  const onImportClick = () => {
+  const onImportClick = async () => {
     dispatch(setFirstTimeFlowType('import'));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -91,23 +110,105 @@ export default function OnboardingWelcome() {
       },
     });
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     history.push(ONBOARDING_METAMETRICS);
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    await dispatch(setParticipateInMetaMetrics(false));
+    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+    ///: END:ONLY_INCLUDE_IN
   };
 
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
-      <Carousel showThumbs={false} showStatus={false} showArrows>
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        <Carousel showThumbs={false} showStatus={false} showArrows>
+          <div>
+            <Text
+              variant={TextVariant.headingLg}
+              as="h2"
+              textAlign={TextAlign.Center}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('welcomeToMetaMask')}
+            </Text>
+            <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
+              {t('welcomeToMetaMaskIntro')}
+            </Text>
+            <div className="onboarding-welcome__mascot">
+              <Mascot
+                animationEventEmitter={eventEmitter}
+                width="250"
+                height="250"
+              />
+            </div>
+          </div>
+          <div>
+            <Text
+              variant={TextVariant.headingLg}
+              as="h2"
+              textAlign={TextAlign.Center}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('welcomeExploreTitle')}
+            </Text>
+            <Text textAlign={TextAlign.Center}>
+              {t('welcomeExploreDescription')}
+            </Text>
+            <div className="onboarding-welcome__image">
+              <img
+                src="/images/onboarding-welcome-say-hello.svg"
+                width="169"
+                height="237"
+                alt=""
+              />
+            </div>
+          </div>
+          <div>
+            <Text
+              variant={TextVariant.headingLg}
+              as="h2"
+              textAlign={TextAlign.Center}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('welcomeLoginTitle')}
+            </Text>
+            <Text textAlign={TextAlign.Center}>
+              {t('welcomeLoginDescription')}
+            </Text>
+            <div className="onboarding-welcome__image">
+              <img
+                src="/images/onboarding-welcome-decentralised-apps.svg"
+                width="327"
+                height="256"
+                alt=""
+              />
+            </div>
+          </div>
+        </Carousel>
+        ///: END:ONLY_INCLUDE_IN
+      }
+
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         <div>
           <Text
             variant={TextVariant.headingLg}
-            as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
-            fontWeight={FONT_WEIGHT.BOLD}
+            textAlign={TextAlign.Center}
+            fontWeight={FontWeight.Bold}
           >
-            {t('welcomeToMetaMask')}
+            {t('installExtension')}
           </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER} marginLeft={6} marginRight={6}>
-            {t('welcomeToMetaMaskIntro')}
+          <Text
+            textAlign={TextAlign.Center}
+            marginTop={2}
+            marginLeft={6}
+            marginRight={6}
+          >
+            {t('installExtensionDescription')}
           </Text>
           <div className="onboarding-welcome__mascot">
             <Mascot
@@ -117,49 +218,9 @@ export default function OnboardingWelcome() {
             />
           </div>
         </div>
-        <div>
-          <Text
-            variant={TextVariant.headingLg}
-            as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
-            fontWeight={FONT_WEIGHT.BOLD}
-          >
-            {t('welcomeExploreTitle')}
-          </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER}>
-            {t('welcomeExploreDescription')}
-          </Text>
-          <div className="onboarding-welcome__image">
-            <img
-              src="/images/onboarding-welcome-say-hello.svg"
-              width="169"
-              height="237"
-              alt=""
-            />
-          </div>
-        </div>
-        <div>
-          <Text
-            variant={TextVariant.headingLg}
-            as="h2"
-            textAlign={TEXT_ALIGN.CENTER}
-            fontWeight={FONT_WEIGHT.BOLD}
-          >
-            {t('welcomeLoginTitle')}
-          </Text>
-          <Text textAlign={TEXT_ALIGN.CENTER}>
-            {t('welcomeLoginDescription')}
-          </Text>
-          <div className="onboarding-welcome__image">
-            <img
-              src="/images/onboarding-welcome-decentralised-apps.svg"
-              width="327"
-              height="256"
-              alt=""
-            />
-          </div>
-        </div>
-      </Carousel>
+        ///: END:ONLY_INCLUDE_IN
+      }
+
       <ul className="onboarding-welcome__buttons">
         <li>
           <Box
@@ -191,7 +252,16 @@ export default function OnboardingWelcome() {
             onClick={onCreateClick}
             disabled={!termsChecked}
           >
-            {t('onboardingCreateWallet')}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+              t('onboardingCreateWallet')
+              ///: END:ONLY_INCLUDE_IN
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              t('continue')
+              ///: END:ONLY_INCLUDE_IN
+            }
           </Button>
         </li>
         <li>

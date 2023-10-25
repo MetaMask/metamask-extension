@@ -288,8 +288,6 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       <button
         class="button btn--rounded btn-primary recovery-phrase__footer--button"
         data-testid="recovery-phrase-reveal"
-        role="button"
-        tabindex="0"
       >
         Reveal Secret Recovery Phrase
       </button>
@@ -610,8 +608,6 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         <button
           class="button btn--rounded btn-primary recovery-phrase__footer--button"
           data-testid="recovery-phrase-next"
-          role="button"
-          tabindex="0"
         >
           Next
         </button>

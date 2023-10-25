@@ -49,8 +49,6 @@ exports[`success template matches the snapshot 1`] = `
         <button
           class="button btn--rounded btn-primary centered"
           data-testid="confirmation-submit-button"
-          role="button"
-          tabindex="0"
         >
           Ok
         </button>

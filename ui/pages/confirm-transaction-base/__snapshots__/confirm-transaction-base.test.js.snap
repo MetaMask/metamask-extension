@@ -219,7 +219,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
               class="sender-to-recipient__name"
               data-testid="sender-to-recipient__name"
             >
-              0x85c...D65e
+              0x85c16...DD65e
             </div>
           </div>
         </div>
@@ -258,17 +258,9 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           >
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              ethlogoheight="24"
               title="0.0001"
             >
-              <div
-                class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
-                variant="inherit"
-              >
-                <i
-                  class="fab fa-ethereum"
-                  style="font-size: 24px;"
-                />
-              </div>
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               >
@@ -495,7 +487,9 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
           style="mask-image: url('./images/icons/danger.svg');"
         />
-        <div>
+        <div
+          class="mm-box mm-box--min-width-0"
+        >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
@@ -513,8 +507,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           <button
             class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
             data-testid="page-container-footer-cancel"
-            role="button"
-            tabindex="0"
           >
             Reject
           </button>
@@ -522,8 +514,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
             class="button btn--rounded btn-primary page-container__footer-button"
             data-testid="page-container-footer-next"
             disabled=""
-            role="button"
-            tabindex="0"
           >
             Confirm
           </button>

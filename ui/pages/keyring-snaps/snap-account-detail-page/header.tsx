@@ -91,7 +91,7 @@ export const SnapDetailHeader = ({
           <Box>
             {isInstalled && updateAvailable && (
               <Button
-                variant={ButtonVariant.Primary}
+                variant={ButtonVariant.Secondary}
                 marginRight={1}
                 onClick={() => {
                   setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);

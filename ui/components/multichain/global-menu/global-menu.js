@@ -8,11 +8,13 @@ import {
   DEFAULT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  SNAPS_ROUTE,
   ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  Box,
   IconName,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Text,
@@ -54,6 +56,8 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
+  BorderColor,
   Display,
   JustifyContent,
   TextAlign,
@@ -109,6 +113,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         closeMenu={closeMenu}
         address={address}
       />
+      <Box
+        borderColor={BorderColor.borderMuted}
+        width={BlockSize.Full}
+        style={{ height: '1px', borderBottomWidth: 0 }}
+      ></Box>
       <MenuItem
         iconName={IconName.Connect}
         disabled={hasUnapprovedTransactions}
@@ -208,6 +217,19 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             </MenuItem>
           </>
         ) : null
+        ///: END:ONLY_INCLUDE_IN(snaps)
+      }
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        <MenuItem
+          iconName={IconName.Snaps}
+          onClick={() => {
+            history.push(SNAPS_ROUTE);
+            closeMenu();
+          }}
+        >
+          {t('snaps')}
+        </MenuItem>
         ///: END:ONLY_INCLUDE_IN(snaps)
       }
       <MenuItem

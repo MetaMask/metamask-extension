@@ -1,9 +1,10 @@
 const { strict: assert } = require('assert');
 const path = require('path');
-const { promises: fs } = require('fs');
+const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
+const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
@@ -106,9 +107,13 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
-      chainId: ganacheOptions?.chainId || 1337,
-    });
+    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
+      mockServer,
+      testSpecificMock,
+      {
+        chainId: ganacheOptions?.chainId || 1337,
+      },
+    );
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',
@@ -151,6 +156,45 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
     });
+
+    // Evaluate whether any new hosts received network requests during E2E test
+    // suite execution. If so, fail the test unless the
+    // --update-privacy-snapshot was specified. In that case, update the
+    // snapshot file.
+    const privacySnapshotRaw = readFileSync('./privacy-snapshot.json');
+    const privacySnapshot = JSON.parse(privacySnapshotRaw);
+    const privacyReport = getPrivacyReport();
+
+    // We must add to our privacyReport all of the known hosts that are
+    // included in the privacySnapshot. If no new hosts were requested during
+    // this test suite execution, then the mergedReport and the privacySnapshot
+    // should be identical.
+    const mergedReport = [
+      ...new Set([...privacyReport, ...privacySnapshot]),
+    ].sort();
+
+    // To determine if a new host was requsted, we use the lodash difference
+    // method to generate an array of the items included in the first argument
+    // but not in the second
+    const newHosts = difference(mergedReport, privacySnapshot);
+
+    if (newHosts.length > 0) {
+      if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
+        writeFileSync(
+          './privacy-snapshot.json',
+          JSON.stringify(mergedReport, null, 2),
+        );
+      } else {
+        throw new Error(
+          `A new host not contained in the privacy-snapshot received a network
+           request during test execution. Please update the privacy-snapshot
+           file by passing the --update-privacy-snapshot option to the test
+           command or add the new hosts to the snapshot manually.
+
+           New hosts found: ${newHosts}.`,
+        );
+      }
+    }
   } catch (error) {
     failed = true;
     if (webDriver) {
@@ -212,7 +256,6 @@ const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
   TestDApp: 'E2E Test Dapp',
   Notification: 'MetaMask Notification',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   InstalledExtensions: 'Extensions',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
 });
@@ -546,8 +589,6 @@ const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
-const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
-
 const sendTransaction = async (
   driver,
   recipientAddress,
@@ -557,8 +598,16 @@ const sendTransaction = async (
   await driver.clickElement('[data-testid="eth-overview-send"]');
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-  await driver.clickElement('[data-testid="page-container-footer-next"]');
-  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement({
+    text: 'Next',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  });
+  await driver.clickElement({
+    text: 'Confirm',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  });
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
@@ -592,19 +641,10 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly
-const assertAccountBalanceForDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-  const balanceElement = await driver.findElement(
-    '[data-testid="eth-overview__primary-currency"]',
-  );
-  assert.equal(`${balance}\nETH`, await balanceElement.getText());
-};
-
-// Usually happens after txn is made
+// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
-  await driver.waitForSelector({
+  await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
     text: `${balance} ETH`,
   });
@@ -639,12 +679,8 @@ const unlockWallet = async (driver) => {
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
-  await assertAccountBalanceForDOM(driver, ganacheServer);
+  await locateAccountBalanceDOM(driver, ganacheServer);
 };
-
-async function sleepSeconds(sec) {
-  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
-}
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
@@ -667,34 +703,6 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
   const initialBalanceInHex = convertETHToHexGwei(initialBalance);
 
   return { initialBalance, initialBalanceInHex };
-}
-
-async function terminateServiceWorker(driver) {
-  await driver.openNewPage(SERVICE_WORKER_URL);
-
-  await driver.waitForSelector({
-    text: 'Service workers',
-    tag: 'button',
-  });
-  await driver.clickElement({
-    text: 'Service workers',
-    tag: 'button',
-  });
-
-  await driver.delay(tinyDelayMs);
-  const serviceWorkerElements = await driver.findClickableElements({
-    text: 'terminate',
-    tag: 'span',
-  });
-
-  // 1st one is app-init.js; while 2nd one is service-worker.js
-  await serviceWorkerElements[serviceWorkerElements.length - 1].click();
-
-  const serviceWorkerTab = await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.ServiceWorkerSettings,
-  );
-
-  await driver.closeWindowHandle(serviceWorkerTab);
 }
 
 /**
@@ -726,7 +734,13 @@ async function validateContractDetails(driver) {
   await driver.clickElement({ text: 'Got it', tag: 'button' });
 
   // Approve signing typed data
-  await driver.clickElement('[data-testid="signature-request-scroll-button"]');
+  try {
+    await driver.clickElement(
+      '[data-testid="signature-request-scroll-button"]',
+    );
+  } catch (error) {
+    // Ignore error if scroll button is not present
+  }
   await driver.delay(regularDelayMs);
 }
 
@@ -809,7 +823,6 @@ function assertInAnyOrder(requests, assertions) {
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
-  SERVICE_WORKER_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
@@ -839,7 +852,6 @@ module.exports = {
   findAnotherAccountFromAccountList,
   unlockWallet,
   logInWithBalanceValidation,
-  assertAccountBalanceForDOM,
   locateAccountBalanceDOM,
   waitForAccountRendered,
   generateGanacheOptions,
@@ -849,8 +861,6 @@ module.exports = {
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  sleepSeconds,
-  terminateServiceWorker,
   clickSignOnSignatureConfirmation,
   validateContractDetails,
   switchToNotificationWindow,

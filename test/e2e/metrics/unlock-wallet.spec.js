@@ -2,6 +2,7 @@ const { strict: assert } = require('assert');
 const {
   withFixtures,
   unlockWallet,
+  waitForAccountRendered,
   defaultGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -35,6 +36,7 @@ describe('Unlock wallet', function () {
       async ({ driver, mockedEndpoint }) => {
         await driver.navigate();
         await unlockWallet(driver);
+        await waitForAccountRendered(driver);
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
           return isPending === false;

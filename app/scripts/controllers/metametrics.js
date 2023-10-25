@@ -11,6 +11,7 @@ import {
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
+import { NameType } from '@metamask/name-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -193,7 +194,7 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      this.extension.alarms.getAll((alarms) => {
+      this.extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
@@ -755,6 +756,13 @@ export default class MetaMetricsController {
         : null;
     ///: END:ONLY_INCLUDE_IN
     const { traits, previousUserTraits } = this.store.getState();
+    let securityProvider;
+    if (metamaskState.securityAlertsEnabled) {
+      securityProvider = 'blockaid';
+    }
+    if (metamaskState.transactionSecurityCheckEnabled) {
+      securityProvider = 'opensea';
+    }
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -798,8 +806,13 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IN
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
+      [MetaMetricsUserTrait.SecurityProviders]: securityProvider
+        ? [securityProvider]
+        : [],
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      [MetaMetricsUserTrait.PetnameAddressCount]:
+        this._getPetnameAddressCount(metamaskState),
+      ///: END:ONLY_INCLUDE_IN
     };
 
     if (!previousUserTraits) {
@@ -1075,5 +1088,30 @@ export default class MetaMetricsController {
       return callback?.(result);
     };
     this.segment[eventType](modifiedPayload, modifiedCallback);
+  }
+
+  /**
+   * Returns the total number of Ethereum addresses with saved petnames,
+   * including all chain ID variations.
+   *
+   * @param {object} metamaskState
+   * @returns {number}
+   */
+  _getPetnameAddressCount(metamaskState) {
+    const addressNames = metamaskState.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
+
+    return Object.keys(addressNames).reduce((totalCount, address) => {
+      const addressEntry = addressNames[address];
+
+      const addressNameCount = Object.keys(addressEntry).reduce(
+        (count, chainId) => {
+          const hasName = Boolean(addressEntry[chainId].name?.length);
+          return count + (hasName ? 1 : 0);
+        },
+        0,
+      );
+
+      return totalCount + addressNameCount;
+    }, 0);
   }
 }

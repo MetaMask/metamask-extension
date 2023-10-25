@@ -9,7 +9,9 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
     style="mask-image: url('./images/icons/danger.svg');"
   />
-  <div>
+  <div
+    class="mm-box mm-box--min-width-0"
+  >
     <p
       class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
     >
@@ -55,7 +57,9 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
     style="mask-image: url('./images/icons/danger.svg');"
   />
-  <div>
+  <div
+    class="mm-box mm-box--min-width-0"
+  >
     <p
       class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
     >
@@ -79,7 +83,9 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
     style="mask-image: url('./images/icons/danger.svg');"
   />
-  <div>
+  <div
+    class="mm-box mm-box--min-width-0"
+  >
     <p
       class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
     >
@@ -126,7 +132,9 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
       style="mask-image: url('./images/icons/danger.svg');"
     />
-    <div>
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
       <p
         class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >
@@ -158,7 +166,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
             class="disclosure__content normal"
           >
             <ul
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--color-text-default"
             >
               <li>
                 • 
@@ -169,6 +177,24 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
                 Operator is untrusted according to previous activity
               </li>
             </ul>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
+            >
+              <span>
+                 
+                Something doesn't look right? 
+                <a
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  href="https://support.metamask.io/hc/en-us"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Contact us
+                </a>
+                
+                 
+              </span>
+            </p>
           </div>
           <div
             class="disclosure__footer"

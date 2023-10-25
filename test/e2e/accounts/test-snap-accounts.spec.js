@@ -1,11 +1,12 @@
+const { strict: assert } = require('assert');
 const util = require('ethereumjs-util');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  clickSignOnSignatureConfirmation,
   convertETHToHexGwei,
   openDapp,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
+  defaultGanacheOptions,
   sendTransaction,
   switchToNotificationWindow,
   switchToOrOpenDapp,
@@ -55,6 +56,79 @@ describe('Test Snap Account', function () {
         await installSnapSimpleKeyring(driver, false);
 
         await makeNewAccountAndSwitch(driver);
+      },
+    );
+  });
+
+  it('will display the keyring snap account removal warning', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        failOnConsoleError: false,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await installSnapSimpleKeyring(driver, false);
+
+        await makeNewAccountAndSwitch(driver);
+
+        const windowHandles = await driver.waitUntilXWindowHandles(
+          2,
+          1000,
+          10000,
+        );
+
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+          windowHandles,
+        );
+
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement({ text: 'Snaps', tag: 'div' });
+
+        await driver.clickElement(
+          '[data-testid="npm:@metamask/snap-simple-keyring-snap"]',
+        );
+
+        const removeButton = await driver.findElement(
+          '[data-testid="remove-snap-button"]',
+        );
+        await driver.scrollToElement(removeButton);
+        await driver.clickElement('[data-testid="remove-snap-button"]');
+
+        assert.equal(
+          await driver.isElementPresentAndVisible({ text: 'Account 2' }),
+          true,
+        );
+
+        await driver.clickElement({
+          text: 'Continue',
+          tag: 'button',
+        });
+
+        await driver.fill(
+          '[data-testid="remove-snap-confirmation-input"]',
+          'MetaMask Simple Snap Keyring',
+        );
+
+        await driver.clickElement({
+          text: 'Remove Snap',
+          tag: 'button',
+        });
+
+        // Checking result modal
+        assert.equal(
+          await driver.isElementPresentAndVisible({
+            text: 'MetaMask Simple Snap Keyring removed',
+            tag: 'p',
+          }),
+          true,
+        );
       },
     );
   });
@@ -209,14 +283,25 @@ describe('Test Snap Account', function () {
     await switchToOrOpenDapp(driver);
 
     await driver.clickElement(locatorID);
-    await switchToNotificationWindow(driver, 4);
+
+    // behaviour of chrome and firefox is different,
+    // chrome needs extra time to load the popup
+    if (driver.browser === 'chrome') {
+      await driver.delay(500);
+    }
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
 
     // these two don't have a contract details page
     if (locatorID !== '#personalSign' && locatorID !== '#signTypedData') {
       await validateContractDetails(driver);
     }
 
-    await clickSignOnSignatureConfirmation(driver, 3);
+    await driver.clickElement({ text: 'Sign', tag: 'button' });
 
     if (isAsyncFlow) {
       await approveOrRejectRequest(driver, flowType);
@@ -345,7 +430,12 @@ describe('Test Snap Account', function () {
     });
 
     // Click "Create" on the Snap's confirmation popup
-    await switchToNotificationWindow(driver, 3);
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
     await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
@@ -373,7 +463,10 @@ describe('Test Snap Account', function () {
     // click on Accounts
     await driver.clickElement('[data-testid="account-menu-icon"]');
 
-    const label = await driver.findElement({ css: '.mm-tag', text: 'Snaps' });
+    const label = await driver.findElement({
+      css: '.mm-tag',
+      text: 'Snaps (Beta)',
+    });
 
     label.click();
 
@@ -386,7 +479,12 @@ describe('Test Snap Account', function () {
   async function connectAccountToTestDapp(driver) {
     await switchToOrOpenDapp(driver);
     await driver.clickElement('#connectButton');
-    await switchToNotificationWindow(driver, 4);
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
     await driver.clickElement('[data-testid="page-container-footer-next"]');
     await driver.clickElement('[data-testid="page-container-footer-next"]');
   }
@@ -409,6 +507,39 @@ describe('Test Snap Account', function () {
    * @param {string} flowType
    */
   async function approveOrRejectRequest(driver, flowType) {
+    // Click redirect button for async flows
+    if (flowType === 'approve' || flowType === 'reject') {
+      // There is a try catch here because when using the send eth flow,
+      // MetaMask is still active, and therefore the popup notification will
+      // no appear. The workaround is to reload the extension and
+      // force the notification to appear in the full window.
+      try {
+        // Adding a delay here because there is a race condition where
+        // the driver tries to switch to the first notification window
+        // and not the second notification window with the redirect button
+        await driver.delay(500);
+        const handles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Notification,
+          handles,
+          2000,
+        );
+      } catch (error) {
+        console.log('SNAPS/ error switching to notification window', error);
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.navigate();
+      }
+      await driver.clickElement({
+        text: 'Go to site',
+        tag: 'button',
+      });
+
+      await driver.delay(500);
+    }
+
     await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
 
     await driver.clickElementUsingMouseMove({

@@ -3,12 +3,12 @@ const {
   TEST_SEED_PHRASE_TWO,
   convertToHexValue,
   withFixtures,
-  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
-  it('Creating a new wallet', async function () {
+  it('Creating a new wallet @no-mmi', async function () {
     const driverOptions = { openDevToolsForTabs: true };
 
     await withFixtures(
@@ -109,7 +109,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );
   });

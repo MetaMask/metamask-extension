@@ -419,4 +419,21 @@ describe('preferences controller', () => {
       });
     });
   });
+
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  describe('setUseExternalNameSources', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the useExternalNameSources property in state', () => {
+      preferencesController.setUseExternalNameSources(false);
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(false);
+    });
+  });
+  ///: END:ONLY_INCLUDE_IN
 });

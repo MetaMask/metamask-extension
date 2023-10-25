@@ -8,6 +8,7 @@ import {
   Display,
   FlexDirection,
 } from '../../helpers/constants/design-system';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { RemoveSnapAccountContent } from './components';
 
 export interface RemoveSnapAccountProps {
@@ -42,7 +43,7 @@ const RemoveSnapAccount = ({
         <RemoveSnapAccountContent
           snapName={snapName}
           snapId={snapId}
-          publicAddress={publicAddress}
+          publicAddress={toChecksumHexAddress(publicAddress)}
         />
       </Box>
     </Box>

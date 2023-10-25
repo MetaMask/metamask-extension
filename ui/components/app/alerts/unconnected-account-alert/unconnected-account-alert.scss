@@ -1,6 +1,6 @@
 .unconnected-account-alert {
   &__content {
-    border-radius: 0;
+    border-radius: 0 !important; // To override the box border radius because of popover
   }
 
   &__footer {
