@@ -102,7 +102,8 @@ const VALID_UNAPPROVED_TRANSACTION_TYPES = [
  * - pendingTxTracker
  * watching blocks for transactions to be include
  * and emitting confirmed events
- * - txGasUtil
+ * -
+ *
  * gas calculations and safety buffering
  * - nonceTracker
  * calculating nonces
@@ -154,6 +155,7 @@ export default class TransactionController extends EventEmitter {
     this.snapAndHardwareMessenger = opts.snapAndHardwareMessenger;
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
+    this._getNetworkClientById = opts.getNetworkClientById;
 
     const { hooks } = opts ?? {};
     this._afterSign = hooks?.afterSign ? hooks.afterSign : () => true;
@@ -178,7 +180,9 @@ export default class TransactionController extends EventEmitter {
 
     this.query = new EthQuery(this.provider);
 
-    this.txGasUtil = new TxGasUtil(this.provider);
+    this.txGasUtil = new TxGasUtil(this.provider, {
+      getNetworkClientById: opts.getNetworkClientById,
+    });
     this._mapMethods();
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
