@@ -161,8 +161,8 @@ export const getPermissionSpecifications = ({
           }
 
           return (
-            secondAccount.metadata?.lastSelected -
-            firstAccount.metadata?.lastSelected
+            secondAccount.metadata.lastSelected -
+            firstAccount.metadata.lastSelected
           );
         });
       },
