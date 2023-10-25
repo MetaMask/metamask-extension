@@ -1,11 +1,10 @@
 import React from 'react';
-import { AccountPicker } from '.';
 import {
-  AlignItems,
   BorderColor,
   BorderRadius,
   TextAlign,
 } from '../../../helpers/constants/design-system';
+import { AccountPicker } from '.';
 
 const CHAOS_ACCOUNT = {
   address: '"0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"',

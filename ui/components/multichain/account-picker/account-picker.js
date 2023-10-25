@@ -4,10 +4,8 @@ import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
-  Box,
   AvatarAccount,
   AvatarAccountVariant,
-  Icon,
   IconName,
   Text,
   ButtonBase,
@@ -16,10 +14,8 @@ import {
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderRadius,
   Display,
-  FlexDirection,
   IconColor,
   Size,
   TextColor,
@@ -123,7 +119,6 @@ AccountPicker.propTypes = {
    * Represents if the account address should display
    */
   showAddress: PropTypes.bool,
-
   /**
    * Represents if the AccountPicker should take full width
    */
@@ -140,4 +135,8 @@ AccountPicker.propTypes = {
    * Props to be added to the text element
    */
   textProps: PropTypes.object,
+  /**
+   * Additional className to be added to the AccountPicker
+   */
+  className: PropTypes.string,
 };
