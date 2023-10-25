@@ -1505,6 +1505,9 @@ export default class MetamaskController extends EventEmitter {
     );
     this.smartTransactionsController = new SmartTransactionsController(
       {
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
