@@ -1,0 +1,16 @@
+Step,Test steps,Preconditions,Test data,Expected result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Keep Ethereum Mainnet as the selected network.,,,,
+4,Select or import an account with a token balance.,,e.g.: orangefox.eth,,Please request access to this test account from George Balolong (Business Operations).
+5,Switch back to the tokens list.,,,A prompt is shown to Import tokens found in the account.,Note that token detection takes place on Ethereum Mainnet regardless of whether this setting is on or off.
+6,Proceed to Import tokens.,,,,
+7,Select the tokens to import or import all.,,,The tokens list is updated with all imported tokens.,
+8,Switch to a network other than Ethereum Mainnet.,,e.g.: BNB Smart Chain,,"Note that token autodetection is currently available on: Ethereum Mainnet, Avalanche, BNB Smart Chain, Polygon, Aurora and Linea Mainnet."
+9,Go to the Tokens list.,Make sure the autodetect tokens toggle is OFF in Settings.,,No prompt to Import tokens is shown.,
+10,Proceed to Privacy & Security Settings.,,,,
+11,Search for Token autodetection.,,,,
+12,Enable Autodetect tokens.,,,,
+13,Go back to the Tokens list and Refresh list.,,,A prompt is shown to Import tokens found in the account.,
+14,Proceed to Import tokens.,,,,
+15,Select the tokens to import or import all.,,,The tokens list is updated with all imported tokens.,
