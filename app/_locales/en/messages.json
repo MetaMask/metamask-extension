@@ -2987,16 +2987,6 @@
     "message": "Ledger and Firefox Users Experiencing Connection Issues",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Try it out"
-  },
-  "notifications21Description": {
-    "message": "We've updated Swaps in the MetaMask extension to be easier and faster to use.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Introducing new and refreshed Swaps!"
-  },
   "notifications22ActionText": {
     "message": "Got it"
   },

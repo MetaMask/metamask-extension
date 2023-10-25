@@ -2621,16 +2621,6 @@
     "message": "Usuários do Ledger e Firefox com problemas de conexão",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Experimentar"
-  },
-  "notifications21Description": {
-    "message": "Atualizamos o recurso de Trocas na extensão da MetaMask para que seu uso seja mais fácil e rápido.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Conheça o recurso novo e atualizado de Trocas!"
-  },
   "notifications22ActionText": {
     "message": "Entendi"
   },
