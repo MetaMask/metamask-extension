@@ -3262,15 +3262,16 @@ export function setSwapsFeatureFlags(
   };
 }
 
-export function getNetworkClientById(
+export function getChainIdByNetworkClientId(
   networkClientId: NetworkClientId,
-): ThunkAction<Promise<any>, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    const networkClient = await submitRequestToBackground<string>(
-      'getNetworkClientById',
-      [networkClientId],
-    );
-    return networkClient;
+    const {
+      configuration: { chainId },
+    } = await submitRequestToBackground<any>('getNetworkClientById', [
+      networkClientId,
+    ]);
+    return chainId;
   };
 }
 

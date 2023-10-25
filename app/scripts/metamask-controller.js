@@ -2506,13 +2506,11 @@ export default class MetamaskController extends EventEmitter {
       setActiveNetwork:
         networkController.setActiveNetwork.bind(networkController),
       upsertNetworkConfiguration:
-        this.networkController.upsertNetworkConfiguration.bind(
-          this.networkController,
-        ),
+        networkController.upsertNetworkConfiguration.bind(networkController),
+      getNetworkClientById:
+        networkController.getNetworkClientById.bind(networkController),
       getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
+        networkController.getEIP1559Compatibility.bind(networkController),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,

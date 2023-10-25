@@ -27,7 +27,7 @@ import {
   fetchSmartTransactionFees,
   cancelSmartTransaction,
   getTransactions,
-  getNetworkClientById,
+  getChainIdByNetworkClientId,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -562,9 +562,11 @@ export const swapsQuoteSelected = (aggId) => {
   };
 };
 
-export const fetchAndSetSwapsGasPriceInfo = () => {
+export const fetchAndSetSwapsGasPriceInfo = (chainId) => {
   return async (dispatch) => {
-    const basicEstimates = await dispatch(fetchMetaSwapsGasPriceEstimates());
+    const basicEstimates = await dispatch(
+      fetchMetaSwapsGasPriceEstimates(chainId),
+    );
 
     if (basicEstimates?.fast) {
       dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fast)));
@@ -645,9 +647,10 @@ export const fetchQuotesAndSetQuoteState = (
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
-    const networkClient = dispatch(getNetworkClientById(networkClientId));
-    const chainId =
-      networkClient.configuration.chainId ?? getCurrentChainId(state);
+    const chainIdFromNetworkClient = await dispatch(
+      getChainIdByNetworkClientId(networkClientId),
+    );
+    const chainId = chainIdFromNetworkClient ?? getCurrentChainId(state);
 
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -811,9 +814,10 @@ export const fetchQuotesAndSetQuoteState = (
         ),
       );
 
+      // TODO parametrize this by networkClientId
       const gasPriceFetchPromise = networkAndAccountSupports1559
         ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
-        : dispatch(fetchAndSetSwapsGasPriceInfo());
+        : dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
 
       const [[fetchedQuotes, selectedAggId]] = await Promise.all([
         fetchAndSetQuotesPromise,
@@ -1059,10 +1063,16 @@ export const signAndSendTransactions = (
   history,
   trackEvent,
   additionalTrackingParams,
+  networkClientId,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    // eslint-disable-next-line no-param-reassign
+    networkClientId ??= getSelectedNetworkClientId(state);
+    const chainIdFromNetworkClient = await dispatch(
+      getChainIdByNetworkClientId(networkClientId),
+    );
+    const chainId = chainIdFromNetworkClient ?? getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 =
       checkNetworkAndAccountSupports1559(state);
@@ -1098,6 +1108,7 @@ export const signAndSendTransactions = (
       history.push(AWAITING_SWAP_ROUTE);
     }
 
+    // parameterize this by networkClientId/chainId
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
 
     let maxFeePerGas;
@@ -1305,10 +1316,12 @@ export const signAndSendTransactions = (
   };
 };
 
-export function fetchMetaSwapsGasPriceEstimates() {
+export function fetchMetaSwapsGasPriceEstimates(chainId) {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+
+    // eslint-disable-next-line no-param-reassign
+    chainId ??= getCurrentChainId(state);
 
     dispatch(swapGasPriceEstimatesFetchStarted());
 
@@ -1325,6 +1338,8 @@ export function fetchMetaSwapsGasPriceEstimates() {
       dispatch(swapGasPriceEstimatesFetchFailed());
 
       try {
+        // TODO this fallback needs to be parametrized by networkClientId
+        // we need some action that fetches gasPrice in the background
         const gasPrice = await global.ethQuery.gasPrice();
         const gasPriceInDecGWEI = hexWEIToDecGWEI(gasPrice.toString(10));
 
