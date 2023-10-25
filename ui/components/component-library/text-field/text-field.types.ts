@@ -93,9 +93,10 @@ export interface TextFieldStyleUtilityProps
   /**
    * Use inputRef to pass a ref to the html input element.
    */
-  inputRef?:
-    | React.RefObject<HTMLInputElement>
-    | ((instance: HTMLInputElement | null) => void);
+  // inputRef?:
+  //   | React.RefObject<HTMLInputElement>
+  //   | ((instance: HTMLInputElement | null) => void);
+  inputRef?: any;
   /**
    * Max number of characters to allow
    */

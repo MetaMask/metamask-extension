@@ -52,7 +52,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
     }: TextFieldProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const internalInputRef = useRef<HTMLInputElement | null>(null);
+    const internalInputRef = useRef<any>(null);
     const [focused, setFocused] = useState(false);
 
     useEffect(() => {
@@ -86,12 +86,35 @@ export const TextField: TextFieldComponent = React.forwardRef(
       onFocus?.(event);
     };
 
-    const handleInputRef = (ref) => {
-      internalInputRef.current = ref;
-      if (inputRef && inputRef.current !== undefined) {
-        inputRef.current = ref;
-      } else if (typeof inputRef === 'function') {
-        inputRef(ref);
+    // const handleInputRef = (ref) => {
+    //   // Assign the input element reference to the internal reference
+    //   internalInputRef.current = ref;
+
+    //   // Check if an external ref (inputRef) is provided and is a ref object
+    //   if (inputRef && inputRef.current !== undefined) {
+    //     // Assign the input element reference to the external ref
+    //     inputRef.current = ref;
+    //   }
+    //   // Check if an external ref (inputRef) is a callback function
+    //   else if (typeof inputRef === 'function') {
+    //     // Call the inputRef function, passing the input element reference
+    //     inputRef(ref);
+    //   }
+    // };
+
+    const handleInputRef = (inputElementRef: HTMLInputElement | null) => {
+      // Assign the input element reference to the internal reference
+      internalInputRef.current = inputElementRef;
+
+      // Check if an external ref (inputRef) is provided and is a ref object
+      if (inputRef && 'current' in inputRef) {
+        // Assign the input element reference to the external ref
+        inputRef.current = inputElementRef;
+      }
+      // Check if an external ref (inputRef) is a callback function
+      else if (typeof inputRef === 'function') {
+        // Call the inputRef function, passing the input element reference
+        inputRef(inputElementRef);
       }
     };
 
