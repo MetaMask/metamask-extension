@@ -114,9 +114,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
       // Check if an external ref (inputRef) is a callback function
       else if (typeof inputRef === 'function') {
         // Call the inputRef function, passing the input element reference
-        //
-        // To Do:  Need to check why this is setup and if we need it
-        // inputRef(inputElementRef);
+        inputRef(inputElementRef);
       }
     };
 
