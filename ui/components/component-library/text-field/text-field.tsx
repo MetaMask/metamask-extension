@@ -86,22 +86,6 @@ export const TextField: TextFieldComponent = React.forwardRef(
       onFocus?.(event);
     };
 
-    // const handleInputRef = (ref) => {
-    //   // Assign the input element reference to the internal reference
-    //   internalInputRef.current = ref;
-
-    //   // Check if an external ref (inputRef) is provided and is a ref object
-    //   if (inputRef && inputRef.current !== undefined) {
-    //     // Assign the input element reference to the external ref
-    //     inputRef.current = ref;
-    //   }
-    //   // Check if an external ref (inputRef) is a callback function
-    //   else if (typeof inputRef === 'function') {
-    //     // Call the inputRef function, passing the input element reference
-    //     inputRef(ref);
-    //   }
-    // };
-
     const handleInputRef = (inputElementRef: HTMLInputElement | null) => {
       // Assign the input element reference to the internal reference
       internalInputRef.current = inputElementRef;
