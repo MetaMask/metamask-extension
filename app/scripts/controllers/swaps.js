@@ -368,6 +368,7 @@ export default class SwapsController extends PollingControllerOnly {
         fetchParams.sourceToken,
         fetchParams.fromAddress,
         chainId,
+        ethersProvider,
       );
       const [firstQuote] = Object.values(newQuotes);
 
@@ -956,8 +957,13 @@ export default class SwapsController extends PollingControllerOnly {
     return [topAggId, newQuotes];
   }
 
-  async _getERC20Allowance(contractAddress, walletAddress, chainId) {
-    const contract = new Contract(contractAddress, abi, this.ethersProvider);
+  async _getERC20Allowance(
+    contractAddress,
+    walletAddress,
+    chainId,
+    ethersProvider,
+  ) {
+    const contract = new Contract(contractAddress, abi, ethersProvider);
     return await contract.allowance(
       walletAddress,
       SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
