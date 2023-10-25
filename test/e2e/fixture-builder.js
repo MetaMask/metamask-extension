@@ -1006,7 +1006,7 @@ class FixtureBuilder {
             type: 'eip155:eoa',
             metadata: {
               name: 'Account 2',
-              lastSelected: 1665507600000,
+              lastSelected: 1665507500000,
               keyring: {
                 type: 'HD Key Tree',
               },
