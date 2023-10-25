@@ -208,9 +208,7 @@
     "@metamask/signature-controller@^6.1.2": "patch:@metamask/signature-controller@npm%3A6.1.2#~/.yarn/patches/@metamask-signature-controller-npm-6.1.2-f60d8a4960.patch",
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
-    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
-    "@metamask/selected-network-controller": "npm:@metamask-previews/selected-network-controller@3.0.0-preview.3315781",
-    "@metamask/network-controller": "npm:@metamask-previews/network-controller@15.0.0-preview.3315781"
+    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -236,7 +234,6 @@
     "@metamask-institutional/rpc-allowlist": "^1.0.0",
     "@metamask-institutional/sdk": "^0.1.21",
     "@metamask-institutional/transaction-update": "^0.1.30",
-    "@metamask-previews/queued-request-controller": "0.0.0-preview.3315781",
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",
@@ -275,7 +272,7 @@
     "@metamask/post-message-stream": "^7.0.0",
     "@metamask/ppom-validator": "^0.8.0",
     "@metamask/providers": "^13.1.0",
-    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@1.0.0-preview.885fefd",
+    "@metamask/queued-request-controller": "^0.1.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
