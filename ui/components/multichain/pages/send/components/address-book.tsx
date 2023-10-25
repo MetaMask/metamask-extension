@@ -36,15 +36,6 @@ export const SendPageAddressBook = () => {
     });
 
   const userInput = useSelector(getRecipientUserInput);
-
-  console.log('---------------------');
-  console.log('addressBook is: ', addressBook);
-  console.log('contacts is: ', contacts);
-  console.log('currentNetworkTransactions is: ', currentNetworkTransactions);
-  console.log('txList is: ', txList);
-  console.log('nonContacts is: ', nonContacts);
-  console.log('userInput is: ', userInput);
-
   const contactFuse = new Fuse(contacts, {
     shouldSort: true,
     threshold: 0.45,
@@ -86,7 +77,11 @@ export const SendPageAddressBook = () => {
     return nonContacts;
   };
 
-  const selectRecipient = (address, nickname = '', type = 'user input') => {
+  const selectRecipient = (
+    address = '',
+    nickname = '',
+    type = 'user input',
+  ) => {
     dispatch(
       addHistoryEntry(
         `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
@@ -104,7 +99,7 @@ export const SendPageAddressBook = () => {
           addressBook={addressBook}
           searchForContacts={() => searchForContacts()}
           searchForRecents={searchForRecents}
-          selectRecipient={(address, name) => {
+          selectRecipient={(address = '', name = '') => {
             selectRecipient(
               address,
               name,
