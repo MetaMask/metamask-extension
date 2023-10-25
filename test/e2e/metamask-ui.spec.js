@@ -232,7 +232,7 @@ describe('MetaMask @no-mmi', function () {
       await driver.delay(tinyDelayMs);
 
       const tokenContractAddress = await driver.waitForSelector({
-        css: '#tokenAddress',
+        css: '#tokenAddresses',
         text: '0x',
       });
       tokenAddress = await tokenContractAddress.getText();
