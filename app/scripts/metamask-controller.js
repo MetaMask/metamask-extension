@@ -1374,6 +1374,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       provider: this.provider,
       blockTracker: this.blockTracker,
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
       getParticipateInMetrics: () =>
         this.metaMetricsController.state.participateInMetaMetrics,
       getEIP1559GasFeeEstimates:

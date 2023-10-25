@@ -391,6 +391,7 @@ export default class SwapsController extends PollingControllerOnly {
         const { gasLimit: approvalGas } = await this.timedoutGasReturn(
           firstQuote.approvalNeeded,
           firstQuote.aggregator,
+          networkClientId,
         );
 
         newQuotes = mapValues(newQuotes, (quote) => ({
@@ -408,7 +409,10 @@ export default class SwapsController extends PollingControllerOnly {
     // We can reduce time on the loading screen by only doing this after the
     // loading screen and best quote have rendered.
     if (!approvalRequired && !fetchParams?.balanceError) {
-      newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes);
+      newQuotes = await this.getAllQuotesWithGasEstimates(
+        newQuotes,
+        networkClientId,
+      );
     }
 
     if (Object.values(newQuotes).length === 0) {
@@ -487,12 +491,13 @@ export default class SwapsController extends PollingControllerOnly {
     this.store.updateState({ swapsState: { ...swapsState, errorKey } });
   }
 
-  async getAllQuotesWithGasEstimates(quotes) {
+  async getAllQuotesWithGasEstimates(quotes, networkClientId) {
     const quoteGasData = await Promise.all(
       Object.values(quotes).map(async (quote) => {
         const { gasLimit, simulationFails } = await this.timedoutGasReturn(
           quote.trade,
           quote.aggregator,
+          networkClientId,
         );
         return [gasLimit, simulationFails, quote.aggregator];
       }),
@@ -522,7 +527,7 @@ export default class SwapsController extends PollingControllerOnly {
     return newQuotes;
   }
 
-  timedoutGasReturn(tradeTxParams, aggregator = '') {
+  timedoutGasReturn(tradeTxParams, aggregator = '', networkClientId) {
     return new Promise((resolve) => {
       let gasTimedOut = false;
 
@@ -552,7 +557,12 @@ export default class SwapsController extends PollingControllerOnly {
         value: tradeTxParams.value,
       };
 
-      this.getBufferedGasLimit({ txParams: tradeTxParamsForGasEstimate }, 1)
+      // TODO depends on transactions controller refactor:
+      // getBufferedGasLimit is from the transactions controller (https://github.com/MetaMask/metamask-extension/blob/0a261a802231200276c8aae0d7271785c3a015e3/app/scripts/metamask-controller.js#L1546)
+      // and it is method on the txGasUtil sub class which is instantiated with the globally selected provider proxy: https://github.com/MetaMask/metamask-extension/blob/0a261a802231200276c8aae0d7271785c3a015e3/app/scripts/controllers/transactions/index.js#L166
+      this.getBufferedGasLimit({ txParams: tradeTxParamsForGasEstimate }, 1, {
+        networkClientId,
+      })
         .then(({ gasLimit, simulationFails }) => {
           if (!gasTimedOut) {
             clearTimeout(gasTimeout);
@@ -573,7 +583,7 @@ export default class SwapsController extends PollingControllerOnly {
     });
   }
 
-  async setInitialGasEstimate(initialAggId) {
+  async setInitialGasEstimate(initialAggId, networkClientId) {
     const { swapsState } = this.store.getState();
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
@@ -582,6 +592,7 @@ export default class SwapsController extends PollingControllerOnly {
       await this.timedoutGasReturn(
         quoteToUpdate.trade,
         quoteToUpdate.aggregator,
+        networkClientId,
       );
 
     if (newGasEstimate && !simulationFails) {
