@@ -35,6 +35,7 @@ import {
   ImportNftsModal,
   ImportTokensModal,
   SelectActionModal,
+  AppFooter,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -43,6 +44,8 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
+import SnapList from '../snaps/snaps-list';
+import SnapView from '../snaps/snap-view';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
@@ -90,6 +93,8 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  SNAPS_ROUTE,
+  SNAPS_VIEW_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
@@ -123,6 +128,8 @@ import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-i
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IN
 
+import { SendPage } from '../../components/multichain/pages/send';
+
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
@@ -138,8 +145,6 @@ export default class Routes extends Component {
     history: PropTypes.object,
     location: PropTypes.object,
     lockMetaMask: PropTypes.func,
-    isMouseUser: PropTypes.bool,
-    setMouseUserState: PropTypes.func,
     providerId: PropTypes.string,
     providerType: PropTypes.string,
     autoLockTimeLimit: PropTypes.number,
@@ -276,13 +281,23 @@ export default class Routes extends Component {
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
           ///: END:ONLY_INCLUDE_IN
         }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
         />
         <Authenticated
           path={SEND_ROUTE}
-          component={SendTransactionScreen}
+          component={process.env.MULTICHAIN ? SendPage : SendTransactionScreen}
           exact
         />
         <Authenticated
@@ -468,6 +483,16 @@ export default class Routes extends Component {
       }),
     );
 
+    const isMultichainSend = Boolean(
+      matchPath(location.pathname, {
+        path: SEND_ROUTE,
+        exact: false,
+      }),
+    );
+    if (process.env.MULTICHAIN && isMultichainSend) {
+      return true;
+    }
+
     const isHandlingAddEthereumChainRequest = Boolean(
       matchPath(location.pathname, {
         path: CONFIRMATION_V_NEXT_ROUTE,
@@ -476,6 +501,25 @@ export default class Routes extends Component {
     );
 
     return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
+  }
+
+  showFooter() {
+    if (Boolean(process.env.MULTICHAIN) === false) {
+      return false;
+    }
+
+    const { location } = this.props;
+    const isHomePage = Boolean(
+      matchPath(location.pathname, { path: DEFAULT_ROUTE, exact: true }),
+    );
+    const isConnectionsPage = Boolean(
+      matchPath(location.pathname, { path: CONNECTIONS, exact: true }),
+    );
+    const isAssetPage = Boolean(
+      matchPath(location.pathname, { path: ASSET_ROUTE, exact: false }),
+    );
+
+    return isAssetPage || isHomePage || isConnectionsPage;
   }
 
   showOnboardingHeader() {
@@ -504,8 +548,6 @@ export default class Routes extends Component {
       textDirection,
       loadingMessage,
       isNetworkLoading,
-      setMouseUserState,
-      isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
       isNetworkUsed,
@@ -561,15 +603,8 @@ export default class Routes extends Component {
         className={classnames('app', {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
-          'mouse-user-styles': isMouseUser,
         })}
         dir={textDirection}
-        onClick={() => setMouseUserState(true)}
-        onKeyDown={(e) => {
-          if (e.keyCode === 9) {
-            setMouseUserState(false);
-          }
-        }}
       >
         {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
@@ -619,6 +654,7 @@ export default class Routes extends Component {
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>
+        {this.showFooter() && <AppFooter location={location} />}
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );

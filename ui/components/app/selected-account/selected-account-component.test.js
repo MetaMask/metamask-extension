@@ -4,6 +4,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import {
   getCustodyAccountDetails,
   getIsCustodianSupportedChain,
@@ -68,6 +69,7 @@ describe('SelectedAccount Component', () => {
 
     expect(copyToClipboard).toHaveBeenCalledWith(
       '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+      COPY_OPTIONS,
     );
   });
 

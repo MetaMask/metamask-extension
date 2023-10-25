@@ -302,15 +302,6 @@ describe('App State', () => {
     expect(state.accountDetail.privateKey).toStrictEqual('private key');
   });
 
-  it('set mouse user state', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SET_MOUSE_USER_STATE,
-      payload: true,
-    });
-
-    expect(state.isMouseUser).toStrictEqual(true);
-  });
-
   it('smart transactions - SET_SMART_TRANSACTIONS_ERROR', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SET_SMART_TRANSACTIONS_ERROR,

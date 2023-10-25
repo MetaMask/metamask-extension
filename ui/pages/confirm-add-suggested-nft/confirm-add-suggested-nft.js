@@ -240,6 +240,7 @@ const ConfirmAddSuggestedNFT = () => {
                   return (
                     <Box
                       className="confirm-add-suggested-nft__nft-single"
+                      key={`confirm-add-suggested-nft__nft-single-${id}`}
                       borderRadius={BorderRadius.MD}
                       margin={0}
                       padding={0}

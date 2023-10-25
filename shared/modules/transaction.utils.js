@@ -39,13 +39,6 @@ const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
 
-export function transactionMatchesNetwork(transaction, chainId, networkId) {
-  if (typeof transaction.chainId !== 'undefined') {
-    return transaction.chainId === chainId;
-  }
-  return transaction.metamaskNetworkId === networkId;
-}
-
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
  * and valid inputs. This will return false for non hex string inputs.
