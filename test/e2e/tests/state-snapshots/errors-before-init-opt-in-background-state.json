@@ -1,5 +1,8 @@
 {
   "data": {
+    "AccountsController": {
+      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
+    },
     "AlertController": {
       "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
       "unconnectedAccountAlertShownOrigins": "object",
