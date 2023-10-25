@@ -14,8 +14,10 @@
  * @param {string} args.retryUntilFailure - Retries until the function fails.
  * @param {Function} functionToRetry - The function that is run and tested for
  * failure.
- * @returns {Promise<null | Error>} a promise that either resolves to null if
- * the function is successful or is rejected with rejectionMessage otherwise.
+ * @returns {Promise<* | null | Error>} a promise that either resolves with one of the following:
+ * - If successful, resolves with the return value of functionToRetry.
+ * - If functionToRetry fails while retryUntilFailure is true, resolves with null.
+ * - Otherwise it is rejected with rejectionMessage.
  */
 async function retry(
   {
@@ -33,14 +35,14 @@ async function retry(
     }
 
     try {
-      await functionToRetry();
+      const result = await functionToRetry();
       if (!retryUntilFailure) {
-        return;
+        return result;
       }
     } catch (error) {
       console.error(error);
       if (retryUntilFailure) {
-        return;
+        return null;
       }
     } finally {
       attempts += 1;

@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const {
   withFixturesOptions,
@@ -89,11 +88,10 @@ describe('Swaps - notifications @no-mmi', function () {
           swapTo: 'INUINU',
           skipCounter: true,
         });
-        const swapButton = await driver.findElement({
+        await driver.findClickableElement({
           text: 'Swap',
           tag: 'button',
         });
-        assert.equal(await swapButton.isEnabled(), true);
       },
     );
   });

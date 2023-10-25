@@ -87,7 +87,7 @@ function TransactionListItemInner({
 
   const {
     initialTransaction: { id },
-    primaryTransaction: { err, status },
+    primaryTransaction: { error, status },
   } = transactionGroup;
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -313,7 +313,7 @@ function TransactionListItemInner({
             statusOnly
             isPending={isPending}
             isEarliestNonce={isEarliestNonce}
-            error={err}
+            error={error}
             date={date}
             status={displayedStatusKey}
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -402,7 +402,7 @@ function TransactionListItemInner({
             <TransactionStatusLabel
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
-              error={err}
+              error={error}
               date={date}
               status={displayedStatusKey}
               statusOnly

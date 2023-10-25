@@ -9,6 +9,7 @@ import {
   AlignItems,
   Color,
   Display,
+  FlexDirection,
   FontWeight,
   TextAlign,
   TextVariant,
@@ -16,8 +17,7 @@ import {
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentNetwork, getUseTokenDetection } from '../../../selectors';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
-import { PickerNetwork, Text } from '../../component-library';
-import Box from '../box';
+import { PickerNetwork, Text, Box } from '../../component-library';
 import Button from '../button';
 import Popover from '../popover';
 
@@ -78,7 +78,11 @@ export default function NewNetworkInfo() {
           </Button>
         }
       >
-        <Box data-testid="new-network-info__wrapper">
+        <Box
+          data-testid="new-network-info__wrapper"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+        >
           <Text
             variant={TextVariant.headingSm}
             as="h4"

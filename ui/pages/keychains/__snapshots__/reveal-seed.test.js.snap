@@ -60,7 +60,9 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
         class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
         style="mask-image: url('./images/icons/danger.svg');"
       />
-      <div>
+      <div
+        class="mm-box mm-box--min-width-0"
+      >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
@@ -89,7 +91,6 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
         class="box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
       >
         <input
-          aria-invalid="false"
           autocomplete="off"
           class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
           data-testid="input-password"

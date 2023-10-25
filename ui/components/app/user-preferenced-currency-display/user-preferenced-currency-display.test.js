@@ -1,6 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import {
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
 import UserPreferencedCurrencyDisplay from '.';
 
 describe('UserPreferencedCurrencyDisplay Component', () => {
@@ -8,7 +13,9 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
     const mockState = {
       metamask: {
         providerConfig: {
-          chainId: '0x99',
+          chainId: CHAIN_IDS.MAINNET,
+          nickname: MAINNET_DISPLAY_NAME,
+          type: NETWORK_TYPES.MAINNET,
         },
         preferences: {
           useNativeCurrencyAsPrimaryCurrency: true,
@@ -16,13 +23,11 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
       },
     };
     const mockStore = configureMockStore()(mockState);
-
     it('should match snapshot', () => {
       const { container } = renderWithProvider(
         <UserPreferencedCurrencyDisplay />,
         mockStore,
       );
-
       expect(container).toMatchSnapshot();
     });
   });
