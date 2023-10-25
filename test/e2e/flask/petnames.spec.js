@@ -1,4 +1,9 @@
-const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
+const {
+  convertToHexValue,
+  openDapp,
+  switchToNotificationWindow,
+  withFixtures,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
 
@@ -40,21 +45,19 @@ async function installNameLookupSnap(driver) {
   await driver.delay(1000);
 
   // Confirm Connect Modal
-  focusNotification(driver);
+  await switchToNotificationWindow(driver, 4);
   await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
 
   // Confirm Install Modal
-  await driver.waitForSelector({ text: 'Install' });
   await driver.clickElement({
     text: 'Install',
     tag: 'button',
   });
 
   // Success Modal
-  await driver.waitForSelector({ text: 'OK' });
   await driver.clickElement({
     text: 'OK',
     tag: 'button',
@@ -71,12 +74,6 @@ async function createSignatureRequest(driver, type) {
 
 async function rejectSignatureRequest(driver) {
   await driver.clickElement({ text: 'Reject', tag: 'button' });
-  await driver.delay(3000);
-}
-
-async function focusNotification(driver) {
-  const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
   await driver.delay(3000);
 }
 
@@ -166,7 +163,7 @@ describe('Petnames', function () {
         await login(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 3);
         await expectName(driver, '0xCD2a3...DD826', false);
         await expectName(driver, '0xbBbBB...bBBbB', false);
         await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
@@ -178,7 +175,7 @@ describe('Petnames', function () {
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 3);
         await expectName(driver, 'test.lens', true);
         await expectName(driver, 'test2.lens', true);
         await showThirdPartyDetails(driver);
@@ -202,7 +199,7 @@ describe('Petnames', function () {
         await login(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 3);
         await expectName(driver, '0xCD2a3...DD826', false);
         await expectName(driver, '0xDeaDb...DbeeF', false);
         await expectName(driver, '0xbBbBB...bBBbB', false);
@@ -217,7 +214,7 @@ describe('Petnames', function () {
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 3);
         await expectName(driver, 'test.lens', true);
         await expectName(driver, 'Test Token 2', true);
         await showThirdPartyDetails(driver);
@@ -244,7 +241,7 @@ describe('Petnames', function () {
         await installNameLookupSnap(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 4);
         await expectProposedNames(driver, '0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
           ['example.domain - 0xcd2 / 0x539', 'Name Lookup Example Snap'],

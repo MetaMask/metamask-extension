@@ -10,6 +10,7 @@ import {
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
+import snapAccountRedirect from './snap-account-redirect';
 ///: END:ONLY_INCLUDE_IN
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
@@ -37,6 +38,8 @@ const APPROVAL_TEMPLATES = {
     createSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval]:
     removeSnapAccount,
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
+    snapAccountRedirect,
   ///: END:ONLY_INCLUDE_IN
 };
 

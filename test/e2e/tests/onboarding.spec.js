@@ -9,7 +9,7 @@ const {
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
-  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
   defaultGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -296,7 +296,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           text: networkName,
         });
 
-        await assertAccountBalanceForDOM(driver, secondaryGanacheServer);
+        await locateAccountBalanceDOM(driver, secondaryGanacheServer);
       },
     );
   });

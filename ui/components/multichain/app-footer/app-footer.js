@@ -1,10 +1,7 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  CONNECTED_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { CONNECTIONS, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   AvatarFavicon,
   AvatarNetwork,
@@ -46,11 +43,11 @@ export const AppFooter = () => {
   const t = useI18nContext();
   const location = useLocation();
   const dispatch = useDispatch();
+  const history = useHistory();
 
-  const walletRoute = `#${DEFAULT_ROUTE}`;
-  const connectedRoute = `#${CONNECTED_ROUTE}`;
   const activeWallet = location.pathname === DEFAULT_ROUTE;
-  const activeConnections = location.pathname === CONNECTED_ROUTE;
+  const activeConnections = location.pathname === CONNECTIONS;
+  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
 
   const selectedAddress = useSelector(getSelectedAddress);
 
@@ -67,124 +64,152 @@ export const AppFooter = () => {
   const currentChain = useSelector(getCurrentNetwork);
 
   return (
-    <Box
-      className="app-footer"
-      width={BlockSize.Full}
-      height={BlockSize.Min}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingTop={2}
-      paddingBottom={2}
-    >
-      <Box
-        as="a"
-        href={walletRoute}
-        className="app-footer__button"
-        width={BlockSize.OneThird}
-        padding={2}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        tabIndex={0}
-      >
-        <Icon
-          data-testid="app-footer-wallet-button"
-          color={
-            activeWallet ? IconColor.primaryDefault : IconColor.iconAlternative
-          }
-          name={IconName.Wallet}
-          size={IconSize.Lg}
-        />
-        <Text
-          color={
-            activeWallet ? TextColor.primaryDefault : TextColor.textAlternative
-          }
-          variant={TextVariant.bodyMd}
-        >
-          {t('wallet')}
-        </Text>
-      </Box>
-      <Box
-        as="button"
-        width={BlockSize.OneThird}
-        padding={2}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        tabIndex={0}
-      >
-        <ButtonIcon
-          className="app-footer__button"
-          data-testid="app-footer-actions-button"
-          iconName={IconName.SwapVertical}
-          color={IconColor.primaryInverse}
-          backgroundColor={BackgroundColor.primaryDefault}
-          size={ButtonIconSize.Lg}
-          borderRadius={BorderRadius.full}
-          onClick={() => dispatch(showSelectActionModal())}
-        />
-      </Box>
-      <Box
-        as="a"
-        href={connectedRoute}
-        className="app-footer__button"
-        width={BlockSize.OneThird}
-        padding={2}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        tabIndex={0}
-      >
-        {connectedSite ? (
-          <Box alignItems={AlignItems.center}>
-            <BadgeWrapper
+    <>
+      {isUnlocked ? (
+        <>
+          <Box
+            className="app-footer"
+            data-test-id="app-footer"
+            width={BlockSize.Full}
+            backgroundColor={BackgroundColor.backgroundAlternative}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+          >
+            <Box
+              className="app-footer__contents"
+              width={BlockSize.Full}
               display={Display.Flex}
-              className="app-footer__connected-badge"
-              badge={
-                <AvatarNetwork
-                  backgroundColor={testNetworkBackgroundColor}
-                  size={AvatarNetworkSize.Xs}
-                  name={currentChain.nickname}
-                  src={currentChain.rpcPrefs?.imageUrl}
-                  borderWidth={2}
-                  borderColor={BorderColor.borderDefault}
-                />
-              }
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              flexDirection={FlexDirection.Row}
+              padding={2}
+              paddingLeft={4}
+              paddingRight={4}
+              gap={2}
             >
-              <AvatarFavicon
-                size={Size.SM}
-                src={connectedAvatar}
-                name={connectedAvatarName}
-              />
-            </BadgeWrapper>
+              <Box
+                as="a"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  history.push(DEFAULT_ROUTE);
+                }}
+                className="app-footer__button"
+                width={BlockSize.OneThird}
+                padding={2}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                tabIndex={0}
+              >
+                <Icon
+                  data-testid="app-footer-wallet-button"
+                  color={
+                    activeWallet
+                      ? IconColor.primaryDefault
+                      : IconColor.iconAlternative
+                  }
+                  name={IconName.Wallet}
+                  size={IconSize.Lg}
+                />
+                <Text
+                  color={
+                    activeWallet
+                      ? TextColor.primaryDefault
+                      : TextColor.textAlternative
+                  }
+                  variant={TextVariant.bodyMd}
+                >
+                  {t('wallet')}
+                </Text>
+              </Box>
+              <Box
+                width={BlockSize.OneThird}
+                padding={2}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                tabIndex={0}
+              >
+                <ButtonIcon
+                  className="app-footer__actions-button"
+                  data-testid="app-footer-actions-button"
+                  iconName={IconName.SwapVertical}
+                  color={IconColor.primaryInverse}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                  borderRadius={BorderRadius.full}
+                  size={ButtonIconSize.Lg}
+                  onClick={() => dispatch(showSelectActionModal())}
+                />
+              </Box>
+              <Box
+                as="a"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  history.push(CONNECTIONS);
+                }}
+                className="app-footer__button"
+                width={BlockSize.OneThird}
+                padding={2}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                tabIndex={0}
+              >
+                {connectedSite ? (
+                  <Box alignItems={AlignItems.center}>
+                    <BadgeWrapper
+                      display={Display.Flex}
+                      className="app-footer__connected-badge"
+                      badge={
+                        <AvatarNetwork
+                          backgroundColor={testNetworkBackgroundColor}
+                          size={AvatarNetworkSize.Xs}
+                          name={currentChain.nickname}
+                          src={currentChain.rpcPrefs?.imageUrl}
+                          borderWidth={2}
+                          borderColor={BorderColor.borderDefault}
+                        />
+                      }
+                    >
+                      <AvatarFavicon
+                        size={Size.SM}
+                        src={connectedAvatar}
+                        name={connectedAvatarName}
+                      />
+                    </BadgeWrapper>
+                  </Box>
+                ) : (
+                  <Icon
+                    color={
+                      activeConnections
+                        ? IconColor.primaryDefault
+                        : IconColor.iconAlternative
+                    }
+                    name={IconName.Global}
+                    size={IconSize.Lg}
+                  />
+                )}
+                <Text
+                  color={
+                    activeConnections
+                      ? TextColor.primaryDefault
+                      : TextColor.textAlternative
+                  }
+                  variant={TextVariant.bodyMd}
+                >
+                  {t('connections')}
+                </Text>
+              </Box>
+            </Box>
           </Box>
-        ) : (
-          <Icon
-            color={
-              activeConnections
-                ? IconColor.primaryDefault
-                : IconColor.iconAlternative
-            }
-            name={IconName.Global}
-            size={IconSize.Lg}
-          />
-        )}
-        <Text
-          color={
-            activeConnections
-              ? TextColor.primaryDefault
-              : TextColor.textAlternative
-          }
-          variant={TextVariant.bodyMd}
-        >
-          {t('connections')}
-        </Text>
-      </Box>
-    </Box>
+        </>
+      ) : null}
+    </>
   );
 };
