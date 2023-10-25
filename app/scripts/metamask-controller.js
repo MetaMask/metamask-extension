@@ -257,7 +257,7 @@ import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
-import { QueuedRequestController, createQueuedRequestMiddleware } from '@metamask-previews/queued-request-controller';
+import { QueuedRequestController, createQueuedRequestMiddleware } from '@metamask/queued-request-controller';
 
 import {
   CaveatMutatorFactories,
