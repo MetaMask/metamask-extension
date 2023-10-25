@@ -15,6 +15,7 @@ import {
   ModalOverlay,
   Text,
   TextField,
+  TextFieldType,
 } from '../../../component-library';
 import {
   BlockSize,
@@ -156,7 +157,7 @@ export default function KeyringRemovalSnapWarning({
                   inputProps={{
                     'data-testid': 'remove-snap-confirmation-input',
                   }}
-                  type="text"
+                  type={TextFieldType.Text}
                 />
               </Box>
             </>
