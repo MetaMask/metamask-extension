@@ -4323,7 +4323,7 @@
     "message": "Proceed with caution"
   },
   "snapInstallWarningPermissionDescription": {
-    "message": "Allow the Snap to derive key pairs based on your Secret Recovery Phrase without revealing it. This grants access to all accounts and assets on the requested networks. With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "message": "Allow the Snap to manage accounts and assets on the requested network(s). These accounts are derived and backed up using your secret recovery phrase (without revealing it). With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
     "description": "Tooltip description used on the Permission Cell component displayed on warning popup"
   },
   "snapInstallWarningPermissionName": {
