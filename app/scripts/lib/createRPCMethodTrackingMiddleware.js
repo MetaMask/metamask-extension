@@ -207,7 +207,6 @@ export default function createRPCMethodTrackingMiddleware({
         ///: END:ONLY_INCLUDE_IN
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-          getSelectedAddress,
           getAccountType,
           getDeviceModel,
           snapAndHardwareMessenger,
