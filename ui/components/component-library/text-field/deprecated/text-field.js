@@ -113,7 +113,7 @@ export const TextField = ({
     >
       {startAccessory}
       <InputComponent
-        aria-invalid={error}
+        {...(error && { 'aria-invalid': error })}
         autoComplete={autoComplete}
         autoFocus={autoFocus}
         backgroundColor={BackgroundColor.transparent}
