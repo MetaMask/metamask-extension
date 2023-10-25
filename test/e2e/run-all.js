@@ -164,18 +164,6 @@ async function main() {
     ];
   }
 
-  // These tests should only be run on Flask for now.
-  if (buildType !== 'flask') {
-    const filteredTests = [
-      'test-snap-lifecycle.spec.js',
-      'test-snap-get-locale.spec.js',
-      'petnames.spec.js',
-    ];
-    testPaths = testPaths.filter((p) =>
-      filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
-    );
-  }
-
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
 
   const args = [runE2eTestPath];

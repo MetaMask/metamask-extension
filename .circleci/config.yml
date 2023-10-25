@@ -916,11 +916,11 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test-flask ./builds
       - run:
-          name: test:e2e:firefox:snaps
+          name: test:e2e:firefox:flask
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=flask
+              yarn test:e2e:firefox:flask --retries 2 --debug
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -946,11 +946,11 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test-flask ./builds
       - run:
-          name: test:e2e:chrome:snaps
+          name: test:e2e:chrome:flask
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=flask
+              yarn test:e2e:chrome:flask --retries 2 --debug
             fi
           no_output_timeout: 20m
       - store_artifacts:
