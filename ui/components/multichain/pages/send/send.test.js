@@ -9,8 +9,13 @@ const store = configureStore(mockState);
 describe('SendPage', () => {
   describe('render', () => {
     it('renders correctly', () => {
-      const { container } = renderWithProvider(<SendPage />, store);
+      const { container, getByTestId } = renderWithProvider(
+        <SendPage />,
+        store,
+      );
       expect(container).toMatchSnapshot();
+
+      expect(getByTestId('send-page-network-picker')).toBeInTheDocument();
     });
   });
 });
