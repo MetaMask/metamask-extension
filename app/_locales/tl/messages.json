@@ -371,9 +371,6 @@
   "amount": {
     "message": "Halaga"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Ethereum Wallet sa iyong Browser",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Bumili"
-  },
   "buyAsset": {
     "message": "Bumili ng $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "I-hold ang iyong crypto at makaipon ng potensyal na tubo"
-  },
-  "buyDisabled": {
-    "message": "Hindi available ang pagbili sa network na ito"
   },
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "Tagapangalaga"
   },
-  "custodianAccount": {
-    "message": "Account ng tagapangalaga"
-  },
   "custodianAccountAddedDesc": {
     "message": "Maaari mo na ngayong gamitin ang iyong mga custodian account sa MetaMask Institutional."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "I-dismiss ang back up na paalala ng Lihim na Parirala sa Pagbawi"
   },
-  "displayNftMedia": {
-    "message": "Ipakita ang NFT media"
-  },
-  "displayNftMediaDescription": {
-    "message": "Ang pagpapakita ng media at data ng NFT ay naglalantad sa iyong IP address sa OpenSea o sa ibang mga third party. Maaari nitong payagan ang mga umaatake na iugnay ang iyong IP address sa iyong Ethereum address. Umaasa ang awtomatikong pagtuklas ng NFT sa setting na ito, at hindi magagamit kapag naka-off ito."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
-  "enableForAllNetworks": {
-    "message": "Paganahin para sa lahat ng network"
-  },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Paganahin sa OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
   "enableSmartSwaps": {
     "message": "Paganahin ang mga smart swap"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Ang pinahusay na pagtuklas ng token ay kasalukuyang magagamit sa $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "Pinapahintulutan ka ng MetaMask na makita ang mga ENS domain gaya ng \"https://metamask.eth\" mismo sa address bar ng iyong browser. Narito kung paano ito ginagawa:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Ang mga regular na browser ay kadalasang hindi humahawak ng mga ENS o IPFS address, pero ang MetaMask ay tumutulong dito. Ang paggamit sa feature na ito ay maaring magbahagi sa iyong IP address gamit ang mga IPFS third-party na serbisyo."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "Sinusuri ng MetaMask ang kontrata ng ENS ng Ethereum para mahanap ang code na konektado sa pangalan ng ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Kapag ang code ay naka-link sa IPFS, kinukuha nito ang content mula sa IPFS network."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Pagkatapos, makikita mo ang content, na karaniwang website o isang bagay na katulad."
   },
   "ensDomainsSettingTitle": {
     "message": "Ipinapakita ang mga ENS domain sa address bar"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Galugarin ang MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "I-customize ang iyong karanasan sa wallet."
+    "message": "I-customize ang iyong karanasan sa wallet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "External Extension"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Napakalaki ng na-drop na file."
   },
   "flaskWelcomeUninstall": {
     "message": "dapat mong i-uninstall ang extension na ito",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Humiling dito"
   },
-  "mmiAddToken": {
-    "message": "Ang pahina sa $1 ay nais pahintulutan ang sumusunod na tagapangalaga na token sa MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "Ang MetaMask Institutional ay dinisenyo at binuo sa buong mundo."
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "Bagong kontrata"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Payagan ang MetaMask na awtomatikong makita ang mga NFT mula sa Opensea at ipakita sa iyong wallet."
-  },
-  "newNFTsDetected": {
-    "message": "Bago! Pag-detect ng NFT"
   },
   "newNetworkAdded": {
     "message": "Ang “$1” matagumpay na naidagdag!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Buksan sa block explorer"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Pinapayagan ang snap na gumamit ng mga lifecycle hook para paganahin ang code sa mga espisipikong panahon sa oras ng lifecycle nito.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Patakbuhin ng walang katapusan.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Payagan ang snap para gumana nang walang limitasyon sa tagal habang, halimbawa, nagpoproseso ng maraming data.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Magdagdag at kontrolin ang mga Ethereum account",
@@ -3886,9 +3825,6 @@
     "message": "Umaasa ito sa $1 na magkakaroon ng access sa iyong Ethereum address at sa iyong IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Umaasa ito sa bawat network na magkakaroon ng access sa iyong Ethereum address at sa iyong IP address."
-  },
   "showMore": {
     "message": "Ipakita ang iba pa"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Gumawa ng $1 account",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Na-install"
-  },
-  "snapError": {
-    "message": "Snap Error: '$1'. Error Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "I-install ang snap"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng Third Party ay direktang kokolektahin ng mga Serbisyo ng Third Party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Pamahalaan ang iyong mga Snap"
   },
   "snapsTermsOfUse": {
     "message": "Mga Tuntunin ng Paggamit"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "termsOfUse": {
-    "message": "mga tuntunin ng paggamit"
-  },
   "termsOfUseAgreeText": {
     "message": " Sumasang-ayon ako sa Mga Tuntunin sa Paggamit, na nalalapat sa aking paggamit ng MetaMask at lahat ng feature nito"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "koleksyong ito"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Ang serbisyong ito ay pang-eksperimento. Sa pamamagitan ng pagpapagana ng feature na ito, sumasang-ayon ka sa $1 ng OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Oras"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "Isinumite ulit ang transaksyon na may tinantyang bayad sa gas na itinaas sa $1 sa $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Paganahin ang mga alerto sa seguridad"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Gumagamit kami ng mga third-party na API para tumuklas at ipakita ang mga panganib na kasangkot sa hindi napirmahang mga kahilingan sa transaksyon at paglagda bago mo pirmahan ang mga ito. Ang mga serbisyong ito ay magkakaroon ng access sa iyong hindi pa napirmahang mga kahilingan sa transaksyon at paglagda, address ng iyong account, at iyong nais na wika."
-  },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "Awtomatikong tuklasin ang mga NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "Gumagamit kami ng mga third-party na API upang matukoy ang mga NFT sa iyong wallet, na nangangahulugang ang iyong IP address ay maaaring malantad sa mga sentralisadong server. May ilang bagay na dapat maging maingat kapag pinapagana ang feature na ito."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Ang address ng iyong account ay makikita ng mga third-party na API."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Ang NFT metadata ay maaaring maglaman ng mga link sa mga panloloko o phishing site."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Kahit sino ay maaaring mag-airdrop ng mga NFT sa iyong account. Maaaring kabilang dito ang nakakapanakit na nilalaman na maaaring awtomatikong ipakita sa iyong wallet."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Iwanan ang feature na ito na naka-off kung ayaw mong makuha ng app ang data mula sa mga serbisyong iyon."
-  },
   "usePhishingDetection": {
     "message": "Gumamit ng phishing detection"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Tingnan sa Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Tingnan ang Dashboard ng Portfolio"
   },
   "viewinCustodianApp": {
     "message": "Tingnan sa app custodian"

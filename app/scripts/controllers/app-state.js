@@ -26,7 +26,6 @@ export default class AppStateController extends EventEmitter {
       initState,
       onInactiveTimeout,
       preferencesStore,
-      qrHardwareStore,
       messenger,
       extension,
     } = opts;
@@ -63,7 +62,6 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
-      serviceWorkerLastActiveTime: 0,
     });
     this.timer = null;
 
@@ -78,9 +76,13 @@ export default class AppStateController extends EventEmitter {
       }
     });
 
-    qrHardwareStore.subscribe((state) => {
-      this.store.updateState({ qrHardware: state });
-    });
+    messenger.subscribe(
+      'KeyringController:qrKeyringStateChange',
+      (qrHardware) =>
+        this.store.updateState({
+          qrHardware,
+        }),
+    );
 
     const { preferences } = preferencesStore.getState();
     this._setInactiveTimeout(preferences.autoLockTimeLimit);
@@ -430,12 +432,6 @@ export default class AppStateController extends EventEmitter {
    */
   getCurrentPopupId() {
     return this.store.getState().currentPopupId;
-  }
-
-  setServiceWorkerLastActiveTime(serviceWorkerLastActiveTime) {
-    this.store.updateState({
-      serviceWorkerLastActiveTime,
-    });
   }
 
   _requestApproval() {

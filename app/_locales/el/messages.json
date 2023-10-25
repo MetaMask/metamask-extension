@@ -371,9 +371,6 @@
   "amount": {
     "message": "Ποσό"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Ένα Πορτοφόλι Ethereum στο Πρόγραμμα Περιήγησής σας",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Απασχολημένο"
   },
-  "buy": {
-    "message": "Αγορά"
-  },
   "buyAsset": {
     "message": "Αγορά $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Κρατήστε τα κρυπτονομίσματά σας και κερδίστε πιθανά κέρδη"
-  },
-  "buyDisabled": {
-    "message": "Η αγορά δεν είναι διαθέσιμη σε αυτό το δίκτυο"
   },
   "buyMoreAsset": {
     "message": "Αγοράστε περισσότερα $1",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "Θεματοφύλακας"
   },
-  "custodianAccount": {
-    "message": "Λογαριασμός θεματοφύλακα"
-  },
   "custodianAccountAddedDesc": {
     "message": "Μπορείτε τώρα να χρησιμοποιήσετε τους λογαριασμούς θεματοφύλακά σας στο MetaMask Institutional."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "Απορρίψτε την υπενθύμιση δημιουργίας αντιγράφων ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
-  "displayNftMedia": {
-    "message": "Εμφάνιση των μέσων NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Η εμφάνιση των μέσων και δεδομένων NFT εκθέτει τη διεύθυνση IP σας στο OpenSea ή σε άλλους τρίτους. Αυτό μπορεί να επιτρέψει σε εισβολείς να συσχετίσουν τη διεύθυνση IP σας με τη διεύθυνση σας στο Ethereum. Η αυτόματη ανίχνευση των NFT βασίζεται σε αυτή τη ρύθμιση και δεν θα είναι διαθέσιμη όταν αυτή είναι απενεργοποιημένη."
-  },
   "domain": {
     "message": "Τομέας"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " Ενεργοποίηση αυτόματου εντοπισμού"
   },
-  "enableForAllNetworks": {
-    "message": "Ενεργοποίηση σε όλα τα δίκτυα"
-  },
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Ενεργοποίηση OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
   "enableSmartSwaps": {
     "message": "Ενεργοποίηση των έξυπνων ανταλλαγών"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Ο βελτιωμένος εντοπισμός για token είναι επί του παρόντος διαθέσιμος στο $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "Το MetaMask σας επιτρέπει να βλέπετε τομείς ENS όπως \"https://metamask.eth\" ακριβώς στη γραμμή διευθύνσεων του προγράμματος περιήγησής σας. Να πώς λειτουργεί:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Τα συνηθισμένα προγράμματα περιήγησης συνήθως δεν χειρίζονται διευθύνσεις ENS ή IPFS, αλλά το MetaMask βοηθάει σε αυτό. Χρησιμοποιώντας αυτή τη λειτουργία ενδέχεται να μοιραστείτε τη διεύθυνση IP σας με υπηρεσίες IPFS τρίτων."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "Το MetaMask ελέγχει το συμβόλαιο ENS του Ethereum για να βρει τον κώδικα που συνδέεται με το όνομα ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Εάν ο κωδικός συνδέεται με το IPFS, λαμβάνει το περιεχόμενο από το δίκτυο IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Στη συνέχεια, μπορείτε να δείτε το περιεχόμενο, συνήθως μια ιστοσελίδα ή κάτι παρόμοιο."
   },
   "ensDomainsSettingTitle": {
     "message": "Εμφάνιση τομέων ENS στη γραμμή διευθύνσεων"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "Πειραματικά"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Εξερευνήστε το MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας."
+    "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Εξωτερική επέκταση"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Το υποβαλλόμενο αρχείο είναι πολύ μεγάλο."
   },
   "flaskWelcomeUninstall": {
     "message": "θα πρέπει να απεγκαταστήσετε αυτή την επέκταση",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Υποβάλετε αίτημα εδώ"
   },
-  "mmiAddToken": {
-    "message": "Η σελίδα στο $1 θα ήθελε να εξουσιοδοτήσει το ακόλουθο token θεματοφύλακα στο MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "Το MetaMask Institutional έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "Νέο συμβόλαιο"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Επιτρέψτε στο MetaMask να εντοπίζει αυτόματα τα NFT από το Opensea και να τα εμφανίζει στο πορτοφόλι σας."
-  },
-  "newNFTsDetected": {
-    "message": "Νέο! Εντοπισμός των NFT"
   },
   "newNetworkAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Άνοιγμα στο Block Explorer"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Δοκιμαστικά)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Επιτρέψτε στο snap να χρησιμοποιεί επιχειρηματικά μοντέλα για την εκτέλεση κώδικα σε συγκεκριμένες χρονικές στιγμές κατά τη διάρκεια του κύκλου ζωής του.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Εκτέλεση επ' αόριστον.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Επιτρέψτε στο snap να εκτελείται επ' αόριστον, ενώ, για παράδειγμα, επεξεργάζεται μεγάλες ποσότητες δεδομένων.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Προσθήκη και έλεγχος λογαριασμών στο Ethereum",
@@ -3886,9 +3825,6 @@
     "message": "Αυτό βασίζεται στο $1, το οποίο θα έχει πρόσβαση στη διεύθυνση Ethereum και τη διεύθυνση IP σας. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Αυτό βασίζεται σε κάθε δίκτυο που θα έχει πρόσβαση στη διεύθυνση Ethereum και στη διεύθυνση IP σας."
-  },
   "showMore": {
     "message": "Εμφάνιση περισσότερων"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Δημιουργήστε έναν $1 λογαριασμό",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Εγκαταστάθηκε"
-  },
-  "snapError": {
-    "message": "Σφάλμα Snap: '$1'. Κωδικός Σφάλματος: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Εγκατάσταση του snap"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Οποιεσδήποτε πληροφορίες μοιράζεστε με τις Υπηρεσίες Τρίτων θα συλλέγονται απευθείας από τις εν λόγω Υπηρεσίες Τρίτων σύμφωνα με τις πολιτικές απορρήτου τους. Ανατρέξτε στις πολιτικές απορρήτου τους για περισσότερες πληροφορίες.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Διαχειριστείτε τα Snaps σας"
   },
   "snapsTermsOfUse": {
     "message": "Όροι Χρήσης"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "Όροι παροχής υπηρεσιών"
   },
-  "termsOfUse": {
-    "message": "όροι χρήσης"
-  },
   "termsOfUseAgreeText": {
     "message": " Συμφωνώ με τους Όρους Χρήσης, οι οποίοι ισχύουν για τη χρήση του MetaMask και όλων των λειτουργιών του"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "αυτή η συλλογή"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Η υπηρεσία αυτή είναι πειραματική. Ενεργοποιώντας αυτή τη λειτουργία, συμφωνείτε με τους $1 του OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Ώρα"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "Η συναλλαγή υποβλήθηκε ξανά με το εκτιμώμενο τέλος συναλλαγής να έχει αυξηθεί στα $1 στις $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Χρησιμοποιούμε API τρίτων για τον εντοπισμό και την εμφάνιση των κινδύνων που ενέχουν τα ανυπόγραφα αιτήματα συναλλαγών και υπογραφών πριν τα υπογράψετε. Αυτές οι υπηρεσίες θα έχουν πρόσβαση στα ανυπόγραφα αιτήματα συναλλαγών και υπογραφών σας, στη διεύθυνση του λογαριασμού σας και στην προτιμώμενη γλώσσα σας."
-  },
   "transactionSettings": {
     "message": "Ρυθμίσεις συναλλαγών"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "Αυτόματη ανίχνευση των NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "Χρησιμοποιούμε API τρίτων για την ανίχνευση NFT στο πορτοφόλι σας, πράγμα που σημαίνει ότι η διεύθυνση IP σας μπορεί να εκτεθεί σε κεντρικούς διακομιστές. Υπάρχουν μερικά πράγματα που πρέπει να προσέχετε κατά την ενεργοποίηση αυτής της λειτουργίας."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Η διεύθυνση του λογαριασμού σας θα είναι ορατή σε API τρίτων."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Τα μεταδεδομένα των NFT ενδέχεται να περιέχουν συνδέσμους προς ιστοσελίδες απάτης ή ηλεκτρονικού «ψαρέματος»."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Οποιοσδήποτε μπορεί να στείλει NFT στον λογαριασμό σας. Αυτό μπορεί να περιλαμβάνει προσβλητικό περιεχόμενο που ενδέχεται να εμφανίζεται αυτόματα στο πορτοφόλι σας."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Αφήστε αυτή τη λειτουργία απενεργοποιημένη αν δεν θέλετε η εφαρμογή να αντλεί δεδομένα από αυτές τις υπηρεσίες."
-  },
   "usePhishingDetection": {
     "message": "Χρήση ανίχνευσης phishing"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Προβολή στο Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Προβολή πίνακα ελέγχου χαρτοφυλακίου"
   },
   "viewinCustodianApp": {
     "message": "Προβολή στην εφαρμογή θεματοφύλακα"

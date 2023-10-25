@@ -50,7 +50,6 @@
       "traits": "object"
     },
     "NetworkController": {
-      "networkId": "1337",
       "selectedNetworkClientId": "string",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
@@ -80,7 +79,6 @@
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
-      "infuraBlocked": false,
       "ipfsGateway": "string",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",

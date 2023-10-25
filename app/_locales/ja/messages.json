@@ -371,9 +371,6 @@
   "amount": {
     "message": "金額"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "ブラウザにあるイーサリアムウォレット",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "ビジー状態"
   },
-  "buy": {
-    "message": "購入"
-  },
   "buyAsset": {
     "message": "$1を購入",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "仮想通貨を保持して利益を得ます"
-  },
-  "buyDisabled": {
-    "message": "このネットワークでは購入できません"
   },
   "buyMoreAsset": {
     "message": "$1を追加購入",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "カストディアン"
   },
-  "custodianAccount": {
-    "message": "カストディアンアカウント"
-  },
   "custodianAccountAddedDesc": {
     "message": "カストディアンアカウントをMetaMask Institutionalで使えるようになりました。"
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "シークレットリカバリーフレーズのバックアップリマインダーを解除"
   },
-  "displayNftMedia": {
-    "message": "NFTメディアの表示"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFTのメディアとデータを表示した場合、IPアドレスがOpenSeaをはじめとするサードパーティに公開されます。その結果、攻撃者がユーザーのIPアドレスとイーサリアムアドレスを関連付けられるようになる可能性があります。NFTの自動検出はこの設定に依存しており、この設定を無効にすると利用できなくなります。"
-  },
   "domain": {
     "message": "ドメイン"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
-  "enableForAllNetworks": {
-    "message": "すべてのネットワークで有効にする"
-  },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea APIを有効にする"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
   "enableSmartSwaps": {
     "message": "スマートスワップを有効にする"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "改善されたトークン検出は現在$1で利用可能です。$2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMaskは、「https://metamask.eth」などのENSドメインをブラウザのアドレスバーに直接表示します。使い方は次の通りです:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "一般的なブラウザは通常、ENSやIPFSアドレスを扱えませんが、MetaMaskはそれをサポートします。この機能を使うと、IPFSサードパーティサービスにIPアドレスが共有される可能性があります。"
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMaskはイーサリアムのENSコントラクトを確認し、ENS名に接続されたコードを取得します。"
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "コードがIPFSにリンクされている場合、IPFSネットワークからコンテンツを取得します。"
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "その後コンテンツが表示され、通常Webサイトやその他同様のコンテンツとなります。"
   },
   "ensDomainsSettingTitle": {
     "message": "アドレスバーにENSドメインを表示する"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "試験運用"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snapsを閲覧"
-  },
   "extendWalletWithSnaps": {
-    "message": "ウォレットのユーザー体験をカスタマイズします。"
+    "message": "ウォレットのユーザー体験をカスタマイズします。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部拡張機能"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "ドロップされたファイルが大きすぎます。"
   },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "ここからリクエスト"
   },
-  "mmiAddToken": {
-    "message": "$1のページがMetaMask Institutionalで次のカストディアントークンの承認を求めています"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "新しいコントラクト"
-  },
-  "newNFTDetectedMessage": {
-    "message": "OpenseaからのNFTの自動検出とウォレットへの表示をMetaMaskに許可してください。"
-  },
-  "newNFTsDetected": {
-    "message": "新機能！NFT検出"
   },
   "newNetworkAdded": {
     "message": "「$1」が追加されました！"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "ブロックエクスプローラーで開く"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (ベータ)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "snapがライフサイクルフックを使用して、ライフサイクルの特定のタイミングでコードを実行することを許可します。",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "無期限で実行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "大きなデータの処理中など、snapが無期限で実行されることを許可します。",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "イーサリアムアカウントを追加して管理します",
@@ -3886,9 +3825,6 @@
     "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする$1に依存します。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする各ネットワークに依存します。"
-  },
   "showMore": {
     "message": "他を表示"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "$1アカウントの作成",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "インストール済み"
-  },
-  "snapError": {
-    "message": "snapエラー:「$1」。エラーコード:「$2」",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "snapをインストール"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "サードパーティサービスと共有する情報は、当該サードパーティサービスにより、それぞれのプライバシーポリシーに従い直接収集されます。詳細は、各サードパーティサービスのプライバシーポリシーをご覧ください。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Snapsの管理"
   },
   "snapsTermsOfUse": {
     "message": "利用規約"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "サービス規約"
   },
-  "termsOfUse": {
-    "message": "利用規約"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します。"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "このコレクション"
-  },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは試験運用中です。この機能を有効にすることで、OpenSeaの$1に同意したものとみなされます。",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "時間"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "推定のガス代を$2で$1に増加し、トランザクションを再送信しました"
   },
-  "transactionSecurityCheck": {
-    "message": "セキュリティアラートを有効にする"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "当社はサードパーティAPIを使用して、ユーザーが署名する前に未署名のトランザクションおよび署名のリクエストに関するリスクを検出・表示します。このようなサービスは、ユーザーの未署名のトランザクションおよび署名のリクエスト、アカウントアドレス、希望言語にアクセスできます。"
-  },
   "transactionSettings": {
     "message": "トランザクション設定"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "NFTを自動検出"
   },
-  "useNftDetectionDescription": {
-    "message": "当社はサードパーティAPIを使用して、ウォレットのNFTを検出します。これにより、ユーザーのIPアドレスが中央サーバーに開示される可能性があります。この機能を有効にする場合は、いくつかの注意点があります。"
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "アカウントアドレスがサードパーティAPIに開示されます。"
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFTのメタデータには、詐欺サイトやフィッシングサイトへのリンクが含まれている可能性があります。"
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "誰でもユーザーのアカウントにNFTをエアドロップできます。これには不快なコンテンツが含まれていて、ウォレットに自動的に表示される可能性があります。"
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "アプリによるこれらのサービスからのデータの取得を希望しない場合は、この機能をオフのままにしてください。"
-  },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Openseaで表示"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolioダッシュボードを表示"
   },
   "viewinCustodianApp": {
     "message": "カストディアンアプリで表示"

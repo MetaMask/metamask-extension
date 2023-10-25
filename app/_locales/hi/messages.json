@@ -371,9 +371,6 @@
   "amount": {
     "message": "अमाउंट"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "बिज़ी"
   },
-  "buy": {
-    "message": "खरीदें"
-  },
   "buyAsset": {
     "message": "$1 खरीदें",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "अपने क्रिप्टो को रोक कर रखें और शानदार लाभ कमाएं"
-  },
-  "buyDisabled": {
-    "message": "इस नेटवर्क में खरीदारी उपलब्ध नहीं है"
   },
   "buyMoreAsset": {
     "message": "ज्यादा $1 खरीदें",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "कस्टोडियन"
   },
-  "custodianAccount": {
-    "message": "कस्टोडियन अकाउंट"
-  },
   "custodianAccountAddedDesc": {
     "message": "अब आप MetaMask Institutional में अपने कस्टोडियन एकाउंट्स का इस्तेमाल कर सकते हैं।"
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "सीक्रेट रिकवरी फ्रेज़ बैकअप रिमाइंडर खारिज करें"
   },
-  "displayNftMedia": {
-    "message": "NFT मीडिया को दिखाएं"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFT मीडिया और डेटा दिखाने से आपका IP एड्रेस OpenSea या अन्य थर्ड पार्टियों के सामने आ जाता है। ऐसा होने पर, हमला करने वाले आपके IP एड्रेस को आपके Ethereum एड्रेस के साथ जोड़ पाते हैं। NFT ऑटोडिटेक्शन की सुविधा इस सेटिंग पर निर्भर करती है, और इस सेटिंग को बंद किए जाने पर उपलब्ध नहीं रहेगी।"
-  },
   "domain": {
     "message": "डोमेन"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट इनेबल करें"
   },
-  "enableForAllNetworks": {
-    "message": "सभी नेटवर्क पर इनेबल करें"
-  },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API इनेबल करें"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
   "enableSmartSwaps": {
     "message": "स्मार्ट स्वैप इनेबल करें"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "एडवांस्ड टोकन डिटेक्शन वर्तमान में $1 पर उपलब्ध है। $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask आपको सीधे आपके ब्राउज़़र के एड्रेस बार में \"https://metamask.eth\" जैसे ENS डोमेन देखने की सुविधा देता है। यह ऐसे काम करता है:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "आमतौर पर इस्तेमाल किए जाने वाले ब्राउज़़र यूं तो ENS या IPFS एड्रेसों को हैंडल नहीं करते हैं, लेकिन MetaMask इसमें मदद करता है। इस फीचर का इस्तेमाल करके आपके IP एड्रेस को IPFS थर्ड-पार्टी सेवाओं के साथ शेयर किया जा सकता है।"
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "ENS नाम से जुड़े कोड को खोजने के लिए MetaMask, Ethereum के ENS कॉन्ट्रैक्ट की जांच करता है।"
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "अगर कोड IPFS से लिंक्ड है, तो उसे IPFS नेटवर्क से कॉन्टेंट प्राप्त होता है।"
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "इसके बाद, आप कॉन्टेंट देख सकते हैं, आमतौर पर एक वेबसाइट या कुछ इसी तरह का।"
   },
   "ensDomainsSettingTitle": {
     "message": "एड्रेस बार में ENS डोमेन दिखाएँ"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "एक्सपेरिमेंटल"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaps को एक्सप्लोर करें"
-  },
   "extendWalletWithSnaps": {
-    "message": "वॉलेट एक्सपीरियंस को कस्टमाइज़ करें।"
+    "message": "वॉलेट एक्सपीरियंस को कस्टमाइज़ करें।",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "बाहरी एक्स्टेन्शन"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "ड्रॉप की गई फाइल बहुत बड़ी है।"
   },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "यहां रिक्वेस्ट करें"
   },
-  "mmiAddToken": {
-    "message": "$1 पर मौजूद पेज MetaMask Institutional में निम्नलिखित कस्टोडियन टोकन को अधिकृत करना चाहता है"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional को दुनिया भर में डिजाइन किया और बनाया गया है।"
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "गोएर्ली"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "बहुभुज"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "नया कॉन्ट्रैक्ट"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Opensea से ऑटोमेटिक तरीके से NFT का पता लगाने और अपने वॉलेट में दिखाने के लिए MetaMask को अनुमति दें।"
-  },
-  "newNFTsDetected": {
-    "message": "नया! NFT डिटेक्शन"
   },
   "newNetworkAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर में खोलें"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (बीटा)"
-  },
   "openSeaNew": {
     "message": "ओपनसी"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Snap को उसके लाइफसाइकल के दौरान खास समयों पर कोड चलाने के लिए लाइफसाइकल हुक का इस्तेमाल करने की अनुमति दें।",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "अनिश्चित काल तक चलाएं।",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "उदाहरण के लिए, बड़ी मात्रा में डेटा प्रॉसेस करते समय Snap को अनिश्चित काल तक चलने दें।",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum अकाउंट जोड़ें और नियंत्रित करें",
@@ -3886,9 +3825,6 @@
     "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "यह हर उस नेटवर्क पर निर्भर करता है जिसे आपके Ethereum एड्रेस और आपके IP एड्रेस का एक्सेस होगा।"
-  },
   "showMore": {
     "message": "अधिक दिखाएं"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "एक $1 वाला अकाउंट बनाएं",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "Snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "इंस्टॉल किया गया"
-  },
-  "snapError": {
-    "message": "Snap एरर: '$1'. एरर कोड: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Snap इंस्टाल करें"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "थर्ड पार्टी सेवाओं के साथ आप जो भी सूचना शेयर करते हैं, उसे उन थर्ड पार्टी सेवाओं द्वारा उनकी अपनी गोपनीयता नीतियों के अनुसार सीधे एकत्र की जाएगी। अधिक जानकारी के लिए कृपया उनकी गोपनीयता नीतियां देखें।",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "अपने Snaps प्रबंधित करें"
   },
   "snapsTermsOfUse": {
     "message": "इस्तेमाल की शर्तें"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "सेवा की शर्तें"
   },
-  "termsOfUse": {
-    "message": "इस्तेमाल की शर्तें"
-  },
   "termsOfUseAgreeText": {
     "message": " मैं इस्तेमाल की शर्तों से सहमत हूं, जो MetaMask और इसकी सभी फीचर्स के मेरे इस्तेमाल पर लागू होती हैं"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "यह संग्रह"
-  },
-  "thisServiceIsExperimental": {
-    "message": "यह सेवा प्रायोगिक है। इस सुविधा को इनेबल करके, आप OpenSea के $1 से सहमत होते हैं।",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "समय"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "$2 गैस फ़ीस में $1 वृद्धि के साथ ट्रांसेक्शन फिर से सबमिट किया गया"
   },
-  "transactionSecurityCheck": {
-    "message": "सुरक्षा अलर्ट एनेबल करें"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "आपके हस्ताक्षर करने से पहले अहस्ताक्षरित ट्रांसेक्शन और हस्ताक्षर रिक्वेस्ट्स में शामिल जोखिमों का पता लगाने और दिखाने के लिए हम थर्ड-पार्टी एपीआई का इस्तेमाल करते हैं। इन सेवाओं के पास आपके अहस्ताक्षरित ट्रांसेक्शन और हस्ताक्षर अनुरोध, आपके अकाउंट का एड्रेस और आपकी पसंदीदा भाषा तक पहुंच होगी।"
-  },
   "transactionSettings": {
     "message": "ट्रांसेक्शन संबंधी सेटिंग्स"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "NFT को ऑटो-डिटेक्ट करें"
   },
-  "useNftDetectionDescription": {
-    "message": "आपके वॉलेट में NFT को डिटेक्ट करने के लिए हम थर्ड-पार्टी API का इस्तेमाल करते हैं, जिसका मतलब है आपका IP एड्रेस केंद्रीकृत सर्वर्स को उजागर किया जा सकता है। ये कुछ ऐसी चीजें हैं जिस पर इस फीचर को एनेबल करते समय सतर्क रहना होगा।"
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "आपका अकाउंट एड्रेस थर्ड-पार्टी API देख सकते हैं।"
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT मेटाडेटा में धोखाधड़ी या फिशिंग साइटों के लिंक हो सकते हैं।"
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "कोई भी आपके अकाउंट में NFT को एयरड्रॉप कर सकता है। इसमें आपत्तिजनक कंटेंट शामिल हो सकती है जो आपके वॉलेट में ऑटोमेटिक तरीके से प्रदर्शित हो सकती है।"
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "यदि आप नहीं चाहते कि ऐप उन सेवाओं से डेटा खींचे तो इस सुविधा को बंद कर दें।"
-  },
   "usePhishingDetection": {
     "message": "फिशिंग डिटेक्शन का इस्तेमाल करें"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea पर देखें"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolio डैशबोर्ड देखें"
   },
   "viewinCustodianApp": {
     "message": "Custodian ऐप में देखें"

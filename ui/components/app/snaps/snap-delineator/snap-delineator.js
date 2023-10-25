@@ -80,5 +80,5 @@ export const SnapDelineator = ({
 SnapDelineator.propTypes = {
   snapName: PropTypes.string,
   type: PropTypes.string,
-  children: PropTypes.ReactNode,
+  children: PropTypes.node,
 };

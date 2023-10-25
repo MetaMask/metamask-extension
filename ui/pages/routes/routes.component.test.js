@@ -5,6 +5,11 @@ import { fireEvent } from '@testing-library/react';
 import { SEND_STAGES } from '../../ducks/send';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import Routes from '.';
 
 const mockShowNetworkDropdown = jest.fn();
@@ -28,10 +33,6 @@ jest.mock('../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
-  setMouseUserState: jest.fn().mockImplementation((payload) => ({
-    type: 'SET_MOUSE_USER_STATE',
-    payload,
-  })),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -75,6 +76,14 @@ describe('Routes Component', () => {
     it('should render with network change disabled while user is in send page', () => {
       const store = configureMockStore()({
         ...mockSendState,
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+        },
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
@@ -88,6 +97,14 @@ describe('Routes Component', () => {
         send: {
           ...mockSendState.send,
           stage: SEND_STAGES.EDIT,
+        },
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
         },
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);

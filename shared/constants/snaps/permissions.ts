@@ -6,8 +6,11 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-  'endowment:long-running': 'endowment:long-running',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
+  'endowment:name-lookup': 'endowment:name-lookup',
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  'endowment:keyring': 'endowment:keyring',
   ///: END:ONLY_INCLUDE_IN
 } as const);
 
@@ -17,8 +20,6 @@ export const ExcludedSnapPermissions = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   snap_getLocale:
     'This permission is still in development and therefore not available.',
-  snap_manageAccounts:
-    'This permission is still in development and therefore not available.',
   ///: END:ONLY_INCLUDE_IN
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps/issues/990.',
@@ -26,12 +27,10 @@ export const ExcludedSnapPermissions = Object.freeze({
 
 export const ExcludedSnapEndowments = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-  'endowment:keyring':
-    'This endowment is still in development therefore not available.',
-  'endowment:long-running':
-    'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps/issues/945.',
   'endowment:lifecycle-hooks':
     'This endowment is experimental and therefore not available.',
+  'endowment:name-lookup':
+    'This permission is still in development and therefore not available.',
   ///: END:ONLY_INCLUDE_IN
 });
 

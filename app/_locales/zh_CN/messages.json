@@ -371,9 +371,6 @@
   "amount": {
     "message": "数额"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "浏览器中的以太坊钱包",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "忙碌中"
   },
-  "buy": {
-    "message": "购买"
-  },
   "buyAsset": {
     "message": "购买$1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "继续持有加密货币，赚取潜在利润"
-  },
-  "buyDisabled": {
-    "message": "在此网络中无法购买"
   },
   "buyMoreAsset": {
     "message": "购买更多$1",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "托管人"
   },
-  "custodianAccount": {
-    "message": "托管账户"
-  },
   "custodianAccountAddedDesc": {
     "message": "您现在可以在 MetaMask Institutional 使用您的托管账户。 "
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "关闭账户私钥助记词备份提醒"
   },
-  "displayNftMedia": {
-    "message": "显示NFT媒体"
-  },
-  "displayNftMediaDescription": {
-    "message": "显示NFT媒体和数据时，OpenSea或其他第三方会获悉您的IP地址。这可能会使攻击者能够将您的IP地址和您的以太坊地址关联起来。NFT自动检测依赖于此设置，关闭后将不可用。"
-  },
   "domain": {
     "message": "域"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " 启用自动检测"
   },
-  "enableForAllNetworks": {
-    "message": "为所有网络启用"
-  },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
+  },
+  "enableOpenSeaAPI": {
+    "message": "启用 OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
   "enableSmartSwaps": {
     "message": "启用智能兑换"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "$1. $2目前提供增强型代币检测"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask让您可以直接在浏览器地址栏中看到ENS域（例如“https://metamask.eth”）。其工作原理如下："
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "普通浏览器通常不处理ENS或IPFS地址，但MetaMask会帮助解决此问题。使用此功能，您的IP地址可能会与IPFS第三方服务共享。"
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask会检查以太坊的ENS合约，以查找与ENS名称相关的代码。"
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "如果代码链接到IPFS，将会从IPFS网络获取内容。"
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "然后，您可以看到内容，通常是网站或类似的内容。"
   },
   "ensDomainsSettingTitle": {
     "message": "在地址栏中显示ENS域"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "实验性"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "探索 MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "扩展钱包体验。"
+    "message": "扩展钱包体验。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部扩展程序"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "拖放的文件太大。"
   },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "在这里请求"
   },
-  "mmiAddToken": {
-    "message": "$1的页面想在 MetaMask Institutional 中授权以下托管代币"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional 面向全球各地设计并建立。"
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "新合约"
-  },
-  "newNFTDetectedMessage": {
-    "message": "允许 MetaMask 自动检测 Opensea 的 NFT 并在您的钱包中显示。"
-  },
-  "newNFTsDetected": {
-    "message": "新功能！NFT 检测"
   },
   "newNetworkAdded": {
     "message": "成功添加了 “$1”！"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "在区块浏览器上打开"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid（测试版）"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "允许snap使用生命周期挂钩在其生命周期的特定时间运行代码。",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "无限期运行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "允许snap无限期运行，例如在处理大量数据时。",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "添加并控制以太坊账户",
@@ -3886,9 +3825,6 @@
     "message": "这取决于$1，即可以访问您的以太坊地址和 IP 地址的网络。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "这取决于每个可以访问您的以太坊地址和 IP 地址的网络。"
-  },
   "showMore": {
     "message": "展开"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "创建 $1 账户",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "已安装"
-  },
-  "snapError": {
-    "message": "Snap错误：'$1'。错误代码：'$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "安装Snap"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "您与第三方服务分享的任何信息，将由这些第三方服务根据其隐私政策直接收集。请参阅其隐私政策以了解更多信息。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "管理您的 Snaps"
   },
   "snapsTermsOfUse": {
     "message": "使用条款"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "服务条款"
   },
-  "termsOfUse": {
-    "message": "使用条款"
-  },
   "termsOfUseAgreeText": {
     "message": "我同意适用于我使用MetaMask及其所有功能的使用条款"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "这个收藏品"
-  },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的。启用此功能，即表示您同意OpenSea的$1。",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "时间"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
   },
-  "transactionSecurityCheck": {
-    "message": "启用安全提醒"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "我们使用第三方 API 来检测和显示未签名交易和签名请求中涉及的风险，然后您再进行签名。这些服务将访问您的未签名交易和签名请求、您的账户地址以及首选语言。"
-  },
   "transactionSettings": {
     "message": "交易设置"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "自动检测NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "我们使用第三方API在您的钱包中检测NFT，这意味着您的IP地址可能会暴露给集中式服务器。在启用此功能时，有几件事需要注意。"
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "您的账户地址将对第三方API可见。"
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT 元数据可能包含欺诈或网络钓鱼网站的链接。"
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "任何人都可以将NFT空投到您的账户。这可能包括或会自动显示在钱包中的冒犯性内容。"
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "如果您不希望应用程序从这些服务中提取数据，请关闭此功能。"
-  },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "在 Opensea 上查看"
-  },
-  "viewPortfolioDashboard": {
-    "message": "查看 Portfolio 控制面板"
   },
   "viewinCustodianApp": {
     "message": "在托管应用程序中查看"

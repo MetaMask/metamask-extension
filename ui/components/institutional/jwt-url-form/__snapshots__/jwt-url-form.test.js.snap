@@ -36,6 +36,7 @@ exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
           class="jwt-url-form__input"
           data-testid="jwt-api-url-input"
           id="api-url-box"
+          type="text"
           value="url"
         />
       </div>

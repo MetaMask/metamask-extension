@@ -17,10 +17,10 @@ import type { NetworkStatus } from '../../shared/constants/network';
  * TODO: Replace this
  */
 export interface TemporaryMessageDataType {
-  id: number;
+  id: string;
   type: string;
   msgParams: {
-    metamaskId: number;
+    metamaskId: string;
     data: string;
   };
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -65,7 +65,6 @@ interface TemporaryBackgroundState {
   unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
-  networkId: string | null;
   networksMetadata: {
     [NetworkClientId: string]: {
       EIPS: { [eip: string]: boolean };

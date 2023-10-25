@@ -371,9 +371,6 @@
   "amount": {
     "message": "Importe"
   },
-  "apiUrl": {
-    "message": "URL de la API"
-  },
   "appDescription": {
     "message": "Un monedero de Ethereum en el explorador",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buy": {
-    "message": "Comprar"
-  },
   "buyAsset": {
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Guarde sus criptomonedas y obtenga ganancias potenciales"
-  },
-  "buyDisabled": {
-    "message": "Comprar no está disponible en esta red"
   },
   "buyMoreAsset": {
     "message": "Comprar más $1",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "Custodio"
   },
-  "custodianAccount": {
-    "message": "Cuenta custodiada"
-  },
   "custodianAccountAddedDesc": {
     "message": "Ahora ya puede usar sus cuentas custodiadas en MetaMask Institutional."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "Ignorar el recordatorio de respaldo de la frase de recuperación"
   },
-  "displayNftMedia": {
-    "message": "Mostrar medios NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Mostrar los medios y datos NFT expone su dirección IP a OpenSea u otros terceros. Esto puede permitir que los atacantes asocien su dirección IP con su dirección Ethereum. La detección automática de NFT se basa en esta configuración y no estará disponible cuando esté desactivada."
-  },
   "domain": {
     "message": "Dominio"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " Activar autodetección"
   },
-  "enableForAllNetworks": {
-    "message": "Habilitar para todas las redes"
-  },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Habilite el API de OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Utilice la API de OpenSea para obtener los datos de NFT. La autodetección de NFT depende de la API de OpenSea y no estará disponible si la API está desactivada."
   },
   "enableSmartSwaps": {
     "message": "Habilitar intercambios inteligentes"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Actualmente, la detección mejorada de token se encuentra disponible en $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask le permite ver dominios ENS como \"https://metamask.eth\" directamente en la barra de direcciones de su navegador. Así es como funciona:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Los navegadores normales no suelen manejar direcciones ENS o IPFS, pero MetaMask ayuda con esto. El uso de esta función podría compartir su dirección IP con servicios de terceros de IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask verifica con el contrato ENS de Ethereum para encontrar el código conectado al nombre ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Si el código está vinculado a IPFS, obtiene el contenido de la red IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Después, puede ver el contenido, generalmente un sitio web o algo similar."
   },
   "ensDomainsSettingTitle": {
     "message": "Mostrar dominios ENS en la barra de direcciones"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Explore MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Amplíe la experiencia de uso de su monedero."
+    "message": "Amplíe la experiencia de uso de su monedero.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Extensión externa"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? Haga clic aquí.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "El archivo arrastrado es demasiado grande."
   },
   "flaskWelcomeUninstall": {
     "message": "le recomendamos que desinstale esta extensión",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Solicítelo aquí"
   },
-  "mmiAddToken": {
-    "message": "A la página de $1 le gustaría autorizar el siguiente token custodiado en MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional está diseñado y construido en todo el mundo."
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "Contrato nuevo"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Permita que MetaMask detecte de forma automática los NFT de Opensea y los muestre en su monedero."
-  },
-  "newNFTsDetected": {
-    "message": "¡Nuevo! Detección NFT"
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Abrir en el explorador de bloques"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Permita que el snap use ganchos de ciclo de vida para ejecutar código en momentos específicos durante su ciclo de vida.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Ejecutar indefinidamente.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Permita que el snap se ejecute indefinidamente mientras, por ejemplo, procesa grandes cantidades de datos.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Agregar y controlar cuentas de Ethereum",
@@ -3886,9 +3825,6 @@
     "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Esto depende de cada red que tendrá acceso a su dirección Ethereum y su dirección IP."
-  },
   "showMore": {
     "message": "Mostrar más"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Cree una cuenta $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Instalado"
-  },
-  "snapError": {
-    "message": "Error de snap: '$1'. Código de error: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Instalar snap"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Cualquier información que comparta con Servicios de terceros será recopilada directamente por dichos Servicios de terceros de acuerdo con sus políticas de privacidad. Consulte sus políticas de privacidad para obtener más información.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Administre sus snaps"
   },
   "snapsTermsOfUse": {
     "message": "Términos de uso"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "Términos de servicio"
   },
-  "termsOfUse": {
-    "message": "términos de uso"
-  },
   "termsOfUseAgreeText": {
     "message": " Acepto los Términos de uso, que se aplican al uso que hago de MetaMask y de todas sus funcionalidades"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "esta colección"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Este servicio es experimental. Al habilitar esta función, usted acepta los $1 de OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Tiempo"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "Transacción reenviada con la tarifa de gas aumentada a $1 en $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Habilitar alertas de seguridad"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Usamos API de terceros para detectar y mostrar los riesgos involucrados en transacciones sin firmar y solicitudes de firma antes de que las firme. Estos servicios tendrán acceso a su transacción no firmada y solicitudes de firma, la dirección de su cuenta y su idioma preferido."
-  },
   "transactionSettings": {
     "message": "Ajustes de la transacción"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "Detección automática de NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "Usamos API de terceros para detectar NFT en su monedero, lo que significa que su dirección IP puede estar expuesta a servidores centralizados. Hay algunas cosas que debe tener cuidado al habilitar esta función."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "La dirección de su cuenta será visible para las API de terceros."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "La metadata de un NFT puede contener enlaces a sitios fraudulentos o de phishing."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Cualquiera puede enviar un NFT no solicitado a su cuenta. Esto puede incluir contenido ofensivo que podría mostrarse automáticamente en su monedero."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Deje esta función desactivada si no desea que la aplicación extraiga datos de esos servicios."
-  },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Ver en Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Ver panel de cartera"
   },
   "viewinCustodianApp": {
     "message": "Ver en la aplicación de custodia"

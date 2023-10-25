@@ -11,7 +11,9 @@ import {
 import NetworksForm from '.';
 
 const renderComponent = (props) => {
-  const store = configureMockStore([])({ metamask: {} });
+  const store = configureMockStore([])({
+    metamask: { useSafeChainsListValidation: true },
+  });
   return renderWithProvider(<NetworksForm {...props} />, store);
 };
 
@@ -254,6 +256,7 @@ describe('NetworkForm Component', () => {
 
   it('should validate currency symbol field correctly', async () => {
     renderComponent(propNewNetwork);
+
     const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
     const currencySymbolField = screen.getByRole('textbox', {
       name: 'Currency symbol',
@@ -274,8 +277,10 @@ describe('NetworkForm Component', () => {
     fireEvent.change(chainIdField, {
       target: { value: '137' },
     });
+
     const secondExpectedWarning =
       'The network with chain ID 137 may use a different currency symbol (MATIC) than the one you have entered. Please verify before continuing.';
+
     expect(await screen.findByText(secondExpectedWarning)).toBeInTheDocument();
   });
 

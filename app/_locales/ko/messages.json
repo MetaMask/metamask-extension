@@ -371,9 +371,6 @@
   "amount": {
     "message": "금액"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "바쁨"
   },
-  "buy": {
-    "message": "구매"
-  },
   "buyAsset": {
     "message": "$1 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "암호화폐를 보유하고 잠재적인 수익을 얻으세요"
-  },
-  "buyDisabled": {
-    "message": "이 네트워크에서는 매수할 수 없습니다"
   },
   "buyMoreAsset": {
     "message": "$1 추가 구매",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "수탁자"
   },
-  "custodianAccount": {
-    "message": "수탁 계정"
-  },
   "custodianAccountAddedDesc": {
     "message": "이제 MetaMask Institutional에서 수탁 계정을 사용할 수 있습니다."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "비밀복구구문 백업 알림 해지"
   },
-  "displayNftMedia": {
-    "message": "NFT 미디어 표시"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFT 미디어와 데이터를 표시하면 IP 주소가 OpenSea나 다른 타사에 노출될 수 있습니다. 그러면 이더리움 주소와 연관된 IP 주소가 공격 세력에 의해 이용될 수 있습니다. NFT 자동 감지 기능에는 이 설정이 필요합니다. 이 설정을 비활성화하면 해당 기능도 사용할 수 없습니다."
-  },
   "domain": {
     "message": "도메인"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " 자동 감지 활성화"
   },
-  "enableForAllNetworks": {
-    "message": "모든 네트워크에 활성화"
-  },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API 활성화"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
   "enableSmartSwaps": {
     "message": "스마트 스왑 활성화"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "$1에서 향상된 토큰 감지 기능을 사용할 수 있습니다. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask를 사용하면 브라우저의 주소창에서 \"https://metamask.eth\"과 같은 ENS 도메인을 바로 볼 수 있습니다. 방법은 다음과 같습니다."
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "일반 브라우저에서는 ENS나 IPFS 주소를 취급하지 않습니다. 하지만 MetaMask에서는 가능합니다. 이 기능을 사용하시면 회원님의 IP 주소를 IPFS 타사 서비스와 공유할 수 있습니다."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask에서는 이더리움의 ENS 계약을 확인하여 해당 ENS 이름과 연결되어 있는 코드를 찾습니다."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "해당 코드가 IPFS와 링크되어 있으면 이를 통해 IPFS 네트워크에서 콘텐츠를 불러올 수 있습니다."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "그러면 보통 웹사이트 또는 이와 유사한 형태의 콘텐츠를 볼 수 있습니다."
   },
   "ensDomainsSettingTitle": {
     "message": "주소창에 ENS 도메인 표시하기"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "실험적"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask 스냅 탐색"
-  },
   "extendWalletWithSnaps": {
-    "message": "지갑 경험을 개인 맞춤하세요."
+    "message": "지갑 경험을 개인 맞춤하세요.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "외부 확장"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "드롭한 파일 크기가 너무 큽니다."
   },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "여기에서 요청하세요"
   },
-  "mmiAddToken": {
-    "message": "$1의 페이지는 다음과 같은 MetaMask 기관 수탁 토큰을 승인하려고 합니다"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional은 전 세계적으로 설계 및 구축되었습니다."
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "새 계약"
-  },
-  "newNFTDetectedMessage": {
-    "message": "MetaMask가 Opensea에서 자동으로 NFT를 감지하고 지갑에 표시할 수 있게 허용하세요."
-  },
-  "newNFTsDetected": {
-    "message": "신규! NFT 감지"
   },
   "newNetworkAdded": {
     "message": "“$1”(을)를 성공적으로 추가했습니다!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "블록 탐색기 열기"
   },
-  "openSea": {
-    "message": "OpenSea+ Blockaid(베타)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "스냅으로 라이프사이클 훅을 사용하도록 허용하면 라이프사이클 동안 코드를 특정 횟수만큼 실행합니다.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "무기한 운용됩니다.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "예를 들어 많은 양의 데이터를 처리하는 동안 스냅이 무기한 실행되도록 허용합니다.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "이더리움 계정 추가 및 제어",
@@ -3886,9 +3825,6 @@
     "message": "이 항목을 선택하면 Etherscan을 사용해 거래 목록에 수신 거래를 표시할 수 있습니다.",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "이 기능을 이용하려면 이더리움 주소와 IP 주소에 접근 가능한 네트워크가 필요합니다."
-  },
   "showMore": {
     "message": "더 보기"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "$1 계정 생성",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "스냅",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "설치됨"
-  },
-  "snapError": {
-    "message": "스냅 오류: '$1'. 오류 코드: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "스냅 설치"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "타사와 공유하는 모든 정보는 해당 타사의 개인정보 처리방침에 따라 직접 수집됩니다. 더 자세한 내용은 해당 회사의 개인정보 처리방침을 참고하시기 바랍니다.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "스냅 관리"
   },
   "snapsTermsOfUse": {
     "message": "이용약관"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "서비스 약관"
   },
-  "termsOfUse": {
-    "message": "이용약관"
-  },
   "termsOfUseAgreeText": {
     "message": " 본인은 MetaMask의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "이 컬렉션"
-  },
-  "thisServiceIsExperimental": {
-    "message": "이 서비스는 시험 기능입니다. 이 기능을 활성화하면 OpenSea의 $1에 동의하는 것입니다.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "시간"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "$2에서 가스비를 $1(으)로 올린 트랜잭션이 다시 제출되었습니다."
   },
-  "transactionSecurityCheck": {
-    "message": "보안 경고 활성화"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "서명하기 전에 해당 트랜잭션과 서명 요청 관련 위험을 탐지하고 표시하기 위해 타사 API를 이용합니다. 이러한 서비스는 해당 서비스가 아직 서명하지 않은 트랜잭션, 서명 요청, 계정 주소 및 기본 언어에 액세스할 수 있습니다."
-  },
   "transactionSettings": {
     "message": "트랜잭션 설정"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "NFT 자동 감지"
   },
-  "useNftDetectionDescription": {
-    "message": "지갑에서 NFT를 감지하려면 타사 API를 사용해야 합니다. 이렇게 하면 IP 주소가 중앙 서버에 노출될 수 있습니다. 이 기능을 사용하시려면 몇 가지 점을 주의해야 합니다."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "타사 API에서 회원님의 계정 주소를 파악할 수 있습니다."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT 메타 데이터에는 사기나 허위 사이트의 링크가 담겨 있을 수 있습니다."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "누구든지 회원님의 계정으로 NFT를 에어드롭할 수 있습니다. 여기에는 지갑에 자동으로 표시될 수도 있는 공격적인 콘텐츠도 포함될 수 있습니다."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "해당 서비스로부터 데이터를 가져오기를 원치 않으시면 이 기능을 끄세요."
-  },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea에서 보기"
-  },
-  "viewPortfolioDashboard": {
-    "message": "포트폴리오 대시보드 보기"
   },
   "viewinCustodianApp": {
     "message": "수탁 앱에서 보기"

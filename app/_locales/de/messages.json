@@ -371,9 +371,6 @@
   "amount": {
     "message": "Betrag"
   },
-  "apiUrl": {
-    "message": "API-URL"
-  },
   "appDescription": {
     "message": "Ethereum Browsererweiterung",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Ausgelastet"
   },
-  "buy": {
-    "message": "Kaufen"
-  },
   "buyAsset": {
     "message": "$1 kaufen",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Halten Sie Ihre Kryptowährung und erzielen Sie potenzielle Gewinne"
-  },
-  "buyDisabled": {
-    "message": "Kaufen ist in diesem Netzwerk nicht verfügbar"
   },
   "buyMoreAsset": {
     "message": "Mehr $1 kaufen",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "Verwahrer"
   },
-  "custodianAccount": {
-    "message": "Verwahrungskonto"
-  },
   "custodianAccountAddedDesc": {
     "message": "Sie können jetzt Verwahrungskonten in MetaMask Institutional verwenden."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "Backup-Erinnerung zur geheimen Wiederherstellungsphrase verwerfen"
   },
-  "displayNftMedia": {
-    "message": "NFT-Medien anzeigen"
-  },
-  "displayNftMediaDescription": {
-    "message": "Das Anzeigen von NFT-Medien und Daten gibt legt IP-Adresse OpenSea oder andere Drittanbieter gegenüber offen. Dies kann es Angreifern gestatten, Ihre IP-Adresse mit Ihrer Etherum-Adresse in Verbindung zu bringen. Die automatische NFT-Erkennung benötigt diese Einstellung und wird nicht zur Verfügung stehen, wenn diese deaktiviert ist."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " Automatische Erkennung aktivieren"
   },
-  "enableForAllNetworks": {
-    "message": "Für alle Netzwerke aktivieren"
-  },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API aktivieren"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
   "enableSmartSwaps": {
     "message": "Smart Swaps aktivieren"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Erweiterte Token-Erkennung ist derzeit über $1 verfügbar. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask zeigt Ihnen ENS-Domains wie „https://metamask.eth“ direkt in der Adressleiste Ihres Browsers an. So funktioniert es:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Normale Browser können in der Regel nicht mit ENS- oder IPFS-Adressen umgehen, aber MetaMask hilft dabei. Bei Verwendung dieser Funktion wird Ihre IP-Adresse eventuell mit IPFS-Diensten von Drittanbietern geteilt."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask findet mithilfe von Ethereums ENS-Contract den mit dem ENS-Namen verbundenen Code."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Wenn der Code mit IPFS verknüpft ist, erhält MetaMask den Content vom IPFS-Netzwerk."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Daraufhin wird dieser, normalerweise eine Webseite oder etwas Ähnliches, angezeigt."
   },
   "ensDomainsSettingTitle": {
     "message": "ENS-Domains in der Adresszeile anzeigen"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "Experimentell"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaps erforschen"
-  },
   "extendWalletWithSnaps": {
-    "message": "Erweitern Sie Ihr Wallet-Erlebnis."
+    "message": "Erweitern Sie Ihr Wallet-Erlebnis.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Externe Erweiterung"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Die abgelegte Datei ist zu groß."
   },
   "flaskWelcomeUninstall": {
     "message": "Sie sollten diese Erweiterung deinstallieren.",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Hier anfragen"
   },
-  "mmiAddToken": {
-    "message": "Die Seite bei $1 möchte das folgende Verwahrungstoken in MetaMask Institutional autorisieren."
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional ist weltweit konzipiert und aufgebaut."
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "Neuer Contract"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Erlauben Sie MetaMask, automatisch NFTs von Opensea zu erkennen und in Ihrer Wallet anzuzeigen."
-  },
-  "newNFTsDetected": {
-    "message": "Neu! NFT-Erkennung"
   },
   "newNetworkAdded": {
     "message": "„$1“ wurde erfolgreich hinzugefügt!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Im Block-Explorer öffnen"
   },
-  "openSea": {
-    "message": "OpenSea (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Erlauben Sie dem Snap Lebenszyklus-Hooks zu verwenden, um den Code während seines Lebenszyklus zu bestimmten Zeiten auszuführen.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Für unbestimmte Zeit ausführen.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Gestatten Sie dem Snap, unbegrenzt ausgeführt zu werden, während es zum Beispiel große Datenmengen verarbeitet.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum-Konten hinzufügen und kontrollieren",
@@ -3886,9 +3825,6 @@
     "message": "Das hängt von $1 ab, das Zugriff auf Ihre Ethereum-Adresse und Ihre IP-Adresse hat. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Dies hängt von jedem Netzwerk ab, das Zugriff auf Ihre Ethereum-Adresse und IP-Adresse hat."
-  },
   "showMore": {
     "message": "Mehr anzeigen"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Ein $1-Konto erstellen",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "Snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Installiert"
-  },
-  "snapError": {
-    "message": "Snap-Fehler: '$1'. Fehler-Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Snap installieren"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Alle Daten, die Sie mit Drittanbieterdiensten teilen, werden direkt von diesen Drittanbieterdiensten im Einklang mit deren Datenschutzerklärung erfasst. Für weitere Informationen lesen Sie bitte die jeweiligen Datenschutzerklärungen.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Verwalten Sie Ihre Snaps."
   },
   "snapsTermsOfUse": {
     "message": "Nutzungsbedingungen"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "Nutzungsbedingungen"
   },
-  "termsOfUse": {
-    "message": "Nutzungsbedingungen"
-  },
   "termsOfUseAgreeText": {
     "message": " Ich akzeptiere die Nutzungsbedingungen, die meine Verwendung von MetaMask, einschließlich aller seiner Funktionen, betreffen"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "diese Sammlung"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Dieser Dienst ist experimentell. Durch die Aktivierung dieser Funktion stimmen Sie den $1 von OpenSea zu.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Zeit"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "Erneutes Absenden der Transaktion mit Erhöhung der geschätzten Gas-Gebühr auf $1 zu $2."
   },
-  "transactionSecurityCheck": {
-    "message": "Sicherheitsbenachrichtigungen aktivieren"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um Risiken bei nicht unterzeichneten Transaktionen und Signaturanfragen zu erkennen und anzuzeigen, bevor Sie diese signieren. Diese Dienste haben Zugriff auf Ihre unsignierten Transaktions- und Signaturanfragen, Ihre Kontoadresse und Ihre bevorzugte Sprache."
-  },
   "transactionSettings": {
     "message": "Transaktionseinstellungen"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "NFTs automatisch erkennen"
   },
-  "useNftDetectionDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um NFTs in Ihrer Wallet zu erkennen, was bedeutet, dass Ihre IP an zentrale Server weitergegeben werden könnte. Hier müssen einige Dinge beachtet werden, wenn diese Funktion aktiviert wird."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Ihre Konto-Adresse wird für die Drittanbieter-APIs sichtbar sein."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT-Metadaten können Links zu Webseiten mit Betrugs- oder Phishing-Inhalten enthalten."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Jeder kann NFTs via Airdrop in Ihrem Konto ablegen. Dies kann anstößige Inhalte einschließen, die automatisch in Ihrer Wallet angezeigt werden könnten."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Lassen Sie diese Funktion deaktiviert, wenn Sie nicht möchten, dass die App Daten von diesen Diensten bezieht."
-  },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Auf Opensea ansehen"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolio-Dashboard anzeigen"
   },
   "viewinCustodianApp": {
     "message": "In Verwahrungs-App anzeigen"

@@ -371,9 +371,6 @@
   "amount": {
     "message": "Số tiền"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Đang bận"
   },
-  "buy": {
-    "message": "Mua"
-  },
   "buyAsset": {
     "message": "Mua $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Giữ tiền mã hóa và kiếm lợi nhuận tiềm năng"
-  },
-  "buyDisabled": {
-    "message": "Mua không khả dụng trong mạng này"
   },
   "buyMoreAsset": {
     "message": "Mua thêm $1",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "Lưu ký"
   },
-  "custodianAccount": {
-    "message": "Tài khoản lưu ký"
-  },
   "custodianAccountAddedDesc": {
     "message": "Giờ đây bạn có thể sử dụng tài khoản lưu ký của mình trong MetaMask Institutional."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "Tắt lời nhắc sao lưu Cụm từ khôi phục bí mật"
   },
-  "displayNftMedia": {
-    "message": "Hiển thị phương tiện NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Thao tác hiển thị dữ liệu và phương tiện NFT sẽ hiển thị địa chỉ IP của bạn với OpenSea hoặc các bên thứ ba khác. Điều này có thể cho phép kẻ tấn công liên kết địa chỉ IP với địa chỉ Ethereum của bạn. Tính năng tự động phát hiện NFT dựa trên chế độ cài đặt này và sẽ không khả dụng khi chế độ cài đặt này bị tắt."
-  },
   "domain": {
     "message": "Tên miền"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " Bật tự động phát hiện"
   },
-  "enableForAllNetworks": {
-    "message": "Bật cho tất cả các mạng"
-  },
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Bật API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
   },
   "enableSmartSwaps": {
     "message": "Kích hoạt hoán đổi thông minh"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Tính năng phát hiện token nâng cao hiện có sẵn trên $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask cho phép bạn xem các tên miền ENS như \"https://metamask.eth\" ngay trên thanh địa chỉ của trình duyệt. Sau đây là cách hoạt động:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Các trình duyệt thông thường thường không xử lý địa chỉ ENS hoặc IPFS, nhưng MetaMask sẽ hỗ trợ xử lý. Việc sử dụng tính năng này có thể chia sẻ địa chỉ IP của bạn với các dịch vụ IPFS bên thứ ba."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask sẽ kiểm tra hợp đồng ENS của Ethereum để tìm mã được kết nối với tên ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Nếu mã được liên kết với IPFS, nó sẽ lấy nội dung từ mạng IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Sau đó, bạn có thể xem nội dung, thường là một trang web hoặc một cái gì đó tương tự."
   },
   "ensDomainsSettingTitle": {
     "message": "Hiển thị tên miền ENS trong thanh địa chỉ"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "Thử nghiệm"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Khám phá MetaMask Snap"
-  },
   "extendWalletWithSnaps": {
-    "message": "Tuỳ biến trải nghiệm sử dụng ví."
+    "message": "Tuỳ biến trải nghiệm sử dụng ví.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Tiện ích bên ngoài"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Kích thước tập tin thả vào quá lớn."
   },
   "flaskWelcomeUninstall": {
     "message": "bạn nên gỡ cài đặt tiện ích mở rộng này",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Yêu cầu tại đây"
   },
-  "mmiAddToken": {
-    "message": "Trang tại $1 muốn ủy quyền token lưu ký sau trong MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional được thiết kế và xây dựng trên khắp thế giới."
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "Hợp đồng mới"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Cho phép MetaMask tự động phát hiện NFT từ OpenSea và hiển thị trên ví MetaMask của bạn."
-  },
-  "newNFTsDetected": {
-    "message": "Mới! Phát hiện NFT"
   },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Mở trên trình khám phá khối"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Cho phép Snap sử dụng hook vòng đời để chạy mã vào những thời điểm cụ thể trong vòng đời của nó.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Chạy không giới hạn.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Ví dụ: cho phép Snap chạy vô thời hạn trong quá trình xử lý lượng lớn dữ liệu.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Thêm và kiểm soát các tài khoản Ethereum",
@@ -3886,9 +3825,6 @@
     "message": "Chọn tùy chọn này nếu bạn muốn dùng Etherscan để hiển thị các giao dịch đến trong danh sách giao dịch",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Điều này phụ thuộc vào từng mạng sẽ có quyền truy cập vào địa chỉ Ethereum và địa chỉ IP của bạn."
-  },
   "showMore": {
     "message": "Hiển thị thêm"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Tạo tài khoản $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "Snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Đã cài đặt"
-  },
-  "snapError": {
-    "message": "Lỗi Snap: \"$1\". Mã lỗi: \"$2\"",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Cài đặt Snap"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Mọi thông tin mà bạn chia sẻ với Dịch vụ bên thứ ba sẽ được Dịch vụ bên thứ ba đó thu thập trực tiếp theo chính sách quyền riêng tư của họ. Vui lòng tham khảo chính sách quyền riêng tư của họ để biết thêm thông tin.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Quản lý Snap"
   },
   "snapsTermsOfUse": {
     "message": "Điều khoản sử dụng"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "Điều khoản dịch vụ"
   },
-  "termsOfUse": {
-    "message": "điều khoản sử dụng"
-  },
   "termsOfUseAgreeText": {
     "message": " Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng MetaMask và tất cả các tính năng của MetaMask"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "bộ sưu tập này"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Đây là dịch vụ thử nghiệm. Bằng cách bật tính năng này, bạn đồng ý với $1 của OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Thời gian"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "Đã gửi lại giao dịch với mức phí gas ước tính tăng lên $1 lúc $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Bật cảnh báo bảo mật"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện và hiển thị những rủi ro liên quan đến các yêu cầu chữ ký và giao dịch chưa ký trước khi bạn ký. Những dịch vụ này sẽ có quyền truy cập vào các yêu cầu chữ ký và giao dịch chưa ký, địa chỉ tài khoản và ngôn ngữ yêu thích của bạn."
-  },
   "transactionSettings": {
     "message": "Cài đặt giao dịch"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "Tự động phát hiện NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện NFT trong ví của bạn, điều này có thể làm lộ địa chỉ IP của bạn cho các máy chủ tập trung. Có một vài điều cần thận trọng khi kích hoạt tính năng này."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Các API của bên thứ ba có thể xem được địa chỉ tài khoản của bạn."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Siêu dữ liệu NFT có thể chứa liên kết dẫn đến các trang web lừa đảo."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Bất kỳ ai cũng có thể gửi NFT vào tài khoản của bạn. Điều này có thể khiến nội dung xúc phạm tự động hiển thị trong ví của bạn."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Tắt tính năng này nếu bạn không muốn ứng dụng lấy dữ liệu từ các dịch vụ đó."
-  },
   "usePhishingDetection": {
     "message": "Sử dụng tính năng phát hiện lừa đảo"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Xem trên Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Xem Trang tổng quan Danh mục đầu tư"
   },
   "viewinCustodianApp": {
     "message": "Xem trong ứng dụng lưu ký"

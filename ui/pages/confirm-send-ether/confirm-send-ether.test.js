@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
 import ConfirmSendEther from './confirm-send-ether';
@@ -19,7 +19,6 @@ const sendEther = {
   id: 9597986287241458,
   time: 1681203297082,
   status: 'unapproved',
-  metamaskNetworkId: '5',
   originalGasEstimate: '0x5208',
   userEditedGasLimit: false,
   chainId: '0x5',

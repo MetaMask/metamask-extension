@@ -125,6 +125,9 @@ workflows:
       - prep-build-test-flask:
           requires:
             - prep-deps
+      - prep-build-test-mmi:
+          requires:
+            - prep-deps
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -162,6 +165,12 @@ workflows:
       - test-e2e-firefox-snaps-flask:
           requires:
             - prep-build-test-flask
+      - test-e2e-chrome-mmi:
+          requires:
+            - prep-build-test-mmi
+      - test-e2e-chrome-rpc-mmi:
+          requires:
+            - prep-build-test-mmi
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
@@ -248,6 +257,8 @@ workflows:
             - test-e2e-firefox-snaps
             - test-e2e-chrome-snaps-flask
             - test-e2e-firefox-snaps-flask
+            - test-e2e-chrome-mmi
+            - test-e2e-chrome-rpc-mmi
             - test-storybook
       - benchmark:
           requires:
@@ -350,23 +361,28 @@ jobs:
     executor: node-browsers
     steps:
       - run: *shallow-git-clone
+      - run:
+          name: Save Yarn version
+          command: |
+            yarn --version > /tmp/YARN_VERSION
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
             # This cache key lookup will fail if the lock file is modified and a cache
             # has not yet been persisted for the new checksum.
-            - dependency-cache-v1-{{ checksum "yarn.lock" }}
+            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
             # To prevent having to do a full install of every node_module when
             # dependencies change, restore from the last known cache of any
-            # branch/checksum, the install step will remove cached items that are no longer
-            # required and add the new dependencies, and the cache will be persisted.
-            - dependency-cache-v1-
+            # branch/checksum with the same Yarn version, the install step will remove
+            # cached items that are no longer required and add the new dependencies, and
+            # the cache will be persisted.
+            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-
       - gh/install
       - run:
           name: Install dependencies
           command: .circleci/scripts/install-dependencies.sh
       - save_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
           paths:
             - .yarn/cache
       - persist_to_workspace:
@@ -568,16 +584,37 @@ jobs:
           name: Build extension for testing
           command: yarn build:test:flask
       - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
+          name: Move test build to 'dist-test-flask' to avoid conflict with production build
           command: mv ./dist ./dist-test-flask
       - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
+          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask
       - persist_to_workspace:
           root: .
           paths:
             - dist-test-flask
             - builds-test-flask
+
+  prep-build-test-mmi:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:mmi
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-mmi
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-mmi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-mmi
+            - builds-test-mmi
 
   prep-build-test-mv3:
     executor: node-browsers-medium-plus
@@ -592,7 +629,7 @@ jobs:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-mv3
       - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
+          name: Move test zips to 'builds-test-mv3' to avoid conflict with production build
           command: mv ./builds ./builds-test-mv3
       - persist_to_workspace:
           root: .
@@ -777,18 +814,11 @@ jobs:
               yarn test:e2e:chrome --retries 2 --debug
             fi
           no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   test-e2e-chrome-mv3:
     executor: node-browsers
@@ -811,7 +841,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 --debug --mv3 || echo "Temporarily suppressing MV3 e2e test failures"
+              yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -842,18 +872,40 @@ jobs:
               yarn test:e2e:chrome:rpc --retries 2
             fi
           no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
+
+  test-e2e-chrome-rpc-mmi:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mmi ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mmi ./builds
+      - run:
+          name: test:e2e:chrome:rpc
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
 
   test-e2e-firefox-snaps:
     executor: node-browsers
@@ -879,18 +931,11 @@ jobs:
               yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=main
             fi
           no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   test-e2e-chrome-snaps:
     executor: node-browsers
@@ -916,18 +961,11 @@ jobs:
               yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=main
             fi
           no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   test-e2e-firefox-snaps-flask:
     executor: node-browsers
@@ -950,21 +988,14 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2 --debug
+              yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=flask
             fi
           no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   test-e2e-chrome-snaps-flask:
     executor: node-browsers
@@ -987,21 +1018,44 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2 --debug
+              yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=flask
             fi
           no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
+
+  test-e2e-chrome-mmi:
+    executor: node-browsers
+    parallelism: 4
+    steps:
+      - run: *shallow-git-clone
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mmi ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mmi ./builds
+      - run:
+          name: test:e2e:chrome:mmi
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
@@ -1027,18 +1081,11 @@ jobs:
               yarn test:e2e:firefox --retries 2 --debug
             fi
           no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   benchmark:
     executor: node-browsers-medium-plus
@@ -1162,6 +1209,10 @@ jobs:
       - store_artifacts:
           path: builds-mmi
           destination: builds-mmi
+      - store_artifacts:
+          path: builds-test
+      - store_artifacts:
+          path: builds-test-flask
       - store_artifacts:
           path: coverage
           destination: coverage

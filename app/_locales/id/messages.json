@@ -371,9 +371,6 @@
   "amount": {
     "message": "Jumlah"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Dompet Ethereum pada Browser Anda",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buy": {
-    "message": "Beli"
-  },
   "buyAsset": {
     "message": "Beli $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Pertahankan kripto Anda dan dapatkan potensi keuntungan"
-  },
-  "buyDisabled": {
-    "message": "Beli tidak tersedia di jaringan ini"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "Kustodian"
   },
-  "custodianAccount": {
-    "message": "Akun kustodian"
-  },
   "custodianAccountAddedDesc": {
     "message": "Saat ini Anda dapat menggunakan akun kustodian di MetaMask Institutional."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "Lewatkan pengingat pencadangan Frasa Pemulihan Rahasia"
   },
-  "displayNftMedia": {
-    "message": "Tampilkan media NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Alamat IP Anda dapat diketahui oleh OpenSea atau pihak ketiga lainnya saat Anda menampilkan media dan data NFT. Ini memungkinkan penyerang menghubungkan alamat IP dengan alamat Ethereum Anda. Deteksi otomatis NFT bergantung pada pengaturan ini, dan tidak akan tersedia saat dinonaktifkan."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
-  "enableForAllNetworks": {
-    "message": "Aktifkan untuk semua jaringan"
-  },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Aktifkan API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
   "enableSmartSwaps": {
     "message": "Aktifkan pertukaran cerdas"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Saat ini, deteksi token lanjutan tersedia di $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask memungkinkan Anda melihat domain ENS seperti \"https://metamask.eth\" tepat di bilah alamat browser Anda. Berikut cara kerjanya:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Browser biasa umumnya tidak menangani alamat ENS atau IPFS, tetapi MetaMask dapat menanganinya. Alamat IP Anda dapat dibagikan kepada layanan pihak ketiga IPFS saat menggunakan fitur ini."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask memeriksa kontrak ENS Ethereum untuk menemukan kode yang terhubung ke nama ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Jika kode ditautkan ke IPFS, maka kode tersebut mendapatkan konten dari jaringan IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Kemudian, Anda dapat melihat kontennya, umumnya dalam bentuk situs web atau yang serupa."
   },
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Jelajahi MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Perluas pengalaman dompet."
+    "message": "Perluas pengalaman dompet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Ekstensi eksternal"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "File yang didrop terlalu besar."
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Minta di sini"
   },
-  "mmiAddToken": {
-    "message": "Halaman di $1 ingin mengotorisasi token kustodian berikut di MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dirancang dan dibangun di seluruh dunia."
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "Kontrak baru"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Izinkan MetaMask mendeteksi NFT dari Opensea secara otomatis dan menampilkannya di dompet Anda."
-  },
-  "newNFTsDetected": {
-    "message": "Baru! Deteksi NFT"
   },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Buka di block explorer"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Izinkan snap menggunakan lifecycle hook untuk menjalankan kode pada waktu tertentu selama siklus hidupnya.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Operasikan sepanjang waktu.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Izinkan snap beroperasi sepanjang waktu saat, sebagai contoh, memproses data dalam jumlah besar.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",
@@ -3886,9 +3825,6 @@
     "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Ini bergantung pada setiap jaringan yang akan memiliki akses ke alamat Ethereum dan alamat IP Anda."
-  },
   "showMore": {
     "message": "Tampilkan selengkapnya"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Buat akun $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Terinstal"
-  },
-  "snapError": {
-    "message": "Kesalahan Snap: '$1'. Kode Kesalahan: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Instal Snap"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Kelola Snap Anda"
   },
   "snapsTermsOfUse": {
     "message": "Ketentuan Penggunaan"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "Ketentuan layanan"
   },
-  "termsOfUse": {
-    "message": "ketentuan penggunaan"
-  },
   "termsOfUseAgreeText": {
     "message": " Saya menyetujui Syarat Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "koleksi ini"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental. Dengan mengaktifkan fitur ini, Anda menyetujui $1 OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Waktu"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Aktifkan peringatan keamanan"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan berbagai risiko yang muncul dalam transaksi yang belum ditandatangani dan permintaan tanda tangan sebelum Anda menandatanganinya. Layanan ini akan dapat mengakses transaksi yang belum ditandatangani dan permintaan tanda tangan, alamat akun, serta bahasa pilihan Anda."
-  },
   "transactionSettings": {
     "message": "Pengaturan transaksi"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi NFT di dompet Anda, yang berarti alamat IP Anda dapat terpapar ke server pusat. Ada beberapa hal yang perlu diwaspadai saat mengaktifkan fitur ini,."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Alamat akun Anda akan dapat dlihat oleh API pihak ketiga."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Metadata NFT dapat berisi tautan ke situs penipuan atau pencurian."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Biarkan fitur ini nonaktif jika Anda tidak ingin aplikasi mengambil data dari layanan tersebut."
-  },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Lihat di Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Tampilkan Dasbor Portofolio"
   },
   "viewinCustodianApp": {
     "message": "Lihat di aplikasi kustodian"

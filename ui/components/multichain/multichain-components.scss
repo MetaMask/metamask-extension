@@ -4,6 +4,7 @@
 * This will help improve specificity and reduce the chance of
 * unintended overrides.
 **/
+@import 'pages';
 @import 'address-copy-button/index';
 @import 'import-nfts-modal/index';
 @import 'account-list-item/index';
@@ -22,3 +23,4 @@
 @import 'nft-item/nft-item';
 @import 'import-tokens-modal/import-tokens-modal';
 @import 'select-action-modal-item/select-action-modal-item';
+@import 'asset-list-conversion-button/asset-list-conversion-button';

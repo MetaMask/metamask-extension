@@ -124,7 +124,7 @@ describe('Sign Typed Data Signature Request', function () {
   });
 
   testData.forEach((data) => {
-    it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
+    it(`can queue multiple Signature Requests of ${data.type} and confirm @no-mmi`, async function () {
       await withFixtures(
         {
           dapp: true,

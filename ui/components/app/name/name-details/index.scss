@@ -1,0 +1,15 @@
+.name-details {
+  &__display-name {
+    width: 100%;
+  }
+
+  &__line {
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: 12px;
+  }
+
+  &__address .mm-text-field {
+    padding-right: 5px;
+  }
+}

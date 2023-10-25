@@ -371,9 +371,6 @@
   "amount": {
     "message": "Tutar"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Tarayıcında bir Ethereum Cüzdanı",
     "description": "The description of the application"
@@ -614,18 +611,9 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buy": {
-    "message": "Satın Al"
-  },
   "buyAsset": {
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
-  "buyDisabled": {
-    "message": "Satın al bu ağda kullanılamaz"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -981,9 +969,6 @@
   "custodian": {
     "message": "Saklayıcı Kurum"
   },
-  "custodianAccount": {
-    "message": "Saklayıcı kurum hesabı"
-  },
   "custodianAccountAddedDesc": {
     "message": "Artık saklayıcı kurum hesaplarınızı MetaMask Institutional'da kullanabilirsiniz."
   },
@@ -1292,12 +1277,6 @@
   "dismissReminderField": {
     "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma uyarısını yoksay"
   },
-  "displayNftMedia": {
-    "message": "NFT medyasını göster"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFT medyasının ve verilerin gösterilmesi IP adresinizin OpenSea'ye veya diğer üçüncü taraflara aktarılmasına neden olur. Bu durum, saldırganların IP adresinizi Ethereum adresinizle ilişkilendirmesini sağlayabilir. NFT otomatik algılama bu ayara dayalıdır ve bu ayar kapatıldığında kullanılamaz olur."
-  },
   "domain": {
     "message": "Alan"
   },
@@ -1420,11 +1399,14 @@
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
-  "enableForAllNetworks": {
-    "message": "Tüm ağlar için etkinleştir"
-  },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API'yi etkinleştir"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
   "enableSmartSwaps": {
     "message": "Akıllı swap'ları etkinleştirin"
@@ -1452,21 +1434,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Gelişmiş token algılama şu anda $1 üzerinden kullanılabilir. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask, \"https://metamask.eth\" gibi ENS alanlarını tarayıcınızın adres çubuğunda görmenizi sağlar. Şöyle çalışır:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Normal tarayıcılar genellikle ENS veya IPFS adreslerini kullanmaz, ancak MetaMask bu konuda yardımcı olur. Bu özelliği kullandığınızda IP adresiniz IPFS üçüncü taraf hizmetleri ile paylaşılabilir."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask, ENS adına bağlı kodu bulmak için Ethereum'un ENS sözleşmesi ile kontrol gerçekleştirir."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Kod IPFS'ye bağlı ise içeriği IPFS ağından alır."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Ardından, genellikle bir web sitesi veya benzeri olan içeriği görebilirsiniz."
   },
   "ensDomainsSettingTitle": {
     "message": "ENS alanlarını adres çubuğunda göster"
@@ -1571,11 +1538,9 @@
   "experimental": {
     "message": "Deneysel"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaplerini keşfedin"
-  },
   "extendWalletWithSnaps": {
-    "message": "Cüzdan deneyimini kişiselleştirin."
+    "message": "Cüzdan deneyimini kişiselleştirin.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Harici uzantı"
@@ -1605,9 +1570,6 @@
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Bırakılan dosya çok büyük."
   },
   "flaskWelcomeUninstall": {
     "message": "bu uzantıyı kaldırmalısın",
@@ -2346,9 +2308,6 @@
   "missingSettingRequest": {
     "message": "Buradan talep et"
   },
-  "mmiAddToken": {
-    "message": "$1 alanındaki sayfa MetaMask Institutional'daki aşağıdaki saklayıcı kurum tokenine yetki vermek istiyor"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dünya çapında tasarlanmış ve yapılmıştır."
   },
@@ -2428,9 +2387,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2444,6 @@
   },
   "newContract": {
     "message": "Yeni sözleşme"
-  },
-  "newNFTDetectedMessage": {
-    "message": "MetaMask'in Opensea'den NFT'leri otomatik olarak algılamasına ve cüzdanında görüntülemesine izin ver."
-  },
-  "newNFTsDetected": {
-    "message": "Yeni! NFT algılama"
   },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
@@ -3069,9 +3019,6 @@
   "openInBlockExplorer": {
     "message": "Blok gezgininde aç"
   },
-  "openSea": {
-    "message": "OpenSea + Blockad (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3232,14 +3179,6 @@
   "permission_lifecycleHooksDescription": {
     "message": "Bu yaşam döngüsü sırasında belirli zamanlarda kod çalıştırmak için snapin yaşam döngüsü kancalarını kullanmasına izin verin.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Süresiz çalıştır.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Snapin örneğin büyük miktarda veri işlerken belirsiz süreyle çalışmasına izin verin.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum hesaplarını ekle ve kontrol et",
@@ -3886,9 +3825,6 @@
     "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Bu, Ethereum adresinize ve IP adresinize erişimi olacak olan her bir ağa dayalıdır."
-  },
   "showMore": {
     "message": "Daha fazlasını göster"
   },
@@ -3977,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Bir $1 hesabı oluştur",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4012,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Yüklendi"
-  },
-  "snapError": {
-    "message": "Snap Hatası: '$1'. Hata Kodu: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Snap yükle"
@@ -4102,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Üçüncü Taraf Hizmetleri ile paylaştığınız tüm bilgiler söz konusu Üçüncü Taraf Hizmetlerinin gizlilik politikalarına göre doğrudan üçüncü taraflar tarafından toplanacaktır. Daha fazla bilgi için lütfen üçüncü tarafların gizlilik politikalarına bakın.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Snaplerini yönet"
   },
   "snapsTermsOfUse": {
     "message": "Kullanım Şartları"
@@ -4857,9 +4786,6 @@
   "termsOfService": {
     "message": "Hizmet şartları"
   },
-  "termsOfUse": {
-    "message": "kullanım şartları"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum"
   },
@@ -4887,10 +4813,6 @@
   },
   "thisCollection": {
     "message": "bu koleksiyon"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Hizmet deneyseldir. Bu özelliği etkinleştirerek OpenSea'nin $1 bölümünü kabul edersiniz.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Zaman"
@@ -5107,12 +5029,6 @@
   "transactionResubmitted": {
     "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
   },
-  "transactionSecurityCheck": {
-    "message": "Güvenlik uyarılarını etkinleştir"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "İmzalanmamış işleme dahil olan riskleri ve onları imzalamadan önce imza taleplerini algılamak ve göstermek için üçüncü taraf API'lerini kullanırız. Bu hizmetler imzalanmamış işlem ve imza taleplerinize, hesap adresinize ve tercih ettiğiniz dile erişim sağlar."
-  },
   "transactionSettings": {
     "message": "İşlem ayarları"
   },
@@ -5257,21 +5173,6 @@
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
   },
-  "useNftDetectionDescription": {
-    "message": "Cüzdanınızdaki NFT'leri algılamak için üçüncü taraf API'leri kullanırız, yani IP adresinizin merkezi sunuculara açıklanmasına neden olabilir. Bu özelliği etkinleştirirken dikkat edilmesi gereken birkaç konu vardır."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Hesap adresiniz üçüncü taraf API'lerinde görüntülenebilir."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT meta verileri dolandırıcılık veya kimlik avı sitelerine bağlantılar içerebilir."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Hesabınıza herkes NFT airdrop'u gerçekleştirebilir. Cüzdanınızda otomatik olarak gösterilebilen saldırgan içerik de buna dahil olabilir."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Uygulamanın bu hizmetlerden veri çekmesini istemiyorsanız bu özelliği kapalı bırakın."
-  },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"
   },
@@ -5345,9 +5246,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea'de görüntüle"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portföy Kontrol Panelini görüntüle"
   },
   "viewinCustodianApp": {
     "message": "Saklayıcı kurum uygulamasında görüntüle"

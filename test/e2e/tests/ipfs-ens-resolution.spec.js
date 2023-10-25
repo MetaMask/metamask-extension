@@ -31,7 +31,7 @@ describe('Settings', function () {
     await driver.quit();
   });
 
-  it('Does not lookup IPFS data for ENS Domain when switched off', async function () {
+  it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
     let server;
 
     await withFixtures(
@@ -54,7 +54,10 @@ describe('Settings', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 
-        // turns off IPFS domain resolution
+        // turns off IPFS setting
+        await driver.clickElement('[data-testid="ipfsToggle"] .toggle-button');
+
+        // turns off ENS domain resolution
         await driver.clickElement(
           '[data-testid="ipfs-gateway-resolution-container"] .toggle-button',
         );

@@ -28,6 +28,9 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -110,9 +113,6 @@ const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
-
-const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
-const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 const OVERRIDE_ORIGIN = {
@@ -205,6 +205,12 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   connectExternal(...args);
 });
 
+function saveTimestamp() {
+  const timestamp = new Date().toISOString();
+
+  browser.storage.session.set({ timestamp });
+}
+
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
  */
@@ -230,7 +236,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} providerConfig - The current selected network provider.
  * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
  * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
- * @property {string} networkId - The stringified number of the current network ID.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
@@ -245,7 +250,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
- * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
@@ -277,6 +281,13 @@ async function initialize() {
 
     let isFirstMetaMaskControllerSetup;
     if (isManifestV3) {
+      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+      // miliseconds. This keeps the service worker alive.
+      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+      saveTimestamp();
+      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+
       const sessionData = await browser.storage.session.get([
         'isFirstMetaMaskControllerSetup',
       ]);
@@ -298,6 +309,7 @@ async function initialize() {
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
@@ -599,20 +611,6 @@ export function setupController(
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      if (isManifestV3) {
-        // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
-        remotePort.onMessage.addListener((message) => {
-          if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
-            // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
-            remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
-
-            controller.appStateController.setServiceWorkerLastActiveTime(
-              Date.now(),
-            );
-          }
-        });
-      }
-
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
@@ -802,6 +800,13 @@ export function setupController(
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
           default:
             controller.approvalController.reject(
               id,
@@ -890,15 +895,18 @@ const addAppInstalledEvent = () => {
 };
 
 // On first install, open a new tab with MetaMask
-browser.runtime.onInstalled.addListener(({ reason }) => {
+async function onInstall() {
+  const storeAlreadyExisted = Boolean(await localStore.get());
+  // If the store doesn't exist, then this is the first time running this script,
+  // and is therefore an install
   if (
-    reason === 'install' &&
+    !storeAlreadyExisted &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
-});
+}
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
@@ -907,7 +915,8 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-function initBackground() {
+async function initBackground() {
+  await onInstall();
   initialize().catch(log.error);
 }
 

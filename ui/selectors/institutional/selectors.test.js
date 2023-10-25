@@ -25,7 +25,7 @@ function buildState(overrides = {}) {
       },
       identities: {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-          name: 'Custody Account A',
+          envName: 'Custody Account A',
           address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
         },
       },
@@ -57,7 +57,7 @@ function buildState(overrides = {}) {
         custodians: [
           {
             type: 'saturn',
-            name: 'saturn',
+            envName: 'saturn',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl: 'images/saturn.svg',
             displayName: 'Saturn Custody',
@@ -566,7 +566,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: true,
               },
             ],
@@ -590,7 +590,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: false,
               },
             ],
@@ -610,7 +610,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: true,
               },
             ],
@@ -632,7 +632,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: true,
               },
             ],
@@ -656,7 +656,7 @@ describe('Institutional selectors', () => {
           mmiConfiguration: {
             custodians: [
               {
-                name: 'custodian1',
+                envName: 'custodian1',
                 isNoteToTraderSupported: true,
               },
             ],

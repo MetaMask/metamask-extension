@@ -43,6 +43,7 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
+  'PPOMController.chainStatus.0x539.lastVisited',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
@@ -273,7 +274,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('before initialization, after opting into metrics', function () {
+  describe('before initialization, after opting into metrics @no-mmi', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -589,7 +590,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting into metrics', function () {
+  describe('after initialization, after opting into metrics @no-mmi', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -784,7 +785,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should have no policy gaps for UI controller state', async function () {
+  it('should have no policy gaps for UI controller state @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -808,7 +809,7 @@ describe('Sentry errors', function () {
     );
   });
 
-  it('should not have extra properties in UI state mask', async function () {
+  it('should not have extra properties in UI state mask @no-mmi', async function () {
     const expectedMissingState = {
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial

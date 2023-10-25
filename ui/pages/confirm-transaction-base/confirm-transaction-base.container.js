@@ -51,6 +51,7 @@ import {
   getNativeCurrency,
   getSendToAccounts,
   getProviderConfig,
+  findKeyringForAddress,
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
@@ -61,7 +62,6 @@ import {
 
 import {
   parseStandardTokenTransactionData,
-  transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import {
@@ -122,13 +122,12 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const { conversionRate, identities, addressBook, networkId, nextNonce } =
-    metamask;
+  const { conversionRate, identities, addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
-  const txId = transactionId || Number(paramsTransactionId);
+  const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId);
   const {
     from: fromAddress,
@@ -145,6 +144,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
+  const keyring = findKeyringForAddress(state, fromAddress);
 
   const isSendingAmount =
     type === TransactionType.simpleSend || !isEmptyHexString(amount);
@@ -181,9 +181,7 @@ const mapStateToProps = (state, ownProps) => {
   } = transactionFeeSelector(state, transaction);
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
-    )
+    .filter((key) => unapprovedTxs[key].chainId === chainId)
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
 
@@ -276,6 +274,7 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
+    keyringForAccount: keyring,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     isNoteToTraderSupported,
@@ -310,8 +309,18 @@ export const mapDispatchToProps = (dispatch) => {
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: (txData) =>
-      dispatch(updateAndApproveTx(customNonceMerge(txData))),
+    sendTransaction: (
+      txData,
+      dontShowLoadingIndicator,
+      loadingIndicatorMessage,
+    ) =>
+      dispatch(
+        updateAndApproveTx(
+          customNonceMerge(txData),
+          dontShowLoadingIndicator,
+          loadingIndicatorMessage,
+        ),
+      ),
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),

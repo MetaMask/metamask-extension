@@ -1,0 +1,42 @@
+const { strict: assert } = require('assert');
+const { withFixtures, defaultGanacheOptions } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
+
+describe('eth_accounts', function () {
+  it('executes a eth_accounts json rpc call', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // eth_accounts
+        await driver.openNewPage(`http://127.0.0.1:8080`);
+
+        const accountsRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'eth_accounts',
+        });
+
+        const accounts = await driver.executeScript(
+          `return window.ethereum.request(${accountsRequest})`,
+        );
+
+        assert.deepStrictEqual(accounts, [
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+        ]);
+      },
+    );
+  });
+});
