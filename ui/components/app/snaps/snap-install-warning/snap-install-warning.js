@@ -107,7 +107,7 @@ export default function SnapInstallWarning({
       >
         {t('snapInstallWarningHeading')}
       </Text>
-      <Text paddingBottom={6} textAlign={TextAlign.Center}>
+      <Text paddingBottom={6} textAlign={TextAlign.Left}>
         {t('snapInstallWarningCheck', [
           <Text
             key="snapNameInWarningDescription"
@@ -129,7 +129,7 @@ export default function SnapInstallWarning({
       />
       <Box
         display={Display.Flex}
-        justifyContent={JustifyContent.center}
+        justifyContent={JustifyContent.flexStart}
         alignItems={AlignItems.center}
         marginTop={4}
         padding={4}
