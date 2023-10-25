@@ -26,7 +26,6 @@ export const SendPageYourAccount = () => {
           identity={account}
           key={account.address}
           onClick={() => {
-            console.log('account is: ', account);
             dispatch(
               addHistoryEntry(
                 `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.name}`,
