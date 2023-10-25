@@ -5,7 +5,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
 import { captureException } from '@sentry/browser';
-import { PollingControllerOnly } from '@metamask/polling-controller';
+import { PollingControllerOnly } from '@metamask/polling-controller/dist/PollingController';
 
 import {
   decGWEIToHexWEI,
@@ -275,16 +275,17 @@ export default class SwapsController extends PollingControllerOnly {
     fetchParams,
     fetchParamsMetaData = {},
     isPolledRequest,
-    networkClientId,
   ) {
     let { ethersProvider } = this;
+    // TODO we should perhaps remove the chainId and just use the networkClientId in the fetchParamsMetaData
+    let { chainId } = fetchParamsMetaData;
+    const { networkClientId } = fetchParamsMetaData;
     if (networkClientId) {
-      const { provider: networkProvider } =
+      const { provider: networkProvider, configuration } =
         this._getNetworkClientById(networkClientId);
       ethersProvider = new Web3Provider(networkProvider);
+      chainId = configuration.chainId;
     }
-    // TODO we should perhaps replace the chainId with the networkClientId in the fetchParamsMetaData
-    const { chainId } = fetchParamsMetaData;
     const {
       swapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
     } = this.store.getState();

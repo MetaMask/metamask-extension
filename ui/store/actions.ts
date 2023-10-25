@@ -3261,6 +3261,18 @@ export function setSwapsFeatureFlags(
   };
 }
 
+export function getNetworkClientById(
+  networkClientId: NetworkClientId,
+): ThunkAction<Promise<any>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    const networkClient = await submitRequestToBackground<string>(
+      'getNetworkClientById',
+      [networkClientId],
+    );
+    return networkClient;
+  };
+}
+
 export function fetchAndSetQuotes(
   fetchParams: {
     slippage: string;
@@ -3276,6 +3288,7 @@ export function fetchAndSetQuotes(
     destinationTokenInfo: Token;
     accountBalance: string;
     chainId: string;
+    networkClientId: NetworkClientId;
   },
 ): ThunkAction<
   Promise<
