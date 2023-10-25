@@ -58,9 +58,6 @@ describe('Test Snap update', function () {
         // wait for permissions popover, click checkboxes and confirm
         await driver.delay(500);
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement(
-          '#public-key-access-bip32-m-44h-0h-secp256k1-0',
-        );
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
