@@ -13,16 +13,6 @@ export enum TextFieldSize {
   Lg = 'lg',
 }
 
-/**
- * @deprecated `TEXT_FIELD_SIZES` const has been deprecated in favor of the `TextFieldSize` enum which can still be imported from `ui/components/component-library/index.js`
- *
- * Help to replace `TEXT_FIELD_SIZES` with `TextFieldSize`
- */
-export const TEXT_FIELD_SIZES = {
-  SM: Size.SM,
-  MD: Size.MD,
-  LG: Size.LG,
-};
 
 export enum TextFieldType {
   Text = 'text',
