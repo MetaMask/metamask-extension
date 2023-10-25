@@ -901,7 +901,7 @@ jobs:
 
   test-e2e-firefox-flask:
     executor: node-browsers
-    parallelism: 4
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - run:
@@ -931,7 +931,7 @@ jobs:
 
   test-e2e-chrome-flask:
     executor: node-browsers
-    parallelism: 4
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - run:
@@ -961,7 +961,7 @@ jobs:
 
   test-e2e-chrome-mmi:
     executor: node-browsers
-    parallelism: 4
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - run:
