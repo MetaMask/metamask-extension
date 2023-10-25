@@ -3,7 +3,7 @@ import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 import { externalContributorLabel } from './shared/label';
 import { Labelable } from './shared/labelable';
-import { retrievePullRequest } from './shared/pullRequest';
+import { retrievePullRequest } from './shared/pull-request';
 
 main().catch((error: Error): void => {
   console.error(error);

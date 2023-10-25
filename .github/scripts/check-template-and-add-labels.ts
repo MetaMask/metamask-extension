@@ -17,7 +17,7 @@ import {
   invalidPullRequestTemplateLabel,
 } from './shared/label';
 import { TemplateType, templates } from './shared/template';
-import { retrievePullRequest } from './shared/pullRequest';
+import { retrievePullRequest } from './shared/pull-request';
 
 main().catch((error: Error): void => {
   console.error(error);
