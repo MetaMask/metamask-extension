@@ -103,7 +103,6 @@ import {
   ERC1155,
   ERC20,
   ERC721,
-  BUILT_IN_NETWORKS,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
@@ -115,6 +114,11 @@ import {
   LensNameProvider,
 } from '@metamask/name-controller';
 ///: END:ONLY_INCLUDE_IN
+
+import {
+  QueuedRequestController,
+  createQueuedRequestMiddleware,
+} from '@metamask/queued-request-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -229,10 +233,6 @@ import {
   createSnapMethodMiddleware,
   ///: END:ONLY_INCLUDE_IN
 } from './lib/rpc-method-middleware';
-import {
-  findExistingNetwork,
-  findExistingNetworkByNetworkClientId,
-} from './lib/rpc-method-middleware/handlers/switch-ethereum-chain';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -256,7 +256,6 @@ import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
-import { QueuedRequestController, createQueuedRequestMiddleware } from '@metamask/queued-request-controller';
 
 import {
   CaveatMutatorFactories,
@@ -2313,23 +2312,29 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Gets network state relevant for external providers.
+   * Retrieves network state information relevant for external providers.
    *
-   * @returns {object} An object with relevant network state properties.
+   * @param {string} origin - The origin identifier for which network state is requested (default: 'metamask').
+   * @returns {object} An object containing important network state properties, including chainId and networkVersion.
    */
-  getProviderNetworkState(memState, origin = 'metamask') {
-    const { networkId } = memState || this.getState();
+  getProviderNetworkState(origin = 'metamask') {
     let chainId;
     if (this.preferencesController.getUseRequestQueue()) {
-      const networkClientId = this.controllerMessenger.call('SelectedNetworkController:getNetworkClientIdForDomain', origin);
-      const networkClient = this.controllerMessenger.call('NetworkController:getNetworkClientById', networkClientId);
+      const networkClientId = this.controllerMessenger.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        origin,
+      );
+      const networkClient = this.controllerMessenger.call(
+        'NetworkController:getNetworkClientById',
+        networkClientId,
+      );
       chainId = networkClient.configuration.chainId;
     } else {
       chainId = this.networkController.state.providerConfig.chainId;
     }
 
     return {
-      chainId: chainId,
+      chainId,
       networkVersion: this.deprecatedNetworkId ?? 'loading',
     };
   }
@@ -4299,12 +4304,17 @@ export default class MetamaskController extends EventEmitter {
 
     let providerForDomain = provider;
     if (this.preferencesController.getUseRequestQueue() === true) {
-      providerForDomain = this.selectedNetworkController.getProviderAndBlockTracker(origin).provider;
+      providerForDomain =
+        this.selectedNetworkController.getProviderAndBlockTracker(
+          origin,
+        ).provider;
     }
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       messenger: this.controllerMessenger,
-      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(this.preferencesController),
+      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+        this.preferencesController,
+      ),
     });
     // add some middleware that will switch chain on each request (as needed)
     engine.push(requestQueueMiddleware);
@@ -4452,7 +4462,9 @@ export default class MetamaskController extends EventEmitter {
             this.networkController,
           ),
         setActiveNetwork: (networkClientId) => {
-          this.selectedNetworkController.setNetworkClientIdForMetamask(networkClientId);
+          this.selectedNetworkController.setNetworkClientIdForMetamask(
+            networkClientId,
+          );
           this.networkController.setActiveNetwork(networkClientId);
         },
         findNetworkClientIdByChainId:
@@ -5353,7 +5365,7 @@ export default class MetamaskController extends EventEmitter {
     // this.notifyAllConnections({
     //  method: NOTIFICATION_NAMES.chainChanged,
     //  params: this.getProviderNetworkState(),
-    //});
+    // });
     // }
   }
 }

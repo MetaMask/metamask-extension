@@ -761,7 +761,7 @@ export function setupController(
     const queuedRequestsCount = controller.queuedRequestController.length();
 
     const pendingApprovalCount =
-          controller.approvalController.getTotalApprovalCount();
+      controller.approvalController.getTotalApprovalCount();
 
     return waitingForUnlockCount + pendingApprovalCount + queuedRequestsCount;
   }

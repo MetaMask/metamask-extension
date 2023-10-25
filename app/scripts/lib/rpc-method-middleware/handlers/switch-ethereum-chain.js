@@ -27,7 +27,6 @@ const switchEthereumChain = {
     requestUserApproval: true,
     getNetworkConfigurations: true,
     getNetworkClientIdForDomain: true,
-    getUseRequestQueue: true,
     getProviderConfig: true,
   },
 };
@@ -84,9 +83,6 @@ async function switchEthereumChainHandler(
     setProviderType,
     setActiveNetwork,
     requestUserApproval,
-    getNetworkConfigurations,
-    getNetworkClientIdForDomain,
-    getUseRequestQueue,
     getProviderConfig,
   },
 ) {
@@ -132,22 +128,14 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const useRequestQueue = getUseRequestQueue();
-
   const requestData = {
     toNetworkConfiguration: findExistingNetwork(
       _chainId,
       findNetworkConfigurationBy,
     ),
-    // fromNetworkConfiguration: findExistingNetworkByNetworkClientId(
-    //   getNetworkClientIdForDomain(origin),
-    //   getNetworkConfigurations,
-    // ),
   };
 
-  // if (useRequestQueue === false) {
   requestData.fromNetworkConfiguration = getProviderConfig();
-  // }
 
   if (requestData.toNetworkConfiguration) {
     const currentChainId = getCurrentChainId();
@@ -184,6 +172,7 @@ async function switchEthereumChainHandler(
     }
     return end();
   }
+
   return end(
     ethErrors.provider.custom({
       code: 4902, // To-be-standardized "unrecognized chain ID" error
