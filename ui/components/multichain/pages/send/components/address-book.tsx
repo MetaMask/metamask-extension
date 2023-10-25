@@ -93,12 +93,12 @@ export const SendPageAddressBook = () => {
 
   return (
     <SendPageRow>
-      {addressBook.length && !userInput ? (
+      {addressBook.length ? (
         <>
           <Label paddingBottom={2}>{t('contacts')}</Label>
           <ContactList
             addressBook={addressBook}
-            searchForContacts={() => searchForContacts()}
+            searchForContacts={searchForContacts}
             searchForRecents={searchForRecents}
             selectRecipient={(address = '', name = '') => {
               selectRecipient(
