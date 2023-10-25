@@ -27,6 +27,7 @@ import {
   fetchSmartTransactionFees,
   cancelSmartTransaction,
   getTransactions,
+  getNetworkClientById,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -635,13 +636,19 @@ export const fetchQuotesAndSetQuoteState = (
   maxSlippage,
   trackEvent,
   pageRedirectionDisabled,
+  networkClientId,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    // eslint-disable-next-line no-param-reassign
+    networkClientId ??= getSelectedNetworkClientId(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
+    const networkClient = dispatch(getNetworkClientById(networkClientId));
+    const chainId =
+      networkClient.configuration.chainId ?? getCurrentChainId(state);
+
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
@@ -660,7 +667,6 @@ export const fetchQuotesAndSetQuoteState = (
 
     const fetchParams = getFetchParams(state);
     const selectedAccount = getSelectedAccount(state);
-    const networkClientId = getSelectedNetworkClientId(state);
     const balanceError = getBalanceError(state);
     const swapsDefaultToken = getSwapsDefaultToken(state);
     const fetchParamsFromToken =
@@ -800,6 +806,7 @@ export const fetchQuotesAndSetQuoteState = (
             destinationTokenInfo,
             accountBalance: selectedAccount.balance,
             chainId,
+            networkClientId,
           },
         ),
       );
