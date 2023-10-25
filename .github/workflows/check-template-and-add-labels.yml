@@ -3,7 +3,7 @@ name: Check template and add labels
 on:
   issues:
     types: [opened, edited]
-  pull_request:
+  pull_request_target:
     types: [opened, edited]
 
 jobs:
