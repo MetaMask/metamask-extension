@@ -57,8 +57,7 @@ describe('Test Snap bip-44', function () {
 
         // deal with permissions popover
         await driver.delay(500);
-        await driver.clickElement('#key-access-bip44-1-0');
-        await driver.clickElement('#key-access-bip44-3-1');
+        await driver.clickElement('.mm-checkbox__input');
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
