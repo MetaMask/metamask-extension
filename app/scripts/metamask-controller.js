@@ -2,10 +2,9 @@ import EventEmitter from 'events';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine, createAsyncMiddleware } from 'json-rpc-engine';
+import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { providerFromEngine } from '@metamask/eth-json-rpc-provider';
 import {
   debounce,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
