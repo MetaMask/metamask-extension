@@ -3455,7 +3455,7 @@
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permission_manageBip44AndBip32KeysDescription": {
-    "message": "Allow the Snap to manage accounts and assets on the requested network(s). These accounts are derived and backed up using your secret recovery phrase (without revealing it). With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "message": "Allow the Snap to manage accounts and assets on the requested network. These accounts are derived and backed up using your secret recovery phrase (without revealing it). With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
     "description": "An extended description for the `snap_getBip44Entropy` and `snap_getBip44Entropy` permissions."
   },
   "permission_manageBip44Keys": {
@@ -4321,6 +4321,10 @@
   },
   "snapInstallWarningHeading": {
     "message": "Proceed with caution"
+  },
+  "snapInstallWarningPermissionDescription": {
+    "message": "Allow the Snap to manage accounts and assets on the requested network(s). These accounts are derived and backed up using your secret recovery phrase (without revealing it). With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "description": "An extended description for the `snap_getBip44Entropy` and `snap_getBip44Entropy` permissions used for tooltip on Snap Install Warning screen (popup/modal)."
   },
   "snapInstallWarningPermissionName": {
     "message": "Manage $1 accounts",

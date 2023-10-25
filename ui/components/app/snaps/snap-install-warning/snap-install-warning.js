@@ -121,7 +121,7 @@ export default function SnapInstallWarning({
       <PermissionCell
         permissionName={permissionName}
         title={permissionName}
-        description={t('permission_manageBip44AndBip32KeysDescription')}
+        description={t('snapInstallWarningPermissionDescription')}
         weight={1}
         avatarIcon={IconName.Key}
         key="snapInstallWarningPermissionCell"
@@ -131,6 +131,7 @@ export default function SnapInstallWarning({
         display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
+        marginTop={4}
         padding={4}
         borderRadius={BorderRadius.SM}
         backgroundColor={

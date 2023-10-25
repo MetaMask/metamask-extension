@@ -160,9 +160,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         return {
           ...baseDescription,
           label: t('permission_manageNamedBip32Keys', [
-            <span className="permission-label-item" key={path.join('/')}>
+            <Text
+              as="span"
+              className="permission-label-item"
+              key={path.join('/')}
+              fontWeight={FontWeight.Medium}
+            >
               {friendlyName}
-            </span>,
+            </Text>,
             path.join('/'),
           ]),
           description: t('permission_manageBip44AndBip32KeysDescription'),
@@ -172,9 +177,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       return {
         ...baseDescription,
         label: t('permission_manageBip32Keys', [
-          <span className="permission-label-item" key={path.join('/')}>
+          <Text
+            as="span"
+            fontWeight={FontWeight.Medium}
+            className="permission-label-item"
+            key={path.join('/')}
+          >
             {path.join('/')}
-          </span>,
+          </Text>,
           curve,
         ]),
         description: t('permission_manageBip44AndBip32KeysDescription'),
@@ -183,10 +193,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.snap_getBip44Entropy]: ({ t, permissionValue }) =>
     permissionValue.caveats[0].value.map(({ coinType }, i) => ({
       label: t('permission_manageBip44Keys', [
-        <span className="permission-label-item" key={`coin-type-${coinType}`}>
+        <Text
+          as="span"
+          fontWeight={FontWeight.Medium}
+          className="permission-label-item"
+          key={`coin-type-${coinType}`}
+        >
           {coinTypeToProtocolName(coinType) ||
             t('unrecognizedProtocol', [coinType])}
-        </span>,
+        </Text>,
       ]),
       description: t('permission_manageBip44AndBip32KeysDescription', [
         <span
