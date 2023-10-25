@@ -609,7 +609,8 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet. $1",
+    "description": "$1 is a link to a Blockaid's terms of use"
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -3239,7 +3240,8 @@
     "message": "OpenSea + Blockaid"
   },
   "openSeaMessage": {
-    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests."
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1",
+    "description": "$1 is the link to OpenSea's terms of use"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3909,7 +3911,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
