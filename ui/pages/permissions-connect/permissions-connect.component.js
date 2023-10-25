@@ -164,19 +164,6 @@ export default class PermissionConnect extends Component {
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const { permissionsRequest, targetSubjectMetadata } = props;
-    const { targetSubjectMetadata: savedMetadata } = state;
-
-    if (
-      permissionsRequest &&
-      savedMetadata.origin !== targetSubjectMetadata?.origin
-    ) {
-      return { targetSubjectMetadata };
-    }
-    return null;
-  }
-
   componentDidUpdate(prevProps) {
     const { permissionsRequest, lastConnectedInfo } = this.props;
     const { redirecting, origin } = this.state;
@@ -353,13 +340,13 @@ export default class PermissionConnect extends Component {
       approvePendingApproval,
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
+      targetSubjectMetadata,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
       selectedAccountAddresses,
       permissionsApproved,
       redirecting,
-      targetSubjectMetadata,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapsInstallPrivacyWarningShown,
       ///: END:ONLY_INCLUDE_IN
