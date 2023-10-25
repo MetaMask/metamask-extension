@@ -130,12 +130,15 @@ async function main() {
 
   let testPaths;
 
+  // Snap Tests need to be run in main build and also seperately on flask
+  const snapsTestPaths = [
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
+  ];
+
   if (snaps) {
-    testPaths = [
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
-    ];
+    testPaths = [...snapsTestPaths];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
@@ -146,6 +149,7 @@ async function main() {
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
+      ...snapsTestPaths,
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   }
