@@ -867,7 +867,7 @@ export default class MetamaskController extends EventEmitter {
     const getSnapController = () => this.snapController;
     const getApprovalController = () => this.approvalController;
     const getKeyringController = () => this.keyringController;
-    const getAccountsController = () => this.accountsController;
+    const getPreferencesController = () => this.preferencesController;
     const getPhishingController = () => this.phishingController;
 
     additionalKeyrings.push(
@@ -875,7 +875,7 @@ export default class MetamaskController extends EventEmitter {
         getSnapController,
         getApprovalController,
         getKeyringController,
-        getAccountsController,
+        getPreferencesController,
         getPhishingController,
         (address) => this.removeAccount(address),
       ),
