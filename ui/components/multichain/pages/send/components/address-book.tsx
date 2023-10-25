@@ -93,20 +93,22 @@ export const SendPageAddressBook = () => {
 
   return (
     <SendPageRow>
-      <Label paddingBottom={2}>{t('contacts')}</Label>
-      {addressBook.length ? (
-        <ContactList
-          addressBook={addressBook}
-          searchForContacts={() => searchForContacts()}
-          searchForRecents={searchForRecents}
-          selectRecipient={(address = '', name = '') => {
-            selectRecipient(
-              address,
-              name,
-              `${name ? 'contact' : 'recent'} list`,
-            );
-          }}
-        />
+      {addressBook.length && !userInput ? (
+        <>
+          <Label paddingBottom={2}>{t('contacts')}</Label>
+          <ContactList
+            addressBook={addressBook}
+            searchForContacts={() => searchForContacts()}
+            searchForRecents={searchForRecents}
+            selectRecipient={(address = '', name = '') => {
+              selectRecipient(
+                address,
+                name,
+                `${name ? 'contact' : 'recent'} list`,
+              );
+            }}
+          />
+        </>
       ) : null}
     </SendPageRow>
   );

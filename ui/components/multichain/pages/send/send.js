@@ -22,9 +22,7 @@ import { showQrScanner } from '../../../../store/actions';
 import {
   SendPageAccountPicker,
   SendPageRecipientInput,
-  SendPageYourAccount,
   SendPageNetworkPicker,
-  SendPageAddressBook,
 } from './components';
 
 export const SendPage = () => {
@@ -95,8 +93,6 @@ export const SendPage = () => {
         <SendPageNetworkPicker />
         <SendPageAccountPicker />
         <SendPageRecipientInput />
-        <SendPageYourAccount />
-        <SendPageAddressBook />
       </Content>
       <Footer>
         <ButtonSecondary size={ButtonSecondarySize.Lg} block>

@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Label } from '../../../../component-library';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+  Label,
+} from '../../../../component-library';
 import DomainInput from '../../../../../pages/send/send-content/add-recipient/domain-input';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
@@ -15,7 +20,13 @@ import {
 import { showQrScanner } from '../../../../../store/actions';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../../../shared/constants/metametrics';
-import { SendPageRow } from '.';
+import {
+  getDomainError,
+  getDomainResolution,
+  getDomainWarning,
+} from '../../../../../ducks/domains';
+import { getAddressBookEntry } from '../../../../../selectors';
+import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
 
 export const SendPageRecipientInput = () => {
   const t = useContext(I18nContext);
@@ -27,6 +38,25 @@ export const SendPageRecipientInput = () => {
   const isUsingMyAccountsForRecipientSearch = useSelector(
     getIsUsingMyAccountForRecipientSearch,
   );
+
+  const domainResolution = useSelector(getDomainResolution);
+  const domainError = useSelector(getDomainError);
+  const domainWarning = useSelector(getDomainWarning);
+
+  let addressBookEntryName = '';
+  const entry = useSelector((state) =>
+    getAddressBookEntry(state, domainResolution),
+  );
+  if (domainResolution) {
+    if (entry.name) {
+      addressBookEntryName = entry.name;
+    }
+  }
+
+  const showErrorBanner =
+    domainError || (recipient.error && recipient.error !== 'required');
+  const showWarningBanner =
+    !showErrorBanner && (domainWarning || recipient.warning);
 
   return (
     <SendPageRow>
@@ -64,6 +94,20 @@ export const SendPageRecipientInput = () => {
           dispatch(showQrScanner());
         }}
       />
+      {showErrorBanner ? (
+        <BannerAlert severity={BannerAlertSeverity.Danger} marginTop={6}>
+          {t(domainError ?? recipient.error)}
+        </BannerAlert>
+      ) : null}
+      {showWarningBanner ? (
+        <BannerAlert severity={BannerAlertSeverity.Warning} marginTop={6}>
+          {t(domainWarning ?? recipient.warning)}
+        </BannerAlert>
+      ) : null}
+      <Box marginTop={6}>
+        <SendPageYourAccount />
+        <SendPageAddressBook />
+      </Box>
     </SendPageRow>
   );
 };
