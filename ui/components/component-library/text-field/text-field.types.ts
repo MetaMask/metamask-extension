@@ -31,17 +31,6 @@ export enum TextFieldType {
   Password = 'password',
   Search = 'search',
 }
-/**
- * @deprecated `TEXT_FIELD_TYPES` const has been deprecated in favor of the `TextFieldType` enum which can still be imported from `ui/components/component-library/index.js`
- *
- * Help to replace `TEXT_FIELD_TYPES` with `TextFieldType`
- */
-export const TEXT_FIELD_TYPES = {
-  TEXT: 'text',
-  NUMBER: 'number',
-  PASSWORD: 'password',
-  SEARCH: 'search',
-};
 
 export interface TextFieldStyleUtilityProps
   extends Omit<StyleUtilityProps, 'type'> {
