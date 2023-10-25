@@ -2621,16 +2621,6 @@
     "message": "Ledger और फायरफॉक्स यूज़र कनेक्शन संबंधी समस्याओं का सामना कर रहे हैं",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "इसे आजमाएं"
-  },
-  "notifications21Description": {
-    "message": "हमने MetaMask एक्सटेंशन में स्वैप को इस्तेमाल में आसान और तेज़ बनाने के लिए अपडेट किया है।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "ला रहे हैं नया और फ्रेश स्वैप!"
-  },
   "notifications22ActionText": {
     "message": "समझ गए"
   },

@@ -2621,16 +2621,6 @@
     "message": "Bağlantı Sorunları Yaşayan Ledger ve Firefox Kullanıcıları",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Deneyin"
-  },
-  "notifications21Description": {
-    "message": "Kullanımı daha kolay ve daha hızlı olması için MetaMask uzantısındaki Swap'ları güncelledik.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "İşte karşınızda yeni ve yenilenmiş Swap'lar!"
-  },
   "notifications22ActionText": {
     "message": "Anladım"
   },

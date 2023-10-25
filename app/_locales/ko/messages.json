@@ -2621,16 +2621,6 @@
     "message": "Ledger 및 Firefox 사용자의 연결 문제점 경험",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "체험해 보세요"
-  },
-  "notifications21Description": {
-    "message": "더욱 쉽고 빠르게 사용하도록 MetaMask 확장의 스왑을 업데이트했습니다",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "새롭게 업데이트한 스왑을 소개합니다"
-  },
   "notifications22ActionText": {
     "message": "확인"
   },

@@ -2621,16 +2621,6 @@
     "message": "Ledger 和 Firefox 用户遇到连接问题",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "试试看"
-  },
-  "notifications21Description": {
-    "message": "我们已更新 MetaMask 扩展程序中的 Swaps，使其使用起来更加轻松快捷。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "全新推出已更新的 Swaps！"
-  },
   "notifications22ActionText": {
     "message": "明白了"
   },
