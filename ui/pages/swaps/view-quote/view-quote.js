@@ -65,6 +65,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
@@ -144,6 +145,8 @@ export default function ViewQuote() {
     GasRecommendations.high,
     GasRecommendations.medium,
   ];
+  // TODO replace this with a passed contextual prop(?) once there is no longer a globally selected network
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);

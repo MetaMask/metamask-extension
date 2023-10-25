@@ -101,6 +101,7 @@ export const GAS_PRICES_LOADING_STATES = {
 
 export const FALLBACK_GAS_MULTIPLIER = 1.5;
 
+// TODO do we parameterize all state by chainId
 const initialState = {
   aggregatorMetadata: null,
   approveTxId: null,
