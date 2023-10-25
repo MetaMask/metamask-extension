@@ -3952,9 +3952,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@17.0.0-preview.08312b7":
-  version: 17.0.0-preview.08312b7
-  resolution: "@metamask-previews/assets-controllers@npm:17.0.0-preview.08312b7"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@17.0.0-preview.7f750b2":
+  version: 17.0.0-preview.7f750b2
+  resolution: "@metamask-previews/assets-controllers@npm:17.0.0-preview.7f750b2"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -3983,7 +3983,7 @@ __metadata:
     "@metamask/approval-controller": ^4.1.0
     "@metamask/network-controller": ^15.1.0
     "@metamask/preferences-controller": ^4.4.3
-  checksum: c2d6013f0b3e6be6ccffef7e86f6663ff7143414d791c50f745eb05e3a96cde3510a19a96e52b78a4bf0d6165a74c7937ca9a8192e4e2b2d1a20e16624ec5651
+  checksum: 1c25a4b0ee6b96f82a98355e849616cfe1e5b203b0fdb36d29a17dae7d19787e733bd6ca67c987d44edf8f788215d0a7d749580ba71f0e395f9d18f3543da9cc
   languageName: node
   linkType: hard
 
