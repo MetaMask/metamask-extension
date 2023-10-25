@@ -569,7 +569,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch]);
+  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (

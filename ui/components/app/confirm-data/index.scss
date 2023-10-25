@@ -2,4 +2,9 @@
   & > .disclosure {
     margin-top: 0;
   }
+
+  &_alert-snaps {
+    font-size: var(--typography-l-body-sm-font-size);
+    vertical-align: baseline;
+  }
 }

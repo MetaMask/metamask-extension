@@ -11,6 +11,7 @@ const {
   findAnotherAccountFromAccountList,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { emptyHtmlPage } = require('../mock-e2e');
 
 const ganacheOptions = {
   accounts: [
@@ -21,6 +22,17 @@ const ganacheOptions = {
     },
   ],
 };
+
+async function mockTrezor(mockServer) {
+  return await mockServer
+    .forGet('https://connect.trezor.io/9/popup.html')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage(),
+      };
+    });
+}
 
 describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase', async function () {
@@ -212,7 +224,7 @@ describe('Import flow @no-mmi', function () {
         );
 
         // New imported account has correct name and label
-        await driver.findElement({
+        await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
@@ -239,7 +251,7 @@ describe('Import flow @no-mmi', function () {
         );
 
         // New imported account has correct name and label
-        await driver.findElement({
+        await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 5',
         });
@@ -256,7 +268,7 @@ describe('Import flow @no-mmi', function () {
         // Account 5 can be removed
         await driver.clickElement('[data-testid="account-list-menu-remove"]');
         await driver.clickElement({ text: 'Remove', tag: 'button' });
-        await driver.findElement({
+        await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 1',
         });
@@ -310,7 +322,7 @@ describe('Import flow @no-mmi', function () {
         );
 
         // New imported account has correct name and label
-        await driver.findElement({
+        await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
@@ -373,39 +385,42 @@ describe('Import flow @no-mmi', function () {
     );
   });
 
-  if (process.env.ENABLE_MV3) {
-    it('Connects to a Hardware wallet for trezor', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
-          title: this.test.title,
-        },
-        async ({ driver }) => {
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+  it('Connects to a Hardware wallet for trezor', async function () {
+    if (process.env.ENABLE_MV3) {
+      // Hardware wallets not supported in MV3 build yet
+      this.skip();
+    }
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: mockTrezor,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
 
-          // choose Connect hardware wallet from the account menu
-          await driver.clickElement('[data-testid="account-menu-icon"]');
-          await driver.clickElement(
-            '[data-testid="multichain-account-menu-popover-action-button"]',
-          );
-          await driver.clickElement({
-            text: 'Add hardware wallet',
-            tag: 'button',
-          });
-          await driver.delay(regularDelayMs);
+        // choose Connect hardware wallet from the account menu
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement({
+          text: 'Add hardware wallet',
+          tag: 'button',
+        });
+        await driver.delay(regularDelayMs);
 
-          // should open the TREZOR Connect popup
-          await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
-          await driver.delay(largeDelayMs * 2);
-          await driver.clickElement({ text: 'Continue', tag: 'button' });
-          await driver.waitUntilXWindowHandles(2);
-          const allWindows = await driver.getAllWindowHandles();
-          assert.equal(allWindows.length, 2);
-        },
-      );
-    });
-  }
+        // should open the TREZOR Connect popup
+        await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
+        await driver.delay(largeDelayMs * 2);
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        const allWindows = await driver.getAllWindowHandles();
+        assert.equal(allWindows.length, 2);
+      },
+    );
+  });
 });

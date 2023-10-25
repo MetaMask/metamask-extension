@@ -15,7 +15,7 @@ import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { _setBackgroundConnection } from '../ui/store/action-queue';
+import { setBackgroundConnection } from '../ui/store/background-connection';
 import MetaMaskStorybookTheme from './metamask-storybook-theme';
 import { addons } from '@storybook/addons';
 
@@ -78,7 +78,7 @@ const proxiedBackground = new Proxy(
     },
   },
 );
-_setBackgroundConnection(proxiedBackground);
+setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
   const [isDark, setDark] = useState(false);
