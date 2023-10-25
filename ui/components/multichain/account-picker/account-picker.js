@@ -55,7 +55,6 @@ export const AccountPicker = ({
       }}
       size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Md}
       disabled={disabled}
-      display={Display.Flex}
       endIconName={IconName.ArrowDown}
       endIconProps={{
         color: IconColor.iconDefault,

@@ -16,19 +16,39 @@ export default {
   component: AccountPicker,
   argTypes: {
     name: {
-      control: 'string',
+      control: 'text',
     },
     address: {
-      control: 'string',
+      control: 'text',
     },
     onClick: {
       action: 'onClick',
+    },
+    disabled: {
+      control: 'boolean',
+    },
+    showAddress: {
+      control: 'boolean',
+    },
+    block: {
+      control: 'boolean',
+    },
+    addressPops: {
+      control: 'object',
+    },
+    labelPros: {
+      control: 'object',
+    },
+    textProp: {
+      control: 'object',
+    },
+    classNam: {
+      control: 'text',
     },
   },
   args: {
     address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
     name: 'Account 1',
-    onClick: () => undefined,
   },
 };
 
