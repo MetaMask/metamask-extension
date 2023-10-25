@@ -4035,9 +4035,6 @@
     "message": "您与第三方服务分享的任何信息，将由这些第三方服务根据其隐私政策直接收集。请参阅其隐私政策以了解更多信息。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
-  "snapsSettingsDescription": {
-    "message": "管理您的 Snaps"
-  },
   "snapsTermsOfUse": {
     "message": "使用条款"
   },

@@ -44,6 +44,8 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
+import SnapList from '../snaps/snaps-list';
+import SnapView from '../snaps/snap-view';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
@@ -91,6 +93,8 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  SNAPS_ROUTE,
+  SNAPS_VIEW_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
@@ -141,8 +145,6 @@ export default class Routes extends Component {
     history: PropTypes.object,
     location: PropTypes.object,
     lockMetaMask: PropTypes.func,
-    isMouseUser: PropTypes.bool,
-    setMouseUserState: PropTypes.func,
     providerId: PropTypes.string,
     providerType: PropTypes.string,
     autoLockTimeLimit: PropTypes.number,
@@ -277,6 +279,16 @@ export default class Routes extends Component {
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
           ///: END:ONLY_INCLUDE_IN
         }
         <Authenticated
@@ -536,8 +548,6 @@ export default class Routes extends Component {
       textDirection,
       loadingMessage,
       isNetworkLoading,
-      setMouseUserState,
-      isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
       isNetworkUsed,
@@ -593,15 +603,8 @@ export default class Routes extends Component {
         className={classnames('app', {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
-          'mouse-user-styles': isMouseUser,
         })}
         dir={textDirection}
-        onClick={() => setMouseUserState(true)}
-        onKeyDown={(e) => {
-          if (e.keyCode === 9) {
-            setMouseUserState(false);
-          }
-        }}
       >
         {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
         {shouldShowNetworkInfo && <NewNetworkInfo />}

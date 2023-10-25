@@ -69,7 +69,6 @@ export const SENTRY_BACKGROUND_STATE = {
     qrHardware: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
-    serviceWorkerLastActiveTime: true,
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
@@ -128,7 +127,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkController: {
     networkConfigurations: false,
-    networkId: true,
     networksMetadata: true,
     providerConfig: {
       chainId: true,
