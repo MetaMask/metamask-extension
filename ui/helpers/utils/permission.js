@@ -165,15 +165,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             </span>,
             path.join('/'),
           ]),
-          description: t('permission_manageBip32KeysDescription', [
-            <span
-              className="tooltip-label-item"
-              key={`description-${path.join('/')}`}
-            >
-              {friendlyName}
-            </span>,
-            curve,
-          ]),
+          description: t('permission_manageBip44AndBip32KeysDescription'),
         };
       }
 
@@ -185,15 +177,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           </span>,
           curve,
         ]),
-        description: t('permission_manageBip32KeysDescription', [
-          <span
-            className="tooltip-label-item"
-            key={`description-${path.join('/')}`}
-          >
-            {path.join('/')}
-          </span>,
-          curve,
-        ]),
+        description: t('permission_manageBip44AndBip32KeysDescription'),
       };
     }),
   [RestrictedMethods.snap_getBip44Entropy]: ({ t, permissionValue }) =>
@@ -204,7 +188,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             t('unrecognizedProtocol', [coinType])}
         </span>,
       ]),
-      description: t('permission_manageBip44KeysDescription', [
+      description: t('permission_manageBip44AndBip32KeysDescription', [
         <span
           className="tooltip-label-item"
           key={`description-coin-type-${coinType}`}

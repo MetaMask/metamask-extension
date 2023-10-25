@@ -3188,17 +3188,9 @@
     "message": "'$1'($2) 하에서 계정과 자산을 통제합니다.",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_manageBip32KeysDescription": {
-    "message": "스냅이 비밀 복구 문구를 노출하지 않고 이를 기반으로 BIP-32 키 쌍을 파생하도록 허용합니다. 이렇게 하면 $1의 모든 계정과 자산에 대한 전체 액세스 권한이 부여됩니다.\n스냅은 키 관리 기능을 통해 이더리움(EVM)을 넘어 다양한 블록체인 프로토콜을 지원할 수 있습니다.",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
   "permission_manageBip44Keys": {
     "message": "$1 계정과 자산을 통제합니다.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "스냅이 비밀 복구 문구를 노출하지 않고 이를 기반으로 BIP-44 키 쌍을 파생하도록 허용합니다. 이렇게 하면 $1의 모든 계정과 자산에 대한 전체 액세스 권한이 부여됩니다.\n스냅은 키 관리 기능을 통해 이더리움(EVM)을 넘어 다양한 블록체인 프로토콜을 지원할 수 있습니다.",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
   },
   "permission_manageNamedBip32Keys": {
     "message": "$1 계정과 자산을 관리합니다.",

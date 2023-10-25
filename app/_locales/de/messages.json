@@ -3188,17 +3188,9 @@
     "message": "Verwalten Sie Ihre Konten und Assets unter $1 ($2).",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_manageBip32KeysDescription": {
-    "message": "Gestatten Sie dem Snap, BIP-32-Schlüssel basierend auf Ihrer geheimen Wiederherstellungsphrase abzuleiten, ohne diese offenzulegen. Dies gewährt vollständigen Zugriff auf alle Konten und Assets auf $1.\nMit der Berechtigung zur Verwaltung von Schlüsseln kann das Snap eine Vielzahl von Blockchain-Protokollen über Ethereum (EVMs) hinaus unterstützen.",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
   "permission_manageBip44Keys": {
     "message": "Verwalten Sie Ihre $1-Konten und Assets.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Gestatten Sie dem Snap, BIP-44-Schlüssel basierend auf Ihrer geheimen Wiederherstellungsphrase abzuleiten, ohne diese offenzulegen. Dies gewährt vollständigen Zugriff auf alle Konten und Assets auf $1.\nMit der Berechtigung zur Verwaltung von Schlüsseln kann das Snap eine Vielzahl von Blockchain-Protokollen über Ethereum (EVMs) hinaus unterstützen.",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
   },
   "permission_manageNamedBip32Keys": {
     "message": "Verwalten Sie Ihre $1-Konten und Assets.",

@@ -3188,17 +3188,9 @@
     "message": "$1 ($2) altındaki hesaplarınızı ve varlıklarınızı kontrol edin.",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_manageBip32KeysDescription": {
-    "message": "Snap'in, ifşa etmeden, Gizli Kurtarma İfadenize göre BIP-32 anahtar çiftleri türetmesine izin verin. Bu işlem $1 üzerinde tüm hesaplara ve varlıklara tam erişim verir.\nSnap, anahtarları yönetme yetkisi ile Ethereum (EVM'ler) ötesinde çeşitli blokzinciri protokollerini destekleyebilir.",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
   "permission_manageBip44Keys": {
     "message": "$1 hesaplarınızı ve varlıklarınızı kontrol edin.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Snap'in, ifşa etmeden, Gizli Kurtarma İfadenize göre BIP-44 anahtar çiftleri türetmesine izin verin. Bu işlem $1 üzerinde tüm hesaplara ve varlıklara tam erişim verir.\nSnap, anahtarları yönetme yetkisi ile Ethereum (EVM'ler) ötesinde çeşitli blokzinciri protokollerini destekleyebilir.",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
   },
   "permission_manageNamedBip32Keys": {
     "message": "$1 hesaplarınızı ve varlıklarınızı kontrol edin.",

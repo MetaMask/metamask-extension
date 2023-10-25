@@ -3188,17 +3188,9 @@
     "message": "在$1（$2）下控制您的账户和资产。",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_manageBip32KeysDescription": {
-    "message": "允许snap根据您的私钥助记词衍生BIP-32私钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理私钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
   "permission_manageBip44Keys": {
     "message": "控制您的 $1 账户和资产。",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "允许snap根据您的私钥助记词衍生BIP-44私钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理私钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
   },
   "permission_manageNamedBip32Keys": {
     "message": "控制您的$1账户和资产。",

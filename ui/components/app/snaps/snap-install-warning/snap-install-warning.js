@@ -55,11 +55,11 @@ export default function SnapInstallWarning({
   const warningElements = [];
   for (let i = 0; i < warnings.length; i++) {
     const warning = warnings[i];
-    if (i > 0) {
+    if (i > 0 && i < warnings.length - 1) {
       warningElements.push(', ');
     }
     if (i === warnings.length - 1) {
-      warningElements.push(' and ');
+      warningElements.push(` ${t('and')} `);
     }
     warningElements.push(
       <span key={i}>
@@ -70,9 +70,7 @@ export default function SnapInstallWarning({
     );
   }
   const permissionName = (
-    <Text>
-      {t('snapInstallWarningPermissionName')} {warningElements}
-    </Text>
+    <Text>{t('snapInstallWarningPermissionName', [warningElements])}</Text>
   );
 
   return (
@@ -123,10 +121,10 @@ export default function SnapInstallWarning({
       <PermissionCell
         permissionName={permissionName}
         title={permissionName}
-        description={t('snapInstallWarningPermissionDescription')}
+        description={t('permission_manageBip44AndBip32KeysDescription')}
         weight={1}
         avatarIcon={IconName.Key}
-        key={`${permissionName}`}
+        key="snapInstallWarningPermissionCell"
         hideStatus
       />
       <Box

@@ -3188,17 +3188,9 @@
     "message": "Ελέγξτε τους λογαριασμούς και τα περιουσιακά σας στοιχεία στο $1 ($2).",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_manageBip32KeysDescription": {
-    "message": "Επιτρέψτε στο snap να εξάγει ζεύγη κλειδιών BIP-32 με βάση τη Μυστική Φράση Ανάκτησης, χωρίς να την αποκαλύψετε. Αυτό παρέχει πλήρη πρόσβαση σε όλους τους λογαριασμούς και τα περιουσιακά στοιχεία στο $1.\nΜε τη δυνατότητα διαχείρισης των κλειδιών, το snap μπορεί να υποστηρίξει μια ποικιλία πρωτοκόλλων blockchain πέραν του Ethereum (EVMs).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
   "permission_manageBip44Keys": {
     "message": "Ελέγξτε τους $1 λογαριασμούς και τα περιουσιακά σας στοιχεία.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Επιτρέψτε στο snap να εξάγει ζεύγη κλειδιών BIP-44 με βάση τη Μυστική Φράση Ανάκτησης, χωρίς να την αποκαλύψετε. Αυτό παρέχει πλήρη πρόσβαση σε όλους τους λογαριασμούς και τα περιουσιακά στοιχεία στο $1.\nΜε τη δυνατότητα διαχείρισης των κλειδιών, το συμπληρωματικό πρόγραμμα μπορεί να υποστηρίξει μια ποικιλία πρωτοκόλλων blockchain πέραν του Ethereum (EVMs).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
   },
   "permission_manageNamedBip32Keys": {
     "message": "Ελέγξτε τους $1 λογαριασμούς σας και τα περιουσιακά σας στοιχεία.",

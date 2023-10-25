@@ -3188,17 +3188,9 @@
     "message": "$1 ($2) のアカウントとアセットを管理します。",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_manageBip32KeysDescription": {
-    "message": "snapがシークレットリカバリーフレーズに基づき、公開することなくBIP-32キーペアを導出することを許可します。これにより、$1のすべてのアカウントとアセットへの完全アクセスが許可されます。\\nキーの管理権限を与えることで、snapはイーサリアム (EVM) 以外にもさまざまなブロックチェーンプロトコルをサポートできるようになります。",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
   "permission_manageBip44Keys": {
     "message": "$1アカウントとアセットをコントロールします。",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "snapがシークレットリカバリーフレーズに基づき、公開することなくBIP-44キーペアを導出することを許可します。これにより、$1のすべてのアカウントとアセットへの完全アクセスが許可されます。\\nキーの管理権限を与えることで、snapはイーサリアム (EVM) 以外にもさまざまなブロックチェーンプロトコルをサポートできるようになります。",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
   },
   "permission_manageNamedBip32Keys": {
     "message": "$1アカウントとアセットをコントロールします。",
