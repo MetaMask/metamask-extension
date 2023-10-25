@@ -126,11 +126,34 @@ describe('Import flow @no-mmi', function () {
         // Send ETH from inside MetaMask
         // starts a send transaction
         await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.fill('.unit-input__input', '1');
+        // Continue to next screen
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        // confirms the transaction
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+        // finds the transaction in the transactions list
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.wait(async () => {
+          const confirmedTxes = await driver.findElements(
+            '.transaction-list__completed-transactions .activity-list-item',
+          );
+          return confirmedTxes.length === 1;
+        }, 10000);
+
+        const txValues = await driver.findElements(
+          '[data-testid="transaction-list-item-primary-currency"]',
+        );
+        assert.equal(txValues.length, 1);
+        assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
       },
     );
   });
