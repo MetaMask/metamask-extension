@@ -70,14 +70,6 @@
     padding-right: 4px;
   }
 
-  .large-input {
-    @include Paragraph;
-
-    border: 1px solid var(--color-border-default);
-    border-radius: 4px;
-    margin: 4px 0 20px;
-  }
-
   .send-screen-gas-input {
     border: 1px solid transparent;
   }

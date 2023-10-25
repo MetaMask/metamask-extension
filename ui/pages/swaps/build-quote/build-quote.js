@@ -185,7 +185,7 @@ export default function BuildQuote({
     ? defaultSwapsToken
     : sourceTokenInfo;
 
-  const { loading, tokensWithBalances } = useTokenTracker(tokens);
+  const { loading, tokensWithBalances } = useTokenTracker({ tokens });
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
