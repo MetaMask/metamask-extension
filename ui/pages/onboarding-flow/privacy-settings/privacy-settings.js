@@ -20,6 +20,7 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
 } from '../../../components/component-library';
+import { TextField } from '../../../components/component-library/text-field/deprecated';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   TextColor,
