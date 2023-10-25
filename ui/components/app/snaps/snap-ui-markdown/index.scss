@@ -4,4 +4,9 @@
       font-style: revert;
     }
   }
+  &__link {
+    span {
+      margin-inline-start: 2px;
+    }
+  }
 }
