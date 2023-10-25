@@ -383,9 +383,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
       }),
-      showApprovalRequest: (...args) => {
-        opts.showUserConfirmation(...args);
-      },
+      showApprovalRequest: opts.showUserConfirmation,
       typesExcludedFromRateLimiting: [
         ApprovalType.EthSign,
         ApprovalType.PersonalSign,
@@ -4264,19 +4262,12 @@ export default class MetamaskController extends EventEmitter {
       this.selectedNetworkController.getNetworkClientIdForDomain(origin);
 
     // Not sure that this will happen anymore
-    if (this.preferencesController.getUseRequestQueue() === true) {
-      if (selectedNetworkClientIdForDomain === undefined) {
-        this.selectedNetworkController.setNetworkClientIdForDomain(
-          origin,
-          selectedNetworkClientId,
-        );
-      } else if (selectedNetworkClientIdForDomain !== selectedNetworkClientId) {
-        // handles switching chain when the provider is set up... not really the right spot to be doing this. We are using setupProvider as a 'proxy' for what we really want which is everytime the wallet 'pops up' - via api call or manually opening the wallet.
-        // also worth noting that this calls methods which do async stuff, but we are not waiting for it to complete or handling any potential errors.
-        // switchChain(selectedNetworkClientIdForDomain);
-      }
+    if (selectedNetworkClientIdForDomain === undefined) {
+      this.selectedNetworkController.setNetworkClientIdForDomain(
+        origin,
+        selectedNetworkClientId,
+      );
     }
-
 
     let providerForDomain = provider;
     if (this.preferencesController.getUseRequestQueue() === true) {
