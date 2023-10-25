@@ -36,7 +36,7 @@ const generalIssueTemplateTitles = [
 const bugReportTemplateTitles = [
   '### Describe the bug',
   '### Expected behavior',
-  '### Screenshots/Recordings',
+  '### Screenshots', // TODO: replace '### Screenshots' by '### Screenshots/Recordings' in January 2024 (as most issues will meet this criteria by then)
   '### Steps to reproduce',
   '### Error messages or log output',
   '### Version',
