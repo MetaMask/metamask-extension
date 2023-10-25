@@ -1095,9 +1095,11 @@ export const signAndSendTransactions = (
       return;
     }
 
+    // TODO parameterize this by networkClientId/chainId
     const customSwapsGas = getCustomSwapsGas(state);
     const customMaxFeePerGas = getCustomMaxFeePerGas(state);
     const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
+
     const fetchParams = getFetchParams(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
@@ -1108,7 +1110,7 @@ export const signAndSendTransactions = (
       history.push(AWAITING_SWAP_ROUTE);
     }
 
-    // parameterize this by networkClientId/chainId
+    // TODO parameterize this by networkClientId/chainId
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
 
     let maxFeePerGas;
@@ -1116,6 +1118,7 @@ export const signAndSendTransactions = (
     let baseAndPriorityFeePerGas;
     let decEstimatedBaseFee;
 
+    // TODO parameterize this by networkClientId/chainId
     if (networkAndAccountSupports1559) {
       const {
         high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
