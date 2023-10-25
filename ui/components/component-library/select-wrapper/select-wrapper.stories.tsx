@@ -119,7 +119,7 @@ export const UncontrolledOpen: StoryFn<typeof SelectWrapper> = (args) => {
 };
 
 export const ControlledValue: StoryFn<typeof SelectWrapper> = (args) => {
-  const [controlledValue, setControlledValue] = React.useState<string>();
+  const [controlledValue, setControlledValue] = React.useState<string>('');
 
   return (
     <>
