@@ -1381,7 +1381,6 @@ const state = {
     isLoading: false,
     warning: null,
     buyView: {},
-    isMouseUser: true,
     gasIsLoading: false,
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",

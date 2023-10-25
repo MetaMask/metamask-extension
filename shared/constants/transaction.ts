@@ -412,7 +412,7 @@ export interface TransactionMeta {
    */
   submittedTime?: number;
   /** The error encountered during the transaction */
-  txErr?: TxError;
+  error?: TxError;
   /**
    * Whether the transaction is verified on the blockchain.
    */
