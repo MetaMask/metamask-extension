@@ -740,9 +740,6 @@ export function setupController(
   function updateBadge() {
     let label = '';
 
-    // const queuedRequestsCount = controller.queuedRequestController.length();
-    // const count = getUnapprovedTransactionCount() + queuedRequestsCount;
-    console.log('UPDATING BADGE');
     const count = getUnapprovedTransactionCount();
     if (count) {
       label = String(count);
@@ -766,20 +763,12 @@ export function setupController(
     const pendingApprovalCount =
           controller.approvalController.getTotalApprovalCount();
 
-    console.log(
-      'getUnapprovedTransactionCount called: ',
-      waitingForUnlockCount + queuedRequestsCount,
-    );
-
     return waitingForUnlockCount + pendingApprovalCount + queuedRequestsCount;
   }
 
   controller.controllerMessenger.subscribe(
     'QueuedRequestController:countChanged',
-    () => {
-      console.log('QUEUE COUNT CHANGED!');
-      updateBadge();
-    },
+    updateBadge,
   );
 
   notificationManager.on(
