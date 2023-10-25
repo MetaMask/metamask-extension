@@ -153,10 +153,10 @@ workflows:
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
-      - test-e2e-chrome-snaps-flask:
+      - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
-      - test-e2e-firefox-snaps-flask:
+      - test-e2e-firefox-flask:
           requires:
             - prep-build-test-flask
       - test-e2e-chrome-mmi:
@@ -247,8 +247,8 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
-            - test-e2e-chrome-snaps-flask
-            - test-e2e-firefox-snaps-flask
+            - test-e2e-chrome-flask
+            - test-e2e-firefox-flask
             - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
             - test-storybook
@@ -784,7 +784,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
-    parallelism: 8
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:
@@ -899,7 +899,7 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-firefox-snaps-flask:
+  test-e2e-firefox-flask:
     executor: node-browsers
     parallelism: 4
     steps:
@@ -929,7 +929,7 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-chrome-snaps-flask:
+  test-e2e-chrome-flask:
     executor: node-browsers
     parallelism: 4
     steps:
@@ -991,7 +991,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
-    parallelism: 8
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:

@@ -82,8 +82,8 @@ async function main() {
             description: `Run only mmi related tests`,
             type: 'boolean',
           })
-          .option('snaps', {
-            description: `run snaps e2e tests`,
+          .option('flask', {
+            description: `run flask e2e tests`,
             type: 'boolean',
           })
           .option('rpc', {
@@ -121,7 +121,7 @@ async function main() {
     debug,
     retries,
     mmi,
-    snaps,
+    flask,
     rpc,
     buildType,
     updateSnapshot,
@@ -130,15 +130,11 @@ async function main() {
 
   let testPaths;
 
-  // Snap Tests need to be run in main build and also seperately on flask
-  const snapsTestPaths = [
-    ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
-    ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
-    ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
-  ];
-
-  if (snaps) {
-    testPaths = [...snapsTestPaths];
+  if (flask) {
+    testPaths = [
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
+    ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
@@ -146,10 +142,10 @@ async function main() {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
-      ...snapsTestPaths,
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   }
