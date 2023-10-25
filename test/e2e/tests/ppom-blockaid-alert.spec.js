@@ -105,12 +105,12 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
       method: 'debug_traceCall',
       params: [{ accessList: [], data: '0x00000000' }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             calls: [
               {

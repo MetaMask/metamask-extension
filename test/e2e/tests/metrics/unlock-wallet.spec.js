@@ -55,8 +55,8 @@ describe('Unlock wallet', function () {
   });
 });
 
-function assertBatchValue(mockRequest, assertedTitle, assertedPath) {
-  const [mockJson] = mockRequest.body.json.batch;
+async function assertBatchValue(mockRequest, assertedTitle, assertedPath) {
+  const [mockJson] = (await mockRequest.body.getJson()).batch;
   const { title, path } = mockJson.context.page;
   assert.equal(title, assertedTitle);
   assert.equal(path, assertedPath);

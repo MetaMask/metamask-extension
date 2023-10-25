@@ -73,12 +73,12 @@ async function mockInfura(mockServer) {
       method: 'debug_traceCall',
       params: [{ accessList: [], data: '0x00000000' }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             calls: [
               {
@@ -111,7 +111,7 @@ async function mockInfura(mockServer) {
       method: 'debug_traceCall',
       params: [{ from: selectedAddress }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       const mockFakePhishingAddress =
         '5fbdb2315678afecb367f032d93f642f64180aa3';
 
@@ -119,7 +119,7 @@ async function mockInfura(mockServer) {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             calls: [
               {

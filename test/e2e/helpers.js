@@ -703,7 +703,7 @@ const generateGanacheOptions = (overrides) => ({
 });
 
 async function waitForAccountRendered(driver) {
-  await driver.waitForSelector(
+  await driver.findElement(
     process.env.MULTICHAIN
       ? '[data-testid="token-balance-overview-currency-display"]'
       : '[data-testid="eth-overview__primary-currency"]',
@@ -836,7 +836,11 @@ async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
 
-  return mockedRequests.map((req) => req.body.json?.batch).flat();
+  return mockedRequests
+    .map(async (req) => {
+      return (await req.body.getJson()).batch;
+    })
+    .flat();
 }
 
 // Asserts that  each request passes all assertions in one group of assertions, and the order does not matter.
