@@ -2307,7 +2307,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
-      ...this.getProviderNetworkState(undefined, origin), // TODO: maybe checkfeature flag and call with no params if ff off.
+      ...this.getProviderNetworkState(origin), // TODO: maybe checkfeature flag and call with no params if ff off.
     };
   }
 
