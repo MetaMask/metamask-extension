@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -30,8 +30,7 @@ describe('Import NFT', function () {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form
         await driver.clickElement('[data-testid="home__nfts-tab"]');
@@ -79,8 +78,7 @@ describe('Import NFT', function () {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form
         await driver.clickElement('[data-testid="home__nfts-tab"]');

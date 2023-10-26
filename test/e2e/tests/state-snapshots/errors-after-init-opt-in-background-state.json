@@ -178,11 +178,7 @@
       "smartTransactions": "object"
     }
   },
-  "SnapController": {
-    "snapErrors": "object",
-    "snaps": "object",
-    "snapStates": "object"
-  },
+  "SnapController": { "snaps": "object", "snapStates": "object" },
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
