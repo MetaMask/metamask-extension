@@ -15,7 +15,7 @@ Step,Test steps,Test data,Expected result,Notes
 14,"Switch to test dapp, in the input field of approve NFT token section, enter the NFT ID you wish to approve.",e.g. 3,,"If NFT with token ID #3 should be appproved, amount of NFTs minted should be equal to or greater than 3."
 15,"In the test dapp, click ""Approve"".",,"Notification window is shown, asking user to allow access to the minted NFT.",
 16,Proceed to confirm the NFT approval.,,,
-17,Switch back to the wallet.,,The approve NFT spending cap transaction appears in the activity list. The recipient's hexadecimal address is shown in the activity list item. The amount is shown in the activity list item.,
+17,Switch back to the wallet.,,The approve NFT spending cap transaction appears in the activity list.,
 18,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
 19,Expand the Activity log.,,"The created, submitted and confirmed activity are shown in the activity log.",
 20,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab.,
