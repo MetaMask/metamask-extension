@@ -11,7 +11,6 @@ import {
   throttle,
   memoize,
   wrap,
-  filter,
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
 import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
@@ -1322,6 +1321,39 @@ export default class MetamaskController extends EventEmitter {
         this._onFinishedTransaction.bind(this),
       );
     });
+
+    const transactionMetricsRequest = this.getTransactionMetricsRequest();
+
+    this.txController.on(
+      'transaction-added',
+      handleTransactionAdded.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      'transaction-approved',
+      handleTransactionApproved.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      'transaction-dropped',
+      handleTransactionDropped.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      'transaction-finalized',
+      handleTransactionFinalized.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      'transaction-rejected',
+      handleTransactionRejected.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      'transaction-submitted',
+      handleTransactionSubmitted.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on('transaction-swap-failed', (payload) =>
+      this.metaMetricsController.trackEvent(payload),
+    );
+    this.txController.on('transaction-swap-finalized', (payload) =>
+      this.metaMetricsController.trackEvent(payload),
+    );
 
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
@@ -2669,16 +2701,6 @@ export default class MetamaskController extends EventEmitter {
           null,
           this.getTransactionMetricsRequest(),
         ),
-      // export async function getTransactions(
-      //   filters: {
-      //     filterToCurrentNetwork?: boolean;
-      //     searchCriteria?: Partial<TransactionMeta> & Partial<TransactionParams>;
-      //   } = {},
-      // ): Promise<TransactionMeta[]> {
-      //   return await submitRequestToBackground<TransactionMeta[]>('getTransactions', [
-      //     filters,
-      //   ]);
-      // }
       getTransactions: ({ filterToCurrentNetwork, searchCriteria } = {}) => {
         const currentChainId =
           this.networkController.state.providerConfig.chainId;
