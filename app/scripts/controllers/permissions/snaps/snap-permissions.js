@@ -1,7 +1,7 @@
 import {
   restrictedMethodPermissionBuilders,
   selectHooks,
-} from '@metamask/rpc-methods';
+} from '@metamask/snaps-rpc-methods';
 import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import {
   ExcludedSnapEndowments,

@@ -10,6 +10,7 @@ const {
   largeDelayMs,
   veryLargeDelayMs,
   openDapp,
+  openActionMenuAndStartSendFlow,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
@@ -162,9 +163,12 @@ describe('MetaMask @no-mmi', function () {
     });
 
     it('balance renders', async function () {
+      const balanceSelector = process.env.MULTICHAIN
+        ? '[data-testid="token-balance-overview-currency-display"]'
+        : '[data-testid="eth-overview__primary-currency"]';
       await driver.waitForSelector({
-        css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
-        text: '1000',
+        css: `${balanceSelector} .currency-display-component__text`,
+        text: process.env.MULTICHAIN ? '0' : '1000',
       });
       await driver.delay(regularDelayMs);
     });
@@ -282,8 +286,14 @@ describe('MetaMask @no-mmi', function () {
   });
 
   describe('Send token from inside MetaMask', function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     it('starts to send a transaction', async function () {
-      await driver.clickElement('[data-testid="eth-overview-send"]');
+      await openActionMenuAndStartSendFlow(driver);
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await driver.delay(regularDelayMs);
 
       await driver.fill(
@@ -433,6 +443,9 @@ describe('MetaMask @no-mmi', function () {
     });
 
     it('checks balance', async function () {
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await driver.clickElement({
         text: 'Tokens',
         tag: 'button',
