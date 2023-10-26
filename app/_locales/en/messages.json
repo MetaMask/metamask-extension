@@ -5251,10 +5251,10 @@
     "message": "ON (Not recommended)"
   },
   "toggleRequestQueueDescription": {
-    "message": "When a dapp or the wallet makes a network request, it's possible that the currently selected network is not the same as what is expected. Turning this feature on will switch the network according to the origin of the request. Using switch ethereum chain will change the saved chain for the particular origin."
+    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which my break your user experience on certain sites."
   },
   "toggleRequestQueueField": {
-    "message": "Enable or disable request queueing when network switching is required"
+    "message": "Select networks for each site"
   },
   "toggleRequestQueueOff": {
     "message": "off"
