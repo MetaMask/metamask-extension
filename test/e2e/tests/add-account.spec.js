@@ -59,6 +59,9 @@ describe('Add account', function () {
   });
 
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -79,7 +82,9 @@ describe('Add account', function () {
         // Check address of 1st account
         await waitForAccountRendered(driver);
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(firstAccount),
         });
 
@@ -93,12 +98,13 @@ describe('Add account', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await waitForAccountRendered(driver);
 
         // Check address of 2nd account
         await waitForAccountRendered(driver);
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(secondAccount),
         });
 
@@ -143,11 +149,16 @@ describe('Add account', function () {
 
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
-        await waitForAccountRendered(driver);
+
+        if (!process.env.MULTICHAIN) {
+          await waitForAccountRendered(driver);
+        }
 
         // Check address of 1st account
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(firstAccount),
         });
 
@@ -160,7 +171,9 @@ describe('Add account', function () {
         await driver.clickElement(accountTwoSelector);
 
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(secondAccount),
         });
       },

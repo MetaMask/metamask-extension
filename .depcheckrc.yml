@@ -32,6 +32,7 @@ ignores:
   - 'geckodriver'
   - 'jest'
   - 'lavamoat-viz'
+  - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
   - 'playwright'
@@ -41,6 +42,7 @@ ignores:
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
+  - '@storybook/addon-designs'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
   - '@storybook/addon-mdx-gfm'
