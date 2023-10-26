@@ -13,7 +13,6 @@ export enum TextFieldSize {
   Lg = 'lg',
 }
 
-
 export enum TextFieldType {
   Text = 'text',
   // eslint-disable-next-line @typescript-eslint/no-shadow
