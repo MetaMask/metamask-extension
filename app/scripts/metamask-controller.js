@@ -2295,7 +2295,8 @@ export default class MetamaskController extends EventEmitter {
       const networkClientId = this.controllerMessenger.call(
         'SelectedNetworkController:getNetworkClientIdForDomain',
         origin,
-      );
+      ) || this.networkController.state.selectedNetworkClientId;
+
       const networkClient = this.controllerMessenger.call(
         'NetworkController:getNetworkClientById',
         networkClientId,
