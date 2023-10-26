@@ -15,7 +15,12 @@ import {
 import { showSnapAccountExperimentalToggle } from '../../../../shared/modules/snap-accounts';
 ///: END:ONLY_INCLUDE_IN
 
-import { Text, Box, Tag } from '../../../components/component-library';
+import {
+  Text,
+  Box,
+  Tag,
+  ButtonLink,
+} from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
@@ -33,6 +38,12 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  BLOCKAID_TERMS_OF_USE,
+  ///: END:ONLY_INCLUDE_IN
+  OPENSEA_TERMS_OF_USE,
+} from '../../../../shared/lib/ui-utils';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -187,7 +198,16 @@ export default class ExperimentalTab extends PureComponent {
                         marginTop={0}
                         marginRight={1}
                       >
-                        {t('blockaidMessage')}
+                        {t('blockaidMessage', [
+                          <ButtonLink
+                            variant="bodyMd"
+                            href={BLOCKAID_TERMS_OF_USE}
+                            externalLink
+                            key="blockaid-terms-of-use"
+                          >
+                            {t('terms')}
+                          </ButtonLink>,
+                        ])}
                       </Text>
                     </div>
                     <ToggleButton
@@ -216,7 +236,16 @@ export default class ExperimentalTab extends PureComponent {
                     marginTop={0}
                     marginRight={1}
                   >
-                    {t('openSeaMessage')}
+                    {t('openSeaMessage', [
+                      <ButtonLink
+                        variant="bodyMd"
+                        href={OPENSEA_TERMS_OF_USE}
+                        externalLink
+                        key="opensea-terms-of-use"
+                      >
+                        {t('terms')}
+                      </ButtonLink>,
+                    ])}
                   </Text>
                 </div>
                 <ToggleButton
