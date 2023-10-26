@@ -148,7 +148,6 @@
     "domains": {},
     "perDomainNetwork": "boolean",
     "logs": "object",
-    "snapErrors": "object",
     "snaps": "object",
     "snapStates": "object",
     "jobs": "object",
