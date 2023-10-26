@@ -118,6 +118,7 @@ import {
 import {
   QueuedRequestController,
   createQueuedRequestMiddleware,
+  QueuedRequestControllerEventTypes
 } from '@metamask/queued-request-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -381,7 +382,9 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'QueuedRequestController',
         allowedActions: [],
-        allowedEvents: [],
+        allowedEvents: [
+          QueuedRequestControllerEventTypes.countChanged
+        ],
       }),
     });
 
@@ -417,7 +420,15 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:infuraIsBlocked',
         'NetworkController:infuraIsUnblocked',
       ],
-      allowedActions: ['NetworkController:getNetworkClientById'],
+      allowedActions: [
+        'NetworkController:getNetworkClientById',
+        `NetworkController:getEthQuery`,
+        `NetworkController:getProviderConfig`,
+        `NetworkController:getEIP1559Compatibility`,
+        `NetworkController:findNetworkClientIdByChainId`,
+        `NetworkController:setProviderType`,
+        `NetworkController:setActiveNetwork`,
+      ],
     });
 
     let initialNetworkControllerState = {};
@@ -4303,9 +4314,9 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    let providerForDomain = provider;
+    let proxyProviderForDomain = provider;
     if (this.preferencesController.getUseRequestQueue() === true) {
-      providerForDomain =
+      proxyProviderForDomain =
         this.selectedNetworkController.getProviderAndBlockTracker(
           origin,
         ).provider;
@@ -4595,7 +4606,7 @@ export default class MetamaskController extends EventEmitter {
     // otherwise do the same old thing
     // forward to metamask primary provider
     if (this.preferencesController.getUseRequestQueue() === true) {
-      engine.push(providerAsMiddleware(providerForDomain));
+      engine.push(providerAsMiddleware(proxyProviderForDomain));
     } else {
       engine.push(providerAsMiddleware(provider));
     }
