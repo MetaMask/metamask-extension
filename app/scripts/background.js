@@ -739,7 +739,6 @@ export function setupController(
    */
   function updateBadge() {
     let label = '';
-
     const count = getUnapprovedTransactionCount();
     if (count) {
       label = String(count);
