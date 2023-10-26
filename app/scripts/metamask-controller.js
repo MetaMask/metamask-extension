@@ -2806,9 +2806,7 @@ export default class MetamaskController extends EventEmitter {
       setAccountLabel: (address, label) => {
         this.preferencesController.setAccountLabel(address, label);
         const account = this.accountsController.getAccountByAddress(address);
-        if (account) {
-          this.accountsController.setAccountLabel(account.id, label);
-        }
+        this.accountsController.setAccountName(account.id, label);
       },
 
       // AssetsContractController
