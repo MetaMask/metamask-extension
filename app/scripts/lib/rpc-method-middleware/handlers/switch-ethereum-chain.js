@@ -51,25 +51,6 @@ export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   return findNetworkConfigurationBy({ chainId });
 }
 
-export function findExistingNetworkByNetworkClientId(
-  networkClientId,
-  getNetworkConfigurations,
-) {
-  if (BUILT_IN_INFURA_NETWORKS[networkClientId]) {
-    const { chainId, ticker, rpcUrl } =
-      BUILT_IN_INFURA_NETWORKS[networkClientId];
-    return {
-      chainId,
-      ticker,
-      rpcUrl,
-      type: networkClientId,
-      nickname: NETWORK_TO_NAME_MAP[networkClientId],
-    };
-  }
-
-  return getNetworkConfigurations()[networkClientId];
-}
-
 async function switchEthereumChainHandler(
   req,
   res,
