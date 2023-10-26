@@ -5,7 +5,7 @@ import { isEqual } from 'lodash';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
-} from '@metamask/rpc-methods';
+} from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
