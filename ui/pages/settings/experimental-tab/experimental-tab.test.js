@@ -69,6 +69,28 @@ describe('ExperimentalTab', () => {
     expect(setTransactionSecurityCheckEnabled).toHaveBeenCalledWith(false);
   });
 
+  it('should show terms of use links', () => {
+    const setSecurityAlertsEnabled = jest.fn();
+    const setTransactionSecurityCheckEnabled = jest.fn();
+    const { getAllByRole } = render(
+      { desktopEnabled: true },
+      {
+        securityAlertsEnabled: false,
+        transactionSecurityCheckEnabled: true,
+        setSecurityAlertsEnabled,
+        setTransactionSecurityCheckEnabled,
+      },
+    );
+    expect(getAllByRole('link', { name: 'Terms of use' })[0]).toHaveAttribute(
+      'href',
+      'https://blockaid.io/legal/metamask-ppom-privacy-policy/',
+    );
+    expect(getAllByRole('link', { name: 'Terms of use' })[1]).toHaveAttribute(
+      'href',
+      'https://opensea.io/securityproviderterms',
+    );
+  });
+
   it('should disable blockaid when opensea is enabled', () => {
     const setSecurityAlertsEnabled = jest.fn();
     const setTransactionSecurityCheckEnabled = jest.fn();
