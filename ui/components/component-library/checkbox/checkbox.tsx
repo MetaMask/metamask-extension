@@ -32,6 +32,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
       title,
       name,
       label,
+      labelProps,
       ...props
     }: CheckboxProps<C>,
     ref?: PolymorphicRef<C>,
@@ -117,7 +118,11 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             />
           )}
         </span>
-        {label ? <span>{label}</span> : null}
+        {label ? (
+          <Box as="span" {...labelProps}>
+            {label}
+          </Box>
+        ) : null}
       </Text>
     );
   },
