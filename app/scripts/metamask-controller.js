@@ -2068,6 +2068,7 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           'KeyringController:getKeyringForAccount',
           'SnapController:get',
+          'AccountsController:getSelectedAccount',
         ],
       }),
       provider: this.provider,
