@@ -94,6 +94,7 @@ export const NetworkListMenu = ({ onClose }) => {
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
     setItems(newItems);
+    // dispatch(updateNetworksList(newItems));
   };
 
   let searchResults = items;
