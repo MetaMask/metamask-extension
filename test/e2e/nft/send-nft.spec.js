@@ -31,6 +31,10 @@ describe('Send NFT', function () {
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         await driver.clickElement('.nft-item__container');
+        // TODO: Update Test when Multichain Send Flow is added
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',

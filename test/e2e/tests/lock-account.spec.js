@@ -35,9 +35,11 @@ describe('Lock and unlock', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        const walletBalance = await driver.findElement(
-          '.eth-overview__primary-balance',
-        );
+        const walletBalance = process.env.MULTICHAIN
+          ? await driver.findElement(
+              '.token-balance-overview__secondary-balance',
+            )
+          : await driver.findElement('.eth-overview__primary-balance');
         assert.equal(/^25\s*ETH$/u.test(await walletBalance.getText()), true);
       },
     );
