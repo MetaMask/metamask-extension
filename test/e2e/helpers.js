@@ -149,6 +149,8 @@ async function withFixtures(options, testSuite) {
       });
     }
 
+    console.log(`\nExecuting test suite: ${title}\n`);
+
     await testSuite({
       driver: driverProxy ?? driver,
       contractRegistry,

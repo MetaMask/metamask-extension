@@ -506,6 +506,15 @@ class Driver {
   // Error handling
 
   async verboseReportOnFailure(title) {
+    if (process.env.CIRCLECI) {
+      console.error(
+        `Failure in ${title}, for more information see the artifacts tab in CI`,
+      );
+    } else {
+      console.error(
+        `Failure in ${title}, for more information see the test-artifacts folder`,
+      );
+    }
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
