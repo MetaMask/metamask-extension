@@ -80,7 +80,7 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       >
         <Box
           className={classnames('mm-select-wrapper', className)}
-          onBlur={handleBlur}
+          onBlur={handleBlur} // This only works if the triggerComponent is a focusable element like a button so the onBlur event bubbles up
           ref={ref}
           {...(props as BoxProps<C>)}
         >
