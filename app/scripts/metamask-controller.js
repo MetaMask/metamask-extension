@@ -115,7 +115,7 @@ import {
 import {
   QueuedRequestController,
   createQueuedRequestMiddleware,
-  QueuedRequestControllerEventTypes
+  QueuedRequestControllerEventTypes,
 } from '@metamask/queued-request-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -375,9 +375,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'QueuedRequestController',
         allowedActions: [],
-        allowedEvents: [
-          QueuedRequestControllerEventTypes.countChanged
-        ],
+        allowedEvents: [QueuedRequestControllerEventTypes.countChanged],
       }),
     });
 
@@ -2290,7 +2288,9 @@ export default class MetamaskController extends EventEmitter {
     return {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
-      ...this.getProviderNetworkState(origin), // TODO: maybe checkfeature flag and call with no params if ff off.
+      ...this.getProviderNetworkState(
+        this.preferencesController.useRequestQueue() ? origin : undefined,
+      ),
     };
   }
 
@@ -2303,10 +2303,11 @@ export default class MetamaskController extends EventEmitter {
   getProviderNetworkState(origin = 'metamask') {
     let chainId;
     if (this.preferencesController.getUseRequestQueue()) {
-      const networkClientId = this.controllerMessenger.call(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        origin,
-      ) || this.networkController.state.selectedNetworkClientId;
+      const networkClientId =
+        this.controllerMessenger.call(
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+          origin,
+        ) || this.networkController.state.selectedNetworkClientId;
 
       const networkClient = this.controllerMessenger.call(
         'NetworkController:getNetworkClientById',
