@@ -754,15 +754,11 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    console.log('getUnapprovedTransactionCount called');
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     const queuedRequestsCount = controller.queuedRequestController.length();
 
-    const pendingApprovalCount =
-      controller.approvalController.getTotalApprovalCount();
-
-    return waitingForUnlockCount + pendingApprovalCount + queuedRequestsCount;
+    return waitingForUnlockCount + queuedRequestsCount;
   }
 
   controller.controllerMessenger.subscribe(
