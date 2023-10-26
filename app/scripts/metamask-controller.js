@@ -1324,34 +1324,34 @@ export default class MetamaskController extends EventEmitter {
 
     const transactionMetricsRequest = this.getTransactionMetricsRequest();
 
-    this.txController.on(
+    this.txController.hub.on(
       'transaction-added',
       handleTransactionAdded.bind(null, transactionMetricsRequest),
     );
-    this.txController.on(
+    this.txController.hub.on(
       'transaction-approved',
       handleTransactionApproved.bind(null, transactionMetricsRequest),
     );
-    this.txController.on(
+    this.txController.hub.on(
       'transaction-dropped',
       handleTransactionDropped.bind(null, transactionMetricsRequest),
     );
-    this.txController.on(
+    this.txController.hub.on(
       'transaction-finalized',
       handleTransactionFinalized.bind(null, transactionMetricsRequest),
     );
-    this.txController.on(
+    this.txController.hub.on(
       'transaction-rejected',
       handleTransactionRejected.bind(null, transactionMetricsRequest),
     );
-    this.txController.on(
+    this.txController.hub.on(
       'transaction-submitted',
       handleTransactionSubmitted.bind(null, transactionMetricsRequest),
     );
-    this.txController.on('transaction-swap-failed', (payload) =>
+    this.txController.hub.on('transaction-swap-failed', (payload) =>
       this.metaMetricsController.trackEvent(payload),
     );
-    this.txController.on('transaction-swap-finalized', (payload) =>
+    this.txController.hub.on('transaction-swap-finalized', (payload) =>
       this.metaMetricsController.trackEvent(payload),
     );
 
