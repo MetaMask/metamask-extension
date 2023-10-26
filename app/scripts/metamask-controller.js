@@ -661,6 +661,10 @@ export default class MetamaskController extends EventEmitter {
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
       name: 'GasFeeController',
+      allowedActions: [
+        `${this.networkController.name}:getNetworkClientById`,
+        `${this.networkController.name}:getEIP1559Compatibility`,
+      ],
     });
 
     const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
